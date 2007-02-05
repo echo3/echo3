@@ -26,6 +26,7 @@
    <add i="testArea">
     <c i="c_1" t="ContentPane">
      <c i="c_2" t="Column">
+      <p t="Extent" n="cellSpacing" v="17px"/>
       <c i="c_3" t="Label">
        <p t="s" n="text" v="First Label"/>
        <p t="Color" n="foreground" v="#ffffff"/>

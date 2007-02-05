@@ -59,7 +59,7 @@
         app.rootComponent.add(contentPane);
         
         mainColumn = new EchoApp.Column();
-        mainColumn.setProperty("cellSpacing", "5px");
+        mainColumn.setProperty("cellSpacing", new EchoApp.Property.Extent("5px"));
         mainColumn.setProperty("insets", new EchoApp.Property.Insets("2px 5px"));
         mainColumn.setProperty("background", new EchoApp.Property.Color("#239567"));
         
@@ -171,10 +171,10 @@
     }
     
     function testColumnCellSpacing() {
-        if (mainColumn.getProperty("cellSpacing") == "5px") {
-            mainColumn.setProperty("cellSpacing", "0px");
+        if (mainColumn.getProperty("cellSpacing") == null) {
+            mainColumn.setProperty("cellSpacing", new EchoApp.Property.Extent("5px"));
         } else {
-            mainColumn.setProperty("cellSpacing", "5px");
+            mainColumn.setProperty("cellSpacing", null);
         }
     }
     
