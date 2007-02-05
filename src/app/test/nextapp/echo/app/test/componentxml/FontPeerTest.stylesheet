@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stylesheet>
+ <style name="alpha" type="nextapp.echo.app.Component">
+  <properties>
+   <property name="font">
+    <font size="24pt" bold="true">
+     <typeface name="Verdana"/>
+    </font>
+   </property>
+  </properties>
+ </style>
+ <style name="bravo" type="nextapp.echo.app.Component">
+  <properties>
+   <property name="font">
+    <font size="24pt" bold="true">
+     <typeface name="Verdana"/>
+     <typeface name="Arial"/>
+    </font>
+   </property>
+  </properties>
+ </style>
+ <style name="charlie" type="nextapp.echo.app.Component">
+  <properties>
+   <property name="font">
+    <font size="24pt" bold="true" italic="true" underline="true" overline="true" line-through="true">
+     <typeface name="Verdana"/>
+    </font>
+   </property>
+  </properties>
+ </style>
+ <style name="delta" type="nextapp.echo.app.Component">
+  <properties>
+   <property name="font">
+    <font size="24pt" bold="true" typeface="Verdana"/>
+   </property>
+  </properties>
+ </style>
+</stylesheet>

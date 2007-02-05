@@ -1,0 +1,68 @@
+/* Javadoc style sheet */
+
+/* Define colors, fonts and other style attributes here to override the defaults */
+
+/* Page background color */
+body { 
+    background-color: #FFFFFF;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 10pt;
+}
+
+/* Table colors */
+.TableHeadingColor     { background: #4f4f6f; color: white; } 
+.TableSubHeadingColor  { background: #EEEEFF } 
+.TableRowColor         { background: #ffffff; color: #1f1f27; } 
+
+/* Font used in left-hand frame lists */
+.FrameTitleFont   { font-size: 10pt; font-family: verdana, arial, helvetica, sans-serif; }
+.FrameHeadingFont { font-size: 10pt; font-family: verdana, arial, helvetica, sans-serif; }
+.FrameItemFont    { font-size: 10pt; font-family: verdana, arial, helvetica, sans-serif; }
+
+/* Example of smaller, sans-serif font in frames */
+/* .FrameItemFont  { font-size: 10pt; font-family: Helvetica, Arial, sans-serif } */
+
+/* Navigation bar fonts and colors */
+.NavBarCell1    { background-color:#afafef;}
+.NavBarCell1Rev { background-color:#1f1f27;}
+.NavBarFont1    { font-family: verdana, arial, helvetica, sans-serif; color:#000000;}
+.NavBarFont1Rev { font-family: verdana, arial, helvetica, sans-serif; color:#FFFFFF;}
+
+.NavBarCell2    { font-family: verdana, arial, helvetica, sans-serif; background-color:#FFFFFF;}
+.NavBarCell3    { font-family: verdana, arial, helvetica, sans-serif; background-color:#FFFFFF;}
+
+HR {
+    border-top: 1px solid #4f4f6f;
+    border-bottom: none;
+    height: 0px;
+}
+
+A {
+    color: #00004f;
+}
+
+A:visited {
+    color: #004f6f;
+}
+
+A:hover {
+    color: #4f0000;
+    background-color: #ffefaf;
+}
+
+PRE {
+    color: #005f00;
+}
+
+CODE {
+    color: #005f00;
+}
+
+TABLE {
+    border-style: solid;
+    border-color: #4f4f6f;
+    border-collapse: collapse;
+}
+
+TD {
+}

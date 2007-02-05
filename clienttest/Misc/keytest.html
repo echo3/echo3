@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+     
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <script type="text/javascript">
+  
+    var upCount = 0, downCount = 0, pressCount = 0;
+  
+    function keyPress() {
+    };
+    
+    function test() {
+        var testElement = document.getElementById("test");
+        if (testElement.addEventListener) {
+            testElement.addEventListener("keydown", down, false);
+            testElement.addEventListener("keyup", up, false);
+            testElement.addEventListener("keypress", press, false);
+        } else {
+            testElement.attachEvent("onkeydown", down);
+            testElement.attachEvent("onkeyup", up);
+            testElement.attachEvent("onkeypress", press);
+        }
+    };
+
+    function down(e) {
+        e = e ? e : window.event;
+        var downElement = document.getElementById("down");
+        while (downElement.childNodes.length > 0) {
+            downElement.removeChild(downElement.childNodes[0]);
+        }
+        downElement.appendChild(document.createTextNode("count=" + ++downCount + ", which=" + e.which + ", keyCode=" + e.keyCode));
+    };
+    
+    function up(e) {
+        e = e ? e : window.event;
+        var upElement = document.getElementById("up");
+        while (upElement.childNodes.length > 0) {
+            upElement.removeChild(upElement.childNodes[0]);
+        }
+        upElement.appendChild(document.createTextNode("count=" + ++upCount + ", which=" + e.which + ", keyCode=" + e.keyCode));
+    };
+    
+    function press(e) {
+        e = e ? e : window.event;
+        var pressElement = document.getElementById("press");
+        while (pressElement.childNodes.length > 0) {
+            pressElement.removeChild(pressElement.childNodes[0]);
+        }
+        pressElement.appendChild(document.createTextNode("count=" + ++pressCount + ", which=" + e.which + ", keyCode=" + e.keyCode));
+    };
+    
+  </script>
+  <title>Test Derivation</title>
+ </head>
+ <body onload="test();">
+ 
+ <div id="test" tabindex="0" style="top:100px;left:100px;width:400px;height:300px;background-color:lime;position:absolute">
+  Down: <span id="down">X</span><br/>
+  Press: <span id="press">X</span><br/>
+  Up: <span id="up">X</span>
+  <div id="foo" tabindex="1" style="background-color:yellow; width: 150px; height:100px; margin:10px;">
+  Another place to focus!
+  </div>
+ </div>
+ 
+ </body>
+</html>

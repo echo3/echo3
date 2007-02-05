@@ -1,0 +1,304 @@
+/**
+ * Remote Client Implementation.
+ * REQUIRES: Core, WebCore, Application, Render, Serial.
+ * 
+ * This client provides a view of a remote server hosted application.
+ */
+EchoRemoteClient = function(serverUrl, domainElementId) { 
+    this._serverUrl = serverUrl;
+    this.domainElement = document.getElementById(domainElementId);
+    if (!this.domainElement) {
+        throw new Error("Cannot find domain element: " + domainElementId);
+    }
+        
+    EchoWebCore.init();
+    
+    this.application = new EchoApp.Application(domainElementId);
+    this.application.addComponentUpdateListener(new EchoCore.MethodRef(this, this._processComponentUpdate));
+    this._storeUpdates = false;
+    
+    this._urlMappings = new EchoCore.Collections.Map();
+    this._urlMappings.put("S", this._serverUrl + "?sid=Echo.StreamImage&imageuid=");
+    
+    this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
+};
+
+EchoRemoteClient.prototype.processUrl = function(url) {
+    if (url.charAt(0) == "!") {
+        var endIndex = url.indexOf("!", 1);
+        if (endIndex == -1) {
+            throw new IllegalArgumentException("Invalid encoded URL");
+        }
+        var baseUrl = url.substring(endIndex + 1);
+        var key = url.substring(1, endIndex);
+        var replacementValue = this._urlMappings.get(key);
+        if (replacementValue == null) {
+            throw new Error("Invalid URL shorthand key \"" + key + "\".");
+        }
+        return replacementValue + baseUrl;
+    } else {
+        return url;
+    }
+};
+
+/**
+ * Base URL from which libraries should be retrieved.
+ * Libraries are loaded into global scope, and are thus not
+ * bound to any particular client instance.
+ */
+EchoRemoteClient.libraryServerUrl = null;
+
+EchoRemoteClient.prototype.addComponentListener = function(component, eventType) {
+    component.addListener(eventType, new EchoCore.MethodRef(this, this._processComponentEvent));
+};
+
+EchoRemoteClient.prototype.getLibraryServiceUrl = function(serviceId) {
+    if (!EchoRemoteClient._libraryServerUrl) {
+        EchoRemoteClient._libraryServerUrl = this._serverUrl;
+    }
+    return EchoRemoteClient._libraryServerUrl + "?sid=" + serviceId;
+};
+
+EchoRemoteClient.prototype._processComponentEvent = function(e) {
+    if (!this._clientMessage) {
+        //FIXME. Central error handling for these.
+        alert("Waiting on server response.  Press the browser reload or refresh button if server fails to respond.");
+    }
+    EchoCore.Debug.consoleWrite("PCE:" + e.source);
+    this._clientMessage.setEvent(e.source.renderId, e.type);
+    this.sync();
+};
+
+EchoRemoteClient.prototype._processComponentUpdate = function(e) {
+    EchoCore.Debug.consoleWrite("UPDATE:" + e.parent.renderId + "/" + e.propertyName + "/" + e.oldValue + "/" + e.newValue);
+    if (!this._clientMessage) {
+        //FIXME. need to work on scenarios where clientmessage is null, for both this and events too.
+        return;
+    }
+    this._clientMessage.storeProperty(e.parent.renderId, e.propertyName, e.newValue);
+};
+
+EchoRemoteClient.prototype._processSyncComplete = function(e) {
+	EchoRender.processUpdates(this.application.updateManager);
+    this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
+    EchoCore.Debug.consoleWrite("complete");
+};
+
+EchoRemoteClient.prototype._processSyncResponse = function(e) {
+    var responseDocument = e.source.getResponseXml();
+    if (!e.valid || !responseDocument || !responseDocument.documentElement) {
+        //FIXME. Central error handling for things like this.
+        //FIXME. Shut down further client input with secondary "you're beating a dead horse" error message. 
+        alert("An invalid response was received from the server.  Press the browser reload or refresh button.");
+        return;
+    }
+    var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
+    serverMessage.addCompletionListener(new EchoCore.MethodRef(this, this._processSyncComplete));
+    serverMessage.process();
+};
+
+EchoRemoteClient.prototype.sync = function() {
+    var conn = new EchoWebCore.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST", 
+            this._clientMessage._renderXml(), "text/xml");
+    this._clientMessage = null;
+    conn.addResponseListener(new EchoCore.MethodRef(this, this._processSyncResponse));
+    conn.connect();
+};
+
+EchoRemoteClient.prototype.getServiceUrl = function(serviceId) {
+    return this._serverUrl + "?sid=" + serviceId;
+};
+
+EchoRemoteClient.ClientMessage = function(client, initialize) {
+    this._client = client;
+    this._componentIdToPropertyMap = new EchoCore.Collections.Map();
+    this._initialize = initialize;
+};
+
+EchoRemoteClient.ClientMessage.prototype.setEvent = function(componentId, eventType) {
+    this._eventComponentId = componentId;
+    this._eventType = eventType;
+};
+
+EchoRemoteClient.ClientMessage.prototype.storeProperty = function(componentId, propertyName, propertyValue) {
+    var propertyMap = this._componentIdToPropertyMap.get(componentId);
+    if (!propertyMap) {
+        propertyMap = new EchoCore.Collections.Map();
+        this._componentIdToPropertyMap.put(componentId, propertyMap);
+    }
+    propertyMap.put(propertyName, propertyValue);
+};
+
+EchoRemoteClient.ClientMessage.prototype._renderXml = function() {
+    var cmsgDocument = EchoWebCore.DOM.createDocument(
+            "http://www.nextapp.com/products/echo/svrmsg/clientmessage.3.0", "cmsg");
+    var cmsgElement = cmsgDocument.documentElement;
+    
+    if (this._initialize) {
+        cmsgElement.setAttribute("t", "init");
+    }
+    
+    // Render event information.
+    if (this._eventType) {
+        var eElement = cmsgDocument.createElement("e");
+        eElement.setAttribute("t", this._eventType);
+        eElement.setAttribute("i", this._eventComponentId);
+        cmsgElement.appendChild(eElement);
+    }
+    
+    // Render property information.
+    for (var componentId in this._componentIdToPropertyMap.associations) {
+        var propertyMap = this._componentIdToPropertyMap.associations[componentId];
+        for (var propertyName in propertyMap.associations) {
+            var propertyValue = propertyMap.associations[propertyName];
+            var pElement = cmsgDocument.createElement("p");
+            pElement.setAttribute("i", componentId);
+            pElement.setAttribute("n", propertyName);
+            if (typeof (propertyValue) == "object") {
+                if (propertyValue.className) {
+                    EchoSerial.storeProperty(this._client, pElement, propertyValue);
+                }
+            } else {
+                pElement.setAttribute("v", propertyValue);
+            }
+            
+            cmsgElement.appendChild(pElement);
+        }
+    }
+    
+    return cmsgDocument;
+};
+
+EchoRemoteClient.ComponentSync = function() { };
+
+EchoRemoteClient.ComponentSync.process = function(client, dirElement) {
+    for (var i = 0; i < dirElement.childNodes.length; ++i) {
+        if (dirElement.childNodes[i].nodeType != 1) {
+            continue;
+        }
+        switch (dirElement.childNodes[i].nodeName) {
+        case "add":
+            EchoRemoteClient.ComponentSync._processComponentAdd(client, dirElement.childNodes[i]);
+            break;
+        case "rm":
+            EchoRemoteClient.ComponentSync._processComponentRemove(client, dirElement.childNodes[i]);
+            break;
+        case "ss":
+            EchoRemoteClient.ComponentSync._processStyleSheet(client, dirElement.childNodes[i]);
+            break;
+        case "up":
+            EchoRemoteClient.ComponentSync._processComponentUpdate(client, dirElement.childNodes[i]);
+            break;
+        }
+    }
+};
+
+EchoRemoteClient.ComponentSync._processComponentAdd = function(client, addElement) {
+    var parentId = addElement.getAttribute("i");
+    var parentComponent = client.application.getComponentByRenderId(parentId);
+    for (var i = 0; i < addElement.childNodes.length; ++i) {
+        if (addElement.childNodes[i].nodeType != 1) {
+            continue;
+        }
+        var component = EchoSerial.loadComponent(client, addElement.childNodes[i]);
+        var index = addElement.childNodes[i].getAttribute("x");
+        if (index == null) {
+            parentComponent.add(component);
+        } else {
+            parentComponent.add(component, parseInt(index));
+        }
+    }
+};
+
+EchoRemoteClient.ComponentSync._processComponentRemove = function(client, removeElement) {
+    var id = removeElement.getAttribute("i");
+    var component = client.application.getComponentByRenderId(id);
+    if (!component) {
+        return;
+    }
+    component.parent.remove(component);
+};
+
+EchoRemoteClient.ComponentSync._processComponentUpdate = function(client, updateElement) {
+    var id = updateElement.getAttribute("i");
+    var component = client.application.getComponentByRenderId(id);
+    for (var i = 0; i < updateElement.childNodes.length; ++i) {
+        var childNodeName = updateElement.childNodes[i].nodeName;
+        switch (childNodeName) {
+        case "p": // Property
+            EchoSerial.loadProperty(client, updateElement.childNodes[i], component);
+            break;
+        }
+    }
+};
+
+EchoRemoteClient.ComponentSync._processStyleSheet = function(client, ssElement) {
+    var styleSheet = EchoSerial.loadStyleSheet(client, ssElement);
+    client.application.setStyleSheet(styleSheet);
+};
+
+EchoRemoteClient.ServerMessage = function(client, xmlDocument) { 
+    this.client = client;
+    this.document = xmlDocument;
+    this._listenerList = new EchoCore.ListenerList();
+};
+
+EchoRemoteClient.ServerMessage._processors = new EchoCore.Collections.Map();
+
+EchoRemoteClient.ServerMessage.prototype.addCompletionListener = function(l) {
+    this._listenerList.addListener("completion", l);
+};
+
+EchoRemoteClient.ServerMessage.addProcessor = function(name, processor) {
+    EchoRemoteClient.ServerMessage._processors.put(name, processor);
+};
+
+EchoRemoteClient.ServerMessage.prototype.process = function() {
+    // Processing phase 1: load libraries.
+    var libsElement = EchoWebCore.DOM.getChildElementByTagName(this.document.documentElement, "libs");
+    if (libsElement) {
+        var libraryGroup = new EchoWebCore.Library.Group();
+        for (var i = 0; i < libsElement.childNodes.length; ++i) {
+            if (libsElement.childNodes[i].nodeType != 1) {
+                continue;
+            }
+            if (libsElement.childNodes[i].nodeName == "lib") {
+                var url = this.client.getLibraryServiceUrl(libsElement.childNodes[i].getAttribute("i"));
+                libraryGroup.add(url);
+            }
+        }
+        if (libraryGroup.hasNewLibraries()) {
+            libraryGroup.addLoadListener(new EchoCore.MethodRef(this, this._processPostLibraryLoad));
+            libraryGroup.load();
+        } else {
+            this._processPostLibraryLoad();
+        }
+    } else {
+        this._processPostLibraryLoad();
+    }
+};
+
+EchoRemoteClient.ServerMessage.prototype._processPostLibraryLoad = function() {
+    // Processing phase 2: invoke directives.
+    var groupElements = EchoWebCore.DOM.getChildElementsByTagName(this.document.documentElement, "group");
+    for (var i = 0; i < groupElements.length; ++i) {
+        var dirElements = EchoWebCore.DOM.getChildElementsByTagName(groupElements[i], "dir");
+        for (var j = 0; j < dirElements.length; ++j) {
+            var procName = dirElements[j].getAttribute("proc");
+            var processor = EchoRemoteClient.ServerMessage._processors.get(procName);
+            if (!processor) {
+                throw new Error("Invalid processor specified in ServerMessage: " + procName);
+            }
+            processor.process(this.client, dirElements[j]);
+        }
+    }
+
+    // Complete: notify listeners of completion.
+    this._listenerList.fireEvent(new EchoCore.Event(this, "completion"));
+};
+
+EchoRemoteClient.ServerMessage.prototype.removeCompletionListener = function(l) {
+    this._listenerList.removeListener("completion", l);
+};
+
+EchoRemoteClient.ServerMessage.addProcessor("CSync", EchoRemoteClient.ComponentSync);

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stylesheet>
+ <style name="alpha" type="nextapp.echo.app.Button">
+  <properties>
+   <property type="nextapp.echo.app.ResourceImageReference" name="icon" 
+           value="nextapp.echo/test/componentxml/Alpha.png"/>
+  </properties>
+ </style>
+ <style name="bravo" type="nextapp.echo.app.Button">
+  <properties>
+   <property type="nextapp.echo.app.ResourceImageReference" name="icon" >
+    <resource-image-reference resource="nextapp.echo/test/componentxml/Bravo.png"/>
+   </property>
+  </properties>
+ </style>
+ <style name="charlie" type="nextapp.echo.app.Button">
+  <properties>
+   <property type="nextapp.echo.app.ResourceImageReference" name="icon" >
+    <resource-image-reference resource="nextapp.echo/test/componentxml/Charlie.png" width="20px" height="30px"/>
+   </property>
+  </properties>
+ </style>
+ <style name="delta" type="nextapp.echo.app.Button">
+  <properties>
+   <property type="nextapp.echo.app.ResourceImageReference" name="icon" >
+    <resource-image-reference resource="nextapp.echo/test/componentxml/Delta.whoknows" content-type="image/gif" width="30px"/>
+   </property>
+  </properties>
+ </style>
+</stylesheet>

@@ -1,0 +1,70 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+     
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title>Navigation</title>
+  <style type="text/css">
+    BODY {
+        padding: 5px 20px 5px 20px;
+        margin: 0px;
+        background-color: #1f1f3f;
+        font-size: 10pt;
+        font-family: verdana, arial, helvetica, sans-serif;
+        color: white;
+        overflow: none;
+    }
+    TABLE {
+        border-collapse: collapse;
+        border-width: 0px;
+        padding: 0px;
+    }
+    TD {
+        padding: 0px;
+    }
+    A {
+        text-decoration: none;
+        color: white;
+    }
+    A:visited {
+        text-decoration: none;
+        color: white;
+    }
+    A:hover {
+        text-decoration: underline;
+        color: #afafff;
+    }
+  </style>
+  <script type="text/javascript">
+    var activeId = null;
+    
+    function highlight(id) {
+        if (activeId) {
+            document.getElementById(activeId).style.color = "white";
+            document.getElementById(activeId).style.textDecoration = "none";
+        }
+        activeId = id;
+        document.getElementById(activeId).style.color = "#ffcf7f";
+        document.getElementById(activeId).style.textDecoration = "underline";
+        document.getElementById(activeId).blur();
+    }
+  </script>
+ </head>
+ <body onload="highlight('app');">
+  <table style="width: 100%;">
+   <tr>
+    <td><strong>NextApp Echo v2.0 API</strong></td>
+    <td align="right"><table>
+     <tr>
+      <td>&nbsp;&nbsp;&nbsp;</td>
+      <td><a id="app" href="app/index.html" target="main" onclick="highlight('app');">Application Framework</td>
+      <td>&nbsp;&nbsp;&nbsp;</td>
+      <td><a id="container" href="webcontainer/index.html" target="main" onclick="highlight('container');">Web Container</td>
+     </tr>
+    </table></td>
+   </tr>
+  </table>
+ </body>
+</html>
+ 

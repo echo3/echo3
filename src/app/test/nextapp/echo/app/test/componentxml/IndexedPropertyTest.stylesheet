@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stylesheet>
+ <style name="alpha" type="nextapp.echo.app.Grid">
+  <properties>
+   <property name="foreground" value="#abcdef"/>
+   <property name="columnWidth" index="0" value="100px"/>
+   <property name="columnWidth" index="1" value="200px"/>
+  </properties>
+ </style>
+</stylesheet>

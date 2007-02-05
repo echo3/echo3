@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+     
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <script type="text/javascript" src="../Core.js"></script>
+  <script type="text/javascript" src="../WebCore.js"></script>
+  <script type="text/javascript" src="../Render.js"></script>
+  <script type="text/javascript" src="../Application.js"></script>
+  <script type="text/javascript" src="../Serial.js"></script>
+  <script type="text/javascript" src="../RemoteClient.js"></script>
+  <script type="text/javascript">
+    var syncIndex = 0;
+  
+    function init() {
+        EchoCore.Debug.consoleElement = document.getElementById("debugconsole");
+
+        var client = new EchoRemoteClient(null, 'testArea');
+
+        client.getLibraryServiceUrl = function(serviceId) {
+            switch (serviceId) {
+            case "Echo.ContentPane":
+                return "../Render.ContentPane.js";
+            case "Echo.Column":
+                return "../Render.Column.js";
+            case "Echo.Label":
+                return "../Render.Label.js";
+            case "Echo.WindowPane":
+                return "../Render.WindowPane.js";
+            case "Echo.SplitPane":
+                return "../Render.SplitPane.js";
+            case "Echo.Row":
+                return "../Render.Row.js";
+            case "Echo.Button":
+                return "../Render.Button.js";
+            case "Echo.TextComponent":
+                return "../Render.TextComponent.js";
+            default:
+                throw new Error("Unknown Service");
+            }
+        };
+
+        client.getServiceUrl = function(serviceId) {
+            EchoCore.Debug.consoleWrite("sync");
+            switch (serviceId) {
+            case "Echo.Sync":
+                return "state" + syncIndex++ + ".xml";
+            }
+        }
+    
+        client.sync();
+    }
+    
+    function dumpEvents() {
+        EchoCore.Debug.consoleWrite(EchoWebCore.EventProcessor.toString());
+    }
+  </script>
+  <title>Experimental Echo Client</title>
+ </head>
+ <body id="b0" style="margin: 0px; padding: 0px;overflow:hidden;font-size:10pt;font-family:sans-serif;"
+ onload="init();">
+  <form action="#" method="POST">
+  <div id="testArea" style="position:absolute;top:5px;left:250px;width:600px;height:480px;overflow:auto;"></div>
+  <div id="debugconsole" style="color:#ffffff;background-color:#3f0000;position:absolute;top:500px;left:250px;width:600px;height:180px;overflow:auto;"></div>
+  </form>
+ </body>
+</html>

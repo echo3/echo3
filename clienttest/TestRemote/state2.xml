@@ -1,0 +1,18 @@
+<smsg>
+ <libs>
+ </libs>
+ <group i="update">
+  <dir proc="CSync">
+   <add i="c_200">
+    <c i="c_210" t="Row">
+     <c i="c_211" t="Button">
+      <p t="s" n="text" v="Control1"/>
+     </c>
+     <c i="c_212" t="Button">
+      <p t="s" n="text" v="Control2"/>
+     </c>
+    </c>
+   </add>
+  </dir>
+ </group>
+</smsg>

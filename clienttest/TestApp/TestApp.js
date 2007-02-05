@@ -1,0 +1,268 @@
+TestApp = function() {
+    EchoApp.Application.call(this, "rootArea");
+    var testScreen = new TestApp.TestScreen();
+    testScreen.addTest("SplitPane");
+    testScreen.addTest("TextComponent");
+    testScreen.addTest("WindowPane");
+    this.rootComponent.add(testScreen);
+};
+
+TestApp.prototype = new EchoApp.Application;
+
+TestApp.TestScreen = function() {
+    EchoApp.ContentPane.call(this);
+    this.setProperty("background", new EchoApp.Property.Color("#abcdef"));
+    
+    this.testSelectSplitPane = new EchoApp.SplitPane();
+    this.testSelectSplitPane.setStyleName("DefaultResizable");
+    this.testSelectSplitPane.setProperty("separatorPosition", new EchoApp.Property.Extent("180px"));
+    this.add(this.testSelectSplitPane);
+
+    this.testSelectColumn = new EchoApp.Column();
+    this.testSelectColumn.setProperty("insets", new EchoApp.Property.Insets("5px 10px"));
+    this.testSelectSplitPane.add(this.testSelectColumn);
+    
+    var testColumn2 = new EchoApp.Column();
+    var label = new EchoApp.Label();
+    label.setProperty("text", "Welcome to the Experimental Echo Client Test Application!");
+    label.setStyleName("Default");
+    testColumn2.add(label);
+    this.testSelectSplitPane.add(testColumn2);
+    
+};
+
+TestApp.TestScreen.prototype = new EchoApp.ContentPane;
+
+TestApp.TestScreen.prototype.addTest = function(testName) {
+    var button = new EchoApp.Button();
+    button.setStyleName("Default");
+    button.setProperty("text", testName);
+    button.addListener("action", new EchoCore.MethodRef(this, this._launchTest));
+    this.testSelectColumn.add(button);
+};
+
+TestApp.TestScreen.prototype._launchTest = function(e) {
+    while (this.testSelectSplitPane.getComponentCount() > 1) {
+        this.testSelectSplitPane.remove(1);
+    }
+    var testName = e.source.getProperty("text");
+    var test = TestApp.Tests[testName];
+    if (!test) {
+        alert("Test not found: " + testName);
+        return;
+    }
+    var instance = new test();
+    this.testSelectSplitPane.add(instance);
+};
+
+TestApp.TestPane = function() {
+    EchoApp.ContentPane.call(this);
+    var testControlsSplitPane = new EchoApp.SplitPane();
+    testControlsSplitPane.setProperty("separatorPosition", new EchoApp.Property.Extent("180px"));
+//        splitPane.setStyleName("DefaultResizable");
+//        splitPane.setProperty("orientation", EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING);
+    this.add(testControlsSplitPane);
+    
+    this.controlsColumn = new EchoApp.Column();
+    testControlsSplitPane.add(this.controlsColumn);
+    
+    this.content = new EchoApp.ContentPane();
+    testControlsSplitPane.add(this.content);
+};
+
+this.component = null;
+
+TestApp.TestPane.prototype = new EchoApp.ContentPane;
+
+TestApp.TestPane.prototype.addTestButton = function(text, action) {
+    var button = new EchoApp.Button();
+    button.setProperty("text", text);
+    button.setStyleName("Default");
+    if (action) {
+        button.addListener("action", action);
+    }
+    this.controlsColumn.add(button);
+};
+
+TestApp.Tests = function() { };
+
+TestApp.Tests.SplitPane = function() {
+    TestApp.TestPane.call(this);
+
+    this.splitPane = new EchoApp.SplitPane();
+    this.splitPane.setProperty("resizable", true);
+    var component;
+    
+    component = new EchoApp.Label();
+    component.setProperty("text", "Content One");
+    this.splitPane.add(component);
+    component = new EchoApp.Label();
+    component.setProperty("text", "Content Two");
+    this.splitPane.add(component);
+    this.content.add(this.splitPane);
+
+    this.addTestButton("Orientation: L/R", new EchoCore.MethodRef(this, this._setOrientationLR));
+    this.addTestButton("Orientation: R/L", new EchoCore.MethodRef(this, this._setOrientationRL));
+    this.addTestButton("Orientation: T/B", new EchoCore.MethodRef(this, this._setOrientationTB));
+    this.addTestButton("Orientation: B/T", new EchoCore.MethodRef(this, this._setOrientationBT));
+    this.addTestButton("Component1: Set LD", new EchoCore.MethodRef(this, this._setLayoutData1));
+    this.addTestButton("Component1: Clear LD", new EchoCore.MethodRef(this, this._clearLayoutData1));
+    this.addTestButton("Component2: Set LD", new EchoCore.MethodRef(this, this._setLayoutData2));
+    this.addTestButton("Component2: Clear LD", new EchoCore.MethodRef(this, this._clearLayoutData2));
+    this.addTestButton("Add Component", new EchoCore.MethodRef(this, this._addComponent));
+    this.addTestButton("Insert Component", new EchoCore.MethodRef(this, this._insertComponent));
+    this.addTestButton("Remove First Component", new EchoCore.MethodRef(this, this._removeFirstComponent));
+    this.addTestButton("Remove Last Component", new EchoCore.MethodRef(this, this._removeLastComponent));
+};
+
+TestApp.Tests.SplitPane.prototype = new TestApp.TestPane;
+
+TestApp.Tests.SplitPane.prototype._addComponent = function(e) {
+    if (this.splitPane.getComponentCount() >= 2) {
+        return;
+    }
+    var component = new EchoApp.Label();
+    component.setProperty("text", "Content X");
+    this.splitPane.add(component);
+};
+
+TestApp.Tests.SplitPane.prototype._insertComponent = function(e) {
+    if (this.splitPane.getComponentCount() >= 2) {
+        return;
+    }
+    var component = new EchoApp.Label();
+    component.setProperty("text", "Content X");
+    this.splitPane.add(component, 0);
+};
+
+TestApp.Tests.SplitPane.prototype._removeFirstComponent = function(e) {
+    if (this.splitPane.getComponentCount() < 1) {
+        return;
+    }
+    this.splitPane.remove(0);
+};
+
+TestApp.Tests.SplitPane.prototype._removeLastComponent = function(e) {
+    if (this.splitPane.getComponentCount() < 1) {
+        return;
+    }
+    this.splitPane.remove(this.splitPane.getComponentCount() - 1);
+};
+
+TestApp.Tests.SplitPane.prototype._clearLayoutData1 = function(e) {
+    if (this.splitPane.getComponentCount() < 1) {
+        return;
+    }
+    var component = this.splitPane.getComponent(0);
+    component.setProperty("layoutData", null);
+};
+
+TestApp.Tests.SplitPane.prototype._clearLayoutData2 = function(e) {
+    if (this.splitPane.getComponentCount() < 2) {
+        return;
+    }
+    var component = this.splitPane.getComponent(1);
+    component.setProperty("layoutData", null);
+};
+
+TestApp.Tests.SplitPane.prototype._setLayoutData1 = function(e) {
+    if (this.splitPane.getComponentCount() < 1) {
+        return;
+    }
+    var component = this.splitPane.getComponent(0);
+    var layoutData = new EchoApp.LayoutData();
+    layoutData.setProperty("background", new EchoApp.Property.Color("#3fffaf"));
+    layoutData.setProperty("insets", new EchoApp.Property.Insets("5px"));
+    component.setProperty("layoutData", layoutData);
+};
+
+TestApp.Tests.SplitPane.prototype._setLayoutData2 = function(e) {
+    if (this.splitPane.getComponentCount() < 2) {
+        return;
+    }
+    var component = this.splitPane.getComponent(1);
+    var layoutData = new EchoApp.LayoutData();
+    layoutData.setProperty("background", new EchoApp.Property.Color("#afff3f"));
+    layoutData.setProperty("insets", new EchoApp.Property.Insets("5px"));
+    component.setProperty("layoutData", layoutData);
+};
+
+TestApp.Tests.SplitPane.prototype._setOrientationLR = function(e) {
+    this.splitPane.setProperty("orientation", EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEFT_RIGHT);
+};
+
+TestApp.Tests.SplitPane.prototype._setOrientationRL = function(e) {
+    this.splitPane.setProperty("orientation", EchoApp.SplitPane.ORIENTATION_HORIZONTAL_RIGHT_LEFT);
+};
+
+TestApp.Tests.SplitPane.prototype._setOrientationTB = function(e) {
+    this.splitPane.setProperty("orientation", EchoApp.SplitPane.ORIENTATION_VERTICAL_TOP_BOTTOM);
+};
+
+TestApp.Tests.SplitPane.prototype._setOrientationBT = function(e) {
+    this.splitPane.setProperty("orientation", EchoApp.SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP);
+};
+
+TestApp.Tests.TextComponent = function() {
+    TestApp.TestPane.call(this);
+
+    var column = new EchoApp.Column();
+    this.content.add(column);
+    this.textField = new EchoApp.TextField();
+    column.add(this.textField);
+
+    this.addTestButton("Set Text", new EchoCore.MethodRef(this, this._setText));
+    this.addTestButton("Set Text Empty", new EchoCore.MethodRef(this, this._setTextEmpty));
+    this.addTestButton("Set Text Null", new EchoCore.MethodRef(this, this._setTextNull));
+};
+
+TestApp.Tests.TextComponent.prototype = new TestApp.TestPane;
+
+TestApp.Tests.TextComponent.prototype._setText = function() {
+    this.textField.setProperty("text", "Hello, world");
+};
+
+TestApp.Tests.TextComponent.prototype._setTextEmpty = function() {
+    this.textField.setProperty("text", "");
+};
+
+TestApp.Tests.TextComponent.prototype._setTextNull = function() {
+    this.textField.setProperty("text", null);
+};
+
+TestApp.Tests.WindowPane = function() {
+    TestApp.TestPane.call(this);
+    this.addTestButton("Set Title", new EchoCore.MethodRef(this, this._setTitle));
+    this.addTestButton("Set Title Empty", new EchoCore.MethodRef(this, this._setTitleEmpty));
+    this.addTestButton("Set Title Null", new EchoCore.MethodRef(this, this._setTitleNull));
+
+    this.windowPane = new EchoApp.WindowPane();
+    this.windowPane.setStyleName("Default");
+    this.windowPane.setProperty("title", "This is a Window");
+    this.add(this.windowPane);
+
+};
+
+TestApp.Tests.WindowPane.prototype = new TestApp.TestPane;
+
+TestApp.Tests.WindowPane.prototype._setTitle = function() {
+    this.windowPane.setProperty("title", "Hello, world");
+};
+
+TestApp.Tests.WindowPane.prototype._setTitleEmpty = function() {
+    this.windowPane.setProperty("title", "");
+};
+
+TestApp.Tests.WindowPane.prototype._setTitleNull = function() {
+    this.windowPane.setProperty("title", null);
+};
+
+init = function() {
+    EchoCore.Debug.consoleElement = document.getElementById("debugconsole");
+    EchoWebCore.init();
+
+    var app = new TestApp();
+    var client = new EchoFreeClient(app);
+    client.init();
+    client.loadStyleSheet("Default.stylesheet.xml");
+};

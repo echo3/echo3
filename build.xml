@@ -1,0 +1,348 @@
+<?xml version="1.0"?>
+
+<!--
+ * This file is part of the Echo Web Application Framework (hereinafter "Echo").
+ * Copyright (C) 2002-2004 NextApp, Inc.
+ *
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+--> 
+ 
+<project name="NextApp_Echo_2" default="dist" basedir=".">
+
+    <property environment="env"/>
+    <property file="ant.properties"/>
+    
+    <patternset id="fileset.resources">
+        <include name="**/*properties"/>
+        <include name="**/*html"/>
+        <include name="**/*js"/>
+        <include name="**/*gif"/>
+        <include name="**/*jpg"/>
+        <include name="**/*png"/>
+        <include name="**/*xml"/>
+        <include name="**/*stylesheet"/>
+    </patternset>
+
+    <!-- Minimize -->
+    <target name="minimize" depends="clean" description="Removes all non-essential files, including Eclipse temporary/build output files">
+        <delete dir="${dir.temp}"/>
+    </target>
+    
+    <!-- Clean -->
+    <target name="clean"
+            description="Clears all generated files, including build directories, distributables, and documentation">
+        <delete dir="${dir.build}"/>
+        <delete dir="${dir.dist}"/>
+        <delete dir="${dir.javadoc}"/>
+        <delete dir="${dir.testoutput}"/>
+        <delete dir="${dir.release}"/>
+    </target>
+    
+    <target name="clienttest" description="Copy JS Resources to ClientTest older.">
+        <copy todir="${dir.clienttest}">
+            <fileset dir="${dir.src.webcontainer}/nextapp/echo/webcontainer/resource/js/">
+                <patternset>
+                    <include name="**/*js"/>
+                </patternset>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="compile.app" description="Compile Echo Application Framework">
+        <mkdir dir="${dir.build.app}"/>
+        <javac srcdir="${dir.src.app}" destdir="${dir.build.app}" debug="${debug}" deprecation="yes"/>
+        <copy todir="${dir.build.app}">
+            <fileset dir="${dir.src.app}">
+                <patternset refid="fileset.resources"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="dist.app" depends="clean,compile.app">
+        <mkdir dir="${dir.dist.lib}"/>
+        <jar jarfile="${dir.dist.lib}/${jarfile.echo.app}" basedir="${dir.build.app}"/>
+    </target>
+    
+    <target name="test.compile.app" depends="dist.app">
+        <mkdir dir="${dir.build.test.app}"/>
+        <javac srcdir="${dir.src.test.app}" destdir="${dir.build.test.app}" debug="${debug}" deprecation="yes">
+            <classpath>
+                <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
+            </classpath>
+        </javac>
+        <copy todir="${dir.build.test.app}">
+            <fileset dir="${dir.src.test.app}">
+                <patternset refid="fileset.resources"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="test.app" depends="test.compile.app" description="Test Echo app Framework">
+        <mkdir dir="${dir.testoutput.app}"/>
+        <junit printsummary="yes" haltonfailure="no">
+            <classpath>
+                <pathelement path="${dir.build.test.app}"/>
+                <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
+            </classpath>
+            <formatter type="plain"/>
+            <batchtest fork="yes" todir="${dir.testoutput.app}">
+                <fileset dir="${dir.src.test.app}">
+                   <include name="**/*Test*.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+    
+    <target name="doc.app"
+            description="Create public/protected JavaDoc Document for Echo Application Framework">
+        <mkdir dir="${dir.javadoc.app.public}"/>
+        <javadoc sourcepath="${dir.src.app}" packagenames="nextapp.echo.app.*" 
+                stylesheetfile="${javadoc.cssfile}"
+                destdir="${dir.javadoc.app.public}" 
+                WindowTitle="${javadoc.windowtitle}"
+                DocTitle="${javadoc.doctitle.app}"
+                Overview="${dir.src.app}/overview.html"
+                Header="${javadoc.header}"/>
+    </target>
+    
+    <target name="doc.app.private"
+            description="Create private JavaDoc Document for Echo Application Framework">
+        <mkdir dir="${dir.javadoc.app.private}"/>
+        <javadoc sourcepath="${dir.src.app}" packagenames="nextapp.echo.app.*" 
+                stylesheetfile="${javadoc.cssfile}"
+                destdir="${dir.javadoc.app.private}" 
+                WindowTitle="${javadoc.windowtitle}"
+                DocTitle="${javadoc.doctitle.app}"
+                Overview="${dir.src.app}/overview.html"
+                Header="${javadoc.header}"
+                Private="true"/>
+    </target>
+    
+    <target name="checkenv">
+        <available property="servlet.api.available" classname="javax.servlet.http.HttpServlet">
+            <classpath>
+                <pathelement path="${servlet.lib.jar}"/>
+            </classpath>
+        </available>
+    </target>
+    
+    <target name="verify.servlet.api" depends="checkenv" unless="servlet.api.available">
+        <echo message="************************************************************"/>
+        <echo message="*         Servlet API not found in build classpath         *"/>
+        <echo message="************************************************************"/>
+        <echo message="Specified JAR = ${servlet.lib.jar}"/>
+        <fail message="${servlet.lib.msg}"/>
+    </target>
+    
+    <target name="compile.webcontainer" depends="verify.servlet.api,compile.webcontainer.impl" description="Compile Echo Web Application Container"/>
+    
+    <target name="compile.webcontainer.impl" depends="verify.servlet.api, compile.app">
+        <mkdir dir="${dir.build.webcontainer}"/>
+        <javac srcdir="${dir.src.webcontainer}" destdir="${dir.build.webcontainer}" debug="${debug}" deprecation="yes">
+            <classpath>
+                <pathelement path="${dir.build.app}"/>
+                <pathelement path="${servlet.lib.jar}"/>
+            </classpath>
+        </javac>
+        <copy todir="${dir.build.webcontainer}">
+            <fileset dir="${dir.src.webcontainer}">
+                <patternset refid="fileset.resources"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="dist.webcontainer" depends="clean,compile.webcontainer">
+        <mkdir dir="${dir.dist.lib}"/>
+        <jar jarfile="${dir.dist.lib}/${jarfile.echo.webcontainer}" basedir="${dir.build.webcontainer}"/>
+    </target>
+    
+    <target name="test.compile.webcontainer" depends="dist.app, dist.webcontainer">
+        <mkdir dir="${dir.build.test.webcontainer}"/>
+        <javac srcdir="${dir.src.test.webcontainer}" destdir="${dir.build.test.webcontainer}" debug="${debug}" deprecation="yes">
+            <classpath>
+                <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
+                <pathelement path="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
+                <pathelement path="${servlet.lib.jar}"/>
+            </classpath>
+        </javac>
+        <copy todir="${dir.build.test.webcontainer}">
+            <fileset dir="${dir.src.test.webcontainer}">
+                <patternset refid="fileset.resources"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="test.webcontainer" depends="test.compile.webcontainer" description="Test Web Application Container">
+        <mkdir dir="${dir.testoutput.webcontainer}"/>
+        <junit printsummary="yes" haltonfailure="yes">
+            <classpath>
+                <pathelement path="${dir.build.test.webcontainer}"/>
+                <pathelement path="${servlet.lib.jar}"/>
+                <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
+                <pathelement path="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
+            </classpath>
+            <formatter type="plain"/>
+            <batchtest fork="yes" todir="${dir.testoutput.webcontainer}">
+                <fileset dir="${dir.src.test.webcontainer}">
+                   <include name="**/*Test*.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+    
+    <target name="doc.webcontainer"
+            description="Create public/protected JavaDoc Document for Echo Web Application Container">
+        <mkdir dir="${dir.javadoc.webcontainer.public}"/>
+        <javadoc sourcepath="${dir.src.app};${dir.src.webcontainer}" packagenames="nextapp.echo.webcontainer.*" 
+                stylesheetfile="${javadoc.cssfile}"
+                destdir="${dir.javadoc.webcontainer.public}" 
+                WindowTitle="${javadoc.windowtitle}"
+                DocTitle="${javadoc.doctitle.webcontainer}"
+                Overview="${dir.src.webcontainer}/overview.html"
+                Header="${javadoc.header}">
+            <classpath>
+                <pathelement path="${servlet.lib.jar}"/>
+            </classpath>
+        </javadoc>
+    </target>
+    
+    <target name="doc.webcontainer.private"
+            description="Create private JavaDoc Document for Echo Web Application Container">
+        <mkdir dir="${dir.javadoc.webcontainer.private}"/>
+        <javadoc sourcepath="${dir.src.app};${dir.src.webcontainer}" packagenames="nextapp.echo.webcontainer.*" 
+                stylesheetfile="${javadoc.cssfile}"
+                destdir="${dir.javadoc.webcontainer.private}" 
+                WindowTitle="${javadoc.windowtitle}"
+                DocTitle="${javadoc.doctitle.webcontainer}"
+                Overview="${dir.src.webcontainer}/overview.html"
+                Header="${javadoc.header}"
+                Private="true">
+            <classpath>
+                <pathelement path="${servlet.lib.jar}"/>
+            </classpath>
+        </javadoc>
+    </target>
+    
+    <target name="dist" depends="clean, dist.app, dist.webcontainer"/>
+    
+    <target name="test" depends="test.app, test.webcontainer"/>
+    
+    <target name="doc.public" 
+            depends="doc.app, doc.webcontainer"/>
+
+    <target name="doc.private" 
+            depends="doc.app.private, doc.webcontainer.private"/>
+
+    <target name="doc" 
+            depends="doc.app, doc.app.private, doc.webcontainer, doc.webcontainer.private"/>
+
+    <target name="compile.testapp" depends="dist">
+        <mkdir dir="${dir.build.testapp}/WEB-INF/classes"/>
+        <mkdir dir="${dir.build.testapp}/WEB-INF/lib"/>
+        <copy todir="${dir.build.testapp}/WEB-INF/lib" file="${dir.dist.lib}/${jarfile.echo.app}"/>
+        <copy todir="${dir.build.testapp}/WEB-INF/lib" file="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
+        <copy todir="${dir.build.testapp}/WEB-INF">
+            <fileset dir="${dir.deploy.testapp}"/>
+        </copy>
+        <copy todir="${dir.build.testapp}">
+            <fileset dir="${dir.htdocs.testapp}"/>
+        </copy>
+        <javac srcdir="${dir.src.testapp}" destdir="${dir.build.testapp}/WEB-INF/classes" debug="${debug}" deprecation="yes">
+            <classpath>
+                <pathelement path="${servlet.lib.jar}"/>
+                <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
+                <pathelement path="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
+            </classpath>
+        </javac>
+        <copy todir="${dir.build.testapp}/WEB-INF/classes">
+            <fileset dir="${dir.src.testapp}">
+                <patternset refid="fileset.resources"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="dist.testapp" depends="compile.testapp" 
+            description="Builds a web archive of the interactive test application">
+        <mkdir dir="${dir.dist.testapp}"/>
+        <jar jarfile="${dir.dist.testapp}/${warfile.testapp}" basedir="${dir.build.testapp}"/>
+    </target>
+
+    <target name="release" depends="clean, dist, dist.testapp, doc.public">
+        <mkdir dir="${dir.build.release.root}"/>
+        <mkdir dir="${dir.build.release.root}/SourceCode"/>
+        <mkdir dir="${dir.build.release.root}/Documentation"/>
+        <mkdir dir="${dir.build.release.root}/BinaryLibraries"/>
+        <mkdir dir="${dir.build.release.root}/BinaryApplications"/>
+        <mkdir dir="${dir.build.release.root}/Licensing"/>
+        <copy todir="${dir.build.release.root}" file="${dir.resource}/readme.txt"/>
+        
+        <!-- Source Code -->
+        <copy todir="${dir.build.release.root}/SourceCode/src">
+            <fileset dir="${dir.src}">
+                <exclude name=".svn/**"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir.build.release.root}/SourceCode/resource">
+            <fileset dir="${dir.resource}">
+                <exclude name=".svn/**"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir.build.release.root}/SourceCode">
+            <fileset file="build.xml"/>
+            <fileset file="ant.properties"/>
+        </copy>
+        
+        <!-- Binary Libraries -->
+        <copy todir="${dir.build.release.root}/BinaryLibraries">
+            <fileset dir="${dir.dist.lib}"/>
+        </copy>
+        
+        <!-- Binary Web Applications: Interactive Test Application -->
+        <copy todir="${dir.build.release.root}/BinaryApplications">
+            <fileset dir="${dir.dist.testapp}"/>
+        </copy>
+
+        <!-- Documentation -->
+        <copy todir="${dir.build.release.root}/Documentation/api/public">
+            <fileset dir="${dir.javadoc.public}"/>
+        </copy>
+        <copy todir="${dir.build.release.root}/Documentation">
+            <fileset dir="${dir.resource}/Documentation"/>
+        </copy>
+        
+        <!-- Licensing -->
+        <copy todir="${dir.build.release.root}/Licensing">
+            <fileset dir="${dir.resource}/Licensing"/>
+        </copy>
+        
+        <!-- Zip & TarGz -->
+        <mkdir dir="${dir.release}"/>
+        <zip zipfile="${dir.release}/${zipfile.release}" basedir="${dir.build.release}"/>
+        <tar tarfile="${dir.release}/${tarfile.release}" basedir="${dir.build.release}" longfile="gnu"/>
+        <gzip src="${dir.release}/${tarfile.release}" zipfile="${dir.release}/${tgzfile.release}"/>
+        <delete file="${dir.release}/${tarfile.release}"/>
+    </target>
+    
+</project>

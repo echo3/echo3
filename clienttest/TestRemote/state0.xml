@@ -1,0 +1,126 @@
+<smsg>
+ <libs>
+  <lib i="Echo.ContentPane"/>
+  <lib i="Echo.Column"/>
+  <lib i="Echo.Label"/>
+  <lib i="Echo.WindowPane"/>
+  <lib i="Echo.SplitPane"/>
+  <lib i="Echo.Row"/>
+  <lib i="Echo.Button"/>
+  <lib i="Echo.TextComponent"/>
+ </libs>
+ <group i="update">
+  <dir proc="CSync">
+   <ss>
+    <s n="Default" t="Button">
+     <p t="Border" n="border" v="2px groove #00ff00"/>
+     <p t="s" n="text" v="A button"/>
+     <p t="b" n="rolloverEnabled" v="true"/>
+     <p t="Color" n="rolloverBackground" v="#afffaf"/>
+     <p t="b" n="pressedEnabled" v="true"/>
+     <p t="Color" n="pressedBackground" v="#ffafff"/>
+     <p t="Color" n="foreground" v="#00007f"/>
+     <p t="Insets" n="insets" v="5px"/>
+    </s>
+   </ss>
+   <add i="testArea">
+    <c i="c_1" t="ContentPane">
+     <c i="c_2" t="Column">
+      <c i="c_3" t="Label">
+       <p t="s" n="text" v="First Label"/>
+       <p t="Color" n="foreground" v="#ffffff"/>
+       <p t="Color" n="background" v="#7f0000"/>
+      </c>
+      <c i="c_19" t="Row">
+       <c i="c_20" t="Label">
+        <p t="s" n="text" v="Hello, world!"/>
+        <p t="Color" n="foreground" v="#00007f"/>
+       </c>
+       <c i="c_31" t="Button">
+        <p t="Border" n="border" v="2px groove #ff0000"/>
+        <p t="s" n="text" v="A button"/>
+        <p t="b" n="rolloverEnabled" v="true"/>
+        <p t="Color" n="rolloverBackground" v="#ffafaf"/>
+        <p t="b" n="pressedEnabled" v="true"/>
+        <p t="Color" n="pressedBackground" v="#ffafff"/>
+        <p t="Color" n="foreground" v="#00007f"/>
+        <p t="Insets" n="insets" v="5px"/>
+        <e t="action"/>
+       </c>
+       <c i="c_35" t="Button">
+        <p t="Border" n="border" v="2px groove #ff0000"/>
+        <p t="s" n="text" v="Second button"/>
+        <p t="b" n="rolloverEnabled" v="true"/>
+        <p t="Color" n="rolloverBackground" v="#ffafaf"/>
+        <p t="b" n="pressedEnabled" v="true"/>
+        <p t="Color" n="pressedBackground" v="#ffafff"/>
+        <p t="Color" n="foreground" v="#00007f"/>
+        <p t="Insets" n="insets" v="5px"/>
+        <e t="action"/>
+       </c>
+       <c i="c_32" t="Button" s="Default">
+        <p t="s" n="text" v="SS button1"/>
+       </c>
+       <c i="c_33" t="Button" s="Default">
+        <p t="s" n="text" v="SS button2"/>
+       </c>
+      </c>
+     </c>
+     <c i="c_22" t="WindowPane">
+      <e t="windowClosing"/>
+      <p t="s" n="title" v="WindowPane 9000"/>
+      <p t="Extent" n="positionX" v="35px"/>
+      <p t="Extent" n="positionY" v="70px"/>
+      <p t="Extent" n="width" v="370px"/>
+      <p t="Extent" n="height" v="170px"/>
+      <p t="Color" n="background" v="#000000"/>
+      <p t="Color" n="foreground" v="#00ff00"/>
+       <c i="c_41" t="Column">
+        <c i="c_42" t="Button">
+         <p t="s" n="text" v="Button1"/>
+        </c>
+        <c i="c_43" t="Button">
+         <p t="s" n="text" v="Button2"/>
+        </c>
+        <c i="c_44" t="Button">
+         <p t="s" n="text" v="Button3"/>
+        </c>
+        <c i="c_45" t="Button">
+         <p t="s" n="text" v="Button4"/>
+        </c>
+        <c i="c_147" t="TextField">
+         <p t="s" n="text" v="TF!!!"/>
+        </c>
+       </c>
+     </c>
+     <c i="c_122" t="WindowPane">
+      <e t="windowClosing"/>
+      <p t="s" n="title" v="SplitPanes and such"/>
+      <c i="c_200" t="SplitPane">
+       <p t="Extent" n="separatorPosition" v="40px"/>
+       <p t="Extent" n="separatorSize" v="10px"/>
+       <p t="i" n="orientation" v="4"/>
+       <p t="b" n="resizable" v="true"/>
+       <c i="c_210" t="Row">
+        <l>
+         <p t="Insets" n="insets" v="10px"/>
+        </l>
+        <c i="c_211" t="Button">
+         <p t="s" n="text" v="Control1"/>
+        </c>
+        <c i="c_212" t="Button">
+         <p t="s" n="text" v="Control2"/>
+        </c>
+       </c>
+       <c i="c_220" t="Column">
+        <c i="c_222" t="Label">
+         <p t="s" n="text" v="A label."/>
+        </c>
+       </c>
+      </c>
+     </c>
+    </c>
+   </add>
+  </dir>
+ </group>
+</smsg>

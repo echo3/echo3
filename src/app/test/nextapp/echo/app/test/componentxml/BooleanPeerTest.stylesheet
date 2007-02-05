@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stylesheet>
+ <style name="charlie" type="nextapp.echo.app.Label">
+  <properties>
+   <property name="lineWrap" value="false"/>
+  </properties>
+ </style>
+ <style name="delta" type="nextapp.echo.app.Button">
+  <properties>
+   <property name="lineWrap" value="true"/>
+  </properties>
+ </style>
+</stylesheet>

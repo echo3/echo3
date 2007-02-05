@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stylesheet>
+ <style name="TestPane" type="nextapp.echo.app.SplitPane">
+  <properties>
+   <property name="separatorPosition" value="40px"/>
+   <property name="separatorHeight" value="1px"/>
+   <property name="separatorColor" value="#1d1d1d"/>
+  </properties>
+ </style>
+ <style name="Default" type="nextapp.echo.app.Table">
+  <properties>
+   <property name="insets" value="5px 2px"/>
+   <property name="border">
+    <border size="2px" style="groove" color="#afffaf"/>
+   </property>
+  </properties>
+ </style>
+ <style name="EvenCellLabel" type="nextapp.echo.app.Label">
+  <properties>
+   <property name="layoutData">
+    <layout-data type="nextapp.echo.app.layout.TableLayoutData">
+     <properties>
+      <property name="background" value="#afffaf"/>
+     </properties>
+    </layout-data>
+   </property>
+  </properties>
+ </style>
+ <style name="OddCellLabel" type="nextapp.echo.app.Label">
+  <properties>
+   <property name="layoutData">
+    <layout-data type="nextapp.echo.app.layout.TableLayoutData">
+     <properties>
+      <property name="background" value="#ffffaf"/>
+     </properties>
+    </layout-data>
+   </property>
+  </properties>
+ </style>
+ <style name="Default" type="nextapp.echo.app.button.AbstractButton">
+  <properties>
+   <property name="background" value="#4f4f5f"/>
+   <property name="foreground" value="#efefff"/>
+   <property name="border">
+    <border size="1px" style="outset" color="#6f6f8f"/>
+   </property>
+   <property name="rolloverEnabled" value="true"/>
+   <property name="rolloverBackground" value="#6f6f87"/>
+   <property name="rolloverForeground" value="#ffffaf"/>
+   <property name="rolloverBorder">
+    <border size="1px" style="outset" color="#8f8faf"/>
+   </property>
+   <property name="pressedEnabled" value="true"/>
+   <property name="pressedBackground" value="#2f2f3f"/>
+   <property name="pressedForeground" value="#ffafaf"/>
+   <property name="pressedBorder">
+    <border size="1px" style="inset" color="#4f4f6f"/>
+   </property>
+   <property name="insets" value="20px 3px"/>
+  </properties>
+ </style>
+ <style name="Selected" base-name="Default" type="nextapp.echo.app.Button">
+  <properties>
+   <property name="background" value="#3f3f4f"/>
+   <property name="foreground" value="#ffcfcf"/>
+  </properties>
+ </style>
+ <style name="Default" type="nextapp.echo.app.text.TextComponent">
+  <properties>
+   <property name="background" value="#ffffdf"/>
+   <property name="foreground" value="#000000"/>
+   <property name="border">
+    <border size="1px" style="inset" color="#ffffaf"/>
+   </property>
+  </properties>
+ </style>
+ <style name="DefaultResizable" type="nextapp.echo.app.SplitPane">
+  <properties>
+   <property name="resizable" value="true"/>
+   <property name="separatorHorizontalImage">
+    <fill-image>
+     <image type="nextapp.echo.app.ResourceImageReference">
+      <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/SplitPaneHorizontalSeparator.png"/>
+     </image>
+    </fill-image>
+   </property>
+   <property name="separatorVerticalImage">
+    <fill-image>
+     <image type="nextapp.echo.app.ResourceImageReference">
+      <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/SplitPaneVerticalSeparator.png"/>
+     </image>
+    </fill-image>
+   </property>
+  </properties>
+ </style>
+ <style name="TitleLabel" type="nextapp.echo.app.Label">
+  <properties>
+   <property name="font">
+    <font typeface="Verdana" size="18px"/>
+   </property>
+   <property name="foreground" value="#ffffff"/>
+   <property name="layoutData">
+    <layout-data type="nextapp.echo.app.layout.SplitPaneLayoutData">
+     <properties>
+      <property name="alignment">
+       <alignment horizontal="center"/>
+      </property>
+      <property name="background" value="#1b1b21"/>
+      <property name="backgroundImage">
+       <fill-image repeat="none">
+        <image type="nextapp.echo.app.ResourceImageReference">
+         <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/HeaderBackground.png"/>
+        </image>
+       </fill-image>
+      </property>
+      <property name="insets" value="8px"/>
+      <property name="overflow" value="OVERFLOW_HIDDEN"/>
+     </properties>
+    </layout-data>
+   </property>
+  </properties>
+ </style>
+ <style name="Default" type="nextapp.echo.app.WindowPane">
+  <properties>
+   <!-- Container-specific property to enable Internet Explorer PNG Alpha Renderer for shadow window border. -->
+   <property type="java.lang.Boolean" name="ieAlphaRenderBorder" value="true"/>
+   <property name="titleInsets" value="10px 5px"/>
+   <property name="titleBackground" value="#2f2f4f"/>
+   <property name="titleBackgroundImage">
+    <fill-image vertical="100%" repeat="horizontal">
+     <image type="nextapp.echo.app.ResourceImageReference">
+      <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/simple/Header.png"/>
+     </image>
+    </fill-image>
+   </property>
+   <property name="titleForeground" value="#ffffff"/>
+   <property name="border">
+    <fill-image-border content-insets="8px 8px 14px 14px" border-insets="17px 17px 23px 23px">
+     <border-part position="top-left">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTopLeft.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="top">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTop.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="top-right">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTopRight.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="left">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderLeft.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="right">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderRight.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="bottom-left">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottomLeft.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="bottom">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottom.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="bottom-right">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottomRight.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+    </fill-image-border>
+   </property>
+  </properties>
+ </style>
+ <style name="GlassBlue" type="nextapp.echo.app.WindowPane">
+  <properties>
+   <!-- Container-specific property to enable Internet Explorer PNG Alpha Renderer for shadow window border. -->
+   <property type="java.lang.Boolean" name="nextapp.echo.webcontainer.syncpeer.WindowPanePeer.ieAlphaRenderBorder" value="true"/>
+   <property name="titleInsets" value="10px 5px"/>
+   <property name="titleBackgroundImage">
+    <fill-image vertical="100%" repeat="horizontal">
+     <image type="nextapp.echo.app.ResourceImageReference">
+      <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/Header.png"/>
+     </image>
+    </fill-image>
+   </property>
+   <property name="titleForeground" value="#ffffff"/>
+   <property name="border">
+    <fill-image-border border-insets="20px 34px 20px 20px" content-insets="12px 6px 15px 15px">
+     <border-part position="top-left">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTopLeft.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="top">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTop.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="top-right">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTopRight.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="left">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderLeft.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="right">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderRight.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="bottom-left">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottomLeft.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="bottom">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottom.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="bottom-right">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottomRight.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+    </fill-image-border>
+   </property>
+  </properties>
+ </style>
+ <style name="TransGreen" type="nextapp.echo.app.WindowPane">
+  <properties>
+   <!-- Container-specific property to enable Internet Explorer PNG Alpha Renderer for shadow window border. -->
+   <property type="java.lang.Boolean" name="nextapp.echo.webcontainer.syncpeer.WindowPanePeer.ieAlphaRenderBorder" value="true"/>
+   <property name="titleInsets" value="10px 5px"/>
+   <property name="titleBackgroundImage">
+    <fill-image vertical="100%" repeat="horizontal">
+     <image type="nextapp.echo.app.ResourceImageReference">
+      <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/Header.png"/>
+     </image>
+    </fill-image>
+   </property>
+   <property name="titleForeground" value="#ffffff"/>
+   <property name="border">
+    <fill-image-border border-insets="20px 34px 20px 20px" content-insets="12px 6px 15px 15px">
+     <border-part position="top-left">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTopLeft.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="top">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTop.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="top-right">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTopRight.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="left">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderLeft.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="right">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderRight.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="bottom-left">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottomLeft.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="bottom">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottom.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+     <border-part position="bottom-right">
+      <fill-image>
+       <image type="nextapp.echo.app.ResourceImageReference">
+        <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottomRight.png"/>
+       </image>
+      </fill-image>
+     </border-part>
+    </fill-image-border>
+   </property>
+  </properties>
+ </style>
+ <style name="ControlPane.Container.Top" type="nextapp.echo.app.SplitPane">
+  <properties>
+   <property name="separatorPosition" value="32px"/>
+   <property name="orientation" value="nextapp.echo.app.SplitPane.ORIENTATION_VERTICAL_TOP_BOTTOM"/>
+  </properties>
+ </style>
+ <style name="ControlPane.Container.Bottom" type="nextapp.echo.app.SplitPane">
+  <properties>
+   <property name="orientation" value="nextapp.echo.app.SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP"/>
+   <property name="separatorPosition" value="32px"/>
+  </properties>
+ </style>
+ <style name="ControlPane.Button" type="nextapp.echo.app.button.AbstractButton">
+  <properties>
+   <property name="lineWrap" value="false"/>
+   <property name="insets" value="8px 0px"/>
+   <property name="foreground" value="#000000"/>
+   <property name="rolloverEnabled" value="true"/>
+   <property name="rolloverForeground" value="#6f0f0f"/>
+  </properties>
+ </style>
+ <style name="ControlPane" type="nextapp.echo.app.Row">
+  <properties>
+   <property name="insets" value="10px 2px"/>
+   <property name="cellSpacing" value="3px"/>
+   <property name="layoutData">
+    <layout-data type="nextapp.echo.app.layout.SplitPaneLayoutData">
+     <properties>
+      <property name="overflow" value="OVERFLOW_HIDDEN"/>
+      <property name="background" value="#cfcfdf"/>
+      <property name="backgroundImage">
+       <fill-image>
+        <image type="nextapp.echo.app.ResourceImageReference">
+         <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/ControlPaneFill.png"/>
+        </image>
+       </fill-image>
+      </property>
+      <property name="insets" value="2px"/>
+     </properties>
+    </layout-data>
+   </property>
+  </properties>
+ </style>
+ <style name="ApplicationControlsColumn" type="nextapp.echo.app.Column">
+  <properties>
+   <property name="layoutData">
+    <layout-data type="nextapp.echo.app.layout.SplitPaneLayoutData">
+     <properties>
+      <property name="background" value="#4f4f6f"/>
+      <property name="backgroundImage">
+       <fill-image repeat="none">
+        <image type="nextapp.echo.app.ResourceImageReference">
+         <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundDarkBlue.png"/>
+        </image>
+       </fill-image>
+      </property>
+      <property name="insets" value="10px 7px"/>
+      <property name="minimumSize" value="200px"/>
+      <property name="maximumSize" value="300px"/>
+     </properties>
+    </layout-data>
+   </property>
+  </properties>
+ </style>
+ <style name="TestControlsColumn" type="nextapp.echo.app.Column">
+  <properties>
+   <property name="layoutData">
+    <layout-data type="nextapp.echo.app.layout.SplitPaneLayoutData">
+     <properties>
+      <property name="background" value="#afafef"/>
+      <property name="backgroundImage">
+       <fill-image repeat="none">
+        <image type="nextapp.echo.app.ResourceImageReference">
+         <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundLightBlue.png"/>
+        </image>
+       </fill-image>
+      </property>
+      <property name="insets" value="10px 7px"/>
+      <property name="minimumSize" value="200px"/>
+      <property name="maximumSize" value="300px"/>
+     </properties>
+    </layout-data>
+   </property>
+  </properties>
+ </style>
+ <style name="WelcomePane" type="nextapp.echo.app.ContentPane">
+  <properties>
+   <property name="backgroundImage">
+    <fill-image repeat="vertical">
+     <image type="nextapp.echo.app.ResourceImageReference">
+      <resource-image-reference resource="/nextapp/echo/testapp/interactive/resource/image/WelcomePaneBackground.png"/>
+     </image>
+    </fill-image>
+   </property>
+  </properties>  
+ </style>
+ <style name="WelcomePane.Column" type="nextapp.echo.app.Column">
+  <properties>
+   <property name="insets" value="245px 0px 0px 0px"/>
+   <property name="cellSpacing" value="40px"/>
+  </properties>
+ </style>
+ <style name="WelcomePane" base-name="Default" type="nextapp.echo.app.WindowPane">
+  <properties>
+   <property name="width" value="550px"/>
+   <property name="height" value="300px"/>
+   <property name="resizable" value="true"/>
+   <property name="positionX" value="160px"/>
+   <property name="positionY" value="300px"/>
+  </properties>
+ </style>
+</stylesheet>

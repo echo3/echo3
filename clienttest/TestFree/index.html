@@ -1,0 +1,274 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+     
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <script type="text/javascript" src="../Core.js"></script>
+  <script type="text/javascript" src="../WebCore.js"></script>
+  <script type="text/javascript" src="../Application.js"></script>
+  <script type="text/javascript" src="../Render.js"></script>
+  <script type="text/javascript" src="../Render.Button.js"></script>
+  <script type="text/javascript" src="../Render.Column.js"></script>
+  <script type="text/javascript" src="../Render.ContentPane.js"></script>
+  <script type="text/javascript" src="../Render.Label.js"></script>
+  <script type="text/javascript" src="../Render.Row.js"></script>
+  <script type="text/javascript" src="../Render.SplitPane.js"></script>
+  <script type="text/javascript" src="../Render.TextComponent.js"></script>
+  <script type="text/javascript" src="../Render.WindowPane.js"></script>
+  <script type="text/javascript" src="../Serial.js"></script>
+  <script type="text/javascript" src="../FreeClient.js"></script>
+  <script type="text/javascript">
+    
+    var mainColumn = null;
+    var testButton = null;
+    var app = null;
+    var contentPane = null;
+
+    var DEFAULT_WINDOW_IMAGE_PATH = "../image/defaultwindow/";
+    var DEFAULT_WINDOW_BORDER_IMAGES = new Array(
+            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderTopLeft.png", "no-repeat"),
+            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderTop.png", "repeat-x"),
+            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderTopRight.png", "no-repeat"),
+            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderLeft.png", "repeat-y"),
+            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderRight.png", "repeat-y"),
+            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderBottomLeft.png", "no-repeat"),
+            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderBottom.png", "repeat-x"),
+            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderBottomRight.png", "no-repeat"));    
+    var DEFAULT_WINDOW_BORDER = new EchoApp.Property.FillImageBorder(null, "17px 23px 23px 17px", "8px 14px 14px 8px", 
+            DEFAULT_WINDOW_BORDER_IMAGES);
+    var DEFAULT_WINDOW_TITLE_BACKGROUND = new EchoApp.Property.FillImage(
+            DEFAULT_WINDOW_IMAGE_PATH + "WindowPaneTitleBackground.png", "repeat", 0, "100%");
+
+    var DEFAULT_WINDOW_STYLE = new EchoApp.Style();
+    DEFAULT_WINDOW_STYLE.setProperty("border", DEFAULT_WINDOW_BORDER);
+    DEFAULT_WINDOW_STYLE.setProperty("titleForeground", new EchoApp.Property.Color("white"));
+    DEFAULT_WINDOW_STYLE.setProperty("titleBackgroundImage", DEFAULT_WINDOW_TITLE_BACKGROUND);
+    
+    var DEFAULT_BUTTON_STYLE = new EchoApp.Style();
+    DEFAULT_BUTTON_STYLE.setProperty("rolloverBackground", new EchoApp.Property.Color("#dfdfff"));
+    DEFAULT_BUTTON_STYLE.setProperty("rolloverEnabled", new EchoApp.Property.Color("#dfdfff"));
+    DEFAULT_BUTTON_STYLE.setProperty("pressedBackground", new EchoApp.Property.Color("#bfbfff"));
+    DEFAULT_BUTTON_STYLE.setProperty("pressedEnabled", new EchoApp.Property.Color("#dfdfff"));
+    DEFAULT_BUTTON_STYLE.setProperty("background", new EchoApp.Property.Color("#bfbfdf"));
+    DEFAULT_BUTTON_STYLE.setProperty("border", new EchoApp.Property.Border("2px outset #bfbfdf"));
+
+    function testRenderInitial() {
+        app = new EchoApp.Application("testArea");
+    
+        contentPane = new EchoApp.ContentPane();
+        contentPane.setProperty("background", new EchoApp.Property.Color("#abcdef"));
+        app.rootComponent.add(contentPane);
+        
+        mainColumn = new EchoApp.Column();
+        mainColumn.setProperty("cellSpacing", "5px");
+        mainColumn.setProperty("insets", new EchoApp.Property.Insets("2px 5px"));
+        mainColumn.setProperty("background", new EchoApp.Property.Color("#239567"));
+        
+        contentPane.add(mainColumn);
+        
+        for (var i = 0; i < 3; ++i) {
+            var label = new EchoApp.Label();
+            label.setProperty("foreground", new EchoApp.Property.Color("#abcdef"));
+            label.setProperty("background", new EchoApp.Property.Color("#2f2f3f"));
+            label.setProperty("text", "A label with color!");
+            mainColumn.add(label);
+
+            var column2 = new EchoApp.Column();
+            mainColumn.add(column2);
+
+            testButton = new EchoApp.Button();
+            testButton.setProperty("foreground", new EchoApp.Property.Color("#7f0000"));
+            testButton.setProperty("background", new EchoApp.Property.Color("#ffafaf"));
+            testButton.setProperty("text", "[button!]");
+            testButton.setStyle(DEFAULT_BUTTON_STYLE);
+
+            column2.add(testButton);
+            
+            var row = new EchoApp.Row();
+            for (var j = 0; j < 6; ++j) {
+                label = new EchoApp.Label();
+                label.setProperty("text", "[" + j + "]");
+                row.add(label);
+            }
+            column2.add(row);
+            
+            testButton = new EchoApp.Button();
+            testButton.setProperty("text", "ButtonBefore3-1");
+            testButton.setProperty("background", new EchoApp.Property.Color("#afffaf"));
+            testButton.setStyle(DEFAULT_BUTTON_STYLE);
+            row.add(testButton, 3);
+            
+            testButton = new EchoApp.Button();
+            testButton.setProperty("text", "ButtonBefore3-2");
+            testButton.setProperty("background", new EchoApp.Property.Color("#afffaf"));
+            testButton.setStyle(DEFAULT_BUTTON_STYLE);
+            row.add(testButton, 3);
+            
+            testButton = new EchoApp.Button();
+            testButton.setProperty("text", "ButtonBefore3-3");
+            testButton.setProperty("background", new EchoApp.Property.Color("#afffaf"));
+            testButton.setStyle(DEFAULT_BUTTON_STYLE);
+            row.add(testButton, 3);
+            
+            label = new EchoApp.Label();
+            label.setProperty("text", "First");
+            row.add(label, 0);
+            
+            label = new EchoApp.Label();
+            label.setProperty("text", "Last1");
+            row.add(label, row.getComponentCount());
+            
+            var index = Math.floor(Math.random() * row.getComponentCount());
+            row.remove(index);
+        }
+        
+        testButton = new EchoApp.Button();
+        testButton.setProperty("text", "Display Listeners");
+        testButton.addListener("action", displayListeners);
+        mainColumn.add(testButton);
+        
+        var regLabel;
+        
+        regLabel = new EchoApp.Label();
+        regLabel.setProperty("text", "testButtonReg=" + testButton.application);
+        mainColumn.add(regLabel);
+        
+        regLabel = new EchoApp.Label();
+        regLabel.setProperty("text", "columnReg=" + mainColumn.application);
+        mainColumn.add(regLabel);
+        
+        var addWindowButton = new EchoApp.Button(null, "Add WindowPane");
+        addWindowButton.setStyle(DEFAULT_BUTTON_STYLE);
+        mainColumn.add(addWindowButton);
+        addWindowButton.addListener("action", testWindowPane);
+        
+        var removeWindowButton = new EchoApp.Button(null, "Remove WindowPane");
+        removeWindowButton.setStyle(DEFAULT_BUTTON_STYLE);
+        mainColumn.add(removeWindowButton);
+        removeWindowButton.addListener("action", testRemoveWindowPane);
+        
+        var windowPane = new EchoApp.WindowPane();
+//        windowPane.setStyle(DEFAULT_WINDOW_STYLE);
+        windowPane.setProperty("title", "This is a Window");
+        contentPane.add(windowPane);
+        var client = new EchoFreeClient(app);
+        client.init();
+    }
+    
+    function testDelete() {
+        if (mainColumn.getComponentCount() == 0) {
+            return;
+        }
+        var index = Math.floor(Math.random() * mainColumn.getComponentCount());
+        mainColumn.remove(index);
+    }
+
+    function testColumnBackground() {
+        if (mainColumn.getProperty("background") == new EchoApp.Property.Color("#ff0000")) {
+            mainColumn.setProperty("background", new EchoApp.Property.Color("#00ff00"));
+        } else {
+            mainColumn.setProperty("background", new EchoApp.Property.Color("#ff0000"));
+        }
+    }
+    
+    function testColumnCellSpacing() {
+        if (mainColumn.getProperty("cellSpacing") == "5px") {
+            mainColumn.setProperty("cellSpacing", "0px");
+        } else {
+            mainColumn.setProperty("cellSpacing", "5px");
+        }
+    }
+    
+    function testAdd() {
+        var index = Math.floor(Math.random() * mainColumn.getComponentCount() + 1);
+        var label = new EchoApp.Label();
+        label.setProperty("text", "Added Label @ " + index);
+        mainColumn.add(label, index);
+    }
+
+    function testWindowPane() {
+        var windowPane = new EchoApp.WindowPane();
+        windowPane.setStyle(DEFAULT_WINDOW_STYLE);
+        windowPane.setProperty("title", "This is a Window");
+        windowPane.setProperty("title", "This is a Window");
+        contentPane.add(windowPane);
+    }
+
+    function testRemoveWindowPane() {
+        var count = contentPane.getComponentCount();
+        for (var i = 0; i < count; ++i) {
+            var component = contentPane.getComponent(i);
+            if (component instanceof EchoApp.WindowPane) {
+                component.parent.remove(component);
+                break;
+            }
+        }
+    }
+
+    TestHandler = function(x) { 
+        this.x = x;
+    };
+    
+    TestHandler.prototype.actionPerformed = function(e) {
+        alert("TestHandler: " + this.x + "/" + e);
+    };
+    
+    var handler25 = new TestHandler(25);
+    var handler50 = new TestHandler(50);
+
+    function testAddActionListener() {
+        testButton.addListener("action", new EchoCore.MethodRef(handler25, handler25.actionPerformed));
+        testButton.addListener("action", new EchoCore.MethodRef(handler50, handler50.actionPerformed));
+    }
+    
+    function testFireActionEvent() {
+        testButton.fireEvent("action", "This is an event");
+    }
+    
+    function testRemoveActionListener() {
+        testButton.removeListener("action", new EchoCore.MethodRef(handler25, handler25.actionPerformed));
+        testButton.removeListener("action", new EchoCore.MethodRef(handler50, handler50.actionPerformed));
+    }
+    
+    function displayListeners() {
+        EchoCore.Debug.consoleWrite(EchoWebCore.EventProcessor);
+    }
+    
+    function displayUpdateManager() {
+        EchoCore.Debug.consoleWrite(app.updateManager.toString());
+    }
+    
+    function clearConsole() {
+        var consoleDiv = document.getElementById("debugconsole");
+        while (consoleDiv.childNodes.length > 0) {
+            consoleDiv.removeChild(consoleDiv.firstChild);
+        }
+    }
+    
+    function init() {
+        EchoCore.Debug.consoleElement = document.getElementById("debugconsole");
+        EchoWebCore.init();
+    }
+    
+  </script>
+  <title>Experimental Echo Client</title>
+ </head>
+ <body id="b0" style="margin: 0px; padding: 0px;overflow:hidden;font-size:10pt;font-family:sans-serif;"
+ onload="init();">
+  <div><a href="javascript:testRenderInitial();">Render Initial</a></div>
+  <div><a href="javascript:clearConsole();">Clear Console</a></div>
+  <div><a href="javascript:testDelete();">Delete Random Child of Column</a></div>
+  <div><a href="javascript:testAdd();">Add Label @ Random Position</a></div>
+  <div><a href="javascript:testColumnBackground();">Set Column Background</a></div>
+  <div><a href="javascript:testColumnCellSpacing();">Set Column CellSpacing</a></div>
+  <div><a href="javascript:testAddActionListener();">Add ActionListeners</a></div>
+  <div><a href="javascript:testFireActionEvent();">Fire ActionEvent</a></div>
+  <div><a href="javascript:testRemoveActionListener();">Remove ActionListeners</a></div>
+  <div><a href="javascript:testWindowPane();">Add WindowPane</a></div>
+  <div><a href="javascript:testRemoveWindowPane();">Remove WindowPane</a></div>
+  <div><a href="javascript:displayListeners();">Display EventProcessor Listeners</a></div>
+  <div><a href="javascript:displayUpdateManager();">Display UpdateManager</a></div>  
+  <div><a href="javascript:EchoWebCore.VirtualPosition.redraw();">VirtualPosition: Redraw</a></div>  
+  <div id="testArea" style="position:absolute;top:5px;left:250px;width:600px;height:480px;overflow:auto;"></div>
+  <div id="debugconsole" style="color:#ffffff;background-color:#3f0000;position:absolute;top:500px;left:250px;width:600px;height:180px;overflow:auto;"></div>
+ </body>
+</html>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stylesheet>
+ <style name="TestPane" type="nextapp.echo.app.SplitPane">
+  <properties>
+   <property name="separatorPosition" value="40px"/>
+   <proeprty name="separatorHeight" value="1px"/>
+   <property name="separatorColor" value="#1d1d1d"/>
+  </properties>
+ </style> 
+ <style name="Default" type="nextapp.echo.app.button.AbstractButton">
+  <properties>
+   <property name="background" value="#4f7f4f"/>
+   <property name="foreground" value="#efefff"/>
+   <property name="border">
+    <border size="1px" style="outset" color="#4f7f4f"/>
+   </property>
+   <property name="rolloverEnabled" value="true"/>
+   <property name="rolloverBackground" value="#6f9f6f"/>
+   <property name="rolloverForeground" value="#ffffaf"/>
+   <property name="rolloverBorder">
+    <border size="1px" style="outset" color="#8f8faf"/>
+   </property>
+   <property name="pressedEnabled" value="true"/>
+   <property name="pressedBackground" value="#2f4f2f"/>
+   <property name="pressedForeground" value="#ffafaf"/>
+   <property name="pressedBorder">
+    <border size="1px" style="inset" color="#4f4f6f"/>
+   </property>
+   <property name="insets" value="20px 3px"/>
+  </properties>
+ </style>
+ <style name="Selected" base-name="Default" type="nextapp.echo.app.Button">
+  <properties>
+   <property name="background" value="#3f6f3f"/>
+   <property name="foreground" value="#ffcfcf"/>
+  </properties>
+ </style>
+ <style name="Default" type="nextapp.echo.app.text.TextComponent">
+  <properties>
+   <property name="background" value="#dfffdf"/>
+   <property name="foreground" value="#000000"/>
+   <property name="border">
+    <border size="1px" style="inset" color="#ffffaf"/>
+   </property>
+  </properties>
+ </style>
+ <style name="TitleLabel" type="nextapp.echo.app.Label">
+  <properties>
+   <property name="font">
+    <font typeface="Verdana" size="18px"/>
+   </property>
+   <property name="foreground" value="#ffffff"/>
+   <property name="layoutData">
+    <layout-data type="nextapp.echo.app.layout.SplitPaneLayoutData">
+     <properties>
+      <property name="alignment">
+       <alignment horizontal="center"/>
+      </property>
+      <property name="background" value="#1f371f"/>
+      <property name="insets" value="8px"/>
+      <property name="overflow" value="OVERFLOW_HIDDEN"/>
+     </properties>
+    </layout-data>
+   </property>
+  </properties>
+ </style>
+ <style name="Default" type="nextapp.echo.app.WindowPane">
+  <properties>
+   <property name="titleInsets" value="10px 5px"/>
+   <property name="titleBackground" value="#2f4f2f"/>
+   <property name="titleForeground" value="#ffffff"/>
+  </properties>
+ </style>
+ <style name="ApplicationControlsColumn" type="nextapp.echo.app.Column">
+  <properties>
+   <property name="layoutData">
+    <layout-data type="nextapp.echo.app.layout.SplitPaneLayoutData">
+     <properties>
+      <property name="background" value="#7f7f4f"/>
+      <property name="insets" value="5px"/>
+      <property name="minimumSize" value="200px"/>
+      <property name="maximumSize" value="300px"/>
+     </properties>
+    </layout-data>
+   </property>
+  </properties>
+ </style>
+ <style name="TestControlsColumn" type="nextapp.echo.app.Column">
+  <properties>
+   <property name="layoutData">
+    <layout-data type="nextapp.echo.app.layout.SplitPaneLayoutData">
+     <properties>
+      <property name="background" value="#dfdfaf"/>
+      <property name="insets" value="5px"/>
+      <property name="minimumSize" value="200px"/>
+      <property name="maximumSize" value="300px"/>
+     </properties>
+    </layout-data>
+   </property>
+  </properties>
+ </style>
+</stylesheet>

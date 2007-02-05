@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stylesheet>
+ <style name="alpha" type="nextapp.echo.app.Column">
+  <properties>
+   <property name="layoutData">
+    <layout-data type="nextapp.echo.app.layout.SplitPaneLayoutData">
+     <properties>
+      <property name="background" value="#abcdef"/>
+      <property name="insets" value="20px 30px"/>
+      <property name="backgroundImage">
+       <fill-image>
+        <image type="nextapp.echo.app.ResourceImageReference">
+         <resource-image-reference resource="nextapp/echo/test/componentxml/BackgroundImage.png"/>
+        </image>
+       </fill-image>
+      </property>
+     </properties>
+    </layout-data>
+   </property>
+  </properties>
+ </style>
+</stylesheet>

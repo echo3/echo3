@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stylesheet>
+ <style name="alpha" type="nextapp.echo.app.Label">
+  <properties>
+   <property name="textPosition">
+    <alignment horizontal="center" vertical="bottom"/>
+   </property>
+  </properties>
+ </style>
+ <style name="bravo" type="nextapp.echo.app.Label">
+  <properties>
+   <property name="textPosition">
+    <alignment/>
+   </property>
+  </properties>
+ </style>
+</stylesheet>
