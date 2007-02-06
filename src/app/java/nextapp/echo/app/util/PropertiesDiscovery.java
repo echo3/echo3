@@ -30,6 +30,7 @@
 package nextapp.echo.app.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -58,8 +59,13 @@ public class PropertiesDiscovery {
         while (resources.hasMoreElements()) {
             URL resourceUrl = (URL) resources.nextElement();
             Properties peerProperties = new Properties();
-            peerProperties.load(resourceUrl.openStream());
-            propertyMap.putAll(peerProperties);
+            InputStream in = resourceUrl.openStream();
+            try {
+                peerProperties.load(in);
+                propertyMap.putAll(peerProperties);
+            } finally {
+                in.close();
+            }
         }
         return propertyMap;
     }
