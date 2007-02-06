@@ -89,42 +89,13 @@ implements Service {
         return DO_NOT_CACHE;
     }
 
-//    /**
-//     * Determines if the specified <code>component</code> has been rendered to
-//     * the client by determining if it is a descendant of any
-//     * <code>LazyRenderContainer</code>s and if so querying them to determine
-//     * the hierarchy's render state. This method is recursively invoked.
-//     * 
-//     * @param userInstance the relevant <code>UserInstance</code>
-//     * @param component the <code>Component</code> to analyze
-//     * @return <code>true</code> if the <code>Component</code> has been
-//     *         rendered to the client
-//     */
-//    private boolean isRendered(UserInstance userInstance, Component component) {
-//        Component parent = component.getParent();
-//        if (parent == null) {
-//            return true;
-//        }
-//        ComponentSynchronizePeer syncPeer = SynchronizePeerFactory.getPeerForComponent(parent.getClass());
-//        if (syncPeer instanceof LazyRenderContainer) {
-//            boolean rendered = ((LazyRenderContainer) syncPeer).isRendered(ci, parent, component);
-//            if (!rendered) {
-//                return false;
-//            }
-//        }
-//        return isRendered(ci, parent);
-//        return true;
-//    }
-    
-    private Class getStyleClass(Component c) {
-        String styleName = c.getStyleName();
-        StyleSheet styleSheet = c.getApplicationInstance().getStyleSheet();
-        
-        Class componentClass = c.getClass();
+    private Class getStyleClass(StyleSheet styleSheet, String styleName, Class componentClass) {
         if (styleSheet.getStyle(styleName, componentClass, false) != null) {
-            return null;
+            // StyleSheet provides style specifically for componentClass.
+            return componentClass;
         }
         
+        // StyleSheet does not provide style specifically for componentClass: search superclasses.
         componentClass = componentClass.getSuperclass();
         while (componentClass != null) {
             if (styleSheet.getStyle(styleName, componentClass, false) != null) {
@@ -213,12 +184,13 @@ implements Service {
         cElement.setAttribute("t", componentPeer.getClientComponentType());
         componentPeer.init(context);
 
+        StyleSheet styleSheet = c.getApplicationInstance().getStyleSheet();
         
         // Render style name (and style type, if necessary). 
-        if (c.getStyleName() != null) {
+        if (styleSheet != null && c.getStyleName() != null) {
             cElement.setAttribute("s", c.getStyleName());
-            Class styleClass = getStyleClass(c);
-            if (styleClass != null) {
+            Class styleClass = getStyleClass(styleSheet, c.getStyleName(), c.getClass());
+            if (styleClass != null && styleClass != c.getClass()) {
                 ComponentSynchronizePeer styleComponentSyncPeer 
                         = SynchronizePeerFactory.getPeerForComponent(styleClass, false);
                 if (styleComponentSyncPeer == null) {
@@ -330,7 +302,7 @@ implements Service {
                 }
                 
                 // Updated properties.
-                //FIXME. move to method.
+                //FIXME. move to method?
                 String[] updatedPropertyNames = componentUpdates[i].getUpdatedPropertyNames();
                 if (updatedPropertyNames.length > 0) {
                     Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
@@ -480,4 +452,33 @@ implements Service {
             }
         }
     }
+
+//FIXME. Re-add isRendered() method and use appropriately.    
+//    /**
+//     * Determines if the specified <code>component</code> has been rendered to
+//     * the client by determining if it is a descendant of any
+//     * <code>LazyRenderContainer</code>s and if so querying them to determine
+//     * the hierarchy's render state. This method is recursively invoked.
+//     * 
+//     * @param userInstance the relevant <code>UserInstance</code>
+//     * @param component the <code>Component</code> to analyze
+//     * @return <code>true</code> if the <code>Component</code> has been
+//     *         rendered to the client
+//     */
+//    private boolean isRendered(UserInstance userInstance, Component component) {
+//        Component parent = component.getParent();
+//        if (parent == null) {
+//            return true;
+//        }
+//        ComponentSynchronizePeer syncPeer = SynchronizePeerFactory.getPeerForComponent(parent.getClass());
+//        if (syncPeer instanceof LazyRenderContainer) {
+//            boolean rendered = ((LazyRenderContainer) syncPeer).isRendered(ci, parent, component);
+//            if (!rendered) {
+//                return false;
+//            }
+//        }
+//        return isRendered(ci, parent);
+//        return true;
+//    }
+    
 }
