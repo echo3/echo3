@@ -19,8 +19,8 @@ EchoRender.ComponentSync.TextField.prototype.renderAdd = function(update, parent
 EchoRender.ComponentSync.TextField.prototype.renderDispose = function(update) { };
 
 EchoRender.ComponentSync.TextField.prototype.renderUpdate = function(update) {
-    EchoRender.SyncUtil.renderRemove(update, update.parent);
-    var containerElement = EchoRender.SyncUtil.getContainerElement(update.parent);
+    EchoRender.Util.renderRemove(update, update.parent);
+    var containerElement = EchoRender.Util.getContainerElement(update.parent);
     this.renderAdd(update, containerElement);
     return false;
 };

@@ -477,10 +477,10 @@ EchoRender.Property.Insets.toPixels = function(insets) {
     return pixelInsets;
 };
 
-EchoRender.SyncUtil = function() { };
+EchoRender.Util = function() { };
 
 //FIXME. findContainerElementByIndex...probably needs to die.
-EchoRender.SyncUtil.findContainerElementByIndex = function(component) {
+EchoRender.Util.findContainerElementByIndex = function(component) {
     var element = document.getElementById(component.parent.renderId);
     if (!element) {
         throw new Error("Cannot find index of container element for " + component + " because parent component "
@@ -495,12 +495,12 @@ EchoRender.SyncUtil.findContainerElementByIndex = function(component) {
  * Convenience method to return the parent DOM element into which a 
  * component should be rendered.
  */
-EchoRender.SyncUtil.getContainerElement = function(component) {
+EchoRender.Util.getContainerElement = function(component) {
     return component.parent.peer.getContainerElement(component);
 };
 
 //FXIME? This method is also invoking dispose on the component....this is kind of what we want, but kind of not.
-EchoRender.SyncUtil.renderRemove = function(update, component) {
+EchoRender.Util.renderRemove = function(update, component) {
     var element = document.getElementById(component.renderId);
     EchoRender.renderComponentDispose(update, component);
     element.parentNode.removeChild(element);

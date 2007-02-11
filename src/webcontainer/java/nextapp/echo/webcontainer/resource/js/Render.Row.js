@@ -18,7 +18,7 @@ EchoRender.ComponentSync.Row.prototype.processKeyDown = function(e) {
 };
 
 EchoRender.ComponentSync.Row.prototype.getContainerElement = function(component) {
-    return EchoRender.SyncUtil.findContainerElementByIndex(component);
+    return EchoRender.Util.findContainerElementByIndex(component);
 };
 
 EchoRender.ComponentSync.Row.prototype.renderAdd = function(update, parentElement) {
@@ -59,8 +59,8 @@ EchoRender.ComponentSync.Row.prototype.renderDispose = function(update) {
 };
 
 EchoRender.ComponentSync.Row.prototype.renderUpdate = function(update) {
-    EchoRender.SyncUtil.renderRemove(update, update.parent);
-    var containerElement = EchoRender.SyncUtil.getContainerElement(update.parent);
+    EchoRender.Util.renderRemove(update, update.parent);
+    var containerElement = EchoRender.Util.getContainerElement(update.parent);
     this.renderAdd(update, containerElement);
     return true;
 };

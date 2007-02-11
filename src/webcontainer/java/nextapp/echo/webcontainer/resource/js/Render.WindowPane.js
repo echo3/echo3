@@ -574,8 +574,8 @@ EchoRender.ComponentSync.WindowPane.prototype.renderDispose = function(update) {
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.renderUpdate = function(update) {
-    EchoRender.SyncUtil.renderRemove(update, update.parent);
-    var containerElement = EchoRender.SyncUtil.getContainerElement(update.parent);
+    EchoRender.Util.renderRemove(update, update.parent);
+    var containerElement = EchoRender.Util.getContainerElement(update.parent);
     this.renderAdd(update, containerElement);
     return true;
 };

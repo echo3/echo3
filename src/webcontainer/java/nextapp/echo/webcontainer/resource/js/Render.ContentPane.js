@@ -6,7 +6,7 @@ EchoRender.ComponentSync.ContentPane = function() { };
 EchoRender.ComponentSync.ContentPane.prototype = new EchoRender.ComponentSync;
 
 EchoRender.ComponentSync.ContentPane.prototype.getContainerElement = function(component) {
-    return EchoRender.SyncUtil.findContainerElementByIndex(component);
+    return EchoRender.Util.findContainerElementByIndex(component);
 };
 
 EchoRender.ComponentSync.ContentPane.prototype.renderAdd = function(update, parentElement) {
@@ -50,8 +50,8 @@ EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update
 EchoRender.ComponentSync.ContentPane.prototype.renderDispose = function(update) { };
 
 EchoRender.ComponentSync.ContentPane.prototype.renderUpdate = function(update) {
-    EchoRender.SyncUtil.renderRemove(update, update.parent);
-    var containerElement = EchoRender.SyncUtil.getContainerElement(update.parent);
+    EchoRender.Util.renderRemove(update, update.parent);
+    var containerElement = EchoRender.Util.getContainerElement(update.parent);
     this.renderAdd(update, containerElement);
     return true;
 };

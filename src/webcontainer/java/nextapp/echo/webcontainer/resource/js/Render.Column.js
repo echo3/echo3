@@ -141,8 +141,8 @@ EchoRender.ComponentSync.Column.prototype.renderUpdate = function(update) {
         }
     }
     if (fullRender) {
-        EchoRender.SyncUtil.renderRemove(update, update.parent);
-        var containerElement = EchoRender.SyncUtil.getContainerElement(update.parent);
+        EchoRender.Util.renderRemove(update, update.parent);
+        var containerElement = EchoRender.Util.getContainerElement(update.parent);
         this.renderAdd(update, containerElement);
     }
     
