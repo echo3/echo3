@@ -1,6 +1,7 @@
 TestApp = function() {
     EchoApp.Application.call(this, "rootArea");
     var testScreen = new TestApp.TestScreen();
+    testScreen.addTest("Column");
     testScreen.addTest("SplitPane");
     testScreen.addTest("TextComponent");
     testScreen.addTest("WindowPane");
@@ -85,6 +86,106 @@ TestApp.TestPane.prototype.addTestButton = function(text, action) {
 };
 
 TestApp.Tests = function() { };
+
+TestApp.Tests.Column = function() {
+    TestApp.TestPane.call(this);
+
+    this.column = new EchoApp.Column();
+    var component;
+    
+    component = new EchoApp.Label();
+    component.setProperty("text", "Content One");
+    this.column.add(component);
+    component = new EchoApp.Label();
+    component.setProperty("text", "Content Two");
+    this.column.add(component);
+    this.content.add(this.column);
+
+    this.addTestButton("CellSpacing=0", new EchoCore.MethodRef(this, this._cellSpacing0));
+    this.addTestButton("CellSpacing=1", new EchoCore.MethodRef(this, this._cellSpacing1));
+    this.addTestButton("CellSpacing=5", new EchoCore.MethodRef(this, this._cellSpacing5));
+    this.addTestButton("CellSpacing=null", new EchoCore.MethodRef(this, this._cellSpacingNull));
+    this.addTestButton("Add child, i=0", new EchoCore.MethodRef(this, this._addChild0));
+    this.addTestButton("Add child, i=1", new EchoCore.MethodRef(this, this._addChild1));
+    this.addTestButton("Add child, i=2", new EchoCore.MethodRef(this, this._addChild2));
+    this.addTestButton("Add child, i=END", new EchoCore.MethodRef(this, this._addChildEnd));
+    this.addTestButton("Remove child, i=0", new EchoCore.MethodRef(this, this._removeChild0));
+    this.addTestButton("Remove child, i=1", new EchoCore.MethodRef(this, this._removeChild1));
+    this.addTestButton("Remove child, i=2", new EchoCore.MethodRef(this, this._removeChild2));
+    this.addTestButton("Remove child, i=END", new EchoCore.MethodRef(this, this._removeChildEnd));
+};
+
+TestApp.Tests.Column.prototype = new TestApp.TestPane;
+
+TestApp.Tests.Column.prototype._cellSpacing0 = function() {
+    this.column.setProperty("cellSpacing", new EchoApp.Property.Extent("0px"));
+};
+
+TestApp.Tests.Column.prototype._cellSpacing1 = function() {
+    this.column.setProperty("cellSpacing", new EchoApp.Property.Extent("1px"));
+};
+
+TestApp.Tests.Column.prototype._cellSpacing5 = function() {
+    this.column.setProperty("cellSpacing", new EchoApp.Property.Extent("5px"));
+};
+
+TestApp.Tests.Column.prototype._cellSpacingNull = function() {
+    this.column.setProperty("cellSpacing", null);
+};
+
+TestApp.Tests.Column.prototype._addChild0 = function() {
+    var label = new EchoApp.Label();
+    label.setProperty("text", "added at 0");
+    this.column.add(label, 0);
+};
+
+TestApp.Tests.Column.prototype._addChild1 = function() {
+    if (this.column.getComponentCount() < 1) {
+        return;
+    }
+    var label = new EchoApp.Label();
+    label.setProperty("text", "added at 1");
+    this.column.add(label, 1);
+};
+
+TestApp.Tests.Column.prototype._addChild2 = function() {
+    if (this.column.getComponentCount() < 2) {
+        return;
+    }
+    var label = new EchoApp.Label();
+    label.setProperty("text", "added at 2");
+    this.column.add(label, 2);
+};
+
+TestApp.Tests.Column.prototype._addChildEnd = function() {
+    var label = new EchoApp.Label();
+    label.setProperty("text", "added at end");
+    this.column.add(label);
+};
+
+TestApp.Tests.Column.prototype._removeChild0 = function() {
+    if (this.column.getComponentCount() > 0) {
+        this.column.remove(0);
+    }
+};
+
+TestApp.Tests.Column.prototype._removeChild1 = function() {
+    if (this.column.getComponentCount() > 1) {
+        this.column.remove(1);
+    }
+};
+
+TestApp.Tests.Column.prototype._removeChild2 = function() {
+    if (this.column.getComponentCount() > 2) {
+        this.column.remove(2);
+    }
+};
+
+TestApp.Tests.Column.prototype._removeChildEnd = function() {
+    if (this.column.getComponentCount() > 0) {
+        this.column.remove(this.column.getComponentCount() - 1);
+    }
+};
 
 TestApp.Tests.SplitPane = function() {
     TestApp.TestPane.call(this);

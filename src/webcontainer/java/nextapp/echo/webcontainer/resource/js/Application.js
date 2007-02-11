@@ -691,6 +691,14 @@ EchoApp.Update.ComponentUpdate.prototype.appendRemovedDescendants = function(upd
     }
 };
 
+EchoApp.Update.ComponentUpdate.prototype.getAddedChildren = function() {
+    return this.addedChildren;
+};
+
+EchoApp.Update.ComponentUpdate.prototype.getRemovedChildren = function() {
+    return this.removedChildren;
+};
+
 EchoApp.Update.ComponentUpdate.prototype.hasRemovedChildren = function() {
     return this.removedChildren != null;
 };
