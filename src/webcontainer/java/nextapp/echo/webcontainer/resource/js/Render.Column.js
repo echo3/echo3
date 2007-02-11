@@ -54,7 +54,7 @@ EchoRender.ComponentSync.Column.prototype.renderAdd = function(update, parentEle
 
 EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, child, parentElement, index) {
     if (index != null && index == update.parent.getComponentCount() - 1) {
-        index == null;
+        index = null;
     }
     
     if (index == null) {
@@ -95,9 +95,14 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
 EchoRender.ComponentSync.Column.prototype._renderRemoveChild = function(update, child) {
     var childElement = document.getElementById(this.component.renderId + "_" + child.renderId);
     var parentElement = childElement.parentNode;
-    var previousElement = childElement.previousSibling;
-    if (this.cellSpacing && previousElement) {
-        parentElement.removeChild(previousElement);
+    if (this.cellSpacing) {
+        // If cell spacing is enabled, remove a spacing element, either before or after the removed child.
+        // In the case of a single child existing in the column, no spacing element will be removed.
+        if (childElement.previousSibling) {
+            parentElement.removeChild(childElement.previousSibling);
+        } else if (childElement.nextSibling) {
+            parentElement.removeChild(childElement.nextSibling);
+        }
     }
     parentElement.removeChild(childElement);
 };
