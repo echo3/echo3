@@ -111,6 +111,7 @@ TestApp.Tests.Column = function() {
     this.addTestButton("CellSpacing=0", new EchoCore.MethodRef(this, this._cellSpacing0));
     this.addTestButton("CellSpacing=1", new EchoCore.MethodRef(this, this._cellSpacing1));
     this.addTestButton("CellSpacing=5", new EchoCore.MethodRef(this, this._cellSpacing5));
+    this.addTestButton("CellSpacing=25", new EchoCore.MethodRef(this, this._cellSpacing25));
     this.addTestButton("CellSpacing=null", new EchoCore.MethodRef(this, this._cellSpacingNull));
     this.addTestButton("Add child, i=0", new EchoCore.MethodRef(this, this._addChild0));
     this.addTestButton("Add child, i=1", new EchoCore.MethodRef(this, this._addChild1));
@@ -135,6 +136,10 @@ TestApp.Tests.Column.prototype._cellSpacing1 = function() {
 
 TestApp.Tests.Column.prototype._cellSpacing5 = function() {
     this.column.setProperty("cellSpacing", new EchoApp.Property.Extent("5px"));
+};
+
+TestApp.Tests.Column.prototype._cellSpacing25 = function() {
+    this.column.setProperty("cellSpacing", new EchoApp.Property.Extent("25px"));
 };
 
 TestApp.Tests.Column.prototype._cellSpacingNull = function() {

@@ -7,7 +7,7 @@ EchoRender.ComponentSync.Column = function() {
 EchoRender.ComponentSync.Column.prototype = new EchoRender.ComponentSync;
 
 EchoRender.ComponentSync.Column.prototype.getContainerElement = function(component) {
-    return EchoRender.SyncUtil.findContainerElementByIndex(component);
+    return document.getElementById(this.component.renderId + "_" + component.renderId);
 };
 
 EchoRender.ComponentSync.Column.prototype.processKeyDown = function(e) { 
