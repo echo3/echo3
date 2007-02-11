@@ -57,6 +57,17 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
         index = null;
     }
     
+    var divElement = document.createElement("div");
+    divElement.id = this.component.renderId + "_"+ child.renderId;
+    EchoRender.renderComponentAdd(update, child, divElement);
+
+    var layoutData = child.getRenderProperty("layoutData");
+    if (layoutData) {
+        EchoRender.Property.Color.renderComponentProperty(layoutData, "background", null, divElement, "backgroundColor");
+        EchoRender.Property.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, divElement);
+        EchoRender.Property.Insets.renderComponentProperty(layoutData, "insets", null, divElement, "padding");
+    }
+    
     if (index == null) {
         // Full render or append-at-end scenario
         
@@ -68,9 +79,6 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
         }
 
         // Render child div second.
-        var divElement = document.createElement("div");
-        divElement.id = this.component.renderId + "_"+ child.renderId;
-        EchoRender.renderComponentAdd(update, child, divElement);
         parentElement.appendChild(divElement);
     } else {
         // Partial render insert at arbitrary location scenario (but not at end)
@@ -78,9 +86,6 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
         var beforeElement = parentElement.childNodes[insertionIndex]
         
         // Render child div first.
-        var divElement = document.createElement("div");
-        divElement.id = this.component.renderId + "_"+ child.renderId;
-        EchoRender.renderComponentAdd(update, child, divElement);
         parentElement.insertBefore(divElement, beforeElement);
         
         // Then render spacing div if required.

@@ -122,6 +122,8 @@ TestApp.Tests.Column = function() {
     this.addTestButton("Remove child, i=2", new EchoCore.MethodRef(this, this._removeChild2));
     this.addTestButton("Remove child, i=END", new EchoCore.MethodRef(this, this._removeChildEnd));
     this.addTestButton("Set child background", new EchoCore.MethodRef(this, this._setChildBackground));
+    this.addTestButton("Set LayoutData Background, i = 0", new EchoCore.MethodRef(this, this._setLayoutDataBackground));
+    this.addTestButton("Set LayoutData Insets, i = 0", new EchoCore.MethodRef(this, this._setLayoutDataInsets));
 };
 
 TestApp.Tests.Column.prototype = new TestApp.TestPane;
@@ -207,6 +209,25 @@ TestApp.Tests.Column.prototype._setChildBackground = function() {
         this.column.getComponent(i).setProperty("background", color);
     }
 };
+
+TestApp.Tests.Column.prototype._setLayoutDataBackground = function() {
+    if (this.column.getComponentCount() == 0) {
+        return;
+    }
+    layoutData = new EchoApp.LayoutData();
+    layoutData.setProperty("background", TestApp.randomColor());
+    this.column.getComponent(0).setProperty("layoutData", layoutData);
+};
+
+TestApp.Tests.Column.prototype._setLayoutDataInsets = function() {
+    if (this.column.getComponentCount() == 0) {
+        return;
+    }
+    layoutData = new EchoApp.LayoutData();
+    layoutData.setProperty("insets", new EchoApp.Property.Insets(parseInt(Math.random() * 20)));
+    this.column.getComponent(0).setProperty("layoutData", layoutData);
+};
+
 
 TestApp.Tests.SplitPane = function() {
     TestApp.TestPane.call(this);
