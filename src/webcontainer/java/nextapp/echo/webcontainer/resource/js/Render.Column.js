@@ -53,37 +53,42 @@ EchoRender.ComponentSync.Column.prototype.renderAdd = function(update, parentEle
 };
 
 EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, child, parentElement, index) {
-    var spacingDivElement;
-    var divElement;
-    
-    if (this.cellSpacing && index > 0) {
-        // Render cell spacing div element.
-        
-        spacingDivElement = document.createElement("div");
-        spacingDivElement.style.height = this.cellSpacing + "px";
-    }
-    var divElement = document.createElement("div");
-    divElement.id = this.component.renderId + "_"+ child.renderId;
-    EchoRender.renderComponentAdd(update, child, divElement);
-
     if (index != null && index == update.parent.getComponentCount() - 1) {
         index == null;
     }
     
     if (index == null) {
-        if (spacingDivElement) {
-            EchoCore.Debug.consoleWrite("appending spacing div");
+        // Full render or append-at-end scenario
+        
+        // Render spacing div first if index != 0 and cell spacing enabled.
+        if (this.cellSpacing && parentElement.childNodes.length > 0) {
+            var spacingDivElement = document.createElement("div");
+            spacingDivElement.style.height = this.cellSpacing + "px";
             parentElement.appendChild(spacingDivElement);
         }
+
+        // Render child div second.
+        var divElement = document.createElement("div");
+        divElement.id = this.component.renderId + "_"+ child.renderId;
+        EchoRender.renderComponentAdd(update, child, divElement);
         parentElement.appendChild(divElement);
     } else {
+        // Partial render insert at arbitrary location scenario (but not at end)
         var insertionIndex = this.cellSpacing ? index * 2 : index;
         var beforeElement = parentElement.childNodes[insertionIndex]
-        if (spacingDivElement) {
-            EchoCore.Debug.consoleWrite("appending spacing div");
+        
+        // Render child div first.
+        var divElement = document.createElement("div");
+        divElement.id = this.component.renderId + "_"+ child.renderId;
+        EchoRender.renderComponentAdd(update, child, divElement);
+        parentElement.insertBefore(divElement, beforeElement);
+        
+        // Then render spacing div if required.
+        if (this.cellSpacing) {
+            var spacingDivElement = document.createElement("div");
+            spacingDivElement.style.height = this.cellSpacing + "px";
             parentElement.insertBefore(spacingDivElement, beforeElement);
         }
-        parentElement.insertBefore(divElement, beforeElement);
     }
 };
 

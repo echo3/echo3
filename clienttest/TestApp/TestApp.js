@@ -10,6 +10,12 @@ TestApp = function() {
 
 TestApp.prototype = new EchoApp.Application;
 
+TestApp.randomColor = function() {
+    var colorValue = parseInt(Math.random() * 0x1000000).toString(16);
+    colorValue = "#" + "000000".substring(colorValue.length) + colorValue;
+    return new EchoApp.Property.Color(colorValue);
+};
+
 TestApp.TestScreen = function() {
     EchoApp.ContentPane.call(this);
     this.setProperty("background", new EchoApp.Property.Color("#abcdef"));
@@ -91,6 +97,7 @@ TestApp.Tests.Column = function() {
     TestApp.TestPane.call(this);
 
     this.column = new EchoApp.Column();
+    this.childCount = 0;
     var component;
     
     component = new EchoApp.Label();
@@ -113,6 +120,7 @@ TestApp.Tests.Column = function() {
     this.addTestButton("Remove child, i=1", new EchoCore.MethodRef(this, this._removeChild1));
     this.addTestButton("Remove child, i=2", new EchoCore.MethodRef(this, this._removeChild2));
     this.addTestButton("Remove child, i=END", new EchoCore.MethodRef(this, this._removeChildEnd));
+    this.addTestButton("Set child background", new EchoCore.MethodRef(this, this._setChildBackground));
 };
 
 TestApp.Tests.Column.prototype = new TestApp.TestPane;
@@ -135,7 +143,7 @@ TestApp.Tests.Column.prototype._cellSpacingNull = function() {
 
 TestApp.Tests.Column.prototype._addChild0 = function() {
     var label = new EchoApp.Label();
-    label.setProperty("text", "added at 0");
+    label.setProperty("text", "[" + ++this.childCount + "] added at 0");
     this.column.add(label, 0);
 };
 
@@ -144,7 +152,7 @@ TestApp.Tests.Column.prototype._addChild1 = function() {
         return;
     }
     var label = new EchoApp.Label();
-    label.setProperty("text", "added at 1");
+    label.setProperty("text", "[" + ++this.childCount + "] added at 1");
     this.column.add(label, 1);
 };
 
@@ -153,13 +161,13 @@ TestApp.Tests.Column.prototype._addChild2 = function() {
         return;
     }
     var label = new EchoApp.Label();
-    label.setProperty("text", "added at 2");
+    label.setProperty("text", "[" + ++this.childCount + "] added at 2");
     this.column.add(label, 2);
 };
 
 TestApp.Tests.Column.prototype._addChildEnd = function() {
     var label = new EchoApp.Label();
-    label.setProperty("text", "added at end");
+    label.setProperty("text", "[" + ++this.childCount + "] added at end");
     this.column.add(label);
 };
 
@@ -184,6 +192,14 @@ TestApp.Tests.Column.prototype._removeChild2 = function() {
 TestApp.Tests.Column.prototype._removeChildEnd = function() {
     if (this.column.getComponentCount() > 0) {
         this.column.remove(this.column.getComponentCount() - 1);
+    }
+};
+
+TestApp.Tests.Column.prototype._setChildBackground = function() {
+    var color = TestApp.randomColor();
+    var length = this.column.getComponentCount();
+    for (var i = 0; i < length; ++i) {
+        this.column.getComponent(i).setProperty("background", color);
     }
 };
 
