@@ -260,6 +260,8 @@ EchoRender.ComponentSync.SplitPane.prototype._renderAddChild = function(update, 
     
     var layoutData = child.getRenderProperty("layoutData");
     if (layoutData) {
+        EchoRender.Property.Alignment.renderComponentProperty(layoutData, "alignment", null, paneDivElement, false,
+                this.component);
         EchoRender.Property.Color.renderComponentProperty(layoutData, "background", null, paneDivElement, "backgroundColor");
         EchoRender.Property.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, paneDivElement);
         EchoRender.Property.Insets.renderComponentProperty(layoutData, "insets", null, paneDivElement, "padding");

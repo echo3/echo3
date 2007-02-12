@@ -372,6 +372,55 @@ EchoRender.Focus._previousSibling = function(component) {
 EchoRender.Property = function() {
 };
 
+EchoRender.Property.Alignment = function() { };
+
+EchoRender.Property.Alignment.getRenderedHorizontal = function(alignment, component) {
+    var layoutDirection = component ? component.getRenderLayoutDirection() : EchoApp.LayoutDirection.LTR;
+    switch (alignment.horizontal) {
+    case EchoApp.Property.Alignment.LEADING:
+        return layoutDirection.isLeftToRight() ? EchoApp.Property.Alignment.LEFT : EchoApp.Property.Alignment.RIGHT;
+    case EchoApp.Property.Alignment.TRAILING:
+        return layoutDirection.isLeftToRight() ? EchoApp.Property.Alignment.RIGHT : EchoApp.Property.Alignment.LEFT;
+    default:
+        return alignment.horizontal;
+    }
+};
+
+EchoRender.Property.Alignment.renderComponentProperty 
+        = function(component, componentProperty, defaultValue, element, renderToElement, referenceComponent) {
+    referenceComponent = referenceComponent ? referenceComponent : component;
+    var alignment = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+            : component.getProperty(componentProperty);
+    if (!alignment) {
+        alignment = defaultValue;
+    }
+    var horizontal = alignment ? EchoRender.Property.Alignment.getRenderedHorizontal(alignment, referenceComponent) : null;
+    var vertical = alignment ? alignment.vertical : null;
+    
+    var horizontalValue;
+    switch (horizontal) {
+    case EchoApp.Property.Alignment.LEFT:   horizontalValue = "left";   break;
+    case EchoApp.Property.Alignment.CENTER: horizontalValue = "center"; break;
+    case EchoApp.Property.Alignment.RIGHT:  horizontalValue = "right";  break;
+    default:                                horizontalValue = "";       break;
+    }
+    var verticalValue;
+    switch (vertical) {
+    case EchoApp.Property.Alignment.TOP:    verticalValue = "top";      break;
+    case EchoApp.Property.Alignment.CENTER: verticalValue = "center";   break;
+    case EchoApp.Property.Alignment.BOTTOM: verticalValue = "bottom";   break;
+    default:                                verticalValue = "";         break;
+    }
+    
+    if (renderToElement) {
+        element.setAttribute("align", horizontalValue);
+        elmeent.setAttribute("valign", verticalValue);
+    } else {
+        element.style.textAlign = horizontalValue;
+        element.style.verticalAlign = verticalValue;
+    }
+};
+
 EchoRender.Property.Border = function() { };
 
 EchoRender.Property.Border._SIDE_STYLE_NAMES = new Array("borderTop", "borderRight", "borderBottom", "borderLeft");

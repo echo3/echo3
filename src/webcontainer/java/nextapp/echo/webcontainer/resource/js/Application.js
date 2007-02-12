@@ -50,6 +50,10 @@ EchoApp.Application.prototype.getFocusedComponent = function() {
     return this._focusedComponent;
 };
 
+EchoApp.Application.prototype.getLayoutDirection = function() {
+    return this._layoutDirection;
+};
+
 EchoApp.Application.prototype.getStyleSheet = function() {
     return this._styleSheet;
 };
@@ -71,6 +75,10 @@ EchoApp.Application.prototype.removeComponentUpdateListener = function(l) {
 
 EchoApp.Application.prototype.setFocusedComponent = function(newValue) {
     this._focusedComponent = newValue;
+};
+
+EchoApp.Application.prototype.setLayoutDirection = function(newValue) {
+    this._layoutDirection = newValue;
 };
 
 EchoApp.Application.prototype.setStyleSheet = function(newValue) {
@@ -172,11 +180,31 @@ EchoApp.Component.prototype.fireEvent = function(event) {
 };
 
 EchoApp.Component.prototype.getComponent = function(index) {
-   return this.children.get(index);
+    return this.children.get(index);
 };
 
 EchoApp.Component.prototype.getComponentCount = function(index) {
-   return this.children.size();
+    return this.children.size();
+};
+
+EchoApp.Component.prototype.getLayoutDirection = function() {
+    return this._layoutDirection;
+};
+
+EchoApp.Component.prototype.getRenderLayoutDirection = function() {
+    if (this._layoutDirection == null) { 
+        if (this.parent == null) {
+            if (this.applicationInstance == null) {
+                return null;
+            } else {
+                return this.applicationInstance.getLayoutDirection();
+            }
+        } else {
+            return this.parent.getRenderLayoutDirection();
+        }
+    } else {
+        return this._layoutDirection;
+    }
 };
 
 EchoApp.Component.prototype.getProperty = function(name) {
@@ -331,6 +359,10 @@ EchoApp.Component.prototype.setIndexedProperty = function(name, index, value) {
     }
 };
 
+EchoApp.Component.prototype.setLayoutDirection = function(newValue) {
+    this._layoutDirection = newValue;
+};
+
 EchoApp.Component.prototype.setProperty = function(name, newValue) {
     var oldValue = this._internalStyle.getProperty(name);
     this._internalStyle.setProperty(name, newValue);
@@ -397,6 +429,21 @@ EchoApp.LayoutData.prototype.setIndexedProperty = function(name, index, value) {
 EchoApp.LayoutData.prototype.setProperty = function(name, newValue) {
     this._internalStyle.setProperty(name, newValue);
 };
+
+/**
+ * LayoutDirection property.  Do not instantiate, use LTR/RTL constants.
+ */
+EchoApp.LayoutDirection = function() {
+    this._ltr = arguments[0];
+};
+
+EchoApp.LayoutDirection.isLeftToRight = function() {
+    return this._ltr;
+};
+
+EchoApp.LayoutDirection.LTR = new EchoApp.LayoutDirection(true);
+EchoApp.LayoutDirection.RTL = new EchoApp.LayoutDirection(false);
+
 
 EchoApp.Property = function() { };
 
