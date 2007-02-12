@@ -65,6 +65,8 @@ import nextapp.echo.webcontainer.WebContainerServlet;
 public class SynchronizeService 
 implements Service {
     
+    private static final String[] PROPERTIES_LAYOUT_DATA = new String[]{Component.PROPERTY_LAYOUT_DATA};
+    
     public static final Service INSTANCE = new SynchronizeService();
     
     static {
@@ -308,6 +310,13 @@ implements Service {
                     Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
                     upElement.setAttribute("i", UserInstance.getElementId(componentUpdates[i].getParent()));
                     renderUpdatedProperties(context, upElement, componentUpdates[i].getParent(), updatedPropertyNames);
+                }
+                
+                Component[] updatedLayoutDataChildren = componentUpdates[i].getUpdatedLayoutDataChildren();
+                for (int j = 0; j < updatedLayoutDataChildren.length; ++j) {
+                    Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
+                    upElement.setAttribute("i", UserInstance.getElementId(updatedLayoutDataChildren[j]));
+                    renderUpdatedProperties(context, upElement, updatedLayoutDataChildren[j], PROPERTIES_LAYOUT_DATA);
                 }
             }
         }
