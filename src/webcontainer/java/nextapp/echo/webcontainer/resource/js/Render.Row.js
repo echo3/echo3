@@ -48,6 +48,7 @@ EchoRender.ComponentSync.Row.prototype.renderAdd = function(update, parentElemen
     var tbodyElement = document.createElement("tbody");
     tableElement.appendChild(tbodyElement);
     var trElement = document.createElement("tr");
+    trElement.id = this.component.renderId + "_tr";
     tbodyElement.appendChild(trElement);
     
     var componentCount = this.component.getComponentCount();
@@ -132,7 +133,7 @@ EchoRender.ComponentSync.Row.prototype.renderUpdate = function(update) {
         // Full render
         fullRender = true;
     } else {
-        var parentElement = document.getElementById(this.component.renderId);
+        var trElemenet = document.getElementById(this.component.renderId + "_tr");
         
         if (update.hasRemovedChildren()) {
             // Remove children.
@@ -150,7 +151,7 @@ EchoRender.ComponentSync.Row.prototype.renderUpdate = function(update) {
             for (var i = 0; i < length; ++i) {
                 var child = addedChildren.items[i];
                 var index = this.component.indexOf(child);
-                this._renderAddChild(update, child, parentElement, index); 
+                this._renderAddChild(update, child, trElemenet, index); 
             }
         }
     }
