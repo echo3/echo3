@@ -1,7 +1,7 @@
 <ss>
  <s n="Default" t="Button">
   <p t="Border" n="border">
-   <b t="2px groove #00ff00"/>
+   <b t="2px groove #00ff00" r="2px groove #ffff00" l="2px groove #00ffff" b="2px groove #ff00ff"/>
   </p>
   <p t="s" n="text" v="A button"/>
   <p t="b" n="rolloverEnabled" v="true"/>

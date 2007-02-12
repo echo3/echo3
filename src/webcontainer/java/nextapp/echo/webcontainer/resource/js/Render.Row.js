@@ -37,6 +37,7 @@ EchoRender.ComponentSync.Row.prototype.renderAdd = function(update, parentElemen
     divElement.id = this.component.renderId;
     divElement.style.outlineStyle = "none";
     divElement.tabIndex = "-1";
+    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), divElement);
     EchoRender.Property.Color.renderFB(this.component, divElement);
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, divElement, "padding");
     

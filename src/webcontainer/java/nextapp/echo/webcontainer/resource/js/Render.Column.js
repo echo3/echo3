@@ -31,13 +31,13 @@ EchoRender.ComponentSync.Column.prototype.processKeyDown = function(e) {
 
 EchoRender.ComponentSync.Column.prototype.renderAdd = function(update, parentElement) {
     this.cellSpacing = EchoRender.Property.Extent.toPixels(this.component.getRenderProperty("cellSpacing"), false);
-    EchoCore.Debug.consoleWrite(this.component + ":cellspacing=" + this.cellSpacing);
     var insets = this.component.getRenderProperty("insets");
 
     var divElement = document.createElement("div");
     divElement.id = this.component.renderId;
     divElement.style.outlineStyle = "none";
     divElement.tabIndex = "-1";
+    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), divElement);
     EchoRender.Property.Color.renderFB(this.component, divElement);
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, divElement, "padding");
     
