@@ -374,14 +374,29 @@ EchoRender.Property = function() {
 
 EchoRender.Property.Border = function() { };
 
+EchoRender.Property.Border._SIDE_STYLE_NAMES = new Array("borderTop", "borderRight", "borderBottom", "borderLeft");
+
 EchoRender.Property.Border.render = function(border, element) {
     if (border) {
-        var color = border.color ? border.color.value : null;
-        element.style.border = EchoRender.Property.Extent.toPixels(border.size) + "px " + border.style + " " 
-                + (color ? color : "");
+        if (border.multisided) {
+            for (var i = 0; i < border.sides.length; ++i) {
+                EchoRender.Property.Border.renderSide(border.sides[i], element, 
+                        EchoRender.Property.Border._SIDE_STYLE_NAMES[i]);
+            }
+        } else {
+            var color = border.color ? border.color.value : null;
+            element.style.border = EchoRender.Property.Extent.toPixels(border.size) + "px " + border.style + " " 
+                    + (color ? color : "");
+        }
     } else {
         element.style.border = "";
     }
+};
+
+EchoRender.Property.Border.renderSide = function(borderSide, element, styleName) {
+    var color = borderSide.color ? borderSide.color.value : null;
+    element.style[styleName] = EchoRender.Property.Extent.toPixels(borderSide.size) + "px " + borderSide.style + " " 
+            + (color ? color : "");
 };
 
 EchoRender.Property.Color = function() { };

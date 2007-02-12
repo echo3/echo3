@@ -401,7 +401,14 @@ EchoApp.LayoutData.prototype.setProperty = function(name, newValue) {
 EchoApp.Property = function() { };
 
 EchoApp.Property.Border = function() {
-    if (arguments.length == 1 && typeof arguments[0] == "string") {
+    if (arguments.length == 1 && arguments[0] instanceof Array) {
+        this.multisided = true;
+        this.sides = arguments[0];
+        this.size = this.sides[0].size;
+        this.style = this.sides[0].style;
+        this.color = this.sides[0].color;
+    } else if (arguments.length == 1 && typeof arguments[0] == "string") {
+        this.multisided = false;
         var items = EchoCore.tokenizeString(arguments[0], " ");
         if (items.length != 3) {
             throw new Error("Invalid border string: " + arguments[0]);
@@ -413,6 +420,18 @@ EchoApp.Property.Border = function() {
 };
 
 EchoApp.Property.Border.prototype.className = "Border";
+
+EchoApp.Property.Border.Side = function() {
+    if (arguments.length == 1 && typeof arguments[0] == "string") {
+        var items = EchoCore.tokenizeString(arguments[0], " ");
+        if (items.length != 3) {
+            throw new Error("Invalid border string: " + arguments[0]);
+        }
+        this.size = new EchoApp.Property.Extent(items[0]);
+        this.style = items[1];
+        this.color = new EchoApp.Property.Color(items[2]);
+    }
+};
 
 /**
  * Color constructor.

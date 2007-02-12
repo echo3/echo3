@@ -196,7 +196,32 @@ EchoSerial.addPropertyTranslator("s", EchoSerial.PropertyTranslator.String);
 EchoSerial.PropertyTranslator.Border = function() { };
 
 EchoSerial.PropertyTranslator.Border.toProperty = function(client, propertyElement) {
-    return new EchoApp.Property.Border(propertyElement.getAttribute("v"));
+    var value = propertyElement.getAttribute("v");
+    if (value) {
+        return new EchoApp.Property.Border(value);
+    } else {
+        var element = EchoWebCore.DOM.getChildElementByTagName(propertyElement, "b");
+        var sides = new Array();
+        value = element.getAttribute("t");
+        if (value) {
+            sides.push(new EchoApp.Property.Border.Side(value));
+            value = element.getAttribute("r");
+            if (value) {
+                sides.push(new EchoApp.Property.Border.Side(value));
+                value = element.getAttribute("b");
+                if (value) {
+                    sides.push(new EchoApp.Property.Border.Side(value));
+                    value = element.getAttribute("l");
+                    if (value) {
+                        sides.push(new EchoApp.Property.Border.Side(value));
+                    }
+                }
+            }
+        } else {
+            throw new Error("Invalid multi-sided border: no sides set.");
+        }
+        return new EchoApp.Property.Border(sides);
+    }
 };
 
 EchoSerial.addPropertyTranslator("Border", EchoSerial.PropertyTranslator.Border);
