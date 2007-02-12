@@ -400,6 +400,22 @@ EchoApp.LayoutData.prototype.setProperty = function(name, newValue) {
 
 EchoApp.Property = function() { };
 
+EchoApp.Property.Alignment = function(horizontal, vertical) {
+    this.horizontal = horizontal ? horizontal : 0;
+    this.vertical = vertical ? vertical : 0;
+};
+
+EchoApp.Property.Alignment.prototype.className = "Alignment";
+
+EchoApp.Property.Alignment.DEFAULT = 0;
+EchoApp.Property.Alignment.LEADING = 1;
+EchoApp.Property.Alignment.TRAILING = 2;
+EchoApp.Property.Alignment.LEFT = 3;
+EchoApp.Property.Alignment.CENTER = 4;
+EchoApp.Property.Alignment.RIGHT = 5;
+EchoApp.Property.Alignment.TOP = 6;
+EchoApp.Property.Alignment.BOTTOM = 7;
+
 EchoApp.Property.Border = function() {
     if (arguments.length == 1 && arguments[0] instanceof Array) {
         this.multisided = true;

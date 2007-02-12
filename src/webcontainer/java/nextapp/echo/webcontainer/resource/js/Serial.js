@@ -191,6 +191,33 @@ EchoSerial.PropertyTranslator.String.toProperty = function(client, propertyEleme
 EchoSerial.addPropertyTranslator("s", EchoSerial.PropertyTranslator.String);
 
 /**
+ * Alignment PropertyTranslator Singleton.
+ */
+EchoSerial.PropertyTranslator.Alignment = function() { };
+
+EchoSerial.PropertyTranslator.Alignment.toProperty = function(client, propertyElement) {
+    var element = EchoWebCore.DOM.getChildElementByTagName(propertyElement, "a");
+    var h, v;
+    switch (element.getAttribute("h")) {
+    case "leading":  h = EchoApp.Property.Alignment.LEADING;  break;
+    case "trailing": h = EchoApp.Property.Alignment.TRAILING; break;
+    case "left":     h = EchoApp.Property.Alignment.LEFT;     break;
+    case "center":   h = EchoApp.Property.Alignment.CENTER;   break;
+    case "right":    h = EchoApp.Property.Alignment.RIGHT;    break;
+    default:         h = EchoApp.Property.Alignment.DEFAULT;
+    }
+    switch (element.getAttribute("v")) {
+    case "top":      v = EchoApp.Property.Alignment.TOP;      break;
+    case "center":   v = EchoApp.Property.Alignment.CENTER;   break;
+    case "bottom":   v = EchoApp.Property.Alignment.BOTTOM;   break;
+    default:         v = EchoApp.Property.Alignment.DEFAULT;  
+    }
+    return new EchoApp.Property.Alignment(h, v);
+};
+
+EchoSerial.addPropertyTranslator("Alignment", EchoSerial.PropertyTranslator.Alignment);
+
+/**
  * Border PropertyTranslator Singleton.
  */
 EchoSerial.PropertyTranslator.Border = function() { };

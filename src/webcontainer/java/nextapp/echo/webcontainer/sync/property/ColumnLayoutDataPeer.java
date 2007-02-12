@@ -24,6 +24,7 @@ implements PropertySynchronizePeer {
     public void toXml(OutputContext out, Element propertyElement, Object propertyValue) {
         ColumnLayoutData layoutData = (ColumnLayoutData) propertyValue;
         propertyElement.setAttribute("t", "LayoutData");
+        SyncUtil.toXml(out, propertyElement, "alignment", layoutData.getAlignment());
         SyncUtil.toXml(out, propertyElement, "background", layoutData.getBackground());
         SyncUtil.toXml(out, propertyElement, "backgroundImage", layoutData.getBackgroundImage());
         SyncUtil.toXml(out, propertyElement, "insets", layoutData.getInsets());
