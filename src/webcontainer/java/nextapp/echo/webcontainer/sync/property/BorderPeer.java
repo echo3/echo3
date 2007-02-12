@@ -41,11 +41,17 @@ import nextapp.echo.webcontainer.PropertySynchronizePeer;
 public class BorderPeer 
 implements PropertySynchronizePeer {
 
+    private static final String[] borderSideAttributeNames = new String[]{"t", "r", "b", "l"};
+    
     public static final String toString(Border border) {
+        return toString(border.getSides()[0]);
+    }
+    
+    public static final String toString(Border.Side side) {
         StringBuffer out = new StringBuffer();
-        out.append(ExtentPeer.toString(border.getSize()));
+        out.append(ExtentPeer.toString(side.getSize()));
         out.append(" ");
-        switch (border.getStyle()) {
+        switch (side.getStyle()) {
         case Border.STYLE_NONE:   out.append("none");   break;
         case Border.STYLE_SOLID:  out.append("solid");  break;
         case Border.STYLE_INSET:  out.append("inset");  break;
@@ -57,7 +63,7 @@ implements PropertySynchronizePeer {
         case Border.STYLE_DOUBLE: out.append("double"); break;
         }
         out.append(" ");
-        out.append(ColorPeer.toString(border.getColor()));
+        out.append(ColorPeer.toString(side.getColor()));
         return out.toString();
     }
     
@@ -75,6 +81,15 @@ implements PropertySynchronizePeer {
     public void toXml(OutputContext rc, Element propertyElement, Object propertyValue) {
         propertyElement.setAttribute("t", "Border");
         Border border = (Border) propertyValue;
-        propertyElement.setAttribute("v", toString(border));
+        if (border.isMultisided()) {
+            Element borderElement = rc.getServerMessage().getDocument().createElement("b");
+            Border.Side[] sides = border.getSides();
+            for (int i = 0; i < sides.length; ++i) {
+                borderElement.setAttribute(borderSideAttributeNames[i], toString(sides[i]));
+            }
+            propertyElement.appendChild(borderElement);
+        } else {
+            propertyElement.setAttribute("v", toString(border));
+        }
     }
 }

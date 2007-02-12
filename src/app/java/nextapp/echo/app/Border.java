@@ -341,6 +341,6 @@ implements Serializable {
     }
     
     public boolean isMultisided() {
-        return sides.length > 0;
+        return sides.length > 1;
     }
 }
