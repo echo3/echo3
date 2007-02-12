@@ -375,12 +375,15 @@ EchoRender.Property = function() {
 EchoRender.Property.Border = function() { };
 
 EchoRender.Property.Border._SIDE_STYLE_NAMES = new Array("borderTop", "borderRight", "borderBottom", "borderLeft");
+EchoRender.Property.Border._SIDE_RENDER_STRATEGIES 
+        = new Array(new Array(0, 1, 2, 3), new Array(0, 1, 2, 1), new Array(0, 1, 0, 1), new Array(0, 0, 0, 0));
 
 EchoRender.Property.Border.render = function(border, element) {
     if (border) {
         if (border.multisided) {
-            for (var i = 0; i < border.sides.length; ++i) {
-                EchoRender.Property.Border.renderSide(border.sides[i], element, 
+            var renderStrategy = EchoRender.Property.Border._SIDE_RENDER_STRATEGIES[4 - border.sides.length];
+            for (var i = 0; i < 4; ++i) {
+                EchoRender.Property.Border.renderSide(border.sides[renderStrategy[i]], element, 
                         EchoRender.Property.Border._SIDE_STYLE_NAMES[i]);
             }
         } else {

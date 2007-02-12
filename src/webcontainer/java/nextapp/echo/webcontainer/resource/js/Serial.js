@@ -202,6 +202,7 @@ EchoSerial.PropertyTranslator.Border.toProperty = function(client, propertyEleme
     } else {
         var element = EchoWebCore.DOM.getChildElementByTagName(propertyElement, "b");
         var sides = new Array();
+        
         value = element.getAttribute("t");
         if (value) {
             sides.push(new EchoApp.Property.Border.Side(value));
