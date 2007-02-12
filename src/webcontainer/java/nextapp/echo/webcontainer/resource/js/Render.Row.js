@@ -33,13 +33,16 @@ EchoRender.ComponentSync.Row.prototype.renderAdd = function(update, parentElemen
     this.cellSpacing = EchoRender.Property.Extent.toPixels(this.component.getRenderProperty("cellSpacing"), false);
     var insets = this.component.getRenderProperty("insets");
 
+    var divElement = document.createElement("div");
+    divElement.id = this.component.renderId;
+    divElement.style.outlineStyle = "none";
+    divElement.tabIndex = "-1";
+    EchoRender.Property.Color.renderFB(this.component, divElement);
+    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, divElement, "padding");
+    
     var tableElement = document.createElement("table");
-    tableElement.id = this.component.renderId;
     tableElement.style.borderCollapse = "collapse";
-    tableElement.style.outlineStyle = "none";
-    tableElement.tabIndex = "-1";
-    EchoRender.Property.Color.renderFB(this.component, tableElement);
-    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, tableElement, "padding");
+    divElement.appendChild(tableElement);
 
     var tbodyElement = document.createElement("tbody");
     tableElement.appendChild(tbodyElement);
@@ -52,9 +55,9 @@ EchoRender.ComponentSync.Row.prototype.renderAdd = function(update, parentElemen
         this._renderAddChild(update, child, trElement);
     }
     
-    EchoWebCore.EventProcessor.add(tableElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
+    EchoWebCore.EventProcessor.add(divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
     
-    parentElement.appendChild(tableElement);
+    parentElement.appendChild(divElement);
 };
 
 EchoRender.ComponentSync.Row.prototype._renderAddChild = function(update, child, parentElement, index) {
@@ -118,8 +121,8 @@ EchoRender.ComponentSync.Row.prototype._renderRemoveChild = function(update, chi
 };
 
 EchoRender.ComponentSync.Row.prototype.renderDispose = function(update) { 
-    var tableElement = document.getElementById(this.component.renderId);
-    EchoWebCore.EventProcessor.remove(tableElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
+    var divElement = document.getElementById(this.component.renderId);
+    EchoWebCore.EventProcessor.remove(divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
 };
 
 EchoRender.ComponentSync.Row.prototype.renderUpdate = function(update) {
