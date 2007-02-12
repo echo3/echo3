@@ -36,6 +36,11 @@ import java.io.Serializable;
 public class Border 
 implements Serializable {
     
+    public static final int SIDE_TOP = 0;
+    public static final int SIDE_RIGHT = 1;
+    public static final int SIDE_BOTTOM = 2;
+    public static final int SIDE_LEFT = 3;
+    
     /**
      * A border style that causes no border to be rendered.
      */
@@ -86,10 +91,130 @@ implements Serializable {
      * A border style that appears as a series of short line segments.
      */
     public static final int STYLE_DASHED = 8;
+    
+    /**
+     * A representation of one or more sides of a border.
+     */
+    public static class Side
+    implements Serializable {
+        
+        private Extent size;
+        private Color color;
+        private int style;
+        
+        /**
+         * Creates a new border <code>Side</code> with a pixel-based size.
+         * 
+         * @param sizePx the size of the border side, in pixels
+         * @param color the color of the border side
+         * @param style the style of the border side, one of the following constant values:
+         *        <ul>
+         *         <li><code>STYLE_NONE</code></li>
+         *         <li><code>STYLE_SOLID</code></li>
+         *         <li><code>STYLE_INSET</code></li>
+         *         <li><code>STYLE_OUTSET</code></li>
+         *         <li><code>STYLE_GROOVE</code></li>
+         *         <li><code>STYLE_RIDGE</code></li>
+         *         <li><code>STYLE_DOUBLE</code></li>
+         *         <li><code>STYLE_DOTTED</code></li>
+         *         <li><code>STYLE_DASHED</code></li>
+         *        </ul>
+         */
+        public Side(int sizePx, Color color, int style) {
+            this(new Extent(sizePx), color, style);
+        }
+        
+        /**
+         * Creates a new border <code>side</code>.
+         * 
+         * @param size the size of the border side (this property only supports
+         *        <code>Extent</code>s with fixed (i.e., not percent) units)
+         * @param color the color of the border side 
+         * @param style the style of the border side, one of the following constant
+         *        values:
+         *        <ul>
+         *        <li><code>STYLE_NONE</code></li>
+         *        <li><code>STYLE_SOLID</code></li>
+         *        <li><code>STYLE_INSET</code></li>
+         *        <li><code>STYLE_OUTSET</code></li>
+         *        <li><code>STYLE_GROOVE</code></li>
+         *        <li><code>STYLE_RIDGE</code></li>
+         *        <li><code>STYLE_DOUBLE</code></li>
+         *        <li><code>STYLE_DOTTED</code></li>
+         *        <li><code>STYLE_DASHED</code></li>
+         *        </ul>
+         */
+        public Side(Extent size, Color color, int style) {
+            super();
+            this.size = size;
+            this.color = color;
+            this.style = style;
+        }
+    
+        /**
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof Side)) {
+                return false;
+            }
+            Side that = (Side) o;
+            if (this.style != that.style) {
+                return false;
+            }
+            if (color == null) {
+                if (that.color != null) {
+                    return false;
+                }
+            } else {
+                if (!this.color.equals(that.color)) {
+                    return false;
+                }
+            }
+            if (size == null) {
+                if (that.size != null) {
+                    return false;
+                }
+            } else {
+                if (!this.size.equals(that.size)) {
+                    return false;
+                }
+            }
+            return true;
+        }
 
-    private Extent size;
-    private Color color;
-    private int style;
+        /**
+         * Returns the border side color.
+         * 
+         * @return the color
+         */
+        public Color getColor() {
+            return color;
+        }
+        
+        /**
+         * Returns the border side size.
+         * 
+         * @return the size
+         */
+        public Extent getSize() {
+            return size;
+        }
+        
+        /**
+         * Returns the border side style.
+         * 
+         * @return the style
+         */
+        public int getStyle() {
+            return style;
+        }
+    }
+    
+    private Side[] sides;
     
     /**
      * Creates a new <code>Border</code> with a pixel-based size.
@@ -135,12 +260,21 @@ implements Serializable {
      */
     public Border(Extent size, Color color, int style) {
         super();
-        this.size = size;
-        this.color = color;
-        this.style = style;
+        sides = new Side[] { new Side(size, color, style) } ;
+    }
+    
+    public Border(Side[] sides) {
+        super();
+        if (sides.length < 1 || sides.length > 4) {
+            throw new IllegalArgumentException("Invalid number of border sides: " + sides.length);
+        }
+        this.sides = sides;
     }
     
     /**
+     * Note that this implementation of equals will return FALSE if two borders 
+     * have a different number of sides but are nevertheless equivalent.
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object o) {
@@ -151,37 +285,24 @@ implements Serializable {
             return false;
         }
         Border that = (Border) o;
-        if (this.style != that.style) {
+        if (this.sides.length != that.sides.length) {
             return false;
         }
-        if (color == null) {
-            if (that.color != null) {
-                return false;
-            }
-        } else {
-            if (!this.color.equals(that.color)) {
-                return false;
-            }
-        }
-        if (size == null) {
-            if (that.size != null) {
-                return false;
-            }
-        } else {
-            if (!this.size.equals(that.size)) {
+        for (int i = 0; i < this.sides.length; ++i) {
+            if (!this.sides[i].equals(that.sides[i])) {
                 return false;
             }
         }
         return true;
     }
-
+    
     /**
      * Returns the border color.
      * 
      * @return the color
      */
     public Color getColor() {
-        return color;
+        return sides[0].getColor();
     }
     
     /**
@@ -192,7 +313,7 @@ implements Serializable {
      * @return the size
      */
     public Extent getSize() {
-        return size;
+        return sides[0].getSize();
     }
 
     /**
@@ -212,6 +333,14 @@ implements Serializable {
      *         </ul>
      */
     public int getStyle() {
-        return style;
+        return sides[0].getStyle();
+    }
+    
+    public Side[] getSides() {
+        return sides;
+    }
+    
+    public boolean isMultisided() {
+        return sides.length > 0;
     }
 }
