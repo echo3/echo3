@@ -8,7 +8,10 @@ EchoRender.ComponentSync.TextArea.prototype = new EchoRender.ComponentSync;
 EchoRender.ComponentSync.TextArea.prototype.renderAdd = function(update, parentElement) {
     var textAreaElement = document.createElement("textarea");
     textAreaElement.id = this.component.renderId;
+    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), textAreaElement);
     EchoRender.Property.Color.renderFB(this.component, textAreaElement);
+    EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, textAreaElement);
+    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, textAreaElement, "padding");
     if (this.component.getProperty("text")) {
         textAreaElement.appendChild(document.createTextNode(this.component.getProperty("text")));
     } else {
@@ -37,7 +40,10 @@ EchoRender.ComponentSync.TextField.prototype.renderAdd = function(update, parent
     var inputElement = document.createElement("input");
     inputElement.id = this.component.renderId;
     inputElement.setAttribute("type", "text");
+    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), inputElement);
     EchoRender.Property.Color.renderFB(this.component, inputElement);
+    EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, inputElement);
+    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, inputElement, "padding");
     if (this.component.getProperty("text")) {
         inputElement.setAttribute("value", this.component.getProperty("text"));
     }
