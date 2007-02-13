@@ -369,6 +369,8 @@ EchoRender.Focus._previousSibling = function(component) {
     return component.parent.getComponent(componentIndex - 1);
 };
 
+//FIXME. determine how clearing of previously set properties is handled in property renderers.
+
 EchoRender.Property = function() {
 };
 
@@ -514,6 +516,42 @@ EchoRender.Property.FillImage.renderComponentProperty = function(component, comp
     var fillImage = component.getRenderProperty ? component.getRenderProperty(componentProperty)
             : component.getProperty(componentProperty);
     EchoRender.Property.FillImage.render(fillImage, element);
+};
+
+EchoRender.Property.Font = function() { };
+
+EchoRender.Property.Font.renderComponentProperty = function(component, componentProperty, defaultValue, 
+        element) {
+    var font = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+            : component.getProperty(componentProperty);
+    if (!font) {
+        return;
+    }
+    if (font.typeface) {
+        if (font.typeface instanceof Array) {
+            element.style.fontFamily = font.typeface.join(",");
+        } else {
+            element.style.fontFamily = font.typeface;
+        }
+    }
+    if (font.size) {
+        element.style.fontSize = EchoRender.Property.Extent.toPixels(font.size) + "px";
+    }
+    if (font.style) {
+        if (font.style & EchoApp.Property.Font.BOLD) {
+            element.style.fontWeight = "bold";
+        }
+        if (font.style & EchoApp.Property.Font.ITALIC) {
+            element.style.fontStyle = "italic";
+        }
+        if (font.style & EchoApp.Property.Font.UNDERLINE) {
+            element.style.textDecoration = "underline";
+        } else if (font.style & EchoApp.Property.Font.OVERLINE) {
+            element.style.textDecoration = "overline";
+        } else if (font.style & EchoApp.Property.Font.LINE_THROUGH) {
+            element.style.textDecoration = "line-through";
+        }
+    }
 };
 
 EchoRender.Property.Insets = function() { };

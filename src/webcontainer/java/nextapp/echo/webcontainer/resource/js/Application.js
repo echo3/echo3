@@ -584,6 +584,40 @@ EchoApp.Property.FillImageBorder = function(color, borderInsets, contentInsets, 
 
 EchoApp.Property.FillImageBorder.prototype.className = "FillImageBorder";
 
+/**
+ * Font property.
+ * 
+ * Creates a new font property.
+ * 
+ * @param typeface the typeface of the font, may be a string or an array of strings
+ * @param style the style of the font, one or more of the following values ORed together:
+ *        <ul>
+ *         <li>EchoApp.Property.Font.PLAIN</li>
+ *         <li>EchoApp.Property.Font.BOLD</li>
+ *         <li>EchoApp.Property.Font.ITALIC</li>
+ *         <li>EchoApp.Property.Font.UNDERLINE</li>
+ *         <li>EchoApp.Property.Font.OVERLINE</li>
+ *         <li>EchoApp.Property.Font.LINE_THROUGH</li>
+ *        </ul>
+ * @param size the size of the font, an extent
+ */
+EchoApp.Property.Font = function(typeface, style, size) {
+    this.typeface = typeface;
+    this.style = style;
+    if (typeof size == "number") {
+        this.size = new Extent(size);
+    } else {
+        this.size = size;
+    }
+};
+
+EchoApp.Property.Font.PLAIN = 0x0;
+EchoApp.Property.Font.BOLD = 0x1;
+EchoApp.Property.Font.ITALIC = 0x2;
+EchoApp.Property.Font.UNDERLINE = 0x4;
+EchoApp.Property.Font.OVERLINE = 0x8;
+EchoApp.Property.Font.LINE_THROUGH = 0x10;
+
 EchoApp.Property.ImageReference = function(url, width, height) {
     this.url = url;
     this.width = width;

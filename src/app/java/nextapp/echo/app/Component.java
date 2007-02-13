@@ -769,7 +769,7 @@ implements RenderIdSupport, Serializable {
      * @return the layout direction of this component
      */
     public final LayoutDirection getRenderLayoutDirection() {
-        if (layoutDirection == null) { 
+        if (layoutDirection == null) {
             if (locale == null) {
                 if (parent == null) {
                     if (applicationInstance == null) {

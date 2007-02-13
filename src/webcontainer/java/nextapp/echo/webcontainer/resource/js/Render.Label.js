@@ -9,6 +9,7 @@ EchoRender.ComponentSync.Label.prototype._createSingleItemSpanElement = function
     var spanElement = document.createElement("span");
     spanElement.id = this.component.renderId;
     EchoRender.Property.Color.renderFB(this.component, spanElement);
+    EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, spanElement);
     spanElement.appendChild(contentNode);
     return spanElement;
 };

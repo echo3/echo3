@@ -343,6 +343,36 @@ EchoSerial.PropertyTranslator.FillImageBorder._parseElement = function(client, f
 EchoSerial.addPropertyTranslator("FillImageBorder", EchoSerial.PropertyTranslator.FillImageBorder);
 
 /**
+ * Font PropertyTranslator Singleton.
+ */
+EchoSerial.PropertyTranslator.Font = function() { };
+
+EchoSerial.PropertyTranslator.Font.toProperty = function(client, propertyElement) {
+    var element = EchoWebCore.DOM.getChildElementByTagName(propertyElement, "f");
+    var tfElements = EchoWebCore.DOM.getChildElementsByTagName(element, "tf");
+    var typefaces = null;
+    if (tfElements.length > 0) {
+        typefaces = new Array(tfElements.length);
+        for (var i = 0; i < tfElements.length; ++i) {
+            typefaces[i] = tfElements[i].getAttribute("n");
+        }
+    }
+    
+    var size = element.getAttribute("sz") ? new EchoApp.Property.Extent(element.getAttribute("sz")) : null;
+
+    var style = 0;
+    if (element.getAttribute("bo")) { style |= EchoApp.Property.Font.BOLD         };
+    if (element.getAttribute("it")) { style |= EchoApp.Property.Font.ITALIC       };
+    if (element.getAttribute("un")) { style |= EchoApp.Property.Font.UNDERLINE    };
+    if (element.getAttribute("ov")) { style |= EchoApp.Property.Font.OVERLINE     };
+    if (element.getAttribute("lt")) { style |= EchoApp.Property.Font.LINE_THROUGH };
+    
+    return new EchoApp.Property.Font(typefaces, style, size);
+};
+
+EchoSerial.addPropertyTranslator("Font", EchoSerial.PropertyTranslator.Font);
+
+/**
  * ImageReference PropertyTranslator Singleton.
  */
 EchoSerial.PropertyTranslator.ImageReference = function() { };
