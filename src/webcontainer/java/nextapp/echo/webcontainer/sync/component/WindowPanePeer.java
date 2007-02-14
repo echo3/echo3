@@ -29,8 +29,11 @@
 
 package nextapp.echo.webcontainer.sync.component;
 
+import nextapp.echo.app.Component;
+import nextapp.echo.app.Extent;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
+import nextapp.echo.webcontainer.InputContext;
 import nextapp.echo.webcontainer.OutputContext;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
@@ -55,10 +58,40 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
         return WindowPane.class;
     }
 
+    public Class getPropertyClass(String propertyName) {
+        if (WindowPane.PROPERTY_POSITION_X.equals(propertyName)) {
+            return Extent.class;
+        } else if (WindowPane.PROPERTY_POSITION_Y.equals(propertyName)) {
+            return Extent.class;
+        } else if (WindowPane.PROPERTY_WIDTH.equals(propertyName)) {
+            return Extent.class;
+        } else if (WindowPane.PROPERTY_HEIGHT.equals(propertyName)) {
+            return Extent.class;
+        } else {
+            return null;
+        }
+    };
+    
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.webcontainer.OutputContext)
      */
     public void init(OutputContext context) {
         context.getServerMessage().addLibrary(WINDOW_PANE_SERVICE.getId());
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(nextapp.echo.webcontainer.InputContext, nextapp.echo.app.Component, java.lang.String, java.lang.Object)
+     */
+    public void storeInputProperty(InputContext context, Component component, String propertyName, Object newValue) {
+        super.storeInputProperty(context, component, propertyName, newValue);
+        if (WindowPane.PROPERTY_POSITION_X.equals(propertyName)) {
+            context.getClientUpdateManager().setComponentProperty(component, WindowPane.PROPERTY_POSITION_X, newValue);
+        } else if (WindowPane.PROPERTY_POSITION_Y.equals(propertyName)) {
+            context.getClientUpdateManager().setComponentProperty(component, WindowPane.PROPERTY_POSITION_Y, newValue);
+        } else if (WindowPane.PROPERTY_WIDTH.equals(propertyName)) {
+            context.getClientUpdateManager().setComponentProperty(component, WindowPane.PROPERTY_WIDTH, newValue);
+        } else if (WindowPane.PROPERTY_HEIGHT.equals(propertyName)) {
+            context.getClientUpdateManager().setComponentProperty(component, WindowPane.PROPERTY_HEIGHT, newValue);
+        }
     }
 }

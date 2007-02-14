@@ -58,7 +58,7 @@ public class ClientMessage {
                 continue;
             }
             
-            Map propertyMap = (Map) componentUpdateMap.get(propertyName);
+            Map propertyMap = (Map) componentUpdateMap.get(component);
             if (propertyMap == null) {
                 propertyMap = new HashMap();
                 componentUpdateMap.put(component, propertyMap);
