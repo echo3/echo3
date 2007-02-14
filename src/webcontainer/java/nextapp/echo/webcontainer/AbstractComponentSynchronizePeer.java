@@ -107,6 +107,13 @@ implements ComponentSynchronizePeer {
     }
     
     /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getPropertyClass(java.lang.String)
+     */
+    public Class getPropertyClass(String propertyName) {
+        return null;
+    }
+    
+    /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.webcontainer.OutputContext)
      */
     public void init(OutputContext context) {

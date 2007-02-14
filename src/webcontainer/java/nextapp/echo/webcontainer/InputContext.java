@@ -1,5 +1,7 @@
 package nextapp.echo.webcontainer;
 
+import nextapp.echo.app.update.ClientUpdateManager;
+
 public interface InputContext {
     
     /**
@@ -17,6 +19,8 @@ public interface InputContext {
      * @return the <code>UserInstance</code>
      */
     public UserInstance getUserInstance();
+    
+    public ClientUpdateManager getClientUpdateManager();
     
     /**
      * Returns the <code>ClientMessage</code> from which input should be processed.

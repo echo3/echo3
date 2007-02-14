@@ -8,7 +8,49 @@ import nextapp.echo.webcontainer.PropertySynchronizePeer;
 
 public class ExtentPeer 
 implements PropertySynchronizePeer {
-
+    
+    public static Extent fromString(String value) {
+        int separatorPoint = -1;
+        int length = value.length();
+        for (int i = length - 1; i >= 0; --i) {
+            if (Character.isDigit(value.charAt(i))) {
+                separatorPoint = i + 1;
+                break;
+            }
+        }
+        if (separatorPoint == -1) {
+            throw new IllegalArgumentException("Cannot create extent from value: " + value);
+        }
+        int extentValue = Integer.parseInt(value.substring(0, separatorPoint));
+        String unitString = value.substring(separatorPoint);
+        int extentUnits = -1;
+        if ("px".equals(unitString)) {
+            extentUnits = Extent.PX;
+        } else if ("%".equals(unitString)) {
+            extentUnits = Extent.PERCENT;
+        } else if ("cm".equals(unitString)) {
+            extentUnits = Extent.CM;
+        } else if ("em".equals(unitString)) {
+            extentUnits = Extent.EM;
+        } else if ("ex".equals(unitString)) {
+            extentUnits = Extent.EX;
+        } else if ("in".equals(unitString)) {
+            extentUnits = Extent.IN;
+        } else if ("mm".equals(unitString)) {
+            extentUnits = Extent.MM;
+        } else if ("pc".equals(unitString)) {
+            extentUnits = Extent.PC;
+        } else if ("pt".equals(unitString)) {
+            extentUnits = Extent.PT;
+        }
+        
+        if (extentUnits == -1) {
+            return null;
+        } else {
+            return new Extent(extentValue, extentUnits);
+        }
+    }
+    
     public static String toString(Extent extent) {
         StringBuffer out = new StringBuffer();
         out.append(extent.getValue());
@@ -48,8 +90,7 @@ implements PropertySynchronizePeer {
      * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(org.w3c.dom.Element)
      */
     public Object toProperty(Element propertyElement) {
-        //TODO. Implement.
-        return null;
+        return fromString(propertyElement.getAttribute("v"));
     }
 
     /**

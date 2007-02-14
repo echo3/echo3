@@ -29,8 +29,11 @@
 
 package nextapp.echo.webcontainer.sync.component;
 
+import nextapp.echo.app.Component;
+import nextapp.echo.app.Extent;
 import nextapp.echo.app.SplitPane;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
+import nextapp.echo.webcontainer.InputContext;
 import nextapp.echo.webcontainer.OutputContext;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
@@ -54,11 +57,30 @@ public class SplitPanePeer extends AbstractComponentSynchronizePeer {
     public Class getComponentClass() {
         return SplitPane.class;
     }
+    
+    public Class getPropertyClass(String propertyName) {
+        if (SplitPane.PROPERTY_SEPARATOR_POSITION.equals(propertyName)) {
+            return Extent.class;
+        } else {
+            return null;
+        }
+    };
 
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.webcontainer.OutputContext)
      */
     public void init(OutputContext rc) {
         rc.getServerMessage().addLibrary(SPLIT_PANE_SERVICE.getId());
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(nextapp.echo.webcontainer.InputContext, nextapp.echo.app.Component, java.lang.String, java.lang.Object)
+     */
+    public void storeInputProperty(InputContext context, Component component, String propertyName, Object newValue) {
+        super.storeInputProperty(context, component, propertyName, newValue);
+        if (SplitPane.PROPERTY_SEPARATOR_POSITION.equals(propertyName)) {
+            context.getClientUpdateManager().setComponentProperty(component, SplitPane.PROPERTY_SEPARATOR_POSITION, newValue);
+            System.err.println("stored separator position");
+        }
     }
 }

@@ -65,6 +65,78 @@ import nextapp.echo.webcontainer.WebContainerServlet;
 public class SynchronizeService 
 implements Service {
     
+    private class InputContextImpl implements InputContext {
+
+        private ClientMessage clientMessage;
+        private Connection conn;
+        
+        private InputContextImpl(Connection conn) 
+        throws IOException {
+            super();
+            this.conn = conn;
+            clientMessage = new ClientMessage(conn);
+        }
+        
+        public ClientUpdateManager getClientUpdateManager() {
+            return conn.getUserInstance().getApplicationInstance().getUpdateManager().getClientUpdateManager();
+        }
+        
+        /**
+         * @see nextapp.echo.webcontainer.InputContext#getClientMessage()
+         */
+        public ClientMessage getClientMessage() {
+            return clientMessage;
+        }
+
+        /**
+         * @see nextapp.echo.webcontainer.InputContext#getConnection()
+         */
+        public Connection getConnection() {
+            return conn;
+        }
+
+        /**
+         * @see nextapp.echo.webcontainer.InputContext#getUserInstance()
+         */
+        public UserInstance getUserInstance() {
+            return conn.getUserInstance();
+        }
+    }
+    
+    private class OutputContextImpl implements OutputContext {
+
+        private ServerMessage serverMessage = new ServerMessage();
+        private Connection conn;
+        
+        private OutputContextImpl(Connection conn) {
+            super();
+            this.conn = conn;
+            serverMessage = new ServerMessage();
+            serverMessage.setTransactionId(getUserInstance().getNextTransactionId());
+        }
+
+        /**
+         * @see nextapp.echo.webcontainer.OutputContext#getConnection()
+         */
+        public Connection getConnection() {
+            return conn;
+        }
+
+        /**
+         * @see nextapp.echo.webcontainer.OutputContext#getServerMessage()
+         */
+        public ServerMessage getServerMessage() {
+            return serverMessage;
+        }
+
+        /**
+         * @see nextapp.echo.webcontainer.OutputContext#getUserInstance()
+         */
+        public UserInstance getUserInstance() {
+            return conn.getUserInstance();
+        }
+    }
+    
     private static final String[] PROPERTIES_LAYOUT_DATA = new String[]{Component.PROPERTY_LAYOUT_DATA};
     
     public static final Service INSTANCE = new SynchronizeService();
@@ -252,6 +324,20 @@ implements Service {
             updateManager.getServerUpdateManager().processFullRefresh();
         }
         
+        Iterator updatedComponentIt  = clientMessage.getUpdatedComponents();
+        while (updatedComponentIt.hasNext()) {
+            Component component = (Component) updatedComponentIt.next();
+            Iterator updatedPropertyIt = clientMessage.getUpdatedPropertyNames(component);
+            while (updatedPropertyIt.hasNext()) {
+                String propertyName = (String) updatedPropertyIt.next();
+                Object propertyValue = clientMessage.getUpdatedPropertyValue(component, propertyName);
+                ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
+                componentPeer.storeInputProperty(context, component, propertyName, propertyValue);
+            }
+        }
+        
+        //FIXME. process clientmessage properties.
+        
         if (clientMessage.getEventType() != null) {
             Component component = userInstance.getComponentByElementId(clientMessage.getEventComponentId());
             clientUpdateManager.setComponentAction(component, clientMessage.getEventType(), null);
@@ -357,74 +443,6 @@ implements Service {
                 propertySyncPeer.toXml(context, pElement, propertyValue);
             }
             upElement.appendChild(pElement);
-        }
-    }
-    
-    private class InputContextImpl implements InputContext {
-
-        private ClientMessage clientMessage;
-        private Connection conn;
-        
-        private InputContextImpl(Connection conn) 
-        throws IOException {
-            super();
-            this.conn = conn;
-            clientMessage = new ClientMessage(conn);
-        }
-        
-        /**
-         * @see nextapp.echo.webcontainer.InputContext#getClientMessage()
-         */
-        public ClientMessage getClientMessage() {
-            return clientMessage;
-        }
-
-        /**
-         * @see nextapp.echo.webcontainer.InputContext#getConnection()
-         */
-        public Connection getConnection() {
-            return conn;
-        }
-
-        /**
-         * @see nextapp.echo.webcontainer.InputContext#getUserInstance()
-         */
-        public UserInstance getUserInstance() {
-            return conn.getUserInstance();
-        }
-    }
-    
-    private class OutputContextImpl implements OutputContext {
-
-        private ServerMessage serverMessage = new ServerMessage();
-        private Connection conn;
-        
-        private OutputContextImpl(Connection conn) {
-            super();
-            this.conn = conn;
-            serverMessage = new ServerMessage();
-            serverMessage.setTransactionId(getUserInstance().getNextTransactionId());
-        }
-
-        /**
-         * @see nextapp.echo.webcontainer.OutputContext#getConnection()
-         */
-        public Connection getConnection() {
-            return conn;
-        }
-
-        /**
-         * @see nextapp.echo.webcontainer.OutputContext#getServerMessage()
-         */
-        public ServerMessage getServerMessage() {
-            return serverMessage;
-        }
-
-        /**
-         * @see nextapp.echo.webcontainer.OutputContext#getUserInstance()
-         */
-        public UserInstance getUserInstance() {
-            return conn.getUserInstance();
         }
     }
     

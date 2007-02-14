@@ -9,6 +9,8 @@ public interface ComponentSynchronizePeer {
     public String getClientComponentType();
     
     public Class getComponentClass();
+    
+    public Class getPropertyClass(String propertyName);
 
     public Iterator getImmediateEventTypes(Component component);
     
