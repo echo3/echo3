@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- FIXME. Temporarily using full class names -->
+<ss>
+ <s n="WelcomePane" t="nextapp.echo.app.ContentPane">
+  <p n="backgroundImage">
+   <fi r="y" t="r">
+    <i r="/nextapp/echo/testapp/interactive/resource/image/WelcomePaneBackground.png"/>
+   </fi>
+  </p>
+ </s>
+ <s n="WelcomePane.Column" t="nextapp.echo.app.Column">
+  <p n="insets" v="0px 0px 0px 245px"/>
+  <p n="cellSpacing" v="40px"/>
+ </s>
+ <s n="WelcomePane" t="nextapp.echo.app.WindowPane">
+  <p n="width" v="550px"/>
+  <p n="height" v="300px"/>
+  <p n="resizable" v="true"/>
+  <p n="positionX" v="160px"/>
+  <p n="positionY" v="300px"/>
+ </s>
+ <s n="TestPane" t="nextapp.echo.app.SplitPane">
+  <p n="separatorPosition" v="40px"/>
+  <p n="separatorHeight" v="1px"/>
+  <p n="separatorColor" v="#1d1d1d"/>
+ </s>
+ <s n="Default" t="nextapp.echo.app.button.AbstractButton">
+  <p n="background" v="#4f4f5f"/>
+  <p n="foreground" v="#efefff"/>
+  <p n="border" v="1px outset #6f6f8f"/>
+  <p n="rolloverEnabled" v="true"/>
+  <p n="rolloverBackground" v="#6f6f87"/>
+  <p n="rolloverForeground" v="#ffffaf"/>
+  <p n="rolloverBorder" v="1px outset #8f8faf"/>
+  <p n="pressedEnabled" v="true"/>
+  <p n="pressedBackground" v="#2f2f3f"/>
+  <p n="pressedForeground" v="#ffafaf"/>
+  <p n="pressedBorder" v="1px inset #4f4f6f"/>
+  <p n="insets" v="3px 20px"/>
+ </s>
+</ss>

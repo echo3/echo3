@@ -35,6 +35,7 @@ import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.StyleSheet;
 import nextapp.echo.app.componentxml.ComponentXmlException;
 import nextapp.echo.app.componentxml.StyleSheetLoader;
+import nextapp.echo.app.xml.XmlException;
 
 /**
  * 
@@ -101,11 +102,15 @@ public class Styles {
     public static final StyleSheet GREEN_STYLE_SHEET;
     static {
         try {
-            DEFAULT_STYLE_SHEET = StyleSheetLoader.load(STYLE_PATH + "Default.stylesheet", 
+            DEFAULT_STYLE_SHEET = nextapp.echo.app.xml.StyleSheetLoader.load(STYLE_PATH + "Default.stylesheet.xml", 
                     Thread.currentThread().getContextClassLoader());
+//            DEFAULT_STYLE_SHEET = StyleSheetLoader.load(STYLE_PATH + "Default.stylesheet", 
+//                    Thread.currentThread().getContextClassLoader());
             GREEN_STYLE_SHEET = StyleSheetLoader.load(STYLE_PATH + "Green.stylesheet", 
                     Thread.currentThread().getContextClassLoader());
         } catch (ComponentXmlException ex) {
+            throw new RuntimeException(ex);
+        } catch (XmlException ex) {
             throw new RuntimeException(ex);
         }
     }

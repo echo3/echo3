@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- FIXME. Temporarily using full class names -->
+<ss>
+ <s n="TestPane" t="nextapp.echo.app.SplitPane">
+  <p n="separatorPosition" v="40px" t="Extent"/>
+  <p n="separatorHeight" v="1px" t="Extent"/>
+  <p n="separatorColor" v="#1d1d1d" t="Color"/>
+ </s>
+ <s n="Default" t="nextapp.echo.app.button.AbstractButton">
+  <p n="background" v="#4f4f5f" t="Color"/>
+  <p n="foreground" v="#efefff" t="Color"/>
+  <p n="border" v="1px outset #6f6f8f" t="Border"/>
+  <p n="rolloverEnabled" v="true" t="b"/>
+  <p n="rolloverBackground" v="#6f6f87" t="Color"/>
+  <p n="rolloverForeground" v="#ffffaf" t="Color"/>
+  <p n="rolloverBorder" v="1px outset #8f8faf" t="Border"/>
+  <p n="pressedEnabled" v="true" t="b"/>
+  <p n="pressedBackground" v="#2f2f3f" t="Color"/>
+  <p n="pressedForeground" v="#ffafaf" t="Color"/>
+  <p n="pressedBorder" v="1px inset #4f4f6f" t="Border"/>
+  <p n="insets" v="20px 3px" t="Insets"/>
+ </s>
+</ss>
