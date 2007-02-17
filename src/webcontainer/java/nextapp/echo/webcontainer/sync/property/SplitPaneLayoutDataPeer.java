@@ -19,16 +19,16 @@ implements PropertySynchronizePeer {
 
     /**
      * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(
-     *      nextapp.echo.webcontainer.OutputContext, org.w3c.dom.Element, java.lang.Object)
+     *      nextapp.echo.webcontainer.OutputContext, Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(OutputContext out, Element propertyElement, Object propertyValue) {
+    public void toXml(OutputContext out, Class objectClass, Element propertyElement, Object propertyValue) {
         SplitPaneLayoutData layoutData = (SplitPaneLayoutData) propertyValue;
         propertyElement.setAttribute("t", "LayoutData");
-        SyncUtil.toXml(out, propertyElement, "alignment", layoutData.getAlignment());
-        SyncUtil.toXml(out, propertyElement, "background", layoutData.getBackground());
-        SyncUtil.toXml(out, propertyElement, "backgroundImage", layoutData.getBackgroundImage());
-        SyncUtil.toXml(out, propertyElement, "insets", layoutData.getInsets());
-        SyncUtil.toXml(out, propertyElement, "maximumSize", layoutData.getMaximumSize());
-        SyncUtil.toXml(out, propertyElement, "minimumSize", layoutData.getMinimumSize());
+        SyncUtil.toXml(out, objectClass, propertyElement, "alignment", layoutData.getAlignment());
+        SyncUtil.toXml(out, objectClass, propertyElement, "background", layoutData.getBackground());
+        SyncUtil.toXml(out, objectClass, propertyElement, "backgroundImage", layoutData.getBackgroundImage());
+        SyncUtil.toXml(out, objectClass, propertyElement, "insets", layoutData.getInsets());
+        SyncUtil.toXml(out, objectClass, propertyElement, "maximumSize", layoutData.getMaximumSize());
+        SyncUtil.toXml(out, objectClass, propertyElement, "minimumSize", layoutData.getMinimumSize());
     }
 }

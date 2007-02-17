@@ -19,9 +19,9 @@ implements PropertySynchronizePeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(OutputContext, org.w3c.dom.Element, java.lang.Object)
+     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(OutputContext, Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(OutputContext context, Element propertyElement, Object propertyValue) {
+    public void toXml(OutputContext context, Class objectClass, Element propertyElement, Object propertyValue) {
         propertyElement.setAttribute("t", "Font");
         Font font = (Font) propertyValue;
         Element element = context.getServerMessage().getDocument().createElement("f");

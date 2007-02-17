@@ -6,5 +6,5 @@ public interface PropertySynchronizePeer {
 
     public Object toProperty(Element propertyElement);
     
-    public void toXml(OutputContext rc, Element propertyElement, Object propertyValue);
+    public void toXml(OutputContext context, Class objectClass, Element propertyElement, Object propertyValue);
 }

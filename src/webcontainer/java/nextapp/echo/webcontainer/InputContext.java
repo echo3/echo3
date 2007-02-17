@@ -1,8 +1,9 @@
 package nextapp.echo.webcontainer;
 
 import nextapp.echo.app.update.ClientUpdateManager;
+import nextapp.echo.app.xml.XmlContext;
 
-public interface InputContext {
+public interface InputContext extends XmlContext {
     
     /**
      * Returns the <code>Connection</code> to which the

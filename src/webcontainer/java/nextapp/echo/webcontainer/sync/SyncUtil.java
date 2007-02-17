@@ -8,14 +8,14 @@ import nextapp.echo.webcontainer.SynchronizePeerFactory;
 
 public class SyncUtil {
 
-    public static void toXml(OutputContext out, Element parentElement, String propertyName, 
+    public static void toXml(OutputContext out, Class objectClass, Element parentElement, String propertyName, 
             Object propertyValue) {
         if (propertyValue != null) {
             Document document = out.getServerMessage().getDocument();       
             Element childPropertyElement = document.createElement("p");
             childPropertyElement.setAttribute("n", propertyName);
             SynchronizePeerFactory.getPeerForProperty(propertyValue.getClass())
-                    .toXml(out, childPropertyElement, propertyValue);
+                    .toXml(out, objectClass, childPropertyElement, propertyValue);
             parentElement.appendChild(childPropertyElement);
         }
     }

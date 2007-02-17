@@ -29,10 +29,12 @@
 
 package nextapp.echo.webcontainer;
 
+import nextapp.echo.app.xml.XmlContext;
+
 /**
  * Contextual information relevant for rendering <code>ServerMessage</code>s.
  */
-public interface OutputContext {
+public interface OutputContext extends XmlContext {
     
     /**
      * Returns the <code>Connection</code> to which the

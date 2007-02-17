@@ -48,7 +48,7 @@ public class StreamImageReferencePeer implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(nextapp.echo.webcontainer.OutputContext, org.w3c.dom.Element, java.lang.Object)
+     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(nextapp.echo.webcontainer.OutputContext, Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
         StreamImageReference imageReference = (StreamImageReference) propertyValue;

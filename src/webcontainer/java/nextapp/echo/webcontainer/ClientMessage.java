@@ -24,9 +24,12 @@ public class ClientMessage {
     private String type;
     private Map componentUpdateMap;
     
-    public ClientMessage(Connection conn) 
+    public ClientMessage(InputContext context) 
     throws IOException {
         super();
+        
+        Connection conn = context.getConnection();
+        
         UserInstance ui = conn.getUserInstance();
         document = XmlRequestParser.parse(conn.getRequest(), conn.getUserInstance().getCharacterEncoding());
         
@@ -82,6 +85,10 @@ public class ClientMessage {
         //FIXME. Debug code
         System.err.println("INPUT PROPERTY MAP============");
         System.err.println(componentUpdateMap);
+    }
+    
+    public Document getDocument() {
+        return document;
     }
     
     public Iterator getUpdatedComponents() {

@@ -31,9 +31,9 @@ public class StreamImageReferencePeer extends AbstractImageReferencePeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(nextapp.echo.webcontainer.OutputContext, org.w3c.dom.Element, java.lang.Object)
+     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(nextapp.echo.webcontainer.OutputContext, Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(OutputContext rc, Element propertyElement, Object propertyValue) {
+    public void toXml(OutputContext rc, Class objectClass, Element propertyElement, Object propertyValue) {
         StreamImageReference imageReference = (StreamImageReference) propertyValue;
         propertyElement.setAttribute("t", "ImageReference");
         propertyElement.setAttribute("v", getImageUrl(rc, imageReference));
