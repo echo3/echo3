@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- FIXME. Temporarily using full class names -->
 <ss>
+
  <s n="WelcomePane" t="nextapp.echo.app.ContentPane">
   <p n="backgroundImage">
    <fi r="y" t="r">
@@ -8,10 +9,12 @@
    </fi>
   </p>
  </s>
+ 
  <s n="WelcomePane.Column" t="nextapp.echo.app.Column">
   <p n="insets" v="0px 0px 0px 245px"/>
   <p n="cellSpacing" v="40px"/>
  </s>
+ 
  <s n="WelcomePane" t="nextapp.echo.app.WindowPane">
   <p n="width" v="550px"/>
   <p n="height" v="300px"/>
@@ -19,11 +22,13 @@
   <p n="positionX" v="160px"/>
   <p n="positionY" v="300px"/>
  </s>
+ 
  <s n="TestPane" t="nextapp.echo.app.SplitPane">
   <p n="separatorPosition" v="40px"/>
   <p n="separatorHeight" v="1px"/>
   <p n="separatorColor" v="#1d1d1d"/>
  </s>
+ 
  <s n="Default" t="nextapp.echo.app.button.AbstractButton">
   <p n="background" v="#4f4f5f"/>
   <p n="foreground" v="#efefff"/>
@@ -38,6 +43,7 @@
   <p n="pressedBorder" v="1px inset #4f4f6f"/>
   <p n="insets" v="3px 20px"/>
  </s>
+ 
  <s n="Default" t="nextapp.echo.app.WindowPane">
   <!-- Container-specific property to enable Internet Explorer PNG Alpha Renderer for shadow window border. -->
   <p t="b" n="ieAlphaRenderBorder" v="1"/>
@@ -78,6 +84,7 @@
    </fib>
   </p>
  </s>
+ 
  <s n="TitleLabel" t="nextapp.echo.app.Label">
   <p n="font">
    <f sz="18px">
@@ -101,4 +108,33 @@
   <!--<p n="overflow" v="OVERFLOW_HIDDEN"/>-->
   </p>
  </s>
+ 
+ <s n="ApplicationControlsColumn" t="nextapp.echo.app.Column">
+   <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
+      <p n="background" v="#4f4f6f"/>
+      <p n="backgroundImage">
+       <fi r="0" t="r">
+        <i r="/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundDarkBlue.png"/>
+       </fi>
+      </p>
+      <p n="insets" v="7px 10px"/>
+      <p n="minimumSize" v="200px"/>
+      <p n="maximumSize" v="300px"/>
+   </p>
+ </s>
+ 
+ <s n="TestControlsColumn" t="nextapp.echo.app.Column">
+   <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
+      <p n="background" v="#afafef"/>
+      <p n="backgroundImage">
+       <fi r="0" t="r">
+        <i r="/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundLightBlue.png"/>
+       </fi>
+      </p>
+      <p n="insets" v="7px 10px"/>
+      <p n="minimumSize" v="200px"/>
+      <p n="maximumSize" v="300px"/>
+   </p>
+ </s>
+ 
 </ss>
