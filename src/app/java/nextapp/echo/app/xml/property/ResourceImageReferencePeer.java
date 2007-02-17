@@ -10,22 +10,18 @@ import nextapp.echo.app.xml.XmlPropertyPeer;
 
 public class ResourceImageReferencePeer 
 implements XmlPropertyPeer {
-
-    public static ResourceImageReference load(XmlContext context, Element parentElement) {
-        Element iElement = DomUtil.getChildElementByTagName(parentElement, "i");
+    
+    /**
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(nextapp.echo.app.xml.XmlContext, org.w3c.dom.Element)
+     */
+    public Object toProperty(XmlContext context, Element propertyElement) {
+        Element iElement = DomUtil.getChildElementByTagName(propertyElement, "i");
         String contentType = iElement.hasAttribute("t") ? iElement.getAttribute("t") : null;
         String resourceName = iElement.getAttribute("r");
         Extent width = iElement.hasAttribute("w") ? ExtentPeer.fromString(iElement.getAttribute("w")) : null;
         Extent height = iElement.hasAttribute("h") ? ExtentPeer.fromString(iElement.getAttribute("h")) : null;
         ResourceImageReference resourceImage = new ResourceImageReference(resourceName, contentType, width, height);
         return resourceImage;
-    }
-    
-    /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(nextapp.echo.app.xml.XmlContext, org.w3c.dom.Element)
-     */
-    public Object toProperty(XmlContext context, Element propertyElement) {
-        return load(context, propertyElement);
     }
 
     /**

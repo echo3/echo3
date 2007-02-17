@@ -47,6 +47,17 @@ public class Serializer {
             public Document getDocument() {
                 return document;
             }
+            
+            /**
+             * @see nextapp.echo.app.xml.XmlContext#getPropertyPeer(java.lang.Class)
+             */
+            public XmlPropertyPeer getPropertyPeer(Class propertyClass) {
+                return XmlPeerFactory.forClassLoader(classLoader).getPeerForProperty(propertyClass);
+            }
+            
+            public Serializer getSerializer() {
+                return Serializer.this;
+            }
         };
         
         typeMap = new HashMap();
@@ -92,24 +103,33 @@ public class Serializer {
 
             Element[] pElements = DomUtil.getChildElementsByTagName(containerElement, "p");
             for (int i = 0; i < pElements.length; ++i) {
+                // Retrieve property name.
                 if (!pElements[i].hasAttribute("n")) {
                     throw new XmlException("Found property without type in component \"" + componentType + "\".", null);
                 }
                 String name = pElements[i].getAttribute("n");
-                Class propertyClass;
+
+                XmlPropertyPeer peer = null;
+                Class propertyClass = null;
                 if (pElements[i].hasAttribute("t")) {
                     String type = pElements[i].getAttribute("t");
                     propertyClass = getClass(type);
-                } else {
+                    peer = (XmlPropertyPeer) factory.getPeerForProperty(propertyClass);
+                }
+                
+                if (peer == null) {
                     if (ci == null) {
+                        // Lazy-create Component Introspector.
                         ci = ComponentIntrospector.forName(componentType, context.getClassLoader());
                     }
                     propertyClass = ci.getPropertyClass(name);
+                    peer = (XmlPropertyPeer) factory.getPeerForProperty(propertyClass);
                 }
+                
                 if (propertyClass == null) {
                     throw new XmlException("Cannot find class for property: " + componentType + "." + name, null);
                 }
-                XmlPropertyPeer peer = (XmlPropertyPeer) factory.getPeerForProperty(propertyClass);
+                
                 if (peer == null) {
                     // Unsupported property.
                     continue;

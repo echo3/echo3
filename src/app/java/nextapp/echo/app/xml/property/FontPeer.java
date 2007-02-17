@@ -4,6 +4,7 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Font;
+import nextapp.echo.app.util.DomUtil;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlPropertyPeer;
 
@@ -15,8 +16,32 @@ implements XmlPropertyPeer {
      *      org.w3c.dom.Element)
      */
     public Object toProperty(XmlContext context, Element propertyElement) {
-        // TODO. Implement.
-        return null;
+        Element fElement = DomUtil.getChildElementByTagName(propertyElement, "f");
+        
+        int style = Font.PLAIN;
+        style |= "1".equals(fElement.getAttribute("bo")) ? Font.BOLD : 0;
+        style |= "1".equals(fElement.getAttribute("it")) ? Font.ITALIC : 0;
+        style |= "1".equals(fElement.getAttribute("un")) ? Font.UNDERLINE : 0;
+        style |= "1".equals(fElement.getAttribute("ov")) ? Font.OVERLINE : 0;
+        style |= "1".equals(fElement.getAttribute("lt")) ? Font.LINE_THROUGH : 0;
+        
+        Extent size = null;
+        if (fElement.hasAttribute("sz")) {
+            size = ExtentPeer.fromString(fElement.getAttribute("sz"));
+        }
+        
+        Element[] tfElements = DomUtil.getChildElementsByTagName(fElement, "tf");
+        Font.Typeface typeface = null;
+        for (int i = tfElements.length - 1; i >= 0; --i) {
+            String name = tfElements[i].getAttribute("n");
+            if (typeface == null) {
+                typeface = new Font.Typeface(name);
+            } else {
+                typeface = new Font.Typeface(name, typeface);
+            }
+        }
+        
+        return new Font(typeface, style, size);
     }
 
     /**

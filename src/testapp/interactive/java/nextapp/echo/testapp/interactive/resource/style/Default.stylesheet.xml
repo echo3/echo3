@@ -38,4 +38,67 @@
   <p n="pressedBorder" v="1px inset #4f4f6f"/>
   <p n="insets" v="3px 20px"/>
  </s>
+ <s n="Default" t="nextapp.echo.app.WindowPane">
+  <!-- Container-specific property to enable Internet Explorer PNG Alpha Renderer for shadow window border. -->
+  <p t="b" n="ieAlphaRenderBorder" v="1"/>
+  <p n="titleInsets" v="10px 5px"/>
+  <p n="titleBackground" v="#2f2f4f"/>
+  <p n="titleBackgroundImage">
+   <fi y="100%" r="x" t="r">
+    <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/Header.png"/>
+   </fi>
+  </p>
+  <p n="titleForeground" v="#ffffff"/>
+  <p n="border">
+   <fib ci="8px 14px 14px 8px" bi="17px 23px 23px 17px">
+    <fi t="r">
+      <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTopLeft.png"/>
+    </fi>
+    <fi t="r">
+      <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTop.png"/>
+    </fi>
+    <fi t="r">
+      <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTopRight.png"/>
+    </fi>
+    <fi t="r">
+      <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderLeft.png"/>
+    </fi>
+    <fi t="r">
+      <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderRight.png"/>
+    </fi>
+    <fi t="r">
+      <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottomLeft.png"/>
+    </fi>
+    <fi t="r">
+      <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottom.png"/>
+    </fi>
+    <fi t="r">
+     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottomRight.png"/>
+    </fi>
+   </fib>
+  </p>
+ </s>
+ <s n="TitleLabel" t="nextapp.echo.app.Label">
+  <p n="font">
+   <f sz="18px">
+    <tf>Verdana</tf>
+    <tf>Arial</tf>
+    <tf>Helvetica</tf>
+   </f>
+  </p>-->
+  <p n="foreground" v="#ffffff"/>
+  <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
+   <p n="alignment">
+    <a h="center"/>
+   </p>
+   <p n="background" v="#1b1b21"/>
+   <p n="backgroundImage">
+    <fi t="r" r="0">
+     <i r="/nextapp/echo/testapp/interactive/resource/image/HeaderBackground.png"/>
+    </fi>
+   </p>
+   <p n="insets" v="8px"/>
+  <!--<p n="overflow" v="OVERFLOW_HIDDEN"/>-->
+  </p>
+ </s>
 </ss>

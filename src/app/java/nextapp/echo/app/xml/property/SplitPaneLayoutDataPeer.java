@@ -4,16 +4,15 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.layout.SplitPaneLayoutData;
 import nextapp.echo.app.xml.XmlContext;
-import nextapp.echo.app.xml.XmlPropertyPeer;
 import nextapp.echo.app.xml.XmlUtil;
 
 public class SplitPaneLayoutDataPeer
-implements XmlPropertyPeer {
+extends LayoutDataPeer {
 
-    public Object toProperty(XmlContext context,Element propertyElement) {
-        throw new UnsupportedOperationException();
-    }
-
+    /**
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.xml.XmlContext, 
+     *      org.w3c.dom.Element, java.lang.Object)
+     */
     public void toXml(XmlContext context, Element propertyElement, Object propertyValue) {
         SplitPaneLayoutData layoutData = (SplitPaneLayoutData) propertyValue;
         propertyElement.setAttribute("t", "LayoutData");
