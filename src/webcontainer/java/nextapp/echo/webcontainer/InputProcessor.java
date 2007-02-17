@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import nextapp.echo.app.Component;
 import nextapp.echo.app.update.ClientUpdateManager;
@@ -77,44 +78,54 @@ public class InputProcessor {
     
     public void process() 
     throws IOException {
-        // Process client input.
-        //FIXME. there is chicken-egg stinkiness going on here:
+        clientMessage = new ClientMessage(conn);
         InputContext inputContext = new InputContextImpl();
-        clientMessage = new ClientMessage(inputContext);
         
         processClientInput(inputContext);
         conn.getUserInstance().getApplicationInstance().getUpdateManager().processClientUpdates();
     }
-    
+
     private void processClientInput(InputContext context) {
         UserInstance userInstance = context.getUserInstance();
         UpdateManager updateManager = userInstance.getUpdateManager();
         ClientUpdateManager clientUpdateManager = updateManager.getClientUpdateManager();
-        ClientMessage clientMessage = context.getClientMessage();
         
         if (ClientMessage.TYPE_INITIALIZE.equals(clientMessage.getType())) {
             // Flag full refresh if initializing.
             updateManager.getServerUpdateManager().processFullRefresh();
         }
         
-        Iterator updatedComponentIt  = clientMessage.getUpdatedComponents();
-        while (updatedComponentIt.hasNext()) {
-            Component component = (Component) updatedComponentIt.next();
-            Iterator updatedPropertyIt = clientMessage.getUpdatedPropertyNames(component);
+        Iterator updatedComponentIdIt  = clientMessage.getUpdatedComponentIds();
+        while (updatedComponentIdIt.hasNext()) {
+            String componentId = (String) updatedComponentIdIt.next();
+            Component component = userInstance.getComponentByElementId(componentId);
+            ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
+            
+            Iterator updatedPropertyIt = clientMessage.getUpdatedPropertyNames(componentId);
             while (updatedPropertyIt.hasNext()) {
                 String propertyName = (String) updatedPropertyIt.next();
-                Object propertyValue = clientMessage.getUpdatedPropertyValue(component, propertyName);
-                ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
+                Element propertyElement = clientMessage.getUpdatedProperty(componentId, propertyName);
+
+                Class propertyClass = componentPeer.getPropertyClass(propertyName);
+                if (propertyClass == null) {
+                    continue;
+                }
+                
+                PropertySynchronizePeer propertyPeer = 
+                        (PropertySynchronizePeer) SynchronizePeerFactory.getPeerForProperty(propertyClass);
+                if (propertyPeer == null) {
+                    continue;
+                }
+                
+                Object propertyValue = propertyPeer.toProperty(propertyElement);
+                
                 componentPeer.storeInputProperty(context, component, propertyName, propertyValue);
             }
         }
-        
-        //FIXME. process clientmessage properties.
         
         if (clientMessage.getEventType() != null) {
             Component component = userInstance.getComponentByElementId(clientMessage.getEventComponentId());
             clientUpdateManager.setComponentAction(component, clientMessage.getEventType(), null);
         }
     }
-
 }
