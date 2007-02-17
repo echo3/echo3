@@ -37,7 +37,7 @@ import nextapp.echo.app.xml.XmlException;
 import nextapp.echo.app.xml.XmlPropertyPeer;
 
 /**
- * <code>XmlPropertyPeer</code> implementation for <code>Color</code>s.
+ * <code>XmlPropertyPeer</code> for <code>Color</code> properties.
  */
 public class ColorPeer 
 implements XmlPropertyPeer {
