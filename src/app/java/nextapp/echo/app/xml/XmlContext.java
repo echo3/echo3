@@ -9,6 +9,4 @@ public interface XmlContext {
     public ClassLoader getClassLoader();
     
     public XmlPropertyPeer getPropertyPeer(Class propertyClass);
-    
-    public Serializer getSerializer();
 }

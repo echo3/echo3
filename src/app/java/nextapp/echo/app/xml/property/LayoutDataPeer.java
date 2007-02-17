@@ -55,8 +55,8 @@ implements XmlPropertyPeer {
             String type = propertyElement.getAttribute("t");
 
             // Load properties from XML into Style.
-            Serializer serializer = context.getSerializer();
-            Style propertyStyle = serializer.loadStyle(type, propertyElement);
+            Serializer serializer = Serializer.forClassLoader(context.getClassLoader());
+            Style propertyStyle = serializer.loadStyle(context, type, propertyElement);
             
             // Instantiate LayoutData instance.
             Class propertyClass = Class.forName(type, true, context.getClassLoader());

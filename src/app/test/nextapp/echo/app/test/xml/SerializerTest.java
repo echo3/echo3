@@ -8,7 +8,7 @@ public class SerializerTest extends TestCase {
 
     public void testClassloader()
     throws Exception {
-        Serializer serializer = new Serializer(Thread.currentThread().getContextClassLoader(), null);
+        Serializer serializer = Serializer.forClassLoader(Thread.currentThread().getContextClassLoader());
         assertEquals(Boolean.class, serializer.getClass("b"));
         assertEquals(Integer.class, serializer.getClass("i"));
         assertEquals(String.class, serializer.getClass("s"));

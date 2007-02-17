@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.MutableStyle;
@@ -12,7 +11,30 @@ import nextapp.echo.app.Style;
 import nextapp.echo.app.util.DomUtil;
 
 public class Serializer {
-
+    
+    /**
+     * Map of <code>ClassLoader</code>s to <code>PropertyLoader</code>s.
+     */
+    private static final Map classLoaderToPropertyLoaderMap = new HashMap();
+    
+    /**
+     * Creates or retrieves a <code>Serializer</code>.
+     * 
+     * @param classLoader the <code>ClassLoader</code> to use for 
+     *        dynamically loading peer classes
+     * @return the <code>Serializer</code>
+     */
+    public static Serializer forClassLoader(ClassLoader classLoader) {
+        synchronized(classLoaderToPropertyLoaderMap) {
+            Serializer serializer = (Serializer) classLoaderToPropertyLoaderMap.get(classLoader);
+            if (serializer == null) {
+                serializer = new Serializer(classLoader);
+                classLoaderToPropertyLoaderMap.put(classLoader, serializer);
+            }
+            return serializer;
+        }
+    }
+    
     //FIXME.  Hardoding?  Maybe not too bad here, but these need to be spec'd in one place only.
     private static final Map javaLangTypeMap;
     static {
@@ -23,42 +45,15 @@ public class Serializer {
         javaLangTypeMap = Collections.unmodifiableMap(m);
     }
     
-    private XmlContext context;
     private XmlPeerFactory factory;
     private Map typeMap;
+    private ClassLoader classLoader;
     
-    public Serializer(final ClassLoader classLoader, final Document document) {
+    private Serializer(final ClassLoader classLoader) {
         super();
         
+        this.classLoader = classLoader;
         factory = XmlPeerFactory.forClassLoader(classLoader);
-        
-        context = new XmlContext(){
-        
-            /**
-             * @see nextapp.echo.app.xml.XmlContext#getClassLoader()
-             */
-            public ClassLoader getClassLoader() {
-                return classLoader;
-            }
-        
-            /**
-             * @see nextapp.echo.app.xml.XmlContext#getDocument()
-             */
-            public Document getDocument() {
-                return document;
-            }
-            
-            /**
-             * @see nextapp.echo.app.xml.XmlContext#getPropertyPeer(java.lang.Class)
-             */
-            public XmlPropertyPeer getPropertyPeer(Class propertyClass) {
-                return XmlPeerFactory.forClassLoader(classLoader).getPeerForProperty(propertyClass);
-            }
-            
-            public Serializer getSerializer() {
-                return Serializer.this;
-            }
-        };
         
         typeMap = new HashMap();
     }
@@ -81,7 +76,7 @@ public class Serializer {
         if (type.indexOf(".") == -1) {
             String echoType = "nextapp.echo.app." + type; 
             try {
-                clazz = Class.forName(echoType, true, context.getClassLoader());
+                clazz = Class.forName(echoType, true, classLoader);
                 typeMap.put(type, clazz);
                 return clazz;
             } catch (ClassNotFoundException ex) {
@@ -90,15 +85,15 @@ public class Serializer {
         }
 
         // Attempt to load specified type.
-        clazz = Class.forName(type, true, context.getClassLoader());
+        clazz = Class.forName(type, true, classLoader);
         typeMap.put(type, clazz);
         return clazz;
     }
     
-    public Style loadStyle(String componentType, Element containerElement) 
+    public Style loadStyle(XmlContext context, String componentType, Element containerElement) 
     throws XmlException {
         try {
-            ComponentIntrospector ci = ComponentIntrospector.forName(componentType, context.getClassLoader());
+            ComponentIntrospector ci = ComponentIntrospector.forName(componentType, classLoader);
             MutableStyle style = new MutableStyle();
 
             Element[] pElements = DomUtil.getChildElementsByTagName(containerElement, "p");

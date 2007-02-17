@@ -85,7 +85,7 @@ public class StyleSheetLoader {
         Element styleSheetElement = document.getDocumentElement();
         Element[] styleElements = DomUtil.getChildElementsByTagName(styleSheetElement, "s");
         
-        Serializer serializer = new Serializer(classLoader, document);
+        Serializer serializer = Serializer.forClassLoader(classLoader);
         
         // First pass, load style information.
         for (int i = 0; i < styleElements.length; ++i) {
@@ -106,7 +106,9 @@ public class StyleSheetLoader {
             
             DerivedMutableStyle style  = new DerivedMutableStyle();
             
-            Style propertyStyle = serializer.loadStyle(type, styleElements[i]);
+            XmlContext context = new DefaultXmlContext(classLoader, document);
+            
+            Style propertyStyle = serializer.loadStyle(context, type, styleElements[i]);
             style.addStyleContent(propertyStyle);
 
             Map classToStyleMap = (Map) namedStyleMap.get(name);
