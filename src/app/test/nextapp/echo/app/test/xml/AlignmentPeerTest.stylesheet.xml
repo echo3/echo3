@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ss>
+ <s n="alpha" t="nextapp.echo.app.Label">
+  <p n="textPosition">
+   <a h="center" v="bottom"/>
+  </p>
+ </s>
+ <s n="bravo" t="nextapp.echo.app.Label">
+  <p n="textPosition">
+   <a/>
+  </p>
+ </s>
+</ss>

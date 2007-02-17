@@ -14,7 +14,10 @@ implements XmlPropertyPeer {
      */
     public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) {
         String valueText = propertyElement.getAttribute("v");
-        return valueText == null ? null : new Boolean(valueText);
+        if (valueText == null) {
+            return null;
+        }
+        return "1".equals(valueText) ? Boolean.TRUE : Boolean.FALSE;
     }
 
     /**
