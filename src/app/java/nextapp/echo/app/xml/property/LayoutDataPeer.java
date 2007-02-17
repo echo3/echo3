@@ -17,7 +17,7 @@ import nextapp.echo.app.xml.XmlPropertyPeer;
 public class LayoutDataPeer 
 implements XmlPropertyPeer {
     
-    public Object toProperty(XmlContext context, Element propertyElement) 
+    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) 
     throws XmlException {        
         try {
             String type = propertyElement.getAttribute("t");
@@ -57,7 +57,7 @@ implements XmlPropertyPeer {
         }
     }
 
-    public void toXml(XmlContext context, Element propertyElement, Object propertyValue) {
+    public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
         //TODO. Implement
     }
 }

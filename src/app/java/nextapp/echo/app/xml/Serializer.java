@@ -98,7 +98,7 @@ public class Serializer {
     public Style loadStyle(String componentType, Element containerElement) 
     throws XmlException {
         try {
-            ComponentIntrospector ci = null;
+            ComponentIntrospector ci = ComponentIntrospector.forName(componentType, context.getClassLoader());
             MutableStyle style = new MutableStyle();
 
             Element[] pElements = DomUtil.getChildElementsByTagName(containerElement, "p");
@@ -118,10 +118,6 @@ public class Serializer {
                 }
                 
                 if (peer == null) {
-                    if (ci == null) {
-                        // Lazy-create Component Introspector.
-                        ci = ComponentIntrospector.forName(componentType, context.getClassLoader());
-                    }
                     propertyClass = ci.getPropertyClass(name);
                     peer = (XmlPropertyPeer) factory.getPeerForProperty(propertyClass);
                 }
@@ -134,7 +130,7 @@ public class Serializer {
                     // Unsupported property.
                     continue;
                 }
-                Object value = peer.toProperty(context, pElements[i]);
+                Object value = peer.toProperty(context, ci.getObjectClass(), pElements[i]);
                 style.setProperty(name, value);
             }
             

@@ -12,9 +12,9 @@ public class ResourceImageReferencePeer
 implements XmlPropertyPeer {
     
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(nextapp.echo.app.xml.XmlContext, org.w3c.dom.Element)
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(nextapp.echo.app.xml.XmlContext, Class, org.w3c.dom.Element)
      */
-    public Object toProperty(XmlContext context, Element propertyElement) {
+    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) {
         Element iElement = DomUtil.getChildElementByTagName(propertyElement, "i");
         String contentType = iElement.hasAttribute("t") ? iElement.getAttribute("t") : null;
         String resourceName = iElement.getAttribute("r");
@@ -27,7 +27,7 @@ implements XmlPropertyPeer {
     /**
      * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(nextapp.echo.webcontainer.OutputContext, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(XmlContext context, Element propertyElement, Object propertyValue) {
+    public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
         ResourceImageReference resourceImage = (ResourceImageReference) propertyValue;
         Element iElement = context.getDocument().createElement("i");
         propertyElement.appendChild(iElement);

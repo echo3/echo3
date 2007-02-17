@@ -11,16 +11,16 @@ extends LayoutDataPeer {
 
     /**
      * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.xml.XmlContext, 
-     *      org.w3c.dom.Element, java.lang.Object)
+     *      Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(XmlContext context, Element propertyElement, Object propertyValue) {
+    public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
         SplitPaneLayoutData layoutData = (SplitPaneLayoutData) propertyValue;
         propertyElement.setAttribute("t", "LayoutData");
-        XmlUtil.toXml(context, propertyElement, "alignment", layoutData.getAlignment());
-        XmlUtil.toXml(context, propertyElement, "background", layoutData.getBackground());
-        XmlUtil.toXml(context, propertyElement, "backgroundImage", layoutData.getBackgroundImage());
-        XmlUtil.toXml(context, propertyElement, "insets", layoutData.getInsets());
-        XmlUtil.toXml(context, propertyElement, "maximumSize", layoutData.getMaximumSize());
-        XmlUtil.toXml(context, propertyElement, "minimumSize", layoutData.getMinimumSize());
+        XmlUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "alignment", layoutData.getAlignment());
+        XmlUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "background", layoutData.getBackground());
+        XmlUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "backgroundImage", layoutData.getBackgroundImage());
+        XmlUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "insets", layoutData.getInsets());
+        XmlUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "maximumSize", layoutData.getMaximumSize());
+        XmlUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "minimumSize", layoutData.getMinimumSize());
     }
 }

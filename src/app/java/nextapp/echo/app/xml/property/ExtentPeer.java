@@ -53,17 +53,17 @@ implements XmlPropertyPeer {
 
     /**
      * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(nextapp.echo.app.xml.InputContext,
-     *      org.w3c.dom.Element)
+     *      Class, org.w3c.dom.Element)
      */
-    public Object toProperty(XmlContext context, Element propertyElement) {
+    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) {
         return fromString(propertyElement.getAttribute("v"));
     }
 
     /**
      * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.xml.XmlContext,
-     *      org.w3c.dom.Element, java.lang.Object)
+     *      Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(XmlContext context, Element propertyElement, Object propertyValue) {
+    public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
         propertyElement.setAttribute("t", "Extent");
         Extent extent = (Extent) propertyValue;
         propertyElement.setAttribute("v", toString(extent));

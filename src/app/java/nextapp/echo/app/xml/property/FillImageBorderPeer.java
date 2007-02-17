@@ -13,7 +13,7 @@ import nextapp.echo.app.xml.XmlPropertyPeer;
 public class FillImageBorderPeer
 implements XmlPropertyPeer {
 
-    public Object toProperty(XmlContext context, Element propertyElement) throws XmlException {
+    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) throws XmlException {
         Element fibElement = DomUtil.getChildElementByTagName(propertyElement, "fib");
         
         Color borderColor = fibElement.hasAttribute("bc") ? ColorPeer.fromString(fibElement.getAttribute("bc")) : null;
@@ -29,7 +29,7 @@ implements XmlPropertyPeer {
         return border;
     }
 
-    public void toXml(XmlContext context, Element propertyElement, Object propertyValue) {
+    public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
         FillImageBorder border = (FillImageBorder) propertyValue;
         propertyElement.setAttribute("t", "FillImageBorder");
         

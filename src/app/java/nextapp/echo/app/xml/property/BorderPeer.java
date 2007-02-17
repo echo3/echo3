@@ -93,9 +93,9 @@ implements XmlPropertyPeer {
     
     /**
      * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(nextapp.echo.app.xml.XmlContext,
-     *      org.w3c.dom.Element)
+     *      Class, org.w3c.dom.Element)
      */
-    public Object toProperty(XmlContext context, Element propertyElement) 
+    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) 
     throws XmlException {
         if (propertyElement.hasAttribute("v")) {
             Border.Side side = fromString(propertyElement.getAttribute("v"));
@@ -122,9 +122,9 @@ implements XmlPropertyPeer {
 
     /**
      * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.xml.XmlContext,
-     *      org.w3c.dom.Element, java.lang.Object)
+     *      Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(XmlContext context, Element propertyElement, Object propertyValue) {
+    public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
         propertyElement.setAttribute("t", "Border");
         Border border = (Border) propertyValue;
         if (border.isMultisided()) {
