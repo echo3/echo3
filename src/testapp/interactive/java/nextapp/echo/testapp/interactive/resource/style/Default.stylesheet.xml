@@ -15,7 +15,7 @@
   <p n="cellSpacing" v="40px"/>
  </s>
  
- <s n="WelcomePane" t="nextapp.echo.app.WindowPane">
+ <s n="WelcomePane" b="Default" t="nextapp.echo.app.WindowPane">
   <p n="width" v="550px"/>
   <p n="height" v="300px"/>
   <p n="resizable" v="true"/>
@@ -137,4 +137,51 @@
    </p>
  </s>
  
+ <s n="DefaultResizable" t="nextapp.echo.app.SplitPane">
+  <p n="resizable" v="1"/>
+  <p n="separatorHorizontalImage">
+   <fi r="xy" t="r">
+    <i r="/nextapp/echo/testapp/interactive/resource/image/SplitPaneHorizontalSeparator.png"/>
+   </fi>
+  </p>
+  <p n="separatorVerticalImage">
+   <fi r="xy" t="r">
+    <i r="/nextapp/echo/testapp/interactive/resource/image/SplitPaneVerticalSeparator.png"/>
+   </fi>
+  </p>
+ </s>
+
+ <s n="ControlPane.Container.Top" t="nextapp.echo.app.SplitPane">
+  <p n="separatorPosition" v="32px"/>
+  <p n="orientation" v="nextapp.echo.app.SplitPane.ORIENTATION_VERTICAL_TOP_BOTTOM"/>
+ </s>
+
+ <s n="ControlPane.Container.Bottom" t="nextapp.echo.app.SplitPane">
+  <p n="orientation" v="nextapp.echo.app.SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP"/>
+  <p n="separatorPosition" v="32px"/>
+ </s>
+ 
+ <s n="ControlPane.Button" t="nextapp.echo.app.button.AbstractButton">
+  <p n="lineWrap" v="false"/>
+  <p n="insets" v="0px 8px"/>
+  <p n="foreground" v="#000000"/>
+  <p n="rolloverEnabled" v="true"/>
+  <p n="rolloverForeground" v="#6f0f0f"/>
+ </s>
+
+ <s n="ControlPane" t="nextapp.echo.app.Row">
+  <p n="insets" v="2px 10px"/>
+  <p n="cellSpacing" v="3px"/>
+  <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
+   <p n="overflow" v="OVERFLOW_HIDDEN"/>
+   <p n="background" v="#cfcfdf"/>
+   <p n="backgroundImage">
+    <fi t="r" r="x">
+     <i r="/nextapp/echo/testapp/interactive/resource/image/ControlPaneFill.png"/>
+    </fi>
+   </p>
+   <p n="insets" v="2px"/>
+  </p>
+ </s>
+
 </ss>
