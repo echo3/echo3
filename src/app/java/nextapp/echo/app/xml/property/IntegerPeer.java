@@ -44,17 +44,17 @@ public class IntegerPeer
 implements XmlPropertyPeer {
     
     /**
-     * @param classLoader the <code>ClassLoader</code> to use for introspection
+     * @param the relevant <code>XmlContext</code>
      * @param objectClass the <code>Class</code> of object containing candidate 
      *        constant values
      * @param value the name of the constant value
      * @return an integer representing the constant value, or null if the 
      *         constant is not found.
      */
-    public Integer introspectConstantValue(ClassLoader classLoader, Class objectClass, String value) 
+    private Integer introspectConstantValue(XmlContext context, Class objectClass, String value) 
     throws XmlException {
         try {
-            ObjectIntrospector introspector = IntrospectorFactory.get(objectClass.getName(), classLoader);
+            ObjectIntrospector introspector = IntrospectorFactory.get(objectClass.getName(), context.getClassLoader());
             if (value.startsWith(objectClass.getName())) {
                 // Remove class name if required.
                 value = value.substring(objectClass.getName().length() + 1);
@@ -77,7 +77,7 @@ implements XmlPropertyPeer {
         try {
             return new Integer(valueText);
         } catch (NumberFormatException ex) {
-            return introspectConstantValue(context.getClassLoader(), objectClass, valueText);
+            return introspectConstantValue(context, objectClass, valueText);
         }
     }
 
