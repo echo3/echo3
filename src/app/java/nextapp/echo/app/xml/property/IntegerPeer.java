@@ -29,7 +29,8 @@
 
 package nextapp.echo.app.xml.property;
 
-import nextapp.echo.app.xml.ComponentIntrospector;
+import nextapp.echo.app.reflect.IntrospectorFactory;
+import nextapp.echo.app.reflect.ObjectIntrospector;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlException;
 import nextapp.echo.app.xml.XmlPropertyPeer;
@@ -53,12 +54,12 @@ implements XmlPropertyPeer {
     public Integer introspectConstantValue(ClassLoader classLoader, Class objectClass, String value) 
     throws XmlException {
         try {
-            ComponentIntrospector ci = ComponentIntrospector.forName(objectClass.getName(), classLoader);
+            ObjectIntrospector introspector = IntrospectorFactory.get(objectClass.getName(), classLoader);
             if (value.startsWith(objectClass.getName())) {
                 // Remove class name if required.
                 value = value.substring(objectClass.getName().length() + 1);
             }
-            Object constantValue = ci.getConstantValue(value);
+            Object constantValue = introspector.getConstantValue(value);
             if (constantValue instanceof Integer) {
                 return (Integer) constantValue;
             } else {

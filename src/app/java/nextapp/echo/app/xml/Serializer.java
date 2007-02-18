@@ -8,6 +8,8 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.MutableStyle;
 import nextapp.echo.app.Style;
+import nextapp.echo.app.reflect.IntrospectorFactory;
+import nextapp.echo.app.reflect.ObjectIntrospector;
 import nextapp.echo.app.util.DomUtil;
 
 public class Serializer {
@@ -93,7 +95,7 @@ public class Serializer {
     public Style loadStyle(XmlContext context, String componentType, Element containerElement) 
     throws XmlException {
         try {
-            ComponentIntrospector ci = ComponentIntrospector.forName(componentType, classLoader);
+            ObjectIntrospector introspector = IntrospectorFactory.get(componentType, classLoader);
             MutableStyle style = new MutableStyle();
 
             Element[] pElements = DomUtil.getChildElementsByTagName(containerElement, "p");
@@ -113,7 +115,7 @@ public class Serializer {
                 }
                 
                 if (peer == null) {
-                    propertyClass = ci.getPropertyClass(name);
+                    propertyClass = introspector.getPropertyClass(name);
                     peer = (XmlPropertyPeer) factory.getPeerForProperty(propertyClass);
                 }
                 
@@ -125,7 +127,7 @@ public class Serializer {
                     // Unsupported property.
                     continue;
                 }
-                Object value = peer.toProperty(context, ci.getObjectClass(), pElements[i]);
+                Object value = peer.toProperty(context, introspector.getObjectClass(), pElements[i]);
                 style.setProperty(name, value);
             }
             

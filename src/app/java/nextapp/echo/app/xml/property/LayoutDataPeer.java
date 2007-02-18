@@ -37,7 +37,8 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.LayoutData;
 import nextapp.echo.app.Style;
-import nextapp.echo.app.xml.ComponentIntrospector;
+import nextapp.echo.app.reflect.IntrospectorFactory;
+import nextapp.echo.app.reflect.ObjectIntrospector;
 import nextapp.echo.app.xml.Serializer;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlException;
@@ -63,13 +64,13 @@ implements XmlPropertyPeer {
             LayoutData layoutData = (LayoutData) propertyClass.newInstance();
             
             // Create introspector to analyze LayoutData class.
-            ComponentIntrospector ci = ComponentIntrospector.forName(type, context.getClassLoader());
+            ObjectIntrospector introspector = IntrospectorFactory.get(type, context.getClassLoader());
             
             // Set property values of LayoutData instance.
             Iterator it = propertyStyle.getPropertyNames();
             while (it.hasNext()) {
                 String propertyName = (String) it.next();
-                Method writeMethod = ci.getWriteMethod(propertyName);
+                Method writeMethod = introspector.getWriteMethod(propertyName);
                 writeMethod.invoke(layoutData, new Object[]{propertyStyle.getProperty(propertyName)});
             }
             
