@@ -32,8 +32,8 @@ package nextapp.echo.app.xml.property;
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.Alignment;
+import nextapp.echo.app.util.ConstantMap;
 import nextapp.echo.app.util.DomUtil;
-import nextapp.echo.app.xml.ConstantMap;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlPropertyPeer;
 

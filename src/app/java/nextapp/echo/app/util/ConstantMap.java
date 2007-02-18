@@ -1,4 +1,4 @@
-package nextapp.echo.app.xml;
+package nextapp.echo.app.util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,5 +21,4 @@ public class ConstantMap {
         Integer constantValue = (Integer) dualMap.get(constantName);
         return constantValue == null ? defaultValue : constantValue.intValue();
     }
-    
 }
