@@ -32,6 +32,7 @@ package nextapp.echo.webcontainer.sync.property;
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.Color;
+import nextapp.echo.webcontainer.InputContext;
 import nextapp.echo.webcontainer.OutputContext;
 import nextapp.echo.webcontainer.PropertySynchronizePeer;
 
@@ -50,9 +51,9 @@ implements PropertySynchronizePeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(org.w3c.dom.Element)
+     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(InputContext, Class, org.w3c.dom.Element)
      */
-    public Object toProperty(Element propertyElement) {
+    public Object toProperty(InputContext context, Class objectClass, Element propertyElement) {
         //TODO implement
         return null;
     }

@@ -87,7 +87,7 @@ implements XmlPropertyPeer {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(org.w3c.dom.Element)
+     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(InputContext, Class, org.w3c.dom.Element)
      */
     public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) 
     throws XmlException {

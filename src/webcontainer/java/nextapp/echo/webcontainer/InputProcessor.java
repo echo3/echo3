@@ -117,7 +117,7 @@ public class InputProcessor {
                     continue;
                 }
                 
-                Object propertyValue = propertyPeer.toProperty(propertyElement);
+                Object propertyValue = propertyPeer.toProperty(context, component.getClass(), propertyElement);
                 
                 componentPeer.storeInputProperty(context, component, propertyName, propertyValue);
             }
