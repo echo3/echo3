@@ -36,6 +36,7 @@ import nextapp.echo.app.FillImage;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.util.ConstantMap;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlException;
@@ -55,10 +56,11 @@ implements XmlPropertyPeer {
         REPEAT_CONSTANTS.add(FillImage.REPEAT, "xy");
     }
 
-    public static Element createFillImageElement(XmlContext context, FillImage fillImage) {
-        Element fiElement = context.getDocument().createElement("fi");
+    public static Element createFillImageElement(Context context, FillImage fillImage) {
+        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
+        Element fiElement = xmlContext.getDocument().createElement("fi");
         ImageReference imageReference = fillImage.getImage();
-        XmlPropertyPeer propertyPeer = context.getPropertyPeer(imageReference.getClass());
+        XmlPropertyPeer propertyPeer = xmlContext.getPropertyPeer(imageReference.getClass());
         if (propertyPeer == null) {
             throw new IllegalArgumentException("Image peer not found for container image");
         } else if (!(propertyPeer instanceof ImageReferencePeer)) {
@@ -72,12 +74,14 @@ implements XmlPropertyPeer {
         return fiElement;
     }
     
-    public static FillImage parseFillImageElement(XmlContext context, Element fiElement) 
+    public static FillImage parseFillImageElement(Context context, Element fiElement) 
     throws XmlException {
+        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
+        
         String imageType = fiElement.getAttribute("t");
         ImageReference imageReference = null;
         if ("r".equals(imageType)) {
-            XmlPropertyPeer imagePropertyPeer = context.getPropertyPeer(ResourceImageReference.class);
+            XmlPropertyPeer imagePropertyPeer = xmlContext.getPropertyPeer(ResourceImageReference.class);
             imageReference = (ImageReference) imagePropertyPeer.toProperty(context, FillImage.class, fiElement);
         }
         int repeat = REPEAT_CONSTANTS.get(fiElement.getAttribute("r"), FillImage.REPEAT);
@@ -87,18 +91,18 @@ implements XmlPropertyPeer {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(InputContext, Class, org.w3c.dom.Element)
+     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(XmlContext, Class, org.w3c.dom.Element)
      */
-    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) 
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws XmlException {
         Element fiElement = DomUtil.getChildElementByTagName(propertyElement, "fi");
         return parseFillImageElement(context, fiElement);
     }
 
     /**
-     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(OutputContext, Class, org.w3c.dom.Element, java.lang.Object)
+     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(Context, Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
         FillImage fillImage = (FillImage) propertyValue;
         propertyElement.setAttribute("t", "FillImage");
         propertyElement.appendChild(createFillImageElement(context, fillImage));

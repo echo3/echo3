@@ -33,6 +33,7 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Font;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlPropertyPeer;
@@ -44,10 +45,10 @@ public class FontPeer
 implements XmlPropertyPeer {
     
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(nextapp.echo.app.xml.XmlContext,
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(Context,
      *      Class, org.w3c.dom.Element)
      */
-    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) {
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) {
         Element fElement = DomUtil.getChildElementByTagName(propertyElement, "f");
         
         int style = Font.PLAIN;
@@ -77,17 +78,19 @@ implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.xml.XmlContext,
-     *      Class, org.w3c.dom.Element, java.lang.Object)
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
+        
         propertyElement.setAttribute("t", "Font");
         Font font = (Font) propertyValue;
-        Element element = context.getDocument().createElement("f");
+        Element element = xmlContext.getDocument().createElement("f");
         
         Font.Typeface typeface = font.getTypeface();
         while (typeface != null) {
-            Element tfElement = context.getDocument().createElement("tf");
+            Element tfElement = xmlContext.getDocument().createElement("tf");
             tfElement.setAttribute("n", typeface.getName());
             element.appendChild(tfElement);
             typeface = typeface.getAlternate();

@@ -4,7 +4,7 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.ImageReference;
-import nextapp.echo.webcontainer.InputContext;
+import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.webcontainer.OutputContext;
 import nextapp.echo.webcontainer.PropertySynchronizePeer;
 import nextapp.echo.webcontainer.SynchronizePeerFactory;
@@ -12,8 +12,8 @@ import nextapp.echo.webcontainer.SynchronizePeerFactory;
 public class FillImagePeer
 implements PropertySynchronizePeer {
 
-    public static Element createFillImageElement(OutputContext rc, FillImage fillImage) {
-        Element fiElement = rc.getServerMessage().getDocument().createElement("fi");
+    public static Element createFillImageElement(OutputContext context, FillImage fillImage) {
+        Element fiElement = context.getDocument().createElement("fi");
         
         ImageReference imageReference = fillImage.getImage();
         AbstractImageReferencePeer imagePeer = 
@@ -22,7 +22,7 @@ implements PropertySynchronizePeer {
             throw new IllegalArgumentException("Image synchronization peer not found for container image");
         }
         
-        fiElement.setAttribute("u", imagePeer.getImageUrl(rc, imageReference));
+        fiElement.setAttribute("u", imagePeer.getImageUrl(context, imageReference));
         
         switch (fillImage.getRepeat()) {
         case FillImage.NO_REPEAT:
@@ -43,9 +43,9 @@ implements PropertySynchronizePeer {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(InputContext, Class, org.w3c.dom.Element)
+     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(XmlContext, Class, org.w3c.dom.Element)
      */
-    public Object toProperty(InputContext context, Class objectClass, Element propertyElement) {
+    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) {
         //TODO. Implement.
         return null;
     }

@@ -37,6 +37,7 @@ import nextapp.echo.app.Border;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.util.ConstantMap;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlException;
@@ -92,10 +93,10 @@ implements XmlPropertyPeer {
     }
     
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(nextapp.echo.app.xml.XmlContext,
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(Context,
      *      Class, org.w3c.dom.Element)
      */
-    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) 
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws XmlException {
         if (propertyElement.hasAttribute("v")) {
             Border.Side side = fromString(propertyElement.getAttribute("v"));
@@ -121,14 +122,15 @@ implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.xml.XmlContext,
-     *      Class, org.w3c.dom.Element, java.lang.Object)
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
         propertyElement.setAttribute("t", "Border");
         Border border = (Border) propertyValue;
         if (border.isMultisided()) {
-            Element borderElement = context.getDocument().createElement("b");
+            Element borderElement = xmlContext.getDocument().createElement("b");
             Border.Side[] sides = border.getSides();
             for (int i = 0; i < sides.length; ++i) {
                 borderElement.setAttribute(borderSideAttributeNames[i], toString(sides[i]));

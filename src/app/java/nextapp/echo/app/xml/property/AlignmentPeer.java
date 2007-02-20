@@ -33,6 +33,7 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.util.ConstantMap;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlPropertyPeer;
@@ -60,10 +61,10 @@ implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(nextapp.echo.app.xml.XmlContext, 
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(Context, 
      *      Class, org.w3c.dom.Element)
      */
-    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) {
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) {
         Element alignmentElement = DomUtil.getChildElementByTagName(propertyElement, "a");
         String horizontal = alignmentElement.getAttribute("h");
         String vertical = alignmentElement.getAttribute("v");
@@ -72,13 +73,14 @@ implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.xml.XmlContext, Class, 
-     *      org.w3c.dom.Element, java.lang.Object)
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
         propertyElement.setAttribute("t", "Alignment");
         Alignment alignment = (Alignment) propertyValue;
-        Element element = context.getDocument().createElement("a");
+        Element element = xmlContext.getDocument().createElement("a");
         String horizontal = HORIZONTAL_CONSTANTS.get(alignment.getHorizontal());
         if (horizontal != null) {
             element.setAttribute("h", horizontal);

@@ -142,7 +142,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * Provides information about updated <code>UserInstance</code> properties.
      */
     private UserInstanceUpdateManager updateManager;
-    
+       
     /**
      * Creates a new <code>UserInstance</code>.
      * 

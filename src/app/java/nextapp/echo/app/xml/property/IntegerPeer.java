@@ -31,6 +31,7 @@ package nextapp.echo.app.xml.property;
 
 import nextapp.echo.app.reflect.IntrospectorFactory;
 import nextapp.echo.app.reflect.ObjectIntrospector;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlException;
 import nextapp.echo.app.xml.XmlPropertyPeer;
@@ -51,10 +52,12 @@ implements XmlPropertyPeer {
      * @return an integer representing the constant value, or null if the 
      *         constant is not found.
      */
-    private Integer introspectConstantValue(XmlContext context, Class objectClass, String value) 
+    private Integer introspectConstantValue(Context context, Class objectClass, String value) 
     throws XmlException {
+        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
         try {
-            ObjectIntrospector introspector = IntrospectorFactory.get(objectClass.getName(), context.getClassLoader());
+            ObjectIntrospector introspector = IntrospectorFactory.get(objectClass.getName(), 
+                    xmlContext.getClassLoader());
             if (value.startsWith(objectClass.getName())) {
                 // Remove class name if required.
                 value = value.substring(objectClass.getName().length() + 1);
@@ -71,7 +74,7 @@ implements XmlPropertyPeer {
         }
     }
 
-    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) 
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws XmlException {
         String valueText = propertyElement.getAttribute("v");
         try {
@@ -81,7 +84,11 @@ implements XmlPropertyPeer {
         }
     }
 
-    public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
+    /**
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
+     */
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
         propertyElement.setAttribute("t", "i");
         propertyElement.setAttribute("v", propertyValue.toString());
     }

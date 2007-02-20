@@ -41,6 +41,11 @@ public class SynchronizePeerFactory {
             = new PeerFactory(RESOURCE_NAME, Thread.currentThread().getContextClassLoader());
     
     /**
+     * Non-instantiable class.
+     */
+    private SynchronizePeerFactory() { }
+    
+    /**
      * Retrieves the appropriate <code>CommandSynchronizePeer</code> for a given 
      * <code>Command</code> class.
      * 

@@ -2,13 +2,13 @@ package nextapp.echo.app.xml;
 
 import org.w3c.dom.Document;
 
-public class DefaultXmlContext 
+class DefaultXmlContext 
 implements XmlContext {
         
     private ClassLoader classLoader;
     private Document document;
     
-    public DefaultXmlContext(ClassLoader classLoader, Document document) {
+    DefaultXmlContext(ClassLoader classLoader, Document document) {
         this.classLoader = classLoader;
         this.document = document;
     }

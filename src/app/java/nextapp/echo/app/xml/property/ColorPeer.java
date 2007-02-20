@@ -32,7 +32,7 @@ package nextapp.echo.app.xml.property;
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.Color;
-import nextapp.echo.app.xml.XmlContext;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.app.xml.XmlException;
 import nextapp.echo.app.xml.XmlPropertyPeer;
 
@@ -63,20 +63,19 @@ implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(nextapp.echo.app.xml.XmlContext,
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(Context,
      *      Class, org.w3c.dom.Element)
      */
-    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) 
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws XmlException {
         return fromString(propertyElement.getAttribute("v"));
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.xml.XmlContext,
-     *      Class, org.w3c.dom.Element, java.lang.Object)
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(XmlContext context, Class objectClass,
-            Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
         propertyElement.setAttribute("t", "Color");
         Color color = (Color) propertyValue;
         propertyElement.setAttribute("v", toString(color));

@@ -34,6 +34,7 @@ import org.w3c.dom.Element;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.FillImageBorder;
 import nextapp.echo.app.Insets;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlException;
@@ -45,7 +46,7 @@ import nextapp.echo.app.xml.XmlPropertyPeer;
 public class FillImageBorderPeer
 implements XmlPropertyPeer {
 
-    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) throws XmlException {
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) throws XmlException {
         Element fibElement = DomUtil.getChildElementByTagName(propertyElement, "fib");
         
         Color borderColor = fibElement.hasAttribute("bc") ? ColorPeer.fromString(fibElement.getAttribute("bc")) : null;
@@ -61,11 +62,16 @@ implements XmlPropertyPeer {
         return border;
     }
 
-    public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
+    /**
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
+     */
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
         FillImageBorder border = (FillImageBorder) propertyValue;
         propertyElement.setAttribute("t", "FillImageBorder");
         
-        Element fibElement = context.getDocument().createElement("fib");
+        Element fibElement = xmlContext.getDocument().createElement("fib");
         
         if (border.getBorderInsets() != null) {
             fibElement.setAttribute("bi", InsetsPeer.toString(border.getBorderInsets()));

@@ -33,6 +33,7 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.ResourceImageReference;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlPropertyPeer;
@@ -44,9 +45,9 @@ public class ResourceImageReferencePeer
 implements XmlPropertyPeer {
     
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(nextapp.echo.app.xml.XmlContext, Class, org.w3c.dom.Element)
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(Context, Class, org.w3c.dom.Element)
      */
-    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) {
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) {
         Element iElement = DomUtil.getChildElementByTagName(propertyElement, "i");
         String contentType = iElement.hasAttribute("t") ? iElement.getAttribute("t") : null;
         String resourceName = iElement.getAttribute("r");
@@ -57,11 +58,13 @@ implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(nextapp.echo.webcontainer.OutputContext, Class, org.w3c.dom.Element, java.lang.Object)
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
         ResourceImageReference resourceImage = (ResourceImageReference) propertyValue;
-        Element iElement = context.getDocument().createElement("i");
+        Element iElement = xmlContext.getDocument().createElement("i");
         propertyElement.appendChild(iElement);
         iElement.setAttribute("t", resourceImage.getContentType());
         iElement.setAttribute("r", resourceImage.getResource());

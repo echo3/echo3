@@ -10,6 +10,7 @@ import nextapp.echo.app.MutableStyle;
 import nextapp.echo.app.Style;
 import nextapp.echo.app.reflect.IntrospectorFactory;
 import nextapp.echo.app.reflect.ObjectIntrospector;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 
 public class Serializer {
@@ -92,12 +93,21 @@ public class Serializer {
         return clazz;
     }
     
-    public Style loadStyle(XmlContext context, String componentType, Element containerElement) 
+    public Style loadStyle(final XmlContext xmlContext, String componentType, Element containerElement) 
     throws XmlException {
         try {
             ObjectIntrospector introspector = IntrospectorFactory.get(componentType, classLoader);
             MutableStyle style = new MutableStyle();
 
+            Context context = new Context() {
+                public Object get(Class specificContextClass) {
+                    if (specificContextClass == XmlContext.class) {
+                        return xmlContext;
+                    }
+                    return null;
+                }
+            };
+            
             Element[] pElements = DomUtil.getChildElementsByTagName(containerElement, "p");
             for (int i = 0; i < pElements.length; ++i) {
                 // Retrieve property name.
@@ -127,6 +137,7 @@ public class Serializer {
                     // Unsupported property.
                     continue;
                 }
+                
                 Object value = peer.toProperty(context, introspector.getObjectClass(), pElements[i]);
                 style.setProperty(name, value);
             }

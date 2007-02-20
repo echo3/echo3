@@ -39,6 +39,7 @@ import nextapp.echo.app.LayoutData;
 import nextapp.echo.app.Style;
 import nextapp.echo.app.reflect.IntrospectorFactory;
 import nextapp.echo.app.reflect.ObjectIntrospector;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.app.xml.Serializer;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlException;
@@ -50,21 +51,23 @@ import nextapp.echo.app.xml.XmlPropertyPeer;
 public class LayoutDataPeer 
 implements XmlPropertyPeer {
     
-    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) 
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws XmlException {        
         try {
+            XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
+            
             String type = propertyElement.getAttribute("t");
 
             // Load properties from XML into Style.
-            Serializer serializer = Serializer.forClassLoader(context.getClassLoader());
-            Style propertyStyle = serializer.loadStyle(context, type, propertyElement);
+            Serializer serializer = Serializer.forClassLoader(xmlContext.getClassLoader());
+            Style propertyStyle = serializer.loadStyle(xmlContext, type, propertyElement);
             
             // Instantiate LayoutData instance.
-            Class propertyClass = Class.forName(type, true, context.getClassLoader());
+            Class propertyClass = Class.forName(type, true, xmlContext.getClassLoader());
             LayoutData layoutData = (LayoutData) propertyClass.newInstance();
             
             // Create introspector to analyze LayoutData class.
-            ObjectIntrospector introspector = IntrospectorFactory.get(type, context.getClassLoader());
+            ObjectIntrospector introspector = IntrospectorFactory.get(type, xmlContext.getClassLoader());
             
             // Set property values of LayoutData instance.
             Iterator it = propertyStyle.getPropertyNames();
@@ -90,7 +93,11 @@ implements XmlPropertyPeer {
         }
     }
 
-    public void toXml(XmlContext context, Class objectClass, Element propertyElement, Object propertyValue) {
+    /**
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context, 
+     *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
+     */
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
         //TODO. Implement
     }
 }

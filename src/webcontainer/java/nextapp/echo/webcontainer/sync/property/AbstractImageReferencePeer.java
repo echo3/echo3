@@ -1,6 +1,7 @@
 package nextapp.echo.webcontainer.sync.property;
 
 import nextapp.echo.app.ImageReference;
+import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.webcontainer.OutputContext;
 import nextapp.echo.webcontainer.PropertySynchronizePeer;
 
@@ -12,5 +13,5 @@ implements PropertySynchronizePeer {
      * @param imageReference
      * @return
      */
-    public abstract String getImageUrl(OutputContext rc, ImageReference imageReference);
+    public abstract String getImageUrl(OutputContext context, ImageReference imageReference);
 }
