@@ -30,6 +30,7 @@
 package nextapp.echo.webcontainer.sync.component;
 
 import nextapp.echo.app.ContentPane;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
 import nextapp.echo.webcontainer.OutputContext;
 import nextapp.echo.webcontainer.Service;
@@ -56,9 +57,10 @@ public class ContentPanePeer extends AbstractComponentSynchronizePeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.webcontainer.OutputContext)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
      */
-    public void init(OutputContext rc) {
-        rc.getServerMessage().addLibrary(CONTENT_PANE_SERVICE.getId());
+    public void init(Context context) {
+        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
+        outputContext.getServerMessage().addLibrary(CONTENT_PANE_SERVICE.getId());
     }
 }

@@ -31,8 +31,8 @@ package nextapp.echo.webcontainer.sync.component;
 
 import nextapp.echo.app.Component;
 import nextapp.echo.app.text.TextComponent;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
-import nextapp.echo.webcontainer.InputContext;
 import nextapp.echo.webcontainer.OutputContext;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
@@ -53,9 +53,9 @@ public abstract class TextComponentPeer extends AbstractComponentSynchronizePeer
     }
     
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputProperty(nextapp.echo.webcontainer.OutputContext, nextapp.echo.app.Component, java.lang.String)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputProperty(Context, nextapp.echo.app.Component, java.lang.String)
      */
-    public Object getOutputProperty(OutputContext context, Component component, String propertyName) {
+    public Object getOutputProperty(Context context, Component component, String propertyName) {
         if (propertyName.equals(TextComponent.TEXT_CHANGED_PROPERTY)) {
             TextComponent textComponent = (TextComponent) component;
             return textComponent.getText();
@@ -65,16 +65,17 @@ public abstract class TextComponentPeer extends AbstractComponentSynchronizePeer
     }
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.webcontainer.OutputContext)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
      */
-    public void init(OutputContext context) {
-        context.getServerMessage().addLibrary(TEXT_COMPONENT_SERVICE.getId());
+    public void init(Context context) {
+        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
+        outputContext.getServerMessage().addLibrary(TEXT_COMPONENT_SERVICE.getId());
     }
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(nextapp.echo.webcontainer.InputContext, nextapp.echo.app.Component, java.lang.String, java.lang.Object)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(Context, nextapp.echo.app.Component, java.lang.String, java.lang.Object)
      */
-    public void storeInputProperty(InputContext context, Component component, String propertyName, Object newValue) {
+    public void storeInputProperty(Context context, Component component, String propertyName, Object newValue) {
         if (propertyName.equals(TextComponent.TEXT_CHANGED_PROPERTY)) {
             //FIXME.  ClientUpdateManager might want to be in InputContext.
             component.getApplicationInstance().getUpdateManager().getClientUpdateManager().setComponentProperty(

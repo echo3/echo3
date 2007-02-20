@@ -92,7 +92,7 @@ public class InputProcessor {
         UpdateManager updateManager = userInstance.getUpdateManager();
         ClientUpdateManager clientUpdateManager = updateManager.getClientUpdateManager();
         
-        Context context = new Context(){
+        Context context = new Context() {
             
             public Object get(Class specificContextClass) {
                 if (specificContextClass == InputContext.class) {
@@ -134,7 +134,7 @@ public class InputProcessor {
                 
                 Object propertyValue = propertyPeer.toProperty(context, component.getClass(), propertyElement);
                 
-                componentPeer.storeInputProperty(inputContext, component, propertyName, propertyValue);
+                componentPeer.storeInputProperty(context, component, propertyName, propertyValue);
             }
         }
         

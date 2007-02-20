@@ -32,6 +32,8 @@ package nextapp.echo.webcontainer.sync.component;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.WindowPane;
+import nextapp.echo.app.update.ClientUpdateManager;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
 import nextapp.echo.webcontainer.InputContext;
 import nextapp.echo.webcontainer.OutputContext;
@@ -73,25 +75,29 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
     };
     
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.webcontainer.OutputContext)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
      */
-    public void init(OutputContext context) {
-        context.getServerMessage().addLibrary(WINDOW_PANE_SERVICE.getId());
+    public void init(Context context) {
+        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
+        outputContext.getServerMessage().addLibrary(WINDOW_PANE_SERVICE.getId());
     }
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(nextapp.echo.webcontainer.InputContext, nextapp.echo.app.Component, java.lang.String, java.lang.Object)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context,
+     *      nextapp.echo.app.Component, java.lang.String, java.lang.Object)
      */
-    public void storeInputProperty(InputContext context, Component component, String propertyName, Object newValue) {
+    public void storeInputProperty(Context context, Component component, String propertyName, Object newValue) {
         super.storeInputProperty(context, component, propertyName, newValue);
+        InputContext inputContext = (InputContext) context.get(InputContext.class);
+        ClientUpdateManager clientUpdateManager = inputContext.getClientUpdateManager();
         if (WindowPane.PROPERTY_POSITION_X.equals(propertyName)) {
-            context.getClientUpdateManager().setComponentProperty(component, WindowPane.PROPERTY_POSITION_X, newValue);
+            clientUpdateManager.setComponentProperty(component, WindowPane.PROPERTY_POSITION_X, newValue);
         } else if (WindowPane.PROPERTY_POSITION_Y.equals(propertyName)) {
-            context.getClientUpdateManager().setComponentProperty(component, WindowPane.PROPERTY_POSITION_Y, newValue);
+            clientUpdateManager.setComponentProperty(component, WindowPane.PROPERTY_POSITION_Y, newValue);
         } else if (WindowPane.PROPERTY_WIDTH.equals(propertyName)) {
-            context.getClientUpdateManager().setComponentProperty(component, WindowPane.PROPERTY_WIDTH, newValue);
+            clientUpdateManager.setComponentProperty(component, WindowPane.PROPERTY_WIDTH, newValue);
         } else if (WindowPane.PROPERTY_HEIGHT.equals(propertyName)) {
-            context.getClientUpdateManager().setComponentProperty(component, WindowPane.PROPERTY_HEIGHT, newValue);
+            clientUpdateManager.setComponentProperty(component, WindowPane.PROPERTY_HEIGHT, newValue);
         }
     }
 }

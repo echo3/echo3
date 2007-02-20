@@ -3,6 +3,7 @@ package nextapp.echo.webcontainer;
 import java.util.Iterator;
 
 import nextapp.echo.app.Component;
+import nextapp.echo.app.util.Context;
 
 public interface ComponentSynchronizePeer {
     
@@ -14,11 +15,11 @@ public interface ComponentSynchronizePeer {
 
     public Iterator getImmediateEventTypes(Component component);
     
-    public Object getOutputProperty(OutputContext context, Component component, String propertyName);
+    public Object getOutputProperty(Context context, Component component, String propertyName);
     
     public Iterator getOutputPropertyNames(Component component);
     
-    public void init(OutputContext context);
+    public void init(Context context);
     
-    public void storeInputProperty(InputContext context, Component component, String propertyName, Object newValue);
+    public void storeInputProperty(Context context, Component component, String propertyName, Object newValue);
 }

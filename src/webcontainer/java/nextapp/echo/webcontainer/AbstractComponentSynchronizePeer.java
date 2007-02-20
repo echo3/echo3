@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import nextapp.echo.app.Component;
+import nextapp.echo.app.util.Context;
 
 public abstract class AbstractComponentSynchronizePeer 
 implements ComponentSynchronizePeer {
@@ -59,9 +60,10 @@ implements ComponentSynchronizePeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputProperty(nextapp.echo.webcontainer.OutputContext, nextapp.echo.app.Component, java.lang.String)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputProperty(nextapp.echo.app.util.Context,
+     *      nextapp.echo.app.Component, java.lang.String)
      */
-    public Object getOutputProperty(OutputContext context, Component component, String propertyName) {
+    public Object getOutputProperty(Context context, Component component, String propertyName) {
         return component.getLocalStyle().getProperty(propertyName);
     }
 
@@ -114,19 +116,19 @@ implements ComponentSynchronizePeer {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.webcontainer.OutputContext)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(Context)
      */
-    public void init(OutputContext context) {
+    public void init(Context context) {
         // Do nothing.
     }
 
     /**
      * Default implementation: do nothing, accept no input properties.
      * 
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(nextapp.echo.webcontainer.InputContext, 
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context,
      *      nextapp.echo.app.Component, java.lang.String, java.lang.Object)
      */
-    public void storeInputProperty(InputContext context, Component component, String propertyName, Object newValue) {
+    public void storeInputProperty(Context context, Component component, String propertyName, Object newValue) {
         // Do nothing.
     }
 }

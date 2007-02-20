@@ -207,8 +207,7 @@ public class OutputProcessor {
 
         cElement.setAttribute("t", componentPeer.getClientComponentType());
         
-        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
-        componentPeer.init(outputContext);
+        componentPeer.init(context);
 
         StyleSheet styleSheet = c.getApplicationInstance().getStyleSheet();
         
@@ -231,7 +230,7 @@ public class OutputProcessor {
         Iterator propertyNameIterator = componentPeer.getOutputPropertyNames(c);
         while (propertyNameIterator.hasNext()) {
             String propertyName = (String) propertyNameIterator.next();
-            Object propertyValue = componentPeer.getOutputProperty(outputContext, c, propertyName);
+            Object propertyValue = componentPeer.getOutputProperty(context, c, propertyName);
             PropertySynchronizePeer propertySyncPeer = SynchronizePeerFactory.getPeerForProperty(propertyValue.getClass());
             if (propertySyncPeer == null) {
                 //FIXME. figure out how these should be handled...ignoring is probably best.
@@ -328,14 +327,11 @@ public class OutputProcessor {
         if (componentPeer == null) {
             throw new IllegalStateException("No synchronize peer found for component: " + c.getClass().getName());
         }
-        
-
-        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
 
         for (int i = 0; i < updatedPropertyNames.length; ++i) {
             Element pElement = document.createElement("p");
             pElement.setAttribute("n", updatedPropertyNames[i]);
-            Object propertyValue = componentPeer.getOutputProperty(outputContext, c, updatedPropertyNames[i]);
+            Object propertyValue = componentPeer.getOutputProperty(context, c, updatedPropertyNames[i]);
             if (propertyValue == null) {
                 pElement.setAttribute("t", "0");
                 //FIXME. handle properties changed to null.

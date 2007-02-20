@@ -32,6 +32,8 @@ package nextapp.echo.webcontainer.sync.component;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.SplitPane;
+import nextapp.echo.app.update.ClientUpdateManager;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
 import nextapp.echo.webcontainer.InputContext;
 import nextapp.echo.webcontainer.OutputContext;
@@ -67,19 +69,23 @@ public class SplitPanePeer extends AbstractComponentSynchronizePeer {
     };
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.webcontainer.OutputContext)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
      */
-    public void init(OutputContext rc) {
-        rc.getServerMessage().addLibrary(SPLIT_PANE_SERVICE.getId());
+    public void init(Context context) {
+        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
+        outputContext.getServerMessage().addLibrary(SPLIT_PANE_SERVICE.getId());
     }
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(nextapp.echo.webcontainer.InputContext, nextapp.echo.app.Component, java.lang.String, java.lang.Object)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context,
+     *      nextapp.echo.app.Component, java.lang.String, java.lang.Object)
      */
-    public void storeInputProperty(InputContext context, Component component, String propertyName, Object newValue) {
+    public void storeInputProperty(Context context, Component component, String propertyName, Object newValue) {
         super.storeInputProperty(context, component, propertyName, newValue);
+        InputContext inputContext = (InputContext) context.get(InputContext.class);
+        ClientUpdateManager clientUpdateManager = inputContext.getClientUpdateManager();
         if (SplitPane.PROPERTY_SEPARATOR_POSITION.equals(propertyName)) {
-            context.getClientUpdateManager().setComponentProperty(component, SplitPane.PROPERTY_SEPARATOR_POSITION, newValue);
+            clientUpdateManager.setComponentProperty(component, SplitPane.PROPERTY_SEPARATOR_POSITION, newValue);
             System.err.println("stored separator position");
         }
     }
