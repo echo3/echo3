@@ -33,7 +33,7 @@ import nextapp.echo.app.Component;
 import nextapp.echo.app.text.TextComponent;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
-import nextapp.echo.webcontainer.OutputContext;
+import nextapp.echo.webcontainer.ServerMessage;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
@@ -68,8 +68,8 @@ public abstract class TextComponentPeer extends AbstractComponentSynchronizePeer
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
      */
     public void init(Context context) {
-        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
-        outputContext.getServerMessage().addLibrary(TEXT_COMPONENT_SERVICE.getId());
+        ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
+        serverMessage.addLibrary(TEXT_COMPONENT_SERVICE.getId());
     }
 
     /**

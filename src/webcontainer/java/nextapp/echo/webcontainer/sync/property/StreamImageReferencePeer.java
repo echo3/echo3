@@ -5,7 +5,7 @@ import org.w3c.dom.Element;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.StreamImageReference;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.webcontainer.OutputContext;
+import nextapp.echo.webcontainer.UserInstance;
 import nextapp.echo.webcontainer.service.StreamImageService;
 
 public class StreamImageReferencePeer extends AbstractImageReferencePeer {
@@ -19,8 +19,8 @@ public class StreamImageReferencePeer extends AbstractImageReferencePeer {
      *      nextapp.echo.webcontainer.OutputContext, nextapp.echo.app.ImageReference)
      */
     public String getImageUrl(Context context, ImageReference imageReference) {
-        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
-        outputContext.getUserInstance().getIdTable().register(imageReference);
+        UserInstance userInstance = (UserInstance) context.get(UserInstance.class);
+        userInstance.getIdTable().register(imageReference);
         return "!S!" + imageReference.getRenderId();
     }
     

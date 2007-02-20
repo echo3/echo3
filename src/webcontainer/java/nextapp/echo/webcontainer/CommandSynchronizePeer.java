@@ -30,6 +30,7 @@
 package nextapp.echo.webcontainer;
 
 import nextapp.echo.app.Command;
+import nextapp.echo.app.util.Context;
 
 /**
  * A stateless peer object used to render the given type of 
@@ -46,8 +47,8 @@ public interface CommandSynchronizePeer {
     /**
      * Renders a directive to execute the command on the client.
      * 
-     * @param rc the relevant <code>OutputContext</code>
+     * @param rc the relevant <code>Context</code>
      * @param command the <code>Command</code> to execute
      */
-    public void render(OutputContext rc, Command command);
+    public void render(Context context, Command command);
 }

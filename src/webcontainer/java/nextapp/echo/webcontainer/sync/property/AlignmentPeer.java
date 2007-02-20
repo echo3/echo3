@@ -4,7 +4,7 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.webcontainer.OutputContext;
+import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.webcontainer.PropertySynchronizePeer;
 
 public class AlignmentPeer 
@@ -22,10 +22,10 @@ implements PropertySynchronizePeer {
      * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(Context, Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
+        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
         propertyElement.setAttribute("t", "Alignment");
         Alignment alignment = (Alignment) propertyValue;
-        Element element = outputContext.getDocument().createElement("a");
+        Element element = xmlContext.getDocument().createElement("a");
         switch (alignment.getHorizontal()) {
         case Alignment.LEADING:  element.setAttribute("h", "leading");  break;
         case Alignment.TRAILING: element.setAttribute("h", "trailing"); break;

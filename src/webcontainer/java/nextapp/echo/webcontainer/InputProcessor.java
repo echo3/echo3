@@ -15,58 +15,42 @@ import nextapp.echo.app.xml.XmlPropertyPeer;
 
 public class InputProcessor {
 
-    private class InputContextImpl implements InputContext {
+    private class InputContext implements Context {
         
-        private InputContextImpl() 
-        throws IOException {
-            super();
-        }
+        private XmlContext xmlContext = new XmlContext(){
         
-        public ClientUpdateManager getClientUpdateManager() {
-            return conn.getUserInstance().getApplicationInstance().getUpdateManager().getClientUpdateManager();
-        }
+            public XmlPropertyPeer getPropertyPeer(Class propertyClass) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+        
+            public ClassLoader getClassLoader() {
+                //FIXME. temporary, not what we want.
+                return Thread.currentThread().getContextClassLoader();
+            }
+        
+            public Document getDocument() {
+                return clientMessage.getDocument();
+            }
+        };
         
         /**
-         * @see nextapp.echo.webcontainer.InputContext#getClientMessage()
+         * @see nextapp.echo.app.util.Context#get(java.lang.Class)
          */
-        public ClientMessage getClientMessage() {
-            return clientMessage;
-        }
-
-        /**
-         * @see nextapp.echo.webcontainer.InputContext#getConnection()
-         */
-        public Connection getConnection() {
-            return conn;
-        }
-
-        /**
-         * @see nextapp.echo.webcontainer.InputContext#getUserInstance()
-         */
-        public UserInstance getUserInstance() {
-            return conn.getUserInstance();
-        }
-
-        /**
-         * @see nextapp.echo.app.xml.XmlContext#getClassLoader()
-         */
-        public ClassLoader getClassLoader() {
-            //FIXME. temporary, not what we want.
-            return Thread.currentThread().getContextClassLoader();
-        }
-
-        /**
-         * @see nextapp.echo.app.xml.XmlContext#getDocument()
-         */
-        public Document getDocument() {
-            return clientMessage.getDocument();
-        }
-
-        /**
-         * @see nextapp.echo.app.xml.XmlContext#getPropertyPeer(java.lang.Class)
-         */
-        public XmlPropertyPeer getPropertyPeer(Class propertyClass) {
-            return null;
+        public Object get(Class specificContextClass) {
+            if (specificContextClass == XmlContext.class) {
+                return xmlContext;
+            } else if (specificContextClass == Connection.class) {
+                return conn;
+            } else if (specificContextClass == ClientMessage.class) {
+                return clientMessage;
+            } else if (specificContextClass == UserInstance.class) {
+                return conn.getUserInstance();
+            } else if (specificContextClass == ClientUpdateManager.class) {
+                return conn.getUserInstance().getApplicationInstance().getUpdateManager().getClientUpdateManager();
+            } else {
+                return null;
+            }
         }
     }
     
@@ -81,29 +65,11 @@ public class InputProcessor {
     public void process() 
     throws IOException {
         clientMessage = new ClientMessage(conn);
-        InputContext inputContext = new InputContextImpl();
-        
-        processClientInput(inputContext);
-        conn.getUserInstance().getApplicationInstance().getUpdateManager().processClientUpdates();
-    }
 
-    private void processClientInput(final InputContext inputContext) {
-        UserInstance userInstance = inputContext.getUserInstance();
+        Context context = new InputContext();
+        UserInstance userInstance = conn.getUserInstance();
         UpdateManager updateManager = userInstance.getUpdateManager();
         ClientUpdateManager clientUpdateManager = updateManager.getClientUpdateManager();
-        
-        Context context = new Context() {
-            
-            public Object get(Class specificContextClass) {
-                if (specificContextClass == InputContext.class) {
-                    return inputContext;
-                } else if (specificContextClass == XmlContext.class) {
-                    //FIXME. do we want input context to extent xml context?
-                    return (XmlContext) inputContext;
-                }
-                return null;
-            }
-        };
         
         if (ClientMessage.TYPE_INITIALIZE.equals(clientMessage.getType())) {
             // Flag full refresh if initializing.
@@ -142,5 +108,7 @@ public class InputProcessor {
             Component component = userInstance.getComponentByElementId(clientMessage.getEventComponentId());
             clientUpdateManager.setComponentAction(component, clientMessage.getEventType(), null);
         }
+
+        updateManager.processClientUpdates();
     }
 }

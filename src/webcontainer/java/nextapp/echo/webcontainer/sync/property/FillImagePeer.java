@@ -5,7 +5,7 @@ import org.w3c.dom.Element;
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.webcontainer.OutputContext;
+import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.webcontainer.PropertySynchronizePeer;
 import nextapp.echo.webcontainer.SynchronizePeerFactory;
 
@@ -13,9 +13,9 @@ public class FillImagePeer
 implements PropertySynchronizePeer {
 
     public static Element createFillImageElement(Context context, FillImage fillImage) {
-        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
-        
-        Element fiElement = outputContext.getDocument().createElement("fi");
+        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
+
+        Element fiElement = xmlContext.getDocument().createElement("fi");
         
         ImageReference imageReference = fillImage.getImage();
         AbstractImageReferencePeer imagePeer = 

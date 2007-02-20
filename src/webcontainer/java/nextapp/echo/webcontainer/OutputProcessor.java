@@ -23,59 +23,37 @@ public class OutputProcessor {
 
     private static final String[] PROPERTIES_LAYOUT_DATA = new String[]{Component.PROPERTY_LAYOUT_DATA};
     
-    private class ContextImpl implements Context {
+    private class OutputContext implements Context {
 
-        private OutputContext outputContext = new OutputContext(){
+        private XmlContext xmlContext = new XmlContext(){
         
-            /**
-             * @see nextapp.echo.webcontainer.OutputContext#getConnection()
-             */
-            public Connection getConnection() {
-                return conn;
-            }
-    
-            /**
-             * @see nextapp.echo.webcontainer.OutputContext#getServerMessage()
-             */
-            public ServerMessage getServerMessage() {
-                return serverMessage;
-            }
-    
-            /**
-             * @see nextapp.echo.webcontainer.OutputContext#getUserInstance()
-             */
-            public UserInstance getUserInstance() {
-                return conn.getUserInstance();
-            }
-    
-            /**
-             * @see nextapp.echo.app.xml.XmlContext#getClassLoader()
-             */
-            public ClassLoader getClassLoader() {
-                //FIXME. temporary, not what we want.
-                return Thread.currentThread().getContextClassLoader();
-            }
-    
-            /**
-             * @see nextapp.echo.app.xml.XmlContext#getDocument()
-             */
-            public Document getDocument() {
-                return serverMessage.getDocument();
-            }
-    
             public XmlPropertyPeer getPropertyPeer(Class propertyClass) {
                 // TODO Auto-generated method stub
                 return null;
             }
+        
+            public ClassLoader getClassLoader() {
+                //FIXME. temporary, not what we want.
+                return Thread.currentThread().getContextClassLoader();
+            }
+        
+            public Document getDocument() {
+                return serverMessage.getDocument();
+            }
         };
         
         public Object get(Class specificContextClass) {
-            if (specificContextClass == OutputContext.class) {
-                return outputContext;
-            } else if (specificContextClass == XmlContext.class) {
-                return (XmlContext) outputContext;
+            if (specificContextClass == XmlContext.class) {
+                return xmlContext;
+            } else if (specificContextClass == ServerMessage.class) {
+                return serverMessage;
+            } else if (specificContextClass == Connection.class) {
+                return conn;
+            } else if (specificContextClass == UserInstance.class) {
+                return conn.getUserInstance();
+            } else {
+                return null;
             }
-            return null;
         }
     }
     
@@ -86,7 +64,7 @@ public class OutputProcessor {
     public OutputProcessor(Connection conn) {
         super();
         this.conn = conn;
-        this.context = new ContextImpl();
+        this.context = new OutputContext();
         serverMessage = new ServerMessage();
     }
     

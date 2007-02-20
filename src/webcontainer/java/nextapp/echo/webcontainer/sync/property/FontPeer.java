@@ -5,7 +5,7 @@ import org.w3c.dom.Element;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Font;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.webcontainer.OutputContext;
+import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.webcontainer.PropertySynchronizePeer;
 
 public class FontPeer 
@@ -23,14 +23,14 @@ implements PropertySynchronizePeer {
      * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(Context, Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
+        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
         propertyElement.setAttribute("t", "Font");
         Font font = (Font) propertyValue;
-        Element element = outputContext.getDocument().createElement("f");
+        Element element = xmlContext.getDocument().createElement("f");
         
         Font.Typeface typeface = font.getTypeface();
         while (typeface != null) {
-            Element tfElement = outputContext.getDocument().createElement("tf");
+            Element tfElement = xmlContext.getDocument().createElement("tf");
             tfElement.setAttribute("n", typeface.getName());
             element.appendChild(tfElement);
             typeface = typeface.getAlternate();

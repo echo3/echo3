@@ -35,8 +35,7 @@ import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
-import nextapp.echo.webcontainer.InputContext;
-import nextapp.echo.webcontainer.OutputContext;
+import nextapp.echo.webcontainer.ServerMessage;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
@@ -78,8 +77,8 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
      */
     public void init(Context context) {
-        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
-        outputContext.getServerMessage().addLibrary(WINDOW_PANE_SERVICE.getId());
+        ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
+        serverMessage.addLibrary(WINDOW_PANE_SERVICE.getId());
     }
 
     /**
@@ -88,8 +87,7 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
      */
     public void storeInputProperty(Context context, Component component, String propertyName, Object newValue) {
         super.storeInputProperty(context, component, propertyName, newValue);
-        InputContext inputContext = (InputContext) context.get(InputContext.class);
-        ClientUpdateManager clientUpdateManager = inputContext.getClientUpdateManager();
+        ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
         if (WindowPane.PROPERTY_POSITION_X.equals(propertyName)) {
             clientUpdateManager.setComponentProperty(component, WindowPane.PROPERTY_POSITION_X, newValue);
         } else if (WindowPane.PROPERTY_POSITION_Y.equals(propertyName)) {

@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.Border;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.webcontainer.OutputContext;
+import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.webcontainer.PropertySynchronizePeer;
 
 /**
@@ -80,11 +80,11 @@ implements PropertySynchronizePeer {
      * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(Context, Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
+        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
         propertyElement.setAttribute("t", "Border");
         Border border = (Border) propertyValue;
         if (border.isMultisided()) {
-            Element borderElement = outputContext.getDocument().createElement("b");
+            Element borderElement = xmlContext.getDocument().createElement("b");
             Border.Side[] sides = border.getSides();
             for (int i = 0; i < sides.length; ++i) {
                 borderElement.setAttribute(borderSideAttributeNames[i], toString(sides[i]));

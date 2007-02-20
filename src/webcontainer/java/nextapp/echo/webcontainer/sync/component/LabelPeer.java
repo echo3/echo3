@@ -32,7 +32,7 @@ package nextapp.echo.webcontainer.sync.component;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
-import nextapp.echo.webcontainer.OutputContext;
+import nextapp.echo.webcontainer.ServerMessage;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
@@ -60,7 +60,7 @@ public class LabelPeer extends AbstractComponentSynchronizePeer {
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
      */
     public void init(Context context) {
-        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
-        outputContext.getServerMessage().addLibrary(LABEL_SERVICE.getId());
+        ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
+        serverMessage.addLibrary(LABEL_SERVICE.getId());
     }
 }
