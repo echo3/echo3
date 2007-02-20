@@ -14,71 +14,87 @@ import nextapp.echo.app.Window;
 import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.update.ServerUpdateManager;
 import nextapp.echo.app.update.UpdateManager;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
+import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlPropertyPeer;
 
 public class OutputProcessor {
 
     private static final String[] PROPERTIES_LAYOUT_DATA = new String[]{Component.PROPERTY_LAYOUT_DATA};
     
-    private class OutputContextImpl implements OutputContext {
+    private class ContextImpl implements Context {
+
+        private OutputContext outputContext = new OutputContext(){
         
-        /**
-         * @see nextapp.echo.webcontainer.OutputContext#getConnection()
-         */
-        public Connection getConnection() {
-            return conn;
-        }
-
-        /**
-         * @see nextapp.echo.webcontainer.OutputContext#getServerMessage()
-         */
-        public ServerMessage getServerMessage() {
-            return serverMessage;
-        }
-
-        /**
-         * @see nextapp.echo.webcontainer.OutputContext#getUserInstance()
-         */
-        public UserInstance getUserInstance() {
-            return conn.getUserInstance();
-        }
-
-        /**
-         * @see nextapp.echo.app.xml.XmlContext#getClassLoader()
-         */
-        public ClassLoader getClassLoader() {
-            //FIXME. temporary, not what we want.
-            return Thread.currentThread().getContextClassLoader();
-        }
-
-        /**
-         * @see nextapp.echo.app.xml.XmlContext#getDocument()
-         */
-        public Document getDocument() {
-            return serverMessage.getDocument();
-        }
-
-        public XmlPropertyPeer getPropertyPeer(Class propertyClass) {
-            // TODO Auto-generated method stub
+            /**
+             * @see nextapp.echo.webcontainer.OutputContext#getConnection()
+             */
+            public Connection getConnection() {
+                return conn;
+            }
+    
+            /**
+             * @see nextapp.echo.webcontainer.OutputContext#getServerMessage()
+             */
+            public ServerMessage getServerMessage() {
+                return serverMessage;
+            }
+    
+            /**
+             * @see nextapp.echo.webcontainer.OutputContext#getUserInstance()
+             */
+            public UserInstance getUserInstance() {
+                return conn.getUserInstance();
+            }
+    
+            /**
+             * @see nextapp.echo.app.xml.XmlContext#getClassLoader()
+             */
+            public ClassLoader getClassLoader() {
+                //FIXME. temporary, not what we want.
+                return Thread.currentThread().getContextClassLoader();
+            }
+    
+            /**
+             * @see nextapp.echo.app.xml.XmlContext#getDocument()
+             */
+            public Document getDocument() {
+                return serverMessage.getDocument();
+            }
+    
+            public XmlPropertyPeer getPropertyPeer(Class propertyClass) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+        };
+        
+        public Object get(Class specificContextClass) {
+            if (specificContextClass == OutputContext.class) {
+                return outputContext;
+            } else if (specificContextClass == XmlContext.class) {
+                return (XmlContext) outputContext;
+            }
             return null;
         }
-    }    
+    }
     
     private Connection conn;
     private ServerMessage serverMessage;
+    private Context context;
     
     public OutputProcessor(Connection conn) {
         super();
         this.conn = conn;
+        this.context = new ContextImpl();
         serverMessage = new ServerMessage();
     }
     
     public void process() 
     throws IOException {
         serverMessage.setTransactionId(conn.getUserInstance().getNextTransactionId());
-        OutputContext outputContext = new OutputContextImpl();
-        processServerOutput(outputContext);
+        
+        processServerOutput();
         conn.setContentType(ContentType.TEXT_XML);
         serverMessage.render(conn.getWriter());
     }
@@ -102,22 +118,20 @@ public class OutputProcessor {
     }
     
     
-    private void processServerOutput(OutputContext context) {
-        UserInstance userInstance = context.getUserInstance();
+    private void processServerOutput() {
+        UserInstance userInstance = conn.getUserInstance();
         UpdateManager updateManager = userInstance.getUpdateManager();
         ServerUpdateManager serverUpdateManager = updateManager.getServerUpdateManager();
         
-        ServerMessage serverMessage = context.getServerMessage();
-        
         if (serverUpdateManager.isFullRefreshRequired()) {
-            renderStyleSheet(context);
+            renderStyleSheet();
             ContentPane content = userInstance.getApplicationInstance().getDefaultWindow().getContent();
             if (content == null) {
                 throw new IllegalStateException("No content to render: default window has no content.");
             }
             Element addElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "add");
             addElement.setAttribute("i", "c_root");
-            renderComponentState(context, addElement, content);
+            renderComponentState(addElement, content);
         } else {
             ServerComponentUpdate[] componentUpdates = updateManager.getServerUpdateManager().getComponentUpdates();
             for (int i = 0; i < componentUpdates.length; ++i) {
@@ -141,7 +155,7 @@ public class OutputProcessor {
                     }
                     addElement.setAttribute("i", parentId);
                     for (int j = 0; j < addedChildren.length; ++j) {
-                        Element cElement = renderComponentState(context, addElement, addedChildren[j]);
+                        Element cElement = renderComponentState(addElement, addedChildren[j]);
                         cElement.setAttribute("x", 
                                 Integer.toString(componentUpdates[i].getParent().indexOf(addedChildren[j])));
                     }
@@ -153,14 +167,14 @@ public class OutputProcessor {
                 if (updatedPropertyNames.length > 0) {
                     Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
                     upElement.setAttribute("i", UserInstance.getElementId(componentUpdates[i].getParent()));
-                    renderUpdatedProperties(context, upElement, componentUpdates[i].getParent(), updatedPropertyNames);
+                    renderUpdatedProperties(upElement, componentUpdates[i].getParent(), updatedPropertyNames);
                 }
                 
                 Component[] updatedLayoutDataChildren = componentUpdates[i].getUpdatedLayoutDataChildren();
                 for (int j = 0; j < updatedLayoutDataChildren.length; ++j) {
                     Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
                     upElement.setAttribute("i", UserInstance.getElementId(updatedLayoutDataChildren[j]));
-                    renderUpdatedProperties(context, upElement, updatedLayoutDataChildren[j], PROPERTIES_LAYOUT_DATA);
+                    renderUpdatedProperties(upElement, updatedLayoutDataChildren[j], PROPERTIES_LAYOUT_DATA);
                 }
             }
         }
@@ -181,7 +195,7 @@ public class OutputProcessor {
      * @param parentElement
      * @param c
      */
-    private Element renderComponentState(OutputContext context, Element parentElement, Component c) {
+    private Element renderComponentState(Element parentElement, Component c) {
         Document document = parentElement.getOwnerDocument();
         ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
         if (componentPeer == null) {
@@ -192,7 +206,9 @@ public class OutputProcessor {
         cElement.setAttribute("i", UserInstance.getElementId(c));
 
         cElement.setAttribute("t", componentPeer.getClientComponentType());
-        componentPeer.init(context);
+        
+        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
+        componentPeer.init(outputContext);
 
         StyleSheet styleSheet = c.getApplicationInstance().getStyleSheet();
         
@@ -215,7 +231,7 @@ public class OutputProcessor {
         Iterator propertyNameIterator = componentPeer.getOutputPropertyNames(c);
         while (propertyNameIterator.hasNext()) {
             String propertyName = (String) propertyNameIterator.next();
-            Object propertyValue = componentPeer.getOutputProperty(context, c, propertyName);
+            Object propertyValue = componentPeer.getOutputProperty(outputContext, c, propertyName);
             PropertySynchronizePeer propertySyncPeer = SynchronizePeerFactory.getPeerForProperty(propertyValue.getClass());
             if (propertySyncPeer == null) {
                 //FIXME. figure out how these should be handled...ignoring is probably best.
@@ -240,7 +256,7 @@ public class OutputProcessor {
         // Render child components.
         Component[] children = c.getVisibleComponents();
         for (int i = 0; i < children.length; ++i) {
-            renderComponentState(context, cElement, children[i]);
+            renderComponentState(cElement, children[i]);
         }
         
         // Append component element to parent.
@@ -249,11 +265,10 @@ public class OutputProcessor {
         return cElement;
     }
     
-    private void renderStyleSheet(OutputContext context) {
-        ServerMessage serverMessage = context.getServerMessage();
+    private void renderStyleSheet() {
         Element ssElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "ss");
         
-        StyleSheet styleSheet = context.getUserInstance().getApplicationInstance().getStyleSheet();
+        StyleSheet styleSheet = conn.getUserInstance().getApplicationInstance().getStyleSheet();
         if (styleSheet == null) {
             return;
         }
@@ -277,14 +292,14 @@ public class OutputProcessor {
                 }
                 
                 Style style = styleSheet.getStyle(styleName, componentClass, false);
-                renderStyle(context, componentClass, sElement, style);
+                renderStyle(componentClass, sElement, style);
                 
                 ssElement.appendChild(sElement);
             }
         }
     }
     
-    private void renderStyle(OutputContext context, Class objectClass, Element parentElement, Style style) {
+    private void renderStyle(Class objectClass, Element parentElement, Style style) {
         Document document = parentElement.getOwnerDocument();
         Iterator it = style.getPropertyNames();
         while (it.hasNext()) {
@@ -306,18 +321,21 @@ public class OutputProcessor {
         }
     }
 
-    private void renderUpdatedProperties(OutputContext context, Element upElement, Component c, 
+    private void renderUpdatedProperties(Element upElement, Component c, 
             String[] updatedPropertyNames) {
-        Document document = context.getServerMessage().getDocument();
+        Document document = serverMessage.getDocument();
         ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
         if (componentPeer == null) {
             throw new IllegalStateException("No synchronize peer found for component: " + c.getClass().getName());
         }
         
+
+        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
+
         for (int i = 0; i < updatedPropertyNames.length; ++i) {
             Element pElement = document.createElement("p");
             pElement.setAttribute("n", updatedPropertyNames[i]);
-            Object propertyValue = componentPeer.getOutputProperty(context, c, updatedPropertyNames[i]);
+            Object propertyValue = componentPeer.getOutputProperty(outputContext, c, updatedPropertyNames[i]);
             if (propertyValue == null) {
                 pElement.setAttribute("t", "0");
                 //FIXME. handle properties changed to null.

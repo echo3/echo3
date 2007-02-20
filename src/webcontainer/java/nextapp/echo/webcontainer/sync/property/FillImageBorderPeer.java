@@ -3,7 +3,7 @@ package nextapp.echo.webcontainer.sync.property;
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.FillImageBorder;
-import nextapp.echo.app.xml.XmlContext;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.OutputContext;
 import nextapp.echo.webcontainer.PropertySynchronizePeer;
 
@@ -11,22 +11,24 @@ public class FillImageBorderPeer
 implements PropertySynchronizePeer {
 
     /**
-     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(XmlContext, Class, org.w3c.dom.Element)
+     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(Context, Class, org.w3c.dom.Element)
      */
-    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) {
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) {
         // TODO Auto-generated method stub
         return null;
     }
 
     /**
      * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(
-     *      OutputContext, Class, org.w3c.dom.Element, java.lang.Object)
+     *      Context, Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(OutputContext context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
+        
         FillImageBorder border = (FillImageBorder) propertyValue;
         propertyElement.setAttribute("t", "FillImageBorder");
         
-        Element fibElement = context.getDocument().createElement("fib");
+        Element fibElement = outputContext.getDocument().createElement("fib");
         
         if (border.getBorderInsets() != null) {
             fibElement.setAttribute("bi", InsetsPeer.toString(border.getBorderInsets()));

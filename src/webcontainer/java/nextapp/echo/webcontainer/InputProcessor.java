@@ -9,6 +9,8 @@ import org.w3c.dom.Element;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.update.UpdateManager;
+import nextapp.echo.app.util.Context;
+import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlPropertyPeer;
 
 public class InputProcessor {
@@ -85,10 +87,23 @@ public class InputProcessor {
         conn.getUserInstance().getApplicationInstance().getUpdateManager().processClientUpdates();
     }
 
-    private void processClientInput(InputContext context) {
-        UserInstance userInstance = context.getUserInstance();
+    private void processClientInput(final InputContext inputContext) {
+        UserInstance userInstance = inputContext.getUserInstance();
         UpdateManager updateManager = userInstance.getUpdateManager();
         ClientUpdateManager clientUpdateManager = updateManager.getClientUpdateManager();
+        
+        Context context = new Context(){
+            
+            public Object get(Class specificContextClass) {
+                if (specificContextClass == InputContext.class) {
+                    return inputContext;
+                } else if (specificContextClass == XmlContext.class) {
+                    //FIXME. do we want input context to extent xml context?
+                    return (XmlContext) inputContext;
+                }
+                return null;
+            }
+        };
         
         if (ClientMessage.TYPE_INITIALIZE.equals(clientMessage.getType())) {
             // Flag full refresh if initializing.
@@ -119,7 +134,7 @@ public class InputProcessor {
                 
                 Object propertyValue = propertyPeer.toProperty(context, component.getClass(), propertyElement);
                 
-                componentPeer.storeInputProperty(context, component, propertyName, propertyValue);
+                componentPeer.storeInputProperty(inputContext, component, propertyName, propertyValue);
             }
         }
         

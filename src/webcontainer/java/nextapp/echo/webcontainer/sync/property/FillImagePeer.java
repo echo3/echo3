@@ -4,7 +4,7 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.ImageReference;
-import nextapp.echo.app.xml.XmlContext;
+import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.OutputContext;
 import nextapp.echo.webcontainer.PropertySynchronizePeer;
 import nextapp.echo.webcontainer.SynchronizePeerFactory;
@@ -12,8 +12,10 @@ import nextapp.echo.webcontainer.SynchronizePeerFactory;
 public class FillImagePeer
 implements PropertySynchronizePeer {
 
-    public static Element createFillImageElement(OutputContext context, FillImage fillImage) {
-        Element fiElement = context.getDocument().createElement("fi");
+    public static Element createFillImageElement(Context context, FillImage fillImage) {
+        OutputContext outputContext = (OutputContext) context.get(OutputContext.class);
+        
+        Element fiElement = outputContext.getDocument().createElement("fi");
         
         ImageReference imageReference = fillImage.getImage();
         AbstractImageReferencePeer imagePeer = 
@@ -43,17 +45,17 @@ implements PropertySynchronizePeer {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(XmlContext, Class, org.w3c.dom.Element)
+     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(Context, Class, org.w3c.dom.Element)
      */
-    public Object toProperty(XmlContext context, Class objectClass, Element propertyElement) {
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) {
         //TODO. Implement.
         return null;
     }
 
     /**
-     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(OutputContext, Class, org.w3c.dom.Element, java.lang.Object)
+     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(Context, Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(OutputContext rc, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context rc, Class objectClass, Element propertyElement, Object propertyValue) {
         FillImage fillImage = (FillImage) propertyValue;
         propertyElement.setAttribute("t", "FillImage");
         propertyElement.appendChild(createFillImageElement(rc, fillImage));
