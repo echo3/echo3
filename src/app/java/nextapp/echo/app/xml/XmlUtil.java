@@ -13,8 +13,10 @@ public class XmlUtil {
             XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
             Element childPropertyElement = xmlContext.getDocument().createElement("p");
             childPropertyElement.setAttribute("n", propertyName);
-            XmlPeerFactory factory = XmlPeerFactory.forClassLoader(xmlContext.getClassLoader());
-            factory.getPeerForProperty(propertyValue.getClass())
+            
+            PropertyPeerFactory peerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
+            
+            peerFactory.getPeerForProperty(propertyValue.getClass())
                     .toXml(context, objectClass, childPropertyElement, propertyValue);
             parentElement.appendChild(childPropertyElement);
         }

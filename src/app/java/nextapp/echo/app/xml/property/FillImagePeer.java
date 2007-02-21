@@ -66,7 +66,7 @@ implements XmlPropertyPeer {
         if (propertyPeer == null) {
             throw new IllegalArgumentException("Image peer not found for container image");
         } else if (!(propertyPeer instanceof ImageReferencePeer)) {
-            throw new IllegalArgumentException("Property peer not found for contained image is not an ImageReferencePeer");
+            throw new IllegalArgumentException("Property peer for contained image is not an ImageReferencePeer");
         }
         
         ImageReferencePeer imagePeer = (ImageReferencePeer) propertyPeer ;

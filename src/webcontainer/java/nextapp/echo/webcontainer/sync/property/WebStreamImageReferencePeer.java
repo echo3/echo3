@@ -8,7 +8,7 @@ import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.UserInstance;
 import nextapp.echo.webcontainer.service.StreamImageService;
 
-public class StreamImageReferencePeer extends AbstractImageReferencePeer {
+public class WebStreamImageReferencePeer extends WebAbstractImageReferencePeer {
 
     static {
         StreamImageService.install();

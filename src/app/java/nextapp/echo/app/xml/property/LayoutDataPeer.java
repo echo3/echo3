@@ -98,6 +98,7 @@ implements XmlPropertyPeer {
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        //TODO. Implement
+        //FIXME.
+        throw new UnsupportedOperationException();
     }
 }

@@ -8,7 +8,7 @@ import nextapp.echo.app.util.Context;
 import nextapp.echo.app.xml.PropertyPeerFactory;
 import nextapp.echo.app.xml.XmlContext;
 
-public class FillImagePeer extends nextapp.echo.app.xml.property.FillImagePeer {
+public class WebFillImagePeer extends nextapp.echo.app.xml.property.FillImagePeer {
 
     public Element createFillImageElement(Context context, FillImage fillImage) {
         XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
@@ -17,8 +17,8 @@ public class FillImagePeer extends nextapp.echo.app.xml.property.FillImagePeer {
         
         ImageReference imageReference = fillImage.getImage();
         PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
-        AbstractImageReferencePeer imagePeer = 
-                (AbstractImageReferencePeer) propertyPeerFactory.getPeerForProperty(imageReference.getClass());
+        WebAbstractImageReferencePeer imagePeer = 
+                (WebAbstractImageReferencePeer) propertyPeerFactory.getPeerForProperty(imageReference.getClass());
         if (imagePeer == null) {
             throw new IllegalArgumentException("Image synchronization peer not found for container image");
         }
