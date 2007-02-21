@@ -34,13 +34,13 @@ import org.w3c.dom.Element;
 import nextapp.echo.app.Border;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.xml.XmlContext;
-import nextapp.echo.webcontainer.PropertySynchronizePeer;
+import nextapp.echo.app.xml.XmlPropertyPeer;
 
 /**
  * <code>PropertySynchronizationPeer</code> implementation for <code>Color</code>s.
  */
 public class BorderPeer 
-implements PropertySynchronizePeer {
+implements XmlPropertyPeer {
 
     private static final String[] borderSideAttributeNames = new String[]{"t", "r", "b", "l"};
     

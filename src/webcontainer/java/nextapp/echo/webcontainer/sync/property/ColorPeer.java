@@ -33,13 +33,13 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.Color;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.webcontainer.PropertySynchronizePeer;
+import nextapp.echo.app.xml.XmlPropertyPeer;
 
 /**
  * <code>PropertySynchronizationPeer</code> implementation for <code>Color</code>s.
  */
 public class ColorPeer 
-implements PropertySynchronizePeer {
+implements XmlPropertyPeer {
 
     private static final String COLOR_MASK = "#000000";
     

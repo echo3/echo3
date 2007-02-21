@@ -11,6 +11,7 @@ import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.update.UpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.xml.XmlContext;
+import nextapp.echo.app.xml.XmlException;
 import nextapp.echo.app.xml.XmlPropertyPeer;
 
 public class InputProcessor {
@@ -18,11 +19,6 @@ public class InputProcessor {
     private class InputContext implements Context {
         
         private XmlContext xmlContext = new XmlContext(){
-        
-            public XmlPropertyPeer getPropertyPeer(Class propertyClass) {
-                // TODO Auto-generated method stub
-                return null;
-            }
         
             public ClassLoader getClassLoader() {
                 //FIXME. temporary, not what we want.
@@ -56,10 +52,12 @@ public class InputProcessor {
     
     private Connection conn;
     private ClientMessage clientMessage;
+    private PropertySerialPeerFactory propertyPeerFactory;
 
     public InputProcessor(Connection conn) {
         super();
         this.conn = conn;
+        propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME. temporary
     }
     
     public void process() 
@@ -92,15 +90,19 @@ public class InputProcessor {
                     continue;
                 }
                 
-                PropertySynchronizePeer propertyPeer = 
-                        (PropertySynchronizePeer) SynchronizePeerFactory.getPeerForProperty(propertyClass);
+                XmlPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(propertyClass);
+                
                 if (propertyPeer == null) {
                     continue;
                 }
                 
-                Object propertyValue = propertyPeer.toProperty(context, component.getClass(), propertyElement);
-                
-                componentPeer.storeInputProperty(context, component, propertyName, propertyValue);
+                try {
+                    Object propertyValue = propertyPeer.toProperty(context, component.getClass(), propertyElement);
+                    componentPeer.storeInputProperty(context, component, propertyName, propertyValue);
+                } catch (XmlException ex) {
+                    //FIXME. bad ex handling.
+                    throw new IOException(ex.toString());
+                }
             }
         }
         

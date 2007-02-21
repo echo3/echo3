@@ -4,11 +4,11 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.layout.RowLayoutData;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.webcontainer.PropertySynchronizePeer;
+import nextapp.echo.app.xml.XmlPropertyPeer;
 import nextapp.echo.webcontainer.sync.SyncUtil;
 
 public class RowLayoutDataPeer
-implements PropertySynchronizePeer {
+implements XmlPropertyPeer {
 
     /**
      * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(Context, Class, org.w3c.dom.Element)

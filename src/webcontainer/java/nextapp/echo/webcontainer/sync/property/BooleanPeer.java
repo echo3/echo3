@@ -1,12 +1,12 @@
 package nextapp.echo.webcontainer.sync.property;
 
 import nextapp.echo.app.util.Context;
-import nextapp.echo.webcontainer.PropertySynchronizePeer;
+import nextapp.echo.app.xml.XmlPropertyPeer;
 
 import org.w3c.dom.Element;
 
 public class BooleanPeer 
-implements PropertySynchronizePeer {
+implements XmlPropertyPeer {
 
     /**
      * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(Context, Class, org.w3c.dom.Element)

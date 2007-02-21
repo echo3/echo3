@@ -27,11 +27,6 @@ public class OutputProcessor {
 
         private XmlContext xmlContext = new XmlContext(){
         
-            public XmlPropertyPeer getPropertyPeer(Class propertyClass) {
-                // TODO Auto-generated method stub
-                return null;
-            }
-        
             public ClassLoader getClassLoader() {
                 //FIXME. temporary, not what we want.
                 return Thread.currentThread().getContextClassLoader();
@@ -51,6 +46,8 @@ public class OutputProcessor {
                 return conn;
             } else if (specificContextClass == UserInstance.class) {
                 return conn.getUserInstance();
+            } else if (specificContextClass == PropertySerialPeerFactory.class) {
+                return propertyPeerFactory;
             } else {
                 return null;
             }
@@ -60,12 +57,14 @@ public class OutputProcessor {
     private Connection conn;
     private ServerMessage serverMessage;
     private Context context;
+    private PropertySerialPeerFactory propertyPeerFactory;
     
     public OutputProcessor(Connection conn) {
         super();
         this.conn = conn;
         this.context = new OutputContext();
         serverMessage = new ServerMessage();
+        propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME temporary
     }
     
     public void process() 
@@ -94,7 +93,6 @@ public class OutputProcessor {
         
         return null;
     }
-    
     
     private void processServerOutput() {
         UserInstance userInstance = conn.getUserInstance();
@@ -203,13 +201,13 @@ public class OutputProcessor {
                 }
             }
         }
-        
+
         // Render component properties.
         Iterator propertyNameIterator = componentPeer.getOutputPropertyNames(c);
         while (propertyNameIterator.hasNext()) {
             String propertyName = (String) propertyNameIterator.next();
             Object propertyValue = componentPeer.getOutputProperty(context, c, propertyName);
-            PropertySynchronizePeer propertySyncPeer = SynchronizePeerFactory.getPeerForProperty(propertyValue.getClass());
+            XmlPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
             if (propertySyncPeer == null) {
                 //FIXME. figure out how these should be handled...ignoring is probably best.
                 System.err.println("No peer for: " + propertyValue.getClass());
@@ -285,7 +283,7 @@ public class OutputProcessor {
             if (propertyValue == null) {
                 continue;
             }
-            PropertySynchronizePeer propertySyncPeer = SynchronizePeerFactory.getPeerForProperty(propertyValue.getClass());
+            XmlPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
             if (propertySyncPeer == null) {
                 //FIXME. figure out how these should be handled...ignoring is probably best.
                 System.err.println("No peer for: " + propertyValue.getClass());
@@ -315,7 +313,7 @@ public class OutputProcessor {
                 //FIXME. handle properties changed to null.
                 System.err.println("NULLED: " + updatedPropertyNames[i]);
             } else {
-                PropertySynchronizePeer propertySyncPeer = SynchronizePeerFactory.getPeerForProperty(
+                XmlPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(
                         propertyValue.getClass());
                 if (propertySyncPeer == null) {
                     //FIXME. figure out how these should be handled...ignoring is probably best.

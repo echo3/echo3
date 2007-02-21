@@ -103,6 +103,8 @@ public class Serializer {
                 public Object get(Class specificContextClass) {
                     if (specificContextClass == XmlContext.class) {
                         return xmlContext;
+                    } else if (specificContextClass == XmlPeerFactory.class) {
+                        return factory;
                     }
                     return null;
                 }

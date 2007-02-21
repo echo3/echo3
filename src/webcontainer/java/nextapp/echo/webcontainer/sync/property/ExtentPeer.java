@@ -4,10 +4,10 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.webcontainer.PropertySynchronizePeer;
+import nextapp.echo.app.xml.XmlPropertyPeer;
 
 public class ExtentPeer 
-implements PropertySynchronizePeer {
+implements XmlPropertyPeer {
     
     public static Extent fromString(String value) {
         int separatorPoint = -1;

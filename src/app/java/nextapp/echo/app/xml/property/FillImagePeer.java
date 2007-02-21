@@ -40,6 +40,7 @@ import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlException;
+import nextapp.echo.app.xml.XmlPeerFactory;
 import nextapp.echo.app.xml.XmlPropertyPeer;
 
 /**
@@ -60,7 +61,8 @@ implements XmlPropertyPeer {
         XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
         Element fiElement = xmlContext.getDocument().createElement("fi");
         ImageReference imageReference = fillImage.getImage();
-        XmlPropertyPeer propertyPeer = xmlContext.getPropertyPeer(imageReference.getClass());
+        XmlPeerFactory peerFactory = (XmlPeerFactory) context.get(XmlPeerFactory.class);
+        XmlPropertyPeer propertyPeer = peerFactory.getPeerForProperty(imageReference.getClass());
         if (propertyPeer == null) {
             throw new IllegalArgumentException("Image peer not found for container image");
         } else if (!(propertyPeer instanceof ImageReferencePeer)) {
@@ -76,12 +78,11 @@ implements XmlPropertyPeer {
     
     public static FillImage parseFillImageElement(Context context, Element fiElement) 
     throws XmlException {
-        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
-        
         String imageType = fiElement.getAttribute("t");
         ImageReference imageReference = null;
         if ("r".equals(imageType)) {
-            XmlPropertyPeer imagePropertyPeer = xmlContext.getPropertyPeer(ResourceImageReference.class);
+            XmlPeerFactory peerFactory = (XmlPeerFactory) context.get(XmlPeerFactory.class);
+            XmlPropertyPeer imagePropertyPeer = peerFactory.getPeerForProperty(ResourceImageReference.class);
             imageReference = (ImageReference) imagePropertyPeer.toProperty(context, FillImage.class, fiElement);
         }
         int repeat = REPEAT_CONSTANTS.get(fiElement.getAttribute("r"), FillImage.REPEAT);

@@ -5,7 +5,7 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.xml.XmlContext;
-import nextapp.echo.webcontainer.SynchronizePeerFactory;
+import nextapp.echo.webcontainer.PropertySerialPeerFactory;
 
 public class SyncUtil {
 
@@ -16,7 +16,10 @@ public class SyncUtil {
             Document document = xmlContext.getDocument();       
             Element childPropertyElement = document.createElement("p");
             childPropertyElement.setAttribute("n", propertyName);
-            SynchronizePeerFactory.getPeerForProperty(propertyValue.getClass())
+            
+            PropertySerialPeerFactory propertyPeerFactory = (PropertySerialPeerFactory) context.get(PropertySerialPeerFactory.class);
+            
+            propertyPeerFactory.getPeerForProperty(propertyValue.getClass())
                     .toXml(context, objectClass, childPropertyElement, propertyValue);
             parentElement.appendChild(childPropertyElement);
         }

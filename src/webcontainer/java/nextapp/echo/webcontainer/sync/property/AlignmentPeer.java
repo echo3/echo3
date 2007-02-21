@@ -5,10 +5,10 @@ import org.w3c.dom.Element;
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.xml.XmlContext;
-import nextapp.echo.webcontainer.PropertySynchronizePeer;
+import nextapp.echo.app.xml.XmlPropertyPeer;
 
 public class AlignmentPeer 
-implements PropertySynchronizePeer {
+implements XmlPropertyPeer {
     
     /**
      * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(Context, Class, org.w3c.dom.Element)

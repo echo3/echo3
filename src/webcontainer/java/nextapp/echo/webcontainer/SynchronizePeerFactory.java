@@ -80,14 +80,14 @@ public class SynchronizePeerFactory {
         return (ComponentSynchronizePeer) peerFactory.getPeerForObject(componentClass, searchSuperClasses);
     }
     
-    /**
-     * Retrieves the appropriate <code>PropertySynchronizePeer</code> for a given 
-     * property class.
-     * 
-     * @param propertyClass the property class
-     * @return the appropriate <code>PropertySynchronizePeer</code>
-     */
-    public static PropertySynchronizePeer getPeerForProperty(Class propertyClass) {
-        return (PropertySynchronizePeer) peerFactory.getPeerForObject(propertyClass, true);
-    }
+//    /**
+//     * Retrieves the appropriate <code>PropertySynchronizePeer</code> for a given 
+//     * property class.
+//     * 
+//     * @param propertyClass the property class
+//     * @return the appropriate <code>PropertySynchronizePeer</code>
+//     */
+//    public static PropertySynchronizePeer getPeerForProperty(Class propertyClass) {
+//        return (PropertySynchronizePeer) peerFactory.getPeerForObject(propertyClass, true);
+//    }
 }
