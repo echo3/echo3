@@ -88,9 +88,9 @@
  <s n="TitleLabel" t="nextapp.echo.app.Label">
   <p n="font">
    <f sz="18px">
-    <tf>Verdana</tf>
-    <tf>Arial</tf>
-    <tf>Helvetica</tf>
+    <tf n="Verdana"/>
+    <tf n="Arial"/>
+    <tf n="Helvetica"/>
    </f>
   </p>-->
   <p n="foreground" v="#ffffff"/>

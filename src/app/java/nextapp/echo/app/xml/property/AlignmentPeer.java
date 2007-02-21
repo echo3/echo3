@@ -80,14 +80,15 @@ implements XmlPropertyPeer {
         XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
         propertyElement.setAttribute("t", "Alignment");
         Alignment alignment = (Alignment) propertyValue;
-        Element element = xmlContext.getDocument().createElement("a");
+        Element aElement = xmlContext.getDocument().createElement("a");
         String horizontal = HORIZONTAL_CONSTANTS.get(alignment.getHorizontal());
         if (horizontal != null) {
-            element.setAttribute("h", horizontal);
+            aElement.setAttribute("h", horizontal);
         }
         String vertical = VERTICAL_CONSTANTS.get(alignment.getVertical());
         if (vertical != null) {
-            element.setAttribute("v", vertical);
+            aElement.setAttribute("v", vertical);
         }
+        propertyElement.appendChild(aElement);
     }
 }

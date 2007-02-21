@@ -16,6 +16,7 @@ import nextapp.echo.app.update.ServerUpdateManager;
 import nextapp.echo.app.update.UpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
+import nextapp.echo.app.xml.PropertyPeerFactory;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlPropertyPeer;
 
@@ -46,7 +47,7 @@ public class OutputProcessor {
                 return conn;
             } else if (specificContextClass == UserInstance.class) {
                 return conn.getUserInstance();
-            } else if (specificContextClass == PropertySerialPeerFactory.class) {
+            } else if (specificContextClass == PropertyPeerFactory.class) {
                 return propertyPeerFactory;
             } else {
                 return null;
@@ -57,7 +58,7 @@ public class OutputProcessor {
     private Connection conn;
     private ServerMessage serverMessage;
     private Context context;
-    private PropertySerialPeerFactory propertyPeerFactory;
+    private PropertyPeerFactory propertyPeerFactory;
     
     public OutputProcessor(Connection conn) {
         super();

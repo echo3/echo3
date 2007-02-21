@@ -32,10 +32,12 @@ package nextapp.echo.app.xml.property;
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.Color;
+import nextapp.echo.app.FillImage;
 import nextapp.echo.app.FillImageBorder;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
+import nextapp.echo.app.xml.PropertyPeerFactory;
 import nextapp.echo.app.xml.XmlContext;
 import nextapp.echo.app.xml.XmlException;
 import nextapp.echo.app.xml.XmlPropertyPeer;
@@ -47,6 +49,9 @@ public class FillImageBorderPeer
 implements XmlPropertyPeer {
 
     public Object toProperty(Context context, Class objectClass, Element propertyElement) throws XmlException {
+        PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
+        FillImagePeer fillImagePeer = (FillImagePeer) propertyPeerFactory.getPeerForProperty(FillImage.class);
+
         Element fibElement = DomUtil.getChildElementByTagName(propertyElement, "fib");
         
         Color borderColor = fibElement.hasAttribute("bc") ? ColorPeer.fromString(fibElement.getAttribute("bc")) : null;
@@ -56,7 +61,7 @@ implements XmlPropertyPeer {
         
         Element[] fiElements = DomUtil.getChildElementsByTagName(fibElement, "fi");
         for (int i = 0; i < fiElements.length && i < 8; ++i) {
-            border.setFillImage(i, FillImagePeer.parseFillImageElement(context, fiElements[i]));
+            border.setFillImage(i, fillImagePeer.parseFillImageElement(context, fiElements[i]));
         }
 
         return border;
@@ -71,6 +76,9 @@ implements XmlPropertyPeer {
         FillImageBorder border = (FillImageBorder) propertyValue;
         propertyElement.setAttribute("t", "FillImageBorder");
         
+        PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
+        FillImagePeer fillImagePeer = (FillImagePeer) propertyPeerFactory.getPeerForProperty(FillImage.class);
+        
         Element fibElement = xmlContext.getDocument().createElement("fib");
         
         if (border.getBorderInsets() != null) {
@@ -84,7 +92,7 @@ implements XmlPropertyPeer {
         }
         
         for (int i = 0; i < 8; ++i) {
-            fibElement.appendChild(FillImagePeer.createFillImageElement(context, border.getFillImage(i)));
+            fibElement.appendChild(fillImagePeer.createFillImageElement(context, border.getFillImage(i)));
         }
         
         propertyElement.appendChild(fibElement);

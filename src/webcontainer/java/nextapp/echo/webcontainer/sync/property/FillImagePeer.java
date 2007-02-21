@@ -5,20 +5,18 @@ import org.w3c.dom.Element;
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.util.Context;
+import nextapp.echo.app.xml.PropertyPeerFactory;
 import nextapp.echo.app.xml.XmlContext;
-import nextapp.echo.app.xml.XmlPropertyPeer;
-import nextapp.echo.webcontainer.PropertySerialPeerFactory;
 
-public class FillImagePeer
-implements XmlPropertyPeer {
+public class FillImagePeer extends nextapp.echo.app.xml.property.FillImagePeer {
 
-    public static Element createFillImageElement(Context context, FillImage fillImage) {
+    public Element createFillImageElement(Context context, FillImage fillImage) {
         XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
 
         Element fiElement = xmlContext.getDocument().createElement("fi");
         
         ImageReference imageReference = fillImage.getImage();
-        PropertySerialPeerFactory propertyPeerFactory = (PropertySerialPeerFactory) context.get(PropertySerialPeerFactory.class);
+        PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
         AbstractImageReferencePeer imagePeer = 
                 (AbstractImageReferencePeer) propertyPeerFactory.getPeerForProperty(imageReference.getClass());
         if (imagePeer == null) {

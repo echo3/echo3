@@ -37,7 +37,8 @@ import nextapp.echo.app.util.PeerFactory;
 /**
  * Factory for obtaining XML peer implementations.
  */
-public class XmlPeerFactory {
+public class XmlPeerFactory 
+implements PropertyPeerFactory {
 
     private static final String RESOURCE_NAME = "META-INF/nextapp/echo/XmlPeers.properties";
 
