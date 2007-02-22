@@ -31,11 +31,12 @@ package nextapp.echo.app.xml.property;
 
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.util.Context;
+import nextapp.echo.app.xml.XmlPropertyPeer;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>ImageReference</code> properties.
  */
-public interface ImageReferencePeer {
+public interface ImageReferencePeer extends XmlPropertyPeer {
 
     public String getImageUrl(Context context, ImageReference imageReference);
 }

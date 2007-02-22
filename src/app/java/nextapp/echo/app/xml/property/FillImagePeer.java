@@ -92,7 +92,8 @@ implements XmlPropertyPeer {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toProperty(Context, Class, org.w3c.dom.Element)
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(nextapp.echo.app.util.Context,
+     *      java.lang.Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws XmlException {
@@ -101,7 +102,8 @@ implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.PropertySynchronizePeer#toXml(Context, Class, org.w3c.dom.Element, java.lang.Object)
+     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
         FillImage fillImage = (FillImage) propertyValue;
