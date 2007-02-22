@@ -32,6 +32,7 @@ package nextapp.echo.app.serial.property;
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.layout.SplitPaneLayoutData;
+import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialUtil;
 import nextapp.echo.app.util.Context;
 
@@ -45,7 +46,8 @@ extends LayoutDataPeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
+    throws SerialException {
         SplitPaneLayoutData layoutData = (SplitPaneLayoutData) propertyValue;
         propertyElement.setAttribute("t", "LayoutData");
         SerialUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "alignment", layoutData.getAlignment());

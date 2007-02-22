@@ -13,6 +13,7 @@ import nextapp.echo.app.StyleSheet;
 import nextapp.echo.app.Window;
 import nextapp.echo.app.serial.PropertyPeerFactory;
 import nextapp.echo.app.serial.SerialContext;
+import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.update.ServerUpdateManager;
@@ -71,10 +72,14 @@ public class OutputProcessor {
     public void process() 
     throws IOException {
         serverMessage.setTransactionId(conn.getUserInstance().getNextTransactionId());
-        
-        processServerOutput();
-        conn.setContentType(ContentType.TEXT_XML);
-        serverMessage.render(conn.getWriter());
+        try {
+            processServerOutput();
+            conn.setContentType(ContentType.TEXT_XML);
+            serverMessage.render(conn.getWriter());
+        } catch (SerialException ex) {
+            //FIXME. Bad exception handling.
+            throw new IOException(ex.toString());
+        }
     }
 
     private Class getStyleClass(StyleSheet styleSheet, String styleName, Class componentClass) {
@@ -95,7 +100,8 @@ public class OutputProcessor {
         return null;
     }
     
-    private void processServerOutput() {
+    private void processServerOutput() 
+    throws SerialException {
         UserInstance userInstance = conn.getUserInstance();
         UpdateManager updateManager = userInstance.getUpdateManager();
         ServerUpdateManager serverUpdateManager = updateManager.getServerUpdateManager();
@@ -172,7 +178,8 @@ public class OutputProcessor {
      * @param parentElement
      * @param c
      */
-    private Element renderComponentState(Element parentElement, Component c) {
+    private Element renderComponentState(Element parentElement, Component c)
+    throws SerialException {
         Document document = parentElement.getOwnerDocument();
         ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
         if (componentPeer == null) {
@@ -241,7 +248,8 @@ public class OutputProcessor {
         return cElement;
     }
     
-    private void renderStyleSheet() {
+    private void renderStyleSheet() 
+    throws SerialException {
         Element ssElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "ss");
         
         StyleSheet styleSheet = conn.getUserInstance().getApplicationInstance().getStyleSheet();
@@ -275,7 +283,8 @@ public class OutputProcessor {
         }
     }
     
-    private void renderStyle(Class objectClass, Element parentElement, Style style) {
+    private void renderStyle(Class objectClass, Element parentElement, Style style)
+    throws SerialException {
         Document document = parentElement.getOwnerDocument();
         Iterator it = style.getPropertyNames();
         while (it.hasNext()) {
@@ -298,7 +307,8 @@ public class OutputProcessor {
     }
 
     private void renderUpdatedProperties(Element upElement, Component c, 
-            String[] updatedPropertyNames) {
+            String[] updatedPropertyNames) 
+    throws SerialException {
         Document document = serverMessage.getDocument();
         ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
         if (componentPeer == null) {

@@ -32,6 +32,7 @@ package nextapp.echo.app.serial.property;
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.layout.ColumnLayoutData;
+import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.serial.SerialUtil;
 import nextapp.echo.app.util.Context;
@@ -53,7 +54,8 @@ implements SerialPropertyPeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context, java.lang.Class, 
      *      org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
+    throws SerialException {
         ColumnLayoutData layoutData = (ColumnLayoutData) propertyValue;
         propertyElement.setAttribute("t", "LayoutData");
         SerialUtil.toXml(context, ColumnLayoutData.class, propertyElement, "alignment", layoutData.getAlignment());

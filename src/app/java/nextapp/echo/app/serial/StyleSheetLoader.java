@@ -19,6 +19,9 @@ import nextapp.echo.app.Style;
 import nextapp.echo.app.StyleSheet;
 import nextapp.echo.app.util.DomUtil;
 
+/**
+ * Loads style sheet data from XML format into a <code>StyleSheet</code> instance. 
+ */
 public class StyleSheetLoader {
 
     /**
