@@ -63,9 +63,9 @@ public class StyleSheetLoader {
      * @return the created <code>StyleSheet</code>
      * @throws ComponentXmlException if parsing/instantiation errors occur
      */
-    public static StyleSheet load(InputStream in, ClassLoader classLoader)
+    public static StyleSheet load(InputStream in, final ClassLoader classLoader)
     throws SerialException {
-        Document document;
+        final Document document;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
@@ -106,7 +106,16 @@ public class StyleSheetLoader {
             
             DerivedMutableStyle style  = new DerivedMutableStyle();
             
-            SerialContext context = new DefaultSerialContext(classLoader, document);
+            SerialContext context = new SerialContext() {
+            
+                public ClassLoader getClassLoader() {
+                    return classLoader;
+                }
+            
+                public Document getDocument() {
+                    return document;
+                }
+            };
             
             Style propertyStyle = serializer.loadStyle(context, type, styleElements[i]);
             style.addStyleContent(propertyStyle);
