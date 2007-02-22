@@ -100,6 +100,33 @@ public class OutputProcessor {
         return null;
     }
     
+    /**
+     * Determines if the specified <code>component</code> has been rendered to
+     * the client by determining if it is a descendant of any
+     * <code>LazyRenderContainer</code>s and if so querying them to determine
+     * the hierarchy's render state. This method is recursively invoked.
+     * 
+     * @param context the relevant <code>Context</code>
+     * @param component the <code>Component</code> to analyze
+     * @return <code>true</code> if the <code>Component</code> has been
+     *         rendered to the client
+     */
+    private boolean isRendered(Context context, Component component) {
+        //FIXME. This code is 100% untested in Echo3.
+        Component parent = component.getParent();
+        if (parent == null) {
+            return true;
+        }
+        ComponentSynchronizePeer syncPeer = SynchronizePeerFactory.getPeerForComponent(parent.getClass());
+        if (syncPeer instanceof LazyRenderContainer) {
+            boolean rendered = ((LazyRenderContainer) syncPeer).isRendered(context, parent, component);
+            if (!rendered) {
+                return false;
+            }
+        }
+        return isRendered(context, parent);
+    }
+    
     private void processServerOutput() 
     throws SerialException {
         UserInstance userInstance = conn.getUserInstance();
@@ -117,7 +144,21 @@ public class OutputProcessor {
             renderComponentState(addElement, content);
         } else {
             ServerComponentUpdate[] componentUpdates = updateManager.getServerUpdateManager().getComponentUpdates();
+            
+            // Remove any updates whose updates are descendants of components which have not been rendered to the
+            // client yet due to lazy-loading containers.
             for (int i = 0; i < componentUpdates.length; ++i) {
+                if (!isRendered(context, componentUpdates[i].getParent())) {
+                    componentUpdates[i] = null;
+                }
+            }
+
+            for (int i = 0; i < componentUpdates.length; ++i) {
+                if (componentUpdates[i] == null) {
+                    // Update removed, do nothing.
+                    continue;
+                }
+                
                 // Removed children.
                 Component[] removedChildren = componentUpdates[i].getRemovedChildren();
                 for (int j = 0; j < removedChildren.length; ++j) {
@@ -336,33 +377,4 @@ public class OutputProcessor {
             upElement.appendChild(pElement);
         }
     }
-    
-//FIXME. Re-add isRendered() method and use appropriately.    
-//    /**
-//     * Determines if the specified <code>component</code> has been rendered to
-//     * the client by determining if it is a descendant of any
-//     * <code>LazyRenderContainer</code>s and if so querying them to determine
-//     * the hierarchy's render state. This method is recursively invoked.
-//     * 
-//     * @param userInstance the relevant <code>UserInstance</code>
-//     * @param component the <code>Component</code> to analyze
-//     * @return <code>true</code> if the <code>Component</code> has been
-//     *         rendered to the client
-//     */
-//    private boolean isRendered(UserInstance userInstance, Component component) {
-//        Component parent = component.getParent();
-//        if (parent == null) {
-//            return true;
-//        }
-//        ComponentSynchronizePeer syncPeer = SynchronizePeerFactory.getPeerForComponent(parent.getClass());
-//        if (syncPeer instanceof LazyRenderContainer) {
-//            boolean rendered = ((LazyRenderContainer) syncPeer).isRendered(ci, parent, component);
-//            if (!rendered) {
-//                return false;
-//            }
-//        }
-//        return isRendered(ci, parent);
-//        return true;
-//    }    
-
 }
