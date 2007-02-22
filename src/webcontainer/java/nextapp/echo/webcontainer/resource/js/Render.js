@@ -4,20 +4,26 @@
  */
 EchoRender = function() { };
 
-EchoRender.peers = new EchoCore.Collections.Map();
+EchoRender._peers = new EchoCore.Collections.Map();
+
+/**
+ * Map containing removed components.  Maps component ids to removed components.
+ * Created and destroyed during each render. 
+ */
+EchoRender._disposedComponents = null;
 
 EchoRender.registerPeer = function(componentName, peerObject) {
-    EchoRender.peers.put(componentName, peerObject);
+    EchoRender._peers.put(componentName, peerObject);
 };
 
-EchoRender.loadPeer = function(component) {
+EchoRender._loadPeer = function(component) {
     if (component.peer) {
         return;
 // FIXME. which behavior is correct for this scenario: ignore or fail?    
 //        throw new Error("Peer already installed: " + component);
     }
     
-    var peerClass = EchoRender.peers.get(component.componentType);
+    var peerClass = EchoRender._peers.get(component.componentType);
     
     if (!peerClass) {
         throw new Error("Peer not found for: " + component.componentType);
@@ -30,15 +36,25 @@ EchoRender.loadPeer = function(component) {
     component.peer.init();
 };
 
-// FIXME. not invoked...ever.
+// FIXME. Ensure this is properly invoked and no peers are being leaked.
 EchoRender.unloadPeer = function(component) {
     component.peer.component = null;
     component.peer = null;
 };
 
+EchoRender._setPeerDisposedState = function(component, disposed) {
+    if (disposed) {
+        component.peer.disposed = true;
+        EchoRender._disposedComponents.put(component.renderId, component);
+    } else {
+        component.peer.disposed = false;
+        EchoRender._disposedComponents.remove(component.renderId);
+    }
+};
+
 EchoRender.renderComponentAdd = function(update, component, parentElement) {
-    EchoRender.loadPeer(component);
-    component.peer.disposed = false;
+    EchoRender._loadPeer(component);
+    EchoRender._setPeerDisposedState(component, false);
     component.peer.renderAdd(update, parentElement);
 };
 
@@ -62,7 +78,7 @@ EchoRender._renderComponentDisposeImpl = function(update, component, removeIds) 
     if (component.peer.disposed) {
         return;
     }
-    component.peer.disposed = true;
+    EchoRender._setPeerDisposedState(component, true);
     
 EchoCore.Debug.consoleWrite("Dispose:" + component.renderId);    
 
@@ -128,6 +144,9 @@ EchoRender.processUpdates = function(updateManager) {
         return;
     }
     
+    // Create map to contain removed components (for peer unloading).
+    EchoRender._disposedComponents = new EchoCore.Collections.Map();
+    
     var updates = updateManager.getUpdates();
     EchoCore.Debug.consoleWrite(updates.length);
     
@@ -136,7 +155,7 @@ EchoRender.processUpdates = function(updateManager) {
     for (var i = 0; i < updates.length; ++i) {
         var peers = updates[i].parent.peer;
         if (peer == null && updates[i].parent.componentType == "Root") {
-            EchoRender.loadPeer(updates[i].parent);
+            EchoRender._loadPeer(updates[i].parent);
         }
     }
 
@@ -157,9 +176,6 @@ EchoRender.processUpdates = function(updateManager) {
         }
         var peer = updates[i].parent.peer;
         
-        // Set disposed set of peer to false.
-        peer.disposed = false;
-        
         var fullRender = peer.renderUpdate(updates[i]);
         if (fullRender) {
             // If update required full-rerender of child component hierarchy, remove
@@ -170,7 +186,23 @@ EchoRender.processUpdates = function(updateManager) {
                 }
             }
         }
+
+        //FIXME....moved after loop, ensure this is okay (evaluate use of dispose).
+        // Set disposed set of peer to false.
+        EchoRender._setPeerDisposedState(updates[i].parent, false);
     }
+    
+    //var ds = "DISPOSEARRAY:";
+    
+    // Unload peers for truly removed components, destroy mapping.
+    for (var componentId in EchoRender._disposedComponents.associations) {
+        //ds += "\n";
+        var component = EchoRender._disposedComponents.associations[componentId];
+        //ds += component;
+        EchoRender.unloadPeer(component);
+    }
+    EchoRender._disposedComponents = null;
+    //alert(ds); ///FIXME Remove this debug code.
     
     updateManager.purge();
     

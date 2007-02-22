@@ -6,7 +6,23 @@ EchoRender.ComponentSync.SplitPane = function() { };
 EchoRender.ComponentSync.SplitPane.prototype = new EchoRender.ComponentSync;
 
 EchoRender.ComponentSync.SplitPane.prototype.renderDispose = function(update) {
+    var firstPaneDivElement = document.getElementById(this.component.renderId + "_pane0");
     var separatorDivElement = document.getElementById(this.component.renderId + "_separator");
+    var secondPaneDivElement = document.getElementById(this.component.renderId + "_pane1");
+
+    if (firstPaneDivElement) {
+        this._firstPaneData = new Object();
+        this._firstPaneData.id = null;
+        this._firstPaneData.scrollTop = firstPaneDivElement.scrollTop;
+        this._firstPaneData.scrollLeft = firstPaneDivElement.scrollLeft;
+    }
+    if (secondPaneDivElement) {
+        this._secondPaneData = new Object();
+        this._secondPaneData.id = null;
+        this._secondPaneData.scrollTop = secondPaneDivElement.scrollTop;
+        this._secondPaneData.scrollLeft = secondPaneDivElement.scrollLeft;
+    }
+    
     if (separatorDivElement) {
         EchoWebCore.EventProcessor.remove(separatorDivElement, "mousedown", new EchoCore.MethodRef(this,
                 this._processSeparatorMouseDown), false);
@@ -179,7 +195,7 @@ EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parent
     this.loadRenderData();
     var separatorColor = new EchoApp.Property.Color("red"); 
     var separatorImage = null;
-
+    
     var childCount = this.component.getComponentCount();
     if (childCount > 2) {
         throw new Error("Cannot render SplitPane with more than two child components.");
