@@ -27,7 +27,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml.property;
+package nextapp.echo.app.serial.property;
 
 import java.util.StringTokenizer;
 
@@ -36,18 +36,18 @@ import org.w3c.dom.Element;
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Extent;
+import nextapp.echo.app.serial.SerialContext;
+import nextapp.echo.app.serial.SerialException;
+import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.ConstantMap;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
-import nextapp.echo.app.xml.XmlContext;
-import nextapp.echo.app.xml.XmlException;
-import nextapp.echo.app.xml.XmlPropertyPeer;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>Border</code> properties.
  */
 public class BorderPeer 
-implements XmlPropertyPeer {
+implements SerialPropertyPeer {
     
     private static final ConstantMap STYLE_CONSTANT_MAP = new ConstantMap();
     static {
@@ -79,7 +79,7 @@ implements XmlPropertyPeer {
     }
     
     public static final Border.Side fromString(String value) 
-    throws XmlException {
+    throws SerialException {
         StringTokenizer st = new StringTokenizer(value, " ");
         String sizeString = st.nextToken();
         String styleString = st.nextToken();
@@ -93,11 +93,11 @@ implements XmlPropertyPeer {
     }
     
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(Context,
      *      Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
-    throws XmlException {
+    throws SerialException {
         if (propertyElement.hasAttribute("v")) {
             Border.Side side = fromString(propertyElement.getAttribute("v"));
             return new Border(new Border.Side[]{side});
@@ -122,11 +122,11 @@ implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
+        SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
         propertyElement.setAttribute("t", "Border");
         Border border = (Border) propertyValue;
         if (border.isMultisided()) {

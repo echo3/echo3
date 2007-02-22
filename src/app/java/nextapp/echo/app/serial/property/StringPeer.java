@@ -27,39 +27,34 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml.property;
+package nextapp.echo.app.serial.property;
+
+import nextapp.echo.app.serial.SerialPropertyPeer;
+import nextapp.echo.app.util.Context;
 
 import org.w3c.dom.Element;
 
-import nextapp.echo.app.layout.RowLayoutData;
-import nextapp.echo.app.util.Context;
-import nextapp.echo.app.xml.XmlPropertyPeer;
-import nextapp.echo.app.xml.XmlUtil;
-
 /**
- * <code>XmlPropertyPeer</code> for <code>RowLayout</code> properties.
+ * <code>XmlPropertyPeer</code> for <code>String</code> properties.
  */
-public class RowLayoutDataPeer
-implements XmlPropertyPeer {
+public class StringPeer 
+implements SerialPropertyPeer {
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(Context, 
      *      Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) {
-        throw new UnsupportedOperationException();
+        return propertyElement.getAttribute("v");
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        RowLayoutData layoutData = (RowLayoutData) propertyValue;
-        propertyElement.setAttribute("t", "LayoutData");
-        XmlUtil.toXml(context, RowLayoutData.class, propertyElement, "alignment", layoutData.getAlignment());
-        XmlUtil.toXml(context, RowLayoutData.class, propertyElement, "background", layoutData.getBackground());
-        XmlUtil.toXml(context, RowLayoutData.class, propertyElement, "backgroundImage", layoutData.getBackgroundImage());
-        XmlUtil.toXml(context, RowLayoutData.class, propertyElement, "insets", layoutData.getInsets());
+    public void toXml(Context context, Class objectClass,
+            Element propertyElement, Object propertyValue) {
+        propertyElement.setAttribute("t", "s");
+        propertyElement.setAttribute("v", (String) propertyValue);
     }
 }

@@ -2,7 +2,7 @@ package nextapp.echo.app.test.xml;
 
 import junit.framework.TestCase;
 import nextapp.echo.app.Border;
-import nextapp.echo.app.xml.Serializer;
+import nextapp.echo.app.serial.Serializer;
 
 public class SerializerTest extends TestCase {
 

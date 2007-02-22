@@ -27,7 +27,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml;
+package nextapp.echo.app.serial;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +37,7 @@ import nextapp.echo.app.util.PeerFactory;
 /**
  * Factory for obtaining XML peer implementations.
  */
-public class XmlPeerFactory 
+public class SerialPeerFactory 
 implements PropertyPeerFactory {
 
     private static final String RESOURCE_NAME = "META-INF/nextapp/echo/XmlPeers.properties";
@@ -56,18 +56,18 @@ implements PropertyPeerFactory {
      *        dynamically loading peer classes
      * @return the <code>XmlPeerFactory</code>
      */
-    public static XmlPeerFactory forClassLoader(ClassLoader classLoader) {
+    public static SerialPeerFactory forClassLoader(ClassLoader classLoader) {
         synchronized(classLoaderToPropertyLoaderMap) {
-            XmlPeerFactory xmlPeerFactory = (XmlPeerFactory) classLoaderToPropertyLoaderMap.get(classLoader);
+            SerialPeerFactory xmlPeerFactory = (SerialPeerFactory) classLoaderToPropertyLoaderMap.get(classLoader);
             if (xmlPeerFactory == null) {
-                xmlPeerFactory = new XmlPeerFactory(classLoader);
+                xmlPeerFactory = new SerialPeerFactory(classLoader);
                 classLoaderToPropertyLoaderMap.put(classLoader, xmlPeerFactory);
             }
             return xmlPeerFactory;
         }
     }
     
-    private XmlPeerFactory(ClassLoader classLoader) {
+    private SerialPeerFactory(ClassLoader classLoader) {
         peerFactory = new PeerFactory(RESOURCE_NAME, classLoader);
     }
     
@@ -78,7 +78,7 @@ implements PropertyPeerFactory {
      * @param propertyClass the property class
      * @return the appropriate <code>XmlPropertyPeer</code>
      */
-    public XmlPropertyPeer getPeerForProperty(Class propertyClass) {
-        return (XmlPropertyPeer) peerFactory.getPeerForObject(propertyClass, true);
+    public SerialPropertyPeer getPeerForProperty(Class propertyClass) {
+        return (SerialPropertyPeer) peerFactory.getPeerForObject(propertyClass, true);
     }
 }

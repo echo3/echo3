@@ -1,16 +1,16 @@
-package nextapp.echo.app.xml;
+package nextapp.echo.app.serial;
 
 import org.w3c.dom.Element;
 import nextapp.echo.app.util.Context;
 
-public class XmlUtil {
+public class SerialUtil {
     
     //FIXME. this class needs a better name.
 
     public static void toXml(Context context, Class objectClass, Element parentElement, String propertyName, 
             Object propertyValue) {
         if (propertyValue != null) {
-            XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
+            SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
             Element childPropertyElement = xmlContext.getDocument().createElement("p");
             childPropertyElement.setAttribute("n", propertyName);
             

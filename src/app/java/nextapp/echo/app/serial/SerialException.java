@@ -1,6 +1,6 @@
 /* 
  * This file is part of the Echo Web Application Framework (hereinafter "Echo").
- * Copyright (C) 2002-2007 NextApp, Inc.
+ * Copyright (C) 2002-2005 NextApp, Inc.
  *
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -27,16 +27,34 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml.property;
-
-import nextapp.echo.app.ImageReference;
-import nextapp.echo.app.util.Context;
-import nextapp.echo.app.xml.XmlPropertyPeer;
+package nextapp.echo.app.serial;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>ImageReference</code> properties.
+ * An exception describing a general failure in the execution of 
+ * loading component / stylesheet resources from XML.
  */
-public interface ImageReferencePeer extends XmlPropertyPeer {
-
-    public String getImageUrl(Context context, ImageReference imageReference);
+public class SerialException extends Exception {
+    
+    private Throwable cause;
+    
+    /**
+     * Creates a new <code>ComponentXmlException</code>.
+     * 
+     * @param message A message describing the problem
+     * @param cause the exception which caused this exception, 
+     *        if applicable
+     */
+    public SerialException(String message, Throwable cause) {
+        super(message);
+        this.cause = cause;
+    }
+    
+    /**
+     * Returns the causing exception, if applicable.
+     * 
+     * @return the causing exception
+     */
+    public Throwable getCause() {
+        return cause;
+    }
 }

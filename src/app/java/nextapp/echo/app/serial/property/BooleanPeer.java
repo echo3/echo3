@@ -27,32 +27,37 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml.property;
+package nextapp.echo.app.serial.property;
+
+import nextapp.echo.app.serial.SerialPropertyPeer;
+import nextapp.echo.app.util.Context;
 
 import org.w3c.dom.Element;
 
-import nextapp.echo.app.layout.SplitPaneLayoutData;
-import nextapp.echo.app.util.Context;
-import nextapp.echo.app.xml.XmlUtil;
-
 /**
- * <code>XmlPropertyPeer</code> for <code>SplitPane</code> properties.
+ * <code>XmlPropertyPeer</code> for <code>Boolean</code> properties.
  */
-public class SplitPaneLayoutDataPeer
-extends LayoutDataPeer {
+public class BooleanPeer 
+implements SerialPropertyPeer {
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(Context,
+     *      Class, org.w3c.dom.Element)
+     */
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) {
+        String valueText = propertyElement.getAttribute("v");
+        if (valueText == null) {
+            return null;
+        }
+        return "1".equals(valueText) ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    /**
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        SplitPaneLayoutData layoutData = (SplitPaneLayoutData) propertyValue;
-        propertyElement.setAttribute("t", "LayoutData");
-        XmlUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "alignment", layoutData.getAlignment());
-        XmlUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "background", layoutData.getBackground());
-        XmlUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "backgroundImage", layoutData.getBackgroundImage());
-        XmlUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "insets", layoutData.getInsets());
-        XmlUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "maximumSize", layoutData.getMaximumSize());
-        XmlUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "minimumSize", layoutData.getMinimumSize());
+        propertyElement.setAttribute("t", "b");
+        propertyElement.setAttribute("v", propertyValue.toString());
     }
 }

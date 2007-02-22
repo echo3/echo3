@@ -6,22 +6,22 @@ import nextapp.echo.app.Color;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.Insets;
-import nextapp.echo.app.xml.XmlPeerFactory;
-import nextapp.echo.app.xml.property.AlignmentPeer;
-import nextapp.echo.app.xml.property.BooleanPeer;
-import nextapp.echo.app.xml.property.BorderPeer;
-import nextapp.echo.app.xml.property.ColorPeer;
-import nextapp.echo.app.xml.property.ExtentPeer;
-import nextapp.echo.app.xml.property.FillImagePeer;
-import nextapp.echo.app.xml.property.InsetsPeer;
-import nextapp.echo.app.xml.property.IntegerPeer;
-import nextapp.echo.app.xml.property.StringPeer;
+import nextapp.echo.app.serial.SerialPeerFactory;
+import nextapp.echo.app.serial.property.AlignmentPeer;
+import nextapp.echo.app.serial.property.BooleanPeer;
+import nextapp.echo.app.serial.property.BorderPeer;
+import nextapp.echo.app.serial.property.ColorPeer;
+import nextapp.echo.app.serial.property.ExtentPeer;
+import nextapp.echo.app.serial.property.FillImagePeer;
+import nextapp.echo.app.serial.property.InsetsPeer;
+import nextapp.echo.app.serial.property.IntegerPeer;
+import nextapp.echo.app.serial.property.StringPeer;
 import junit.framework.TestCase;
 
 public class PeerLoadTest extends TestCase {
     
     public void testPeerLoad() {
-        XmlPeerFactory factory = XmlPeerFactory.forClassLoader(Thread.currentThread().getContextClassLoader());
+        SerialPeerFactory factory = SerialPeerFactory.forClassLoader(Thread.currentThread().getContextClassLoader());
 
         assertTrue(factory.getPeerForProperty(Boolean.class) instanceof BooleanPeer);
         assertTrue(factory.getPeerForProperty(Integer.class) instanceof IntegerPeer);

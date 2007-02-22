@@ -27,20 +27,20 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml.property;
+package nextapp.echo.app.serial.property;
 
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.Extent;
+import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.ConstantMap;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.app.xml.XmlPropertyPeer;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>Extent</code> properties.
  */
 public class ExtentPeer 
-implements XmlPropertyPeer {
+implements SerialPropertyPeer {
 
     private static final ConstantMap suffixConstantMap = new ConstantMap();
     static {
@@ -84,7 +84,7 @@ implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(Context,
      *      Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) {
@@ -92,7 +92,7 @@ implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context, 
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context, 
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {

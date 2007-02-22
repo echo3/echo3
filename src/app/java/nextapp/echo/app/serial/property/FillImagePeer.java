@@ -27,7 +27,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml.property;
+package nextapp.echo.app.serial.property;
 
 import org.w3c.dom.Element;
 
@@ -35,19 +35,19 @@ import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.ResourceImageReference;
+import nextapp.echo.app.serial.PropertyPeerFactory;
+import nextapp.echo.app.serial.SerialContext;
+import nextapp.echo.app.serial.SerialException;
+import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.ConstantMap;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
-import nextapp.echo.app.xml.PropertyPeerFactory;
-import nextapp.echo.app.xml.XmlContext;
-import nextapp.echo.app.xml.XmlException;
-import nextapp.echo.app.xml.XmlPropertyPeer;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>FillImage</code> properties.
  */
 public class FillImagePeer
-implements XmlPropertyPeer {
+implements SerialPropertyPeer {
     
     private static final ConstantMap REPEAT_CONSTANTS = new ConstantMap();
     static {
@@ -58,11 +58,11 @@ implements XmlPropertyPeer {
     }
 
     public Element createFillImageElement(Context context, FillImage fillImage) {
-        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
+        SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
         Element fiElement = xmlContext.getDocument().createElement("fi");
         ImageReference imageReference = fillImage.getImage();
         PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
-        XmlPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(imageReference.getClass());
+        SerialPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(imageReference.getClass());
         if (propertyPeer == null) {
             throw new IllegalArgumentException("Image peer not found for container image");
         } else if (!(propertyPeer instanceof ImageReferencePeer)) {
@@ -77,12 +77,12 @@ implements XmlPropertyPeer {
     }
     
     public FillImage parseFillImageElement(Context context, Element fiElement) 
-    throws XmlException {
+    throws SerialException {
         String imageType = fiElement.getAttribute("t");
         ImageReference imageReference = null;
         if ("r".equals(imageType)) {
             PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
-            XmlPropertyPeer imagePropertyPeer = propertyPeerFactory.getPeerForProperty(ResourceImageReference.class);
+            SerialPropertyPeer imagePropertyPeer = propertyPeerFactory.getPeerForProperty(ResourceImageReference.class);
             imageReference = (ImageReference) imagePropertyPeer.toProperty(context, FillImage.class, fiElement);
         }
         int repeat = REPEAT_CONSTANTS.get(fiElement.getAttribute("r"), FillImage.REPEAT);
@@ -92,17 +92,17 @@ implements XmlPropertyPeer {
     }
     
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(nextapp.echo.app.util.Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
-    throws XmlException {
+    throws SerialException {
         Element fiElement = DomUtil.getChildElementByTagName(propertyElement, "fi");
         return parseFillImageElement(context, fiElement);
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {

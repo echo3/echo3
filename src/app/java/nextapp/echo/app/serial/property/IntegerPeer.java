@@ -27,14 +27,14 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml.property;
+package nextapp.echo.app.serial.property;
 
 import nextapp.echo.app.reflect.IntrospectorFactory;
 import nextapp.echo.app.reflect.ObjectIntrospector;
+import nextapp.echo.app.serial.SerialContext;
+import nextapp.echo.app.serial.SerialException;
+import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.app.xml.XmlContext;
-import nextapp.echo.app.xml.XmlException;
-import nextapp.echo.app.xml.XmlPropertyPeer;
 
 import org.w3c.dom.Element;
 
@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * <code>XmlPropertyPeer</code> for <code>Integer</code> properties.
  */
 public class IntegerPeer 
-implements XmlPropertyPeer {
+implements SerialPropertyPeer {
     
     /**
      * @param the relevant <code>XmlContext</code>
@@ -53,8 +53,8 @@ implements XmlPropertyPeer {
      *         constant is not found.
      */
     private Integer introspectConstantValue(Context context, Class objectClass, String value) 
-    throws XmlException {
-        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
+    throws SerialException {
+        SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
         try {
             ObjectIntrospector introspector = IntrospectorFactory.get(objectClass.getName(), 
                     xmlContext.getClassLoader());
@@ -70,12 +70,12 @@ implements XmlPropertyPeer {
             }
         } catch (ClassNotFoundException ex) {
             // Should not occur.
-            throw new XmlException("Object class not found.", ex);  
+            throw new SerialException("Object class not found.", ex);  
         }
     }
 
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
-    throws XmlException {
+    throws SerialException {
         String valueText = propertyElement.getAttribute("v");
         try {
             return new Integer(valueText);
@@ -85,7 +85,7 @@ implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {

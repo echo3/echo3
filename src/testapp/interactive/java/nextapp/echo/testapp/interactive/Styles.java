@@ -33,7 +33,7 @@ import nextapp.echo.app.FillImage;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.StyleSheet;
-import nextapp.echo.app.xml.XmlException;
+import nextapp.echo.app.serial.SerialException;
 
 /**
  * 
@@ -99,9 +99,9 @@ public class Styles {
     public static final StyleSheet DEFAULT_STYLE_SHEET;
     static {
         try {
-            DEFAULT_STYLE_SHEET = nextapp.echo.app.xml.StyleSheetLoader.load(STYLE_PATH + "Default.stylesheet.xml", 
+            DEFAULT_STYLE_SHEET = nextapp.echo.app.serial.StyleSheetLoader.load(STYLE_PATH + "Default.stylesheet.xml", 
                     Thread.currentThread().getContextClassLoader());
-        } catch (XmlException ex) {
+        } catch (SerialException ex) {
             throw new RuntimeException(ex);
         }
     }

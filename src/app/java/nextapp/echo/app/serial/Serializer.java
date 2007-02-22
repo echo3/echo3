@@ -1,4 +1,4 @@
-package nextapp.echo.app.xml;
+package nextapp.echo.app.serial;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,7 +48,7 @@ public class Serializer {
         javaLangTypeMap = Collections.unmodifiableMap(m);
     }
     
-    private XmlPeerFactory factory;
+    private SerialPeerFactory factory;
     private Map typeMap;
     private ClassLoader classLoader;
     
@@ -56,7 +56,7 @@ public class Serializer {
         super();
         
         this.classLoader = classLoader;
-        factory = XmlPeerFactory.forClassLoader(classLoader);
+        factory = SerialPeerFactory.forClassLoader(classLoader);
         
         typeMap = new HashMap();
     }
@@ -93,15 +93,15 @@ public class Serializer {
         return clazz;
     }
     
-    public Style loadStyle(final XmlContext xmlContext, String componentType, Element containerElement) 
-    throws XmlException {
+    public Style loadStyle(final SerialContext xmlContext, String componentType, Element containerElement) 
+    throws SerialException {
         try {
             ObjectIntrospector introspector = IntrospectorFactory.get(componentType, classLoader);
             MutableStyle style = new MutableStyle();
 
             Context context = new Context() {
                 public Object get(Class specificContextClass) {
-                    if (specificContextClass == XmlContext.class) {
+                    if (specificContextClass == SerialContext.class) {
                         return xmlContext;
                     } else if (specificContextClass == PropertyPeerFactory.class) {
                         return factory;
@@ -114,25 +114,25 @@ public class Serializer {
             for (int i = 0; i < pElements.length; ++i) {
                 // Retrieve property name.
                 if (!pElements[i].hasAttribute("n")) {
-                    throw new XmlException("Found property without type in component \"" + componentType + "\".", null);
+                    throw new SerialException("Found property without type in component \"" + componentType + "\".", null);
                 }
                 String name = pElements[i].getAttribute("n");
 
-                XmlPropertyPeer peer = null;
+                SerialPropertyPeer peer = null;
                 Class propertyClass = null;
                 if (pElements[i].hasAttribute("t")) {
                     String type = pElements[i].getAttribute("t");
                     propertyClass = getClass(type);
-                    peer = (XmlPropertyPeer) factory.getPeerForProperty(propertyClass);
+                    peer = (SerialPropertyPeer) factory.getPeerForProperty(propertyClass);
                 }
                 
                 if (peer == null) {
                     propertyClass = introspector.getPropertyClass(name);
-                    peer = (XmlPropertyPeer) factory.getPeerForProperty(propertyClass);
+                    peer = (SerialPropertyPeer) factory.getPeerForProperty(propertyClass);
                 }
                 
                 if (propertyClass == null) {
-                    throw new XmlException("Cannot find class for property: " + componentType + "." + name, null);
+                    throw new SerialException("Cannot find class for property: " + componentType + "." + name, null);
                 }
                 
                 if (peer == null) {
@@ -146,7 +146,7 @@ public class Serializer {
             
             return style;
         } catch (ClassNotFoundException ex) {
-            throw new XmlException("Error loading class.", ex);
+            throw new SerialException("Error loading class.", ex);
         }
     }
 }

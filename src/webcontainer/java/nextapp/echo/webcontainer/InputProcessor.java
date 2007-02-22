@@ -7,18 +7,18 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.Component;
+import nextapp.echo.app.serial.SerialContext;
+import nextapp.echo.app.serial.SerialException;
+import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.update.UpdateManager;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.app.xml.XmlContext;
-import nextapp.echo.app.xml.XmlException;
-import nextapp.echo.app.xml.XmlPropertyPeer;
 
 public class InputProcessor {
 
     private class InputContext implements Context {
         
-        private XmlContext xmlContext = new XmlContext(){
+        private SerialContext xmlContext = new SerialContext(){
         
             public ClassLoader getClassLoader() {
                 //FIXME. temporary, not what we want.
@@ -34,7 +34,7 @@ public class InputProcessor {
          * @see nextapp.echo.app.util.Context#get(java.lang.Class)
          */
         public Object get(Class specificContextClass) {
-            if (specificContextClass == XmlContext.class) {
+            if (specificContextClass == SerialContext.class) {
                 return xmlContext;
             } else if (specificContextClass == Connection.class) {
                 return conn;
@@ -90,7 +90,7 @@ public class InputProcessor {
                     continue;
                 }
                 
-                XmlPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(propertyClass);
+                SerialPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(propertyClass);
                 
                 if (propertyPeer == null) {
                     continue;
@@ -99,7 +99,7 @@ public class InputProcessor {
                 try {
                     Object propertyValue = propertyPeer.toProperty(context, component.getClass(), propertyElement);
                     componentPeer.storeInputProperty(context, component, propertyName, propertyValue);
-                } catch (XmlException ex) {
+                } catch (SerialException ex) {
                     //FIXME. bad ex handling.
                     throw new IOException(ex.toString());
                 }

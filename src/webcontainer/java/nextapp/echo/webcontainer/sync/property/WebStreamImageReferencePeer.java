@@ -4,8 +4,8 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.StreamImageReference;
+import nextapp.echo.app.serial.property.ImageReferencePeer;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.app.xml.property.ImageReferencePeer;
 import nextapp.echo.webcontainer.UserInstance;
 import nextapp.echo.webcontainer.service.StreamImageService;
 
@@ -16,7 +16,7 @@ public class WebStreamImageReferencePeer implements ImageReferencePeer {
     }
     
     /**
-     * @see nextapp.echo.app.xml.property.ImageReferencePeer#getImageUrl(nextapp.echo.app.util.Context,
+     * @see nextapp.echo.app.serial.property.ImageReferencePeer#getImageUrl(nextapp.echo.app.util.Context,
      *      nextapp.echo.app.ImageReference)
      */
     public String getImageUrl(Context context, ImageReference imageReference) {
@@ -26,7 +26,7 @@ public class WebStreamImageReferencePeer implements ImageReferencePeer {
     }
     
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(nextapp.echo.app.util.Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) {
@@ -35,7 +35,7 @@ public class WebStreamImageReferencePeer implements ImageReferencePeer {
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context rc, Class objectClass, Element propertyElement, Object propertyValue) {

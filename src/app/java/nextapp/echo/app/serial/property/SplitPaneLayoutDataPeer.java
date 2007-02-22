@@ -27,38 +27,32 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml.property;
+package nextapp.echo.app.serial.property;
 
 import org.w3c.dom.Element;
 
-import nextapp.echo.app.layout.ColumnLayoutData;
+import nextapp.echo.app.layout.SplitPaneLayoutData;
+import nextapp.echo.app.serial.SerialUtil;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.app.xml.XmlPropertyPeer;
-import nextapp.echo.app.xml.XmlUtil;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>ColumnLayoutData</code> properties.
+ * <code>XmlPropertyPeer</code> for <code>SplitPane</code> properties.
  */
-public class ColumnLayoutDataPeer
-implements XmlPropertyPeer {
+public class SplitPaneLayoutDataPeer
+extends LayoutDataPeer {
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(Context, Class, org.w3c.dom.Element)
-     */
-    public Object toProperty(Context context, Class objectClass, Element propertyElement) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context, java.lang.Class, 
-     *      org.w3c.dom.Element, java.lang.Object)
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        ColumnLayoutData layoutData = (ColumnLayoutData) propertyValue;
+        SplitPaneLayoutData layoutData = (SplitPaneLayoutData) propertyValue;
         propertyElement.setAttribute("t", "LayoutData");
-        XmlUtil.toXml(context, ColumnLayoutData.class, propertyElement, "alignment", layoutData.getAlignment());
-        XmlUtil.toXml(context, ColumnLayoutData.class, propertyElement, "background", layoutData.getBackground());
-        XmlUtil.toXml(context, ColumnLayoutData.class, propertyElement, "backgroundImage", layoutData.getBackgroundImage());
-        XmlUtil.toXml(context, ColumnLayoutData.class, propertyElement, "insets", layoutData.getInsets());
+        SerialUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "alignment", layoutData.getAlignment());
+        SerialUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "background", layoutData.getBackground());
+        SerialUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "backgroundImage", layoutData.getBackgroundImage());
+        SerialUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "insets", layoutData.getInsets());
+        SerialUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "maximumSize", layoutData.getMaximumSize());
+        SerialUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "minimumSize", layoutData.getMinimumSize());
     }
 }

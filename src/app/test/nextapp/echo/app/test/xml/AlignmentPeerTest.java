@@ -35,7 +35,7 @@ import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Style;
 import nextapp.echo.app.StyleSheet;
-import nextapp.echo.app.xml.StyleSheetLoader;
+import nextapp.echo.app.serial.StyleSheetLoader;
 import junit.framework.TestCase;
 
 /**

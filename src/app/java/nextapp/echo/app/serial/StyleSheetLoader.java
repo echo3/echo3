@@ -1,4 +1,4 @@
-package nextapp.echo.app.xml;
+package nextapp.echo.app.serial;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +37,7 @@ public class StyleSheetLoader {
      * @throws ComponentXmlException if parsing/instantiation errors occur
      */
     public static StyleSheet load(String resourceName, ClassLoader classLoader)
-    throws XmlException {
+    throws SerialException {
         InputStream in = null;
         try {
             in = classLoader.getResourceAsStream(resourceName);
@@ -64,7 +64,7 @@ public class StyleSheetLoader {
      * @throws ComponentXmlException if parsing/instantiation errors occur
      */
     public static StyleSheet load(InputStream in, ClassLoader classLoader)
-    throws XmlException {
+    throws SerialException {
         Document document;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -72,11 +72,11 @@ public class StyleSheetLoader {
             DocumentBuilder builder = factory.newDocumentBuilder();
             document = builder.parse(in);
         } catch (IOException ex) {
-            throw new XmlException("Failed to parse InputStream.", ex);
+            throw new SerialException("Failed to parse InputStream.", ex);
         } catch (ParserConfigurationException ex) {
-            throw new XmlException("Failed to parse InputStream.", ex);
+            throw new SerialException("Failed to parse InputStream.", ex);
         } catch (SAXException ex) {
-            throw new XmlException("Failed to parse InputStream.", ex);
+            throw new SerialException("Failed to parse InputStream.", ex);
         }      
         
         Map namedStyleMap = new HashMap();
@@ -91,7 +91,7 @@ public class StyleSheetLoader {
         for (int i = 0; i < styleElements.length; ++i) {
             String name = styleElements[i].getAttribute("n");
             if (!styleElements[i].hasAttribute("t")) {
-                throw new XmlException("Component type not specified in style: " + name, null);
+                throw new SerialException("Component type not specified in style: " + name, null);
             }
             String type = styleElements[i].getAttribute("t");
             
@@ -106,7 +106,7 @@ public class StyleSheetLoader {
             
             DerivedMutableStyle style  = new DerivedMutableStyle();
             
-            XmlContext context = new DefaultXmlContext(classLoader, document);
+            SerialContext context = new DefaultSerialContext(classLoader, document);
             
             Style propertyStyle = serializer.loadStyle(context, type, styleElements[i]);
             style.addStyleContent(propertyStyle);
@@ -142,7 +142,7 @@ public class StyleSheetLoader {
                 
                 classToStyleMap = (Map) namedStyleMap.get(baseName);
                 if (classToStyleMap == null) {
-                    throw new XmlException("Invalid base style name for style name " + name + ".", null);
+                    throw new SerialException("Invalid base style name for style name " + name + ".", null);
                 }
                 Style baseStyle = (Style) classToStyleMap.get(componentClass);
                 while (baseStyle == null && componentClass != Object.class) {
@@ -150,7 +150,7 @@ public class StyleSheetLoader {
                     baseStyle = (Style) classToStyleMap.get(componentClass);
                 }
                 if (baseStyle == null) {
-                    throw new XmlException("Invalid base style name for style name " + name + ".", null);
+                    throw new SerialException("Invalid base style name for style name " + name + ".", null);
                 }
                 
                 style.setParentStyle(baseStyle);

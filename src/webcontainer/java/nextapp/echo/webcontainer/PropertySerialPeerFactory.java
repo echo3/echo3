@@ -1,8 +1,8 @@
 package nextapp.echo.webcontainer;
 
+import nextapp.echo.app.serial.PropertyPeerFactory;
+import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.PeerFactory;
-import nextapp.echo.app.xml.PropertyPeerFactory;
-import nextapp.echo.app.xml.XmlPropertyPeer;
 
 //FIXME.  This is a temporary class to be used in refactoring the peer stuff between app and webcontaienr.
 // this code will be exterminated.
@@ -24,7 +24,7 @@ implements PropertyPeerFactory {
      * @param propertyClass the property class
      * @return the appropriate <code>PropertySynchronizePeer</code>
      */
-    public XmlPropertyPeer getPeerForProperty(Class propertyClass) {
-        return (XmlPropertyPeer) peerFactory.getPeerForObject(propertyClass, true);
+    public SerialPropertyPeer getPeerForProperty(Class propertyClass) {
+        return (SerialPropertyPeer) peerFactory.getPeerForObject(propertyClass, true);
     }
 }

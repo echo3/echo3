@@ -27,37 +27,39 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml.property;
-
-import nextapp.echo.app.util.Context;
-import nextapp.echo.app.xml.XmlPropertyPeer;
+package nextapp.echo.app.serial.property;
 
 import org.w3c.dom.Element;
 
+import nextapp.echo.app.layout.RowLayoutData;
+import nextapp.echo.app.serial.SerialPropertyPeer;
+import nextapp.echo.app.serial.SerialUtil;
+import nextapp.echo.app.util.Context;
+
 /**
- * <code>XmlPropertyPeer</code> for <code>Boolean</code> properties.
+ * <code>XmlPropertyPeer</code> for <code>RowLayout</code> properties.
  */
-public class BooleanPeer 
-implements XmlPropertyPeer {
+public class RowLayoutDataPeer
+implements SerialPropertyPeer {
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(Context,
      *      Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) {
-        String valueText = propertyElement.getAttribute("v");
-        if (valueText == null) {
-            return null;
-        }
-        return "1".equals(valueText) ? Boolean.TRUE : Boolean.FALSE;
+        throw new UnsupportedOperationException();
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        propertyElement.setAttribute("t", "b");
-        propertyElement.setAttribute("v", propertyValue.toString());
+        RowLayoutData layoutData = (RowLayoutData) propertyValue;
+        propertyElement.setAttribute("t", "LayoutData");
+        SerialUtil.toXml(context, RowLayoutData.class, propertyElement, "alignment", layoutData.getAlignment());
+        SerialUtil.toXml(context, RowLayoutData.class, propertyElement, "background", layoutData.getBackground());
+        SerialUtil.toXml(context, RowLayoutData.class, propertyElement, "backgroundImage", layoutData.getBackgroundImage());
+        SerialUtil.toXml(context, RowLayoutData.class, propertyElement, "insets", layoutData.getInsets());
     }
 }

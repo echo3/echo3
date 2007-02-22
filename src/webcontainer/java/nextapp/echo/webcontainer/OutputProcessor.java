@@ -11,14 +11,14 @@ import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Style;
 import nextapp.echo.app.StyleSheet;
 import nextapp.echo.app.Window;
+import nextapp.echo.app.serial.PropertyPeerFactory;
+import nextapp.echo.app.serial.SerialContext;
+import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.update.ServerUpdateManager;
 import nextapp.echo.app.update.UpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
-import nextapp.echo.app.xml.PropertyPeerFactory;
-import nextapp.echo.app.xml.XmlContext;
-import nextapp.echo.app.xml.XmlPropertyPeer;
 
 public class OutputProcessor {
 
@@ -26,7 +26,7 @@ public class OutputProcessor {
     
     private class OutputContext implements Context {
 
-        private XmlContext xmlContext = new XmlContext(){
+        private SerialContext xmlContext = new SerialContext(){
         
             public ClassLoader getClassLoader() {
                 //FIXME. temporary, not what we want.
@@ -39,7 +39,7 @@ public class OutputProcessor {
         };
         
         public Object get(Class specificContextClass) {
-            if (specificContextClass == XmlContext.class) {
+            if (specificContextClass == SerialContext.class) {
                 return xmlContext;
             } else if (specificContextClass == ServerMessage.class) {
                 return serverMessage;
@@ -208,7 +208,7 @@ public class OutputProcessor {
         while (propertyNameIterator.hasNext()) {
             String propertyName = (String) propertyNameIterator.next();
             Object propertyValue = componentPeer.getOutputProperty(context, c, propertyName);
-            XmlPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
+            SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
             if (propertySyncPeer == null) {
                 //FIXME. figure out how these should be handled...ignoring is probably best.
                 System.err.println("No peer for: " + propertyValue.getClass());
@@ -284,7 +284,7 @@ public class OutputProcessor {
             if (propertyValue == null) {
                 continue;
             }
-            XmlPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
+            SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
             if (propertySyncPeer == null) {
                 //FIXME. figure out how these should be handled...ignoring is probably best.
                 System.err.println("No peer for: " + propertyValue.getClass());
@@ -314,7 +314,7 @@ public class OutputProcessor {
                 //FIXME. handle properties changed to null.
                 System.err.println("NULLED: " + updatedPropertyNames[i]);
             } else {
-                XmlPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(
+                SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(
                         propertyValue.getClass());
                 if (propertySyncPeer == null) {
                     //FIXME. figure out how these should be handled...ignoring is probably best.

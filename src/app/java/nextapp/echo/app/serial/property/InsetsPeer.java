@@ -27,7 +27,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml.property;
+package nextapp.echo.app.serial.property;
 
 import java.util.StringTokenizer;
 
@@ -35,18 +35,18 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Insets;
+import nextapp.echo.app.serial.SerialException;
+import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.app.xml.XmlException;
-import nextapp.echo.app.xml.XmlPropertyPeer;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>Insets</code> properties.
  */
 public class InsetsPeer 
-implements XmlPropertyPeer {
+implements SerialPropertyPeer {
     
     public static Insets fromString(String value) 
-    throws XmlException {
+    throws SerialException {
         Extent[] extents = new Extent[4];
         StringTokenizer st = new StringTokenizer(value, " ");
         int count = 0;
@@ -64,7 +64,7 @@ implements XmlPropertyPeer {
         case 4:
             return new Insets(extents[3], extents[0], extents[1], extents[2]);
         default:
-            throw new XmlException("Invalid extent string: " + value, null);
+            throw new SerialException("Invalid extent string: " + value, null);
         }
     }
     
@@ -87,16 +87,16 @@ implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(Context,
      *      Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
-    throws XmlException {
+    throws SerialException {
         return fromString(propertyElement.getAttribute("v"));
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass,

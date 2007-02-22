@@ -1,8 +1,8 @@
-package nextapp.echo.app.xml;
+package nextapp.echo.app.serial;
 
 import org.w3c.dom.Document;
 
-public interface XmlContext {
+public interface SerialContext {
     
     public Document getDocument();
 

@@ -27,25 +27,25 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml.property;
+package nextapp.echo.app.serial.property;
 
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.ResourceImageReference;
+import nextapp.echo.app.serial.SerialContext;
+import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
-import nextapp.echo.app.xml.XmlContext;
-import nextapp.echo.app.xml.XmlPropertyPeer;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>ResourceImageReference</code> properties.
  */
 public class ResourceImageReferencePeer 
-implements XmlPropertyPeer {
+implements SerialPropertyPeer {
     
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(Context, Class, org.w3c.dom.Element)
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(Context, Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) {
         Element iElement = DomUtil.getChildElementByTagName(propertyElement, "i");
@@ -58,11 +58,11 @@ implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
+        SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
         ResourceImageReference resourceImage = (ResourceImageReference) propertyValue;
         Element iElement = xmlContext.getDocument().createElement("i");
         propertyElement.appendChild(iElement);

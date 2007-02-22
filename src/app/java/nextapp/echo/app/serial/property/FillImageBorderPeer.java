@@ -27,7 +27,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml.property;
+package nextapp.echo.app.serial.property;
 
 import org.w3c.dom.Element;
 
@@ -35,20 +35,20 @@ import nextapp.echo.app.Color;
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.FillImageBorder;
 import nextapp.echo.app.Insets;
+import nextapp.echo.app.serial.PropertyPeerFactory;
+import nextapp.echo.app.serial.SerialContext;
+import nextapp.echo.app.serial.SerialException;
+import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
-import nextapp.echo.app.xml.PropertyPeerFactory;
-import nextapp.echo.app.xml.XmlContext;
-import nextapp.echo.app.xml.XmlException;
-import nextapp.echo.app.xml.XmlPropertyPeer;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>FillImageBorder</code> properties.
  */
 public class FillImageBorderPeer
-implements XmlPropertyPeer {
+implements SerialPropertyPeer {
 
-    public Object toProperty(Context context, Class objectClass, Element propertyElement) throws XmlException {
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) throws SerialException {
         PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
         FillImagePeer fillImagePeer = (FillImagePeer) propertyPeerFactory.getPeerForProperty(FillImage.class);
 
@@ -68,11 +68,11 @@ implements XmlPropertyPeer {
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
+        SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
         FillImageBorder border = (FillImageBorder) propertyValue;
         propertyElement.setAttribute("t", "FillImageBorder");
         

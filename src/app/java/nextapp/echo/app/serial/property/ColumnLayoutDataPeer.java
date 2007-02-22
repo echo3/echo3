@@ -27,34 +27,38 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml.property;
-
-import nextapp.echo.app.util.Context;
-import nextapp.echo.app.xml.XmlPropertyPeer;
+package nextapp.echo.app.serial.property;
 
 import org.w3c.dom.Element;
 
+import nextapp.echo.app.layout.ColumnLayoutData;
+import nextapp.echo.app.serial.SerialPropertyPeer;
+import nextapp.echo.app.serial.SerialUtil;
+import nextapp.echo.app.util.Context;
+
 /**
- * <code>XmlPropertyPeer</code> for <code>String</code> properties.
+ * <code>XmlPropertyPeer</code> for <code>ColumnLayoutData</code> properties.
  */
-public class StringPeer 
-implements XmlPropertyPeer {
+public class ColumnLayoutDataPeer
+implements SerialPropertyPeer {
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toProperty(Context, 
-     *      Class, org.w3c.dom.Element)
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(Context, Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) {
-        return propertyElement.getAttribute("v");
+        throw new UnsupportedOperationException();
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context,
-     *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context, java.lang.Class, 
+     *      org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(Context context, Class objectClass,
-            Element propertyElement, Object propertyValue) {
-        propertyElement.setAttribute("t", "s");
-        propertyElement.setAttribute("v", (String) propertyValue);
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+        ColumnLayoutData layoutData = (ColumnLayoutData) propertyValue;
+        propertyElement.setAttribute("t", "LayoutData");
+        SerialUtil.toXml(context, ColumnLayoutData.class, propertyElement, "alignment", layoutData.getAlignment());
+        SerialUtil.toXml(context, ColumnLayoutData.class, propertyElement, "background", layoutData.getBackground());
+        SerialUtil.toXml(context, ColumnLayoutData.class, propertyElement, "backgroundImage", layoutData.getBackgroundImage());
+        SerialUtil.toXml(context, ColumnLayoutData.class, propertyElement, "insets", layoutData.getInsets());
     }
 }

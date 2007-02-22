@@ -27,7 +27,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.app.xml.property;
+package nextapp.echo.app.serial.property;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -39,22 +39,22 @@ import nextapp.echo.app.LayoutData;
 import nextapp.echo.app.Style;
 import nextapp.echo.app.reflect.IntrospectorFactory;
 import nextapp.echo.app.reflect.ObjectIntrospector;
+import nextapp.echo.app.serial.SerialContext;
+import nextapp.echo.app.serial.SerialException;
+import nextapp.echo.app.serial.SerialPropertyPeer;
+import nextapp.echo.app.serial.Serializer;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.app.xml.Serializer;
-import nextapp.echo.app.xml.XmlContext;
-import nextapp.echo.app.xml.XmlException;
-import nextapp.echo.app.xml.XmlPropertyPeer;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>LayoutData</code> properties.
  */
 public class LayoutDataPeer 
-implements XmlPropertyPeer {
+implements SerialPropertyPeer {
     
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
-    throws XmlException {        
+    throws SerialException {        
         try {
-            XmlContext xmlContext = (XmlContext) context.get(XmlContext.class);
+            SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
             
             String type = propertyElement.getAttribute("t");
 
@@ -79,22 +79,22 @@ implements XmlPropertyPeer {
             
             return layoutData;
         } catch (ClassNotFoundException ex) {
-            throw new XmlException("Unable to process properties.", ex);
-        } catch (XmlException ex) {
-            throw new XmlException("Unable to process properties.", ex);
+            throw new SerialException("Unable to process properties.", ex);
+        } catch (SerialException ex) {
+            throw new SerialException("Unable to process properties.", ex);
         } catch (InstantiationException ex) {
-            throw new XmlException("Unable to process properties.", ex);
+            throw new SerialException("Unable to process properties.", ex);
         } catch (IllegalAccessException ex) {
-            throw new XmlException("Unable to process properties.", ex);
+            throw new SerialException("Unable to process properties.", ex);
         } catch (IllegalArgumentException ex) {
-            throw new XmlException("Unable to process properties.", ex);
+            throw new SerialException("Unable to process properties.", ex);
         } catch (InvocationTargetException ex) {
-            throw new XmlException("Unable to process properties.", ex);
+            throw new SerialException("Unable to process properties.", ex);
         }
     }
 
     /**
-     * @see nextapp.echo.app.xml.XmlPropertyPeer#toXml(nextapp.echo.app.util.Context, 
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context, 
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
