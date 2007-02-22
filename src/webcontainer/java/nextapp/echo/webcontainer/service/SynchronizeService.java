@@ -70,7 +70,4 @@ implements Service {
         Synchronization sync = new Synchronization(conn);
         sync.process();
     }
-
-
-    
 }
