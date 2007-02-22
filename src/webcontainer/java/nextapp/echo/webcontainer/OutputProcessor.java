@@ -26,7 +26,7 @@ public class OutputProcessor {
     
     private class OutputContext implements Context {
 
-        private SerialContext xmlContext = new SerialContext(){
+        private SerialContext serialContext = new SerialContext() {
         
             public ClassLoader getClassLoader() {
                 //FIXME. temporary, not what we want.
@@ -40,7 +40,7 @@ public class OutputProcessor {
         
         public Object get(Class specificContextClass) {
             if (specificContextClass == SerialContext.class) {
-                return xmlContext;
+                return serialContext;
             } else if (specificContextClass == ServerMessage.class) {
                 return serverMessage;
             } else if (specificContextClass == Connection.class) {

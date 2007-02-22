@@ -72,14 +72,14 @@ implements SerialPropertyPeer {
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         FillImageBorder border = (FillImageBorder) propertyValue;
         propertyElement.setAttribute("t", "FillImageBorder");
         
         PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
         FillImagePeer fillImagePeer = (FillImagePeer) propertyPeerFactory.getPeerForProperty(FillImage.class);
         
-        Element fibElement = xmlContext.getDocument().createElement("fib");
+        Element fibElement = serialContext.getDocument().createElement("fib");
         
         if (border.getBorderInsets() != null) {
             fibElement.setAttribute("bi", InsetsPeer.toString(border.getBorderInsets()));

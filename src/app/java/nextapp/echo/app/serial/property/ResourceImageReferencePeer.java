@@ -62,9 +62,9 @@ implements SerialPropertyPeer {
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         ResourceImageReference resourceImage = (ResourceImageReference) propertyValue;
-        Element iElement = xmlContext.getDocument().createElement("i");
+        Element iElement = serialContext.getDocument().createElement("i");
         propertyElement.appendChild(iElement);
         iElement.setAttribute("t", resourceImage.getContentType());
         iElement.setAttribute("r", resourceImage.getResource());

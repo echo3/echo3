@@ -10,8 +10,8 @@ public class SerialUtil {
     public static void toXml(Context context, Class objectClass, Element parentElement, String propertyName, 
             Object propertyValue) {
         if (propertyValue != null) {
-            SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
-            Element childPropertyElement = xmlContext.getDocument().createElement("p");
+            SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
+            Element childPropertyElement = serialContext.getDocument().createElement("p");
             childPropertyElement.setAttribute("n", propertyName);
             
             PropertyPeerFactory peerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);

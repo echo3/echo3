@@ -82,15 +82,15 @@ implements SerialPropertyPeer {
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         
         propertyElement.setAttribute("t", "Font");
         Font font = (Font) propertyValue;
-        Element element = xmlContext.getDocument().createElement("f");
+        Element element = serialContext.getDocument().createElement("f");
         
         Font.Typeface typeface = font.getTypeface();
         while (typeface != null) {
-            Element tfElement = xmlContext.getDocument().createElement("tf");
+            Element tfElement = serialContext.getDocument().createElement("tf");
             tfElement.setAttribute("n", typeface.getName());
             element.appendChild(tfElement);
             typeface = typeface.getAlternate();

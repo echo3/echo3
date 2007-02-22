@@ -45,7 +45,7 @@ public class IntegerPeer
 implements SerialPropertyPeer {
     
     /**
-     * @param the relevant <code>XmlContext</code>
+     * @param the relevant <code>SerialContext</code>
      * @param objectClass the <code>Class</code> of object containing candidate 
      *        constant values
      * @param value the name of the constant value
@@ -54,10 +54,10 @@ implements SerialPropertyPeer {
      */
     private Integer introspectConstantValue(Context context, Class objectClass, String value) 
     throws SerialException {
-        SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         try {
             ObjectIntrospector introspector = IntrospectorFactory.get(objectClass.getName(), 
-                    xmlContext.getClassLoader());
+                    serialContext.getClassLoader());
             if (value.startsWith(objectClass.getName())) {
                 // Remove class name if required.
                 value = value.substring(objectClass.getName().length() + 1);

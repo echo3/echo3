@@ -93,7 +93,7 @@ public class Serializer {
         return clazz;
     }
     
-    public Style loadStyle(final SerialContext xmlContext, String componentType, Element containerElement) 
+    public Style loadStyle(final SerialContext serialContext, String componentType, Element containerElement) 
     throws SerialException {
         try {
             ObjectIntrospector introspector = IntrospectorFactory.get(componentType, classLoader);
@@ -102,7 +102,7 @@ public class Serializer {
             Context context = new Context() {
                 public Object get(Class specificContextClass) {
                     if (specificContextClass == SerialContext.class) {
-                        return xmlContext;
+                        return serialContext;
                     } else if (specificContextClass == PropertyPeerFactory.class) {
                         return factory;
                     }

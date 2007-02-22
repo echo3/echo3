@@ -54,20 +54,20 @@ implements SerialPropertyPeer {
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws SerialException {        
         try {
-            SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
+            SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
             
             String type = propertyElement.getAttribute("t");
 
             // Load properties from XML into Style.
-            Serializer serializer = Serializer.forClassLoader(xmlContext.getClassLoader());
-            Style propertyStyle = serializer.loadStyle(xmlContext, type, propertyElement);
+            Serializer serializer = Serializer.forClassLoader(serialContext.getClassLoader());
+            Style propertyStyle = serializer.loadStyle(serialContext, type, propertyElement);
             
             // Instantiate LayoutData instance.
-            Class propertyClass = Class.forName(type, true, xmlContext.getClassLoader());
+            Class propertyClass = Class.forName(type, true, serialContext.getClassLoader());
             LayoutData layoutData = (LayoutData) propertyClass.newInstance();
             
             // Create introspector to analyze LayoutData class.
-            ObjectIntrospector introspector = IntrospectorFactory.get(type, xmlContext.getClassLoader());
+            ObjectIntrospector introspector = IntrospectorFactory.get(type, serialContext.getClassLoader());
             
             // Set property values of LayoutData instance.
             Iterator it = propertyStyle.getPropertyNames();

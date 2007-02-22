@@ -58,8 +58,8 @@ implements SerialPropertyPeer {
     }
 
     public Element createFillImageElement(Context context, FillImage fillImage) {
-        SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
-        Element fiElement = xmlContext.getDocument().createElement("fi");
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
+        Element fiElement = serialContext.getDocument().createElement("fi");
         ImageReference imageReference = fillImage.getImage();
         PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
         SerialPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(imageReference.getClass());

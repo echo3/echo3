@@ -77,10 +77,10 @@ implements SerialPropertyPeer {
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         propertyElement.setAttribute("t", "Alignment");
         Alignment alignment = (Alignment) propertyValue;
-        Element aElement = xmlContext.getDocument().createElement("a");
+        Element aElement = serialContext.getDocument().createElement("a");
         String horizontal = HORIZONTAL_CONSTANTS.get(alignment.getHorizontal());
         if (horizontal != null) {
             aElement.setAttribute("h", horizontal);

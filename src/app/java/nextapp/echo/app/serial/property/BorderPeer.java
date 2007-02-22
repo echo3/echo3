@@ -126,11 +126,11 @@ implements SerialPropertyPeer {
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        SerialContext xmlContext = (SerialContext) context.get(SerialContext.class);
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         propertyElement.setAttribute("t", "Border");
         Border border = (Border) propertyValue;
         if (border.isMultisided()) {
-            Element borderElement = xmlContext.getDocument().createElement("b");
+            Element borderElement = serialContext.getDocument().createElement("b");
             Border.Side[] sides = border.getSides();
             for (int i = 0; i < sides.length; ++i) {
                 borderElement.setAttribute(borderSideAttributeNames[i], toString(sides[i]));

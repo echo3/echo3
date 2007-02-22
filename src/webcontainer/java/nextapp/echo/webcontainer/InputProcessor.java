@@ -18,7 +18,7 @@ public class InputProcessor {
 
     private class InputContext implements Context {
         
-        private SerialContext xmlContext = new SerialContext(){
+        private SerialContext serialContext = new SerialContext() {
         
             public ClassLoader getClassLoader() {
                 //FIXME. temporary, not what we want.
@@ -35,7 +35,7 @@ public class InputProcessor {
          */
         public Object get(Class specificContextClass) {
             if (specificContextClass == SerialContext.class) {
-                return xmlContext;
+                return serialContext;
             } else if (specificContextClass == Connection.class) {
                 return conn;
             } else if (specificContextClass == ClientMessage.class) {
