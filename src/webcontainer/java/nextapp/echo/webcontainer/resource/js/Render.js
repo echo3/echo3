@@ -16,6 +16,10 @@ EchoRender.registerPeer = function(componentName, peerObject) {
     EchoRender._peers.put(componentName, peerObject);
 };
 
+//FIXME.  Scrollbar position tracking code in SplitPane appears to suggest that
+// disposed states are not in good shape....SplitPane is being disposed when
+// parent contentPane is redrawn.
+
 EchoRender._loadPeer = function(component) {
     if (component.peer) {
         return;
@@ -37,7 +41,7 @@ EchoRender._loadPeer = function(component) {
 };
 
 // FIXME. Ensure this is properly invoked and no peers are being leaked.
-EchoRender.unloadPeer = function(component) {
+EchoRender._unloadPeer = function(component) {
     component.peer.component = null;
     component.peer = null;
 };
@@ -199,7 +203,7 @@ EchoRender.processUpdates = function(updateManager) {
         //ds += "\n";
         var component = EchoRender._disposedComponents.associations[componentId];
         //ds += component;
-        EchoRender.unloadPeer(component);
+        EchoRender._unloadPeer(component);
     }
     EchoRender._disposedComponents = null;
     //alert(ds); ///FIXME Remove this debug code.

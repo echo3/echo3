@@ -261,6 +261,24 @@ EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parent
     
     parentElement.appendChild(splitPaneDivElement);
     
+    //FIXME. The scroll-bar position storage code here appears to not be working if parent component is redrawn
+    // is peer being deleted?  Probably.  That means disposed state is all broken too.
+    
+    if (this._firstPaneData) {
+        var firstPaneDivElement = document.getElementById(this.component.renderId + "_pane0");
+        if (firstPaneDivElement) {
+            firstPaneDivElement.scrollTop = this._firstPaneData.scrollTop;
+            firstPaneDivElement.scrollLeft = this._firstPaneData.scrollLeft;
+        }
+    }
+    if (this._secondPaneData) {
+        var secondPaneDivElement = document.getElementById(this.component.renderId + "_pane1");
+        if (secondPaneDivElement) {
+            secondPaneDivElement.scrollTop = this._secondPaneData.scrollTop;
+            secondPaneDivElement.scrollLeft = this._secondPaneData.scrollLeft;
+        }
+    }
+    
     if (this._resizable) {
         EchoWebCore.EventProcessor.add(separatorDivElement, "mousedown", new EchoCore.MethodRef(this,
                 this._processSeparatorMouseDown), false);
