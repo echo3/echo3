@@ -53,9 +53,9 @@ implements ComponentSynchronizePeer {
     /**
      * Default implmentation: return an empty iterator.
      * 
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getImmediateEventTypes(Component)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getImmediateEventTypes(Context, Component)
      */
-    public Iterator getImmediateEventTypes(Component component) {
+    public Iterator getImmediateEventTypes(Context context, Component component) {
         return Collections.EMPTY_SET.iterator();
     }
 
@@ -71,9 +71,9 @@ implements ComponentSynchronizePeer {
      * Default implementation: return the names of all properties currently set in the 
      * component's local <code>Style</code>.
      * 
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputPropertyNames(nextapp.echo.app.Component)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputPropertyNames(Context, nextapp.echo.app.Component)
      */
-    public Iterator getOutputPropertyNames(Component component) {
+    public Iterator getOutputPropertyNames(Context context, Component component) {
         final Iterator styleIterator = component.getLocalStyle().getPropertyNames();
         final Iterator additionalPropertyIterator 
                 = additionalProperties == null ? null : additionalProperties.iterator();

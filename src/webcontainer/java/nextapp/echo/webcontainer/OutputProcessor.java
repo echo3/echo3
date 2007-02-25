@@ -252,7 +252,7 @@ public class OutputProcessor {
         }
 
         // Render component properties.
-        Iterator propertyNameIterator = componentPeer.getOutputPropertyNames(c);
+        Iterator propertyNameIterator = componentPeer.getOutputPropertyNames(context, c);
         while (propertyNameIterator.hasNext()) {
             String propertyName = (String) propertyNameIterator.next();
             Object propertyValue = componentPeer.getOutputProperty(context, c, propertyName);
@@ -269,7 +269,7 @@ public class OutputProcessor {
         }
         
         // Render immediate event flags.
-        Iterator eventTypeIterator = componentPeer.getImmediateEventTypes(c);
+        Iterator eventTypeIterator = componentPeer.getImmediateEventTypes(context, c);
         while (eventTypeIterator.hasNext()) {
             String eventType = (String) eventTypeIterator.next();
             Element eElement = document.createElement("e");

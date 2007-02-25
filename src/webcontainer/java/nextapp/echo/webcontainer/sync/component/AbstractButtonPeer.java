@@ -63,14 +63,14 @@ public class AbstractButtonPeer extends AbstractComponentSynchronizePeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getImmediateEventTypes(nextapp.echo.app.Component)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getImmediateEventTypes(Context, nextapp.echo.app.Component)
      */
-    public Iterator getImmediateEventTypes(Component component) {
+    public Iterator getImmediateEventTypes(Context context, Component component) {
         AbstractButton button = (AbstractButton) component;
         if (button.hasActionListeners()) {
             return new ArrayIterator(EVENT_TYPES_ACTION);
         }
-        return super.getImmediateEventTypes(component);
+        return super.getImmediateEventTypes(context, component);
     }
 
     /**
