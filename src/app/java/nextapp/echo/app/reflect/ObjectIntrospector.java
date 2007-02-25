@@ -49,6 +49,10 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+/**
+ * Provides introspection/reflection capabilities for components, proeprties, 
+ * and layout data objects.  Wraps Java beans and reflection APIs.
+ */
 public class ObjectIntrospector {
 
     /**

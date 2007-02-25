@@ -33,6 +33,11 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Extends <code>ObjectIntrospector</code> to proivde
+ * <code>nextapp.echo.app.Component</code>-specific functionality,
+ * i.e., introspection of style constants names.
+ */
 public class ComponentIntrospector extends ObjectIntrospector {
 
     /**
