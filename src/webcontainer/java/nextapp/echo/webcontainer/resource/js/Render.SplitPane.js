@@ -269,6 +269,7 @@ EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parent
         if (firstPaneDivElement) {
             firstPaneDivElement.scrollTop = this._firstPaneData.scrollTop;
             firstPaneDivElement.scrollLeft = this._firstPaneData.scrollLeft;
+            alert("1scrolling to: " + this._firstPaneData.scrollTop);
         }
     }
     if (this._secondPaneData) {
@@ -276,6 +277,7 @@ EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parent
         if (secondPaneDivElement) {
             secondPaneDivElement.scrollTop = this._secondPaneData.scrollTop;
             secondPaneDivElement.scrollLeft = this._secondPaneData.scrollLeft;
+            alert("2scrolling to: " + this._secondPaneData.scrollTop);
         }
     }
     

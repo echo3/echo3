@@ -196,13 +196,13 @@ EchoRender.processUpdates = function(updateManager) {
         EchoRender._setPeerDisposedState(updates[i].parent, false);
     }
     
-    //var ds = "DISPOSEARRAY:";
+    //var ds = "DISPOSEARRAY:"; ///FIXME Remove this debug code.
     
     // Unload peers for truly removed components, destroy mapping.
     for (var componentId in EchoRender._disposedComponents.associations) {
-        //ds += "\n";
+        //ds += "\n"; ///FIXME Remove this debug code.
         var component = EchoRender._disposedComponents.associations[componentId];
-        //ds += component;
+        //ds += component; ///FIXME Remove this debug code.
         EchoRender._unloadPeer(component);
     }
     EchoRender._disposedComponents = null;
