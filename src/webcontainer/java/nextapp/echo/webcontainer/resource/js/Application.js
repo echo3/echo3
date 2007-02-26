@@ -8,60 +8,136 @@ EchoApp = function() { };
 /**
  * Representation of a single application instance.
  * Derived objects must invoke construtor with root component id.
+ * 
+ * @param (string) rootComponentId the DOM id of the root component
  */
 EchoApp.Application = function(rootComponentId) {
     if (arguments.length == 0) {
+        // Return immediately in case that instance is being created to extend prototype.
         return;
     }
+    
+    /** Mapping between component ids and component instances. */
     this._idToComponentMap = new EchoCore.Collections.Map();
+    
+    /** ListenerList instance for application-level events. */
     this._listenerList = new EchoCore.ListenerList();
 
+    /** Id of root component. */
     this.rootComponentId = rootComponentId;
 
+    /** Root component instance. */
     this.rootComponent = new EchoApp.Component("Root", this.rootComponentId);
     this.rootComponent.register(this);
     
+    /** Root component of modal context. */
     this.modalContext = null;
     
+    /** Displayed style sheet. */
     this._styleSheet = null;
+    
+    /** Currently focused component. */
     this._focusedComponent = null;
     
+    /** UpdateManager instance monitoring changes to the application for redraws. */
     this.updateManager = new EchoApp.Update.Manager(this);
 };
 
+/**
+ * Adds a ComponentUpdateListener.
+ * 
+ * @param l (function / EchoCore.MethodRef) the listener to add
+ */
 EchoApp.Application.prototype.addComponentUpdateListener = function(l) {
     this._listenerList.addListener("componentUpdate", l);
 };
 
+/**
+ * Disposes of the application.
+ * Once invoked, the application will no longer function and cannot be used again.
+ * This method will free any resources allocated by the application.
+ */ 
 EchoApp.Application.prototype.dispose = function() {
+    //FIXME. Add additional functionality to fully destroy application,
+    // cause release of all browser-releated resources.
     this.updateManager.dispose();
 };
 
+/**
+ * Notifies listeners of a component update event.
+ * 
+ * The property name "children" indicates a child was added or removed.
+ * If a child was added, the added child is provided as <code>newValue</code>
+ * and the <code>oldValue</code> property is null.
+ * If a child was removed, the removed child is provided as <code>oldValue</code>
+ * and the <code>newValue</code> property is null.
+ * 
+ * @param parent (EchoApp.Component) the updated component
+ * @param propertyName (string) the name of the updated property
+ * @param oldValue the old value of the property
+ * @param newValue the new value of the property
+ */
 EchoApp.Application.prototype._fireComponentUpdate = function(parent, propertyName, oldValue, newValue) {
     var e = new EchoApp.Application.ComponentUpdateEvent(this, parent, propertyName, oldValue, newValue);
     this._listenerList.fireEvent(e);
 };
 
+/**
+ * Retrieves the registered component with the specified render id.
+ * 
+ * @param (string) renderId the render id
+ * @return (EchoApp.Component) the component 
+ */
 EchoApp.Application.prototype.getComponentByRenderId = function(renderId) {
     return this._idToComponentMap.get(renderId);
 };
 
+/**
+ * Returns the focused component.
+ * 
+ * @return (EchoApp.Component) the focused component
+ */
 EchoApp.Application.prototype.getFocusedComponent = function() {
     return this._focusedComponent;
 };
 
+/**
+ * Returns the default layout direction of the application.
+ *
+ * @return (EchoApp.LayoutDirection) the default layout direction 
+ */
 EchoApp.Application.prototype.getLayoutDirection = function() {
     return this._layoutDirection;
 };
 
+/**
+ * Returns the application style sheet.
+ * 
+ * @return (EchoApp.StyleSheet) he application style sheet
+ */
 EchoApp.Application.prototype.getStyleSheet = function() {
     return this._styleSheet;
 };
 
+/**
+ * Notifies the application of an update to a component.
+ * 
+ * @param parent (EchoApp.Component) the parent component
+ * @param propertyName (string) the updated property
+ * @param oldValue the previous property value
+ * @param newValue the new property value
+ */
 EchoApp.Application.prototype.notifyComponentUpdate = function(parent, propertyName, oldValue, newValue) {
     this._fireComponentUpdate(parent, propertyName, oldValue, newValue);
 };
 
+/**
+ * Registers a component with the application.
+ * Invoked when a component is added to a hierarchy of 
+ * components that is registered with the application.
+ * 
+ * @param component (EchoApp.Component) the component to register
+ */
 EchoApp.Application.prototype.registerComponent = function(component) {
     if (this._idToComponentMap.get(component.renderId)) {
         throw new Error("Component already exists with id: " + component.renderId);
@@ -69,18 +145,38 @@ EchoApp.Application.prototype.registerComponent = function(component) {
     this._idToComponentMap.put(component.renderId, component);
 };
 
+/**
+ * Removes a ComponentUpdateListener.
+ * 
+ * @param l (function / EchoCore.MethodRef)  the listener to remove
+ */
 EchoApp.Application.prototype.removeComponentUpdateListener = function(l) {
     this._listenerList.removeListener("componentUpdate", l);
 };
 
+/**
+ * Sets the focused component
+ * 
+ * @param newValue (EchoApp.Component) the new focused component
+ */
 EchoApp.Application.prototype.setFocusedComponent = function(newValue) {
     this._focusedComponent = newValue;
 };
 
+/**
+ * Sets the application default layout direction.
+ * 
+ * @param newValue (EchoApp.LayoutDirection) the new layout direction
+ */
 EchoApp.Application.prototype.setLayoutDirection = function(newValue) {
     this._layoutDirection = newValue;
 };
 
+/**
+ * Sets the application style sheet.
+ * 
+ * @param newValue (EchoApp.StyleSheet) the new style sheet
+ */
 EchoApp.Application.prototype.setStyleSheet = function(newValue) {
     var oldValue = this._styleSheet;
     this._styleSheet = newValue;
@@ -88,10 +184,26 @@ EchoApp.Application.prototype.setStyleSheet = function(newValue) {
 //    this.notifyComponentUpdate(null, "styleSheet", oldValue, newValue);
 };
 
+/**
+ * Unregisters a component from the application.
+ * This method is invoked when a component is removed from a hierarchy of 
+ * components registered with the application.
+ * 
+ * @param component (EchoApp.Component) the component to remove
+ */
 EchoApp.Application.prototype.unregisterComponent = function(component) {
     this._idToComponentMap.remove(component.renderId);
 };
 
+/**
+ * Event object describing an update to a component.
+ * 
+ * @param source the generator of the event
+ * @param parent (EchoApp.Component) the updated component
+ * @param propertyName (string) the updated propery
+ * @param oldValue the previous value of the property
+ * @param newValue the new value of the property
+ */
 EchoApp.Application.ComponentUpdateEvent = function(source, parent, propertyName, oldValue, newValue) {
     EchoCore.Event.call(this, source, "componentUpdate");
     this.parent = parent;
@@ -102,10 +214,25 @@ EchoApp.Application.ComponentUpdateEvent = function(source, parent, propertyName
 
 EchoApp.Application.ComponentUpdateEvent.prototype = new EchoCore.Event;
 
+/**
+ * Factory to create new instances of arbitrary components.  This object is 
+ * used to instantiate new components during XML deserialization.
+ * This is a namespace object, do not instantiate.
+ */
 EchoApp.ComponentFactory = function() { };
 
+/**
+ * Mapping between type names and object constructors.
+ */
 EchoApp.ComponentFactory._typeToConstructorMap = new EchoCore.Collections.Map();
 
+/**
+ * Creates a new instance of an arbitrary component.
+ * 
+ * @param typeName (string) the type name of the component
+ * @param renderId (string) the component render id
+ * @return (EchoApp.Component) a newly instantiated component
+ */
 EchoApp.ComponentFactory.newInstance = function(typeName, renderId) {
     var typeConstructor = EchoApp.ComponentFactory._typeToConstructorMap.get(typeName);
     if (typeConstructor == null) {
@@ -115,6 +242,13 @@ EchoApp.ComponentFactory.newInstance = function(typeName, renderId) {
     }
 };
 
+/**
+ * Registers a type name to a specific constructor.
+ * 
+ * @param typeName the type name
+ * @param typeConstructor (function) the component object to instantiate
+ *        (must extend EchoApp.Component)
+ */
 EchoApp.ComponentFactory.registerType = function(typeName, typeConstructor) {
     EchoApp.ComponentFactory._typeToConstructorMap.put(typeName, typeConstructor);
 };
@@ -122,6 +256,9 @@ EchoApp.ComponentFactory.registerType = function(typeName, typeConstructor) {
 /**
  * Base class for components.
  * Derived classes must invoke constructor with componentType (and optionally renderId) properties.
+ * 
+ * @param componentType (string) the component type
+ * @param renderId (string) the render id
  */
 EchoApp.Component = function(componentType, renderId) {
     if (arguments.length == 0) { return; }
@@ -137,6 +274,9 @@ EchoApp.Component = function(componentType, renderId) {
     this._styleType = null;
 };
 
+/**
+ * The next automatically assigned client render id.
+ */
 EchoApp.Component.nextRenderId = 0;
 
 EchoApp.Component.prototype.add = function(component, index) {
