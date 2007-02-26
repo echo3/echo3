@@ -279,6 +279,13 @@ EchoApp.Component = function(componentType, renderId) {
  */
 EchoApp.Component.nextRenderId = 0;
 
+/**
+ * Adds a component as a child.
+ * 
+ * @param component (EchoApp.Component) the component to add
+ * @param index (integer) the index at which to add it (optional, omission
+ *        will cause component to be appended to end)
+ */
 EchoApp.Component.prototype.add = function(component, index) {
     if (!(component instanceof EchoApp.Component)) {
         throw new Error("Cannot add child: specified component object is not derived from EchoApp.Component.");
@@ -305,6 +312,13 @@ EchoApp.Component.prototype.add = function(component, index) {
     }
 };
 
+/**
+ * Adds an arbitrary event listener.
+ * 
+ * @param eventType (string) the event type name
+ * @param eventTarget (function / EchoCore.MethodRef) the method to invoke when
+ *        the event occurs (the event will be passed as the single argument)
+ */
 EchoApp.Component.prototype.addListener = function(eventType, eventTarget) {
     if (this._listenerList == null) {
         this._listenerList = new EchoCore.ListenerList();
@@ -312,6 +326,12 @@ EchoApp.Component.prototype.addListener = function(eventType, eventTarget) {
     this._listenerList.addListener(eventType, eventTarget);
 };
 
+/**
+ * Provides notification of an arbitrary event.
+ * Listeners will be notified based on the event's type property.
+ * 
+ * @param event (EchoCore.Event) the event to fire
+ */
 EchoApp.Component.prototype.fireEvent = function(event) {
     if (this._listenerList == null) {
         return;
@@ -319,18 +339,83 @@ EchoApp.Component.prototype.fireEvent = function(event) {
     this._listenerList.fireEvent(event);
 };
 
+/**
+ * Retrieves the child omponent at the specified index.
+ * 
+ * @param index (integer) the index
+ * @return (EchoApp.Component) the child component
+ */
 EchoApp.Component.prototype.getComponent = function(index) {
     return this.children.get(index);
 };
 
+/**
+ * Returns the number of child components
+ * 
+ * @return (integer) the number of child components
+ */
 EchoApp.Component.prototype.getComponentCount = function(index) {
     return this.children.size();
 };
 
+/**
+ * Returns an arbitrary indexed property value.
+ * 
+ * @param name (string) the name of the property
+ * @param index the index to return
+ * @return the property value
+ */
+EchoApp.Component.prototype.getIndexedProperty = function(name, index) {
+    return this._internalStyle.getIndexedProperty(name, index);
+};
+
+/**
+ * Returns the component layout direction.
+ * 
+ * @return (EchoApp.LayoutDirection) the component layout direction
+ */
 EchoApp.Component.prototype.getLayoutDirection = function() {
     return this._layoutDirection;
 };
 
+/**
+ * Returns an arbitrary property value.
+ * 
+ * @param name (string) the name of the property
+ * @return the property value
+ */
+EchoApp.Component.prototype.getProperty = function(name) {
+    return this._internalStyle.getProperty(name);
+};
+
+/**
+ * Returns the value of an indexed property that should be rendered,
+ * based on the value set on this component, in the component's
+ * specified style, and/or in the application's stylesheet.
+ * 
+ * @param name (string) the name of the property
+ * @param index (integer) the index of the property
+ * @param defaultValue the default value to return if no value is 
+ *        specified in an internal property, style, or stylesheet
+ */
+EchoApp.Component.prototype.getRenderIndexedProperty = function(name, index, defaultValue) {
+    var value = this.getIndexedProperty(name, index);
+    if (value == null) {
+        if (this._style != null) {
+            value = this._style.getProperty(name, index);
+        }
+        //FIXME. Stylesheet support.
+    }
+    return value == null ? defaultValue : value;
+};
+
+/**
+ * Returns the layout direction with which the component should be
+ * rendered, based on analyzing the component's layout direction,
+ * its parent's, and/or the application's.
+ * 
+ * @return (EchoApp.LayoutDirection) the rendering layout direction
+ */
 EchoApp.Component.prototype.getRenderLayoutDirection = function() {
     if (this._layoutDirection == null) { 
         if (this.parent == null) {
@@ -347,25 +432,15 @@ EchoApp.Component.prototype.getRenderLayoutDirection = function() {
     }
 };
 
-EchoApp.Component.prototype.getProperty = function(name) {
-    return this._internalStyle.getProperty(name);
-};
-
-EchoApp.Component.prototype.getIndexedProperty = function(name, index) {
-    return this._internalStyle.getIndexedProperty(name, index);
-};
-
-EchoApp.Component.prototype.getRenderIndexedProperty = function(name, index, defaultValue) {
-    var value = this.getIndexedProperty(name, index);
-    if (value == null) {
-        if (this._style != null) {
-            value = this._style.getProperty(name, index);
-        }
-        //FIXME. Stylesheet support.
-    }
-    return value == null ? defaultValue : value;
-};
-
+/**
+ * Returns the value of a property that should be rendered,
+ * based on the value set on this component, in the component's
+ * specified style, and/or in the application's stylesheet.
+ * 
+ * @param name (string) the name of the property
+ * @param defaultValue the default value to return if no value is 
+ *        specified in an internal property, style, or stylesheet
+ */
 EchoApp.Component.prototype.getRenderProperty = function(name, defaultValue) {
     var value = this.getProperty(name);
     if (value == null) {
@@ -383,18 +458,44 @@ EchoApp.Component.prototype.getRenderProperty = function(name, defaultValue) {
     return value == null ? defaultValue : value;
 };
 
-EchoApp.Component.prototype.getStyle = function(styleId) {
+/**
+ * Returns the style assigned to this component, if any.
+ * 
+ * @return (EchoApp.Style) the assigned style
+ */
+EchoApp.Component.prototype.getStyle = function() {
     return this._style;
 };
 
-EchoApp.Component.prototype.getStyleName = function(styleId) {
+/**
+ * Returns the name of the style (from the application's style sheet) 
+ * assigned to this component.
+ * 
+ * @return (string) the style name
+ */
+EchoApp.Component.prototype.getStyleName = function() {
     return this._styleName;
 };
 
-EchoApp.Component.prototype.getStyleType = function(styleId) {
+/** 
+ * Returns the type name of the style (from the application's style sheet)
+ * assigned to this component.
+ * This value may differ from the component type in the event
+ * the component is a derivative of the type specified in the style sheet
+ * 
+ * @return (string) the style type
+ */
+EchoApp.Component.prototype.getStyleType = function() {
     return this._styleType;
 };
 
+/**
+ * Returns the index of a child component, or -1 if the component
+ * is not a child.
+ * 
+ * @param component (EchoApp.Component) the component
+ * @return (integer) the index
+ */
 EchoApp.Component.prototype.indexOf = function(component) {
     return this.children.indexOf(component);
 };
@@ -402,11 +503,19 @@ EchoApp.Component.prototype.indexOf = function(component) {
 /**
  * Determines if the component is active, that is, within the current modal context
  * and ready to receive input.
+ * 
+ * @return (boolean) the active state
  */
 EchoApp.Component.prototype.isActive = function() {
     return true;
 };
 
+/**
+ * Determines if this component is or is an ancestor of another component.
+ * 
+ * @param (EchoApp.Component) the component to test
+ * @return true if an ancestor relationship exists
+ */
 EchoApp.Component.prototype.isAncestorOf = function(c) {
     while (c != null && c != this) {
         c = c.parent;
@@ -414,6 +523,14 @@ EchoApp.Component.prototype.isAncestorOf = function(c) {
     return c == this;
 };
 
+/**
+ * Registers / unregisters a component that has been 
+ * added/removed to/from a registered hierarchy
+ * (a hierarchy that is registered to an application).
+ * 
+ * @param application (EchoApp.Application) the application 
+ *        (null to unregister the component)
+ */
 EchoApp.Component.prototype.register = function(application) {
 	// Sanity check.
 	if (application && this.application) {
@@ -450,6 +567,12 @@ EchoApp.Component.prototype.register = function(application) {
 	}
 };
 
+/**
+ * Removes a child component.
+ * 
+ * @param componentOrIndex (EchoApp.Component / integer) 
+ *        the index of the component to remove, or the component to remove
+ */
 EchoApp.Component.prototype.remove = function(componentOrIndex) {
     var component;
     var index;
@@ -480,10 +603,20 @@ EchoApp.Component.prototype.remove = function(componentOrIndex) {
     }
 };
 
+/**
+ * Removes all child components.
+ */
 EchoApp.Component.prototype.removeAll = function() {
     //TODO Implement
 };
 
+/**
+ * Removes an arbitrary event listener.
+ * 
+ * @param eventType (string) the event type name
+ * @param eventTarget (function / EchoCore.MethodRef) the method to invoke when
+ *        the event occurs (the event will be passed as the single argument)
+ */
 EchoApp.Component.prototype.removeListener = function(eventType, eventTarget) {
     if (this._listenerList == null) {
         return;
@@ -491,6 +624,13 @@ EchoApp.Component.prototype.removeListener = function(eventType, eventTarget) {
     this._listenerList.removeListener(eventType, eventTarget);
 };
 
+/** 
+ * Sets the value of an indexed property in the internal style.
+ * 
+ * @param name (string) the name of the property
+ * @param index (integer) the index of the property
+ * @param value the new value of the property
+ */
 EchoApp.Component.prototype.setIndexedProperty = function(name, index, value) {
     var oldValue = this._internalStyle.getIndexedProperty(name, index);
     this._internalStyle.setIndexedProperty(name, index, newValue);
@@ -499,10 +639,21 @@ EchoApp.Component.prototype.setIndexedProperty = function(name, index, value) {
     }
 };
 
+/**
+ * Sets a component-specific layout direction.
+ * 
+ * @param (EchoApp.LayoutDirection) the new layout direction
+ */
 EchoApp.Component.prototype.setLayoutDirection = function(newValue) {
     this._layoutDirection = newValue;
 };
 
+/** 
+ * Sets the value of a property in the internal style.
+ * 
+ * @param name (string) the name of the property
+ * @param value the new value of the property
+ */
 EchoApp.Component.prototype.setProperty = function(name, newValue) {
     var oldValue = this._internalStyle.getProperty(name);
     this._internalStyle.setProperty(name, newValue);
@@ -511,6 +662,11 @@ EchoApp.Component.prototype.setProperty = function(name, newValue) {
     }
 };
 
+/**
+ * Sets the style of the component.
+ * 
+ * @param newValue (EchoApp.Style) the new style
+ */
 EchoApp.Component.prototype.setStyle = function(newValue) {
     var oldValue = this._style;
     this._style = newValue;
@@ -519,6 +675,12 @@ EchoApp.Component.prototype.setStyle = function(newValue) {
     }
 };
 
+/**
+ * Sets the name of the style (from the application's style sheet) 
+ * assigned to this component.
+ * 
+ * @param newValue (string) the style name
+ */
 EchoApp.Component.prototype.setStyleName = function(newValue) {
     var oldValue = this._styleName;
     this._styleName = newValue;
@@ -527,6 +689,14 @@ EchoApp.Component.prototype.setStyleName = function(newValue) {
     }
 };
 
+/** 
+ * Sets the type name of the style (from the application's style sheet)
+ * assigned to this component.
+ * This value may differ from the component type in the event
+ * the component is a derivative of the type specified in the style sheet
+ * 
+ * @param newValue (string) the style type
+ */
 EchoApp.Component.prototype.setStyleType = function(newValue) {
     var oldValue = this._styleType;
     this._styleType = newValue;
@@ -535,6 +705,13 @@ EchoApp.Component.prototype.setStyleType = function(newValue) {
     }
 };
 
+/**
+ * Returns a string representation of the component (default implementation).
+ * 
+ * @param longFormat an optional flag specifying whether all information about
+ *        the component should be displayed (e.g., property values)
+ * @return a string representation of the component
+ */
 EchoApp.Component.prototype.toString = function(longFormat) {
     var out = this.renderId + "/" + this.componentType;
     if (longFormat) {
