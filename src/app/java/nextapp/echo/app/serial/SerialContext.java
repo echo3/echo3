@@ -31,9 +31,25 @@ package nextapp.echo.app.serial;
 
 import org.w3c.dom.Document;
 
+/**
+ * Contextual information provided during property 
+ * serialization/de-serialization operations.
+ */
 public interface SerialContext {
     
+    /**
+     * Returns the DOM <code>Document</code> to/from which the property is 
+     * being (de)serialized.
+     * 
+     * @return the DOM <code>Document</code>
+     */
     public Document getDocument();
 
+    /**
+     * Returns the <code>ClassLoader</code> from which new should
+     * be instantiated or introspected.
+     * 
+     * @return the <code>ClassLoader</code>
+     */
     public ClassLoader getClassLoader();
 }

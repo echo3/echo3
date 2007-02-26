@@ -29,7 +29,17 @@
 
 package nextapp.echo.app.serial;
 
+/**
+ * Interface for factories which create <code>SerialPropertyPeer</code>s/
+ */
 public interface PropertyPeerFactory {
 
+    /**
+     * Returns the appropriate <code>SerialPropertyPeer</code> for the
+     * specified <code>propertyClass</code>.
+     * 
+     * @param propertyClass the <code>Class</code> of the property
+     * @return the <code>SerialPropertyPeer</code>
+     */
     public SerialPropertyPeer getPeerForProperty(Class propertyClass);
 }
