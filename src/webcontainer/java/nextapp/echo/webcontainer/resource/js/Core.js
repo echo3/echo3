@@ -229,6 +229,12 @@ EchoCore.Collections.Map.prototype.remove = function(key) {
     }
 };
 
+/**
+ * Determines the size of the map.
+ * 
+ * @return the size of the map
+ * @type Number
+ */
 EchoCore.Collections.Map.prototype.size = function() {
     var size = 0;
     for (var x in this.associations) {
@@ -237,6 +243,14 @@ EchoCore.Collections.Map.prototype.size = function() {
     return size;
 };
 
+/**
+ * Returns a string representation.
+ * The items will be comma-delimited,
+ * in the form "key=value".
+ *
+ * @return a string representation
+ * @type String
+ */
 EchoCore.Collections.Map.prototype.toString = function() {
     var outArray = new Array();
     for (var x in this.associations) {
@@ -246,13 +260,17 @@ EchoCore.Collections.Map.prototype.toString = function() {
 };
 
 /**
- * Collection set implementation.
+ * Creates a new Set.
+ * 
+ * @constructor
+ * @class Collection set implementation.
  */
 EchoCore.Collections.Set = function() { 
 
     /**
      * An array containing all items in the set.
      * This array may be iterated by an object, but should not be modified.
+     * @type Array
      */
     this.items = new Array();
 };
@@ -264,6 +282,8 @@ EchoCore.Collections.Set = function() {
  * invoking .equals() on the specified item if it provides such a method.
  * If a .equals() implementation is not provided, equality will be determined
  * based on the double-equal operator (==).
+ * 
+ * @param item the item to add
  */
 EchoCore.Collections.Set.prototype.add = function(item) {
     for (var i = 0; i < this.items.length; ++i) {
@@ -281,6 +301,10 @@ EchoCore.Collections.Set.prototype.add = function(item) {
  * invoking .equals() on the specified item if it provides such a method.
  * If a .equals() implementation is not provided, equality will be determined
  * based on the double-equal operator (==).
+ * 
+ * @param item the item to test
+ * @return true if the item is contained in the set
+ * @type Boolean
  */
 EchoCore.Collections.Set.prototype.contains = function(item) {
     for (var i = 0; i < this.items.length; ++i) {
@@ -298,6 +322,8 @@ EchoCore.Collections.Set.prototype.contains = function(item) {
  * invoking .equals() on the specified item if it provides such a method.
  * If a .equals() implementation is not provided, equality will be determined
  * based on the double-equal operator (==).
+ * 
+ * @param item the item to remove
  */
 EchoCore.Collections.Set.prototype.remove = function(item) {
     for (var i = 0; i < this.items.length; ++i) {
@@ -315,7 +341,11 @@ EchoCore.Collections.Set.prototype.size = function(index) {
 };
 
 /**
- * Returns a string representation of the set.
+ * Returns a string representation.
+ * The items will be comma-delimited.
+ *
+ * @return a string representation
+ * @type String
  */
 EchoCore.Collections.Set.prototype.toString = function() {
     return this.items.toString();
@@ -353,7 +383,11 @@ EchoCore.Debug.consoleWrite = function(text) {
 };
 
 /**
- * Returns a string representation of the state of an object's instance variables.
+ * Creates a string representation of the state of an object's instance variables.
+ *
+ * @param object the object to convert to a string
+ * @return the string
+ * @type String
  */
 EchoCore.Debug.toString = function(object) {
     var s = "";
