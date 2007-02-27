@@ -2271,5 +2271,9 @@ EchoApp.WindowPane.DEFAULT_MINIMUM_WIDTH = new EchoApp.Property.Extent("100px");
 EchoApp.WindowPane.DEFAULT_MINIMUM_HEIGHT = new EchoApp.Property.Extent("100px");
 
 EchoApp.ComponentFactory.registerType("Button", EchoApp.Button);
+EchoApp.ComponentFactory.registerType("Column", EchoApp.Column);
+EchoApp.ComponentFactory.registerType("Label", EchoApp.Label);
+EchoApp.ComponentFactory.registerType("Row", EchoApp.Row);
 EchoApp.ComponentFactory.registerType("SplitPane", EchoApp.SplitPane);
+EchoApp.ComponentFactory.registerType("TextField", EchoApp.TextField);
 EchoApp.ComponentFactory.registerType("WindowPane", EchoApp.WindowPane);
