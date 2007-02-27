@@ -1652,9 +1652,12 @@ EchoApp.StyleSheet.prototype.setStyle = function(name, componentType, style) {
 EchoApp.Update = function() { };
 
 /**
- * Representation of an update to a single existing component which is currently rendered on the screen.
+ * Creates a new ComponentUpdate.
  * 
  * @constructor
+ * @param parent the updated component
+ * @class Representation of an update to a single existing component 
+ *        which is currently rendered on the screen.
  */
 EchoApp.Update.ComponentUpdate = function(parent) {
 
@@ -1698,6 +1701,11 @@ EchoApp.Update.ComponentUpdate = function(parent) {
     this.updatedLayoutDataChildren = null;
 };
 
+/**
+ * Records the addition of a child to the parent component.
+ * 
+ * @param {EchoApp.Component} child the added child
+ */
 EchoApp.Update.ComponentUpdate.prototype.addChild = function(child) {
     if (!this.addedChildren) {
         this.addedChildren = new EchoCore.Collections.Set();
@@ -1727,30 +1735,72 @@ EchoApp.Update.ComponentUpdate.prototype.appendRemovedDescendants = function(upd
     }
 };
 
+/**
+ * Retrives children that have been added to the component.
+ * 
+ * @return the set of added child components
+ * @type EchoCore.Collections.Set
+ */
 EchoApp.Update.ComponentUpdate.prototype.getAddedChildren = function() {
     return this.addedChildren;
 };
 
+/**
+ * Retrives children that have been removed from the component.
+ * 
+ * @return the set of removed child components
+ * @type EchoCore.Collections.Set
+ */
 EchoApp.Update.ComponentUpdate.prototype.getRemovedChildren = function() {
     return this.removedChildren;
 };
 
-EchoApp.Update.ComponentUpdate.prototype.hasRemovedChildren = function() {
-    return this.removedChildren != null;
-};
-
+/**
+ * Determines if the component has had any children added.
+ * 
+ * @return true if children have been added
+ * @type Boolean
+ */
 EchoApp.Update.ComponentUpdate.prototype.hasAddedChildren = function() {
     return this.addedChildren != null;
 };
 
+/**
+ * Determines if the component has had any children removed.
+ * 
+ * @return true if children have been removed
+ * @type Boolean
+ */
+EchoApp.Update.ComponentUpdate.prototype.hasRemovedChildren = function() {
+    return this.removedChildren != null;
+};
+
+/**
+ * Determines if any children of the component have had their LayoutData
+ * properties updated.
+ * 
+ * @return true if any child LayoutDatas have been updated
+ * @type Boolean
+ */
 EchoApp.Update.ComponentUpdate.prototype.hasUpdatedLayoutDataChildren = function() {
     return this.updatedLayoutDataChildren != null;
 };
 
+/**
+ * Determines if the component has any updated properties.
+ * 
+ * @return true if any properties have been updated
+ * @type Boolean
+ */
 EchoApp.Update.ComponentUpdate.prototype.hasUpdatedProperties = function() {
     return this.propertyUpdates != null;
 };
 
+/**
+ * Records the removal of a child from the parent component.
+ * 
+ * @param {EchoApp.Component} child the removed child
+ */
 EchoApp.Update.ComponentUpdate.prototype.removeChild = function(child) {
     if (this.addedChildren != null && this.addedChildren.contains(child)) {
         // Remove child from add list if found.
@@ -1827,7 +1877,13 @@ EchoApp.Update.ComponentUpdate.PropertyUpdate = function(oldValue, newValue) {
 };
 
 /**
+ * Creates a new Update Manager.
+ *
  * @constructor
+ * @class Monitors and records updates made to the application between repaints.
+ *        Provides API to determine changes to component hierarchy since last update
+ *        in order to efficiently repaint the screen.
+ * @param {EchoApp.Application} application the supported application
  */
 EchoApp.Update.Manager = function(application) {
     this.componentUpdateMap = new EchoCore.Collections.Map();
@@ -1838,6 +1894,9 @@ EchoApp.Update.Manager = function(application) {
     this._listenerList = new EchoCore.ListenerList();
 };
 
+/**
+ * Adds an 
+ */
 EchoApp.Update.Manager.prototype.addUpdateListener = function(l) {
     this._listenerList.addListener("update", l);
 };
@@ -2006,6 +2065,7 @@ EchoApp.Update.Manager.prototype.toString = function() {
  * Button component.
  * 
  * @constructor
+ * @class Button component.
  * @base EchoApp.Component
  */
 EchoApp.Button = function(renderId, text, icon) {
@@ -2020,15 +2080,19 @@ EchoApp.Button = function(renderId, text, icon) {
 
 EchoApp.Button.prototype = new EchoApp.Component;
 
+/**
+ * Programatically performs a button action.
+ */
 EchoApp.Button.prototype.doAction = function() {
     var e = new EchoCore.Event(this, "action");
     this.fireEvent(e);
 };
 
 /**
- * Column component.
+ * Creates a new Column.
  * 
  * @constructor
+ * @class Column component.
  * @base EchoApp.Component
  */
 EchoApp.Column = function(renderId) {
@@ -2038,9 +2102,10 @@ EchoApp.Column = function(renderId) {
 EchoApp.Column.prototype = new EchoApp.Component;
 
 /**
- * ContentPane component.
+ * Creates a new ContentPane.
  * 
  * @constructor
+ * @class ContentPane component.
  * @base EchoApp.Component
  */
 EchoApp.ContentPane = function(renderId) {
@@ -2051,9 +2116,10 @@ EchoApp.ContentPane = function(renderId) {
 EchoApp.ContentPane.prototype = new EchoApp.Component;
 
 /**
- * Label component.
+ * Creates a new Label.
  * 
  * @constructor
+ * @class Label component.
  * @base EchoApp.Component
  */
 EchoApp.Label = function(renderId) {
@@ -2063,9 +2129,10 @@ EchoApp.Label = function(renderId) {
 EchoApp.Label.prototype = new EchoApp.Component;
 
 /**
- * Row component.
+ * Creates a new Row.
  * 
  * @constructor
+ * @class Row component.
  * @base EchoApp.Component
  */
 EchoApp.Row = function(renderId) {
@@ -2075,9 +2142,10 @@ EchoApp.Row = function(renderId) {
 EchoApp.Row.prototype = new EchoApp.Component;
 
 /**
- * SplitPane component.
+ * Creates a new SplitPane.
  * 
  * @constructor
+ * @class SplitPane component.
  * @base EchoApp.Component
  */
 EchoApp.SplitPane = function(renderId) {
@@ -2099,9 +2167,10 @@ EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE = new EchoApp.Property.Extent
 EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR = new EchoApp.Property.Color("#3f007f");
 
 /**
- * TextField component.
+ * Creates a new TextField.
  * 
  * @constructor
+ * @class TextField component.
  * @base EchoApp.Component
  */
 EchoApp.TextField = function(renderId) {
@@ -2111,9 +2180,10 @@ EchoApp.TextField = function(renderId) {
 EchoApp.TextField.prototype = new EchoApp.Component;
 
 /**
- * WindowPane component.
+ * Creates a new WindowPane.
  * 
  * @constructor
+ * @class WindowPane component.
  * @base EchoApp.Component
  */
 EchoApp.WindowPane = function(renderId) {
