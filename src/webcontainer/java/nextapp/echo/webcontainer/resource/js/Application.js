@@ -1914,9 +1914,6 @@ EchoApp.Update.Manager = function(application) {
     this._listenerList = new EchoCore.ListenerList();
 };
 
-/**
- * Adds an 
- */
 EchoApp.Update.Manager.prototype.addUpdateListener = function(l) {
     this._listenerList.addListener("update", l);
 };
@@ -1971,6 +1968,13 @@ EchoApp.Update.Manager.prototype._isAncestorBeingAdded = function(component) {
     return false;
 };
 
+/**
+ * Processes a child addition to a component.
+ * 
+ * @private
+ * @param {EchoApp.Component} parent the parent component
+ * @param {EchoApp.Component} child the added child component
+ */
 EchoApp.Update.Manager.prototype._processComponentAdd = function(parent, child) {
     if (this.fullRefreshRequired) {
         return;
@@ -1982,6 +1986,12 @@ EchoApp.Update.Manager.prototype._processComponentAdd = function(parent, child) 
     update.addChild(child);
 };
 
+/**
+ * Process a layout data update to a child component.
+ * 
+ * @private
+ * @param {EchoApp.Component} updatedComponent the updated component
+ */
 EchoApp.Update.Manager.prototype._processComponentLayoutDataUpdate = function(updatedComponent) {
     if (this.fullRefreshRequired) {
         return;
@@ -1994,6 +2004,13 @@ EchoApp.Update.Manager.prototype._processComponentLayoutDataUpdate = function(up
     update.updateLayoutData(updatedComponent);
 };
 
+/**
+ * Processes a child removal from a component.
+ * 
+ * @private
+ * @param {EchoApp.Component} parent the parent component
+ * @param {EchoApp.Component} child the removed child component
+ */
 EchoApp.Update.Manager.prototype._processComponentRemove = function(parent, child) {
     if (this.fullRefreshRequired) {
         return;
@@ -2027,6 +2044,15 @@ EchoApp.Update.Manager.prototype._processComponentRemove = function(parent, chil
     }
 };
 
+/**
+ * Processes a property update to a component.
+ * 
+ * @private
+ * @component {EchoApp.Component} the updated component
+ * @propertyName {String} the updated property name
+ * @oldValue the previous value of the property
+ * @newValue the new value of the property
+ */
 EchoApp.Update.Manager.prototype._processComponentPropertyUpdate = function(component, propertyName, oldValue, newValue) {
 	if (this.fullRefereshRequired) {
 		return;
@@ -2038,6 +2064,13 @@ EchoApp.Update.Manager.prototype._processComponentPropertyUpdate = function(comp
 	update.updateProperty(propertyName, oldValue, newValue);
 };
 
+/**
+ * ComponentUpdateEvent handler registered with the application to monitor
+ * UI state changes.
+ * 
+ * @private
+ * @param {EchoApp.Update.ComponentUpdateEvent} e the event
+ */
 EchoApp.Update.Manager.prototype._processComponentUpdate = function(e) {
     if (e.propertyName == "children") {
         if (e.newValue == null) {
@@ -2053,6 +2086,10 @@ EchoApp.Update.Manager.prototype._processComponentUpdate = function(e) {
     this._fireUpdate();
 };
 
+/**
+ * Purges all updates from the manager.
+ * Invoked after the client has repainted the screen.
+ */
 EchoApp.Update.Manager.prototype.purge = function() {
     this.componentUpdateMap = new EchoCore.Collections.Map();
     this.fullRefreshRequired = false;
