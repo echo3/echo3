@@ -1,15 +1,15 @@
 /**
- * Application namespace.  DO NOT INSTANTIATE.
+ * Namespace for application framework.  Non-instantiable object.
  * REQUIRES: Core.
- * SPECIAL NOTE: This resource may NOT use any APIs other than "Core" out of convention.
  */
 EchoApp = function() { };
 
 /**
- * Representation of a single application instance.
- * Derived objects must invoke construtor with root component id.
- * 
- * @param (string) rootComponentId the DOM id of the root component
+ * Creates a new application instance.  
+ * @class Representation of a single application instance.
+ *        Derived objects must invoke construtor with root component id.
+ * @constructor
+ * @param {String} rootComponentId the DOM id of the root component
  */
 EchoApp.Application = function(rootComponentId) {
     if (arguments.length == 0) {
@@ -17,36 +17,65 @@ EchoApp.Application = function(rootComponentId) {
         return;
     }
     
-    /** Mapping between component ids and component instances. */
+    /** 
+     * Mapping between component ids and component instances.
+     * @private 
+     * @type EchoCore.Collections.Map
+     */
     this._idToComponentMap = new EchoCore.Collections.Map();
     
-    /** ListenerList instance for application-level events. */
+    /** 
+     * ListenerList instance for application-level events.
+     * @private 
+     * @type EchoCore.ListenerList 
+     */
     this._listenerList = new EchoCore.ListenerList();
 
-    /** Id of root component. */
+    /** 
+     * Id of root component.
+     * @type string 
+     */
     this.rootComponentId = rootComponentId;
 
-    /** Root component instance. */
+    /** 
+     * Root component instance.
+     * @type EchoApp.Component 
+     */
     this.rootComponent = new EchoApp.Component("Root", this.rootComponentId);
     this.rootComponent.register(this);
     
-    /** Root component of modal context. */
+    /** 
+     * Root component of modal context.
+     * @type EchoApp.Component 
+     */
     this.modalContext = null;
     
-    /** Displayed style sheet. */
+    /** 
+     * Displayed style sheet.
+     * 
+     * @private 
+     * @type EchoApp.StyleSheet
+     */
     this._styleSheet = null;
     
-    /** Currently focused component. */
+    /** 
+     * Currently focused component.
+     * @private
+     * @type EchoApp.Component
+     */
     this._focusedComponent = null;
     
-    /** UpdateManager instance monitoring changes to the application for redraws. */
+    /** 
+     * UpdateManager instance monitoring changes to the application for redraws. 
+     * @type EchoApp.Update.Manager
+     */
     this.updateManager = new EchoApp.Update.Manager(this);
 };
 
 /**
  * Adds a ComponentUpdateListener.
  * 
- * @param l (function / EchoCore.MethodRef) the listener to add
+ * @param l the listener to add (may be of type Function or EchoCore.MethodRef)
  */
 EchoApp.Application.prototype.addComponentUpdateListener = function(l) {
     this._listenerList.addListener("componentUpdate", l);
@@ -72,10 +101,11 @@ EchoApp.Application.prototype.dispose = function() {
  * If a child was removed, the removed child is provided as <code>oldValue</code>
  * and the <code>newValue</code> property is null.
  * 
- * @param parent (EchoApp.Component) the updated component
- * @param propertyName (string) the name of the updated property
+ * @param {EchoApp.Component} parent the updated component
+ * @param {String} propertyName the name of the updated property
  * @param oldValue the old value of the property
  * @param newValue the new value of the property
+ * @private
  */
 EchoApp.Application.prototype._fireComponentUpdate = function(parent, propertyName, oldValue, newValue) {
     var e = new EchoApp.Application.ComponentUpdateEvent(this, parent, propertyName, oldValue, newValue);
@@ -85,8 +115,9 @@ EchoApp.Application.prototype._fireComponentUpdate = function(parent, propertyNa
 /**
  * Retrieves the registered component with the specified render id.
  * 
- * @param (string) renderId the render id
- * @return (EchoApp.Component) the component 
+ * @param {String} renderId the render id
+ * @return the component
+ * @type EchoApp.Component 
  */
 EchoApp.Application.prototype.getComponentByRenderId = function(renderId) {
     return this._idToComponentMap.get(renderId);
@@ -95,7 +126,8 @@ EchoApp.Application.prototype.getComponentByRenderId = function(renderId) {
 /**
  * Returns the focused component.
  * 
- * @return (EchoApp.Component) the focused component
+ * @return the focused component
+ * @type {EchoApp.Component}
  */
 EchoApp.Application.prototype.getFocusedComponent = function() {
     return this._focusedComponent;
@@ -104,7 +136,8 @@ EchoApp.Application.prototype.getFocusedComponent = function() {
 /**
  * Returns the default layout direction of the application.
  *
- * @return (EchoApp.LayoutDirection) the default layout direction 
+ * @return the default layout direction
+ * @type EchoApp.LayoutDirection 
  */
 EchoApp.Application.prototype.getLayoutDirection = function() {
     return this._layoutDirection;
@@ -113,7 +146,8 @@ EchoApp.Application.prototype.getLayoutDirection = function() {
 /**
  * Returns the application style sheet.
  * 
- * @return (EchoApp.StyleSheet) he application style sheet
+ * @return the application style sheet
+ * @type EchoApp.StyleSheet
  */
 EchoApp.Application.prototype.getStyleSheet = function() {
     return this._styleSheet;
@@ -122,8 +156,8 @@ EchoApp.Application.prototype.getStyleSheet = function() {
 /**
  * Notifies the application of an update to a component.
  * 
- * @param parent (EchoApp.Component) the parent component
- * @param propertyName (string) the updated property
+ * @param {EchoApp.Component} parent the parent component
+ * @param {String} propertyName the updated property
  * @param oldValue the previous property value
  * @param newValue the new property value
  */
@@ -136,7 +170,7 @@ EchoApp.Application.prototype.notifyComponentUpdate = function(parent, propertyN
  * Invoked when a component is added to a hierarchy of 
  * components that is registered with the application.
  * 
- * @param component (EchoApp.Component) the component to register
+ * @param {EchoApp.Component} component the component to register
  */
 EchoApp.Application.prototype.registerComponent = function(component) {
     if (this._idToComponentMap.get(component.renderId)) {
@@ -148,7 +182,7 @@ EchoApp.Application.prototype.registerComponent = function(component) {
 /**
  * Removes a ComponentUpdateListener.
  * 
- * @param l (function / EchoCore.MethodRef)  the listener to remove
+ * @param l the listener to add (may be of type Function or EchoCore.MethodRef)
  */
 EchoApp.Application.prototype.removeComponentUpdateListener = function(l) {
     this._listenerList.removeListener("componentUpdate", l);
@@ -157,7 +191,7 @@ EchoApp.Application.prototype.removeComponentUpdateListener = function(l) {
 /**
  * Sets the focused component
  * 
- * @param newValue (EchoApp.Component) the new focused component
+ * @param {EchoApp.Component} newValue the new focused component
  */
 EchoApp.Application.prototype.setFocusedComponent = function(newValue) {
     this._focusedComponent = newValue;
@@ -166,7 +200,7 @@ EchoApp.Application.prototype.setFocusedComponent = function(newValue) {
 /**
  * Sets the application default layout direction.
  * 
- * @param newValue (EchoApp.LayoutDirection) the new layout direction
+ * @param {EchoApp.LayoutDirection} newValue the new layout direction
  */
 EchoApp.Application.prototype.setLayoutDirection = function(newValue) {
     this._layoutDirection = newValue;
@@ -175,7 +209,7 @@ EchoApp.Application.prototype.setLayoutDirection = function(newValue) {
 /**
  * Sets the application style sheet.
  * 
- * @param newValue (EchoApp.StyleSheet) the new style sheet
+ * @param {EchoApp.StyleSheet} newValue the new style sheet
  */
 EchoApp.Application.prototype.setStyleSheet = function(newValue) {
     var oldValue = this._styleSheet;
@@ -189,7 +223,7 @@ EchoApp.Application.prototype.setStyleSheet = function(newValue) {
  * This method is invoked when a component is removed from a hierarchy of 
  * components registered with the application.
  * 
- * @param component (EchoApp.Component) the component to remove
+ * @param {EchoApp.Component} component the component to remove
  */
 EchoApp.Application.prototype.unregisterComponent = function(component) {
     this._idToComponentMap.remove(component.renderId);
@@ -198,9 +232,11 @@ EchoApp.Application.prototype.unregisterComponent = function(component) {
 /**
  * Event object describing an update to a component.
  * 
+ * @constructor
+ * @base EchoCore.Event
  * @param source the generator of the event
- * @param parent (EchoApp.Component) the updated component
- * @param propertyName (string) the updated propery
+ * @param {EchoApp.Component} parent the updated component
+ * @param {String} propertyName the updated propery
  * @param oldValue the previous value of the property
  * @param newValue the new value of the property
  */
@@ -229,9 +265,10 @@ EchoApp.ComponentFactory._typeToConstructorMap = new EchoCore.Collections.Map();
 /**
  * Creates a new instance of an arbitrary component.
  * 
- * @param typeName (string) the type name of the component
- * @param renderId (string) the component render id
- * @return (EchoApp.Component) a newly instantiated component
+ * @param {String} typeName the type name of the component
+ * @param {String} renderId the component render id
+ * @return a newly instantiated component
+ * @type  {EchoApp.Component}
  */
 EchoApp.ComponentFactory.newInstance = function(typeName, renderId) {
     var typeConstructor = EchoApp.ComponentFactory._typeToConstructorMap.get(typeName);
@@ -245,8 +282,8 @@ EchoApp.ComponentFactory.newInstance = function(typeName, renderId) {
 /**
  * Registers a type name to a specific constructor.
  * 
- * @param typeName the type name
- * @param typeConstructor (function) the component object to instantiate
+ * @param {String} typeName the type name
+ * @param {Function} typeConstructor the component object to instantiate
  *        (must extend EchoApp.Component)
  */
 EchoApp.ComponentFactory.registerType = function(typeName, typeConstructor) {
@@ -257,33 +294,91 @@ EchoApp.ComponentFactory.registerType = function(typeName, typeConstructor) {
  * Base class for components.
  * Derived classes must invoke constructor with componentType (and optionally renderId) properties.
  * 
- * @param componentType (string) the component type
- * @param renderId (string) the render id
+ * @param {String} componentType the component type
+ * @param {String} renderId the render id
+ * @constructor
  */
 EchoApp.Component = function(componentType, renderId) {
     if (arguments.length == 0) { return; }
+    
+    /**
+     * The type name of the component.
+     * @type String
+     */
     this.componentType = componentType;
-    this.renderId = renderId ? renderId : "cl_" + ++EchoApp.Component.nextRenderId;
+    
+    /**
+     * The render id.
+     * @type String
+     */
+    this.renderId = renderId ? renderId : "cl_" + ++EchoApp.Component._nextRenderId;
+    
+    /**
+     * The parent component.
+     * @type EchoApp.Component
+     */
     this.parent = null;
+    
+    /**
+     * Array of child components.
+     * @type Array
+     */
     this.children = new EchoCore.Collections.List();
+    
+    /**
+     * The registered application.
+     * @type EchoApp.Application
+     */
     this.application = null;
+    
+    /**
+     * Listener list.
+     * @private
+     * @type EchoCore.ListenerList
+     */
     this._listenerList = null;
+    
+    /**
+     * Internal style used to store properties set directly on component.
+     * @private
+     * @type EchoApp.Style
+     */
     this._internalStyle = new EchoApp.Style();
+    
+    /**
+     * Referenced external style
+     * @private
+     * @type EchoApp.Style
+     */
     this._style = null;
+    
+    /**
+     * Assigned style name from application-level style sheet.
+     * @private
+     * @type String
+     */
     this._styleName = null;
+
+    /**
+     * Assigned style type from application-level style sheet.
+     * @private
+     * @type String
+     */
     this._styleType = null;
 };
 
 /**
  * The next automatically assigned client render id.
+ * @private
+ * @type Number
  */
-EchoApp.Component.nextRenderId = 0;
+EchoApp.Component._nextRenderId = 0;
 
 /**
  * Adds a component as a child.
  * 
- * @param component (EchoApp.Component) the component to add
- * @param index (integer) the index at which to add it (optional, omission
+ * @param {EchoApp.Component} component the component to add
+ * @param {Number} index the (integer) index at which to add it (optional, omission
  *        will cause component to be appended to end)
  */
 EchoApp.Component.prototype.add = function(component, index) {
@@ -315,9 +410,10 @@ EchoApp.Component.prototype.add = function(component, index) {
 /**
  * Adds an arbitrary event listener.
  * 
- * @param eventType (string) the event type name
- * @param eventTarget (function / EchoCore.MethodRef) the method to invoke when
- *        the event occurs (the event will be passed as the single argument)
+ * @param {String} eventType the event type name
+ * @param eventTarget the method to invoke when the event occurs 
+ *        (the event will be passed as the single argument)
+ *        (argument may be of type Function or EchoCore.MethodRef)
  */
 EchoApp.Component.prototype.addListener = function(eventType, eventTarget) {
     if (this._listenerList == null) {
@@ -330,7 +426,7 @@ EchoApp.Component.prototype.addListener = function(eventType, eventTarget) {
  * Provides notification of an arbitrary event.
  * Listeners will be notified based on the event's type property.
  * 
- * @param event (EchoCore.Event) the event to fire
+ * @param {EchoCore.Event} event the event to fire
  */
 EchoApp.Component.prototype.fireEvent = function(event) {
     if (this._listenerList == null) {
@@ -342,8 +438,9 @@ EchoApp.Component.prototype.fireEvent = function(event) {
 /**
  * Retrieves the child omponent at the specified index.
  * 
- * @param index (integer) the index
- * @return (EchoApp.Component) the child component
+ * @param {Number} index the (integer) index
+ * @return the child component
+ * @type EchoApp.Component
  */
 EchoApp.Component.prototype.getComponent = function(index) {
     return this.children.get(index);
@@ -352,7 +449,8 @@ EchoApp.Component.prototype.getComponent = function(index) {
 /**
  * Returns the number of child components
  * 
- * @return (integer) the number of child components
+ * @return the number of child components
+ * @type Number
  */
 EchoApp.Component.prototype.getComponentCount = function(index) {
     return this.children.size();
@@ -361,8 +459,8 @@ EchoApp.Component.prototype.getComponentCount = function(index) {
 /**
  * Returns an arbitrary indexed property value.
  * 
- * @param name (string) the name of the property
- * @param index the index to return
+ * @param {String} name the name of the property
+ * @param {Number} index the index to return
  * @return the property value
  */
 EchoApp.Component.prototype.getIndexedProperty = function(name, index) {
@@ -372,7 +470,8 @@ EchoApp.Component.prototype.getIndexedProperty = function(name, index) {
 /**
  * Returns the component layout direction.
  * 
- * @return (EchoApp.LayoutDirection) the component layout direction
+ * @return the component layout direction
+ * @type {EchoApp.LayoutDirection}
  */
 EchoApp.Component.prototype.getLayoutDirection = function() {
     return this._layoutDirection;
@@ -381,7 +480,7 @@ EchoApp.Component.prototype.getLayoutDirection = function() {
 /**
  * Returns an arbitrary property value.
  * 
- * @param name (string) the name of the property
+ * @param {String} name the name of the property
  * @return the property value
  */
 EchoApp.Component.prototype.getProperty = function(name) {
@@ -393,8 +492,8 @@ EchoApp.Component.prototype.getProperty = function(name) {
  * based on the value set on this component, in the component's
  * specified style, and/or in the application's stylesheet.
  * 
- * @param name (string) the name of the property
- * @param index (integer) the index of the property
+ * @param {String} name the name of the property
+ * @param {Number} index the (integer) index of the property
  * @param defaultValue the default value to return if no value is 
  *        specified in an internal property, style, or stylesheet
  */
@@ -414,7 +513,8 @@ EchoApp.Component.prototype.getRenderIndexedProperty = function(name, index, def
  * rendered, based on analyzing the component's layout direction,
  * its parent's, and/or the application's.
  * 
- * @return (EchoApp.LayoutDirection) the rendering layout direction
+ * @return the rendering layout direction
+ * @type EchoApp.LayoutDirection
  */
 EchoApp.Component.prototype.getRenderLayoutDirection = function() {
     if (this._layoutDirection == null) { 
@@ -437,9 +537,10 @@ EchoApp.Component.prototype.getRenderLayoutDirection = function() {
  * based on the value set on this component, in the component's
  * specified style, and/or in the application's stylesheet.
  * 
- * @param name (string) the name of the property
+ * @param {String} name the name of the property
  * @param defaultValue the default value to return if no value is 
  *        specified in an internal property, style, or stylesheet
+ * @return the property value
  */
 EchoApp.Component.prototype.getRenderProperty = function(name, defaultValue) {
     var value = this.getProperty(name);
@@ -461,7 +562,8 @@ EchoApp.Component.prototype.getRenderProperty = function(name, defaultValue) {
 /**
  * Returns the style assigned to this component, if any.
  * 
- * @return (EchoApp.Style) the assigned style
+ * @return the assigned style
+ * @type EchoApp.Style
  */
 EchoApp.Component.prototype.getStyle = function() {
     return this._style;
@@ -471,7 +573,8 @@ EchoApp.Component.prototype.getStyle = function() {
  * Returns the name of the style (from the application's style sheet) 
  * assigned to this component.
  * 
- * @return (string) the style name
+ * @return the style name
+ * @type String
  */
 EchoApp.Component.prototype.getStyleName = function() {
     return this._styleName;
@@ -483,7 +586,8 @@ EchoApp.Component.prototype.getStyleName = function() {
  * This value may differ from the component type in the event
  * the component is a derivative of the type specified in the style sheet
  * 
- * @return (string) the style type
+ * @return the style type
+ * @type String
  */
 EchoApp.Component.prototype.getStyleType = function() {
     return this._styleType;
@@ -493,8 +597,9 @@ EchoApp.Component.prototype.getStyleType = function() {
  * Returns the index of a child component, or -1 if the component
  * is not a child.
  * 
- * @param component (EchoApp.Component) the component
- * @return (integer) the index
+ * @param {EchoApp.Component} component the component
+ * @return the index
+ * @type Number
  */
 EchoApp.Component.prototype.indexOf = function(component) {
     return this.children.indexOf(component);
@@ -504,7 +609,8 @@ EchoApp.Component.prototype.indexOf = function(component) {
  * Determines if the component is active, that is, within the current modal context
  * and ready to receive input.
  * 
- * @return (boolean) the active state
+ * @return the active state
+ * @type Boolean
  */
 EchoApp.Component.prototype.isActive = function() {
     return true;
@@ -513,8 +619,9 @@ EchoApp.Component.prototype.isActive = function() {
 /**
  * Determines if this component is or is an ancestor of another component.
  * 
- * @param (EchoApp.Component) the component to test
+ * @param {EchoApp.Component} c the component to test
  * @return true if an ancestor relationship exists
+ * @type Boolean
  */
 EchoApp.Component.prototype.isAncestorOf = function(c) {
     while (c != null && c != this) {
@@ -528,7 +635,7 @@ EchoApp.Component.prototype.isAncestorOf = function(c) {
  * added/removed to/from a registered hierarchy
  * (a hierarchy that is registered to an application).
  * 
- * @param application (EchoApp.Application) the application 
+ * @param {EchoApp.Application} application the application 
  *        (null to unregister the component)
  */
 EchoApp.Component.prototype.register = function(application) {
@@ -570,8 +677,9 @@ EchoApp.Component.prototype.register = function(application) {
 /**
  * Removes a child component.
  * 
- * @param componentOrIndex (EchoApp.Component / integer) 
+ * @param componentOrIndex 
  *        the index of the component to remove, or the component to remove
+ *        (values may be of type EchoApp.Component or Number)
  */
 EchoApp.Component.prototype.remove = function(componentOrIndex) {
     var component;
@@ -613,9 +721,10 @@ EchoApp.Component.prototype.removeAll = function() {
 /**
  * Removes an arbitrary event listener.
  * 
- * @param eventType (string) the event type name
- * @param eventTarget (function / EchoCore.MethodRef) the method to invoke when
- *        the event occurs (the event will be passed as the single argument)
+ * @param {String} eventType the event type name
+ * @param eventTarget the method to invoke when the event occurs 
+ *        (the event will be passed as the single argument)
+ *        (values may be of type Function or EchoCore.MethodRef)
  */
 EchoApp.Component.prototype.removeListener = function(eventType, eventTarget) {
     if (this._listenerList == null) {
@@ -627,8 +736,8 @@ EchoApp.Component.prototype.removeListener = function(eventType, eventTarget) {
 /** 
  * Sets the value of an indexed property in the internal style.
  * 
- * @param name (string) the name of the property
- * @param index (integer) the index of the property
+ * @param {String} name the name of the property
+ * @param {Number} index the index of the property
  * @param value the new value of the property
  */
 EchoApp.Component.prototype.setIndexedProperty = function(name, index, value) {
@@ -642,7 +751,7 @@ EchoApp.Component.prototype.setIndexedProperty = function(name, index, value) {
 /**
  * Sets a component-specific layout direction.
  * 
- * @param (EchoApp.LayoutDirection) the new layout direction
+ * @param {EchoApp.LayoutDirection} newValue the new layout direction
  */
 EchoApp.Component.prototype.setLayoutDirection = function(newValue) {
     this._layoutDirection = newValue;
@@ -651,7 +760,7 @@ EchoApp.Component.prototype.setLayoutDirection = function(newValue) {
 /** 
  * Sets the value of a property in the internal style.
  * 
- * @param name (string) the name of the property
+ * @param {String} name the name of the property
  * @param value the new value of the property
  */
 EchoApp.Component.prototype.setProperty = function(name, newValue) {
@@ -665,7 +774,7 @@ EchoApp.Component.prototype.setProperty = function(name, newValue) {
 /**
  * Sets the style of the component.
  * 
- * @param newValue (EchoApp.Style) the new style
+ * @param {EchoApp.Style} newValue the new style
  */
 EchoApp.Component.prototype.setStyle = function(newValue) {
     var oldValue = this._style;
@@ -679,7 +788,7 @@ EchoApp.Component.prototype.setStyle = function(newValue) {
  * Sets the name of the style (from the application's style sheet) 
  * assigned to this component.
  * 
- * @param newValue (string) the style name
+ * @param {String} newValue the style name
  */
 EchoApp.Component.prototype.setStyleName = function(newValue) {
     var oldValue = this._styleName;
@@ -695,7 +804,7 @@ EchoApp.Component.prototype.setStyleName = function(newValue) {
  * This value may differ from the component type in the event
  * the component is a derivative of the type specified in the style sheet
  * 
- * @param newValue (string) the style type
+ * @param {String} newValue the style type
  */
 EchoApp.Component.prototype.setStyleType = function(newValue) {
     var oldValue = this._styleType;
@@ -708,9 +817,10 @@ EchoApp.Component.prototype.setStyleType = function(newValue) {
 /**
  * Returns a string representation of the component (default implementation).
  * 
- * @param longFormat an optional flag specifying whether all information about
+ * @param {Boolean} longFormat an optional flag specifying whether all information about
  *        the component should be displayed (e.g., property values)
  * @return a string representation of the component
+ * @type String
  */
 EchoApp.Component.prototype.toString = function(longFormat) {
     var out = this.renderId + "/" + this.componentType;
@@ -727,65 +837,245 @@ EchoApp.Component.prototype.toString = function(longFormat) {
     return out;
 };
 
+/**
+ * Layout Data Object, describing how a child component is rendered/laid out 
+ * within its parent container.
+ * 
+ * @constructor
+ */
 EchoApp.LayoutData = function() {
     this._internalStyle = new EchoApp.Style();
 };
 
-EchoApp.LayoutData.prototype.getProperty = function(name) {
-    return this._internalStyle.getProperty(name);
-};
-
+/**
+ * Retrieves an indexed property value.
+ * 
+ * @param {String} name the name of the property
+ * @param {Number} the (integer) property index
+ */
 EchoApp.LayoutData.prototype.getIndexedProperty = function(name, index) {
     return this._internalStyle.getIndexedProperty(name, index);
 };
 
+/**
+ * Retrieves a property value.
+ * 
+ * @param {String} name the name of the property
+ * @return the property value
+ */
+EchoApp.LayoutData.prototype.getProperty = function(name) {
+    return this._internalStyle.getProperty(name);
+};
+
+/**
+ * Sets an indexed property value.
+ * 
+ * @param {String} name the name of the property
+ * @param {Number} the (integer) property index
+ * @param value the new property value
+ */
 EchoApp.LayoutData.prototype.setIndexedProperty = function(name, index, value) {
     this._internalStyle.setIndexedProperty(name, index, newValue);
 };
 
+/**
+ * Sets a property value.
+ * 
+ * @param {String} name the name of the property
+ * @param value the new property value
+ */
 EchoApp.LayoutData.prototype.setProperty = function(name, newValue) {
     this._internalStyle.setProperty(name, newValue);
 };
 
 /**
  * LayoutDirection property.  Do not instantiate, use LTR/RTL constants.
+ * @constructor
  */
 EchoApp.LayoutDirection = function() {
+
+    /**
+     * Flag indicating whether layout direction is left-to-right.
+     * @type Boolean 
+     */
     this._ltr = arguments[0];
 };
 
+/**
+ * Determines if the layout direction is left-to-right.
+ * 
+ * @return true if the layout direction is left-to-right
+ * @type Boolean
+ */
 EchoApp.LayoutDirection.isLeftToRight = function() {
     return this._ltr;
 };
 
+/**
+ * Global instance representing a left-to-right layout direction.
+ * @type EchoApp.LayoutDirection
+ * @final
+ */
 EchoApp.LayoutDirection.LTR = new EchoApp.LayoutDirection(true);
+
+/**
+ * Global instance representing a right-to-left layout direction.
+ * @type EchoApp.LayoutDirection
+ * @final
+ */
 EchoApp.LayoutDirection.RTL = new EchoApp.LayoutDirection(false);
 
-
+/**
+ * Namespace for properties.  Non-instantiable object.
+ */
 EchoApp.Property = function() { };
 
+/**
+ * Creates an alignment property.
+ *
+ * @class Alignment property.
+ * @param {Number} horizontal the horizontal alignment setting, one of the 
+ *        following values:
+ *        <ul>
+ *         <li>EchoApp.Property.Alignment.DEFAULT</li>
+ *         <li>EchoApp.Property.Alignment.LEADING</li>
+ *         <li>EchoApp.Property.Alignment.TRAILING</li>
+ *         <li>EchoApp.Property.Alignment.LEFT</li>
+ *         <li>EchoApp.Property.Alignment.CENTER</li>
+ *         <li>EchoApp.Property.Alignment.RIGHT</li>
+ *        </ul>
+ * @param {Number} vertical the vertical alignment setting, one of the 
+ *        following values:
+ *        <ul>
+ *         <li>EchoApp.Property.Alignment.DEFAULT</li>
+ *         <li>EchoApp.Property.Alignment.TOP</li>
+ *         <li>EchoApp.Property.Alignment.CENTER</li>
+ *         <li>EchoApp.Property.Alignment.BOTTOM</li>
+ *        </ul>
+ * @constructor
+ */
 EchoApp.Property.Alignment = function(horizontal, vertical) {
+
+    /**
+     * The horizontal alignment setting.
+     * @type {Number}
+     */
     this.horizontal = horizontal ? horizontal : 0;
+
+    /**
+     * The vertical alignment setting.
+     * @type {Number}
+     */
     this.vertical = vertical ? vertical : 0;
 };
 
+/**
+ * Property class name.
+ * @type String
+ * @final
+ */
 EchoApp.Property.Alignment.prototype.className = "Alignment";
 
+/**
+ * Value for horizontal/vertical setting indicating default alignment.
+ * @type Number
+ * @final
+ */
 EchoApp.Property.Alignment.DEFAULT = 0;
+
+/**
+ * Value for horizontal setting indicating leading alignment
+ * (actual value will be left or right, depending on layout direction).
+ * @type Number
+ * @final
+ */
 EchoApp.Property.Alignment.LEADING = 1;
+
+/**
+ * Value for horizontal setting indicating trailing alignment
+ * (actual value will be left or right, depending on layout direction).
+ * @type Number
+ * @final
+ */
 EchoApp.Property.Alignment.TRAILING = 2;
+
+/**
+ * Value for horizontal setting indicating left alignment.
+ * @type Number
+ * @final
+ */
 EchoApp.Property.Alignment.LEFT = 3;
+
+/**
+ * Value for horizontal/vertical setting indicating centered alignment.
+ * @type Number
+ * @final
+ */
 EchoApp.Property.Alignment.CENTER = 4;
+
+/**
+ * Value for horizontal setting indicating right alignment.
+ * @type Number
+ * @final
+ */
 EchoApp.Property.Alignment.RIGHT = 5;
+
+/**
+ * Value for vertical setting indicating top alignment.
+ * @type Number
+ * @final
+ */
 EchoApp.Property.Alignment.TOP = 6;
+
+/**
+ * Value for vertical setting indicating bottom alignment.
+ * @type Number
+ * @final
+ */
 EchoApp.Property.Alignment.BOTTOM = 7;
 
+/**
+ * Creates a border property. 
+ * @class Border property.
+ * @constructor
+ */
 EchoApp.Property.Border = function() {
     if (arguments.length == 1 && arguments[0] instanceof Array) {
+        /**
+         * Flag indicating whether the border has individually specified sides.
+         * @type Boolean
+         */
         this.multisided = true;
+        
+        /**
+         * Array of Border.Side objects, specifying top, right, bottom, and left
+         * sides in that order.
+         * @type Array
+         */
         this.sides = arguments[0];
+        
+        /**
+         * Default border size (used by components that do not support borders
+         * with individually specified sides, or in the case of a border that
+         * does not individually specify sides).
+         * @type EchoApp.Property.Extent
+         */
         this.size = this.sides[0].size;
+
+        /**
+         * Default border style (used by components that do not support borders
+         * with individually specified sides, or in the case of a border that
+         * does not individually specify sides).
+         * @type Number
+         */
         this.style = this.sides[0].style;
+
+        /**
+         * Default border color (used by components that do not support borders
+         * with individually specified sides, or in the case of a border that
+         * does not individually specify sides).
+         * @type EchoApp.Property.Color
+         */
         this.color = this.sides[0].color;
     } else if (arguments.length == 1 && typeof arguments[0] == "string") {
         this.multisided = false;
@@ -799,43 +1089,92 @@ EchoApp.Property.Border = function() {
     }
 };
 
+/**
+ * Property class name.
+ * @type String
+ * @final
+ */
 EchoApp.Property.Border.prototype.className = "Border";
 
+/**
+ * Creates a border side.
+ * @class Border side sub-property.
+ * @constructor
+ */
 EchoApp.Property.Border.Side = function() {
     if (arguments.length == 1 && typeof arguments[0] == "string") {
         var items = EchoCore.tokenizeString(arguments[0], " ");
         if (items.length != 3) {
             throw new Error("Invalid border string: " + arguments[0]);
         }
+        
+        /** 
+         * Border side size
+         * @type EchoApp.Property.Extent
+         */ 
         this.size = new EchoApp.Property.Extent(items[0]);
+        
+        /** 
+         * Border side style
+         * @type Number
+         */ 
         this.style = items[1];
+
+        /** 
+         * Border side color
+         * @type EchoApp.Property.Color
+         */ 
         this.color = new EchoApp.Property.Color(items[2]);
     }
 };
 
 /**
- * Color constructor.
- *
+ * Creates a color property.
+ * @class Color property.
+ * @constructor
  * @param value the color hex value
  */
 EchoApp.Property.Color = function(value) {
+    
+    /**
+     * The hexadecimal value of the color, e.g., #ab12c3.
+     * @type String
+     */
     this.value = value;
 };
 
+/**
+ * Property class name.
+ * @type String
+ * @final
+ */
 EchoApp.Property.Color.prototype.className = "Color";
 
 /**
- * Extent constructor.
- *
- * Configuration 1:
- * @param extentString the value of the extent as a string 
- * Configuration 2:
- * @param value the numeric value portion of the extent 
- * @param units the units of the extent, e.g. "%" or "px"
+ * Creates a new Extent property.  
+ * This method takes multiple configurations of arguments.
+ * <p>
+ * Configuration 1: Extent (string)
+ * extentString the value of the extent as a string 
+ * <p>
+ * Configuration 2: Extent(value, units)
+ * value the numeric value portion of the extent 
+ * units the units of the extent, e.g. "%" or "px"
+ * 
+ * @class Extent property.
+ * @constructor
  */
 EchoApp.Property.Extent = function() {
     if (arguments.length == 2) {
+        /**
+         * The dimensionless value of the extent, e.g., 30.
+         * @type Number 
+         */
         this.value = arguments[0];
+        /**
+         * The dimension of the extent, e.g., "px", "%", or "in"/
+         * @type String
+         */
         this.units = arguments[1];
     } else {
         this.value = parseFloat(arguments[0]);
@@ -853,61 +1192,140 @@ EchoApp.Property.Extent = function() {
     }
 };
 
+/**
+ * Property class name.
+ * @type String
+ * @final
+ */
 EchoApp.Property.Extent.prototype.className = "Extent";
 
+/**
+ * Returns a string representation.
+ * 
+ * @return a string representation
+ * @type String
+ */
 EchoApp.Property.Extent.prototype.toString = function() {
     return this.value + this.units;
 };
 
+//FIXME need values for repeat
+/**
+ * Creates a FillImage property.
+ * 
+ * @param {EchoApp.Property.ImageReference} the image (may also be a string,
+ *        at which point an ImageReference will be automatically constructed
+ *        with the string as its URL).
+ * @param {Number} repeat the image repeat mode, one of the following values:
+ * @param {EchoApp.Property.Extent} the horizontal alignment/position of the image
+ * @param {EchoApp.Property.Extent} the vertical alignment/position of the image
+ * @class FillImage property.  Describes a repeating image, typically used as a background.
+ * @constructor
+ */
 EchoApp.Property.FillImage = function(image, repeat, x, y) {
     if (image instanceof EchoApp.Property.ImageReference) {
+        /**
+         * The image.
+         * @type EchoApp.Property.ImageReference
+         */
         this.image = image;
     } else {
         this.image = new EchoApp.Property.ImageReference(image);
     }
+    /**
+     * The repeat configuration.
+     * @type Number
+     */
     this.repeat = repeat;
     if (x == null || x instanceof EchoApp.Property.Extent) {
+        /**
+         * The horizontal aligment/position of the image.
+         * @type EchoApp.Property.Extent
+         */
         this.x = x;
     } else {
         this.x = new EchoApp.Property.Extent(x);
     }
     if (y == null || y instanceof EchoApp.Property.Extent) {
+        /**
+         * The vertical aligment/position of the image.
+         * @type EchoApp.Property.Extent
+         */
         this.y = y;
     } else {
         this.y = new EchoApp.Property.Extent(y);
     }
 };
 
+/**
+ * Property class name.
+ * @type String
+ * @final
+ */
 EchoApp.Property.FillImage.prototype.className = "FillImage";
 
+//FIXME params documentation
+/**
+ * Creates a FillImageBorder
+ * 
+ * @class FillImageBorder property.  A border which is rendered using FillImages to
+ *        represent each side and each corner, and with configurable Insets to define 
+ *        the border size. 
+ * @constructor
+ */
 EchoApp.Property.FillImageBorder = function(color, borderInsets, contentInsets, fillImages) {
     if (color instanceof EchoApp.Property.Color) {
+        /**
+         * The border background color.
+         * @type EchoApp.Property.Color
+         */
         this.color = color;
     } else {
         this.color = new EchoApp.Property.Color(color);
     }
     if (borderInsets instanceof EchoApp.Property.Insets) {
+        /**
+         * The border insets 
+         * (effectively defines the sizes of the cells where the border FillImages are rendered).
+         * @type EchoApp.Property.Insets 
+         */
         this.borderInsets = borderInsets;
     } else {
         this.borderInsets = new EchoApp.Property.Insets(borderInsets);
     }
     if (contentInsets instanceof EchoApp.Property.Insets) {
+        /**
+         * The content insets (defines the content area inside of the border, if smaller than the
+         * border insets, the content will overlap the border).
+         * 
+         * @type EchoApp.Property.Insets 
+         */
         this.contentInsets = contentInsets;
     } else {
         this.contentInsets = new EchoApp.Property.Insets(contentInsets);
     }
+    
+    /**
+     * An array containing eight fill images, specifying the images used for the
+     * top-left, top, top-right, left, right, bottom-left, bottom, and bottom-right
+     * images in that order.
+     * @type Array
+     */
     this.fillImages = fillImages ? fillImages : new Array(8);
 };
 
+/**
+ * Property class name.
+ * @type String
+ * @final
+ */
 EchoApp.Property.FillImageBorder.prototype.className = "FillImageBorder";
 
 /**
- * Font property.
- * 
- * Creates a new font property.
+ * Creates a Font property.
  * 
  * @param typeface the typeface of the font, may be a string or an array of strings
- * @param style the style of the font, one or more of the following values ORed together:
+ * @param {Number} style the style of the font, one or more of the following values ORed together:
  *        <ul>
  *         <li>EchoApp.Property.Font.PLAIN</li>
  *         <li>EchoApp.Property.Font.BOLD</li>
@@ -916,33 +1334,127 @@ EchoApp.Property.FillImageBorder.prototype.className = "FillImageBorder";
  *         <li>EchoApp.Property.Font.OVERLINE</li>
  *         <li>EchoApp.Property.Font.LINE_THROUGH</li>
  *        </ul>
- * @param size the size of the font, an extent
+ * @param {EchoApp.Property.Extent} size the size of the font
+ * @class Font property
+ * @constructor
  */
 EchoApp.Property.Font = function(typeface, style, size) {
+    
+    /**
+     * The typeface of the font, may be a string or an array of strings.
+     */
     this.typeface = typeface;
+    
+    /**
+     * The style of the font, one or more of the following values ORed together:
+     * <ul>
+     *  <li>EchoApp.Property.Font.PLAIN</li>
+     *  <li>EchoApp.Property.Font.BOLD</li>
+     *  <li>EchoApp.Property.Font.ITALIC</li>
+     *  <li>EchoApp.Property.Font.UNDERLINE</li>
+     *  <li>EchoApp.Property.Font.OVERLINE</li>
+     *  <li>EchoApp.Property.Font.LINE_THROUGH</li>
+     * </ul>
+     * @type Number
+     */
     this.style = style;
+    
     if (typeof size == "number") {
+        /**
+         * The size of the font.
+         * 
+         * @type EchoApp.Property.Extent
+         */
         this.size = new Extent(size);
     } else {
         this.size = size;
     }
 };
 
+/**
+ * Style constant representing a plain font.
+ * @type Number
+ * @final
+ */
 EchoApp.Property.Font.PLAIN = 0x0;
+
+/**
+ * Style constant representing a bold font.
+ * @type Number
+ * @final
+ */
 EchoApp.Property.Font.BOLD = 0x1;
+
+/**
+ * Style constant representing a italic font.
+ * @type Number
+ * @final
+ */
 EchoApp.Property.Font.ITALIC = 0x2;
+
+/**
+ * Style constant representing an underlined font.
+ * @type Number
+ * @final
+ */
 EchoApp.Property.Font.UNDERLINE = 0x4;
+
+/**
+ * Style constant representing an overlined font.
+ * @type Number
+ * @final
+ */
 EchoApp.Property.Font.OVERLINE = 0x8;
+
+/**
+ * Style constant representing a line-through (strikethrough) font.
+ * @type Number
+ * @final
+ */
 EchoApp.Property.Font.LINE_THROUGH = 0x10;
 
+/**
+ * Creates a new Image Reference.
+ * 
+ * @param {String} url the URL from which the image may be obtained
+ * @param {EchoApp.Property.Extent} width the width of the image
+ * @param {EchoApp.Property.Extent} height the height of the image
+ * @class Image Reference Property.
+ * @constructor
+ */
 EchoApp.Property.ImageReference = function(url, width, height) {
+    /**
+     * The URL from which the image may be obtained.
+     * @type String
+     */
     this.url = url;
+    
+    /**
+     * The width of the image.
+     * @type EchoApp.Property.Extent
+     */
     this.width = width;
+
+    /**
+     * The height of the image.
+     * @type EchoApp.Property.Extent
+     */
     this.height = height;
 };
 
+/**
+ * Property class name.
+ * @type String
+ * @final
+ */
 EchoApp.Property.ImageReference.prototype.className = "ImageReference";
 
+//FIXME params documentation
+/**
+ * Creates a new Insets Property.
+ * @class Insets property.  Describes inset margins within a box.
+ * @constructor
+ */
 EchoApp.Property.Insets = function() {
     var values;
     if (arguments.length == 1) {
@@ -975,9 +1487,25 @@ EchoApp.Property.Insets = function() {
         this.bottom = values[2];
         break;
     case 4:
+        /**
+         * The top inset size.
+         * @type EchoApp.Property.Extent
+         */
         this.top = values[0];
+        /**
+         * The right inset size.
+         * @type EchoApp.Property.Extent
+         */
         this.right = values[1];
+        /**
+         * The bottom inset size.
+         * @type EchoApp.Property.Extent
+         */
         this.bottom = values[2];
+        /**
+         * The left inset size.
+         * @type EchoApp.Property.Extent
+         */
         this.left = values[3];
         break;
     default:
@@ -985,16 +1513,38 @@ EchoApp.Property.Insets = function() {
     }
 };
 
+/**
+ * Property class name.
+ * @type String
+ * @final
+ */
 EchoApp.Property.Insets.prototype.className = "Insets";
 
+/**
+ * Returns a string representation.
+ * 
+ * @return a string representation
+ * @type String
+ */
 EchoApp.Property.Insets.prototype.toString = function() {
     return this.top + " " + this.right + " " + this.bottom + " " + this.left;
 };
 
+/**
+ * @class Component Style.
+ * @constructor
+ */
 EchoApp.Style = function() { 
     this._propertyMap = new EchoCore.Collections.Map();
 };
 
+/**
+ * Returns the value of an indexed property.
+ * 
+ * @param {String} name the name of the property
+ * @param {Number} the (integer) index of the property
+ * @return the property value  
+ */
 EchoApp.Style.prototype.getIndexedProperty = function(name, index) {
     var indexValues = _propertyMap.get(name);
     if (!indexValues) {
@@ -1003,10 +1553,23 @@ EchoApp.Style.prototype.getIndexedProperty = function(name, index) {
     return indexValues[index];
 };
 
+/**
+ * Returns the value of a property.
+ * 
+ * @param {String} name the name of the property
+ * @return the property value  
+ */
 EchoApp.Style.prototype.getProperty = function(name) {
     return this._propertyMap.get(name);
 };
 
+/**
+ * Sets the value of an indexed property.
+ * 
+ * @param {String} name the name of the property
+ * @param {Number} the (integer) index of the property
+ * @param value the new value of the property 
+ */
 EchoApp.Style.prototype.setIndexedProperty = function(name, index, value) {
     var indexValues = _propertyMap.get(name);
     if (!indexValues) {
@@ -1016,27 +1579,47 @@ EchoApp.Style.prototype.setIndexedProperty = function(name, index, value) {
     indexValues[index] = value;
 };
 
+/**
+ * Sets the value of a property.
+ * 
+ * @param {String} name the name of the property
+ * @param value the new value of the property 
+ */
 EchoApp.Style.prototype.setProperty = function(name, newValue) {
     this._propertyMap.put(name, newValue);
 };
 
+/**
+ * Returns a string representation.
+ * 
+ * @return a string representation
+ * @type String
+ */
 EchoApp.Style.prototype.toString = function() {
     return this._propertyMap.toString();
 };
 
+/**
+ * An application style sheet.
+ */
 EchoApp.StyleSheet = function() {
     this._nameToStyleMap = new EchoCore.Collections.Map();
 };
 
+//FIXME docs.
 EchoApp.StyleSheet.prototype.getRenderStyle = function(name, componentType) {
     //FIXME. Does not query super component types.
     return this.getStyle(name, componentType);
 };
 
 /**
- * @param name the style name
- * @param componentType the component type
-` */
+ * Retrieves a specific style from the style sheet.
+ * 
+ * @param {String} name the style name
+ * @param {String} componentType the component type
+ * @return the style
+ * @type EchoApp.Style
+ */
 EchoApp.StyleSheet.prototype.getStyle = function(name, componentType) {
     var typeToStyleMap = this._nameToStyleMap.get(name);
     if (typeToStyleMap == null) {
@@ -1045,6 +1628,13 @@ EchoApp.StyleSheet.prototype.getStyle = function(name, componentType) {
     return typeToStyleMap.get(componentType);
 };
 
+/**
+ * Stores a style in the style sheet.
+ * 
+ * @param {String} name the style name
+ * @param {String} componentType the component type
+ * @param {EchoApp.Style} the style
+ */
 EchoApp.StyleSheet.prototype.setStyle = function(name, componentType, style) {
     var typeToStyleMap = this._nameToStyleMap.get(name);
     if (typeToStyleMap == null) {
@@ -1054,43 +1644,56 @@ EchoApp.StyleSheet.prototype.setStyle = function(name, componentType, style) {
     typeToStyleMap.put(componentType, style);
 };
 
+/**
+ * Namespace for update management.  Non-instantiable object.
+ * Provides capabilities for storing property changes made to applications and components
+ * such that display redraws may be performed efficiently. 
+ */
 EchoApp.Update = function() { };
 
 /**
  * Representation of an update to a single existing component which is currently rendered on the screen.
+ * 
+ * @constructor
  */
 EchoApp.Update.ComponentUpdate = function(parent) {
 
     /**
      * The parent component represented in this <code>ServerComponentUpdate</code>.
+     * @type EchoApp.Component
      */
     this.parent = parent;
 
     /**
      * The set of child <code>Component</code>s added to the <code>parent</code>.
+     * @type EchoCore.Collections.Set
      */
     this.addedChildren = null;
     
     /**
      * A mapping between property names of the <code>parent</code> component and 
      * <code>PropertyUpdate</code>s.
+     * @type EchoCore.Collections.Map
      */
     this.propertyUpdates = null;
     
     /**
      * The set of child <code>Component</code>s removed from the <code>parent</code>.
+     * @type EchoCore.Collections.Set
      */
     this.removedChildren = null;
     
     /**
      * The set of descendant <code>Component</code>s which are implicitly removed 
      * as they were children of removed children.
+     * @type EchoCore.Collections.Set
      */
     this.removedDescendants = null;
 
     /**
      * The set of child <code>Component</code>s whose <code>LayoutData</code> 
      * was updated. 
+     * @type EchoCore.Collections.Set
      */
     this.updatedLayoutDataChildren = null;
 };
@@ -1180,6 +1783,12 @@ EchoApp.Update.ComponentUpdate.prototype.removeDescendant = function(descendant)
     }
 };
 
+/**
+ * Returns a string representation.
+ * 
+ * @return a string representation
+ * @type String
+ */
 EchoApp.Update.ComponentUpdate.prototype.toString = function() {
     var s = "ComponentUpdate\n";
     s += "- Parent: " + this.parent + "\n";
@@ -1217,6 +1826,9 @@ EchoApp.Update.ComponentUpdate.PropertyUpdate = function(oldValue, newValue) {
     this.newValue = newValue;
 };
 
+/**
+ * @constructor
+ */
 EchoApp.Update.Manager = function(application) {
     this.componentUpdateMap = new EchoCore.Collections.Map();
     this.fullRefreshRequired = false;
@@ -1372,6 +1984,12 @@ EchoApp.Update.Manager.prototype.removeUpdateListener = function(l) {
     this._listenerList.removeListener("update", l);
 };
 
+/**
+ * Returns a string representation.
+ * 
+ * @return a string representation
+ * @type String
+ */
 EchoApp.Update.Manager.prototype.toString = function() {
     var s = "[ UpdateManager ]\n";
     if (this.fullRefreshRequired) {
@@ -1386,6 +2004,9 @@ EchoApp.Update.Manager.prototype.toString = function() {
 
 /**
  * Button component.
+ * 
+ * @constructor
+ * @base EchoApp.Component
  */
 EchoApp.Button = function(renderId, text, icon) {
     EchoApp.Component.call(this, "Button", renderId);
@@ -1406,6 +2027,9 @@ EchoApp.Button.prototype.doAction = function() {
 
 /**
  * Column component.
+ * 
+ * @constructor
+ * @base EchoApp.Component
  */
 EchoApp.Column = function(renderId) {
     EchoApp.Component.call(this, "Column", renderId);
@@ -1415,6 +2039,9 @@ EchoApp.Column.prototype = new EchoApp.Component;
 
 /**
  * ContentPane component.
+ * 
+ * @constructor
+ * @base EchoApp.Component
  */
 EchoApp.ContentPane = function(renderId) {
     this.pane = true;
@@ -1425,6 +2052,9 @@ EchoApp.ContentPane.prototype = new EchoApp.Component;
 
 /**
  * Label component.
+ * 
+ * @constructor
+ * @base EchoApp.Component
  */
 EchoApp.Label = function(renderId) {
     EchoApp.Component.call(this, "Label", renderId);
@@ -1434,6 +2064,9 @@ EchoApp.Label.prototype = new EchoApp.Component;
 
 /**
  * Row component.
+ * 
+ * @constructor
+ * @base EchoApp.Component
  */
 EchoApp.Row = function(renderId) {
     EchoApp.Component.call(this, "Row", renderId);
@@ -1443,6 +2076,9 @@ EchoApp.Row.prototype = new EchoApp.Component;
 
 /**
  * SplitPane component.
+ * 
+ * @constructor
+ * @base EchoApp.Component
  */
 EchoApp.SplitPane = function(renderId) {
     EchoApp.Component.call(this, "SplitPane", renderId);
@@ -1464,6 +2100,9 @@ EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR = new EchoApp.Property.Color("#3f007f"
 
 /**
  * TextField component.
+ * 
+ * @constructor
+ * @base EchoApp.Component
  */
 EchoApp.TextField = function(renderId) {
     EchoApp.Component.call(this, "TextField", renderId);
@@ -1473,6 +2112,9 @@ EchoApp.TextField.prototype = new EchoApp.Component;
 
 /**
  * WindowPane component.
+ * 
+ * @constructor
+ * @base EchoApp.Component
  */
 EchoApp.WindowPane = function(renderId) {
     this.floatingPane = this.pane = true;

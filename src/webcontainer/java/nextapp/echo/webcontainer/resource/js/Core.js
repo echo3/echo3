@@ -439,8 +439,9 @@ EchoCore.ListenerList.prototype.removeListener = function(eventType, eventTarget
  *
  * Creates a new MethodRef.
  *
+ * @constructor
  * @param instance the object instance on which the method should be invoked
- * @param method the method to invoke
+ * @param {function} method the method to invoke
  */
 EchoCore.MethodRef = function(instance, method) {
     this.instance = instance;
