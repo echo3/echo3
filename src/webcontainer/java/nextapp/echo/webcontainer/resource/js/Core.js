@@ -624,6 +624,12 @@ EchoCore.MethodRef.prototype.invoke = function(args) {
     }
 };
 
+/**
+ * Scheduler namespace.  Non-instantiable object.
+ * Provides capability to invoke code at regular intervals, after a delay, 
+ * or after the current JavaScript execution context has completed.
+ * Provides an object-oriented means of accomplishing this task.
+ */
 EchoCore.Scheduler = function() { };
 
 /**
@@ -632,8 +638,16 @@ EchoCore.Scheduler = function() { };
  */
 EchoCore.Scheduler.INTERVAL = 20;
 
+/**
+ * Collection of runnables to execute.
+ * @private
+ */
 EchoCore.Scheduler._runnables = new Array();
 
+/**
+ * Executes the scheduler, running any runnables that are due.
+ * This method is invoked by the interval/thread.
+ */
 EchoCore.Scheduler._execute = function() {
     var time = new Date().getTime();
     
@@ -657,6 +671,11 @@ EchoCore.Scheduler._execute = function() {
     }
 };
 
+/**
+ * Enqueues a Runnable to be executed by the scheduler.
+ * 
+ * @param {EchoCore.Scheduler.Runnable} the runnable to enqueue
+ */
 EchoCore.Scheduler.add = function(runnable) {
     var currentTime = new Date().getTime();
     EchoCore.Scheduler._runnables.push(runnable);
@@ -693,16 +712,30 @@ EchoCore.Scheduler._stop = function() {
  * Creates a new Runnable.
  *
  * @constructor
- * @param time the time interval, in milleseconds, after which the Runnable should be executed
+ * @class A runnable task that may be scheduled with the Scheduler.
+ * @param {Number} time the time interval, in milleseconds, after which the Runnable should be executed
  *        (may be null/undefined to execute task immediately, in such cases repeat must be false)
- * @param repeat a boolean flag indicating whether the task should be repeated
+ * @param {Boolean} repeat a flag indicating whether the task should be repeated
  */
 EchoCore.Scheduler.Runnable = function(timeInterval, repeat) {
     if (timeInterval && !repeat) {
         throw new Error("Cannot creating repeating runnable without time delay");
     }
+    
+    /** 
+     * Time interval, in milleseconds after which the Runnable should be executed.
+     * @type Number
+     */
     this.timeInterval = timeInterval;
+    
+    /**
+     * Flag indicating whether task should be repeated.
+     * @type Boolean
+     */
     this.repeat = repeat;
 };
 
+/**
+ * Default run() implemenation.  Should be overidden by subclasses.
+ */
 EchoCore.Scheduler.Runnable.prototype.run = function() { };
