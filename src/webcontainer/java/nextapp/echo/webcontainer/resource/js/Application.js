@@ -1713,7 +1713,17 @@ EchoApp.Update.ComponentUpdate.prototype.addChild = function(child) {
     this.addedChildren.add(child);
 };
 
-EchoApp.Update.ComponentUpdate.prototype.appendRemovedDescendants = function(update) {
+/**
+ * Appends removed children and descendants from another update to this
+ * update as removed descendants.
+ * This method is invoked when a component is removed that is an ancestor
+ * of a component that has an update in the update manager.
+ * 
+ * @private
+ * @param {EchoApp.Update.CompoenntUpdate} update the update from which to pull 
+ *        removed components/descendants
+ */
+EchoApp.Update.ComponentUpdate.prototype._appendRemovedDescendants = function(update) {
     // Append removed descendants.
     if (update.removedDescendants != null) {
         if (this.removedDescendants == null) {
@@ -1819,17 +1829,27 @@ EchoApp.Update.ComponentUpdate.prototype.removeChild = function(child) {
     this.removedChildren.add(child);
 
      for (var i = 0; i < child.children.items.length; ++i) {
-          this.removeDescendant(child.children.items[i]);
+          this._removeDescendant(child.children.items[i]);
      }
 };
 
-EchoApp.Update.ComponentUpdate.prototype.removeDescendant = function(descendant) {
+/**
+ * Records the removal of a descendant of the parent component.
+ * All children of a removed compoennt are recorded as removed
+ * descendants when the child is removed.
+ * This method will recursively invoke itself on children of
+ * the specified descendant.
+ * 
+ * @private
+ * @param {EchoApp.Component} descendant the removed descendant 
+ */
+EchoApp.Update.ComponentUpdate.prototype._removeDescendant = function(descendant) {
     if (this.removedDescendants == null) {
         this.removedDescendants = new EchoCore.Collections.Set();
     }
     this.removedDescendants.add(descendant);
     for (var i = 0; i < descendant.children.items.length; ++i) {
-        this.removeDescendant(descendant.children.items[i]);
+        this._removeDescendant(descendant.children.items[i]);
     }
 };
 
@@ -1992,7 +2012,7 @@ EchoApp.Update.Manager.prototype._processComponentRemove = function(parent, chil
     for (var testParentId in this.componentUpdateMap.associations) {
          var testUpdate = this.componentUpdateMap.associations[testParentId];
          if (child.isAncestorOf(testUpdate.parent)) {
-             update.appendRemovedDescendants(testUpdate);
+             update._appendRemovedDescendants(testUpdate);
              if (disposedIds == null) {
                  disposedIds = new Array();
              }
