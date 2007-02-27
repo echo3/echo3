@@ -335,6 +335,9 @@ EchoCore.Collections.Set.prototype.remove = function(item) {
 
 /**
  * Returns the number of items in the set.
+ * 
+ * @return the number of items in the set
+ * @type Number
  */
 EchoCore.Collections.Set.prototype.size = function(index) {
     return this.items.length;
@@ -353,21 +356,28 @@ EchoCore.Collections.Set.prototype.toString = function() {
 
 /** 
  * EchoCore.Debug Namespace.
- * Do not instantiate.
+ * Non-instantiable object.
  */
 EchoCore.Debug = function() { };
 
 /**
  * Flag indicating whether console output should be displayed as alerts.
  * Enabling is generally not recommended.
+ * @type Boolean
  */
-EchoCore.Debug.alert = null;
+EchoCore.Debug.alert = false;
 
 /**
  * The DOM element to which console output should be written.
+ * @type HTMLElement
  */
 EchoCore.Debug.consoleElement = null;
 
+/**
+ * Writes a message to the debug console.
+ * 
+ * @param {String} text the message
+ */
 EchoCore.Debug.consoleWrite = function(text) {
     if (EchoCore.Debug.consoleElement) {
         var entryElement = document.createElement("div");
@@ -399,15 +409,51 @@ EchoCore.Debug.toString = function(object) {
     return s;
 };
 
+/**
+ * Creates a new event object.
+ * 
+ * @constructor
+ * @class Event object.
+ * @param source the source of the event
+ * @param {String} type the type of the event
+ */
 EchoCore.Event = function(source, type) {
+    
+    /**
+     * The source of the event.
+     */
     this.source = source;
+    
+    /**
+     * The event type.
+     * @type String
+     */
     this.type = type;
 };
 
+/**
+ * Creates a new listener list.
+ * 
+ * @constructor
+ * @class A collection of event listeners.  Provides capability to manage listeners
+ *        of multiple types, and fire events to listeners based on type.
+ */
 EchoCore.ListenerList = function() {
+
+    /**
+     * Map of event types to Sets of listeners.
+     * @type EchoCore.Collections.Map
+     * @private
+     */
     this._listenerMap = null;
 };
 
+/**
+ * Adds an event listener.
+ * 
+ * @param {String} eventType the event type
+ * @param eventTarget the event target (a function or EchoCore.MethodRef instance)
+ */
 EchoCore.ListenerList.prototype.addListener = function(eventType, eventTarget) {
     if (this._listenerMap == null) {
         this._listenerMap = new EchoCore.Collections.Map();
@@ -423,11 +469,11 @@ EchoCore.ListenerList.prototype.addListener = function(eventType, eventTarget) {
 /**
  * Fires an event.
  * 
- * @param eventType the type of listener to invoke
- * @param event the event to fire
+ * @param {EchoCore.Event} event the event to fire
  * @return true if all event listeners returned values that evaluate to true, 
  *         or false if any event listeners returned values that evaluate to 
- *         false.
+ *         false
+ * @type Boolean
  */
 EchoCore.ListenerList.prototype.fireEvent = function(event) {
     if (event.type == null) {
@@ -456,6 +502,13 @@ EchoCore.ListenerList.prototype.fireEvent = function(event) {
     return returnValue;
 };
 
+/**
+ * Returns an array containing the types of all listeners
+ * in the list.
+ * 
+ * @return the event types
+ * @type Array
+ */
 EchoCore.ListenerList.prototype.getListenerTypes = function() {
     var types = new Array();
     if (this._listenerMap != null) {
@@ -466,6 +519,13 @@ EchoCore.ListenerList.prototype.getListenerTypes = function() {
     return types;
 };
 
+/**
+ * Returns an array of all listeners for a specific event type.
+ * 
+ * @param {String} eventType the event type
+ * @return the listeners
+ * @type Array
+ */
 EchoCore.ListenerList.prototype.getListeners = function(eventType) {
     if (this._listenerMap == null) {
         return new Array();
@@ -475,6 +535,13 @@ EchoCore.ListenerList.prototype.getListeners = function(eventType) {
     }
 };
 
+/**
+ * Determines the number of listeners for a specific event type.
+ * 
+ * @param {String} eventType the event type
+ * @return the listener count
+ * @type Number
+ */
 EchoCore.ListenerList.prototype.getListenerCount = function(eventType) {
     if (this._listenerMap == null) {
         return 0;
@@ -486,6 +553,12 @@ EchoCore.ListenerList.prototype.getListenerCount = function(eventType) {
     return listeners.size();
 };
 
+/**
+ * Determines if any number of listeners are registered to the list.
+ * 
+ * @return true if the listener list is empty
+ * @type Boolean
+ */
 EchoCore.ListenerList.prototype.isEmpty = function() {
     for (var i in this._listenerMap.associations) {
         return false;
@@ -493,6 +566,12 @@ EchoCore.ListenerList.prototype.isEmpty = function() {
     return true;
 };
 
+/**
+ * Removes an event listener.
+ * 
+ * @param {String} eventType the event type
+ * @param eventTarget the event target (a function or EchoCore.MethodRef instance)
+ */
 EchoCore.ListenerList.prototype.removeListener = function(eventType, eventTarget) {
     if (this._listenerMap == null) {
         return;
@@ -508,14 +587,15 @@ EchoCore.ListenerList.prototype.removeListener = function(eventType, eventTarget
 };
 
 /**
- * A representation of a method of a specific instance of a class.
- * This object is often used for repsenting object-oriented event handlers.
- *
  * Creates a new MethodRef.
  *
  * @constructor
+ * @class A representation of a method of a specific instance of a class.
+ *        This object is often used for representing object-oriented event handlers,
+ *        such that they may be invoked with the "this pointer" set to their
+ *        containing object.
  * @param instance the object instance on which the method should be invoked
- * @param {function} method the method to invoke
+ * @param {Function} method the method to invoke
  */
 EchoCore.MethodRef = function(instance, method) {
     this.instance = instance;
@@ -546,6 +626,10 @@ EchoCore.MethodRef.prototype.invoke = function(args) {
 
 EchoCore.Scheduler = function() { };
 
+/**
+ * Interval at which the scheduler should wake to check for queued tasks.
+ * @type Number
+ */
 EchoCore.Scheduler.INTERVAL = 20;
 
 EchoCore.Scheduler._runnables = new Array();
@@ -580,6 +664,11 @@ EchoCore.Scheduler.add = function(runnable) {
     EchoCore.Scheduler._start();
 };
 
+/**
+ * Starts the scheduler "thread".
+ * If the scheduler is already running, no action is taken.
+ * @private
+ */
 EchoCore.Scheduler._start = function() {
     if (EchoCore.Scheduler._interval != null) {
         return;
@@ -587,6 +676,11 @@ EchoCore.Scheduler._start = function() {
     EchoCore.Scheduler._interval = window.setInterval("EchoCore.Scheduler._execute();", EchoCore.Scheduler.INTERVAL);    
 };
 
+/**
+ * Stops the scheduler "thread".
+ * If the scheduler is not running, no action is taken.
+ * @private
+ */
 EchoCore.Scheduler._stop = function() {
     if (EchoCore.Scheduler._interval == null) {
         return;
@@ -598,6 +692,7 @@ EchoCore.Scheduler._stop = function() {
 /**
  * Creates a new Runnable.
  *
+ * @constructor
  * @param time the time interval, in milleseconds, after which the Runnable should be executed
  *        (may be null/undefined to execute task immediately, in such cases repeat must be false)
  * @param repeat a boolean flag indicating whether the task should be repeated
