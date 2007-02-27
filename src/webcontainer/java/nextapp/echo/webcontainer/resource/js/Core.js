@@ -1,5 +1,5 @@
 /**
- * Core namespace.  DO NOT INSTANTIATE.
+ * Core namespace.  Non-instantiable object.
  * REQUIRES: Nothing.
  *
  * Provides core APIs for creating object-oriented and event-driven JavaScript code:
@@ -16,6 +16,11 @@ EchoCore = function() { };
 
 /**
  * Returns an array of tokens representing a tring.
+ * 
+ * @param {String} string the string to tokenize
+ * @delimiter {String} delimiter on which to tokenize
+ * @return an array of tokens
+ * @type Array
  */
 EchoCore.tokenizeString = function(string, delimiter) {
     var tokens = new Array();
@@ -35,15 +40,23 @@ EchoCore.tokenizeString = function(string, delimiter) {
 };
 
 /**
- * EchoCore.Collections Namespace.
- * Do not instantiate.
+ * EchoCore.Collections Namespace.  Non-instantiable object.
  */
 EchoCore.Collections = function() { };
 
 /**
- * List collection.
+ * Creates a new List.
+ * 
+ * @constructor
+ * @class List collection.
  */
 EchoCore.Collections.List = function() { 
+
+    /**
+     * Array of items contained in the list.
+     * May be externally modified if desired.
+     * @type Array
+     */
     this.items = new Array();
 };
 
@@ -51,7 +64,7 @@ EchoCore.Collections.List = function() {
  * Adds an item to the list.
  *
  * @param item the item to add
- * @param the array index at which to insert it (if not set, item will be added to end of list)
+ * @param {Number} the (integer) index at which to insert it (if not set, item will be added to end of list)
  */
 EchoCore.Collections.List.prototype.add = function(item, index) {
     if (index == undefined) {
@@ -64,7 +77,7 @@ EchoCore.Collections.List.prototype.add = function(item, index) {
 /**
  * Returns a specific item from the list.
  *
- * @param index the index of the item to retrieve
+ * @param {Number} index the index of the item to retrieve
  * @return the item
  * @throws Error in the event the specified index is out of bounds
  */
@@ -84,6 +97,10 @@ EchoCore.Collections.List.prototype.get = function(index) {
  * invoking .equals() on the specified item if it provides such a method.
  * If a .equals() implementation is not provided, equality will be determined
  * based on the double-equal operator (==).
+ * 
+ * @param item the item
+ * @return the index of the item, or -1 if it is not present in the list
+ * @type Number
  */
 EchoCore.Collections.List.prototype.indexOf = function(item) {
     for (var i = 0; i < this.items.length; ++i) {
@@ -97,7 +114,7 @@ EchoCore.Collections.List.prototype.indexOf = function(item) {
 /**
  * Removes an item from the list.
  *
- * @param index the index of the item to remove
+ * @param {Number} index the index of the item to remove
  */
 EchoCore.Collections.List.prototype.remove = function(index) {
     if (index < 0 || index >= this.items.length) {
@@ -108,32 +125,55 @@ EchoCore.Collections.List.prototype.remove = function(index) {
 
 /**
  * Returns the size of the list.
+ * 
+ * @return the size of the list
+ * @type Number
  */
 EchoCore.Collections.List.prototype.size = function(index) {
     return this.items.length;
 };
 
 /**
- * Returns a string representation of the list.
+ * Returns a string representation.
  * The items will be comma-delimited.
+ *
+ * @return a string representation
+ * @type String
  */
 EchoCore.Collections.List.prototype.toString = function() {
     return this.items.toString();
 };
 
 /**
- * Collection map implementation.
- * Implmentation is based on an associative array.
- * Array is periodically recreated after a significant number of
- * element removals to eliminate side effects from memory management 
- * flaws with Internet Explorer.
- * Null values are not permitted as keys.  Setting a key to a null value
- * will result in the key being removed.
+ * Creates a new Map.
+ * 
+ * @class Collection map implementation.
+ *        Implmentation is based on an associative array.
+ *        Array is periodically recreated after a significant number of
+ *        element removals to eliminate side effects from memory management 
+ *        flaws with Internet Explorer.
+ *        Null values are not permitted as keys.  Setting a key to a null value
+ *        will result in the key being removed.
  */
 EchoCore.Collections.Map = function() {
+ 
+    /**
+     * Number of removes since last associative array re-creation.
+     * @type Number
+     * @private
+     */
     this._removeCount = 0;
+    
+    /**
+     * Number (integer) of removes between associative array re-creation.
+     * @type Number
+     */
     this.garbageCollectionInterval = 250;
-    this.associations = new Array();
+    
+    /**
+     * Associative mapping.
+     */
+    this.associations = new Object();
 };
 
 /**
@@ -167,7 +207,7 @@ EchoCore.Collections.Map.prototype.put = function(key, value) {
  */
 EchoCore.Collections.Map.prototype._garbageCollect = function() {
     this._removeCount = 0;
-    var newAssociations = new Array();
+    var newAssociations = new Object();
     var i = 0;
     for (var key in this.associations) {
         newAssociations[key] = this.associations[key];
