@@ -167,12 +167,24 @@ implements RenderIdSupport, Serializable {
     public static final String STYLE_NAME_CHANGED_PROPERTY = "styleName";
     public static final String VISIBLE_CHANGED_PROPERTY = "visible";
     
-    //TODO. Doc/move to util.
+    /**
+     * Verifies a character is a (7-bit ASCII) letter.
+     * Used for renderId verification.
+     * 
+     * @param ch the character to verify
+     * @return true if the character is a (7-bit ASCII) letter.
+     */
     private static final boolean isLetter(char ch) {
         return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z');
     }
     
-    //TODO. Doc/move to util.
+    /**
+     * Verifies a character is a (7-bit ASCII) letter or digit.
+     * Used for renderId verification.
+     * 
+     * @param ch the character to verify
+     * @return true if the character is a (7-bit ASCII) letter or digit
+     */
     private static final boolean isLetterOrDigit(char ch) {
         return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9');
     }
@@ -656,7 +668,14 @@ implements RenderIdSupport, Serializable {
         return locale;
     }
 
-    //FIXME. unsure if this should be exposed.
+    /**
+     * Returns the <code>Style</code> object in which local style
+     * properties are stored.  Access to this object is provided
+     * solely for the purpose of allowing the enabling the application
+     * container to render the state of the component to a client.
+     * 
+     * @return the local <code>Style</code>
+     */
     public Style getLocalStyle() {
         return localStyle;
     }
