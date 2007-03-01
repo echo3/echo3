@@ -44,6 +44,11 @@
   <p n="insets" v="3px 20px"/>
  </s>
  
+ <s n="Selected" b="Default" t="nextapp.echo.app.Button">
+  <p n="background" v="#3f3f4f"/>
+  <p n="foreground" v="#ffcfcf"/>
+ </s>
+
  <s n="Default" t="nextapp.echo.app.WindowPane">
   <!-- Container-specific property to enable Internet Explorer PNG Alpha Renderer for shadow window border. -->
   <p t="b" n="ieAlphaRenderBorder" v="1"/>
