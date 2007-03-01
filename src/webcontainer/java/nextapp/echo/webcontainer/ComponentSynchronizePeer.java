@@ -95,6 +95,17 @@ public interface ComponentSynchronizePeer {
     public Iterator getOutputPropertyNames(Context context, Component component);
     
     /**
+     * Determines if the specified <code>Component</code> has an output property set with the
+     * specified property name
+     * 
+     * @param context the relevant <code>Context</ocde>
+     * @param component the rendering <code>Component</code>
+     * @param propertyName the name of the property
+     * @return true if the property is provided
+     */
+    public boolean hasOutputProperty(Context context, Component component, String propertyName);
+    
+    /**
      * Initializes the peer.
      * This method will be invoked prior to rendering a <b>specific</b>
      * <code>Component</code> for the first time.

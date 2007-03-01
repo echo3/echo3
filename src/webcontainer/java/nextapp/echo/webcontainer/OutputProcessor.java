@@ -215,9 +215,8 @@ public class OutputProcessor {
     /**
      * Renders the full state of a specific component.
      * 
-     * @param context 
-     * @param parentElement
-     * @param c
+     * @param parentElement the element to append the component element to
+     * @param c the rendering component
      */
     private Element renderComponentState(Element parentElement, Component c)
     throws SerialException {
@@ -234,22 +233,7 @@ public class OutputProcessor {
         
         componentPeer.init(context);
 
-        StyleSheet styleSheet = c.getApplicationInstance().getStyleSheet();
-        
-        // Render style name (and style type, if necessary). 
-        if (styleSheet != null && c.getStyleName() != null) {
-            cElement.setAttribute("s", c.getStyleName());
-            Class styleClass = getStyleClass(styleSheet, c.getStyleName(), c.getClass());
-            if (styleClass != null && styleClass != c.getClass()) {
-                ComponentSynchronizePeer styleComponentSyncPeer 
-                        = SynchronizePeerFactory.getPeerForComponent(styleClass, false);
-                if (styleComponentSyncPeer == null) {
-                    cElement.setAttribute("st", styleClass.getName());
-                } else {
-                    cElement.setAttribute("st", styleComponentSyncPeer.getClientComponentType());
-                }
-            }
-        }
+        renderComponentStyleAttributes(cElement, c);
 
         // Render component properties.
         Iterator propertyNameIterator = componentPeer.getOutputPropertyNames(context, c);
@@ -287,6 +271,29 @@ public class OutputProcessor {
         parentElement.appendChild(cElement);
         
         return cElement;
+    }
+    
+    /**
+     * Render style name (and style type, if necessary).
+     * 
+     * @param element the element to append the style attributes to
+     * @param c the rendering component
+     */ 
+    private void renderComponentStyleAttributes(Element element, Component c) {
+        StyleSheet styleSheet = c.getApplicationInstance().getStyleSheet();
+        if (styleSheet != null && c.getStyleName() != null) {
+            element.setAttribute("s", c.getStyleName());
+            Class styleClass = getStyleClass(styleSheet, c.getStyleName(), c.getClass());
+            if (styleClass != null && styleClass != c.getClass()) {
+                ComponentSynchronizePeer styleComponentSyncPeer 
+                        = SynchronizePeerFactory.getPeerForComponent(styleClass, false);
+                if (styleComponentSyncPeer == null) {
+                    element.setAttribute("st", styleClass.getName());
+                } else {
+                    element.setAttribute("st", styleComponentSyncPeer.getClientComponentType());
+                }
+            }
+        }
     }
     
     private void renderStyleSheet() 
@@ -357,12 +364,21 @@ public class OutputProcessor {
         }
 
         for (int i = 0; i < updatedPropertyNames.length; ++i) {
+            if (!componentPeer.hasOutputProperty(context, c, updatedPropertyNames[i])) {
+                //FIXME. We may want to handle "special" properties like style name differently.
+                // or perhaps not.  If "not" turns out to be the case, just delete this fixme comment.
+                if ("styleName".equals(updatedPropertyNames[i])) {
+                    renderComponentStyleAttributes(upElement, c);
+                }
+                continue;
+            }
+            
             Element pElement = document.createElement("p");
             pElement.setAttribute("n", updatedPropertyNames[i]);
             Object propertyValue = componentPeer.getOutputProperty(context, c, updatedPropertyNames[i]);
             if (propertyValue == null) {
                 pElement.setAttribute("t", "0");
-                //FIXME. handle properties changed to null.
+                //FIXME. handle properties changed to null.  (Edit: um...doesn't this do exactly that?  Verify.)
                 System.err.println("NULLED: " + updatedPropertyNames[i]);
             } else {
                 SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(

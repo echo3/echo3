@@ -27,9 +27,10 @@ EchoSerial.loadComponent = function(client, componentElement) {
     }
     var type = componentElement.getAttribute("t");
     var id = componentElement.getAttribute("i");
-    var styleName = componentElement.getAttribute("s");
-    
+
     var component = EchoApp.ComponentFactory.newInstance(type, id);
+
+    var styleName = componentElement.getAttribute("s");
     if (styleName) {
         component.setStyleName(styleName);
         var styleType = componentElement.getAttribute("st");

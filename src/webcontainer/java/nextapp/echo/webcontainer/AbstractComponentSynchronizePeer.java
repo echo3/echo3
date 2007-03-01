@@ -10,7 +10,7 @@ import nextapp.echo.app.util.Context;
 
 public abstract class AbstractComponentSynchronizePeer 
 implements ComponentSynchronizePeer {
-
+    
     private Set additionalProperties = null;
     
     private String clientComponentType;
@@ -65,6 +65,18 @@ implements ComponentSynchronizePeer {
      */
     public Object getOutputProperty(Context context, Component component, String propertyName) {
         return component.getLocalStyle().getProperty(propertyName);
+    }
+    
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#hasOutputProperty(nextapp.echo.app.util.Context, 
+     *      nextapp.echo.app.Component, java.lang.String)
+     */
+    public boolean hasOutputProperty(Context context, Component component, String propertyName) {
+        if (component.getLocalStyle().isPropertySet(propertyName)) {
+            return true;
+        } else {
+            return additionalProperties == null ? false : additionalProperties.contains(propertyName);
+        }
     }
 
     /**

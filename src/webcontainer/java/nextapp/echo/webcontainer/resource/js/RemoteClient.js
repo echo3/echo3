@@ -222,6 +222,18 @@ EchoRemoteClient.ComponentSync._processComponentRemove = function(client, remove
 EchoRemoteClient.ComponentSync._processComponentUpdate = function(client, updateElement) {
     var id = updateElement.getAttribute("i");
     var component = client.application.getComponentByRenderId(id);
+    
+    var styleName = updateElement.getAttribute("s");
+    if (styleName != null) {
+        component.setStyleName(styleName == "" ? null : styleName); //FIXME verify this works as desired for unsets.
+        var styleType = updateElement.getAttribute("st");
+        if (styleType) {
+            component.setStyleType(styleType);
+        } else {
+            component.setStyleType(null);
+        }
+    }
+    
     for (var i = 0; i < updateElement.childNodes.length; ++i) {
         var childNodeName = updateElement.childNodes[i].nodeName;
         switch (childNodeName) {
