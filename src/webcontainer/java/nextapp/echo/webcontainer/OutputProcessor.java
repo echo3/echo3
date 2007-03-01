@@ -248,7 +248,6 @@ public class OutputProcessor {
             SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
             if (propertySyncPeer == null) {
                 //FIXME. figure out how these should be handled...ignoring is probably best.
-                System.err.println("No peer for: " + propertyValue.getClass());
                 continue;
             }
             Element pElement = document.createElement("p");
@@ -349,7 +348,6 @@ public class OutputProcessor {
             SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
             if (propertySyncPeer == null) {
                 //FIXME. figure out how these should be handled...ignoring is probably best.
-                System.err.println("No peer for: " + propertyValue.getClass());
                 continue;
             }
             Element pElement = document.createElement("p");
@@ -384,13 +382,11 @@ public class OutputProcessor {
             if (propertyValue == null) {
                 pElement.setAttribute("t", "0");
                 //FIXME. handle properties changed to null.  (Edit: um...doesn't this do exactly that?  Verify.)
-                System.err.println("NULLED: " + updatedPropertyNames[i]);
             } else {
                 SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(
                         propertyValue.getClass());
                 if (propertySyncPeer == null) {
                     //FIXME. figure out how these should be handled...ignoring is probably best.
-                    System.err.println("No peer for: " + propertyValue.getClass());
                     continue;
                 }
                 propertySyncPeer.toXml(context, c.getClass(), pElement, propertyValue);
