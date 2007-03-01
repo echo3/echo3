@@ -10,7 +10,6 @@ import nextapp.echo.webcontainer.util.XmlRequestParser;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 public class ClientMessage {
     
@@ -28,13 +27,6 @@ public class ClientMessage {
         super();
         
         document = XmlRequestParser.parse(conn.getRequest(), conn.getUserInstance().getCharacterEncoding());
-
-        //FIXME. Debug code
-        try {
-            DomUtil.save(document, System.err, DomUtil.OUTPUT_PROPERTIES_INDENT);
-        } catch (SAXException ex) {
-            throw new RuntimeException(ex);
-        }
 
         // Retrieve message type.
         type = document.getDocumentElement().getAttribute("t");

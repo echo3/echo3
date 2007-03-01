@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
@@ -79,6 +80,16 @@ public class OutputProcessor {
         } catch (SerialException ex) {
             //FIXME. Bad exception handling.
             throw new IOException(ex.toString());
+        }
+        
+        if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
+            // Print ServerMessage to console. 
+            try {
+                DomUtil.save(serverMessage.getDocument(), System.err, DomUtil.OUTPUT_PROPERTIES_INDENT);
+            } catch (SAXException ex) {
+                // Should not generally occur.
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -204,12 +215,6 @@ public class OutputProcessor {
         }
         
         updateManager.purge();
-        
-        try {
-            DomUtil.save(serverMessage.getDocument(), System.err, DomUtil.OUTPUT_PROPERTIES_INDENT);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
     }
     
     /**

@@ -52,6 +52,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 public abstract class WebContainerServlet extends HttpServlet {
 
+    // FIXME. not a permanent solution.
+    /**
+     * Flag indicating whether client/server messages should be dumped to console.
+     */
+    public static final boolean DEBUG_PRINT_MESSAGES_TO_CONSOLE = true;
+    
     /**
      * Default constructor.
      */

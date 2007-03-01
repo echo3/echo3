@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import nextapp.echo.app.Component;
 import nextapp.echo.app.serial.SerialContext;
@@ -13,6 +14,7 @@ import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.update.UpdateManager;
 import nextapp.echo.app.util.Context;
+import nextapp.echo.app.util.DomUtil;
 
 public class InputProcessor {
 
@@ -74,6 +76,15 @@ public class InputProcessor {
             updateManager.getServerUpdateManager().processFullRefresh();
         }
         
+        if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
+            // Print ClientMessage to console. 
+            try {
+                DomUtil.save(clientMessage.getDocument(), System.err, DomUtil.OUTPUT_PROPERTIES_INDENT);
+            } catch (SAXException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
         Iterator updatedComponentIdIt  = clientMessage.getUpdatedComponentIds();
         while (updatedComponentIdIt.hasNext()) {
             String componentId = (String) updatedComponentIdIt.next();
