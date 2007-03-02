@@ -393,7 +393,7 @@ public class OutputProcessor {
         }
 
         for (int i = 0; i < updatedPropertyNames.length; ++i) {
-            if (!componentPeer.hasOutputProperty(context, c, updatedPropertyNames[i])) {
+            if (!componentPeer.hasOutputProperty(context, updatedPropertyNames[i])) {
                 //FIXME. We may want to handle "special" properties like style name differently.
                 // or perhaps not.  If "not" turns out to be the case, just delete this fixme comment.
                 if ("styleName".equals(updatedPropertyNames[i])) {

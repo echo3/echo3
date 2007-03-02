@@ -89,9 +89,9 @@ implements ComponentSynchronizePeer {
     
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#hasOutputProperty(nextapp.echo.app.util.Context, 
-     *      nextapp.echo.app.Component, java.lang.String)
+     *      java.lang.String)
      */
-    public boolean hasOutputProperty(Context context, Component component, String propertyName) {
+    public boolean hasOutputProperty(Context context, String propertyName) {
         if (stylePropertyNames.contains(propertyName)) {
             return true;
         } else {
