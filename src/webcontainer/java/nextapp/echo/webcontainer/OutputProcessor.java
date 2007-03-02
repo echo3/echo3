@@ -63,14 +63,14 @@ public class OutputProcessor {
         public Object get(Class specificContextClass) {
             if (specificContextClass == SerialContext.class) {
                 return serialContext;
-            } else if (specificContextClass == ServerMessage.class) {
-                return serverMessage;
             } else if (specificContextClass == Connection.class) {
                 return conn;
-            } else if (specificContextClass == UserInstance.class) {
-                return conn.getUserInstance();
             } else if (specificContextClass == PropertyPeerFactory.class) {
                 return propertyPeerFactory;
+            } else if (specificContextClass == UserInstance.class) {
+                return conn.getUserInstance();
+            } else if (specificContextClass == ServerMessage.class) {
+                return serverMessage;
             } else {
                 return null;
             }

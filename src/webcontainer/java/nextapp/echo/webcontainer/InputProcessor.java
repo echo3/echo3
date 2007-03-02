@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import nextapp.echo.app.Component;
+import nextapp.echo.app.serial.PropertyPeerFactory;
 import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
@@ -40,10 +41,12 @@ public class InputProcessor {
                 return serialContext;
             } else if (specificContextClass == Connection.class) {
                 return conn;
-            } else if (specificContextClass == ClientMessage.class) {
-                return clientMessage;
+            } else if (specificContextClass == PropertyPeerFactory.class) {
+                return propertyPeerFactory;
             } else if (specificContextClass == UserInstance.class) {
                 return conn.getUserInstance();
+            } else if (specificContextClass == ClientMessage.class) {
+                return clientMessage;
             } else if (specificContextClass == ClientUpdateManager.class) {
                 return conn.getUserInstance().getApplicationInstance().getUpdateManager().getClientUpdateManager();
             } else {
@@ -54,7 +57,7 @@ public class InputProcessor {
     
     private Connection conn;
     private ClientMessage clientMessage;
-    private PropertySerialPeerFactory propertyPeerFactory;
+    private PropertyPeerFactory propertyPeerFactory;
 
     public InputProcessor(Connection conn) {
         super();

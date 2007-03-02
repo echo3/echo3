@@ -37,7 +37,19 @@ import nextapp.echo.app.util.Context;
 /**
  * Peer for synchronizing the state of server-side <code>Component</code>
  * objects with their equivalent client-side instances.
+ * 
+ * Note about <code>Context</code>s.
+ * Any context passed to any method in a <code>ComponentSynchronizePeer</code>
+ * must contain the following items:
+ * 
+ * <ul>
+ *  <li><code>SerialContext</code></li>
+ *  <li><code>Connection</code></li>
+ *  <li><code>PropertyPeerFactory</code></li>
+ *  <li><code>UserInstance</code></li>
+ * </ul>
  */
+
 public interface ComponentSynchronizePeer {
     
     /**
@@ -66,7 +78,12 @@ public interface ComponentSynchronizePeer {
      * Determines the types of events which, when fired on the client,
      * result in immediate server notification. 
      * 
-     * @param context the relevant <code>Context</code>
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
      * @param component the <code>Component</code> being rendered
      * @return an <code>Iterator</code> over a collection of <code>String</code>s
      *         of the remote client event type names
@@ -76,7 +93,12 @@ public interface ComponentSynchronizePeer {
     /**
      * Returns the value of a specific output property.
      * 
-     * @param context the relevant <code>Context</code>
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
      * @param component the <code>Component</code> being rendered
      * @param propertyName the name of the property being rendered
      * @return the property value
@@ -88,7 +110,12 @@ public interface ComponentSynchronizePeer {
      * output properties that should be rendered to the remote client. Only the
      * names of properties with non-default values should be returned.
      * 
-     * @param context the relevant <code>Context</code>
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
      * @param component the component
      * @return an <code>Iterator</code> of property names
      */
@@ -98,7 +125,12 @@ public interface ComponentSynchronizePeer {
      * Determines if the component type supports sending the specified property to the client.
      * This method is used to determine which changed properties will be sent to the client.
      * 
-     * @param context the relevant <code>Context</ocde>
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
      * @param propertyName the name of the property
      * @return true if the property is provided
      */
@@ -109,7 +141,12 @@ public interface ComponentSynchronizePeer {
      * This method will be invoked prior to rendering a <b>specific</b>
      * <code>Component</code> for the first time.
      * 
-     * @param context the relevant <code>Context</code>
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
      */
     public void init(Context context);
     
@@ -119,7 +156,13 @@ public interface ComponentSynchronizePeer {
      * ensuring that the client may only modify specific properties of
      * a component that are user-mutable.
      * 
-     * @param context the relevant <code>Context</code>
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li><code>ClientMessage</code></li>
+     *         <li><code>ClientUpdateManager</code></li>
+     *        </ul>
      * @param component the updated <code>Component</code>
      * @param propertyName the name of the property
      * @param newValue the new value of the property
