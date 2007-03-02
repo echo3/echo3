@@ -22,24 +22,44 @@ import nextapp.echo.app.update.UpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 
+/**
+ * Generates an XML <code>ServerMessage</code> describing server-side changes to the
+ * state of an application that is returned to the remote client as a response
+ * to its syncrhonization HTTP connection.
+ */
 public class OutputProcessor {
 
     private static final String[] PROPERTIES_LAYOUT_DATA = new String[]{Component.PROPERTY_LAYOUT_DATA};
     
+    /**
+     * <code>Context</code> implementation.
+     */
     private class OutputContext implements Context {
 
+        /**
+         * <code>SerialContext</code> implementation.
+         */
         private SerialContext serialContext = new SerialContext() {
         
+            /**
+             * @see nextapp.echo.app.serial.SerialContext#getClassLoader()
+             */
             public ClassLoader getClassLoader() {
                 //FIXME. temporary, not what we want.
                 return Thread.currentThread().getContextClassLoader();
             }
         
+            /**
+             * @see nextapp.echo.app.serial.SerialContext#getDocument()
+             */
             public Document getDocument() {
                 return serverMessage.getDocument();
             }
         };
         
+        /**
+         * @see nextapp.echo.app.util.Context#get(java.lang.Class)
+         */
         public Object get(Class specificContextClass) {
             if (specificContextClass == SerialContext.class) {
                 return serialContext;
@@ -62,6 +82,12 @@ public class OutputProcessor {
     private Context context;
     private PropertyPeerFactory propertyPeerFactory;
     
+    /**
+     * Creates a new <code>OutputProcessor</code>.
+     * 
+     * @param conn the <code>Connection</code> for which the output is 
+     * being generated.
+     */
     public OutputProcessor(Connection conn) {
         super();
         this.conn = conn;
@@ -70,29 +96,6 @@ public class OutputProcessor {
         propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME temporary
     }
     
-    public void process() 
-    throws IOException {
-        serverMessage.setTransactionId(conn.getUserInstance().getNextTransactionId());
-        try {
-            processServerOutput();
-            conn.setContentType(ContentType.TEXT_XML);
-            serverMessage.render(conn.getWriter());
-        } catch (SerialException ex) {
-            //FIXME. Bad exception handling.
-            throw new IOException(ex.toString());
-        }
-        
-        if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
-            // Print ServerMessage to console. 
-            try {
-                DomUtil.save(serverMessage.getDocument(), System.err, DomUtil.OUTPUT_PROPERTIES_INDENT);
-            } catch (SAXException ex) {
-                // Should not generally occur.
-                throw new RuntimeException(ex);
-            }
-        }
-    }
-
     private Class getStyleClass(StyleSheet styleSheet, String styleName, Class componentClass) {
         if (styleSheet.getStyle(styleName, componentClass, false) != null) {
             // StyleSheet provides style specifically for componentClass.
@@ -138,6 +141,29 @@ public class OutputProcessor {
         return isRendered(context, parent);
     }
     
+    public void process() 
+    throws IOException {
+        serverMessage.setTransactionId(conn.getUserInstance().getNextTransactionId());
+        try {
+            processServerOutput();
+            conn.setContentType(ContentType.TEXT_XML);
+            serverMessage.render(conn.getWriter());
+        } catch (SerialException ex) {
+            //FIXME. Bad exception handling.
+            throw new IOException(ex.toString());
+        }
+        
+        if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
+            // Print ServerMessage to console. 
+            try {
+                DomUtil.save(serverMessage.getDocument(), System.err, DomUtil.OUTPUT_PROPERTIES_INDENT);
+            } catch (SAXException ex) {
+                // Should not generally occur.
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
     private void processServerOutput() 
     throws SerialException {
         UserInstance userInstance = conn.getUserInstance();

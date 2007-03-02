@@ -6,12 +6,15 @@ import java.util.Iterator;
 import java.util.Set;
 
 import nextapp.echo.app.Component;
+import nextapp.echo.app.reflect.ComponentIntrospector;
+import nextapp.echo.app.reflect.IntrospectorFactory;
 import nextapp.echo.app.util.Context;
 
 public abstract class AbstractComponentSynchronizePeer 
 implements ComponentSynchronizePeer {
     
     private Set additionalProperties = null;
+    private Set stylePropertyNames = null;
     
     private String clientComponentType;
 
@@ -22,6 +25,23 @@ implements ComponentSynchronizePeer {
             // Use relative class name automatically for nextapp.echo.app objects.
             int lastDot = clientComponentType.lastIndexOf(".");
             clientComponentType = clientComponentType.substring(lastDot + 1);
+        }
+        
+        try {
+            stylePropertyNames = new HashSet();
+            Class componentClass = getComponentClass();
+            ComponentIntrospector ci = (ComponentIntrospector) IntrospectorFactory.get(componentClass.getName(),
+                    componentClass.getClassLoader());
+            Iterator propertyNameIt = ci.getPropertyNames();
+            while (propertyNameIt.hasNext()) {
+                String propertyName = (String) propertyNameIt.next();
+                if (ci.getStyleConstantName(propertyName) != null) {
+                    stylePropertyNames.add(propertyName);
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            // Should never occur.
+            throw new RuntimeException("Internal error.", ex);
         }
     }
     
@@ -72,7 +92,7 @@ implements ComponentSynchronizePeer {
      *      nextapp.echo.app.Component, java.lang.String)
      */
     public boolean hasOutputProperty(Context context, Component component, String propertyName) {
-        if (component.getLocalStyle().isPropertySet(propertyName)) {
+        if (stylePropertyNames.contains(propertyName)) {
             return true;
         } else {
             return additionalProperties == null ? false : additionalProperties.contains(propertyName);

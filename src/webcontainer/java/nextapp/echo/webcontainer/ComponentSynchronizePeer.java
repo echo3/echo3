@@ -95,8 +95,9 @@ public interface ComponentSynchronizePeer {
     public Iterator getOutputPropertyNames(Context context, Component component);
     
     /**
-     * Determines if the specified <code>Component</code> has an output property set with the
-     * specified property name
+     * Determines if the specified <code>Component</code> has an output property with the
+     * specified property name.  <b>This method should return true even if that property is 
+     * not set.</b>
      * 
      * @param context the relevant <code>Context</ocde>
      * @param component the rendering <code>Component</code>
