@@ -1,28 +1,56 @@
 /**
  * Component rendering peer: SplitPane
+ * 
+ * @class
+ * @base EchoRender.ComponentSync
  */
-EchoRender.ComponentSync.SplitPane = function() { };
+EchoRender.ComponentSync.SplitPane = function() {
+
+    /**
+     * Array containing two PaneConfiguration instances, representing the state of each child pane.
+     * @type Array
+     */
+    this._paneConfigurations = new Array(2);
+};
 
 EchoRender.ComponentSync.SplitPane.prototype = new EchoRender.ComponentSync;
 
-EchoRender.ComponentSync.SplitPane.prototype.renderDispose = function(update) {
-    var firstPaneDivElement = document.getElementById(this.component.renderId + "_pane0");
-    var separatorDivElement = document.getElementById(this.component.renderId + "_separator");
-    var secondPaneDivElement = document.getElementById(this.component.renderId + "_pane1");
+/**
+ * Creates a new PaneConfiguration instance
+ * 
+ * @class Describes the configuration of a child pane of the SplitPane,
+ *        including the child component and scroll bar positions.
+ * @param component the child component
+ */
+EchoRender.ComponentSync.SplitPane.PaneConfiguration = function(component) {
+    this.component = component;
+};
 
-    if (firstPaneDivElement) {
-        this._firstPaneData = new Object();
-        this._firstPaneData.id = null;
-        this._firstPaneData.scrollTop = firstPaneDivElement.scrollTop;
-        this._firstPaneData.scrollLeft = firstPaneDivElement.scrollLeft;
+EchoRender.ComponentSync.SplitPane.PaneConfiguration.prototype.loadScrollPositions = function(paneDivElement) {
+    paneDivElement.scrollLeft = this.scrollLeft;
+    paneDivElement.scrollTop = this.scrollTop;
+};
+
+EchoRender.ComponentSync.SplitPane.PaneConfiguration.prototype.storeScrollPositions = function(paneDivElement) {
+    this.scrollLeft = paneDivElement.scrollLeft;
+    this.scrollTop = paneDivElement.scrollTop;
+};
+
+EchoRender.ComponentSync.SplitPane.prototype.renderDispose = function(update) {
+    if (this._paneConfigurations[0]) {
+        var firstPaneDivElement = document.getElementById(this.component.renderId + "_pane0");
+        if (this.firstPaneDivElement) {
+            this._paneConfigurations[0].storeScrollPositions(firstPaneDivElement);
+        }
     }
-    if (secondPaneDivElement) {
-        this._secondPaneData = new Object();
-        this._secondPaneData.id = null;
-        this._secondPaneData.scrollTop = secondPaneDivElement.scrollTop;
-        this._secondPaneData.scrollLeft = secondPaneDivElement.scrollLeft;
+    if (this._paneConfigurations[1]) {
+        var secondPaneDivElement = document.getElementById(this.component.renderId + "_pane1");
+        if (this.secondPaneDivElement) {
+            this._paneConfigurations[0].storeScrollPositions(firstPaneDivElement);
+        }
     }
     
+    var separatorDivElement = document.getElementById(this.component.renderId + "_separator");
     if (separatorDivElement) {
         EchoWebCore.EventProcessor.remove(separatorDivElement, "mousedown", new EchoCore.MethodRef(this,
                 this._processSeparatorMouseDown), false);
@@ -143,6 +171,26 @@ EchoRender.ComponentSync.SplitPane.prototype._getInsetsSizeAdjustment = function
     return adjustment;
 };
 
+EchoRender.ComponentSync.SplitPane.prototype._getRenderedChildIndex = function(child) {
+    if (this._paneConfigurations[0] && this._paneConfigurations[0].component == child) {
+        return 0;
+    } else if (this._paneConfigurations[1] && this._paneConfigurations[1].component == child) {
+        return 1;
+    } else {
+        throw new Error("Specified component is not a child of the SplitPane.");
+    }
+};
+
+EchoRender.ComponentSync.SplitPane.prototype._hasRelocatedChildren = function(update) {
+    var oldChild0 = this._paneConfigurations[0] ? this._paneConfigurations[0].component : null; 
+    var oldChild1 = this._paneConfigurations[1] ? this._paneConfigurations[1].component : null; 
+    var childCount = this.component.getComponentCount();
+    var newChild0 = childCount > 0 ? this.component.getComponent(0) : null;
+    var newChild1 = childCount > 1 ? this.component.getComponent(1) : null;
+    return (oldChild0 != null && oldChild0 == newChild1) 
+            || (oldChild1 != null && oldChild1 == newChild0);
+};
+
 EchoRender.ComponentSync.SplitPane.prototype._redraw = function() {
     var firstPaneDivElement = document.getElementById(this.component.renderId + "_pane0");
     var separatorDivElement = document.getElementById(this.component.renderId + "_separator");
@@ -261,28 +309,6 @@ EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parent
     
     parentElement.appendChild(splitPaneDivElement);
     
-    //FIXME. The scroll-bar position storage code here appears to not be working if parent component is redrawn
-    // is peer being deleted?  Probably.  That means disposed state is all broken too.
-    
-    if (this._firstPaneData) {
-        var firstPaneDivElement = document.getElementById(this.component.renderId + "_pane0");
-        if (firstPaneDivElement) {
-            firstPaneDivElement.scrollTop = this._firstPaneData.scrollTop;
-            firstPaneDivElement.scrollLeft = this._firstPaneData.scrollLeft;
-//FIXME Debug code
-//            alert("1scrolling to: " + this._firstPaneData.scrollTop);
-        }
-    }
-    if (this._secondPaneData) {
-        var secondPaneDivElement = document.getElementById(this.component.renderId + "_pane1");
-        if (secondPaneDivElement) {
-            secondPaneDivElement.scrollTop = this._secondPaneData.scrollTop;
-            secondPaneDivElement.scrollLeft = this._secondPaneData.scrollLeft;
-//FIXME Debug code
-//            alert("2scrolling to: " + this._secondPaneData.scrollTop);
-        }
-    }
-    
     if (this._resizable) {
         EchoWebCore.EventProcessor.add(separatorDivElement, "mousedown", new EchoCore.MethodRef(this,
                 this._processSeparatorMouseDown), false);
@@ -354,13 +380,56 @@ EchoRender.ComponentSync.SplitPane.prototype._renderAddChild = function(update, 
     
     EchoRender.renderComponentAdd(update, child, paneDivElement);
     parentElement.appendChild(paneDivElement);
+
+    if (this._paneConfigurations[index] && this._paneConfigurations[index].component == child) {
+        this._paneConfigurations[index].loadScrollPositions(paneDivElement);
+    } else {
+        this._paneConfigurations[index] = new EchoRender.ComponentSync.SplitPane.PaneConfiguration(child);
+    }
+};
+
+EchoRender.ComponentSync.SplitPane.prototype._renderRemoveChild = function(update, child) {
+    var index = this._getRenderedChildIndex(child);
+    this._paneConfigurations[index] = null;
+    var paneDivElement = document.getElementById(this.component.renderId + "_pane" + index);
+    paneDivElement.parentNode.removeChild(paneDivElement);
 };
 
 EchoRender.ComponentSync.SplitPane.prototype.renderUpdate = function(update) {
-    EchoRender.Util.renderRemove(update, update.parent);
-    var containerElement = EchoRender.Util.getContainerElement(update.parent);
-    this.renderAdd(update, containerElement);
-    return true;
+    var fullRender = false;
+    if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()
+            || this._hasRelocatedChildren()) {
+        // Full render
+        fullRender = true;
+    } else {
+        if (update.hasRemovedChildren()) {
+            // Remove children.
+            var removedChildren = update.getRemovedChildren();
+            var length = removedChildren.size();
+            for (var i = 0; i < length; ++i) {
+                var child = removedChildren.items[i];
+                this._renderRemoveChild(update, child);
+            }
+        }
+        if (update.hasAddedChildren()) {
+            // Add children.
+            var addedChildren = update.getAddedChildren();
+            var length = addedChildren.size();
+            var splitPaneDivElemenet = document.getElementById(this.component.renderId);
+            for (var i = 0; i < length; ++i) {
+                var child = addedChildren.items[i];
+                var index = this.component.indexOf(child);
+                this._renderAddChild(update, child, splitPaneDivElemenet, index); 
+            }
+        }
+    }
+    if (fullRender) {
+        EchoRender.Util.renderRemove(update, update.parent);
+        var containerElement = EchoRender.Util.getContainerElement(update.parent);
+        this.renderAdd(update, containerElement);
+    }
+    
+    return fullRender;
 };
 
 EchoRender.ComponentSync.SplitPane.prototype._setSeparatorPosition = function(newValue) {
