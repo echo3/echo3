@@ -123,8 +123,6 @@ EchoRender.ComponentSync.Column.prototype.renderUpdate = function(update) {
         // Full render
         fullRender = true;
     } else {
-        var parentElement = document.getElementById(this.component.renderId);
-        
         if (update.hasRemovedChildren()) {
             // Remove children.
             var removedChildren = update.getRemovedChildren();
@@ -138,6 +136,7 @@ EchoRender.ComponentSync.Column.prototype.renderUpdate = function(update) {
             // Add children.
             var addedChildren = update.getAddedChildren();
             var length = addedChildren.size();
+            var parentElement = document.getElementById(this.component.renderId);
             for (var i = 0; i < length; ++i) {
                 var child = addedChildren.items[i];
                 var index = this.component.indexOf(child);

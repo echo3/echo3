@@ -133,8 +133,6 @@ EchoRender.ComponentSync.Row.prototype.renderUpdate = function(update) {
         // Full render
         fullRender = true;
     } else {
-        var trElemenet = document.getElementById(this.component.renderId + "_tr");
-        
         if (update.hasRemovedChildren()) {
             // Remove children.
             var removedChildren = update.getRemovedChildren();
@@ -148,6 +146,7 @@ EchoRender.ComponentSync.Row.prototype.renderUpdate = function(update) {
             // Add children.
             var addedChildren = update.getAddedChildren();
             var length = addedChildren.size();
+            var trElemenet = document.getElementById(this.component.renderId + "_tr");
             for (var i = 0; i < length; ++i) {
                 var child = addedChildren.items[i];
                 var index = this.component.indexOf(child);

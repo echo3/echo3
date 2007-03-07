@@ -49,11 +49,45 @@ EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update
 
 EchoRender.ComponentSync.ContentPane.prototype.renderDispose = function(update) { };
 
+EchoRender.ComponentSync.ContentPane.prototype._renderRemoveChild = function(update, child) {
+    var divElement = document.getElementById(this.component.renderId + "__" + child.renderId);
+    divElement.parentNode.removeChild(divElement);
+};
+
 EchoRender.ComponentSync.ContentPane.prototype.renderUpdate = function(update) {
-    EchoRender.Util.renderRemove(update, update.parent);
-    var containerElement = EchoRender.Util.getContainerElement(update.parent);
-    this.renderAdd(update, containerElement);
-    return true;
+    var fullRender = false;
+    if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()) {
+        // Full render
+        fullRender = true;
+    } else {
+        if (update.hasRemovedChildren()) {
+            // Remove children.
+            var removedChildren = update.getRemovedChildren();
+            var length = removedChildren.size();
+            for (var i = 0; i < length; ++i) {
+                var child = removedChildren.items[i];
+                this._renderRemoveChild(update, child);
+            }
+        }
+        if (update.hasAddedChildren()) {
+            // Add children.
+            var addedChildren = update.getAddedChildren();
+            var length = addedChildren.size();
+            var contentPaneDivElemenet = document.getElementById(this.component.renderId);
+            for (var i = 0; i < length; ++i) {
+                var child = addedChildren.items[i];
+                var index = this.component.indexOf(child);
+                this._renderAddChild(update, child, contentPaneDivElemenet, index); 
+            }
+        }
+    }
+    if (fullRender) {
+        EchoRender.Util.renderRemove(update, update.parent);
+        var containerElement = EchoRender.Util.getContainerElement(update.parent);
+        this.renderAdd(update, containerElement);
+    }
+    
+    return fullRender;
 };
 
 EchoRender.registerPeer("ContentPane", EchoRender.ComponentSync.ContentPane);
