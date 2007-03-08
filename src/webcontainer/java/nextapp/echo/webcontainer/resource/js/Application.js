@@ -1209,7 +1209,6 @@ EchoApp.Property.Extent.prototype.toString = function() {
     return this.value + this.units;
 };
 
-//FIXME need values for repeat
 /**
  * Creates a FillImage property.
  * 
@@ -1217,6 +1216,13 @@ EchoApp.Property.Extent.prototype.toString = function() {
  *        at which point an ImageReference will be automatically constructed
  *        with the string as its URL).
  * @param {Number} repeat the image repeat mode, one of the following values:
+ *        <ul>
+ *         <li>EchoApp.Property.FillImage.NO_REPEAT</li>
+ *         <li>EchoApp.Property.FillImage.REPEAT_X</li>
+ *         <li>EchoApp.Property.FillImage.REPEAT_Y</li>
+ *         <li>EchoApp.Property.FillImage.REPEAT_ALL</li>
+ *        </ul>
+ *         
  * @param {EchoApp.Property.Extent} the horizontal alignment/position of the image
  * @param {EchoApp.Property.Extent} the vertical alignment/position of the image
  * @class FillImage property.  Describes a repeating image, typically used as a background.
@@ -1233,7 +1239,13 @@ EchoApp.Property.FillImage = function(image, repeat, x, y) {
         this.image = new EchoApp.Property.ImageReference(image);
     }
     /**
-     * The repeat configuration.
+     * The repeat configuration, one of the following values:
+     * <ul>
+     *  <li>EchoApp.Property.FillImage.NO_REPEAT</li>
+     *  <li>EchoApp.Property.FillImage.REPEAT_X</li>
+     *  <li>EchoApp.Property.FillImage.REPEAT_Y</li>
+     *  <li>EchoApp.Property.FillImage.REPEAT_ALL</li>
+     * </ul>
      * @type Number
      */
     this.repeat = repeat;
@@ -1258,16 +1270,51 @@ EchoApp.Property.FillImage = function(image, repeat, x, y) {
 };
 
 /**
+ * Repeat value constant indicating the image should not repeat.
+ * @type Number
+ * @final
+ */
+EchoApp.Property.FillImage.NO_REPEAT = 0;
+
+/**
+ * Repeat value constant indicating the image should repeat horizontally.
+ * @type Number
+ * @final
+ */
+EchoApp.Property.FillImage.REPEAT_HORIZONTAL = 1;
+
+/**
+ * Repeat value constant indicating the image should repeat vertically.
+ * @type Number
+ * @final
+ */
+EchoApp.Property.FillImage.REPEAT_VERTICAL = 2;
+
+/**
+ * Repeat value constant indicating the image should repeat horizontally and vertically.
+ * @type Number
+ * @final
+ */
+EchoApp.Property.FillImage.REPEAT = 3;
+
+/**
  * Property class name.
  * @type String
  * @final
  */
 EchoApp.Property.FillImage.prototype.className = "FillImage";
 
-//FIXME params documentation
 /**
  * Creates a FillImageBorder
  * 
+ * @param {EchoApp.Property.Color} color the border background color (specify null to enable
+ *        a transparent background, such that alpha-rendered PNGs will render properlty)
+ * @param {EchoApp.Property.Insets} borderInsets describes the width and 
+ *        height of the border images, i.e. the inset to which the border images
+ *        extend inward from the outer edges of the box
+ * @param {EchoApp.Property.Insets} contentInsets describes the inset of
+ *        the content displayed within the border  (if the content inset is less
+ *        than the border inset, the content will be drawn above the border)    
  * @class FillImageBorder property.  A border which is rendered using FillImages to
  *        represent each side and each corner, and with configurable Insets to define 
  *        the border size. 
@@ -1449,9 +1496,18 @@ EchoApp.Property.ImageReference = function(url, width, height) {
  */
 EchoApp.Property.ImageReference.prototype.className = "ImageReference";
 
-//FIXME params documentation
 /**
  * Creates a new Insets Property.
+ * 
+ * This method takes multiple parameter configurations:
+ * <ul>
+ *  <li>A string may be passed providing extent values for 1-4 sides of the inset,
+ *   in the following order: top, right, bottom, left.  Any values not specified will
+ *   be derived from the value representing the opposite side inset.</li>
+ *  <li>Additionally, 1-4 values may be provided in the form of Extents or String,
+ *   representing each side of the Insets.</li>
+ * </ul> 
+ * 
  * @class Insets property.  Describes inset margins within a box.
  * @constructor
  */
@@ -1606,7 +1662,14 @@ EchoApp.StyleSheet = function() {
     this._nameToStyleMap = new EchoCore.Collections.Map();
 };
 
-//FIXME docs.
+/**
+ * Returns the style that should be used for a component.
+ * 
+ *  @param {String} name the component's style name
+ *  @param {String} componentType the type of the component
+ *  @return the style
+ *  @type EchoApp.Style
+ */
 EchoApp.StyleSheet.prototype.getRenderStyle = function(name, componentType) {
     //FIXME. Does not query super component types.
     return this.getStyle(name, componentType);
