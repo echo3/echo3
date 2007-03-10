@@ -396,15 +396,23 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
 
     /**
      * @see javax.servlet.http.HttpSessionActivationListener#sessionDidActivate(javax.servlet.http.HttpSessionEvent)
+     * 
+     * Recreates reference to session.
+     * Notifies <code>ApplicationInstance</code> of activation.
      */
     public void sessionDidActivate(HttpSessionEvent e) {
         session = e.getSession();
+        applicationInstance.activate();
     }
 
     /**
      * @see javax.servlet.http.HttpSessionActivationListener#sessionWillPassivate(javax.servlet.http.HttpSessionEvent)
+     * 
+     * Notifies <code>ApplicationInstance</code> of passivation.
+     * Discards reference to session.
      */
     public void sessionWillPassivate(HttpSessionEvent e) {
+        applicationInstance.passivate();
         session = null;
     }
 
@@ -461,11 +469,13 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
 
     /**
      * Listener implementation of <code>HttpSessionBindingListener</code>.
+     * Disposes <code>ApplicationInstance</code>.
      * Removes reference to session when invoked.
      * 
      * @see javax.servlet.http.HttpSessionBindingListener#valueUnbound(HttpSessionBindingEvent)
      */
     public void valueUnbound(HttpSessionBindingEvent e) {
+        applicationInstance.dispose();
         session = null;
     }
 }

@@ -188,6 +188,14 @@ implements Serializable {
     }
     
     /**
+     * Invoked after the application has been passivated (such that its state may
+     * be persisted or moved amongst VMs) and is about to be reactivated.
+     * Implementations must invoke <code>super.activate()</code>.
+     */
+    public void activate() {
+    }
+
+    /**
      * Adds a <code>PropertyChangeListener</code> to receive notification of
      * application-level property changes.
      * 
@@ -216,6 +224,13 @@ implements Serializable {
         return taskQueue;
     }
     
+    /**
+     * Invoked when the application is disposed and will not be used again.
+     * Implementations must invoke <code>super.dispose()</code>.
+     */
+    public void dispose() {
+    }
+
     /**
      * Initializes the <code>ApplicationInstance</code>. This method is
      * invoked by the application container.
@@ -546,6 +561,14 @@ implements Serializable {
             }
             serverUpdateManager.processComponentPropertyUpdate(parent, propertyName, oldValue, newValue);
         }
+    }
+    
+    /**
+     * Invoked before the application is passivated (such that its state may
+     * be persisted or moved amongst VMs).
+     * Implementations must invoke <code>super.passivate()</code>.
+     */
+    public void passivate() {
     }
     
     /**
