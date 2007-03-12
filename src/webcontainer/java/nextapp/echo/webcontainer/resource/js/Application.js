@@ -171,8 +171,9 @@ EchoApp.Application.prototype.notifyComponentUpdate = function(parent, propertyN
  * components that is registered with the application.
  * 
  * @param {EchoApp.Component} component the component to register
+ * @private
  */
-EchoApp.Application.prototype.registerComponent = function(component) {
+EchoApp.Application.prototype._registerComponent = function(component) {
     if (this._idToComponentMap.get(component.renderId)) {
         throw new Error("Component already exists with id: " + component.renderId);
     }
@@ -224,8 +225,9 @@ EchoApp.Application.prototype.setStyleSheet = function(newValue) {
  * components registered with the application.
  * 
  * @param {EchoApp.Component} component the component to remove
+ * @private
  */
-EchoApp.Application.prototype.unregisterComponent = function(component) {
+EchoApp.Application.prototype._unregisterComponent = function(component) {
     this._idToComponentMap.remove(component.renderId);
 };
 
@@ -259,6 +261,9 @@ EchoApp.ComponentFactory = function() { };
 
 /**
  * Mapping between type names and object constructors.
+ * 
+ * @type EchoCore.Collections.Map
+ * @private
  */
 EchoApp.ComponentFactory._typeToConstructorMap = new EchoCore.Collections.Map();
 
@@ -268,7 +273,7 @@ EchoApp.ComponentFactory._typeToConstructorMap = new EchoCore.Collections.Map();
  * @param {String} typeName the type name of the component
  * @param {String} renderId the component render id
  * @return a newly instantiated component
- * @type  {EchoApp.Component}
+ * @type EchoApp.Component
  */
 EchoApp.ComponentFactory.newInstance = function(typeName, renderId) {
     var typeConstructor = EchoApp.ComponentFactory._typeToConstructorMap.get(typeName);
@@ -654,7 +659,7 @@ EchoApp.Component.prototype.register = function(application) {
 		}
 		
         // Notify application.
-		this.application.unregisterComponent(this);
+		this.application._unregisterComponent(this);
 	}
 
     // Link/unlink with application.
@@ -663,7 +668,7 @@ EchoApp.Component.prototype.register = function(application) {
 	if (application) { // registering
 
         // Notify application.
-        this.application.registerComponent(this);
+        this.application._registerComponent(this);
         
 		if (this.children != null) {
 			// Recursively register children.
@@ -1768,8 +1773,9 @@ EchoApp.Update.ComponentUpdate = function(parent) {
  * Records the addition of a child to the parent component.
  * 
  * @param {EchoApp.Component} child the added child
+ * @private
  */
-EchoApp.Update.ComponentUpdate.prototype.addChild = function(child) {
+EchoApp.Update.ComponentUpdate.prototype._addChild = function(child) {
     if (!this.addedChildren) {
         this.addedChildren = new EchoCore.Collections.Set();
     }
@@ -1873,8 +1879,9 @@ EchoApp.Update.ComponentUpdate.prototype.hasUpdatedProperties = function() {
  * Records the removal of a child from the parent component.
  * 
  * @param {EchoApp.Component} child the removed child
+ * @private
  */
-EchoApp.Update.ComponentUpdate.prototype.removeChild = function(child) {
+EchoApp.Update.ComponentUpdate.prototype._removeChild = function(child) {
     if (this.addedChildren != null && this.addedChildren.contains(child)) {
         // Remove child from add list if found.
         this.addedChildren.remove(child);
@@ -1937,8 +1944,9 @@ EchoApp.Update.ComponentUpdate.prototype.toString = function() {
  * Records the update of the LayoutData of a child component.
  * 
  * @param the child component whose layout data was updated
+ * @private
  */
-EchoApp.Update.ComponentUpdate.prototype.updateLayoutData = function(child) {
+EchoApp.Update.ComponentUpdate.prototype._updateLayoutData = function(child) {
 	if (this.updatedLayoutDataChildren == null) {
 		this.updatedLayoutDataChildren = new EchoCore.Collections.Set();
 	}
@@ -1951,8 +1959,9 @@ EchoApp.Update.ComponentUpdate.prototype.updateLayoutData = function(child) {
  * @param propertyName the name of the property
  * @param oldValue the previous value of the property
  * @param newValue the new value of the property
+ * @private
  */
-EchoApp.Update.ComponentUpdate.prototype.updateProperty = function(propertyName, oldValue, newValue) {
+EchoApp.Update.ComponentUpdate.prototype._updateProperty = function(propertyName, oldValue, newValue) {
     if (this.propertyUpdates == null) {
         this.propertyUpdates = new EchoCore.Collections.Map();
     }
@@ -1998,7 +2007,7 @@ EchoApp.Update.Manager.prototype.addUpdateListener = function(l) {
     this._listenerList.addListener("update", l);
 };
 
-EchoApp.Update.Manager.prototype.createComponentUpdate = function(parent) {
+EchoApp.Update.Manager.prototype._createComponentUpdate = function(parent) {
     this._hasUpdates = true;
     var update = this.componentUpdateMap.get(parent.renderId);
     if (!update) {
@@ -2062,8 +2071,8 @@ EchoApp.Update.Manager.prototype._processComponentAdd = function(parent, child) 
     if (this._isAncestorBeingAdded(child)) {
         return;
     };
-    var update = this.createComponentUpdate(parent);
-    update.addChild(child);
+    var update = this._createComponentUpdate(parent);
+    update._addChild(child);
 };
 
 /**
@@ -2080,8 +2089,8 @@ EchoApp.Update.Manager.prototype._processComponentLayoutDataUpdate = function(up
     if (parent == null || this._isAncestorBeingAdded(parent)) {
         return;
     }
-    var update = this.createComponentUpdate(parent);
-    update.updateLayoutData(updatedComponent);
+    var update = this._createComponentUpdate(parent);
+    update._updateLayoutData(updatedComponent);
 };
 
 /**
@@ -2098,8 +2107,8 @@ EchoApp.Update.Manager.prototype._processComponentRemove = function(parent, chil
     if (this._isAncestorBeingAdded(parent)) {
         return;
     }
-    var update = this.createComponentUpdate(parent);
-    update.removeChild(child);
+    var update = this._createComponentUpdate(parent);
+    update._removeChild(child);
     
     var disposedIds = null;
     
@@ -2140,8 +2149,8 @@ EchoApp.Update.Manager.prototype._processComponentPropertyUpdate = function(comp
 	if (this._isAncestorBeingAdded(component)) {
 		return;
 	}
-	var update = this.createComponentUpdate(component);
-	update.updateProperty(propertyName, oldValue, newValue);
+	var update = this._createComponentUpdate(component);
+	update._updateProperty(propertyName, oldValue, newValue);
 };
 
 /**
