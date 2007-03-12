@@ -2007,6 +2007,15 @@ EchoApp.Update.Manager.prototype.addUpdateListener = function(l) {
     this._listenerList.addListener("update", l);
 };
 
+/**
+ * Creates a new ComponentUpdate object (or returns an existing one) for a
+ * specific parent component.
+ * 
+ * @private
+ * @param {EchoApp.Component} parent the parent Component
+ * @return a ComponentUpdate instance for that Component
+ * @type EchoApp.Update.ComponentUpdate 
+ */
 EchoApp.Update.Manager.prototype._createComponentUpdate = function(parent) {
     this._hasUpdates = true;
     var update = this.componentUpdateMap.get(parent.renderId);
@@ -2017,11 +2026,19 @@ EchoApp.Update.Manager.prototype._createComponentUpdate = function(parent) {
     return update;
 };
 
+/**
+ * Permanently disposes of the Update Manager, freeing any resources.
+ */
 EchoApp.Update.Manager.prototype.dispose = function() {
     this.application.removeComponentUpdateListener(new EchoCore.MethodRef(this, this._processComponentUpdate));
     this.application = null;
 };
 
+/**
+ * Notifies update listeners of an event.
+ * 
+ * @private
+ */
 EchoApp.Update.Manager.prototype._fireUpdate = function() {
     var e = new EchoCore.Event(this, "update");
     this._listenerList.fireEvent(e);
@@ -2029,6 +2046,9 @@ EchoApp.Update.Manager.prototype._fireUpdate = function() {
 
 /**
  * Returns the current pending updates.  Returns null in the event that that no pending updates exist.
+ * 
+ * @return an array containing all component updates (as EchoApp.Update.ComponentUpdates)
+ * @type Array
  */
 EchoApp.Update.Manager.prototype.getUpdates = function() {
     var updates = new Array();
@@ -2038,10 +2058,24 @@ EchoApp.Update.Manager.prototype.getUpdates = function() {
     return updates;
 };
 
+/**
+ * Determines if any updates exist in the Update Manager.
+ * 
+ * @return true if any updates are present
+ * @type Boolean
+ */
 EchoApp.Update.Manager.prototype.hasUpdates = function() {
     return this._hasUpdates;
 };
 
+/**
+ * Determines if an ancestor of the specified component is being added.
+ * 
+ * @private
+ * @param {EchoApp.Component} component the component to evaluate
+ * @return true if the component or an ancestor of the component is being added
+ * @type Boolean
+ */
 EchoApp.Update.Manager.prototype._isAncestorBeingAdded = function(component) {
     //TODO. This is a performance bottleneck for large adds.  Update to Echo(2) svn837+ version.
     for (var testParentId in this.componentUpdateMap.associations) {
