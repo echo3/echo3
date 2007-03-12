@@ -33,12 +33,14 @@ EchoApp.Application = function(rootComponentId) {
 
     /** 
      * Id of root component.
+     * This value is read-only.
      * @type string 
      */
     this.rootComponentId = rootComponentId;
 
     /** 
      * Root component instance.
+     * This value is read-only.
      * @type EchoApp.Component 
      */
     this.rootComponent = new EchoApp.Component("Root", this.rootComponentId);
@@ -46,6 +48,7 @@ EchoApp.Application = function(rootComponentId) {
     
     /** 
      * Root component of modal context.
+     * This value is read-only.
      * @type EchoApp.Component 
      */
     this.modalContext = null;
@@ -308,30 +311,35 @@ EchoApp.Component = function(componentType, renderId) {
     
     /**
      * The type name of the component.
+     * This value is read-only.
      * @type String
      */
     this.componentType = componentType;
     
     /**
      * The render id.
+     * This value is read-only.
      * @type String
      */
     this.renderId = renderId ? renderId : "cl_" + ++EchoApp.Component._nextRenderId;
     
     /**
      * The parent component.
+     * This value is read-only.
      * @type EchoApp.Component
      */
     this.parent = null;
     
     /**
      * Array of child components.
+     * This value is read-only.
      * @type Array
      */
     this.children = new EchoCore.Collections.List();
     
     /**
      * The registered application.
+     * This value is read-only.
      * @type EchoApp.Application
      */
     this.application = null;
