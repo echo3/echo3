@@ -1933,6 +1933,11 @@ EchoApp.Update.ComponentUpdate.prototype.toString = function() {
     return s;
 };
 
+/**
+ * Records the update of the LayoutData of a child component.
+ * 
+ * @param the child component whose layout data was updated
+ */
 EchoApp.Update.ComponentUpdate.prototype.updateLayoutData = function(child) {
 	if (this.updatedLayoutDataChildren == null) {
 		this.updatedLayoutDataChildren = new EchoCore.Collections.Set();
@@ -1940,6 +1945,13 @@ EchoApp.Update.ComponentUpdate.prototype.updateLayoutData = function(child) {
 	this.updatedLayoutDataChildren.add(child);
 };
 
+/**
+ * Records the update of a property of the parent component.
+ * 
+ * @param propertyName the name of the property
+ * @param oldValue the previous value of the property
+ * @param newValue the new value of the property
+ */
 EchoApp.Update.ComponentUpdate.prototype.updateProperty = function(propertyName, oldValue, newValue) {
     if (this.propertyUpdates == null) {
         this.propertyUpdates = new EchoCore.Collections.Map();
@@ -1977,6 +1989,11 @@ EchoApp.Update.Manager = function(application) {
     this._listenerList = new EchoCore.ListenerList();
 };
 
+/**
+ * Adds a listener to receive notification of update events.
+ * 
+ * @param l the listener to add (may be a function or EchoCore.MethodRef)
+ */
 EchoApp.Update.Manager.prototype.addUpdateListener = function(l) {
     this._listenerList.addListener("update", l);
 };
@@ -2159,6 +2176,11 @@ EchoApp.Update.Manager.prototype.purge = function() {
     this._hasUpdates = false;
 };
 
+/**
+ * Removes a listener from receiving notification of update events.
+ * 
+ * @param l the listener to remove (may be a function or EchoCore.MethodRef)
+ */
 EchoApp.Update.Manager.prototype.removeUpdateListener = function(l) {
     this._listenerList.removeListener("update", l);
 };
