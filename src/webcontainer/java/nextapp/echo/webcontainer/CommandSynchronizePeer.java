@@ -47,7 +47,7 @@ public interface CommandSynchronizePeer {
     /**
      * Renders a directive to execute the command on the client.
      * 
-     * @param rc the relevant <code>Context</code>
+     * @param context the relevant <code>Context</code>
      * @param command the <code>Command</code> to execute
      */
     public void render(Context context, Command command);

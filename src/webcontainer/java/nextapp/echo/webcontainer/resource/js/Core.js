@@ -1,16 +1,18 @@
 /**
  * Core namespace.  Non-instantiable object.
  * REQUIRES: Nothing.
- *
+ * <p>
  * Provides core APIs for creating object-oriented and event-driven JavaScript code:
- * - Provides "Method Reference" object to describe reference to a member function
- *   of a specific object instance (enabling invocation with "this pointer" set 
-     appropriately.
- * - Provides event/listener management framework.  Event listeners may be 
- *   "Method Reference" objects, thus allowing specific class instances to process events.
- * - Provides basic List/Set/Map collections framework.
- * - Does not provide any web-specific functionality.
- * - Provides string tokenization capability.
+ * <ul>
+ *  <li>Provides "Method Reference" object to describe reference to a member function
+ *    of a specific object instance (enabling invocation with "this pointer" set 
+*     appropriately.</li>
+ *  <li>Provides event/listener management framework.  Event listeners may be 
+ *    "Method Reference" objects, thus allowing specific class instances to process events.</li>
+ *  <li>Provides basic List/Set/Map collections framework.</li>
+ *  <li>Does not provide any web-specific functionality.</li>
+ *  <li>Provides string tokenization capability.</li>
+ * </ul>
  */
 EchoCore = function() { };
 
@@ -40,7 +42,7 @@ EchoCore.tokenizeString = function(string, delimiter) {
 };
 
 /**
- * EchoCore.Collections Namespace.  Non-instantiable object.
+ * @class EchoCore.Collections Namespace.  Non-instantiable object.
  */
 EchoCore.Collections = function() { };
 

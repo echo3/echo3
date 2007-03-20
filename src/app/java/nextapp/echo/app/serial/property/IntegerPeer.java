@@ -45,12 +45,15 @@ public class IntegerPeer
 implements SerialPropertyPeer {
     
     /**
-     * @param the relevant <code>SerialContext</code>
+     * Uses an <code>ObjectIntrospector</code> to determine the integer value of 
+     * a constant name
+     * 
+     * @param context the relevant <code>SerialContext</code>
      * @param objectClass the <code>Class</code> of object containing candidate 
      *        constant values
      * @param value the name of the constant value
      * @return an integer representing the constant value, or null if the 
-     *         constant is not found.
+     *         constant is not found
      */
     private Integer introspectConstantValue(Context context, Class objectClass, String value) 
     throws SerialException {

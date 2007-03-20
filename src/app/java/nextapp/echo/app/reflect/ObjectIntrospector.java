@@ -111,12 +111,12 @@ public class ObjectIntrospector {
         loadConstants();
     }
 
+    // FIXME do we want a getConstantNames()?
     /**
      * Retrieves the value of the constant with the specified name.
      * 
      * @param constantName the name of the constant (unqualified)
      * @return the constant value, or null if no such constant exists
-     * @see #getConstantNames()
      */
     public Object getConstantValue(String constantName) {
         return constants.get(constantName);

@@ -57,7 +57,7 @@ implements ComponentSynchronizePeer {
      * Return relative name for base Echo classes.
      * Overriding this method is not generally recommended, due to potential client namespace issues.
      * 
-     * @see nextapp.echo.webcontainer.YeOldeComponentSynchronizePeer#getClientComponentType()
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
      */
     public String getClientComponentType() {
         return clientComponentType;

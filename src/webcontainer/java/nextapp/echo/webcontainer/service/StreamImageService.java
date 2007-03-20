@@ -57,22 +57,22 @@ public class StreamImageService extends AbstractImageService {
     }
     
     /**
-     * @see nextapp.echo.webrender.Service#getId()
+     * @see nextapp.echo.webcontainer.Service#getId()
      */
     public String getId() {
         return SERVICE_ID;
     }
     
     /**
-     * @see nextapp.echo.webrender.Service#getVersion()
+     * @see nextapp.echo.webcontainer.Service#getVersion()
      */
     public int getVersion() {
         return 0; // Enable caching.
     }
 
     /**
-     * @see nextapp.echo.webcontainer.image.AbstractImageService#renderImage(
-     *      nextapp.echo.webrender.Connection, nextapp.echo.app.ImageReference)
+     * @see nextapp.echo.webcontainer.service.AbstractImageService#renderImage(
+     *      nextapp.echo.webcontainer.Connection, nextapp.echo.app.ImageReference)
      */
     public void renderImage(Connection conn, ImageReference imageReference) 
     throws IOException {

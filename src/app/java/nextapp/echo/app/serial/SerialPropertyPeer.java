@@ -39,20 +39,25 @@ import org.w3c.dom.Element;
 public interface SerialPropertyPeer {
 
     /**
-     * @param context
-     * @param objectClass
-     * @param propertyElement
-     * @return
+     * Translates an XML representation of a property to a property value object.
+     * 
+     * @param context the relevant <code>Context</code>
+     * @param objectClass the class of the property value
+     * @param propertyElement the XML &lt;p&gt; element to process
+     * @return the property value
      * @throws SerialException when the property cannot be de-serialized.
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement)
     throws SerialException;
     
     /**
-     * @param context
-     * @param objectClass
-     * @param propertyElement
-     * @param propertyValue
+     * Translates an object to an XML representation of a property.
+     * 
+     * @param context the relevant <code>context</code>
+     * @param objectClass the class of the property value
+     * @param propertyElement the XML &lt;p&gt; element in which the 
+     *        property value should be rendered
+     * @param propertyValue the property value
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue)
     throws SerialException;

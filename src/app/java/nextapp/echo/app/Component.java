@@ -356,7 +356,7 @@ implements RenderIdSupport, Serializable {
      * 
      * @param renderId the new identifier
      * @see #getRenderId()
-     * @see #setRenderId()
+     * @see #setRenderId(java.lang.String)
      */
     void assignRenderId(String renderId) {
         this.renderId = renderId;

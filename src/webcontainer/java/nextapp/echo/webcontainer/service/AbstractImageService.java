@@ -54,7 +54,7 @@ implements Service {
      * Creates a URI to retrieve a specific image for a specific component 
      * from the server.
      * 
-     * @param containerInstance the relevant application container instance.
+     * @param userInstance the relevant application user instance
      * @param imageId the unique id to retrieve the image from the
      *        <code>ContainerInstance</code>
      */
@@ -75,7 +75,7 @@ implements Service {
     throws IOException;
     
     /**
-     * @see nextapp.echo.webrender.Service#service(nextapp.echo.webrender.Connection)
+     * @see nextapp.echo.webcontainer.Service#service(nextapp.echo.webcontainer.Connection)
      */
     public void service(Connection conn)
     throws IOException {
