@@ -59,6 +59,9 @@
         <delete dir="${dir.jsdoc}"/>
         <delete dir="${dir.testoutput}"/>
         <delete dir="${dir.release}"/>
+        <delete>
+            <fileset dir="${dir.clienttest}" includes="*.js"/>
+        </delete>
     </target>
     
     <target name="clienttest" description="Copy JS Resources to ClientTest older.">
