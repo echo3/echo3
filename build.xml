@@ -56,6 +56,7 @@
         <delete dir="${dir.build}"/>
         <delete dir="${dir.dist}"/>
         <delete dir="${dir.javadoc}"/>
+        <delete dir="${dir.jsdoc}"/>
         <delete dir="${dir.testoutput}"/>
         <delete dir="${dir.release}"/>
     </target>
@@ -248,6 +249,31 @@
     <target name="dist" depends="clean, dist.app, dist.webcontainer"/>
     
     <target name="test" depends="test.app, test.webcontainer"/>
+    
+    <target name="doc.js"
+            description="Create public documentation for the JavaScript modules">
+        <mkdir dir="${dir.jsdoc.public}"/>
+        <exec executable="jsdoc">
+             <arg value="--logo ${jsdoc.logofile}"/>
+             <arg value="--project-name ${jsdoc.projectname}"/>
+             <arg value="--package-naming"/>
+             <arg value="--directory ${dir.jsdoc.public}"/>
+             <arg value="${dir.src.webcontainer.js}"/>
+        </exec>
+    </target>
+    
+    <target name="doc.js.private"
+            description="Create private documentation for the JavaScript modules">
+        <mkdir dir="${dir.jsdoc.private}"/>
+        <exec executable="jsdoc">
+             <arg value="--logo ${jsdoc.logofile}"/>
+             <arg value="--project-name ${jsdoc.projectname}"/>
+             <arg value="--package-naming"/>
+             <arg value="--private"/>
+             <arg value="--directory ${dir.jsdoc.private}"/>
+             <arg value="${dir.src.webcontainer.js}"/>
+        </exec>
+    </target>
     
     <target name="doc.public" 
             depends="doc.app, doc.webcontainer"/>
