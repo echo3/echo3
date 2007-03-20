@@ -253,7 +253,7 @@
     
     <target name="test" depends="test.app, test.webcontainer"/>
     
-    <target name="doc.js"
+    <target name="doc.js.public"
             description="Create public documentation for the JavaScript modules">
         <mkdir dir="${dir.jsdoc.public}"/>
         <exec executable="jsdoc">
@@ -277,6 +277,9 @@
              <arg value="${dir.src.webcontainer.js}"/>
         </exec>
     </target>
+    
+    <target name="doc.js"
+            depends="doc.js.public, doc.js.private"/>
     
     <target name="doc.public" 
             depends="doc.app, doc.webcontainer"/>
@@ -318,7 +321,7 @@
         <jar jarfile="${dir.dist.testapp}/${warfile.testapp}" basedir="${dir.build.testapp}"/>
     </target>
 
-    <target name="release" depends="clean, dist, dist.testapp, doc.public">
+    <target name="release" depends="clean, dist, dist.testapp, doc.public, doc.js.public">
         <mkdir dir="${dir.build.release.root}"/>
         <mkdir dir="${dir.build.release.root}/SourceCode"/>
         <mkdir dir="${dir.build.release.root}/Documentation"/>
@@ -359,6 +362,9 @@
         </copy>
         <copy todir="${dir.build.release.root}/Documentation">
             <fileset dir="${dir.resource}/Documentation"/>
+        </copy>
+        <copy todir="${dir.build.release.root}/Documentation/jsapi/public">
+            <fileset dir="${dir.jsdoc.public}"/>
         </copy>
         
         <!-- Licensing -->
