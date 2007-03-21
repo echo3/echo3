@@ -248,6 +248,7 @@ EchoWebCore.Environment._init = function() {
         env.NOT_SUPPORTED_CSS_OPACITY = true;
         env.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED = true;
         env.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED = true;
+        env.PROPRIETARY_EVENT_SELECT_START_SUPPORTED = true;
         env.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR = true;
         env.QUIRK_IE_SELECT_PERCENT_WIDTH = true;
         
@@ -308,12 +309,16 @@ EchoWebCore.EventProcessor.add = function(element, eventType, eventTarget, captu
 
 EchoWebCore.EventProcessor.addSelectionDenialListener = function(element) {
     EchoWebCore.EventProcessor.add(element, "mousedown", EchoWebCore.EventProcessor._selectionDenialHandler, false);
-    EchoWebCore.EventProcessor.add(element, "selectstart", EchoWebCore.EventProcessor._selectionDenialHandler, false);
+    if (EchoWebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
+        EchoWebCore.EventProcessor.add(element, "selectstart", EchoWebCore.EventProcessor._selectionDenialHandler, false);
+    }
 };
 
 EchoWebCore.EventProcessor.removeSelectionDenialListener = function(element) {
     EchoWebCore.EventProcessor.remove(element, "mousedown", EchoWebCore.EventProcessor._selectionDenialHandler, false);
-    EchoWebCore.EventProcessor.remove(element, "selectstart", EchoWebCore.EventProcessor._selectionDenialHandler, false);
+    if (EchoWebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
+        EchoWebCore.EventProcessor.remove(element, "selectstart", EchoWebCore.EventProcessor._selectionDenialHandler, false);
+    }
 };
 
 EchoWebCore.EventProcessor._selectionDenialHandler = function(e) {
@@ -1061,4 +1066,3 @@ EchoWebCore.VirtualPosition._verifyPixelOrUndefinedValue = function(value) {
     var valueString = value.toString();
     return valueString == "0" || valueString.indexOf("px") != -1;
 };
-
