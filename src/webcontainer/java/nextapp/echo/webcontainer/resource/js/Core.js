@@ -592,7 +592,6 @@ EchoCore.ListenerList.prototype.removeListener = function(eventType, eventTarget
                 && (eventTarget == this._data[i + 1] || (eventTarget.equals && eventTarget.equals(this._data[i + 1])))) {
             var oldLength = this._data.length;
             this._data.splice(i, 2);
-            EchoCore.Debug.consoleWrite("REMOVED: " + oldLength + ":" + this._data.length);
             return;
         }
     }
