@@ -94,13 +94,14 @@ EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentEle
     divElement.tabIndex = "0";
     divElement.style.outlineStyle = "none";
     divElement.style.overflow = "hidden";
+    divElement.style.cursor = "pointer";
     EchoRender.Property.Color.renderFB(this.component, divElement);
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), divElement);
-    EchoRender.Property.Insets.renderPixel(this.component.getRenderProperty("insets"), divElement, "padding");
-    if (this.component.getRenderProperty("text")) {
-        divElement.appendChild(document.createTextNode(this.component.getRenderProperty("text")));
+    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", "", divElement, "padding");
+    var text = this.component.getRenderProperty("text");
+    if (text) {
+        divElement.appendChild(document.createTextNode(text));
     }
-    divElement.style.cursor = "pointer";
 
     EchoWebCore.EventProcessor.add(divElement, "click", new EchoCore.MethodRef(this, this.processClick), false);
     EchoWebCore.EventProcessor.add(divElement, "keypress", new EchoCore.MethodRef(this, this.processKeyPress), false);

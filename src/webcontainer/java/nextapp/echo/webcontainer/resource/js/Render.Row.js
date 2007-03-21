@@ -82,7 +82,7 @@ EchoRender.ComponentSync.Row.prototype._renderAddChild = function(update, child,
         // Full render or append-at-end scenario
         
         // Render spacing td first if index != 0 and cell spacing enabled.
-        if (this.cellSpacing && parentElement.childNodes.length > 0) {
+        if (this.cellSpacing && parentElement.firstChild) {
             var spacingTdElement = document.createElement("td");
             spacingTdElement.style.width = this.cellSpacing + "px";
             parentElement.appendChild(spacingTdElement);

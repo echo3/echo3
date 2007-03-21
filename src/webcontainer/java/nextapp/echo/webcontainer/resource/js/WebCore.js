@@ -106,22 +106,24 @@ EchoWebCore.DOM.createDocument = function(namespaceUri, qualifiedName) {
 };
 
 EchoWebCore.DOM.getChildElementByTagName = function(parentElement, tagName) {
-    for (var i = 0; i < parentElement.childNodes.length; ++i) {
-        if (parentElement.childNodes[i].nodeType == 1
-                && parentElement.childNodes[i].nodeName == tagName) {
-            return parentElement.childNodes[i];
+    var element = parentElement.firstChild;
+    while (element) {
+        if (element.nodeType == 1 && element.nodeName == tagName) {
+            return element;
         }
+        element = element.nextSibling;
     }
     return null;
 };
 
 EchoWebCore.DOM.getChildElementsByTagName = function(parentElement, tagName) {
     var elements = new Array();
-    for (var i = 0; i < parentElement.childNodes.length; ++i) {
-        if (parentElement.childNodes[i].nodeType == 1
-                && parentElement.childNodes[i].nodeName == tagName) {
-            elements.push(parentElement.childNodes[i]);
+    var element = parentElement.firstChild;
+    while (element) {
+        if (element.nodeType == 1 && element.nodeName == tagName) {
+            elements.push(element);
         }
+        element = element.nextSibling;
     }
     return elements;
 };
@@ -164,8 +166,8 @@ EchoWebCore.DOM.preventEventDefault = function(e) {
  * @param node the parent node whose children should be deleted
  */
 EchoWebCore.DOM.removeAllChildren = function(node) {
-    for (var i = node.childNodes.length - 1; i >= 0; --i) {
-        node.removeChild(node.childNodes[i]);
+    while (node.firstChild) {
+        node.removeChild(node.firstChild);
     }
 };
 

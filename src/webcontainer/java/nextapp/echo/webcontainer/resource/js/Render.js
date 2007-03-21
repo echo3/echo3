@@ -83,8 +83,6 @@ EchoRender._renderComponentDisposeImpl = function(update, component, removeIds) 
         return;
     }
     EchoRender._setPeerDisposedState(component, true);
-    
-EchoCore.Debug.consoleWrite("Dispose:" + component.renderId);    
 
     component.peer.renderDispose(update);
     for (var i = 0; i < component.children.items.length; ++i) {
@@ -99,10 +97,12 @@ EchoCore.Debug.consoleWrite("Dispose:" + component.renderId);
 
 EchoRender._renderRemoveIds = function(element) {
     element.id = "";
-    for (var i = 0; i < element.childNodes.length; ++i) {
-        if (element.childNodes[i].nodeType == 1) {
-            EchoRender._renderRemoveIds(element.childNodes[i]);
+    element = element.firstChild;
+    while (element) {
+        if (element.nodeType == 1) {
+            EchoRender._renderRemoveIds(element);
         }
+        element = element.nextSibling;
     }
 };
 
@@ -172,6 +172,9 @@ EchoRender.processUpdates = function(updateManager) {
         EchoRender._processDispose(updates[i]);
     }
     
+    //FIXME debug code.
+    //TIMER.mark("ProcessUpdates: Remove Phase");
+    
     // Need to remove descendant peers if renderUpdate returns true.
     for (var i = 0; i < updates.length; ++i) {
         if (updates[i] == null) {
@@ -196,6 +199,9 @@ EchoRender.processUpdates = function(updateManager) {
         EchoRender._setPeerDisposedState(updates[i].parent, false);
     }
     
+    //FIXME debug code.
+    //TIMER.mark("ProcessUpdates: Update Phase");
+
     //var ds = "DISPOSEARRAY:"; ///FIXME Remove this debug code.
     
     // Unload peers for truly removed components, destroy mapping.
@@ -207,9 +213,9 @@ EchoRender.processUpdates = function(updateManager) {
     }
     EchoRender._disposedComponents = null;
     //alert(ds); ///FIXME Remove this debug code.
-    
+
     updateManager.purge();
-    
+
     EchoWebCore.VirtualPosition.redraw();
 };
 

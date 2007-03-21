@@ -72,7 +72,7 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
         // Full render or append-at-end scenario
         
         // Render spacing div first if index != 0 and cell spacing enabled.
-        if (this.cellSpacing && parentElement.childNodes.length > 0) {
+        if (this.cellSpacing && parentElement.firstChild) {
             var spacingDivElement = document.createElement("div");
             spacingDivElement.style.height = this.cellSpacing + "px";
             parentElement.appendChild(spacingDivElement);

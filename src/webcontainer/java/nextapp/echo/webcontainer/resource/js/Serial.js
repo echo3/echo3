@@ -39,23 +39,24 @@ EchoSerial.loadComponent = function(client, componentElement) {
         }
     }
     
-    for (var i = 0; i < componentElement.childNodes.length; ++i) {
-        if (componentElement.childNodes[i].nodeType != 1) {
+    var element = componentElement.firstChild;
+    while (element) {
+        if (element.nodeType != 1) {
             continue;
         }
-        var childNodeName = componentElement.childNodes[i].nodeName;
-        switch (childNodeName) {
+        switch (element.nodeName) {
         case "c": // Child Component
-            var childComponent = EchoSerial.loadComponent(client, componentElement.childNodes[i]);
+            var childComponent = EchoSerial.loadComponent(client, element);
             component.add(childComponent);
             break;
         case "p": // Property
-            EchoSerial.loadProperty(client, componentElement.childNodes[i], component);
+            EchoSerial.loadProperty(client, element, component);
             break;
         case "e": // Event
-            EchoSerial._loadComponentEvent(client, componentElement.childNodes[i], component);
+            EchoSerial._loadComponentEvent(client, element, component);
             break;
         }
+        element = element.nextSibling;
     }
     
     return component;
@@ -93,25 +94,29 @@ EchoSerial.loadProperty = function(client, propertyElement, object) {
  */
 EchoSerial.loadStyleSheet = function(client, ssElement) {
     var styleSheet = new EchoApp.StyleSheet();
-    for (var i = 0; i < ssElement.childNodes.length; ++i) {
-        if (ssElement.childNodes[i].nodeType != 1) {
+    
+    var ssChild = ssElement.firstChild;
+    while (ssChild) {
+        if (ssChild.nodeType != 1) {
             continue;
         }
-        if (ssElement.childNodes[i].nodeName == "s") {
+        if (ssChild.nodeName == "s") {
             var style = new EchoApp.Style();
-            for (var j = 0; j < ssElement.childNodes[i].childNodes.length; ++j) {
-                var element = ssElement.childNodes[i].childNodes[j];
-                if (element.nodeType != 1) {
+            var sChild = ssChild.firstChild;
+            while (sChild) {
+                if (sChild.nodeType != 1) {
                     continue;
                 }
-                switch (element.nodeName) {
+                switch (sChild.nodeName) {
                 case "p":
-                    EchoSerial.loadProperty(client, element, style);
+                    EchoSerial.loadProperty(client, sChild, style);
                     break;
                 }
+                sChild = sChild.nextSibling;
             }
-            styleSheet.setStyle(ssElement.childNodes[i].getAttribute("n"), ssElement.childNodes[i].getAttribute("t"), style);
+            styleSheet.setStyle(ssChild.getAttribute("n"), ssChild.getAttribute("t"), style);
         }
+        ssChild = ssChild.nextSibling;
     }
     return styleSheet;
 };
@@ -328,14 +333,16 @@ EchoSerial.PropertyTranslator.FillImageBorder._parseElement = function(client, f
     var borderColor = fibElement.getAttribute("bc");
     borderColor = borderColor ? new EchoApp.Property.Color(borderColor) : null;
     var fillImages = new Array();
-    for (var i = 0; i < fibElement.childNodes.length; ++i) {
-        var element = fibElement.childNodes[i];
+    
+    var element = fibElement.firstChild;
+    while(element) {
         if (element.nodeType != 1) {
             continue;
         }
         if (element.nodeName == "fi") {
             fillImages.push(EchoSerial.PropertyTranslator.FillImage._parseElement(client, element));
         }
+        element = element.nextSibling;
     }
     var border = new EchoApp.Property.FillImageBorder(borderColor, borderInsets, contentInsets, fillImages);
     return border;
@@ -406,8 +413,8 @@ EchoSerial.PropertyTranslator.LayoutData = function() { };
 
 EchoSerial.PropertyTranslator.LayoutData.toProperty = function(client, propertyElement) {
     var layoutData = new EchoApp.LayoutData();
-    for (var i = 0; i < propertyElement.childNodes.length; ++i) {
-        var element = propertyElement.childNodes[i];
+    var element = propertyElement.firstChild;
+    while (element) {
         if (element.nodeType != 1) {
             continue;
         }
@@ -416,6 +423,7 @@ EchoSerial.PropertyTranslator.LayoutData.toProperty = function(client, propertyE
             EchoSerial.loadProperty(client, element, layoutData);
             break;
         }
+        element = element.nextSibling;
     }
     return layoutData;
 };

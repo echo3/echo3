@@ -79,12 +79,21 @@ EchoRemoteClient.prototype._processComponentUpdate = function(e) {
 };
 
 EchoRemoteClient.prototype._processSyncComplete = function(e) {
+    //FIXME debug code.
+    //TIMER.mark("RemoteClient: Deserialized");
+    //FIXME debug code.
+    
 	EchoRender.processUpdates(this.application.updateManager);
+    
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
-    EchoCore.Debug.consoleWrite("complete");
+    
+    //FIXME Debug code.
+    //alert(TIMER);
 };
 
 EchoRemoteClient.prototype._processSyncResponse = function(e) {
+    //FIXME debug code.
+    //this._startTime = new Date().getTime();
     var responseDocument = e.source.getResponseXml();
     if (!e.valid || !responseDocument || !responseDocument.documentElement) {
         //FIXME. Central error handling for things like this.
@@ -92,6 +101,10 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
         alert("An invalid response was received from the server.  Press the browser reload or refresh button.");
         return;
     }
+    
+    //FIXME Debug code.
+    //TIMER = new EchoCore.Debug.Timer();
+
     var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
     serverMessage.addCompletionListener(new EchoCore.MethodRef(this, this._processSyncComplete));
     serverMessage.process();
@@ -172,41 +185,45 @@ EchoRemoteClient.ClientMessage.prototype._renderXml = function() {
 EchoRemoteClient.ComponentSync = function() { };
 
 EchoRemoteClient.ComponentSync.process = function(client, dirElement) {
-    for (var i = 0; i < dirElement.childNodes.length; ++i) {
-        if (dirElement.childNodes[i].nodeType != 1) {
+    var element = dirElement.firstChild;
+    while (element) {
+        if (element.nodeType != 1) {
             continue;
         }
-        switch (dirElement.childNodes[i].nodeName) {
+        switch (element.nodeName) {
         case "add":
-            EchoRemoteClient.ComponentSync._processComponentAdd(client, dirElement.childNodes[i]);
+            EchoRemoteClient.ComponentSync._processComponentAdd(client, element);
             break;
         case "rm":
-            EchoRemoteClient.ComponentSync._processComponentRemove(client, dirElement.childNodes[i]);
+            EchoRemoteClient.ComponentSync._processComponentRemove(client, element);
             break;
         case "ss":
-            EchoRemoteClient.ComponentSync._processStyleSheet(client, dirElement.childNodes[i]);
+            EchoRemoteClient.ComponentSync._processStyleSheet(client, element);
             break;
         case "up":
-            EchoRemoteClient.ComponentSync._processComponentUpdate(client, dirElement.childNodes[i]);
+            EchoRemoteClient.ComponentSync._processComponentUpdate(client, element);
             break;
         }
+        element = element.nextSibling;
     }
 };
 
 EchoRemoteClient.ComponentSync._processComponentAdd = function(client, addElement) {
     var parentId = addElement.getAttribute("i");
     var parentComponent = client.application.getComponentByRenderId(parentId);
-    for (var i = 0; i < addElement.childNodes.length; ++i) {
-        if (addElement.childNodes[i].nodeType != 1) {
+    var element = addElement.firstChild;
+    while (element) {
+        if (element.nodeType != 1) {
             continue;
         }
-        var component = EchoSerial.loadComponent(client, addElement.childNodes[i]);
-        var index = addElement.childNodes[i].getAttribute("x");
+        var component = EchoSerial.loadComponent(client, element);
+        var index = element.getAttribute("x");
         if (index == null) {
             parentComponent.add(component);
         } else {
             parentComponent.add(component, parseInt(index));
         }
+        element = element.nextSibling;
     }
 };
 
@@ -234,13 +251,14 @@ EchoRemoteClient.ComponentSync._processComponentUpdate = function(client, update
         }
     }
     
-    for (var i = 0; i < updateElement.childNodes.length; ++i) {
-        var childNodeName = updateElement.childNodes[i].nodeName;
-        switch (childNodeName) {
+    var element = updateElement.firstChild;
+    while (element) {
+        switch (element.nodeName) {
         case "p": // Property
-            EchoSerial.loadProperty(client, updateElement.childNodes[i], component);
+            EchoSerial.loadProperty(client, element, component);
             break;
         }
+        element = element.nextSibling;
     }
 };
 
@@ -270,14 +288,16 @@ EchoRemoteClient.ServerMessage.prototype.process = function() {
     var libsElement = EchoWebCore.DOM.getChildElementByTagName(this.document.documentElement, "libs");
     if (libsElement) {
         var libraryGroup = new EchoWebCore.Library.Group();
-        for (var i = 0; i < libsElement.childNodes.length; ++i) {
-            if (libsElement.childNodes[i].nodeType != 1) {
+        var element = libsElement.firstChild;
+        while (element) {
+            if (element.nodeType != 1) {
                 continue;
             }
-            if (libsElement.childNodes[i].nodeName == "lib") {
-                var url = this.client.getLibraryServiceUrl(libsElement.childNodes[i].getAttribute("i"));
+            if (element.nodeName == "lib") {
+                var url = this.client.getLibraryServiceUrl(element.getAttribute("i"));
                 libraryGroup.add(url);
             }
+            element = element.nextSibling;
         }
         if (libraryGroup.hasNewLibraries()) {
             libraryGroup.addLoadListener(new EchoCore.MethodRef(this, this._processPostLibraryLoad));
