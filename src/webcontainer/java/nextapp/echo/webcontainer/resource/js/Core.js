@@ -462,13 +462,14 @@ EchoCore.Event = function(source, type) {
  *        of multiple types, and fire events to listeners based on type.
  */
 EchoCore.ListenerList = function() {
-
+    
     /**
-     * Map of event types to Sets of listeners.
-     * @type EchoCore.Collections.Map
-     * @private
+     * Array containing event types and event listeners.  
+     * Even indexes contain event types, and the subsequent odd
+     * index contains a method or EchoCore.MethodRef instance.
+     * @type Array
      */
-    this._listenerMap = null;
+    this._data = new Array();
 };
 
 /**
@@ -478,15 +479,7 @@ EchoCore.ListenerList = function() {
  * @param eventTarget the event target (a function or EchoCore.MethodRef instance)
  */
 EchoCore.ListenerList.prototype.addListener = function(eventType, eventTarget) {
-    if (this._listenerMap == null) {
-        this._listenerMap = new EchoCore.Collections.Map();
-    }
-    var listeners = this._listenerMap.get(eventType);
-    if (listeners == null) {
-        listeners = new EchoCore.Collections.Set();
-        this._listenerMap.put(eventType, listeners);
-    }
-    listeners.add(eventTarget);
+    this._data.push(eventType, eventTarget);
 };
 
 /**
@@ -502,22 +495,24 @@ EchoCore.ListenerList.prototype.fireEvent = function(event) {
     if (event.type == null) {
         throw new Error("Cannot fire event, type property not set.");
     }
-    if (this._listenerMap == null) {
-        return true;
+    
+    var listeners = new Array();
+    for (var i = 0; i < this._data.length; i += 2) {
+        if (this._data[i] != event.type) {
+            // Listener is not correct type.
+            continue;
+        }
+        listeners.push(this._data[i + 1]);
     }
-    var listeners = this._listenerMap.get(event.type);
-    if (listeners == null) {
-        return true;
-    }
+    
     var returnValue = true;
-    for (var i = 0; i < listeners.items.length; ++i) {
-        var target = listeners.items[i];
-        if (target instanceof EchoCore.MethodRef) {
-            if (!target.invoke(event)) {
+    for (var i = 0; i < listeners.length; ++i) {
+        if (listeners[i] instanceof EchoCore.MethodRef) {
+            if (!listeners[i].invoke(event)) {
                 returnValue = false;
             }
         } else {
-            if (!target(event)) {
+            if (!listeners[i](event)) {
                 returnValue = false;
             }
         }
@@ -533,13 +528,11 @@ EchoCore.ListenerList.prototype.fireEvent = function(event) {
  * @type Array
  */
 EchoCore.ListenerList.prototype.getListenerTypes = function() {
-    var types = new Array();
-    if (this._listenerMap != null) {
-        for (var key in this._listenerMap.associations) {
-            types.push(key);
-        }
+    var types = new EchoCore.Collections.Set();
+    for (var i = 0; i < this._data.length; i += 2) {
+        types.add(this._data[i]);
     }
-    return types;
+    return types.items;
 };
 
 /**
@@ -550,12 +543,13 @@ EchoCore.ListenerList.prototype.getListenerTypes = function() {
  * @type Array
  */
 EchoCore.ListenerList.prototype.getListeners = function(eventType) {
-    if (this._listenerMap == null) {
-        return new Array();
-    } else {
-        var listeners = this._listenerMap.get(eventType);
-        return listeners.items;
+    var listeners = new Array();
+    for (var i = 0; i < this._data.length; i += 2) {
+        if (this._data[i] == eventType) {
+            listeners.push(this._data[i + 1]);
+        }
     }
+    return listeners;
 };
 
 /**
@@ -566,14 +560,13 @@ EchoCore.ListenerList.prototype.getListeners = function(eventType) {
  * @type Number
  */
 EchoCore.ListenerList.prototype.getListenerCount = function(eventType) {
-    if (this._listenerMap == null) {
-        return 0;
+    var count = 0;
+    for (var i = 0; i < this._data.length; i += 2) {
+        if (this._data[i] == eventType) {
+            ++count;
+        }
     }
-    var listeners = this._listenerMap.get(eventType);
-    if (listeners == null) {
-        return 0;
-    }
-    return listeners.size();
+    return count;
 };
 
 /**
@@ -583,10 +576,7 @@ EchoCore.ListenerList.prototype.getListenerCount = function(eventType) {
  * @type Boolean
  */
 EchoCore.ListenerList.prototype.isEmpty = function() {
-    for (var i in this._listenerMap.associations) {
-        return false;
-    }
-    return true;
+    return this._data.length == 0;
 };
 
 /**
@@ -596,16 +586,15 @@ EchoCore.ListenerList.prototype.isEmpty = function() {
  * @param eventTarget the event target (a function or EchoCore.MethodRef instance)
  */
 EchoCore.ListenerList.prototype.removeListener = function(eventType, eventTarget) {
-    if (this._listenerMap == null) {
-        return;
-    }
-    var listeners = this._listenerMap.get(eventType);
-    if (listeners == null) {
-        return;
-    }
-    listeners.remove(eventTarget);
-    if (listeners.size() == 0) {
-        this._listenerMap.remove(eventType);
+    EchoCore.Debug.consoleWrite("removeListener: " + eventType + ", " + eventTarget);
+    for (var i = 0; i < this._data.length; i += 2) {
+        if (this._data[i] == eventType
+                && (eventTarget == this._data[i + 1] || (eventTarget.equals && eventTarget.equals(this._data[i + 1])))) {
+            var oldLength = this._data.length;
+            this._data.splice(i, 2);
+            EchoCore.Debug.consoleWrite("REMOVED: " + oldLength + ":" + this._data.length);
+            return;
+        }
     }
 };
 
