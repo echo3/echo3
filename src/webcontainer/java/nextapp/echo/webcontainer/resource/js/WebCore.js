@@ -286,18 +286,28 @@ EchoWebCore.EventProcessor.add = function(element, eventType, eventTarget, captu
     if (!element.id) {
         throw new Error("Specified element has no DOM id.");
     }
-    
-    // Obtain correct id->ListenerList mapping based on capture parameter.
-    var listenerMap = capture ? EchoWebCore.EventProcessor._capturingListenerMap 
-                              : EchoWebCore.EventProcessor._bubblingListenerMap;
-                              
-    // Obtain ListenerList based on element id.                              
-    var listenerList = listenerMap.get(element.id);
-    if (!listenerList) {
-        // Create new ListenerList if none exists.
-        listenerList = new EchoCore.ListenerList();
-        listenerMap.put(element.id, listenerList);
+
+    var listenerList;
+    if (element == EchoWebCore.EventProcessor._lastElement && capture == EchoWebCore.EventProcessor._lastCapture) {
+        listenerList = EchoWebCore.EventProcessor._lastListenerList; 
+    } else {
+        // Obtain correct id->ListenerList mapping based on capture parameter.
+        var listenerMap = capture ? EchoWebCore.EventProcessor._capturingListenerMap 
+                                  : EchoWebCore.EventProcessor._bubblingListenerMap;
+        
+        // Obtain ListenerList based on element id.                              
+        listenerList = listenerMap.get(element.id);
+        if (!listenerList) {
+            // Create new ListenerList if none exists.
+            listenerList = new EchoCore.ListenerList();
+            listenerMap.put(element.id, listenerList);
+        }
+        
+        EchoWebCore.EventProcessor._lastElement = element;
+        EchoWebCore.EventProcessor._lastCapture = capture;
+        EchoWebCore.EventProcessor._lastListenerList = listenerList;
     }
+    
 
     // Add event handler to the ListenerList.
     listenerList.addListener(eventType, eventTarget);
