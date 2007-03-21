@@ -411,6 +411,27 @@ EchoCore.Debug.toString = function(object) {
     return s;
 };
 
+EchoCore.Debug.Timer = function() {
+    this._times = new Array();
+    this._labels = new Array();
+    this._times.push(new Date().getTime());
+    this._labels.push("Start");
+};
+
+EchoCore.Debug.Timer.prototype.mark = function(label) {
+    this._times.push(new Date().getTime());
+    this._labels.push(label);
+};
+
+EchoCore.Debug.Timer.prototype.toString = function() {
+    var out = "";
+    for (var i = 1; i < this._times.length; ++i) {
+        var time = this._times[i] - this._times[i - 1];
+        out += this._labels[i] + ": " + time + "ms\n";
+    }
+    return out;
+};
+
 /**
  * Creates a new event object.
  * 
