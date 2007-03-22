@@ -628,18 +628,6 @@ EchoRender.Property.Insets.toPixels = function(insets) {
 
 EchoRender.Util = function() { };
 
-//FIXME. findContainerElementByIndex...probably needs to die.
-EchoRender.Util.findContainerElementByIndex = function(component) {
-    var element = document.getElementById(component.parent.renderId);
-    if (!element) {
-        throw new Error("Cannot find index of container element for " + component + " because parent component "
-                + component.parent + " does not appear to be rendered.");
-    }
-    var index = component.parent.indexOf(component);
-
-    return element.childNodes[index];
-};
-
 /**
  * Convenience method to return the parent DOM element into which a 
  * component should be rendered.

@@ -6,7 +6,9 @@ EchoRender.ComponentSync.ContentPane = function() { };
 EchoRender.ComponentSync.ContentPane.prototype = new EchoRender.ComponentSync;
 
 EchoRender.ComponentSync.ContentPane.prototype.getContainerElement = function(component) {
-    return EchoRender.Util.findContainerElementByIndex(component);
+    var index = component.parent.indexOf(component);
+    var contentPaneElement = document.getElementById(component.parent.renderId);
+    return contentPaneElement.childNodes[index];
 };
 
 EchoRender.ComponentSync.ContentPane.prototype.renderAdd = function(update, parentElement) {
