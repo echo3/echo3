@@ -456,7 +456,7 @@ EchoApp.Component.prototype.fireEvent = function(event) {
  * @type EchoApp.Component
  */
 EchoApp.Component.prototype.getComponent = function(index) {
-    return this.children.get(index);
+    return this.children.items[index];
 };
 
 /**
@@ -466,7 +466,7 @@ EchoApp.Component.prototype.getComponent = function(index) {
  * @type Number
  */
 EchoApp.Component.prototype.getComponentCount = function(index) {
-    return this.children.size();
+    return this.children.items.length;
 };
 
 /**

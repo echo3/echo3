@@ -172,8 +172,9 @@ EchoRender.processUpdates = function(updateManager) {
         EchoRender._processDispose(updates[i]);
     }
     
-    //FIXME debug code.
-    //TIMER.mark("ProcessUpdates: Remove Phase");
+    if (EchoCore.profilingTimer) {
+        EchoCore.profilingTimer.mark("ProcessUpdates: Remove Phase");
+    }
     
     // Need to remove descendant peers if renderUpdate returns true.
     for (var i = 0; i < updates.length; ++i) {
@@ -199,8 +200,9 @@ EchoRender.processUpdates = function(updateManager) {
         EchoRender._setPeerDisposedState(updates[i].parent, false);
     }
     
-    //FIXME debug code.
-    //TIMER.mark("ProcessUpdates: Update Phase");
+    if (EchoCore.profilingTimer) {
+        EchoCore.profilingTimer.mark("ProcessUpdates: Update Phase");
+    }
 
     //var ds = "DISPOSEARRAY:"; ///FIXME Remove this debug code.
     

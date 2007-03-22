@@ -79,22 +79,23 @@ EchoRemoteClient.prototype._processComponentUpdate = function(e) {
 };
 
 EchoRemoteClient.prototype._processSyncComplete = function(e) {
-    //FIXME debug code.
-    //TIMER.mark("RemoteClient: Deserialized");
-    //FIXME debug code.
+    if (EchoCore.profilingTimer) {
+        EchoCore.profilingTimer.mark("RemoteClient: Deserialized");
+    }
     
 	EchoRender.processUpdates(this.application.updateManager);
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
     
-    //FIXME Debug code.
-    //alert(TIMER);
+    if (EchoCore.profilingTimer) {
+        alert(EchoCore.profilingTimer);
+        EchoCore.profilingTimer = null;
+    }
 };
 
 EchoRemoteClient.prototype._processSyncResponse = function(e) {
-    //FIXME debug code.
-    //this._startTime = new Date().getTime();
     var responseDocument = e.source.getResponseXml();
+    
     if (!e.valid || !responseDocument || !responseDocument.documentElement) {
         //FIXME. Central error handling for things like this.
         //FIXME. Shut down further client input with secondary "you're beating a dead horse" error message. 
@@ -102,8 +103,7 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
         return;
     }
     
-    //FIXME Debug code.
-    //TIMER = new EchoCore.Debug.Timer();
+    EchoCore.profilingTimer = new EchoCore.Debug.Timer();
 
     var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
     serverMessage.addCompletionListener(new EchoCore.MethodRef(this, this._processSyncComplete));

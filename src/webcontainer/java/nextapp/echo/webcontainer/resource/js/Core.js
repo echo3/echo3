@@ -17,6 +17,12 @@
 EchoCore = function() { };
 
 /**
+ * This is a EchoCore.Debug.Timer object used for optimizing Echo3 JavaScript performance.
+ * It should be considered undocumented and not part of the public API.
+ */
+EchoCore.profilingTimer = null;
+
+/**
  * Returns an array of tokens representing a tring.
  * 
  * @param {String} string the string to tokenize
