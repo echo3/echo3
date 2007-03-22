@@ -505,24 +505,15 @@ EchoCore.ListenerList.prototype.fireEvent = function(event) {
     
     var listeners = new Array();
     for (var i = 0; i < this._data.length; i += 2) {
-        if (this._data[i] != event.type) {
-            // Listener is not correct type.
-            continue;
+        if (this._data[i] == event.type) {
+            listeners.push(this._data[i + 1]);
         }
-        listeners.push(this._data[i + 1]);
     }
     
     var returnValue = true;
     for (var i = 0; i < listeners.length; ++i) {
-        if (listeners[i] instanceof EchoCore.MethodRef) {
-            if (!listeners[i].invoke(event)) {
-                returnValue = false;
-            }
-        } else {
-            if (!listeners[i](event)) {
-                returnValue = false;
-            }
-        }
+        returnValue = (listeners[i] instanceof EchoCore.MethodRef ? listeners[i].invoke(event) : listeners[i](event)) 
+                && returnValue; 
     }
     return returnValue;
 };
