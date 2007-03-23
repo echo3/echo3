@@ -417,6 +417,12 @@ EchoCore.Debug.toString = function(object) {
     return s;
 };
 
+/**
+ * Creates a new debug timer.
+ * 
+ * @constructor
+ * @class Provides a tool for measuring performance of the Echo3 client engine.
+ */
 EchoCore.Debug.Timer = function() {
     this._times = new Array();
     this._labels = new Array();
@@ -424,11 +430,24 @@ EchoCore.Debug.Timer = function() {
     this._labels.push("Start");
 };
 
+/**
+ * Marks the time required to complete a task.  This method should be invoked
+ * when a task is completed with the 'label' specifying a description of the task.
+ * 
+ * @param {String} label a description of the completed task.
+ */
 EchoCore.Debug.Timer.prototype.mark = function(label) {
     this._times.push(new Date().getTime());
     this._labels.push(label);
 };
 
+/**
+ * Returns a String representation of the timer results, showing how long
+ * each task required to complete (and included a total time).
+ * 
+ * @return the timer results
+ * @type String
+ */
 EchoCore.Debug.Timer.prototype.toString = function() {
     var out = "";
     for (var i = 1; i < this._times.length; ++i) {
