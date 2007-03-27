@@ -104,7 +104,7 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     }
     
     // Profiling Timer (Uncomment to enable).
-    //EchoCore.profilingTimer = new EchoCore.Debug.Timer();
+    // EchoCore.profilingTimer = new EchoCore.Debug.Timer();
 
     var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
     serverMessage.addCompletionListener(new EchoCore.MethodRef(this, this._processSyncComplete));
@@ -188,22 +188,21 @@ EchoRemoteClient.ComponentSync = function() { };
 EchoRemoteClient.ComponentSync.process = function(client, dirElement) {
     var element = dirElement.firstChild;
     while (element) {
-        if (element.nodeType != 1) {
-            continue;
-        }
-        switch (element.nodeName) {
-        case "add":
-            EchoRemoteClient.ComponentSync._processComponentAdd(client, element);
-            break;
-        case "rm":
-            EchoRemoteClient.ComponentSync._processComponentRemove(client, element);
-            break;
-        case "ss":
-            EchoRemoteClient.ComponentSync._processStyleSheet(client, element);
-            break;
-        case "up":
-            EchoRemoteClient.ComponentSync._processComponentUpdate(client, element);
-            break;
+        if (element.nodeType == 1) {
+            switch (element.nodeName) {
+            case "add":
+                EchoRemoteClient.ComponentSync._processComponentAdd(client, element);
+                break;
+            case "rm":
+                EchoRemoteClient.ComponentSync._processComponentRemove(client, element);
+                break;
+            case "ss":
+                EchoRemoteClient.ComponentSync._processStyleSheet(client, element);
+                break;
+            case "up":
+                EchoRemoteClient.ComponentSync._processComponentUpdate(client, element);
+                break;
+            }
         }
         element = element.nextSibling;
     }
@@ -214,15 +213,14 @@ EchoRemoteClient.ComponentSync._processComponentAdd = function(client, addElemen
     var parentComponent = client.application.getComponentByRenderId(parentId);
     var element = addElement.firstChild;
     while (element) {
-        if (element.nodeType != 1) {
-            continue;
-        }
-        var component = EchoSerial.loadComponent(client, element);
-        var index = element.getAttribute("x");
-        if (index == null) {
-            parentComponent.add(component);
-        } else {
-            parentComponent.add(component, parseInt(index));
+        if (element.nodeType == 1) {
+            var component = EchoSerial.loadComponent(client, element);
+            var index = element.getAttribute("x");
+            if (index == null) {
+                parentComponent.add(component);
+            } else {
+                parentComponent.add(component, parseInt(index));
+            }
         }
         element = element.nextSibling;
     }
@@ -291,12 +289,11 @@ EchoRemoteClient.ServerMessage.prototype.process = function() {
         var libraryGroup = new EchoWebCore.Library.Group();
         var element = libsElement.firstChild;
         while (element) {
-            if (element.nodeType != 1) {
-                continue;
-            }
-            if (element.nodeName == "lib") {
-                var url = this.client.getLibraryServiceUrl(element.getAttribute("i"));
-                libraryGroup.add(url);
+            if (element.nodeType == 1) {
+                if (element.nodeName == "lib") {
+                    var url = this.client.getLibraryServiceUrl(element.getAttribute("i"));
+                    libraryGroup.add(url);
+                }
             }
             element = element.nextSibling;
         }

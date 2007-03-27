@@ -434,7 +434,6 @@ EchoRender.ComponentSync.SplitPane.prototype.renderUpdate = function(update) {
 
 EchoRender.ComponentSync.SplitPane.prototype._setSeparatorPosition = function(newValue) {
     this._separatorPosition = newValue;
-    EchoCore.Debug.consoleWrite(this._separatorPosition);
 };
 
 EchoRender.registerPeer("SplitPane", EchoRender.ComponentSync.SplitPane);

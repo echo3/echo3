@@ -92,6 +92,11 @@ public abstract class WebContainerServlet extends HttpServlet {
     public static final boolean DISABLE_CACHING = false;
     
     /**
+     * Flag indicating whether client-side debug console should be enabled.
+     */
+    public static final boolean ENABLE_CLIENT_DEBUG_CONSOLE = true;
+    
+    /**
      * Request parameter identifying requested <code>Service</code>.
      */
     public static final String SERVICE_ID_PARAMETER = "sid";

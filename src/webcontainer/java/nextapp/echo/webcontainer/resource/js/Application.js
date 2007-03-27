@@ -168,6 +168,10 @@ EchoApp.Application.prototype.notifyComponentUpdate = function(parent, propertyN
     this._fireComponentUpdate(parent, propertyName, oldValue, newValue);
 };
 
+EchoApp.Application.prototype.publish = function() {
+    //alert("publish");
+};
+
 /**
  * Registers a component with the application.
  * Invoked when a component is added to a hierarchy of 
@@ -349,7 +353,7 @@ EchoApp.Component = function(componentType, renderId) {
      * @private
      * @type EchoCore.ListenerList
      */
-    this._listenerList = null;
+    this._listenerList = new EchoCore.ListenerList();
     
     /**
      * Internal style used to store properties set directly on component.
@@ -379,6 +383,8 @@ EchoApp.Component = function(componentType, renderId) {
      */
     this._styleType = null;
 };
+
+EchoApp.Component.NOTIFY_CHILDREN = 1;
 
 /**
  * The next automatically assigned client render id.
@@ -779,6 +785,13 @@ EchoApp.Component.prototype.setLayoutDirection = function(newValue) {
 EchoApp.Component.prototype.setProperty = function(name, newValue) {
     var oldValue = this._internalStyle.getProperty(name);
     this._internalStyle.setProperty(name, newValue);
+    if (this._listenerList && this._listenerList.hasListeners("property")) {
+        var e = new EchoCore.Event(this, "property")
+        e.propertyName = name;
+        e.oldValue = oldValue;
+        e.newValue = newValue;
+        this._listenerList.fireEvent(e);
+    }
     if (this.application) {
         this.application.notifyComponentUpdate(this, name, oldValue, newValue);
     }
@@ -848,6 +861,28 @@ EchoApp.Component.prototype.toString = function(longFormat) {
 		}
     }
     return out;
+};
+
+/**
+ * Experimental pubsub API.
+ */
+EchoApp.Component.prototype.publish = function(e, flags) {
+    if (!this.application) {
+        return;
+    }
+    this.application.publish(this, e, flags);
+};
+
+/**
+ * Experimental pubsub API.
+ */
+EchoApp.Component.prototype.addSubscriber = function(eventType, eventTarget, flags) {
+};
+
+/**
+ * Experimental pubsub API.
+ */
+EchoApp.Component.prototype.removeSubscriber = function(eventType, eventTarget) {
 };
 
 /**
@@ -2343,9 +2378,17 @@ EchoApp.Row.prototype = new EchoApp.Component;
  */
 EchoApp.SplitPane = function(renderId) {
     EchoApp.Component.call(this, "SplitPane", renderId);
+    this.addListener("property", new EchoCore.MethodRef(this, this._propertyListener));
 };
 
 EchoApp.SplitPane.prototype = new EchoApp.Component;
+
+EchoApp.SplitPane.prototype._propertyListener = function(e) {
+    if (e.propertyName == "separatorPosition") {
+        var resizeEvent = new EchoCore.Event(this, "resize");
+        this.publish(resizeEvent, EchoApp.Component.NOTIFY_CHILDREN);
+    }
+};
 
 EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING = 0;
 EchoApp.SplitPane.ORIENTATION_HORIZONTAL_TRAILING_LEADING = 1;

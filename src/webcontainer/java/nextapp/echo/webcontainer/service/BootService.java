@@ -29,8 +29,12 @@
 
 package nextapp.echo.webcontainer.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.ServiceRegistry;
+import nextapp.echo.webcontainer.WebContainerServlet;
 
 /**
  * Static instances of the 'core' Web Render Engine <code>Service</code>s.
@@ -40,16 +44,24 @@ public class BootService {
     /** Root path to core service <code>CLASSPATH</code> script resources. */
     private static final String JS_RESOURCE_PATH = "/nextapp/echo/webcontainer/resource/js/";
     
-    public static final Service SERVICE
-            = JavaScriptService.forResources("Echo.Boot", new String[]{
-                    JS_RESOURCE_PATH + "Core.js",
-                    JS_RESOURCE_PATH + "WebCore.js", 
-                    JS_RESOURCE_PATH + "Application.js", 
-                    JS_RESOURCE_PATH + "Render.js", 
-                    JS_RESOURCE_PATH + "Serial.js", 
-                    JS_RESOURCE_PATH + "RemoteClient.js", 
-                    JS_RESOURCE_PATH + "Boot.js" 
-            });
+    public static final Service SERVICE;
+    static {
+        List resourceList= new ArrayList();
+        resourceList.add(JS_RESOURCE_PATH + "Core.js");
+        resourceList.add(JS_RESOURCE_PATH + "WebCore.js");
+        resourceList.add(JS_RESOURCE_PATH + "Application.js"); 
+        resourceList.add(JS_RESOURCE_PATH + "Render.js");
+        resourceList.add(JS_RESOURCE_PATH + "Serial.js");
+        resourceList.add(JS_RESOURCE_PATH + "RemoteClient.js");
+        if (WebContainerServlet.ENABLE_CLIENT_DEBUG_CONSOLE) {
+            resourceList.add(JS_RESOURCE_PATH + "DebugConsole.js");
+        }
+        resourceList.add(JS_RESOURCE_PATH + "Boot.js");
+        
+        String[] resources = new String[resourceList.size()];
+        resourceList.toArray(resources);
+        SERVICE =JavaScriptService.forResources("Echo.Boot", resources);
+    }
     
     /**
      * Installs the core services in the specified 

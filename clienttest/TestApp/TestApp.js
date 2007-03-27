@@ -19,7 +19,7 @@ TestApp.randomColor = function() {
 TestApp.TestScreen = function() {
     EchoApp.ContentPane.call(this);
     this.setProperty("background", new EchoApp.Property.Color("#abcdef"));
-    
+
     this.testSelectSplitPane = new EchoApp.SplitPane();
     this.testSelectSplitPane.setStyleName("DefaultResizable");
     this.testSelectSplitPane.setProperty("separatorPosition", new EchoApp.Property.Extent("180px"));
@@ -35,7 +35,6 @@ TestApp.TestScreen = function() {
     label.setStyleName("Default");
     testColumn2.add(label);
     this.testSelectSplitPane.add(testColumn2);
-    
 };
 
 TestApp.TestScreen.prototype = new EchoApp.ContentPane;

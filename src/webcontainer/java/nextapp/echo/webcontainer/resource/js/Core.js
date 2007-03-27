@@ -586,6 +586,15 @@ EchoCore.ListenerList.prototype.getListenerCount = function(eventType) {
     return count;
 };
 
+EchoCore.ListenerList.prototype.hasListeners = function(eventType) {
+    for (var i = 0; i < this._data.length; i += 2) {
+        if (this._data[i] == eventType) {
+            return true;
+        }
+    }
+    return false;
+};
+
 /**
  * Determines if any number of listeners are registered to the list.
  * 
