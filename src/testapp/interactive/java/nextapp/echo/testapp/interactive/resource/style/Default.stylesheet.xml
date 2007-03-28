@@ -37,6 +37,10 @@
   <p n="rolloverBackground" v="#6f6f87"/>
   <p n="rolloverForeground" v="#ffffaf"/>
   <p n="rolloverBorder" v="1px outset #8f8faf"/>
+  <p n="focusedEnabled" v="1"/>
+  <p n="focusedBackground" v="#7f7f97"/>
+  <p n="focusedForeground" v="#ffafff"/>
+  <p n="focusedBorder" v="1px outset #afafcf"/>
   <p n="pressedEnabled" v="1"/>
   <p n="pressedBackground" v="#2f2f3f"/>
   <p n="pressedForeground" v="#ffafaf"/>

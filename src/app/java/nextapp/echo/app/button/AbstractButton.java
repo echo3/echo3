@@ -60,6 +60,13 @@ public abstract class AbstractButton extends Component {
     public static final String PROPERTY_DISABLED_FONT = "disabledFont";
     public static final String PROPERTY_DISABLED_FOREGROUND = "disabledForeground";
     public static final String PROPERTY_DISABLED_ICON = "disabledIcon";
+    public static final String PROPERTY_FOCUSED_BACKGROUND = "focusedBackground";
+    public static final String PROPERTY_FOCUSED_BACKGROUND_IMAGE = "focusedBackgroundImage";
+    public static final String PROPERTY_FOCUSED_BORDER = "focusedBorder";
+    public static final String PROPERTY_FOCUSED_ENABLED = "focusedEnabled";
+    public static final String PROPERTY_FOCUSED_FONT = "focusedFont";
+    public static final String PROPERTY_FOCUSED_FOREGROUND = "focusedForeground";
+    public static final String PROPERTY_FOCUSED_ICON = "focusedIcon";
     public static final String PROPERTY_HEIGHT = "height";
     public static final String PROPERTY_ICON = "icon";
     public static final String PROPERTY_ALIGNMENT = "alignment";
@@ -229,6 +236,62 @@ public abstract class AbstractButton extends Component {
      */
     public ImageReference getDisabledIcon() {
         return (ImageReference) getProperty(PROPERTY_DISABLED_ICON);
+    }
+
+    /**
+     * Returns the background color of the button when the button is focused.
+     * 
+     * @return the color
+     */
+    public Color getFocusedBackground() {
+        return (Color) getProperty(PROPERTY_FOCUSED_BACKGROUND);
+    }
+
+    /**
+     * Returns the background image displayed when the button is focused. 
+     * 
+     * @return the background image
+     */
+    public FillImage getFocusedBackgroundImage() {
+        return (FillImage) getProperty(PROPERTY_FOCUSED_BACKGROUND_IMAGE);
+    }
+
+    /**
+     * Returns the border displayed around the button when the button is
+     * focused.
+     * 
+     * @return the border
+     */
+    public Border getFocusedBorder() {
+        return (Border) getProperty(PROPERTY_FOCUSED_BORDER);
+    }
+
+    /**
+     * Returns the font of the button when the button is focused.
+     * 
+     * @return the font
+     */
+    public Font getFocusedFont() {
+        return (Font) getProperty(PROPERTY_FOCUSED_FONT);
+    }
+
+    /**
+     * Returns the foreground color of the button when the button is focused.
+     * 
+     * @return the color
+     */
+    public Color getFocusedForeground() {
+        return (Color) getProperty(PROPERTY_FOCUSED_FOREGROUND);
+    }
+
+    /**
+     * Returns the icon of the button that is displayed when the button is
+     * focused.
+     * 
+     * @return the icon
+     */
+    public ImageReference getFocusedIcon() {
+        return (ImageReference) getProperty(PROPERTY_FOCUSED_ICON);
     }
 
     /**
@@ -457,6 +520,17 @@ public abstract class AbstractButton extends Component {
     }
     
     /**
+     * Determines if focused effects are enabled.
+     * 
+     * @return true if focused effects are enabled
+     * @see #setFocusedEnabled(boolean)
+     */
+    public boolean isFocusedEnabled() {
+        Boolean value = (Boolean) getProperty(PROPERTY_PRESSED_ENABLED);
+        return value == null ? false : value.booleanValue();
+    }
+
+    /**
      * Determines if the text of the button should wrap in the event that 
      * horizontal space is limited.  Default value is true.
      * 
@@ -615,6 +689,72 @@ public abstract class AbstractButton extends Component {
      */
     public void setDisabledIcon(ImageReference newValue) {
         setProperty(PROPERTY_DISABLED_ICON, newValue);
+    }
+
+    /**
+     * Sets the background color of the button when the button is focused.
+     * 
+     * @param newValue the new <code>Color</code>
+     */
+    public void setFocusedBackground(Color newValue) {
+        setProperty(PROPERTY_FOCUSED_BACKGROUND, newValue);
+    }
+
+    /**
+     * Sets the background image displayed when the button is focused.
+     * 
+     * @param newValue the new background image
+     */
+    public void setFocusedBackgroundImage(FillImage newValue) {
+        setProperty(PROPERTY_FOCUSED_BACKGROUND_IMAGE, newValue);
+    }
+
+    /**
+     * Sets the border displayed around the button when the button is focused.
+     * 
+     * @param newValue the new border
+     */
+    public void setFocusedBorder(Border newValue) {
+        setProperty(PROPERTY_FOCUSED_BORDER, newValue);
+    }
+
+    /**
+     * Sets whether focused effects are enabled when the button is focused. 
+     * Focused properties have no effect unless this
+     * property is set to true. The default value is false.
+     * 
+     * @param newValue true if focused effects should be enabled
+     */
+    public void setFocusedEnabled(boolean newValue) {
+        setProperty(PROPERTY_FOCUSED_ENABLED, new Boolean(newValue));
+    }
+
+    /**
+     * Sets the font of the button when the button is focused.
+     * 
+     * @param newValue the new <code>Font</code>
+     */
+    public void setFocusedFont(Font newValue) {
+        setProperty(PROPERTY_FOCUSED_FONT, newValue);
+    }
+
+    /**
+     * Sets the foreground color of the button when the button is focused.
+     * 
+     * @param newValue the new <code>Color</code>
+     */
+    public void setFocusedForeground(Color newValue) {
+        setProperty(PROPERTY_FOCUSED_FOREGROUND, newValue);
+    }
+
+    /**
+     * Sets the icon of the button that is displayed when the button is 
+     * focused.
+     * 
+     * @param newValue the new icon
+     */
+    public void setFocusedIcon(ImageReference newValue) {
+        setProperty(PROPERTY_FOCUSED_ICON, newValue);
     }
 
     /**

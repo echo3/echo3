@@ -78,21 +78,23 @@ EchoRender.ComponentSync.Button.prototype.processRolloverEnter = function(e) {
     if (!this.component.isActive() || EchoWebCore.dragInProgress) {
         return;
     }
-    this.setFocusState(true);
+    this.setRolloverState(true);
 };
 
 EchoRender.ComponentSync.Button.prototype.processRolloverExit = function(e) {
     if (!this.component.isActive()) {
         return;
     }
-    this.setFocusState(false);
+    this.setRolloverState(false);
 };
 
 EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentElement) {
     var divElement = document.createElement("div");
     divElement.id = this.component.renderId;
     divElement.tabIndex = "0";
-    divElement.style.outlineStyle = "none";
+    if (this.component.getRenderProperty("focusedEnabled")) {
+        divElement.style.outlineStyle = "none";
+    }
     divElement.style.overflow = "hidden";
     divElement.style.cursor = "pointer";
     EchoRender.Property.Color.renderFB(this.component, divElement);
@@ -130,6 +132,21 @@ EchoRender.ComponentSync.Button.prototype.renderUpdate = function(update) {
 };
 
 EchoRender.ComponentSync.Button.prototype.setFocusState = function(focusState) {
+    var divElement = document.getElementById(this.component.renderId);
+    if (focusState) {
+        if (this.component.getRenderProperty("focusedEnabled")) {
+            EchoRender.Property.Color.renderComponentProperty(this.component, "focusedBackground", null, divElement, "background");
+            EchoRender.Property.Color.renderComponentProperty(this.component, "focusedForeground", null, divElement, "color");
+        }
+    } else {
+        if (this.component.getRenderProperty("focusedEnabled")) {
+            EchoRender.Property.Color.renderComponentProperty(this.component, "background", null, divElement, "background");
+            EchoRender.Property.Color.renderComponentProperty(this.component, "foreground", null, divElement, "color");
+        }
+    }
+};
+
+EchoRender.ComponentSync.Button.prototype.setRolloverState = function(focusState) {
     var divElement = document.getElementById(this.component.renderId);
     if (focusState) {
         if (this.component.getRenderProperty("rolloverEnabled")) {
