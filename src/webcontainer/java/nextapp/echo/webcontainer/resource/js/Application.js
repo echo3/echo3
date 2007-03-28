@@ -168,10 +168,6 @@ EchoApp.Application.prototype.notifyComponentUpdate = function(parent, propertyN
     this._fireComponentUpdate(parent, propertyName, oldValue, newValue);
 };
 
-EchoApp.Application.prototype.publish = function() {
-    //alert("publish");
-};
-
 /**
  * Registers a component with the application.
  * Invoked when a component is added to a hierarchy of 
@@ -861,28 +857,6 @@ EchoApp.Component.prototype.toString = function(longFormat) {
 		}
     }
     return out;
-};
-
-/**
- * Experimental pubsub API.
- */
-EchoApp.Component.prototype.publish = function(e, flags) {
-    if (!this.application) {
-        return;
-    }
-    this.application.publish(this, e, flags);
-};
-
-/**
- * Experimental pubsub API.
- */
-EchoApp.Component.prototype.addSubscriber = function(eventType, eventTarget, flags) {
-};
-
-/**
- * Experimental pubsub API.
- */
-EchoApp.Component.prototype.removeSubscriber = function(eventType, eventTarget) {
 };
 
 /**
@@ -2378,17 +2352,9 @@ EchoApp.Row.prototype = new EchoApp.Component;
  */
 EchoApp.SplitPane = function(renderId) {
     EchoApp.Component.call(this, "SplitPane", renderId);
-    this.addListener("property", new EchoCore.MethodRef(this, this._propertyListener));
 };
 
 EchoApp.SplitPane.prototype = new EchoApp.Component;
-
-EchoApp.SplitPane.prototype._propertyListener = function(e) {
-    if (e.propertyName == "separatorPosition") {
-        var resizeEvent = new EchoCore.Event(this, "resize");
-        this.publish(resizeEvent, EchoApp.Component.NOTIFY_CHILDREN);
-    }
-};
 
 EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING = 0;
 EchoApp.SplitPane.ORIENTATION_HORIZONTAL_TRAILING_LEADING = 1;
