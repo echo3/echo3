@@ -14,7 +14,6 @@ EchoFreeClient.prototype.dispose = function() {
 };
 
 EchoFreeClient.prototype._processUpdate = function(e) {
-EchoCore.Debug.consoleWrite("Rec'd update event");
 };
 
 EchoFreeClient.prototype.init = function() {

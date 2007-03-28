@@ -16,7 +16,6 @@ EchoRender.ComponentSync.WindowPane.prototype.getContainerElement = function(com
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseDown = function(e) {
-    EchoCore.Debug.consoleWrite("mousedown");
     if (!this.component.isActive()) {
         return;
     }
@@ -54,8 +53,6 @@ EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseDown = function(
     EchoWebCore.EventProcessor.add(bodyElement, "mousemove", new EchoCore.MethodRef(this, this.processBorderMouseMove), true);
     EchoWebCore.EventProcessor.add(bodyElement, "mouseup", new EchoCore.MethodRef(this, this.processBorderMouseUp), true);
 
-    EchoCore.Debug.consoleWrite(EchoWebCore.EventProcessor);
-    
     // Reduce opacity.   
     if (EchoRender.ComponentSync.WindowPane.adjustOpacity) {
         windowPaneDivElement.style.opacity = EchoRender.ComponentSync.WindowPane.ADJUSTMENT_OPACITY;

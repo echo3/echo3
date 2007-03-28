@@ -152,7 +152,6 @@ EchoRender.processUpdates = function(updateManager) {
     EchoRender._disposedComponents = new EchoCore.Collections.Map();
     
     var updates = updateManager.getUpdates();
-    EchoCore.Debug.consoleWrite(updates.length);
     
     updates.sort(EchoRender._componentDepthArraySort);
 

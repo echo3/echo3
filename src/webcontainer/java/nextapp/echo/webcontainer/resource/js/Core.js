@@ -612,7 +612,6 @@ EchoCore.ListenerList.prototype.isEmpty = function() {
  * @param eventTarget the event target (a function or EchoCore.MethodRef instance)
  */
 EchoCore.ListenerList.prototype.removeListener = function(eventType, eventTarget) {
-    EchoCore.Debug.consoleWrite("removeListener: " + eventType + ", " + eventTarget);
     for (var i = 0; i < this._data.length; i += 2) {
         if (this._data[i] == eventType
                 && (eventTarget == this._data[i + 1] || (eventTarget.equals && eventTarget.equals(this._data[i + 1])))) {

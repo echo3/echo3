@@ -64,13 +64,11 @@ EchoRemoteClient.prototype._processComponentEvent = function(e) {
         //FIXME. Central error handling for these.
         alert("Waiting on server response.  Press the browser reload or refresh button if server fails to respond.");
     }
-    EchoCore.Debug.consoleWrite("PCE:" + e.source);
     this._clientMessage.setEvent(e.source.renderId, e.type);
     this.sync();
 };
 
 EchoRemoteClient.prototype._processComponentUpdate = function(e) {
-    EchoCore.Debug.consoleWrite("UPDATE:" + e.parent.renderId + "/" + e.propertyName + "/" + e.oldValue + "/" + e.newValue);
     if (!this._clientMessage) {
         //FIXME. need to work on scenarios where clientmessage is null, for both this and events too.
         return;
