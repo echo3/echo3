@@ -345,7 +345,7 @@ EchoWebCore.EventProcessor._processEvent = function(e) {
         // Modify the event such the target is retrievable using the W3C DOM Level 2 specified property 'target'.
         e.target = e.srcElement;
     }
-
+    
     // Establish array containing elements ancestry, with index 0 containing 
     // the element and the last index containing its most distant ancestor.  
     // Only record elements that have ids.
@@ -409,6 +409,8 @@ EchoWebCore.EventProcessor._processEvent = function(e) {
  *        the bubbling phase
  */
 EchoWebCore.EventProcessor.remove = function(element, eventType, eventTarget, capture) {
+    EchoWebCore.EventProcessor._lastElement = null;
+    
     if (!element.id) {
         throw new Error("Specified element has no DOM id.");
     }

@@ -622,6 +622,17 @@ EchoCore.ListenerList.prototype.removeListener = function(eventType, eventTarget
     }
 };
 
+EchoCore.ListenerList.prototype.toString = function() {
+    var out = "";
+    for (var i = 0; i < this._data.length; i += 2) {
+        if (i > 0) {
+            out += ", ";
+        }
+        out += this._data[i] + ":" + this._data[i + 1];
+    }
+    return out;
+};
+
 /**
  * Creates a new MethodRef.
  *
