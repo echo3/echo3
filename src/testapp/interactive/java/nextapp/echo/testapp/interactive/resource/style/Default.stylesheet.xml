@@ -176,6 +176,8 @@
   <p n="foreground" v="#000000"/>
   <p n="rolloverEnabled" v="1"/>
   <p n="rolloverForeground" v="#6f0f0f"/>
+  <p n="focusedEnabled" v="1"/>
+  <p n="focusedBackground" v="#ffafaf"/>
  </s>
 
  <s n="ControlPane" t="nextapp.echo.app.Row">

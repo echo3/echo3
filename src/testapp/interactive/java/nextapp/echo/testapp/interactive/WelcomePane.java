@@ -29,6 +29,7 @@
 
 package nextapp.echo.testapp.interactive;
 
+import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.ContentPane;
@@ -86,17 +87,17 @@ public class WelcomePane extends ContentPane {
         controlRow.setStyleName("ControlPane");
         splitPane.add(controlRow);
         
-        Button button = new Button("Continue", Styles.ICON_24_YES);
-        button.setRenderId("WelcomePaneEnter");
-        button.setId("EnterTestApplication");
-        button.setStyleName("ControlPane.Button");
-        button.addActionListener(new ActionListener() {
+        Button continueButton = new Button("Continue", Styles.ICON_24_YES);
+        continueButton.setRenderId("WelcomePaneEnter");
+        continueButton.setId("EnterTestApplication");
+        continueButton.setStyleName("ControlPane.Button");
+        continueButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.err.println("displaying test pane");
                 InteractiveApp.getApp().displayTestPane();
             }
         });
-        controlRow.add(button);
+        controlRow.add(continueButton);
         
         Column infoColumn = new Column();
         infoColumn.setInsets(new Insets(20, 5));
@@ -123,5 +124,11 @@ public class WelcomePane extends ContentPane {
 
         label = new Label("Please visit the Echo Home Page @ http://www.nextapp.com/products/echo for more information.");
         infoColumn.add(label);
+        
+        ApplicationInstance app = getApplicationInstance();
+        if (app != null) {
+            //FIXME. focus not working.
+            app.setFocusedComponent(continueButton);
+        }
     }
 }

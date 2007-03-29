@@ -56,7 +56,7 @@ public abstract class WebContainerServlet extends HttpServlet {
     /**
      * Flag indicating whether client/server messages should be dumped to console.
      */
-    public static final boolean DEBUG_PRINT_MESSAGES_TO_CONSOLE = false;
+    public static final boolean DEBUG_PRINT_MESSAGES_TO_CONSOLE = true;
     
     /**
      * Default constructor.
