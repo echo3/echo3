@@ -44,7 +44,7 @@ import nextapp.echo.app.event.ActionListener;
  * of available tests.
  */
 public class TestPane extends ContentPane {
-
+    
     private ActionListener commandActionListener = new ActionListener() {
         
         private Button activeButton = null;
@@ -60,18 +60,13 @@ public class TestPane extends ContentPane {
                 Button button = (Button) e.getSource();
                 button.setStyleName("Selected");
                 activeButton = button;
-                String screenClassName = "nextapp.echo.testapp.interactive.testscreen." + e.getActionCommand();
-                Class screenClass = Class.forName(screenClassName);
+                
+                Class screenClass = getScreenClass(e.getActionCommand());
                 Component content = (Component) screenClass.newInstance();
                 if (horizontalPane.getComponentCount() > 1) {
                     horizontalPane.remove(1);
                 }
                 horizontalPane.add(content);
-            } catch (ClassNotFoundException ex) {
-                MessageDialog messageDialog = new MessageDialog("Test Not Found",
-                        "The specified test is not present in this version of the test application.",
-                        Styles.ICON_64_ERROR, MessageDialog.CONTROLS_OK);
-                TestPane.this.add(messageDialog);
             } catch (InstantiationException ex) {
                 throw new RuntimeException(ex.toString());
             } catch (IllegalAccessException ex) {
@@ -164,6 +159,17 @@ public class TestPane extends ContentPane {
         button.setActionCommand(action);
         button.setStyleName("Default");
         button.addActionListener(commandActionListener);
+        if (getScreenClass(action) == null) {
+            button.setEnabled(false);
+        }
         testLaunchButtonsColumn.add(button);
+    }
+
+    private Class getScreenClass(String testName) {
+        try {
+            return Class.forName("nextapp.echo.testapp.interactive.testscreen." + testName);
+        } catch (ClassNotFoundException ex) {
+            return null;
+        }
     }
 }
