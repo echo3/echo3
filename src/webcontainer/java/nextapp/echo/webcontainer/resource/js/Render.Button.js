@@ -100,11 +100,32 @@ EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentEle
     EchoRender.Property.Color.renderFB(this.component, divElement);
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), divElement);
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", "", divElement, "padding");
-    var text = this.component.getRenderProperty("text");
-    if (text) {
-        divElement.appendChild(document.createTextNode(text));
-    }
 
+    var text = this.component.getRenderProperty("text");
+    var icon = this.component.getRenderProperty("icon");
+
+    if (text) {
+        if (icon) {
+            // Text and icon.
+            var tct = new EchoRender.TriCellTable(this.component.renderId,
+                    EchoRender.TriCellTable.LEADING_TRAILING, 5);
+            var imgElement = document.createElement("img");
+            imgElement.src = icon.url;
+            tct.tdElements[0].appendChild(document.createTextNode(text));
+            tct.tdElements[1].appendChild(imgElement);
+            divElement.appendChild(tct.tableElement);
+        } else {
+            // Text only.
+            divElement.appendChild(document.createTextNode(text));
+        }
+    } else if (icon) {
+        // Icon only.
+        var imgElement = document.createElement("img");
+        imgElement.src = icon.url;
+    } else {
+        // No text or icon.
+    }
+    
     EchoWebCore.EventProcessor.add(divElement, "click", new EchoCore.MethodRef(this, this.processClick), false);
     EchoWebCore.EventProcessor.add(divElement, "keypress", new EchoCore.MethodRef(this, this.processKeyPress), false);
     EchoWebCore.EventProcessor.add(divElement, "mouseover", new EchoCore.MethodRef(this, this.processRolloverEnter), false);
