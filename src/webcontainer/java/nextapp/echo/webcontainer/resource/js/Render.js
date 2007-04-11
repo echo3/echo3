@@ -654,6 +654,9 @@ EchoRender.Property.Insets.toPixels = function(insets) {
 EchoRender.TriCellTable = function(id, orientation0_1, margin0_1, orientation01_2, margin01_2) {
     this.id = id;
     this.tableElement = document.createElement("table");
+    this.tableElement.style.borderCollapse = "collapse";
+    this.tableElement.style.padding = 0;
+    
     this.tbodyElement = document.createElement("tbody");
     this.tbodyElement.setAttribute("id", id + "_tbody");
     this.tableElement.appendChild(this.tbodyElement);
@@ -701,12 +704,15 @@ EchoRender.TriCellTable.prototype.addSpacer = function(parentElement, size, vert
 EchoRender.TriCellTable.prototype.configure2 = function(id, orientation0_1, margin0_1) {
     this.tdElements = new Array(document.createElement("td"), document.createElement("td"));
     this.tdElements[0].setAttribute("id", this.id + "_td_0");
+    this.tdElements[0].style.padding = 0;
     this.tdElements[1].setAttribute("id", this.id + "_td_1");
+    this.tdElements[1].style.padding = 0;
     this.marginTdElements = new Array(1);
     
     if (margin0_1 != null) {
         this.marginTdElements[0] = document.createElement("td");
         this.marginTdElements[0].setAttribute("id", id + "_tdmargin_0_1");
+        this.marginTdElements[0].style.padding = 0;
         if ((orientation0_1 & EchoRender.TriCellTable.VERTICAL) == 0) {
             this.marginTdElements[0].style.width = margin0_1 + "px";
             this.addSpacer(this.marginTdElements[0], margin0_1, false);
