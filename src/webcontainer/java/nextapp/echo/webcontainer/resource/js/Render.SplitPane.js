@@ -329,6 +329,14 @@ EchoRender.ComponentSync.SplitPane.prototype._renderAddChild = function(update, 
         EchoRender.Property.Color.renderComponentProperty(layoutData, "background", null, paneDivElement, "backgroundColor");
         EchoRender.Property.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, paneDivElement);
         EchoRender.Property.Insets.renderComponentProperty(layoutData, "insets", null, paneDivElement, "padding");
+        switch (layoutData.getProperty("overflow")) {
+        case EchoApp.SplitPane.OVERFLOW_HIDDEN:
+            paneDivElement.style.overflow = "hidden";
+            break;
+        case EchoApp.SplitPane.OVERFLOW_SCROLL:
+            paneDivElement.style.overflow = "scroll";
+            break;
+        }
     }
     var insetsAdjustment = this._getInsetsSizeAdjustment(layoutData);
     

@@ -632,8 +632,8 @@ EchoRender.Property.Insets.toPixels = function(insets) {
  *        the following values:
  *        <ul>
  *        <ul>
- *        <li>LEFT_RIGHT (element 0 is trailing element 1)</li>
- *        <li>RIGHT_LEFT (element 1 is leading element 0)</li>
+ *        <li>LEADING_TRAILING (element 0 is trailing element 1)</li>
+ *        <li>TRAILING_LEADING (element 1 is leading element 0)</li>
  *        <li>TOP_BOTTOM (element 0 is above element 1)</li>
  *        <li>BOTTOM_TOP (element 1 is above element 0)</li>
  *        </ul>
@@ -643,7 +643,7 @@ EchoRender.Property.Insets.toPixels = function(insets) {
  *        respect to Element 2, one of the following values:
  *        <ul>
  *        <li>LEADING_TRAILING (elements 0 and 1 are leading element 2)</li>
- *        <li>RIGHT_LEFT (element 2 is trailing elements 0 and 1)</li>
+ *        <li>TRAILING_LEADING (element 2 is trailing elements 0 and 1)</li>
  *        <li>TOP_BOTTOM (elements 0 and 1 are above element 2)</li>
  *        <li>BOTTOM_TOP (element 2 is above elements 0 and 1)</li>
  *        </ul>

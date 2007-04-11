@@ -56,5 +56,9 @@ extends LayoutDataPeer {
         SerialUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "insets", layoutData.getInsets());
         SerialUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "maximumSize", layoutData.getMaximumSize());
         SerialUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "minimumSize", layoutData.getMinimumSize());
+        if (layoutData.getOverflow() != SplitPaneLayoutData.OVERFLOW_AUTO) {
+            SerialUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "overflow", 
+                    new Integer(layoutData.getOverflow()));
+        }
     }
 }

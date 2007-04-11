@@ -2402,6 +2402,10 @@ EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED = new EchoApp.Property.Extent("0p
 EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE = new EchoApp.Property.Extent("4px");
 EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR = new EchoApp.Property.Color("#3f007f");
 
+EchoApp.SplitPane.OVERFLOW_AUTO = 0;
+EchoApp.SplitPane.OVERFLOW_HIDDEN = 1;
+EchoApp.SplitPane.OVERFLOW_SCROLL = 2;
+
 /**
  * Creates a new TextField.
  * 

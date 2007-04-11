@@ -108,7 +108,7 @@ EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentEle
         if (icon) {
             // Text and icon.
             var tct = new EchoRender.TriCellTable(this.component.renderId,
-                    EchoRender.TriCellTable.LEADING_TRAILING, 5);
+                    EchoRender.TriCellTable.TRAILING_LEADING, 3);
             var imgElement = document.createElement("img");
             imgElement.src = icon.url;
             tct.tdElements[0].appendChild(document.createTextNode(text));
