@@ -1650,7 +1650,7 @@ EchoApp.Style = function() {
  * @return the property value  
  */
 EchoApp.Style.prototype.getIndexedProperty = function(name, index) {
-    var indexValues = _propertyMap.get(name);
+    var indexValues = this._propertyMap.get(name);
     if (!indexValues) {
         return null;
     }
@@ -2342,6 +2342,21 @@ EchoApp.ContentPane = function(renderId) {
 };
 
 EchoApp.ContentPane.prototype = new EchoApp.Component;
+
+/**
+ * Creates a new Grid.
+ * 
+ * @constructor
+ * @class Grid component.
+ * @base EchoApp.Component
+ */
+EchoApp.Grid = function(renderId) {
+    EchoApp.Component.call(this, "Grid", renderId);
+};
+
+EchoApp.Grid.prototype = new EchoApp.Component;
+
+EchoApp.Grid.SPAN_FILL = -1;
 
 /**
  * Creates a new Label.
