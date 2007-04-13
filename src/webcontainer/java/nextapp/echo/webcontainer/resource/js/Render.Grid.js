@@ -71,6 +71,11 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
                 tdElement.setAttribute(ySpan, cell.ySpan);
             }
             
+            var layoutData = cell.component.getRenderProperty("layoutData");
+            if (layoutData) {
+                EchoRender.Property.Color.renderComponentProperty(layoutData, "background", "", tdElement, "backgroundColor");
+            }
+            
             EchoRender.Property.Border.render(defaultBorder, tdElement);
             tdElement.style.padding = defaultInsets.toString();
             EchoRender.renderComponentAdd(update, cell.component, tdElement);

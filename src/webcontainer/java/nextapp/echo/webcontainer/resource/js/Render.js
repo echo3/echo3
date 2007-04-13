@@ -498,7 +498,8 @@ EchoRender.Property.Border.renderSide = function(borderSide, element, styleName)
 
 EchoRender.Property.Color = function() { };
 
-EchoRender.Property.Color.render = function(color, element, styleProperty) { 
+EchoRender.Property.Color.render = function(color, element, styleProperty) {
+    //FIXME. broken.
     var color = component.getRenderProperty(componentProperty);
     element.style[styleProperty] = color ? color.value : "";
 };
