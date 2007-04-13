@@ -114,6 +114,8 @@ EchoRender.ComponentSync.Grid.Processor = function(grid) {
     this.renderCellMatrix(cells);
     
     this.calculateExtents();
+    
+    this.reduceY();
 };
 
 EchoRender.ComponentSync.Grid.Processor.prototype.calculateExtents = function() {
@@ -195,6 +197,71 @@ EchoRender.ComponentSync.Grid.Processor.prototype.getCell = function(column, row
  */
 EchoRender.ComponentSync.Grid.Processor.prototype.getRowCount = function() {
     return this.horizontalOrientation ? this.gridYSize : this.gridXSize;
+};
+
+/**
+ * Remove duplicates from the y-axis where all cells simply
+ * "span over" a given y-axis coordinate. 
+ */
+EchoRender.ComponentSync.Grid.Processor.prototype.reduceY = function() {
+    var yRemoves = new Array();
+    var y = 1;
+    
+    var size = this.cellArrays.length;
+    var previousCellArray;
+    var currentCellArray = this.getCellArray(0, false);
+    
+    while (y < size) {
+        previousCellArray = currentCellArray;
+        currentCellArray = this.getCellArray(y, false);
+        
+        var x = 0;
+        var indentical = true;
+        
+        while (x < currentCellArray.length) {
+            if (currentCellArray[x] != previousCellArray[x]) {
+                identical = false;
+                break;
+            }
+            ++x;
+        }
+        if (identical) {
+            yRemoves[y] = true;
+        }
+        
+        ++y;
+    }
+    
+    // If no reductions are necessary on the y-axis, do nothing.
+    if (yRemoves.length == 0) {
+        return;
+    }
+    
+    for (var removedY = this.gridYSize - 1; removedY >= 0; --removedY) {
+        if (!yRemoves[removedY]) {
+            continue;
+        }
+        
+        // Shorten the y-spans of the cell array that will be retained to 
+        // reflect the fact that a cell array is being removed.
+        var retainedCellArray = this.getCellArray(removedY - 1, false);
+        for (var x = 0; x < this.gridXSize; ++x) {
+            if (x == 0 || retainedCellArray[x] != retainedCellArray[x - 1]) {
+                // Reduce y-span, taking care not to reduce it multiple times if cell has an x-span.
+                if (retainedCellArray[x] != null) {
+                    --retainedCellArray[x].ySpan;
+                }
+            }
+        }
+        
+        // Remove the duplicate cell array.
+        this.cellArrays.splice(removedY, 1);
+        
+        //FIXME. insert code here for extent adjustment.
+        
+        // Decrement the grid size to reflect cell array removal.
+        --this.gridYSize;
+    }
 };
 
 EchoRender.ComponentSync.Grid.Processor.prototype.renderCellMatrix = function(cells) {
