@@ -156,8 +156,16 @@ EchoRender.ComponentSync.Grid.Processor.prototype.createCells = function() {
     return cells;
 };
 
-EchoRender.ComponentSync.Grid.Processor.prototype.getCellArray = function(y, expand) {
-    while (expand && y >= this.cellArrays.length) {
+/**
+ * Returns an array representing the cells at the specified y-index.
+ * If no array currently exists, one is created.
+ * 
+ * @param {Integer} y the y-index
+ * @return the array of cells.
+ * @type {Array}
+ */
+EchoRender.ComponentSync.Grid.Processor.prototype._getCellArray = function(y) {
+    while (y >= this.cellArrays.length) {
         this.cellArrays.push(new Array(this.gridXSize));
     }
     return this.cellArrays[y]; 
@@ -294,7 +302,7 @@ EchoRender.ComponentSync.Grid.Processor.prototype.reduceY = function() {
 EchoRender.ComponentSync.Grid.Processor.prototype.renderCellMatrix = function(cells) {
     this.gridXSize = parseInt(this.grid.getRenderProperty("size", 2));
     var x = 0, y = 0;
-    var yCells = this.getCellArray(y, true);
+    var yCells = this._getCellArray(y);
     
     for (var componentIndex = 0; componentIndex < cells.length; ++componentIndex) {
         
@@ -325,7 +333,7 @@ EchoRender.ComponentSync.Grid.Processor.prototype.renderCellMatrix = function(ce
                 }
             }
             for (var yIndex = 0; yIndex < cells[componentIndex].ySpan; ++yIndex) {
-                var yIndexCells = this.getCellArray(y + yIndex, true);
+                var yIndexCells = this._getCellArray(y + yIndex);
                 for (var xIndex = 0; xIndex < cells[componentIndex].xSpan; ++xIndex) {
                     yIndexCells[x + xIndex] = cells[componentIndex];
                 }
@@ -343,7 +351,7 @@ EchoRender.ComponentSync.Grid.Processor.prototype.renderCellMatrix = function(ce
                     // Move cursor to next line.
                     x = 0;
                     ++y;
-                    yCells = this.getCellArray(y, true);
+                    yCells = this._getCellArray(y);
                     
                 }
                 nextRenderPointFound = yCells[x] == null;
