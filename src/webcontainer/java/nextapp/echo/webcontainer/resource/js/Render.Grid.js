@@ -184,9 +184,9 @@ EchoRender.ComponentSync.Grid.Processor.prototype.getColumnCount = function() {
  */
 EchoRender.ComponentSync.Grid.Processor.prototype.getCell = function(column, row) {
     if (this.horizontalOrientation) {
-        return this.getCellArray(row, false)[column];
+        return this.cellArrays[row][column];
     } else {
-        return this.getCellArray(column, false)[row];
+        return this.cellArrays[column][row];
     }
 }
 
@@ -205,7 +205,25 @@ EchoRender.ComponentSync.Grid.Processor.prototype.getRowCount = function() {
  * "span over" a given x-axis coordinate. 
  */
 EchoRender.ComponentSync.Grid.Processor.prototype.reduceX = function() {
-    // determine duplicate cell sets on x-axis.
+    // Determine duplicate cell sets on x-axis.
+    var xRemoves = new Array();
+    var x = 1;
+    var length = this.cellArrays[0].length;
+    while (x < length) {
+        var y = 0;
+        var identical = true;
+        while (y < this.cellArrays.length) {
+            if (this.cellArrays[y][x] != this.cellArrays[y][x - 1]) {
+                identical = false;
+                break;
+            }
+            ++y;
+        }
+        if (identical) {
+            xRemoves[x] = true;
+        }
+        ++x;
+    }
 }
 
 /**
@@ -218,11 +236,11 @@ EchoRender.ComponentSync.Grid.Processor.prototype.reduceY = function() {
     
     var size = this.cellArrays.length;
     var previousCellArray;
-    var currentCellArray = this.getCellArray(0, false);
+    var currentCellArray = this.cellArrays[0];
     
     while (y < size) {
         previousCellArray = currentCellArray;
-        currentCellArray = this.getCellArray(y, false);
+        currentCellArray = this.cellArrays[y];
         
         var x = 0;
         var identical = true;
@@ -253,7 +271,7 @@ EchoRender.ComponentSync.Grid.Processor.prototype.reduceY = function() {
         
         // Shorten the y-spans of the cell array that will be retained to 
         // reflect the fact that a cell array is being removed.
-        var retainedCellArray = this.getCellArray(removedY - 1, false);
+        var retainedCellArray = this.cellArrays[removedY - 1];
         for (var x = 0; x < this.gridXSize; ++x) {
             if (x == 0 || retainedCellArray[x] != retainedCellArray[x - 1]) {
                 // Reduce y-span, taking care not to reduce it multiple times if cell has an x-span.
