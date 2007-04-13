@@ -116,6 +116,7 @@ EchoRender.ComponentSync.Grid.Processor = function(grid) {
     this.calculateExtents();
     
     this.reduceY();
+    this.reduceX();
 };
 
 EchoRender.ComponentSync.Grid.Processor.prototype.calculateExtents = function() {
@@ -200,6 +201,14 @@ EchoRender.ComponentSync.Grid.Processor.prototype.getRowCount = function() {
 };
 
 /**
+ * Remove duplicates from the x-axis where all cells simply
+ * "span over" a given x-axis coordinate. 
+ */
+EchoRender.ComponentSync.Grid.Processor.prototype.reduceX = function() {
+    // determine duplicate cell sets on x-axis.
+}
+
+/**
  * Remove duplicates from the y-axis where all cells simply
  * "span over" a given y-axis coordinate. 
  */
@@ -216,7 +225,7 @@ EchoRender.ComponentSync.Grid.Processor.prototype.reduceY = function() {
         currentCellArray = this.getCellArray(y, false);
         
         var x = 0;
-        var indentical = true;
+        var identical = true;
         
         while (x < currentCellArray.length) {
             if (currentCellArray[x] != previousCellArray[x]) {
