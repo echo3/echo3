@@ -232,6 +232,33 @@ EchoRender.ComponentSync.Grid.Processor.prototype.reduceX = function() {
         }
         ++x;
     }
+    
+    // If no reductions are necessary on the x-axis, do nothing.
+    if (xRemoves.length == 0) {
+        return;
+    }
+    
+    for (var removedX = this.gridXSize - 1; removedX >= 0; --removedX) {
+        if (!xRemoves[removedX]) {
+            continue;
+        }
+        
+        for (var y = 0; y < this.gridYSize; ++y) {
+            if (y == 0 || this.cellArrays[y][removedX - 1] != this.cellArrays[y - 1][removedX - 1]) {
+                // Reduce x-span, taking care not to reduce it multiple times if cell has a y-span.
+                if (this.cellArrays[y][removedX - 1] != null) {
+                    --this.cellArrays[y][removedX - 1].xSpan;
+                }
+            }
+            for (x = removedX; x < this.gridXSize - 1; ++x) {
+                this.cellArrays[y][x] = this.cellArrays[y][x + 1];
+            }
+        }
+        
+        //FIXME. Add extent-size recalc.
+        
+        --this.gridXSize;
+    }
 }
 
 /**
