@@ -12,6 +12,8 @@ EchoRender.ComponentSync.Grid.prototype.getContainerElement = function(component
 
 EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentElement) {
     var gridProcessor = new EchoRender.ComponentSync.Grid.Processor(this.component);
+    var columnCount = gridProcessor.getColumnCount();
+    var rowCount = gridProcessor.getRowCount();
     
     var defaultInsets = this.component.getRenderProperty("insets", "0");
     var defaultBorder = this.component.getRenderProperty("border", "");
@@ -32,26 +34,47 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     var size = parseInt(this.component.getRenderProperty("size", 2));
     
     var trElement;
+    var renderedComponentIds = new Object();
     
-    var componentCount = this.component.getComponentCount();
-    for (var i = 0; i < componentCount; ++i) {
-        if (!trElement) {
-            trElement = document.createElement("tr");
-            tbodyElement.appendChild(trElement);
-        }
+    var xSpan, ySpan;
+    if (gridProcessor.horizontalOrientation) {
+        xSpan = "colspan";
+        ySpan = "rowspan"; 
+    } else {
+        xSpan = "rowspan";
+        ySpan = "colspan"; 
+    }
+    
+    for (var rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
+        trElement = document.createElement("tr");
+        tbodyElement.appendChild(trElement);
         
-        var child = this.component.getComponent(i);
-        
-        var tdElement = document.createElement("td");
-        EchoRender.Property.Border.render(defaultBorder, tdElement);
-        tdElement.style.padding = defaultInsets.toString();
-        
-        EchoRender.renderComponentAdd(update, child, tdElement);
-        
-        trElement.appendChild(tdElement);
-        
-        if (trElement.childNodes.length >= size) {
-            trElement = null;
+        for (var columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
+            var cell = gridProcessor.getCell(columnIndex, rowIndex);
+            if (cell == null) {
+                var tdElement = document.createElement("td");
+                trElement.appendChild(tdElement);
+                continue;
+            }
+            if (renderedComponentIds[cell.component.renderId]) {
+                // Cell already rendered.
+                continue;
+            }
+            renderedComponentIds[cell.component.renderId] = true;
+            
+            var tdElement = document.createElement("td");
+            tdElement.id = this.component.renderId + "_" + cell.component.renderId;
+            if (cell.xSpan > 1) {
+                tdElement.setAttribute(xSpan, cell.xSpan);
+            }
+            if (cell.ySpan > 1) {
+                tdElement.setAttribute(ySpan, cell.ySpan);
+            }
+            
+            EchoRender.Property.Border.render(defaultBorder, tdElement);
+            tdElement.style.padding = defaultInsets.toString();
+            EchoRender.renderComponentAdd(update, cell.component, tdElement);
+            trElement.appendChild(tdElement);
         }
     }
     
@@ -132,6 +155,43 @@ EchoRender.ComponentSync.Grid.Processor.prototype.getCellArray = function(y, exp
     return this.cellArrays[y]; 
 };
 
+/**
+ * Returns the number of columns that should be rendered.
+ * 
+ * @return the number of rendered columns
+ * @type Integer
+ */
+EchoRender.ComponentSync.Grid.Processor.prototype.getColumnCount = function() {
+    return this.horizontalOrientation ? this.gridXSize : this.gridYSize;
+};
+
+/**
+ * Returns the cell that should be rendered at the
+ * specified position.
+ * 
+ * @param {Integer} column the column index
+ * @param {Integer} row the row index
+ * @return the cell
+ * @type EchoRender.ComponentSync.Grid.Processor.Cell
+ */
+EchoRender.ComponentSync.Grid.Processor.prototype.getCell = function(column, row) {
+    if (this.horizontalOrientation) {
+        return this.getCellArray(row, false)[column];
+    } else {
+        return this.getCellArray(column, false)[row];
+    }
+}
+
+/**
+ * Returns the number of rows that should be rendered.
+ * 
+ * @return the number of rendered rows
+ * @type Integer
+ */
+EchoRender.ComponentSync.Grid.Processor.prototype.getRowCount = function() {
+    return this.horizontalOrientation ? this.gridYSize : this.gridXSize;
+};
+
 EchoRender.ComponentSync.Grid.Processor.prototype.renderCellMatrix = function(cells) {
     this.gridXSize = parseInt(this.grid.getRenderProperty("size", 2));
     var x = 0, y = 0;
@@ -194,8 +254,6 @@ EchoRender.ComponentSync.Grid.Processor.prototype.renderCellMatrix = function(ce
 
     // Store actual 'y' dimension.
     this.gridYSize = this.cellArrays.length;
-    
-    EchoCore.Debug.consoleWrite("rendercellmatrix!");
 };
 
 EchoRender.ComponentSync.Grid.Processor.Cell = function(component, index, xSpan, ySpan) {
