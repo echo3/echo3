@@ -122,6 +122,8 @@ EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentEle
         // Icon only.
         var imgElement = document.createElement("img");
         imgElement.src = icon.url;
+        imgElement.alt = "";
+        divElement.appendChild(imgElement);
     } else {
         // No text or icon.
     }
