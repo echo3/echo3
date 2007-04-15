@@ -458,8 +458,8 @@ EchoRender.Property.Alignment.renderComponentProperty
     }
     
     if (renderToElement) {
-        element.setAttribute("align", horizontalValue);
-        elmeent.setAttribute("valign", verticalValue);
+        element.align = horizontalValue;
+        elmeent.valign = verticalValue;
     } else {
         element.style.textAlign = horizontalValue;
         element.style.verticalAlign = verticalValue;
@@ -683,36 +683,31 @@ EchoRender.TriCellTable.prototype.addColumn = function(trElement, tdElement) {
     }
 };
 
-EchoRender.TriCellTable.prototype.addRow = function(tdElement, trElementId) {
+EchoRender.TriCellTable.prototype.addRow = function(tdElement) {
     if (tdElement == null) {
         return;
     }
     var trElement = document.createElement("tr");
-    trElement.id = trElementId;
     trElement.appendChild(td);
     this.tbodyElement.appendChild(trElement);
 };
 
 EchoRender.TriCellTable.prototype.addSpacer = function(parentElement, size, vertical) {
     var imgElement = document.createElement("img");
-    imgElement.setAttribute("src", EchoRender.TriCellTable.TRANSPARENT_IMAGE);
-    imgElement.setAttribute("alt", "");
-    imgElement.setAttribute("width", vertical ? "1" : size);
-    imgElement.setAttribute("height", vertical ? size : "1");
+    imgElement.src = EchoRender.TriCellTable.TRANSPARENT_IMAGE;
+    imgElement.width = vertical ? "1" : size;
+    imgElement.height = vertical ? size : "1";
     parentElement.appendChild(imgElement);
 };
 
 EchoRender.TriCellTable.prototype.configure2 = function(id, orientation0_1, margin0_1) {
     this.tdElements = new Array(document.createElement("td"), document.createElement("td"));
-    this.tdElements[0].id = this.id + "_td_0";
     this.tdElements[0].style.padding = 0;
-    this.tdElements[1].id = this.id + "_td_1";
     this.tdElements[1].style.padding = 0;
     this.marginTdElements = new Array(1);
     
     if (margin0_1 != null) {
         this.marginTdElements[0] = document.createElement("td");
-        this.marginTdElements[0].id = id + "_tdmargin_0_1";
         this.marginTdElements[0].style.padding = 0;
         if ((orientation0_1 & EchoRender.TriCellTable.VERTICAL) == 0) {
             this.marginTdElements[0].style.width = margin0_1 + "px";
@@ -727,19 +722,18 @@ EchoRender.TriCellTable.prototype.configure2 = function(id, orientation0_1, marg
         // Vertically oriented.
         if (orientation0_1 & EchoRender.TriCellTable.INVERTED) {
             // Inverted (bottom to top).
-            this.addRow(this.tdElements[1], this.id + "_tr_1");
-            this.addRow(this.marginTdElements[0], id + "_trmargin_0_1");
-            this.addRow(this.tdElements[0], this.id + "_tr_0");
+            this.addRow(this.tdElements[1]);
+            this.addRow(this.marginTdElements[0]);
+            this.addRow(this.tdElements[0]);
         } else {
             // Normal (top to bottom).
-            this.addRow(this.tdElements[0], this.id + "_tr_0");
-            this.addRow(this.marginTdElements[0], id + "_trmargin_0_1");
-            this.addRow(this.tdElements[1], this.id + "_tr_1");
+            this.addRow(this.tdElements[0]);
+            this.addRow(this.marginTdElements[0]);
+            this.addRow(this.tdElements[1]);
         }
     } else {
         // Horizontally oriented.
         var trElement = document.createElement("tr");
-        trElement.id = this.id + "_tr_0_1";
         if (orientation0_1 & EchoRender.TriCellTable.INVERTED) {
             // Trailing to leading.
             this.addColumn(trElement, this.tdElements[1]);
@@ -759,7 +753,6 @@ EchoRender.TriCellTable.prototype.configure3 = function(id, orientation0_1, marg
     this.tdElements = new Array(3);
     for (var i = 0; i < 3; ++i) {
         this.tdElements[i] = document.createElement("td");
-        this.tdElements[i].id = this.id + "_td_" + i;
         this.tdElements[i].style.padding = 0;
     }
     
