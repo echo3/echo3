@@ -564,6 +564,10 @@ EchoRender.Property.FillImage.renderComponentProperty = function(component, comp
 
 EchoRender.Property.Font = function() { };
 
+EchoRender.Property.Font.renderDefault = function(component, element, defaultValue) {
+	EchoRender.Property.Font.renderComponentProperty(component, "font", defaultValue, element);
+};
+
 EchoRender.Property.Font.renderComponentProperty = function(component, componentProperty, defaultValue, 
         element) {
     var font = component.getRenderProperty ? component.getRenderProperty(componentProperty)
