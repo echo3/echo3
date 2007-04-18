@@ -30,11 +30,6 @@
 package nextapp.echo.webcontainer.sync.component;
 
 import nextapp.echo.app.Panel;
-import nextapp.echo.app.util.Context;
-import nextapp.echo.webcontainer.ServerMessage;
-import nextapp.echo.webcontainer.Service;
-import nextapp.echo.webcontainer.WebContainerServlet;
-import nextapp.echo.webcontainer.service.JavaScriptService;
 
 /**
  * Synchronization peer for <code>Panel</code>s.
@@ -43,26 +38,10 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
  */
 public class PanelPeer extends CompositePeer {
 
-    private static final Service PANEL_SERVICE = JavaScriptService.forResource("Echo.Panel", 
-            "/nextapp/echo/webcontainer/resource/js/Render.Panel.js");
-    
-    static {
-        WebContainerServlet.getServiceRegistry().add(PANEL_SERVICE);
-    }
-    
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getComponentClass()
      */
     public Class getComponentClass() {
         return Panel.class;
-    }
-
-    /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
-     */
-    public void init(Context context) {
-        super.init(context);
-    	ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
-        serverMessage.addLibrary(PANEL_SERVICE.getId());
     }
 }

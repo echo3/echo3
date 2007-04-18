@@ -11,7 +11,7 @@ EchoRender.ComponentSync.Composite.prototype.renderAdd = function(update, parent
     
     var componentCount = this.component.getComponentCount();
     if (componentCount > 0) {
-	    this.renderStyle(divElement);
+	    this._renderStyle(divElement);
 	    for (var i = 0; i < componentCount; ++i) {
 	        var child = this.component.getComponent(i);
 		    EchoRender.renderComponentAdd(update, child, divElement);
@@ -21,7 +21,7 @@ EchoRender.ComponentSync.Composite.prototype.renderAdd = function(update, parent
     parentElement.appendChild(divElement);
 };
 
-EchoRender.ComponentSync.Composite.prototype.renderStyle = function(element) {
+EchoRender.ComponentSync.Composite.prototype._renderStyle = function(element) {
     EchoRender.Property.Color.renderFB(this.component, element);
     EchoRender.Property.Font.renderDefault(this.component, element);
 };
@@ -34,4 +34,18 @@ EchoRender.ComponentSync.Composite.prototype.renderUpdate = function(update) {
     this.renderAdd(update, containerElement);
 };
 
+/**
+ * Component rendering peer: Panel
+ */
+EchoRender.ComponentSync.Panel = function() { };
+
+EchoRender.ComponentSync.Panel.prototype = new EchoRender.ComponentSync.Composite;
+
+EchoRender.ComponentSync.Panel.prototype._renderStyle = function(element) {
+	EchoRender.ComponentSync.Composite.prototype._renderStyle.call(this, element);
+    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), element);
+    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, element, "padding");
+};
+
 EchoRender.registerPeer("Composite", EchoRender.ComponentSync.Composite);
+EchoRender.registerPeer("Panel", EchoRender.ComponentSync.Panel);
