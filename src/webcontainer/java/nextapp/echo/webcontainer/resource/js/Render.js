@@ -462,7 +462,7 @@ EchoRender.Property.Alignment.renderComponentProperty
     
     if (renderToElement) {
         element.align = horizontalValue;
-        elmeent.valign = verticalValue;
+        element.valign = verticalValue;
     } else {
         element.style.textAlign = horizontalValue;
         element.style.verticalAlign = verticalValue;
