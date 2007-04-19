@@ -143,7 +143,8 @@ EchoApp.Application.prototype.getFocusedComponent = function() {
  * @type EchoApp.LayoutDirection 
  */
 EchoApp.Application.prototype.getLayoutDirection = function() {
-    return this._layoutDirection;
+	// FIXME ensure layout direction gets set upon application instantiation
+    return this._layoutDirection ? this._layoutDirection : EchoApp.LayoutDirection.LTR;
 };
 
 /**
@@ -538,10 +539,10 @@ EchoApp.Component.prototype.getRenderIndexedProperty = function(name, index, def
 EchoApp.Component.prototype.getRenderLayoutDirection = function() {
     if (this._layoutDirection == null) { 
         if (this.parent == null) {
-            if (this.applicationInstance == null) {
+            if (this.application == null) {
                 return null;
             } else {
-                return this.applicationInstance.getLayoutDirection();
+                return this.application.getLayoutDirection();
             }
         } else {
             return this.parent.getRenderLayoutDirection();
@@ -632,6 +633,7 @@ EchoApp.Component.prototype.indexOf = function(component) {
  * @type Boolean
  */
 EchoApp.Component.prototype.isActive = function() {
+    // FIXME implement this
     return true;
 };
 
@@ -955,7 +957,7 @@ EchoApp.LayoutDirection = function() {
  * @return true if the layout direction is left-to-right
  * @type Boolean
  */
-EchoApp.LayoutDirection.isLeftToRight = function() {
+EchoApp.LayoutDirection.prototype.isLeftToRight = function() {
     return this._ltr;
 };
 
