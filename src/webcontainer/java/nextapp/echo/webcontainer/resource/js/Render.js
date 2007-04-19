@@ -1,3 +1,6 @@
+// FIXME. Investigate "defaultValue" argument in property rendering peers...currently it is ignored,
+// should be delete it or should we correctly implement it?
+
 /**
  * NAMESPACE: Component Rendering Peers.
  * Do not instantiate.
@@ -818,6 +821,33 @@ EchoRender.TriCellTable.prototype.configure3 = function(id, orientation0_1, marg
             this.tdElements[2].rowSpan = rows;
             if (this.marginTdElements[1]) {
                 this.marginTdElements[1].rowSpan = rows;
+            }
+            
+            var trElement = document.createElement("tr");
+            if (orientation01_2 & INVERTED) {
+                if (orientation0_1 & INVERTED) {
+                    this.addColumn(trElement, tdElements[1]);
+                } else {
+                    this.addColumn(trElement, tdElements[0]);
+                }
+                this.addColumn(trElement, this.marginTdElements[1]);
+                this.addColumn(trElement, this.tdElements[2]);
+            } else {
+                this.addColumn(trElement, this.tdElements[2]);
+                this.addColumn(trElement, this.marginTdElements[1]);
+                if (orientation0_1 & INVERTED) {
+                    this.addColumn(trElement, tdElements[1]);
+                } else {
+                    this.addColumn(trElement, tdElements[0]);
+                }
+            }
+            
+            tbodyElement.appendChild(trElement);
+            this.addRow(marginTdElements[0]);
+            if (orientation0_1 & INVERTED) {
+                this.addRow(tdElements[0]);
+            } else {
+                this.addRow(tdElements[1]);
             }
         }
     }

@@ -49,7 +49,6 @@ import nextapp.echo.app.util.Context;
  *  <li><code>UserInstance</code></li>
  * </ul>
  */
-
 public interface ComponentSynchronizePeer {
     
     /**
