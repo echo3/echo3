@@ -31,16 +31,16 @@ package nextapp.echo.app.serial.property;
 
 import org.w3c.dom.Element;
 
-import nextapp.echo.app.layout.GridLayoutData;
+import nextapp.echo.app.layout.CellLayoutData;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialUtil;
 import nextapp.echo.app.util.Context;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>GridLayoutData</code> properties.
+ * <code>XmlPropertyPeer</code> for <code>CellLayoutData</code> properties.
  */
-public class GridLayoutDataPeer
-extends CellLayoutDataPeer {
+public class CellLayoutDataPeer
+extends LayoutDataPeer {
 
     /**
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
@@ -48,13 +48,11 @@ extends CellLayoutDataPeer {
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
-        super.toXml(context, objectClass, propertyElement, propertyValue);
-    	GridLayoutData layoutData = (GridLayoutData) propertyValue;
-        if (layoutData.getColumnSpan() > 1) {
-            SerialUtil.toXml(context, GridLayoutData.class, propertyElement, "columnSpan", new Integer(layoutData.getColumnSpan()));
-        }
-        if (layoutData.getRowSpan() > 1) {
-            SerialUtil.toXml(context, GridLayoutData.class, propertyElement, "rowSpan", new Integer(layoutData.getRowSpan()));
-        }
+    	CellLayoutData layoutData = (CellLayoutData) propertyValue;
+        propertyElement.setAttribute("t", "LayoutData");
+        SerialUtil.toXml(context, CellLayoutData.class, propertyElement, "alignment", layoutData.getAlignment());
+        SerialUtil.toXml(context, CellLayoutData.class, propertyElement, "background", layoutData.getBackground());
+        SerialUtil.toXml(context, CellLayoutData.class, propertyElement, "backgroundImage", layoutData.getBackgroundImage());
+        SerialUtil.toXml(context, CellLayoutData.class, propertyElement, "insets", layoutData.getInsets());
     }
 }
