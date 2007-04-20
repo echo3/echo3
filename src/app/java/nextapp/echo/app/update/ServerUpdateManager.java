@@ -200,18 +200,17 @@ implements Serializable {
      * @return true if an ancestor of the component is being added
      */
     private boolean isAncestorBeingAdded(Component component) {
-        Iterator it = componentUpdateMap.keySet().iterator();
-        while (it.hasNext()) {
-            Component testParent = (Component) it.next();
-            if (testParent.isAncestorOf(component)) {
-                ServerComponentUpdate update = (ServerComponentUpdate) componentUpdateMap.get(testParent);
-                Component[] addedChildren = update.getAddedChildren();
-                for (int i = 0; i < addedChildren.length; ++i) {
-                    if (addedChildren[i].isAncestorOf(component)) {
-                        return true;
-                    }
+        Component child = component;
+        Component parent = component.getParent();
+        while (parent != null) {
+            ServerComponentUpdate update = (ServerComponentUpdate) componentUpdateMap.get(parent);
+            if (update != null) {
+                if (update.hasAddedChild(child)) {
+                    return true;
                 }
             }
+            child = parent;
+            parent = parent.getParent();
         }
         return false;
     }
