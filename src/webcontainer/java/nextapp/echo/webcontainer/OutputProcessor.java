@@ -2,10 +2,9 @@ package nextapp.echo.webcontainer;
 
 import java.io.IOException;
 import java.util.Iterator;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
@@ -21,6 +20,10 @@ import nextapp.echo.app.update.ServerUpdateManager;
 import nextapp.echo.app.update.UpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * Generates an XML <code>ServerMessage</code> describing server-side changes to the
@@ -203,22 +206,31 @@ public class OutputProcessor {
                     rmElement.setAttribute("i", UserInstance.getElementId(removedChildren[j]));
                 }
                 
+                Component parentComponent = componentUpdates[i].getParent();
+                
                 // Added children.
                 Component[] addedChildren = componentUpdates[i].getAddedChildren();
                 if (addedChildren.length > 0) {
                     Element addElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "add");
                     String parentId;
                     //FIXME. Ugly hack for root window id.  Need to either render window as a div...or something.
-                    if (componentUpdates[i].getParent() instanceof Window) {
+                    if (parentComponent instanceof Window) {
                         parentId = "c_root";
                     } else {
-                        parentId = UserInstance.getElementId(componentUpdates[i].getParent());
+                        parentId = UserInstance.getElementId(parentComponent);
                     }
                     addElement.setAttribute("i", parentId);
+                    // sort components by their index
+                    SortedMap indexedComponents = new TreeMap();
                     for (int j = 0; j < addedChildren.length; ++j) {
-                        Element cElement = renderComponentState(addElement, addedChildren[j]);
-                        cElement.setAttribute("x", 
-                                Integer.toString(componentUpdates[i].getParent().indexOf(addedChildren[j])));
+                        Component addedChild = addedChildren[j];
+                        indexedComponents.put(new Integer((parentComponent.indexOf(addedChild))), addedChild);
+                    }
+                    Iterator indexedComponentsIter = indexedComponents.entrySet().iterator();
+                    while (indexedComponentsIter.hasNext()) {
+                        Entry entry = (Entry)indexedComponentsIter.next();
+                        Element cElement = renderComponentState(addElement, (Component)entry.getValue());
+                        cElement.setAttribute("x", ((Integer)entry.getKey()).toString()); 
                     }
                 }
                 
@@ -227,8 +239,8 @@ public class OutputProcessor {
                 String[] updatedPropertyNames = componentUpdates[i].getUpdatedPropertyNames();
                 if (updatedPropertyNames.length > 0) {
                     Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
-                    upElement.setAttribute("i", UserInstance.getElementId(componentUpdates[i].getParent()));
-                    renderUpdatedProperties(upElement, componentUpdates[i].getParent(), updatedPropertyNames);
+                    upElement.setAttribute("i", UserInstance.getElementId(parentComponent));
+                    renderUpdatedProperties(upElement, parentComponent, updatedPropertyNames);
                 }
                 
                 Component[] updatedLayoutDataChildren = componentUpdates[i].getUpdatedLayoutDataChildren();
