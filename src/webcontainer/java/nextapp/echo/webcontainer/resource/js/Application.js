@@ -472,7 +472,7 @@ EchoApp.Component.prototype.getComponent = function(index) {
  * @return the number of child components
  * @type Number
  */
-EchoApp.Component.prototype.getComponentCount = function(index) {
+EchoApp.Component.prototype.getComponentCount = function() {
     return this.children.items.length;
 };
 
