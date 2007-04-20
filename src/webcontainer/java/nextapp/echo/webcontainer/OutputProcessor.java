@@ -283,6 +283,10 @@ public class OutputProcessor {
         while (propertyNameIterator.hasNext()) {
             String propertyName = (String) propertyNameIterator.next();
             Object propertyValue = componentPeer.getOutputProperty(context, c, propertyName);
+            if (propertyValue == null) {
+                // default is null, no need to sent down
+                continue;
+            }
             SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
             if (propertySyncPeer == null) {
                 //FIXME. figure out how these should be handled...ignoring is probably best.
