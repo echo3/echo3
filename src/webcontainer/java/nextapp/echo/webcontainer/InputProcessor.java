@@ -101,12 +101,16 @@ public class InputProcessor {
 
                 Class propertyClass = componentPeer.getPropertyClass(propertyName);
                 if (propertyClass == null) {
+                    //FIXME. add ex handling.
+                    System.err.println("Could not determine class of property: " + propertyName);
                     continue;
                 }
                 
                 SerialPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(propertyClass);
                 
                 if (propertyPeer == null) {
+                    //FIXME. add ex handling.
+                    System.err.println("No peer available for property: " + propertyName + " of class: " + propertyClass);
                     continue;
                 }
                 
