@@ -93,7 +93,6 @@ public class WelcomePane extends ContentPane {
         continueButton.setStyleName("ControlPane.Button");
         continueButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.err.println("displaying test pane");
                 InteractiveApp.getApp().displayTestPane();
             }
         });
