@@ -366,6 +366,8 @@ EchoWebCore.EventProcessor._processEvent = function(e) {
     for (var i = elementAncestry.length - 1; i >= 0; --i) {
         listenerList = EchoWebCore.EventProcessor._capturingListenerMap.get(elementAncestry[i].id);
         if (listenerList) {
+            // Set registered target on event.
+            e.registeredTarget = elementAncestry[i];
             if (!listenerList.fireEvent(e)) {
                 propagate = false;
             }
@@ -380,6 +382,8 @@ EchoWebCore.EventProcessor._processEvent = function(e) {
         // Fire event to bubbling listeners.
         for (var i = 0; i < elementAncestry.length; ++i) {
             listenerList = EchoWebCore.EventProcessor._bubblingListenerMap.get(elementAncestry[i].id);
+            // Set registered target on event.
+            e.registeredTarget = elementAncestry[i];
             if (listenerList) {
                 if (!listenerList.fireEvent(e)) {
                     propagate = false;
