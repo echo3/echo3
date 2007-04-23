@@ -182,6 +182,7 @@ EchoRender.ComponentSync.Table.prototype.renderUpdate = function(update) {
     EchoRender.Util.renderRemove(update, update.parent);
     var containerElement = EchoRender.Util.getContainerElement(update.parent);
     this.renderAdd(update, containerElement);
+    return true;
 };
 
 EchoRender.ComponentSync.Table.prototype.renderDispose = function(update) {
