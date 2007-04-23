@@ -16,6 +16,7 @@ EchoRemoteClient = function(serverUrl, domainElementId) {
     this.application = new EchoApp.Application(domainElementId);
     this.application.addComponentUpdateListener(new EchoCore.MethodRef(this, this._processComponentUpdate));
     this._storeUpdates = false;
+    this._updateManager = this.application.updateManager;
     
     this._urlMappings = new EchoCore.Collections.Map();
     this._urlMappings.put("S", this._serverUrl + "?sid=Echo.StreamImage&imageuid=");
@@ -81,7 +82,7 @@ EchoRemoteClient.prototype._processSyncComplete = function(e) {
         EchoCore.profilingTimer.mark("RemoteClient: Deserialized");
     }
     
-	EchoRender.processUpdates(this.application.updateManager);
+	EchoRender.processUpdates(this._updateManager);
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
     
@@ -106,7 +107,12 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
 
     var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
     serverMessage.addCompletionListener(new EchoCore.MethodRef(this, this._processSyncComplete));
-    serverMessage.process();
+    try {
+    	this._updateManager.setSimplifiedStateUpdatesEnabled(true);
+	    serverMessage.process();
+    } finally {
+    	this._updateManager.setSimplifiedStateUpdatesEnabled(false);
+    }
 };
 
 EchoRemoteClient.prototype.sync = function() {

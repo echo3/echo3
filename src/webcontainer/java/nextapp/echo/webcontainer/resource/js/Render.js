@@ -156,7 +156,9 @@ EchoRender.processUpdates = function(updateManager) {
     
     var updates = updateManager.getUpdates();
     
-    updates.sort(EchoRender._componentDepthArraySort);
+    if (!updateManager.isSimplifiedStateUpdatesEnabled()) {
+	    updates.sort(EchoRender._componentDepthArraySort);
+    }
 
     for (var i = 0; i < updates.length; ++i) {
         var peers = updates[i].parent.peer;
