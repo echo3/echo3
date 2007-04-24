@@ -134,14 +134,16 @@ EchoRender._componentDepthArraySort = function(a, b) {
 };
 
 EchoRender._processDispose = function(update) {
-    if (update.removedDescendants) {
-        for (var i = 0; i < update.removedDescendants.items.length; ++i) {
-            EchoRender._renderComponentDisposeImpl(update, update.removedDescendants.items[i], false);
+    var components = update.getRemovedDescendants();
+    if (components) {
+        for (var i = 0; i < components.length; ++i) {
+            EchoRender._renderComponentDisposeImpl(update, components[i], false);
         }
     }
-    if (update.removedChildren) {
-        for (var i = 0; i < update.removedChildren.items.length; ++i) {
-            EchoRender._renderComponentDisposeImpl(update, update.removedChildren.items[i], true);
+    components = update.getRemovedChildren();
+    if (update.removedChildIds) {
+        for (var i = 0; i < components.length; ++i) {
+            EchoRender._renderComponentDisposeImpl(update, components[i], true);
         }
     }
 };

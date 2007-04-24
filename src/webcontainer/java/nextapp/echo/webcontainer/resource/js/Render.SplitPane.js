@@ -410,24 +410,19 @@ EchoRender.ComponentSync.SplitPane.prototype.renderUpdate = function(update) {
         // Full render
         fullRender = true;
     } else {
-        if (update.hasRemovedChildren()) {
+        var removedChildren = update.getRemovedChildren();
+        if (removedChildren) {
             // Remove children.
-            var removedChildren = update.getRemovedChildren();
-            var length = removedChildren.size();
-            for (var i = 0; i < length; ++i) {
-                var child = removedChildren.items[i];
-                this._renderRemoveChild(update, child);
+            for (var i = 0; i < removedChildren.length; ++i) {
+                this._renderRemoveChild(update, removedChildren[i]);
             }
         }
-        if (update.hasAddedChildren()) {
+        var addedChildren = update.getAddedChildren();
+        if (addedChildren) {
             // Add children.
-            var addedChildren = update.getAddedChildren();
-            var length = addedChildren.size();
-            var splitPaneDivElemenet = document.getElementById(this.component.renderId);
-            for (var i = 0; i < length; ++i) {
-                var child = addedChildren.items[i];
-                var index = this.component.indexOf(child);
-                this._renderAddChild(update, child, splitPaneDivElemenet, index); 
+            var splitPaneDivElement = document.getElementById(this.component.renderId);
+            for (var i = 0; i < addedChildren.length; ++i) {
+                this._renderAddChild(update, addedChildren[i], splitPaneDivElement, this.component.indexOf(addedChildren[i])); 
             }
         }
     }

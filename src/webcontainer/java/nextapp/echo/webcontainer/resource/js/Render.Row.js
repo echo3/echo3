@@ -133,24 +133,20 @@ EchoRender.ComponentSync.Row.prototype.renderUpdate = function(update) {
         // Full render
         fullRender = true;
     } else {
-        if (update.hasRemovedChildren()) {
+        var removedChildren = update.getRemovedChildren();
+        if (removedChildren) {
             // Remove children.
-            var removedChildren = update.getRemovedChildren();
-            var length = removedChildren.size();
-            for (var i = 0; i < length; ++i) {
-                var child = removedChildren.items[i];
+            for (var i = 0; i < removedChildren.length; ++i) {
+                var child = removedChildren[i];
                 this._renderRemoveChild(update, child);
             }
         }
-        if (update.hasAddedChildren()) {
+        var addedChildren = update.getAddedChildren();
+        if (addedChildren) {
             // Add children.
-            var addedChildren = update.getAddedChildren();
-            var length = addedChildren.size();
             var trElemenet = document.getElementById(this.component.renderId + "_tr");
-            for (var i = 0; i < length; ++i) {
-                var child = addedChildren.items[i];
-                var index = this.component.indexOf(child);
-                this._renderAddChild(update, child, trElemenet, index); 
+            for (var i = 0; i < addedChildren.length; ++i) {
+                this._renderAddChild(update, addedChildren[i], trElemenet, this.component.indexOf(addedChildren[i])); 
             }
         }
     }

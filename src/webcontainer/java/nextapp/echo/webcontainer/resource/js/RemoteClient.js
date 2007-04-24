@@ -108,10 +108,11 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
     serverMessage.addCompletionListener(new EchoCore.MethodRef(this, this._processSyncComplete));
     try {
-    	this._updateManager.setSimplifiedStateUpdatesEnabled(true);
+        //FIXME. Temporarily disabled for major overhaul of update manager code.
+    	//this._updateManager.setSimplifiedStateUpdatesEnabled(true);
 	    serverMessage.process();
     } finally {
-    	this._updateManager.setSimplifiedStateUpdatesEnabled(false);
+    	//this._updateManager.setSimplifiedStateUpdatesEnabled(false);
     }
 };
 

@@ -47,6 +47,44 @@ EchoCore.tokenizeString = function(string, delimiter) {
     return tokens;
 };
 
+EchoCore.Arrays = function() { };
+
+EchoCore.Arrays.remove = function(array, item) {
+    for (var i = 0; i < array.length; ++i) {
+        if (item == array[i]) {
+            array.splice(i, 1);
+        }
+    }
+};
+
+EchoCore.Arrays.removeEqual = function(array, item) {
+    for (var i = 0; i < array.length; ++i) {
+        if ((item.equals && item.equals(array[i])) || item == array[i]) {
+            array.splice(i, 1);
+        }
+    }
+};
+
+EchoCore.Arrays.removeDuplicates = function(array) {
+    array.sort();
+    var removeCount = 0;
+    // Iterate from last element to second element.
+    for (var i = array.length - 1; i > 0; --i) {
+        // Determine if element is equivalent to previous element.
+        if (array[i] == array[i - 1]) {
+            // If duplicate, copy last element in array over current element.
+            array[i] = array[array.length - 1 - removeCount];
+            
+            // Increment removeCount (indicating how much the length of the array should be decremented)
+            ++removeCount;
+        }
+    }
+    
+    if (removeCount > 0) {
+        array.length = array.length - removeCount;
+    }
+};
+
 /**
  * @class EchoCore.Collections Namespace.  Non-instantiable object.
  */

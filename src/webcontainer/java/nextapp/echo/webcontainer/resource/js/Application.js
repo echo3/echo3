@@ -1772,46 +1772,52 @@ EchoApp.Update = function() { };
  * @class Representation of an update to a single existing component 
  *        which is currently rendered on the screen.
  */
-EchoApp.Update.ComponentUpdate = function(parent) {
+EchoApp.Update.ComponentUpdate = function(manager, parent) {
 
     /**
+     * The <code>Manager</code> to which this update belongs.
+     * @type Array
+     */
+    this._manager = manager;
+    
+    /**
      * The parent component represented in this <code>ServerComponentUpdate</code>.
-     * @type EchoApp.Component
+     * @type Array
      */
     this.parent = parent;
 
     /**
-     * The set of child <code>Component</code>s added to the <code>parent</code>.
-     * @type EchoCore.Collections.Set
+     * The set of child Component ids added to the <code>parent</code>.
+     * @type Array
      */
-    this.addedChildren = null;
+    this._addedChildIds = null;
     
     /**
-     * A mapping between property names of the <code>parent</code> component and 
+     * A mapping between property names of the parent component and 
      * <code>PropertyUpdate</code>s.
-     * @type EchoCore.Collections.Map
+     * @type Object
      */
-    this.propertyUpdates = null;
+    this._propertyUpdates = null;
     
     /**
-     * The set of child <code>Component</code>s removed from the <code>parent</code>.
-     * @type EchoCore.Collections.Set
+     * The set of child Component ids removed from the <code>parent</code>.
+     * @type Array
      */
-    this.removedChildren = null;
+    this._removedChildIds = null;
     
     /**
-     * The set of descendant <code>Component</code>s which are implicitly removed 
+     * The set of descendant Component ids which are implicitly removed 
      * as they were children of removed children.
-     * @type EchoCore.Collections.Set
+     * @type Array
      */
-    this.removedDescendants = null;
+    this._removedDescendantIds = null;
 
     /**
-     * The set of child <code>Component</code>s whose <code>LayoutData</code> 
+     * The set of child Component ids whose <code>LayoutData</code> 
      * was updated. 
-     * @type EchoCore.Collections.Set
+     * @type Array
      */
-    this.updatedLayoutDataChildren = null;
+    this._updatedLayoutDataChildIds = null;
 };
 
 /**
@@ -1821,10 +1827,11 @@ EchoApp.Update.ComponentUpdate = function(parent) {
  * @private
  */
 EchoApp.Update.ComponentUpdate.prototype._addChild = function(child) {
-    if (!this.addedChildren) {
-        this.addedChildren = new EchoCore.Collections.Set();
+    if (!this._addedChildIds) {
+        this._addedChildIds = new Array();
     }
-    this.addedChildren.add(child);
+    this._addedChildIds.push(child.renderId);
+    this._manager._idMap[child.renderId] = child;
 };
 
 /**
@@ -1839,86 +1846,81 @@ EchoApp.Update.ComponentUpdate.prototype._addChild = function(child) {
  */
 EchoApp.Update.ComponentUpdate.prototype._appendRemovedDescendants = function(update) {
     // Append removed descendants.
-    if (update.removedDescendants != null) {
-        if (this.removedDescendants == null) {
-            removedDescendants = new EchoCore.Collections.Set();
+    if (update._removedDescendantIds != null) {
+        if (this._removedDescendantIds == null) {
+            this._removedDescendantIds = new Array();
         }
-        for (var x in update.removedDescendants.items) {
-            this.removedDescendants.add(x);
+        for (var x in update._removedDescendantIds) {
+            this._removedDescendantIds.push(x);
         }
     }
     
     // Append removed children.
-    if (update.removedChildren != null) {
-        if (this.removedDescendants == null) {
-            removedDescendants = new EchoCore.Collections.Set();
+    if (update._removedChildIds != null) {
+        if (this._removedDescendantIds == null) {
+            this._removedDescendantIds = new Array();
         }
-        for (var x in update.removedChildren.items) {
-            this.removedDescendants.add(x);
+        for (var x in update._removedChildIds) {
+            this._removedDescendantIds.push(x);
         }
     }
+    
+    EchoCore.Arrays.removeDuplicates(this._removedDescendantIds);
 };
 
-/**
- * Retrives children that have been added to the component.
- * 
- * @return the set of added child components
- * @type EchoCore.Collections.Set
- */
 EchoApp.Update.ComponentUpdate.prototype.getAddedChildren = function() {
-    return this.addedChildren;
+    if (!this._addedChildIds) {
+        return null;
+    }
+    var components = new Array(this._addedChildIds.length);
+    for (var i = 0; i < this._addedChildIds.length; ++i) {
+        components[i] = this._manager._idMap[this._addedChildIds[i]];
+    }
+    return components;
 };
 
-/**
- * Retrives children that have been removed from the component.
- * 
- * @return the set of removed child components
- * @type EchoCore.Collections.Set
- */
 EchoApp.Update.ComponentUpdate.prototype.getRemovedChildren = function() {
-    return this.removedChildren;
+    if (!this._removedChildIds) {
+        return null;
+    }
+    var components = new Array(this._removedChildIds.length);
+    for (var i = 0; i < this._removedChildIds.length; ++i) {
+        components[i] = this._manager._idMap[this._removedChildIds[i]];
+    }
+    return components;
 };
 
-/**
- * Determines if the component has had any children added.
- * 
- * @return true if children have been added
- * @type Boolean
- */
-EchoApp.Update.ComponentUpdate.prototype.hasAddedChildren = function() {
-    return this.addedChildren != null;
+EchoApp.Update.ComponentUpdate.prototype.getRemovedDescendants = function() {
+    if (!this._removedDescendantIds) {
+        return null;
+    }
+    var components = new Array(this._removedDescendantIds.length);
+    for (var i = 0; i < this._removedDescendantIds.length; ++i) {
+        components[i] = this._manager._idMap[this._removedDescendantIds[i]];
+    }
+    return components;
 };
 
-/**
- * Determines if the component has had any children removed.
- * 
- * @return true if children have been removed
- * @type Boolean
- */
-EchoApp.Update.ComponentUpdate.prototype.hasRemovedChildren = function() {
-    return this.removedChildren != null;
+EchoApp.Update.ComponentUpdate.prototype.getUpdatedLayoutDataChildren = function() {
+    if (!this._updatedLayoutDataChildIds) {
+        return null;
+    }
+    var components = new Array(this._updatedLayoutDataChildIds.length);
+    for (var i = 0; i < this._updatedLayoutDataChildIds.length; ++i) {
+        components[i] = this._manager._idMap[this._updatedLayoutDataChildIds[i]];
+    }
+    return components;
 };
 
-/**
- * Determines if any children of the component have had their LayoutData
- * properties updated.
- * 
- * @return true if any child LayoutDatas have been updated
- * @type Boolean
- */
-EchoApp.Update.ComponentUpdate.prototype.hasUpdatedLayoutDataChildren = function() {
-    return this.updatedLayoutDataChildren != null;
+EchoApp.Update.ComponentUpdate.prototype.hasUpdatedLayoutDataChildren= function() {
+    return this._updatedLayoutDataChildIds != null;
 };
 
-/**
- * Determines if the component has any updated properties.
- * 
- * @return true if any properties have been updated
- * @type Boolean
- */
 EchoApp.Update.ComponentUpdate.prototype.hasUpdatedProperties = function() {
-    return this.propertyUpdates != null;
+    return this._propertyUpdates != null;
 };
+
+//FIXME. methods req to get property names, property updates.
 
 /**
  * Records the removal of a child from the parent component.
@@ -1927,25 +1929,27 @@ EchoApp.Update.ComponentUpdate.prototype.hasUpdatedProperties = function() {
  * @private
  */
 EchoApp.Update.ComponentUpdate.prototype._removeChild = function(child) {
-    if (this.addedChildren != null && this.addedChildren.contains(child)) {
+    this._manager._idMap[child.renderId] = child;
+
+    if (this._addedChildIds) {
         // Remove child from add list if found.
-        this.addedChildren.remove(child);
+        EchoCore.Arrays.remove(this._addedChildIds, child.renderId);
     }
     
-    if (this.updatedLayoutDataChildren != null && this.updatedLayoutDataChildren.containes(child)) {
+    if (this._updatedLayoutDataChildIds) {
         // Remove child from updated layout data list if found.
-        this.updatedLayoutDataChildren.remove(child);
+        EchoCore.Arrays.remove(this._updatedLayoutDataChildIds, child.renderId);
     }
 
-    if (this.removedChildren == null) {
-        this.removedChildren = new EchoCore.Collections.Set();
+    if (!this._removedChildIds) {
+        this._removedChildIds = new Array();
     }
     
-    this.removedChildren.add(child);
+    this._removedChildIds.push(child.renderId);
 
-     for (var i = 0; i < child.children.items.length; ++i) {
-          this._removeDescendant(child.children.items[i]);
-     }
+    for (var i = 0; i < child.children.items.length; ++i) {
+        this._removeDescendant(child.children.items[i]);
+    }
 };
 
 /**
@@ -1959,10 +1963,11 @@ EchoApp.Update.ComponentUpdate.prototype._removeChild = function(child) {
  * @param {EchoApp.Component} descendant the removed descendant 
  */
 EchoApp.Update.ComponentUpdate.prototype._removeDescendant = function(descendant) {
-    if (this.removedDescendants == null) {
-        this.removedDescendants = new EchoCore.Collections.Set();
+    this._manager._idMap[descendant.renderId] = descendant;
+    if (!this._removedDescendantIds) {
+        this._removedDescendantIds = new Array();
     }
-    this.removedDescendants.add(descendant);
+    this._removedDescendantIds.push(descendant.renderId);
     for (var i = 0; i < descendant.children.items.length; ++i) {
         this._removeDescendant(descendant.children.items[i]);
     }
@@ -1977,11 +1982,11 @@ EchoApp.Update.ComponentUpdate.prototype._removeDescendant = function(descendant
 EchoApp.Update.ComponentUpdate.prototype.toString = function() {
     var s = "ComponentUpdate\n";
     s += "- Parent: " + this.parent + "\n";
-    s += "- Adds: " + this.addedChildren + "\n";
-    s += "- Removes: " + this.removedChildren + "\n";
-    s += "- DescendantRemoves: " + this.removedDescendants + "\n";
-    s += "- Properties: " + this.propertyUpdates + "\n";
-    s += "- LayoutDatas: " + this.updatedLayoutDataChildren + "\n";
+    s += "- Adds: " + this._addedChildIds + "\n";
+    s += "- Removes: " + this._removedChildIds + "\n";
+    s += "- DescendantRemoves: " + this._removedDescendantIds + "\n";
+    s += "- Properties: " + this._propertyUpdates + "\n";
+    s += "- LayoutDatas: " + this._updatedLayoutDataChildIds + "\n";
     return s;
 };
 
@@ -1992,10 +1997,11 @@ EchoApp.Update.ComponentUpdate.prototype.toString = function() {
  * @private
  */
 EchoApp.Update.ComponentUpdate.prototype._updateLayoutData = function(child) {
-	if (this.updatedLayoutDataChildren == null) {
-		this.updatedLayoutDataChildren = new EchoCore.Collections.Set();
+    this._manager._idMap[child.renderId] = child;
+	if (this._updatedLayoutDataChildIds == null) {
+		this._updatedLayoutDataChildIds = new Array();
 	}
-	this.updatedLayoutDataChildren.add(child);
+	this._updatedLayoutDataChildIds.push(child.renderId);
 };
 
 /**
@@ -2007,11 +2013,11 @@ EchoApp.Update.ComponentUpdate.prototype._updateLayoutData = function(child) {
  * @private
  */
 EchoApp.Update.ComponentUpdate.prototype._updateProperty = function(propertyName, oldValue, newValue) {
-    if (this.propertyUpdates == null) {
-        this.propertyUpdates = new EchoCore.Collections.Map();
+    if (this._propertyUpdates == null) {
+        this._propertyUpdates = new Object();
     }
 	var propertyUpdate = new EchoApp.Update.ComponentUpdate.PropertyUpdate(oldValue, newValue);
-	this.propertyUpdates.put(propertyName, propertyUpdate);
+	this._propertyUpdates[propertyName] = propertyUpdate;
 };
 
 /**
@@ -2042,6 +2048,12 @@ EchoApp.Update.Manager = function(application) {
     this._hasUpdates = true;
     this._listenerList = new EchoCore.ListenerList();
     this._simplifiedStateUpdates = false;
+    
+    /**
+     * Associative mapping between component ids and component instances for all
+     * updates held in this manager object.
+     */
+    this._idMap = new Object();
 };
 
 /**
@@ -2087,7 +2099,7 @@ EchoApp.Update.Manager.prototype._createComponentUpdate = function(parent) {
     this._hasUpdates = true;
     var update = this.componentUpdateMap.get(parent.renderId);
     if (!update) {
-        update = new EchoApp.Update.ComponentUpdate(parent);
+        update = new EchoApp.Update.ComponentUpdate(this, parent);
         this.componentUpdateMap.put(parent.renderId, update);
     }
     return update;
@@ -2109,6 +2121,10 @@ EchoApp.Update.Manager.prototype.dispose = function() {
 EchoApp.Update.Manager.prototype._fireUpdate = function() {
     var e = new EchoCore.Event(this, "update");
     this._listenerList.fireEvent(e);
+};
+
+EchoApp.Update.Manager.prototype.getComponent = function(id) {
+    return this._idMap[id];
 };
 
 /**
@@ -2148,9 +2164,9 @@ EchoApp.Update.Manager.prototype._isAncestorBeingAdded = function(component) {
     var parent = component.parent;
     while (parent != null) {
         var update = this.componentUpdateMap.associations[parent.renderId];
-        if (update && update.addedChildren) {
-            for (var i = 0; i < update.addedChildren.items.length; ++i) {
-                if (update.addedChildren.items[i].renderId == child.renderId) {
+        if (update && update._addedChildIds) {
+            for (var i = 0; i < update._addedChildIds.length; ++i) {
+                if (update._addedChildIds[i] == child.renderId) {
                     return true;
                 }
             }
@@ -2286,6 +2302,7 @@ EchoApp.Update.Manager.prototype._processComponentUpdate = function(e) {
 EchoApp.Update.Manager.prototype.purge = function() {
     this.componentUpdateMap = new EchoCore.Collections.Map();
     this.fullRefreshRequired = false;
+    this._idMap = new Object();
     this._hasUpdates = false;
 };
 
