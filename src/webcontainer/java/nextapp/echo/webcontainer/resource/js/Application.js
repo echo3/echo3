@@ -2144,16 +2144,19 @@ EchoApp.Update.Manager.prototype.hasUpdates = function() {
  * @type Boolean
  */
 EchoApp.Update.Manager.prototype._isAncestorBeingAdded = function(component) {
-    //TODO. This is a performance bottleneck for large adds.  Update to Echo(2) svn837+ version.
-    for (var testParentId in this.componentUpdateMap.associations) {
-         var update = this.componentUpdateMap.associations[testParentId];
-         if (update.parent.isAncestorOf(component) && update.addedChildren) {
-             for (var i = 0; i < update.addedChildren.items.length; ++i) {
-                 if (update.addedChildren.items[i].isAncestorOf(component)) {
-                     return true;
-                 }
-             }
-         }
+    var child = component;
+    var parent = component.parent;
+    while (parent != null) {
+        var update = this.componentUpdateMap.associations[parent.renderId];
+        if (update && update.addedChildren) {
+            for (var i = 0; i < update.addedChildren.items.length; ++i) {
+                if (update.addedChildren.items[i].renderId == child.renderId) {
+                    return true;
+                }
+            }
+        }
+        child = parent;
+        parent = parent.parent;
     }
     return false;
 };
