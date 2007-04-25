@@ -349,6 +349,8 @@ public class Table extends Component {
      * @param column the column
      * @param row the row
      * @return the component
+     * 
+     * @deprecated
      */
     public Component getCellComponent(int column, int row) {
         if (!valid) {

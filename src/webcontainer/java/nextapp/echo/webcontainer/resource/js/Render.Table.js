@@ -61,7 +61,7 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
             if (selectedIndices[i] == "") {
                 continue;
             }
-            this._setSelected(parseInt(selectedIndices[i]), true);
+            this._setSelected(parseInt(selectedIndices[i]), true, tableElement);
         }
     }
     
@@ -117,10 +117,13 @@ EchoRender.ComponentSync.Table.prototype._render100PercentWidthWorkaround = func
  * Renders an appropriate style for a row (i.e. selected or deselected).
  *
  * @param rowIndex {Number} the index of the row
+ * @param tableElement the table element, may be null
  */
-EchoRender.ComponentSync.Table.prototype._renderRowStyle = function(rowIndex) {
+EchoRender.ComponentSync.Table.prototype._renderRowStyle = function(rowIndex, tableElement) {
     var selected = this._isSelectionEnabled() && this.selectionModel.isSelectedIndex(rowIndex);
-    var tableElement = document.getElementById(this.component.renderId);
+    if (!tableElement) {
+    	tableElement = document.getElementById(this.component.renderId);
+    }
     var trElement = tableElement.rows[rowIndex + (this._isHeaderVisible() ? 1 : 0)];
     
     for (var i = 0; i < trElement.cells.length; ++i) {
@@ -216,20 +219,23 @@ EchoRender.ComponentSync.Table.prototype._getRowIndex = function(element) {
  *
  * @param {Number} rowIndex the index of the row
  * @param {Boolean} newValue the new selection state
+ * @param tableElement the table element, may be null
  */
-EchoRender.ComponentSync.Table.prototype._setSelected = function(rowIndex, newValue) {
+EchoRender.ComponentSync.Table.prototype._setSelected = function(rowIndex, newValue, tableElement) {
     this.selectionModel.setSelectedIndex(rowIndex, newValue);
-    this._renderRowStyle(rowIndex);
+    this._renderRowStyle(rowIndex, tableElement);
 };
 
 /**
  * Deselects all selected rows.
+ * 
+ * @param tableElement the table element, may be null
  */
-EchoRender.ComponentSync.Table.prototype._clearSelected = function() {
+EchoRender.ComponentSync.Table.prototype._clearSelected = function(tableElement) {
     var rowCount = this._getRowCount();
     for (var i = 0; i < rowCount; ++i) {
         if (this.selectionModel.isSelectedIndex(i)) {
-            this._setSelected(i, false);
+            this._setSelected(i, false, tableElement);
         }
     }
 };
@@ -242,6 +248,12 @@ EchoRender.ComponentSync.Table.prototype._clearSelected = function() {
  * @param tableElement the table element
  */
 EchoRender.ComponentSync.Table.prototype._addEventListeners = function(tableElement) {
+    /*
+    if (!this.component.getRenderProperty("enabled")) {
+    	return;
+    }
+    */
+    
     var selectionEnabled = this._isSelectionEnabled();
     var rolloverEnabled = this._isRolloverEnabled();
     
@@ -288,8 +300,10 @@ EchoRender.ComponentSync.Table.prototype._processClick = function(e) {
     
     EchoWebCore.DOM.preventEventDefault(e);
 
+    var tableElement = trElement.parentNode.parentNode;
+    
     if (this.selectionModel.isSingleSelection() || !(e.shiftKey || e.ctrlKey || e.metaKey || e.altKey)) {
-        this._clearSelected();
+        this._clearSelected(tableElement);
     }
 
     if (e.shiftKey && this.lastSelectedIndex != -1) {
@@ -303,11 +317,11 @@ EchoRender.ComponentSync.Table.prototype._processClick = function(e) {
             endIndex = this.lastSelectedIndex;
         }
         for (var i = startIndex; i <= endIndex; ++i) {
-            this._setSelected(i, true);
+            this._setSelected(i, true, tableElement);
         }
     } else {
         this.lastSelectedIndex = rowIndex;
-        this._setSelected(rowIndex, !this.selectionModel.isSelectedIndex(rowIndex));
+        this._setSelected(rowIndex, !this.selectionModel.isSelectedIndex(rowIndex), tableElement);
     }
     
     this.component.setProperty("selection", this.selectionModel.getSelectionString());
@@ -346,7 +360,9 @@ EchoRender.ComponentSync.Table.prototype._processRolloverExit = function(e) {
         return;
     }
 
-    this._renderRowStyle(rowIndex);
+    var tableElement = trElement.parentNode.parentNode;
+    
+    this._renderRowStyle(rowIndex, tableElement);
 };
 
 // property accessors
