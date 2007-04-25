@@ -84,6 +84,10 @@ implements SerialPropertyPeer {
             PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
             SerialPropertyPeer imagePropertyPeer = propertyPeerFactory.getPeerForProperty(ResourceImageReference.class);
             imageReference = (ImageReference) imagePropertyPeer.toProperty(context, FillImage.class, fiElement);
+        } else if (imageType == null) {
+            throw new RuntimeException("No image type specified");
+        } else {
+            throw new RuntimeException("Unknown image type: " + imageType);
         }
         int repeat = REPEAT_CONSTANTS.get(fiElement.getAttribute("r"), FillImage.REPEAT);
         Extent x = fiElement.hasAttribute("x") ? ExtentPeer.fromString(fiElement.getAttribute("x") ) : null;
