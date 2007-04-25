@@ -2049,11 +2049,23 @@ EchoApp.Update.Manager = function(application) {
     this._listenerList = new EchoCore.ListenerList();
     this._simplifiedStateUpdates = false;
     
+    this._last
+    
     /**
      * Associative mapping between component ids and component instances for all
      * updates held in this manager object.
      */
     this._idMap = new Object();
+
+    /** 
+     * The id of the last parent component whose child was analyzed by
+     * _isAncestorBeingAdded() that resulted in that method returning false.
+     * This id is stored for performance optimization purposes.
+     * @type String
+     */
+    this._lastAncestorTestParentId = null;
+
+
 };
 
 /**
@@ -2162,7 +2174,13 @@ EchoApp.Update.Manager.prototype.hasUpdates = function() {
 EchoApp.Update.Manager.prototype._isAncestorBeingAdded = function(component) {
     var child = component;
     var parent = component.parent;
-    while (parent != null) {
+    
+    var originalParentId = parent ? parent.renderId : null;
+    if (originalParentId && this._lastAncestorTestParentId == originalParentId) {
+        return false;
+    }
+    
+    while (parent) {
         var update = this.componentUpdateMap.associations[parent.renderId];
         if (update && update._addedChildIds) {
             for (var i = 0; i < update._addedChildIds.length; ++i) {
@@ -2174,6 +2192,8 @@ EchoApp.Update.Manager.prototype._isAncestorBeingAdded = function(component) {
         child = parent;
         parent = parent.parent;
     }
+    
+    this._lastAncestorTestParentId = originalParentId;
     return false;
 };
 
@@ -2304,6 +2324,7 @@ EchoApp.Update.Manager.prototype.purge = function() {
     this.fullRefreshRequired = false;
     this._idMap = new Object();
     this._hasUpdates = false;
+    this._lastAncestorTestParentId = null;
 };
 
 /**

@@ -87,7 +87,7 @@ EchoRemoteClient.prototype._processSyncComplete = function(e) {
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
     
     if (EchoCore.profilingTimer) {
-        alert(EchoCore.profilingTimer);
+        EchoCore.Debug.consoleWrite(EchoCore.profilingTimer);
         EchoCore.profilingTimer = null;
     }
 };
@@ -103,7 +103,7 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     }
     
     // Profiling Timer (Uncomment to enable).
-    // EchoCore.profilingTimer = new EchoCore.Debug.Timer();
+    EchoCore.profilingTimer = new EchoCore.Debug.Timer();
 
     var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
     serverMessage.addCompletionListener(new EchoCore.MethodRef(this, this._processSyncComplete));
