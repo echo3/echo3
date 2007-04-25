@@ -2047,7 +2047,6 @@ EchoApp.Update.Manager = function(application) {
     this.application.addComponentUpdateListener(new EchoCore.MethodRef(this, this._processComponentUpdate));
     this._hasUpdates = true;
     this._listenerList = new EchoCore.ListenerList();
-    this._simplifiedStateUpdates = false;
     
     this._last
     
@@ -2075,27 +2074,6 @@ EchoApp.Update.Manager = function(application) {
  */
 EchoApp.Update.Manager.prototype.addUpdateListener = function(l) {
     this._listenerList.addListener("update", l);
-};
-
-/**
- * Returns whether simplified state updates are enabled or disabled.
- * 
- * @return true if simplified state updates are enabled
- * @type Boolean
- */
-EchoApp.Update.Manager.prototype.isSimplifiedStateUpdatesEnabled = function() {
-    return this._simplifiedStateUpdates;
-};
-
-/**
- * Enables or disables simplified state updates, simplified state updates have the following properties:
- *  - updates are sorted by hierarchy
- *  - updates that are not necessary because an ancestor is being added are not present
- * 
- * @param newState true to enable simplified state updates
- */
-EchoApp.Update.Manager.prototype.setSimplifiedStateUpdatesEnabled = function(newState) {
-    this._simplifiedStateUpdates = newState;
 };
 
 /**
@@ -2208,7 +2186,7 @@ EchoApp.Update.Manager.prototype._processComponentAdd = function(parent, child) 
     if (this.fullRefreshRequired) {
         return;
     }
-    if (!this._simplifiedStateUpdates && this._isAncestorBeingAdded(child)) {
+    if (this._isAncestorBeingAdded(child)) {
         return;
     };
     var update = this._createComponentUpdate(parent);
@@ -2226,7 +2204,7 @@ EchoApp.Update.Manager.prototype._processComponentLayoutDataUpdate = function(up
         return;
     }
     var parent = updatedComponent.parent;
-    if (parent == null || (!this._simplifiedStateUpdates && this._isAncestorBeingAdded(parent))) {
+    if (parent == null || this._isAncestorBeingAdded(parent)) {
         return;
     }
     var update = this._createComponentUpdate(parent);
@@ -2244,7 +2222,7 @@ EchoApp.Update.Manager.prototype._processComponentRemove = function(parent, chil
     if (this.fullRefreshRequired) {
         return;
     }
-    if (!this._simplifiedStateUpdates && this._isAncestorBeingAdded(parent)) {
+    if (this._isAncestorBeingAdded(parent)) {
         return;
     }
     var update = this._createComponentUpdate(parent);
@@ -2286,7 +2264,7 @@ EchoApp.Update.Manager.prototype._processComponentPropertyUpdate = function(comp
 	if (this.fullRefreshRequired) {
 		return;
 	}
-	if (!this._simplifiedStateUpdates && this._isAncestorBeingAdded(component)) {
+	if (this._isAncestorBeingAdded(component)) {
 		return;
 	}
 	var update = this._createComponentUpdate(component);

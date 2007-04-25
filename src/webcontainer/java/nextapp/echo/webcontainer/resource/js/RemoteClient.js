@@ -103,17 +103,11 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     }
     
     // Profiling Timer (Uncomment to enable).
-    EchoCore.profilingTimer = new EchoCore.Debug.Timer();
+    //EchoCore.profilingTimer = new EchoCore.Debug.Timer();
 
     var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
     serverMessage.addCompletionListener(new EchoCore.MethodRef(this, this._processSyncComplete));
-    try {
-        //FIXME. Temporarily disabled for major overhaul of update manager code.
-    	//this._updateManager.setSimplifiedStateUpdatesEnabled(true);
-	    serverMessage.process();
-    } finally {
-    	//this._updateManager.setSimplifiedStateUpdatesEnabled(false);
-    }
+    serverMessage.process();
 };
 
 EchoRemoteClient.prototype.sync = function() {
