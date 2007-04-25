@@ -858,6 +858,9 @@ EchoRender.TriCellTable.prototype.configure3 = function(id, orientation0_1, marg
 
 EchoRender.Util = function() { };
 
+// FIXME abstract this somehow so it works with FreeClient too
+EchoRender.Util.TRANSPARENT_IMAGE = "?sid=Echo.TransparentImage";
+
 /**
  * Convenience method to return the parent DOM element into which a 
  * component should be rendered.
