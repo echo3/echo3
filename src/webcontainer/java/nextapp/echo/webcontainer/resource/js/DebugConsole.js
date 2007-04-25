@@ -40,13 +40,28 @@ EchoDebugConsole._consoleWrite = function(text) {
 
 EchoDebugConsole._init = function() {
     var windowElement = document.createElement("div");
-    windowElement.setAttribute("id", EchoDebugConsole._BASE_ID);
-    windowElement.setAttribute("style", "position: absolute; top: 20px; right: 20px; height: 300px; width: 300px; "
-            + "background: #2f2f3f; color: #3fff6f; border: 5px solid #3f6fff; overflow: hidden; z-index: 32767;");
+    windowElement.id = EchoDebugConsole._BASE_ID;
+    windowElement.style.position = "absolute";
+    windowElement.style.top = "20px";
+    windowElement.style.right = "20px";
+    windowElement.style.width = "300px";
+    windowElement.style.height = "300px";
+    windowElement.style.background = "#2f2f3f";
+    windowElement.style.color = "#3fff6f";
+    windowElement.style.border = "5px solid #3f6fff";
+    windowElement.style.overflow = "hidden";
+    windowElement.style.zIndex = 32767;
     
     var titleBarElement = document.createElement("div");
-    titleBarElement.setAttribute("style", "position: absolute; top: 1px; left: 1px; width: 278px; height: 20px;"
-            + "padding: 3px 10px; background: #5f5f8f; color: #ffffff; overflow: hidden;");
+    titleBarElement.style.position = "absolute";
+    titleBarElement.style.top = "1px";
+    titleBarElement.style.left = "1px";
+    titleBarElement.style.width = "278px";
+    titleBarElement.style.height = "20px";
+    titleBarElement.style.padding = "3px 10px";
+    titleBarElement.style.background = "#5f5f8f";
+    titleBarElement.style.color = "#ffffff";
+    titleBarElement.style.overflow = "hidden";
     titleBarElement.appendChild(document.createTextNode("/ Debug Console /"));
     windowElement.appendChild(titleBarElement);
 
@@ -64,8 +79,14 @@ EchoDebugConsole._init = function() {
 
     var contentElement = document.createElement("div");
     contentElement.setAttribute("id", EchoDebugConsole._CONTENT_ID);
-    contentElement.setAttribute("style", "position: absolute; top: 28px; left: 1px; width: 278px; height: 265px; " +
-            "padding: 3px 10px; background: #1f1f2f; overflow:auto;")
+    contentElement.style.position = "absolute";
+    contentElement.style.top = "28px";
+    contentElement.style.left = "1px";
+    contentElement.style.width = "278px";
+    contentElement.style.height = "265px";
+    contentElement.style.padding = "3px 10px";
+    contentElement.style.background = "#1f1f2f";
+    contentElement.style.overflow = "auto";
     windowElement.appendChild(contentElement);
     
     document.getElementsByTagName("body")[0].appendChild(windowElement);
