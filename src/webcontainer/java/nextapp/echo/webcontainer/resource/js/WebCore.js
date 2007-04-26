@@ -823,6 +823,41 @@ EchoWebCore.Render.Measure.prototype.toString = function() {
     return this.width + "x" + this.height;
 };
 
+EchoWebCore.Render.Measure.Bounds = function(element) {
+	var cumOffset = EchoWebCore.Render.Measure.Bounds._getCumulativeOffset(element);
+    var scrollOffset = EchoWebCore.Render.Measure.Bounds._getScrollOffset(element);
+	var measure = new EchoWebCore.Render.Measure(element);
+    
+    this.top = cumOffset.top - scrollOffset.top;
+    this.left = cumOffset.left - scrollOffset.left;
+    this.width = measure.width;
+    this.height = measure.height;
+};
+
+EchoWebCore.Render.Measure.Bounds._getScrollOffset = function(element) {
+    var valueT = 0, valueL = 0;
+    do {
+      valueT += element.scrollTop  || 0;
+      valueL += element.scrollLeft || 0; 
+      element = element.parentNode;
+    } while (element);
+    return {left: valueL, top: valueT};
+};
+
+EchoWebCore.Render.Measure.Bounds._getCumulativeOffset = function(element) {
+    var valueT = 0, valueL = 0;
+    do {
+      valueT += element.offsetTop  || 0;
+      valueL += element.offsetLeft || 0;
+      element = element.offsetParent;
+    } while (element);
+    return {left: valueL, top: valueT};
+};
+
+EchoWebCore.Render.Measure.Bounds.prototype.toString = function() {
+    return this.width + "x" + this.height + "@" + this.left + "," + this.top;
+};
+
 /**
  * Static object/namespace which provides cross-platform CSS positioning 
  * capabilities.  Internet Explorer 6 is ordinarily handicapped by its lack
