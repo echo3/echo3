@@ -72,7 +72,6 @@ EchoSerial._loadComponentEvent = function(client, eventElement, component) {
  */
 EchoSerial.loadProperty = function(client, propertyElement, object) {
     var propertyName = propertyElement.getAttribute("n");
-    var propertyValue = propertyElement.getAttribute("v");
     var propertyType = propertyElement.getAttribute("t");
     
     if (propertyType) {
