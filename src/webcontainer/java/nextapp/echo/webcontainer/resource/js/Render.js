@@ -504,15 +504,13 @@ EchoRender.Property.Border.renderSide = function(borderSide, element, styleName)
 EchoRender.Property.Color = function() { };
 
 EchoRender.Property.Color.render = function(color, element, styleProperty) {
-    //FIXME. broken.
-    var color = component.getRenderProperty(componentProperty);
     element.style[styleProperty] = color ? color.value : "";
 };
 
 EchoRender.Property.Color.renderComponentProperty = function(component, componentProperty, defaultValue, element, styleProperty) { 
     var color = component.getRenderProperty ? component.getRenderProperty(componentProperty)
             : component.getProperty(componentProperty);
-    element.style[styleProperty] = color ? color.value : (defaultValue ? defaultValue.value : "");
+    EchoRender.Property.Color.render(color ? color : defaultValue, element, styleProperty);
 };
 
 EchoRender.Property.Color.renderFB = function(component, element) { 
@@ -577,6 +575,10 @@ EchoRender.Property.Font.renderComponentProperty = function(component, component
         element) {
     var font = component.getRenderProperty ? component.getRenderProperty(componentProperty)
             : component.getProperty(componentProperty);
+    EchoRender.Property.Font.render(font ? font : defaultValue, element);
+};
+
+EchoRender.Property.Font.render = function(font, element) {
     if (!font) {
         return;
     }
