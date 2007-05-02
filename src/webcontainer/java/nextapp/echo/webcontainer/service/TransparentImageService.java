@@ -47,6 +47,10 @@ public class TransparentImageService {
         WebContainerServlet.getServiceRegistry().add(INSTANCE);
     }
     
+    public static void install() {
+        // Do nothing, simply ensure static directives are executed.
+    }
+    
     private TransparentImageService() {
         super();
     }
