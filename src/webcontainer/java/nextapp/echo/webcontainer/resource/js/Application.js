@@ -1136,6 +1136,11 @@ EchoApp.Property.Border = function() {
         this.size = new EchoApp.Property.Extent(items[0]);
         this.style = items[1];
         this.color = new EchoApp.Property.Color(items[2]);
+    } else if (arguments.length == 3) {
+        this.multisided = false;
+        this.size = arguments[0];
+        this.style = arguments[1];
+        this.color = arguments[2];
     }
 };
 
