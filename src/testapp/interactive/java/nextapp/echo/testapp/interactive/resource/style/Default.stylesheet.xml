@@ -65,7 +65,7 @@
   <p n="foreground" t="Color" v="#ffffff"/>
   <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
    <p n="alignment" t="Alignment">
-    <a x="center"/>
+    <a h="center"/>
    </p>
    <p n="background" t="Color" v="#1b1b21"/>
    <p n="backgroundImage" t="FillImage">
