@@ -116,7 +116,7 @@ public class InputProcessor {
                 
                 try {
                     Object propertyValue = propertyPeer.toProperty(context, component.getClass(), propertyElement);
-                    componentPeer.storeInputProperty(context, component, propertyName, propertyValue);
+                    componentPeer.storeInputProperty(context, component, propertyName, -1, propertyValue);
                 } catch (SerialException ex) {
                     //FIXME. bad ex handling.
                     throw new IOException(ex.toString());

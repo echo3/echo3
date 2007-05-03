@@ -76,11 +76,10 @@ public class SplitPanePeer extends AbstractComponentSynchronizePeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context,
-     *      nextapp.echo.app.Component, java.lang.String, java.lang.Object)
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context,
+     *      nextapp.echo.app.Component, java.lang.String, int, java.lang.Object)
      */
-    public void storeInputProperty(Context context, Component component, String propertyName, Object newValue) {
-        super.storeInputProperty(context, component, propertyName, newValue);
+    public void storeInputProperty(Context context, Component component, String propertyName, int index, Object newValue) {
         ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
         if (SplitPane.PROPERTY_SEPARATOR_POSITION.equals(propertyName)) {
             clientUpdateManager.setComponentProperty(component, SplitPane.PROPERTY_SEPARATOR_POSITION, newValue);

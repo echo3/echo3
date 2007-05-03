@@ -102,7 +102,7 @@ public interface ComponentSynchronizePeer {
      * @param propertyName the name of the property being rendered
      * @return the property value
      */
-    public Object getOutputProperty(Context context, Component component, String propertyName);
+    public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex);
     
     /**
      * Returns an <code>Iterator</code> over the collection of names of all
@@ -119,6 +119,10 @@ public interface ComponentSynchronizePeer {
      * @return an <code>Iterator</code> of property names
      */
     public Iterator getOutputPropertyNames(Context context, Component component);
+    
+    public boolean isOutputPropertyIndexed(Context context, Component component, String propertyName);
+    
+    public Iterator getOutputPropertyIndices(Context context, Component component, String propertyName);
     
     /**
      * Determines if the component type supports sending the specified property to the client.
@@ -164,7 +168,10 @@ public interface ComponentSynchronizePeer {
      *        </ul>
      * @param component the updated <code>Component</code>
      * @param propertyName the name of the property
+     * @param propertyIndex the index of the property 
+     *        (or -1 in the typical case of a non-indexed property)
      * @param newValue the new value of the property
      */
-    public void storeInputProperty(Context context, Component component, String propertyName, Object newValue);
+    public void storeInputProperty(Context context, Component component, String propertyName, 
+            int propertyIndex, Object newValue);
 }

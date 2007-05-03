@@ -56,7 +56,7 @@ public class OutputProcessor {
              * @see nextapp.echo.app.serial.SerialContext#getDocument()
              */
             public Document getDocument() {
-                return serverMessage.getDocument();
+                return document;
             }
         };
         
@@ -84,6 +84,7 @@ public class OutputProcessor {
     private ServerMessage serverMessage;
     private Context context;
     private PropertyPeerFactory propertyPeerFactory;
+    private Document document;
     
     /**
      * Creates a new <code>OutputProcessor</code>.
@@ -96,6 +97,7 @@ public class OutputProcessor {
         this.conn = conn;
         this.context = new OutputContext();
         serverMessage = new ServerMessage();
+        document = serverMessage.getDocument();
         propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME temporary
     }
     
@@ -159,7 +161,7 @@ public class OutputProcessor {
         if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
             // Print ServerMessage to console. 
             try {
-                DomUtil.save(serverMessage.getDocument(), System.err, DomUtil.OUTPUT_PROPERTIES_INDENT);
+                DomUtil.save(document, System.err, DomUtil.OUTPUT_PROPERTIES_INDENT);
             } catch (SAXException ex) {
                 // Should not generally occur.
                 throw new RuntimeException(ex);
@@ -282,20 +284,7 @@ public class OutputProcessor {
         Iterator propertyNameIterator = componentPeer.getOutputPropertyNames(context, c);
         while (propertyNameIterator.hasNext()) {
             String propertyName = (String) propertyNameIterator.next();
-            Object propertyValue = componentPeer.getOutputProperty(context, c, propertyName);
-            if (propertyValue == null) {
-                // default is null, no need to sent down
-                continue;
-            }
-            SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
-            if (propertySyncPeer == null) {
-                //FIXME. figure out how these should be handled...ignoring is probably best.
-                continue;
-            }
-            Element pElement = document.createElement("p");
-            pElement.setAttribute("n", propertyName);
-            propertySyncPeer.toXml(context, c.getClass(), pElement, propertyValue);
-            cElement.appendChild(pElement);
+            renderProperty(cElement, componentPeer, c, propertyName, false);
         }
         
         // Render immediate event flags.
@@ -340,6 +329,60 @@ public class OutputProcessor {
                 }
             }
         }
+    }
+    
+    private void renderProperty(Element parentElement, ComponentSynchronizePeer componentPeer, 
+            Component c, String propertyName, boolean renderNulls) 
+    throws SerialException {
+        boolean indexedProperty = componentPeer.isOutputPropertyIndexed(context, c, propertyName);
+        if (indexedProperty) {
+            Iterator indicesIt = componentPeer.getOutputPropertyIndices(context, c, propertyName);
+            while (indicesIt.hasNext()) {
+                int index = ((Integer) indicesIt.next()).intValue();
+                renderPropertyImpl(parentElement, componentPeer, c, propertyName, index, renderNulls);
+            }
+        } else {
+            renderPropertyImpl(parentElement, componentPeer, c, propertyName, -1, renderNulls);
+        }
+    }
+
+    private void renderPropertyImpl(Element parentElement, ComponentSynchronizePeer componentPeer, 
+            Component c, String propertyName, int propertyIndex, boolean renderNulls) 
+    throws SerialException {
+        Object propertyValue = componentPeer.getOutputProperty(context, c, propertyName, propertyIndex);
+        if (propertyValue == null && !renderNulls) {
+            // Abort immediately if rendering of nulls is not desired.
+            return;
+        }
+        
+        // Create property element.
+        Element pElement = document.createElement("p");
+        
+        // Set property name.
+        pElement.setAttribute("n", propertyName);
+        
+        if (propertyIndex != -1) {
+            // Set property index.
+            pElement.setAttribute("x", Integer.toString(propertyIndex));
+        }
+        
+        if (propertyValue == null) {
+            // Set nulll property value.
+            pElement.setAttribute("t", "0");
+        } else {
+            // Set non-null property value.
+            // Obtain appropriate peer.
+            SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
+            if (propertySyncPeer == null) {
+                // Unsupported property: do nothing.
+                return;
+            }
+            // Render property value.
+            propertySyncPeer.toXml(context, c.getClass(), pElement, propertyValue);
+        }
+        
+        // Append to parent element.
+        parentElement.appendChild(pElement);
     }
     
     private void renderStyleSheet() 
@@ -392,17 +435,18 @@ public class OutputProcessor {
                 //FIXME. figure out how these should be handled...ignoring is probably best.
                 continue;
             }
+            
+            //FIXME these need to handle indexed properties.
             Element pElement = document.createElement("p");
             pElement.setAttribute("n", propertyName);
             propertySyncPeer.toXml(context, objectClass, pElement, propertyValue);
             parentElement.appendChild(pElement);
         }
     }
-
+    
     private void renderUpdatedProperties(Element upElement, Component c, 
             String[] updatedPropertyNames) 
     throws SerialException {
-        Document document = serverMessage.getDocument();
         ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
         if (componentPeer == null) {
             throw new IllegalStateException("No synchronize peer found for component: " + c.getClass().getName());
@@ -418,22 +462,7 @@ public class OutputProcessor {
                 continue;
             }
             
-            Element pElement = document.createElement("p");
-            pElement.setAttribute("n", updatedPropertyNames[i]);
-            Object propertyValue = componentPeer.getOutputProperty(context, c, updatedPropertyNames[i]);
-            if (propertyValue == null) {
-                pElement.setAttribute("t", "0");
-                //FIXME. handle properties changed to null.  (Edit: um...doesn't this do exactly that?  Verify.)
-            } else {
-                SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(
-                        propertyValue.getClass());
-                if (propertySyncPeer == null) {
-                    //FIXME. figure out how these should be handled...ignoring is probably best.
-                    continue;
-                }
-                propertySyncPeer.toXml(context, c.getClass(), pElement, propertyValue);
-            }
-            upElement.appendChild(pElement);
+            renderProperty(upElement, componentPeer, c, updatedPropertyNames[i], true);
         }
     }
 }

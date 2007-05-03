@@ -53,14 +53,15 @@ public abstract class TextComponentPeer extends AbstractComponentSynchronizePeer
     }
     
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputProperty(Context, nextapp.echo.app.Component, java.lang.String)
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputProperty(
+     *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, int)
      */
-    public Object getOutputProperty(Context context, Component component, String propertyName) {
+    public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex) {
         if (propertyName.equals(TextComponent.TEXT_CHANGED_PROPERTY)) {
             TextComponent textComponent = (TextComponent) component;
             return textComponent.getText();
         } else {
-            return super.getOutputProperty(context, component, propertyName);
+            return super.getOutputProperty(context, component, propertyName, propertyIndex);
         }
     }
 

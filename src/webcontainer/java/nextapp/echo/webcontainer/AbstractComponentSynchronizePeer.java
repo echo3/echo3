@@ -12,10 +12,10 @@ import nextapp.echo.app.util.Context;
 
 public abstract class AbstractComponentSynchronizePeer 
 implements ComponentSynchronizePeer {
-    
+
     private Set additionalProperties = null;
     private Set stylePropertyNames = null;
-    
+    private Set indexedPropertyNames = null;
     private String clientComponentType;
 
     public AbstractComponentSynchronizePeer() {
@@ -29,6 +29,7 @@ implements ComponentSynchronizePeer {
         
         try {
             stylePropertyNames = new HashSet();
+            indexedPropertyNames = new HashSet();
             Class componentClass = getComponentClass();
             ComponentIntrospector ci = (ComponentIntrospector) IntrospectorFactory.get(componentClass.getName(),
                     componentClass.getClassLoader());
@@ -37,6 +38,9 @@ implements ComponentSynchronizePeer {
                 String propertyName = (String) propertyNameIt.next();
                 if (ci.getStyleConstantName(propertyName) != null) {
                     stylePropertyNames.add(propertyName);
+                    if (ci.isIndexedProperty(propertyName)) {
+                        indexedPropertyNames.add(propertyName);
+                    }
                 }
             }
         } catch (ClassNotFoundException ex) {
@@ -83,8 +87,15 @@ implements ComponentSynchronizePeer {
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputProperty(nextapp.echo.app.util.Context,
      *      nextapp.echo.app.Component, java.lang.String)
      */
-    public Object getOutputProperty(Context context, Component component, String propertyName) {
+    public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex) {
         return component.getLocalStyle().getProperty(propertyName);
+    }
+    
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputPropertyIndices(nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String)
+     */
+    public Iterator getOutputPropertyIndices(Context context, Component component, String propertyName) {
+        return component.getLocalStyle().getPropertyIndices(propertyName);
     }
     
     /**
@@ -155,12 +166,17 @@ implements ComponentSynchronizePeer {
     }
 
     /**
-     * Default implementation: do nothing, accept no input properties.
-     * 
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context,
-     *      nextapp.echo.app.Component, java.lang.String, java.lang.Object)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#isIndexedProperty(nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String)
      */
-    public void storeInputProperty(Context context, Component component, String propertyName, Object newValue) {
+    public boolean isOutputPropertyIndexed(Context context, Component component, String propertyName) {
+        return indexedPropertyNames.contains(propertyName);
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context, 
+     *      nextapp.echo.app.Component, java.lang.String, int, java.lang.Object)
+     */
+    public void storeInputProperty(Context context, Component component, String propertyName, int index, Object newValue) {
         // Do nothing.
     }
 }
