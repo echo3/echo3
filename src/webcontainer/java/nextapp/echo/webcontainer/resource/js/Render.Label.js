@@ -21,6 +21,7 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
     
     if (text) {
         if (icon) {
+			// FIXME render icon
             labelElement = this._createSingleItemSpanElement(document.createTextNode(icon + "/" + text));
         } else {
             labelElement = this._createSingleItemSpanElement(document.createTextNode(text));
