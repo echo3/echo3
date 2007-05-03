@@ -1,3 +1,5 @@
+// FIXME render enabled/disabled fonts
+
 /**
  * Component rendering peer: Button
  */
