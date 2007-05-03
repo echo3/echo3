@@ -88,7 +88,11 @@ implements ComponentSynchronizePeer {
      *      nextapp.echo.app.Component, java.lang.String)
      */
     public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex) {
-        return component.getLocalStyle().getProperty(propertyName);
+        if (propertyIndex == -1) {
+            return component.getLocalStyle().getProperty(propertyName);
+        } else {
+            return component.getLocalStyle().getIndexedProperty(propertyName, propertyIndex);
+        }
     }
     
     /**
