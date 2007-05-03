@@ -73,6 +73,7 @@ EchoSerial._loadComponentEvent = function(client, eventElement, component) {
 EchoSerial.loadProperty = function(client, propertyElement, object) {
     var propertyName = propertyElement.getAttribute("n");
     var propertyType = propertyElement.getAttribute("t");
+    var propertyIndex = propertyElement.getAttribute("x");
     
     if (propertyType) {
         // Invoke custom property processor.
@@ -80,7 +81,11 @@ EchoSerial.loadProperty = function(client, propertyElement, object) {
         if (!translator) {
             throw new Error("Translator not available for property type: " + propertyType);
         }
-        object.setProperty(propertyName, translator.toProperty(client, propertyElement));
+        if (propertyIndex == null) {
+            object.setProperty(propertyName, translator.toProperty(client, propertyElement));
+        } else {
+            object.setIndexedProperty(propertyName, propertyIndex, translator.toProperty(client, propertyElement));
+        }
     } else {
         throw new Error("No property type specified for property: " + propertyName);
     }

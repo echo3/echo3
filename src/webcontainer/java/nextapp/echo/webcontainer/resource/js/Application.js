@@ -759,9 +759,9 @@ EchoApp.Component.prototype.removeListener = function(eventType, eventTarget) {
  * 
  * @param {String} name the name of the property
  * @param {Number} index the index of the property
- * @param value the new value of the property
+ * @param newValue the new value of the property
  */
-EchoApp.Component.prototype.setIndexedProperty = function(name, index, value) {
+EchoApp.Component.prototype.setIndexedProperty = function(name, index, newValue) {
     var oldValue = this._internalStyle.getIndexedProperty(name, index);
     this._internalStyle.setIndexedProperty(name, index, newValue);
     if (this.application) {
@@ -922,9 +922,9 @@ EchoApp.LayoutData.prototype.getProperty = function(name) {
  * 
  * @param {String} name the name of the property
  * @param {Number} the (integer) property index
- * @param value the new property value
+ * @param newValue the new property value
  */
-EchoApp.LayoutData.prototype.setIndexedProperty = function(name, index, value) {
+EchoApp.LayoutData.prototype.setIndexedProperty = function(name, index, newValue) {
     this._internalStyle.setIndexedProperty(name, index, newValue);
 };
 
@@ -1682,10 +1682,10 @@ EchoApp.Style.prototype.getProperty = function(name) {
  * @param value the new value of the property 
  */
 EchoApp.Style.prototype.setIndexedProperty = function(name, index, value) {
-    var indexValues = _propertyMap.get(name);
+    var indexValues = this._propertyMap.get(name);
     if (!indexValues) {
         indexValues = new Array();
-        _propertyMap.put(name, indexValues);
+        this._propertyMap.put(name, indexValues);
     }
     indexValues[index] = value;
 };
