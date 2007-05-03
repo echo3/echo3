@@ -75,6 +75,17 @@ implements Service {
     throws IOException;
     
     /**
+     * Gets the image with the specified id.
+     * 
+     * @param userInstance the <code>UserInstance</code> from which the image was requested
+     * @param imageId the id of the image
+     * @return the image if found, <code>null</code> otherwise.
+     */
+    public ImageReference getImage(UserInstance userInstance, String imageId) {
+        return (ImageReference) userInstance.getIdTable().getObject(imageId);
+    }
+    
+    /**
      * @see nextapp.echo.webcontainer.Service#service(nextapp.echo.webcontainer.Connection)
      */
     public void service(Connection conn)
@@ -89,7 +100,7 @@ implements Service {
             serviceBadRequest(conn, "Image UID not specified.");
             return;
         }
-        ImageReference imageReference = (ImageReference) userInstance.getIdTable().getObject(imageId);
+        ImageReference imageReference = getImage(userInstance, imageId);
         
         if (imageReference == null) {
             serviceBadRequest(conn, "Image UID is not valid.");
