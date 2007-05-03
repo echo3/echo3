@@ -63,15 +63,6 @@ public interface ComponentSynchronizePeer {
      * @return the <code>Class</code>
      */
     public Class getComponentClass();
-    
-    /**
-     * Returns the <code>Class</code> of the specified input/output
-     * property of the component.
-     * 
-     * @param propertyName the name of the property
-     * @return the property <code>Class</code>
-     */
-    public Class getPropertyClass(String propertyName);
 
     /**
      * Determines the types of events which, when fired on the client,
@@ -141,19 +132,13 @@ public interface ComponentSynchronizePeer {
     public Iterator getOutputPropertyNames(Context context, Component component);
     
     /**
-     * Determines if the specified output property is indexed.
+     * Returns the <code>Class</code> of the specified input/output
+     * property of the component.
      * 
-     * @param context the relevant <code>Context</code>, provides 
-     *        standard contextual information described in class description, in
-     *        addition to the following:
-     *        <ul>
-     *         <li>ServerMessage</li>
-     *        </ul>
-     * @param component the component
-     * @param propertyName the property name
-     * @return true if the property is indexed
+     * @param propertyName the name of the property
+     * @return the property <code>Class</code>
      */
-    public boolean isOutputPropertyIndexed(Context context, Component component, String propertyName);
+    public Class getPropertyClass(String propertyName);
     
     /**
      * Determines if the component type supports sending the specified property to the client.
@@ -183,6 +168,21 @@ public interface ComponentSynchronizePeer {
      *        </ul>
      */
     public void init(Context context);
+    
+    /**
+     * Determines if the specified output property is indexed.
+     * 
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
+     * @param component the component
+     * @param propertyName the property name
+     * @return true if the property is indexed
+     */
+    public boolean isOutputPropertyIndexed(Context context, Component component, String propertyName);
     
     /**
      * Processes a property update from the client.
