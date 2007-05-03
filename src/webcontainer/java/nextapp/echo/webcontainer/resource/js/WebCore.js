@@ -259,6 +259,7 @@ EchoWebCore.Environment._init = function() {
             env.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY = true;
             env.QUIRK_CSS_BACKGROUND_ATTACHMENT_USE_FIXED = true;
             env.QUIRK_IE_SELECT_Z_INDEX = true;
+            env.NOT_SUPPORTED_CSS_MAX_HEIGHT = true;
         }
     }
 };
