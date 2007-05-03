@@ -100,6 +100,8 @@ public interface ComponentSynchronizePeer {
      *        </ul>
      * @param component the <code>Component</code> being rendered
      * @param propertyName the name of the property being rendered
+     * @param propertyIndex the property index (only relevant for indexed properties, -1 will
+     *        be provided for non-indexed properties)
      * @return the property value
      */
     public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex);
