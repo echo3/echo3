@@ -73,9 +73,7 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
         
         // Render spacing div first if index != 0 and cell spacing enabled.
         if (this.cellSpacing && parentElement.firstChild) {
-            var spacingDivElement = document.createElement("div");
-            spacingDivElement.style.height = this.cellSpacing + "px";
-            parentElement.appendChild(spacingDivElement);
+            parentElement.appendChild(this._renderSpacing());
         }
 
         // Render child div second.
@@ -90,11 +88,17 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
         
         // Then render spacing div if required.
         if (this.cellSpacing) {
-            var spacingDivElement = document.createElement("div");
-            spacingDivElement.style.height = this.cellSpacing + "px";
-            parentElement.insertBefore(spacingDivElement, beforeElement);
+            parentElement.insertBefore(this._renderSpacing(), beforeElement);
         }
     }
+};
+
+EchoRender.ComponentSync.Column.prototype._renderSpacing = function() {
+    var spacingDivElement = document.createElement("div");
+    spacingDivElement.style.height = this.cellSpacing + "px";
+    spacingDivElement.style.fontSize = "1px";
+    spacingDivElement.style.lineHeight = "0px";
+    return spacingDivElement;
 };
 
 EchoRender.ComponentSync.Column.prototype._renderRemoveChild = function(update, child) {
