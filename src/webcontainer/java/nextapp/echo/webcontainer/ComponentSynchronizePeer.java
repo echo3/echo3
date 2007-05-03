@@ -105,6 +105,24 @@ public interface ComponentSynchronizePeer {
     public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex);
     
     /**
+     * Determines which indices of a particular property are set.
+     * This method will only be invoked on properties where
+     * <code>isOutputPropertyIndexed()</code> has returned true.
+     * 
+     * @param contex the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
+     * @param component the component
+     * @param propertyName the property name
+     * @return an <code>Iterator</code> that returns the set indices in
+     *         incrementing order as <code>Integer</code>s
+     */
+    public Iterator getOutputPropertyIndices(Context context, Component component, String propertyName);
+    
+    /**
      * Returns an <code>Iterator</code> over the collection of names of all
      * output properties that should be rendered to the remote client. Only the
      * names of properties with non-default values should be returned.
@@ -120,9 +138,20 @@ public interface ComponentSynchronizePeer {
      */
     public Iterator getOutputPropertyNames(Context context, Component component);
     
+    /**
+     * Determines if the specified output property is indexed.
+     * 
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
+     * @param component the component
+     * @param propertyName the property name
+     * @return true if the property is indexed
+     */
     public boolean isOutputPropertyIndexed(Context context, Component component, String propertyName);
-    
-    public Iterator getOutputPropertyIndices(Context context, Component component, String propertyName);
     
     /**
      * Determines if the component type supports sending the specified property to the client.
