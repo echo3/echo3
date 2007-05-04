@@ -223,6 +223,7 @@ EchoRender.ComponentSync.SplitPane.prototype._redraw = function() {
             this._redrawItem(separatorDivElement, "right", this._separatorPosition + "px");
         }
     }
+    EchoWebCore.VirtualPosition.redraw();
 };
 
 EchoRender.ComponentSync.SplitPane.prototype._redrawItem = function(element, styleProperty, newValue) {
