@@ -2463,7 +2463,7 @@ EchoApp.SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP = 5;
 EchoApp.SplitPane.DEFAULT_SEPARATOR_POSITION = new EchoApp.Property.Extent("100px");
 EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED = new EchoApp.Property.Extent("0px");
 EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE = new EchoApp.Property.Extent("4px");
-EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR = new EchoApp.Property.Color("#3f007f");
+EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR = new EchoApp.Property.Color("#3f3f4f");
 
 EchoApp.SplitPane.OVERFLOW_AUTO = 0;
 EchoApp.SplitPane.OVERFLOW_HIDDEN = 1;
