@@ -31,6 +31,21 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     var tbodyElement = document.createElement("tbody");
     tableElement.appendChild(tbodyElement);
     
+    var colGroupElement = document.createElement("colgroup");
+    for (var columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
+        var colElement = document.createElement("col");
+        var width = gridProcessor.xExtents[columnIndex];
+        if (width != null) {
+            if (width.units == "%") {
+                colElement.width = width.toString();
+            } else {
+                colElement.width = EchoWebCore.Render.extentToPixels(width.value, width.units, true);
+            }
+        }
+        colGroupElement.appendChild(colElement);
+    }
+    tableElement.appendChild(colGroupElement);
+    
     var size = parseInt(this.component.getRenderProperty("size", 2));
     
     var trElement;
@@ -63,6 +78,7 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
             renderedComponentIds[cell.component.renderId] = true;
             
             var tdElement = document.createElement("td");
+            
             tdElement.id = this.component.renderId + "_" + cell.component.renderId;
             if (cell.xSpan > 1) {
                 tdElement.setAttribute(xSpan, cell.xSpan);
@@ -102,6 +118,7 @@ EchoRender.ComponentSync.Grid.Processor = function(grid) {
     this.grid = grid;
     this.cellArrays = new Array();
     this.horizontalOrientation = true;
+    
     
     var cells = this.createCells();
     if (cells == null) {
