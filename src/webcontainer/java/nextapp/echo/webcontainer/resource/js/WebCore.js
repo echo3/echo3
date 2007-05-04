@@ -32,6 +32,9 @@ EchoWebCore.init = function() {
 
     if (EchoWebCore.Environment.BROWSER_INTERNET_EXPLORER) {
         EchoWebCore.DOM.addEventListener(document, "selectstart", EchoWebCore._selectStartListener, false);
+        // Set documentElement.style.overflow to hidden in order to hide root scrollbar in IE.
+        // This is a non-standard CSS property.
+        document.documentElement.style.overflow = "hidden";
     }
     
     EchoWebCore.initialized = true;
