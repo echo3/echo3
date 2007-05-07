@@ -69,6 +69,7 @@ implements SerialPropertyPeer {
     }
     
     public static String toString(Insets insets) {
+        // FIXME handle null Extents
         if (insets.getTop().equals(insets.getBottom())) {
             if (insets.getLeft().equals(insets.getRight())) {
                 if (insets.getTop().equals(insets.getLeft())) {
