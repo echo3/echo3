@@ -146,6 +146,20 @@ EchoWebCore.DOM.getEventTarget = function(e) {
 };
 
 /**
+ * Returns the related target of an event, using the client's supported event model.
+ * On clients which support the W3C DOM Level 2 event specification,
+ * the <code>relatedTarget</code> property of the event is returned.
+ * On clients which support only the Internet Explorer event model,
+ * the <code>toElement</code> property of the event is returned.
+ *
+ * @param e the event
+ * @return the target
+ */
+EchoWebCore.DOM.getEventRelatedTarget = function(e) {
+    return e.relatedTarget ? e.relatedTarget : e.toElement;
+};
+
+/**
  * Prevents the default action of an event from occurring, using the
  * client's supported event model.
  * On clients which support the W3C DOM Level 2 event specification,
@@ -211,6 +225,26 @@ EchoWebCore.DOM.stopEventPropagation = function(e) {
     } else {
         e.cancelBubble = true;
     }
+};
+
+/**
+ * Determines if <code>ancestorNode</code> is or is an ancestor of
+ * <code>descendantNode</code>.
+ *
+ * @param ancestorNode the potential ancestor node
+ * @param descendantNode the potential descendant node
+ * @return true if <code>ancestorNode</code> is or is an ancestor of
+ *         <code>descendantNode</code>
+ */
+EchoWebCore.DOM.isAncestorOf = function(ancestorNode, descendantNode) {
+    var testNode = descendantNode;
+    while (testNode !== null) {
+        if (testNode == ancestorNode) {
+            return true;
+        }
+        testNode = testNode.parentNode;
+    }
+    return false;
 };
 
 EchoWebCore.Environment = function() { };
