@@ -304,10 +304,10 @@ EchoSerial.PropertyTranslator.FillImage._parseElement = function(client, fiEleme
     }
     var repeat = fiElement.getAttribute("r");
     switch (repeat) {
-    case "0": repeat = "no-repeat"; break;
-    case "xy": repeat = "repeat"; break;
-    case "x": repeat = "repeat-x"; break;
-    case "y": repeat = "repeat-y"; break;
+    case "0": repeat = EchoApp.Property.FillImage.NO_REPEAT; break;
+    case "xy": repeat = EchoApp.Property.FillImage.REPEAT; break;
+    case "x": repeat = EchoApp.Property.FillImage.REPEAT_HORIZONTAL; break;
+    case "y": repeat = EchoApp.Property.FillImage.REPEAT_VERTICAL; break;
     }
     var x = fiElement.getAttribute("x");
     var y = fiElement.getAttribute("y");

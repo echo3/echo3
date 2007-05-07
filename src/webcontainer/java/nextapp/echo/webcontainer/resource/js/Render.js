@@ -464,7 +464,7 @@ EchoRender.Property.Alignment.renderComponentProperty
     
     if (renderToElement) {
         element.align = horizontalValue;
-        element.valign = verticalValue;
+        element.vAlign = verticalValue;
     } else {
         element.style.textAlign = horizontalValue;
         element.style.verticalAlign = verticalValue;
@@ -549,13 +549,38 @@ EchoRender.Property.FillImage.render = function(fillImage, element, flags) {
         element.style.backgroundImage = "url(" + fillImage.image.url + ")";
     }
     
-    if (fillImage.repeat) {
-        element.style.backgroundRepeat = fillImage.repeat;
+    if (fillImage.repeat || fillImage.repeat == EchoApp.Property.FillImage.NO_REPEAT) {
+		var repeat;
+		switch (fillImage.repeat) {
+        case EchoApp.Property.FillImage.NO_REPEAT:
+            repeat = "no-repeat";
+            break;
+        case EchoApp.Property.FillImage.REPEAT_HORIZONTAL:
+            repeat = "repeat-x";
+            break;
+        case EchoApp.Property.FillImage.REPEAT_VERTICAL:
+            repeat = "repeat-y";
+            break;
+        default:
+            repeat = "repeat";
+        }
+        element.style.backgroundRepeat = repeat;
     }
     
     if (fillImage.x || fillImage.y) {
-        element.style.backgroundPosition = (fillImage.x ? fillImage.x : "0") + " " + (fillImage.y ? fillImage.y : "0");
+        element.style.backgroundPosition = (fillImage.x ? fillImage.x : "0px") + " " + (fillImage.y ? fillImage.y : "0px");
     }
+};
+
+/**
+ * Clears the background image settings of the given element.
+ * 
+ * @param element the element to clear
+ */
+EchoRender.Property.FillImage.clear = function(element) {
+	element.style.backgroundImage = "";
+    element.style.backgroundPosition = "";
+    element.style.backgroundRepeat = "";
 };
 
 EchoRender.Property.FillImage.renderComponentProperty = function(component, componentProperty, defaultValue,
@@ -607,6 +632,19 @@ EchoRender.Property.Font.render = function(font, element) {
             element.style.textDecoration = "line-through";
         }
     }
+};
+
+/**
+ * Clears the font settings of the given element.
+ * 
+ * @param element the element to clear
+ */
+EchoRender.Property.Font.clear = function(element) {
+	element.style.fontFamily = "";
+	element.style.fontSize = "";
+	element.style.fontWeight = "";
+	element.style.fontStyle = "";
+	element.style.textDecoration = "";
 };
 
 EchoRender.Property.Insets = function() { };
