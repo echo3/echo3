@@ -335,6 +335,8 @@ EchoSerial.PropertyTranslator.FillImageBorder._parseElement = function(client, f
     borderColor = borderColor ? new EchoApp.Property.Color(borderColor) : null;
     var fillImages = new Array();
     
+    // FIXME handle null FillImages, put back position attribute?
+    
     var element = fibElement.firstChild;
     while(element) {
         if (element.nodeType == 1) {

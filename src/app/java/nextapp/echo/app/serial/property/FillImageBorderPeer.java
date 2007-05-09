@@ -48,6 +48,8 @@ import nextapp.echo.app.util.DomUtil;
 public class FillImageBorderPeer
 implements SerialPropertyPeer {
 
+    // FIXME handle null FillImages, put back position attribute?
+    
     public Object toProperty(Context context, Class objectClass, Element propertyElement) throws SerialException {
         PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
         FillImagePeer fillImagePeer = (FillImagePeer) propertyPeerFactory.getPeerForProperty(FillImage.class);
