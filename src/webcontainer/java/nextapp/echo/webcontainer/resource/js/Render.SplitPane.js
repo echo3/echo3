@@ -263,6 +263,7 @@ EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parent
     
     EchoWebCore.VirtualPosition.register(splitPaneDivElement.id);
     EchoRender.Property.Color.renderFB(this.component, splitPaneDivElement);
+    EchoRender.Property.Font.renderDefault(this.component, splitPaneDivElement);
     
     var separatorDivElement = null;
     if (this._separatorSize > 0) {
