@@ -189,6 +189,42 @@ EchoWebCore.DOM.removeAllChildren = function(node) {
 };
 
 /**
+ * Removes the specified DOM node from the DOM tree. This method employs a workaround for the
+ * <code>QUIRK_PERFORMANCE_LARGE_DOM_REMOVE</code> quirk.
+ *
+ * @param node the node which should be deleted
+ */
+EchoWebCore.DOM.removeNode = function(node) {
+    var parentNode = node.parentNode;
+    if (!parentNode) {
+    	// not in DOM tree
+    	return;
+    }
+    if (EchoWebCore.Environment.QUIRK_PERFORMANCE_LARGE_DOM_REMOVE) {
+    	EchoWebCore.DOM._removeNodeRecursive(node);
+    } else {
+	  	parentNode.removeChild(node);
+    }
+};
+
+/**
+ * Removes the specified DOM node from the DOM tree in a recursive manner, i.e. all descendants
+ * of the given node are removed individually. This alleviates slow performance when removing large
+ * DOM trees.
+ *
+ * @param node the node which should be deleted
+*/
+EchoWebCore.DOM._removeNodeRecursive = function(node) {
+    var childNode = node.firstChild;
+    while (childNode) {
+        var nextChildNode = childNode.nextSibling;
+        EchoWebCore.DOM._removeNodeRecursive(childNode);
+        childNode = nextChildNode;
+    }
+    node.parentNode.removeChild(node);
+};
+
+/**
  * Removes an event listener from an object, using the client's supported event 
  * model.
  *
@@ -298,6 +334,10 @@ EchoWebCore.Environment._init = function() {
             env.QUIRK_IE_SELECT_Z_INDEX = true;
             env.NOT_SUPPORTED_CSS_MAX_HEIGHT = true;
         }
+    } else if (env.BROWSER_MOZILLA) {
+    	if (!env.BROWSER_FIREFOX) {
+    		env.QUIRK_PERFORMANCE_LARGE_DOM_REMOVE = true;
+    	}
     }
 };
 

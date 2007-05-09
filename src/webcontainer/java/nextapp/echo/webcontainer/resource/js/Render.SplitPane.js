@@ -401,7 +401,7 @@ EchoRender.ComponentSync.SplitPane.prototype._renderRemoveChild = function(updat
     var index = this._getRenderedChildIndex(child);
     this._paneConfigurations[index] = null;
     var paneDivElement = document.getElementById(this.component.renderId + "_pane" + index);
-    paneDivElement.parentNode.removeChild(paneDivElement);
+    EchoWebCore.DOM.removeNode(paneDivElement);
 };
 
 EchoRender.ComponentSync.SplitPane.prototype.renderUpdate = function(update) {
