@@ -744,8 +744,8 @@ EchoRender.TriCellTable.prototype.addRow = function(tdElement) {
 EchoRender.TriCellTable.prototype.addSpacer = function(parentElement, size, vertical) {
     var imgElement = document.createElement("img");
     imgElement.src = EchoRender.TriCellTable.TRANSPARENT_IMAGE;
-    imgElement.width = vertical ? "1" : size;
-    imgElement.height = vertical ? size : "1";
+    imgElement.style.width = vertical ? "1px" : size + "px";
+    imgElement.style.height = vertical ? size + "px" : "1px";
     parentElement.appendChild(imgElement);
 };
 
