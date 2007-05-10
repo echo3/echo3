@@ -18,7 +18,7 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     var defaultInsets = this.component.getRenderProperty("insets", "0");
     var defaultBorder = this.component.getRenderProperty("border", "");
 
-    var tableElement = document.createElement("div");
+    var tableElement = document.createElement("table");
     tableElement.id = this.component.renderId;
     tableElement.style.outlineStyle = "none";
     tableElement.tabIndex = "-1";
