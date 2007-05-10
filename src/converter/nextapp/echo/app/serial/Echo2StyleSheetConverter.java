@@ -501,6 +501,12 @@ public class Echo2StyleSheetConverter {
                 fillImages.put(FILL_IMAGE_BORDER_MAP.get(position), convertFillImage(DomUtil.getChildElementByTagName((Element)childNode, "fill-image")));
             }
         }
+        // add null elements for missing images
+        for (int i = 0; i < 8; i++) {
+            if (!fillImages.containsKey(new Integer(i))) {
+                fillImages.put(new Integer(i), outputDoc.createElement("null-fi"));
+            }
+        }
         int positionCounter = 0;
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node childNode = childNodes.item(i);
@@ -510,6 +516,9 @@ public class Echo2StyleSheetConverter {
             } else {
                 fillImageBorder.appendChild(outputDoc.importNode(childNode, true));
             }
+        }
+        for (int i = positionCounter; i < 8; i++) {
+            fillImageBorder.appendChild((Node)fillImages.get(new Integer(i)));
         }
         return fillImageBorder;
     }

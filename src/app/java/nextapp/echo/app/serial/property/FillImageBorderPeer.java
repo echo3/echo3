@@ -30,6 +30,8 @@
 package nextapp.echo.app.serial.property;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import nextapp.echo.app.Color;
 import nextapp.echo.app.FillImage;
@@ -48,8 +50,6 @@ import nextapp.echo.app.util.DomUtil;
 public class FillImageBorderPeer
 implements SerialPropertyPeer {
 
-    // FIXME handle null FillImages, put back position attribute?
-    
     public Object toProperty(Context context, Class objectClass, Element propertyElement) throws SerialException {
         PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
         FillImagePeer fillImagePeer = (FillImagePeer) propertyPeerFactory.getPeerForProperty(FillImage.class);
@@ -61,11 +61,20 @@ implements SerialPropertyPeer {
         Insets contentInsets = fibElement.hasAttribute("ci") ? InsetsPeer.fromString(fibElement.getAttribute("ci")) : null;
         FillImageBorder border = new FillImageBorder(borderColor, borderInsets, contentInsets);
         
-        Element[] fiElements = DomUtil.getChildElementsByTagName(fibElement, "fi");
-        for (int i = 0; i < fiElements.length && i < 8; ++i) {
-            border.setFillImage(i, fillImagePeer.parseFillImageElement(context, fiElements[i]));
+        int fiCount = 0;
+        NodeList fibChildNodes = fibElement.getChildNodes();
+        for (int i = 0; i < fibChildNodes.getLength() && fiCount < 8; ++i) {
+            Node fiNode = fibChildNodes.item(i);
+            if ("fi".equals(fiNode.getNodeName())) {
+                border.setFillImage(fiCount, fillImagePeer.parseFillImageElement(context, (Element)fiNode));
+                fiCount++;
+            } else if ("null-fi".equals(fiNode.getNodeName())) {
+                fiCount++;
+            }
         }
-
+        if (fiCount != 8) {
+            throw new SerialException("Invalid FillImageBorder image count: " + fiCount, null);
+        }
         return border;
     }
 
@@ -94,7 +103,12 @@ implements SerialPropertyPeer {
         }
         
         for (int i = 0; i < 8; ++i) {
-            fibElement.appendChild(fillImagePeer.createFillImageElement(context, border.getFillImage(i)));
+            FillImage fillImage = border.getFillImage(i);
+            if (fillImage == null) {
+                fibElement.appendChild(serialContext.getDocument().createElement("null-fi"));
+            } else {
+                fibElement.appendChild(fillImagePeer.createFillImageElement(context, fillImage));
+            }
         }
         
         propertyElement.appendChild(fibElement);

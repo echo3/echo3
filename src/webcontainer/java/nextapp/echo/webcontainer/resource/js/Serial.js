@@ -335,19 +335,22 @@ EchoSerial.PropertyTranslator.FillImageBorder._parseElement = function(client, f
     borderColor = borderColor ? new EchoApp.Property.Color(borderColor) : null;
     var fillImages = new Array();
     
-    // FIXME handle null FillImages, put back position attribute?
-    
     var element = fibElement.firstChild;
     while(element) {
         if (element.nodeType == 1) {
             if (element.nodeName == "fi") {
                 fillImages.push(EchoSerial.PropertyTranslator.FillImage._parseElement(client, element));
+            } else if (element.nodeName == "null-fi") {
+                fillImages.push(null);
             }
         }
         element = element.nextSibling;
     }
-    var border = new EchoApp.Property.FillImageBorder(borderColor, borderInsets, contentInsets, fillImages);
-    return border;
+    if (fillImages.length != 8) {
+	    throw new Error("Invalid FillImageBorder image count: " + fillImages.length);
+    }
+    
+    return new EchoApp.Property.FillImageBorder(borderColor, borderInsets, contentInsets, fillImages);
 };
 
 EchoSerial.addPropertyTranslator("FillImageBorder", EchoSerial.PropertyTranslator.FillImageBorder);
