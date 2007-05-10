@@ -152,8 +152,11 @@ EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentEle
     EchoWebCore.EventProcessor.add(divElement, "click", new EchoCore.MethodRef(this, this._processClick), false);
     EchoWebCore.EventProcessor.add(divElement, "keypress", new EchoCore.MethodRef(this, this._processKeyPress), false);
 	if (this.component.getRenderProperty("rolloverEnabled")) {
-	    EchoWebCore.EventProcessor.add(divElement, "mouseover", new EchoCore.MethodRef(this, this._processRolloverEnter), false);
-    	EchoWebCore.EventProcessor.add(divElement, "mouseout", new EchoCore.MethodRef(this, this._processRolloverExit), false);
+        var mouseEnterLeaveSupport = EchoWebCore.Environment.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
+        var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
+        var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
+	    EchoWebCore.EventProcessor.add(divElement, enterEvent, new EchoCore.MethodRef(this, this._processRolloverEnter), false);
+    	EchoWebCore.EventProcessor.add(divElement, exitEvent, new EchoCore.MethodRef(this, this._processRolloverExit), false);
 	}
     if (this.component.getRenderProperty("pressedEnabled")) {
 	    EchoWebCore.EventProcessor.add(divElement, "mousedown", new EchoCore.MethodRef(this, this._processPress), false);
