@@ -503,8 +503,9 @@ EchoCore.Debug.Timer.prototype.toString = function() {
  * @class Event object.
  * @param source the source of the event
  * @param {String} type the type of the event
+ * @param data the optional data of the event
  */
-EchoCore.Event = function(source, type) {
+EchoCore.Event = function(source, type, data) {
     
     /**
      * The source of the event.
@@ -516,6 +517,11 @@ EchoCore.Event = function(source, type) {
      * @type String
      */
     this.type = type;
+    
+    /**
+     * The event data.
+     */
+    this.data = data;
 };
 
 /**
