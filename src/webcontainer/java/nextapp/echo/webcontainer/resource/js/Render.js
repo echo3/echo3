@@ -870,9 +870,9 @@ EchoRender.TriCellTable.prototype.configure3 = function(id, orientation0_1, marg
             var trElement = document.createElement("tr");
             if (orientation01_2 & EchoRender.TriCellTable.INVERTED) {
                 if (orientation0_1 & EchoRender.TriCellTable.INVERTED) {
-                    this.addColumn(trElement, tdElements[1]);
+                    this.addColumn(trElement, this.tdElements[1]);
                 } else {
-                    this.addColumn(trElement, tdElements[0]);
+                    this.addColumn(trElement, this.tdElements[0]);
                 }
                 this.addColumn(trElement, this.marginTdElements[1]);
                 this.addColumn(trElement, this.tdElements[2]);
@@ -880,9 +880,9 @@ EchoRender.TriCellTable.prototype.configure3 = function(id, orientation0_1, marg
                 this.addColumn(trElement, this.tdElements[2]);
                 this.addColumn(trElement, this.marginTdElements[1]);
                 if (orientation0_1 & EchoRender.TriCellTable.INVERTED) {
-                    this.addColumn(trElement, tdElements[1]);
+                    this.addColumn(trElement, this.tdElements[1]);
                 } else {
-                    this.addColumn(trElement, tdElements[0]);
+                    this.addColumn(trElement, this.tdElements[0]);
                 }
             }
             this.tbodyElement.appendChild(trElement);
