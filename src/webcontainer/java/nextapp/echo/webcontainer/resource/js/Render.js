@@ -804,11 +804,12 @@ EchoRender.TriCellTable.prototype.configure3 = function(id, orientation0_1, marg
         this.tdElements[i] = document.createElement("td");
         this.tdElements[i].style.padding = 0;
     }
+    this.marginTdElements = new Array(2);
     
     if (margin0_1 != null || margin01_2 != null) {
         if (margin0_1 != null && margin0_1 > 0) {
             this.marginTdElements[0] = document.createElement("td");
-            if (orientation0_1 & VERTICAL) {
+            if (orientation0_1 & EchoRender.TriCellTable.VERTICAL) {
                 this.marginTdElements[0].style.height = margin0_1 + "px";
                 this.addSpacer(this.marginTdElements[0], margin0_1, true);
             } else {
@@ -817,28 +818,29 @@ EchoRender.TriCellTable.prototype.configure3 = function(id, orientation0_1, marg
             }
         }
         if (margin01_2 != null && margin01_2 > 0) {
-            if (orientation0_1 & VERTICAL) {
-                this.marginTdElements[1].style.height = margin01_2;
+            this.marginTdElements[1] = document.createElement("td");
+            if (orientation0_1 & EchoRender.TriCellTable.VERTICAL) {
+                this.marginTdElements[1].style.height = margin01_2 + "px";
                 this.addSpacer(this.marginTdElements[1], margin01_2, true);
             } else {
-                this.marginTdElements[1].style.width = margin01_2;
+                this.marginTdElements[1].style.width = margin01_2 + "px";
                 this.addSpacer(this.marginTdElements[1], margin01_2, false);
             }
         }
     }
     
-    if (orientation0_1 & VERTICAL) {
+    if (orientation0_1 & EchoRender.TriCellTable.VERTICAL) {
         // Vertically oriented 0/1.
-        if (orientation01_2 & VERTICAL) {
+        if (orientation01_2 & EchoRender.TriCellTable.VERTICAL) {
             // Vertically oriented 01/2
-            if (!(orientation01_2 & INVERTED)) {
+            if (orientation01_2 & EchoRender.TriCellTable.INVERTED) {
                 // 2 before 01: render #2 and margin at beginning of TABLE.
                 this.addRow(this.tdElements[2]);
                 this.addRow(this.marginTdElements[1]);
             }
             
             // Render 01
-            if (orientation0_1 & INVERTED) {
+            if (orientation0_1 & EchoRender.TriCellTable.INVERTED) {
                 // Inverted (bottom to top)
                 this.addRow(this.tdElements[1]);
                 this.addRow(this.marginTdElements[0]);
@@ -850,7 +852,7 @@ EchoRender.TriCellTable.prototype.configure3 = function(id, orientation0_1, marg
                 this.addRow(this.tdElements[1]);
             }
 
-            if (!(orientation01_2 & INVERTED)) {
+            if (!(orientation01_2 & EchoRender.TriCellTable.INVERTED)) {
                 // 01 before 2: render #2 and margin at end of TABLE.
                 this.addRow(this.marginTdElements[1]);
                 this.addRow(this.tdElements[2]);
@@ -866,8 +868,8 @@ EchoRender.TriCellTable.prototype.configure3 = function(id, orientation0_1, marg
             }
             
             var trElement = document.createElement("tr");
-            if (orientation01_2 & INVERTED) {
-                if (orientation0_1 & INVERTED) {
+            if (orientation01_2 & EchoRender.TriCellTable.INVERTED) {
+                if (orientation0_1 & EchoRender.TriCellTable.INVERTED) {
                     this.addColumn(trElement, tdElements[1]);
                 } else {
                     this.addColumn(trElement, tdElements[0]);
@@ -877,21 +879,16 @@ EchoRender.TriCellTable.prototype.configure3 = function(id, orientation0_1, marg
             } else {
                 this.addColumn(trElement, this.tdElements[2]);
                 this.addColumn(trElement, this.marginTdElements[1]);
-                if (orientation0_1 & INVERTED) {
+                if (orientation0_1 & EchoRender.TriCellTable.INVERTED) {
                     this.addColumn(trElement, tdElements[1]);
                 } else {
                     this.addColumn(trElement, tdElements[0]);
                 }
             }
-            
-            tbodyElement.appendChild(trElement);
-            this.addRow(marginTdElements[0]);
-            if (orientation0_1 & INVERTED) {
-                this.addRow(tdElements[0]);
-            } else {
-                this.addRow(tdElements[1]);
-            }
+            this.tbodyElement.appendChild(trElement);
         }
+    } else {
+    	// FIXME implement this
     }
     
 };
