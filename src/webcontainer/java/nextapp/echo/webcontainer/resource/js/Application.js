@@ -2365,6 +2365,45 @@ EchoApp.Button.prototype.doAction = function() {
 };
 
 /**
+ * ToggleButton component.
+ * 
+ * @constructor
+ * @class ToggleButton component.
+ * @base EchoApp.Button
+ */
+EchoApp.ToggleButton = function(renderId) {
+    EchoApp.Component.call(this, "ToggleButton", renderId);
+};
+
+EchoApp.ToggleButton.prototype = new EchoApp.Button;
+
+/**
+ * RadioButton component.
+ * 
+ * @constructor
+ * @class RadioButton component.
+ * @base EchoApp.ToggleButton
+ */
+EchoApp.RadioButton = function(renderId) {
+    EchoApp.Component.call(this, "RadioButton", renderId);
+};
+
+EchoApp.RadioButton.prototype = new EchoApp.ToggleButton;
+
+/**
+ * CheckBox component.
+ * 
+ * @constructor
+ * @class CheckBox component.
+ * @base EchoApp.ToggleButton
+ */
+EchoApp.CheckBox = function(renderId) {
+    EchoApp.Component.call(this, "CheckBox", renderId);
+};
+
+EchoApp.CheckBox.prototype = new EchoApp.ToggleButton;
+
+/**
  * Creates a new Column.
  * 
  * @constructor
@@ -2517,6 +2556,9 @@ EchoApp.WindowPane.DEFAULT_MINIMUM_WIDTH = new EchoApp.Property.Extent("100px");
 EchoApp.WindowPane.DEFAULT_MINIMUM_HEIGHT = new EchoApp.Property.Extent("100px");
 
 EchoApp.ComponentFactory.registerType("Button", EchoApp.Button);
+EchoApp.ComponentFactory.registerType("ToggleButton", EchoApp.ToggleButton);
+EchoApp.ComponentFactory.registerType("RadioButton", EchoApp.RadioButton);
+EchoApp.ComponentFactory.registerType("CheckBox", EchoApp.CheckBox);
 EchoApp.ComponentFactory.registerType("Column", EchoApp.Column);
 EchoApp.ComponentFactory.registerType("Label", EchoApp.Label);
 EchoApp.ComponentFactory.registerType("Row", EchoApp.Row);

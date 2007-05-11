@@ -43,11 +43,11 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 import nextapp.echo.webcontainer.util.ArrayIterator;
 
 /**
- * Synchronization peer for <code>Button</code>s.
+ * Base synchronization peer for <code>AbstractButton</code>s.
  */
-public class AbstractButtonPeer extends AbstractComponentSynchronizePeer {
+public abstract class AbstractButtonPeer extends AbstractComponentSynchronizePeer {
 
-    private static final String[] EVENT_TYPES_ACTION = new String[]{"action"};
+    private static final String[] EVENT_TYPES_ACTION = new String[]{ AbstractButton.EVENT_TYPE_ACTION };
     
     protected static final Service BUTTON_SERVICE = JavaScriptService.forResource("Echo.Button", 
             "/nextapp/echo/webcontainer/resource/js/Render.Button.js");
@@ -87,8 +87,8 @@ public class AbstractButtonPeer extends AbstractComponentSynchronizePeer {
      */
     public void processEvent(Context context, Component component, String eventType, Object eventData) {
         ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
-        if ("action".equals(eventType)) {
-            clientUpdateManager.setComponentAction(component, "action", null);
-        }
+        if (AbstractButton.EVENT_TYPE_ACTION.equals(eventType)) {
+            clientUpdateManager.setComponentAction(component, AbstractButton.EVENT_TYPE_ACTION, null);
+		}
     }
 }

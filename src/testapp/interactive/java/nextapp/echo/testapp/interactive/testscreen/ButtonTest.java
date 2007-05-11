@@ -35,19 +35,19 @@ import java.util.Locale;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Button;
-//import nextapp.echo.app.CheckBox;
+import nextapp.echo.app.CheckBox;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Font;
-//import nextapp.echo.app.Grid;
+import nextapp.echo.app.Grid;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.LayoutDirection;
-//import nextapp.echo.app.RadioButton;
+import nextapp.echo.app.RadioButton;
 import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.button.AbstractButton;
-//import nextapp.echo.app.button.ButtonGroup;
+import nextapp.echo.app.button.ButtonGroup;
 import nextapp.echo.app.button.ToggleButton;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
@@ -145,7 +145,6 @@ extends SplitPane {
         testGrid.addTestRow("Text and Icon", button);
         buttonList.add(button);
 
-/*
         CheckBox checkBox;
         testGrid.addHeaderRow("CheckBox");
 
@@ -204,7 +203,7 @@ extends SplitPane {
         radioButton = new RadioButton("Test");
         buttonList.add(radioButton);
         testGrid.addTestRow("Null ButtonGroup", radioButton);
-*/
+        
         ButtonColumn controlsColumn;
         
         // Create 'AbstractButton Controls Group'
