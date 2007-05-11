@@ -75,6 +75,13 @@ implements ComponentSynchronizePeer {
     public abstract Class getComponentClass();
     
     /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getEventDataClass(java.lang.String)
+     */
+    public Class getEventDataClass(String eventType) {
+        return null;
+    }
+
+    /**
      * Default implmentation: return an empty iterator.
      * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getImmediateEventTypes(Context, Component)
@@ -174,6 +181,14 @@ implements ComponentSynchronizePeer {
      */
     public boolean isOutputPropertyIndexed(Context context, Component component, String propertyName) {
         return indexedPropertyNames.contains(propertyName);
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#processEvent(nextapp.echo.app.util.Context,
+     *      nextapp.echo.app.Component, java.lang.String, java.lang.Object)
+     */
+    public void processEvent(Context context, Component component, String eventType, Object eventData) {
+        
     }
 
     /**

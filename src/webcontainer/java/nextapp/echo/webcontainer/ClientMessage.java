@@ -20,6 +20,7 @@ public class ClientMessage {
     private Map componentUpdateMap;
     
     private String eventType;
+    private Element eventElement;
     private String eventComponentId;
     
     public ClientMessage(Connection conn) 
@@ -32,10 +33,10 @@ public class ClientMessage {
         type = document.getDocumentElement().getAttribute("t");
         
         // Retrieve event.
-        Element eElement = DomUtil.getChildElementByTagName(document.getDocumentElement(), "e");
-        if (eElement != null) {
-            eventType = eElement.getAttribute("t");
-            eventComponentId = eElement.getAttribute("i");
+        eventElement = DomUtil.getChildElementByTagName(document.getDocumentElement(), "e");
+        if (eventElement != null) {
+            eventType = eventElement.getAttribute("t");
+            eventComponentId = eventElement.getAttribute("i");
         }
         
         // Retrieve property updates.
@@ -75,6 +76,10 @@ public class ClientMessage {
     
     public String getType() {
         return type;
+    }
+    
+    public Element getEvent() {
+        return eventElement;
     }
     
     public String getEventType() {

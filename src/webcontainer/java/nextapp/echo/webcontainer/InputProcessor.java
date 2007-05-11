@@ -72,7 +72,6 @@ public class InputProcessor {
         Context context = new InputContext();
         UserInstance userInstance = conn.getUserInstance();
         UpdateManager updateManager = userInstance.getUpdateManager();
-        ClientUpdateManager clientUpdateManager = updateManager.getClientUpdateManager();
         
         if (ClientMessage.TYPE_INITIALIZE.equals(clientMessage.getType())) {
             // Flag full refresh if initializing.
@@ -124,9 +123,27 @@ public class InputProcessor {
             }
         }
         
-        if (clientMessage.getEventType() != null) {
+        if (clientMessage.getEvent() != null) {
             Component component = userInstance.getComponentByElementId(clientMessage.getEventComponentId());
-            clientUpdateManager.setComponentAction(component, clientMessage.getEventType(), null);
+            ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
+            Class eventDataClass = componentPeer.getEventDataClass(clientMessage.getEventType());
+            if (eventDataClass == null) {
+                componentPeer.processEvent(context, component, clientMessage.getEventType(), null);
+            } else {
+                SerialPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(eventDataClass);
+                if (propertyPeer == null) {
+                    //FIXME. add ex handling.
+                    System.err.println("No peer available for event data for event type: " + clientMessage.getEventType() 
+                            + " of class: " + eventDataClass);
+                }
+                try {
+                    Object eventData = propertyPeer.toProperty(context, component.getClass(), clientMessage.getEvent());
+                    componentPeer.processEvent(context, component, clientMessage.getEventType(), eventData);
+                } catch (SerialException ex) {
+                    //FIXME. bad ex handling.
+                    throw new IOException(ex.toString());
+                }
+            }
         }
 
         updateManager.processClientUpdates();

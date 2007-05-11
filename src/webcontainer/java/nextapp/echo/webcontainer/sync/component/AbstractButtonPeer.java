@@ -33,6 +33,7 @@ import java.util.Iterator;
 
 import nextapp.echo.app.Component;
 import nextapp.echo.app.button.AbstractButton;
+import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
 import nextapp.echo.webcontainer.ServerMessage;
@@ -79,5 +80,15 @@ public class AbstractButtonPeer extends AbstractComponentSynchronizePeer {
     public void init(Context context) {
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(BUTTON_SERVICE.getId());
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#processEvent(nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, java.lang.Object)
+     */
+    public void processEvent(Context context, Component component, String eventType, Object eventData) {
+        ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
+        if ("action".equals(eventType)) {
+            clientUpdateManager.setComponentAction(component, "action", null);
+        }
     }
 }

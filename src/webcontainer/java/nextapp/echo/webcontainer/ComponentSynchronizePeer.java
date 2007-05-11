@@ -63,6 +63,15 @@ public interface ComponentSynchronizePeer {
      * @return the <code>Class</code>
      */
     public Class getComponentClass();
+    
+    /**
+     * Returns the <code>Class</code> of the event data that will
+     * be provided by the specified event type.
+     * 
+     * @param eventType the type of the event
+     * @return the event data <code>Class</code>
+     */
+    public Class getEventDataClass(String eventType);
 
     /**
      * Determines the types of events which, when fired on the client,
@@ -183,6 +192,24 @@ public interface ComponentSynchronizePeer {
      * @return true if the property is indexed
      */
     public boolean isOutputPropertyIndexed(Context context, Component component, String propertyName);
+    
+    /**
+     * Processes an event received from the client.
+     * Implementations must take care to implement appropriate security,
+     * ensuring that the client may only fire specific appropriate events.
+     * 
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li><code>ClientMessage</code></li>
+     *         <li><code>ClientUpdateManager</code></li>
+     *        </ul>
+     * @param component the updated <code>Component</code>
+     * @param eventType the type of the event
+     * @param eventData arbitrary component/event-specific event-related data
+     */
+    public void processEvent(Context context, Component component, String eventType, Object eventData);
     
     /**
      * Processes a property update from the client.

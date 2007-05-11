@@ -65,7 +65,7 @@ EchoRemoteClient.prototype._processComponentEvent = function(e) {
         //FIXME. Central error handling for these.
         alert("Waiting on server response.  Press the browser reload or refresh button if server fails to respond.");
     }
-    this._clientMessage.setEvent(e.source.renderId, e.type);
+    this._clientMessage.setEvent(e.source.renderId, e.type, e.data);
     this.sync();
 };
 
@@ -128,9 +128,10 @@ EchoRemoteClient.ClientMessage = function(client, initialize) {
     this._initialize = initialize;
 };
 
-EchoRemoteClient.ClientMessage.prototype.setEvent = function(componentId, eventType) {
+EchoRemoteClient.ClientMessage.prototype.setEvent = function(componentId, eventType, eventData) {
     this._eventComponentId = componentId;
     this._eventType = eventType;
+    this._eventData = eventData;
 };
 
 EchoRemoteClient.ClientMessage.prototype.storeProperty = function(componentId, propertyName, propertyValue) {
@@ -156,6 +157,15 @@ EchoRemoteClient.ClientMessage.prototype._renderXml = function() {
         var eElement = cmsgDocument.createElement("e");
         eElement.setAttribute("t", this._eventType);
         eElement.setAttribute("i", this._eventComponentId);
+        if (this._eventData != null) {
+            if (typeof (this._eventData) == "object") {
+                if (this._eventData.className) {
+                    EchoSerial.storeProperty(this._client, eElement, this._eventData);
+                }
+            } else {
+                eElement.setAttribute("v", this._eventData);
+            }
+        }
         cmsgElement.appendChild(eElement);
     }
     

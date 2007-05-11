@@ -124,7 +124,7 @@ public class OutputProcessor {
      * the client by determining if it is a descendant of any
      * <code>LazyRenderContainer</code>s and if so querying them to determine
      * the hierarchy's render state. This method is recursively invoked.
-     * 
+     *
      * @param context the relevant <code>Context</code>
      * @param component the <code>Component</code> to analyze
      * @return <code>true</code> if the <code>Component</code> has been
