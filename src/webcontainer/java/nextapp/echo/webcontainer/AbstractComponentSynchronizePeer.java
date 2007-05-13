@@ -103,7 +103,8 @@ implements ComponentSynchronizePeer {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputPropertyIndices(nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputPropertyIndices(nextapp.echo.app.util.Context, 
+     *      nextapp.echo.app.Component, java.lang.String)
      */
     public Iterator getOutputPropertyIndices(Context context, Component component, String propertyName) {
         return component.getLocalStyle().getPropertyIndices(propertyName);
@@ -177,7 +178,8 @@ implements ComponentSynchronizePeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#isIndexedProperty(nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#isIndexedProperty(nextapp.echo.app.util.Context, 
+     *      nextapp.echo.app.Component, java.lang.String)
      */
     public boolean isOutputPropertyIndexed(Context context, Component component, String propertyName) {
         return indexedPropertyNames.contains(propertyName);
@@ -188,7 +190,7 @@ implements ComponentSynchronizePeer {
      *      nextapp.echo.app.Component, java.lang.String, java.lang.Object)
      */
     public void processEvent(Context context, Component component, String eventType, Object eventData) {
-        
+        // Do nothing.
     }
 
     /**
