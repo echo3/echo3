@@ -38,11 +38,13 @@ EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update
     if (child.floatingPane) {
         divElement.style.zIndex = "1";
     } else {
+        var insets = this.component.getRenderProperty("insets", new EchoApp.Property.Insets(0));
+        var pixelInsets = EchoRender.Property.Insets.toPixels(insets);
         divElement.style.zIndex = "0";
-        divElement.style.left = "0px";
-        divElement.style.top = "0px";
-        divElement.style.bottom = "0px";
-        divElement.style.right = "0px";
+        divElement.style.left = pixelInsets.left + "px";
+        divElement.style.top = pixelInsets.top + "px";
+        divElement.style.bottom = pixelInsets.bottom + "px";
+        divElement.style.right = pixelInsets.right + "px";
         EchoWebCore.VirtualPosition.register(divElement.id);
     }
     EchoRender.renderComponentAdd(update, child, divElement);
