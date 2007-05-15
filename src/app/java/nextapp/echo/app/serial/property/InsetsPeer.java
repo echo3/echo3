@@ -68,23 +68,38 @@ implements SerialPropertyPeer {
         }
     }
     
+    private static boolean equals(Extent extent1, Extent extent2) {
+       if (extent1 == null && extent2 == null) {
+           return true;
+       } else if (extent1 == null || extent2 == null) {
+           return false;
+       }
+       return extent1.equals(extent2);
+    }
+    
+    private static String toString(Extent extent) {
+        if (extent == null) {
+            return "0px";
+        }
+        return ExtentPeer.toString(extent);
+    }
+    
     public static String toString(Insets insets) {
-        // FIXME handle null Extents
-        if (insets.getTop().equals(insets.getBottom())) {
-            if (insets.getLeft().equals(insets.getRight())) {
-                if (insets.getTop().equals(insets.getLeft())) {
-                    // All sides are equals.
-                    return ExtentPeer.toString(insets.getTop());
+        if (equals(insets.getTop(), insets.getBottom())) {
+            if (equals(insets.getLeft(), insets.getRight())) {
+                if (equals(insets.getTop(), insets.getLeft())) {
+                    // All sides are equal.
+                    return toString(insets.getTop());
                 } else {
                     // Horizontal and vertical are equal.
-                    return ExtentPeer.toString(insets.getTop()) + " " + ExtentPeer.toString(insets.getLeft());
+                    return toString(insets.getTop()) + " " + toString(insets.getLeft());
                 }
             }
         }
-        return ExtentPeer.toString(insets.getTop()) 
-                + " " + ExtentPeer.toString(insets.getRight())
-                + " " + ExtentPeer.toString(insets.getBottom())
-                + " " + ExtentPeer.toString(insets.getLeft());
+        return toString(insets.getTop()) 
+                + " " + toString(insets.getRight())
+                + " " + toString(insets.getBottom())
+                + " " + toString(insets.getLeft());
     }
 
     /**
