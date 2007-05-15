@@ -29,14 +29,16 @@
 
 package nextapp.echo.webcontainer.sync.property;
 
-import org.w3c.dom.Element;
-
+import nextapp.echo.app.Extent;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.StreamImageReference;
+import nextapp.echo.app.serial.property.ExtentPeer;
 import nextapp.echo.app.serial.property.ImageReferencePeer;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.UserInstance;
 import nextapp.echo.webcontainer.service.StreamImageService;
+
+import org.w3c.dom.Element;
 
 /**
  * <code>ImageReferencePeer</code> implementation to provide
@@ -74,5 +76,14 @@ public class WebStreamImageReferencePeer implements ImageReferencePeer {
         StreamImageReference imageReference = (StreamImageReference) propertyValue;
         propertyElement.setAttribute("t", "ImageReference");
         propertyElement.setAttribute("v", getImageUrl(rc, imageReference));
+        
+        Extent width = imageReference.getWidth();
+        if (width != null) {
+            propertyElement.setAttribute("w", ExtentPeer.toString(width));
+        }
+        Extent height = imageReference.getHeight();
+        if (height != null) {
+            propertyElement.setAttribute("h", ExtentPeer.toString(height));
+        }
     }
 }

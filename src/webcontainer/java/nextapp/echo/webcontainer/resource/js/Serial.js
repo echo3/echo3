@@ -395,7 +395,12 @@ EchoSerial.PropertyTranslator.ImageReference.toProperty = function(client, prope
     if (client.processUrl) {
         url = client.processUrl(url);
     }
-    return new EchoApp.Property.ImageReference(url);
+    var width = propertyElement.getAttribute("w");
+    width = width ? new EchoApp.Property.Extent(width) : null;
+    var height = propertyElement.getAttribute("h");
+    height = height ? new EchoApp.Property.Extent(height) : null;
+    
+    return new EchoApp.Property.ImageReference(url, width, height);
 };
 
 EchoSerial.addPropertyTranslator("ImageReference", EchoSerial.PropertyTranslator.ImageReference);
