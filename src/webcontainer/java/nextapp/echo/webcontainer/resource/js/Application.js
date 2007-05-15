@@ -1376,7 +1376,7 @@ EchoApp.Property.FillImage.prototype.className = "FillImage";
  * @constructor
  */
 EchoApp.Property.FillImageBorder = function(color, borderInsets, contentInsets, fillImages) {
-    if (color instanceof EchoApp.Property.Color) {
+    if (color == null || color instanceof EchoApp.Property.Color) {
         /**
          * The border background color.
          * @type EchoApp.Property.Color
@@ -1385,7 +1385,7 @@ EchoApp.Property.FillImageBorder = function(color, borderInsets, contentInsets, 
     } else {
         this.color = new EchoApp.Property.Color(color);
     }
-    if (borderInsets instanceof EchoApp.Property.Insets) {
+    if (borderInsets == null || borderInsets instanceof EchoApp.Property.Insets) {
         /**
          * The border insets 
          * (effectively defines the sizes of the cells where the border FillImages are rendered).
@@ -1395,7 +1395,7 @@ EchoApp.Property.FillImageBorder = function(color, borderInsets, contentInsets, 
     } else {
         this.borderInsets = new EchoApp.Property.Insets(borderInsets);
     }
-    if (contentInsets instanceof EchoApp.Property.Insets) {
+    if (contentInsets == null || contentInsets instanceof EchoApp.Property.Insets) {
         /**
          * The content insets (defines the content area inside of the border, if smaller than the
          * border insets, the content will overlap the border).
