@@ -29,7 +29,9 @@
 
 package nextapp.echo.webcontainer.sync.component;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Table;
@@ -138,7 +140,29 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     
     public Iterator getUpdatedOutputPropertyNames(Context context, Component component, 
             ServerComponentUpdate update) {
-        return null;
+        Set additionalProperties = new HashSet();
+        if (update.hasUpdatedProperty(Table.MODEL_CHANGED_PROPERTY)) {
+            additionalProperties.add(PROPERTY_ROW_COUNT);
+            additionalProperties.add(PROPERTY_COLUMN_COUNT);
+        }
+        
+        final Iterator standardIterator = super.getUpdatedOutputPropertyNames(context, component, update);
+        final Iterator additionalIterator = additionalProperties.iterator();
+        
+        return new Iterator(){
+            
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        
+            public Object next() {
+                return standardIterator.hasNext() ? standardIterator.next() : additionalIterator.next();
+            }
+        
+            public boolean hasNext() {
+                return standardIterator.hasNext() || additionalIterator.hasNext();
+            }
+        };
     }
     
     private static String getSelectionString(ListSelectionModel selectionModel, TableModel model) {
