@@ -36,6 +36,7 @@ import nextapp.echo.app.Table;
 import nextapp.echo.app.list.ListSelectionModel;
 import nextapp.echo.app.table.TableModel;
 import nextapp.echo.app.update.ClientUpdateManager;
+import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.*;
 import nextapp.echo.webcontainer.service.JavaScriptService;
@@ -133,6 +134,11 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
             return new Integer(table.getSelectionModel().getSelectionMode());
         }
         return super.getOutputProperty(context, component, propertyName, propertyIndex);
+    }
+    
+    public Iterator getUpdatedOutputPropertyNames(Context context, Component component, 
+            ServerComponentUpdate update) {
+        return null;
     }
     
     private static String getSelectionString(ListSelectionModel selectionModel, TableModel model) {

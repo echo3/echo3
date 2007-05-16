@@ -328,6 +328,16 @@ implements Serializable {
     }
     
     /**
+     * Determines if the update is updating a specific property of the parent component.
+     * 
+     * @param propertyName the property name
+     * @return true if the specified property is being updated
+     */
+    public boolean hasUpdatedProperty(String propertyName) {
+        return propertyUpdates != null && propertyUpdates.containsKey(propertyName);
+    }
+    
+    /**
      * Adds a description of a removed child to the 
      * <code>ServerComponentUpdate</code>.
      * 

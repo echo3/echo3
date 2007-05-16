@@ -32,6 +32,7 @@ package nextapp.echo.webcontainer;
 import java.util.Iterator;
 
 import nextapp.echo.app.Component;
+import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.util.Context;
 
 /**
@@ -150,8 +151,12 @@ public interface ComponentSynchronizePeer {
     public Class getPropertyClass(String propertyName);
     
     /**
-     * Determines if the component type supports sending the specified property to the client.
-     * This method is used to determine which changed properties will be sent to the client.
+     * Returns an <code>Iterator</code> over the collection of names of all
+     * output properties that should be rendered to the client to complete
+     * the specified <code>update</code>.  Only the names of properties taht
+     * have been updated by the <code>update</code> should be returned (including
+     * those whose values have <strong>changed to null</strong>.  Client-specific
+     * may be included as necessary.
      * 
      * @param context the relevant <code>Context</code>, provides 
      *        standard contextual information described in class description, in
@@ -159,10 +164,12 @@ public interface ComponentSynchronizePeer {
      *        <ul>
      *         <li>ServerMessage</li>
      *        </ul>
-     * @param propertyName the name of the property
-     * @return true if the property is provided
+     * @param component the component
+     * @param update the <code>ServerComponentUpdate</code> being rendered
+     * @return an <code>Iterator</code> of property names to update on the client
      */
-    public boolean hasOutputProperty(Context context, String propertyName);
+    public Iterator getUpdatedOutputPropertyNames(Context context, Component component, 
+            ServerComponentUpdate update);
     
     /**
      * Initializes the peer.

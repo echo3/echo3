@@ -8,6 +8,7 @@ import java.util.Set;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.reflect.ComponentIntrospector;
 import nextapp.echo.app.reflect.IntrospectorFactory;
+import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.util.Context;
 
 public abstract class AbstractComponentSynchronizePeer 
@@ -111,18 +112,6 @@ implements ComponentSynchronizePeer {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#hasOutputProperty(nextapp.echo.app.util.Context, 
-     *      java.lang.String)
-     */
-    public boolean hasOutputProperty(Context context, String propertyName) {
-        if (stylePropertyNames.contains(propertyName)) {
-            return true;
-        } else {
-            return additionalProperties == null ? false : additionalProperties.contains(propertyName);
-        }
-    }
-
-    /**
      * Default implementation: return the names of all properties currently set in the 
      * component's local <code>Style</code>.
      * 
@@ -162,7 +151,7 @@ implements ComponentSynchronizePeer {
             }
         };
     }
-    
+   
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getPropertyClass(java.lang.String)
      */
@@ -170,6 +159,25 @@ implements ComponentSynchronizePeer {
         return null;
     }
     
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getUpdatedOutputPropertyNames(nextapp.echo.app.util.Context,
+     *      nextapp.echo.app.Component,
+     *      nextapp.echo.app.update.ServerComponentUpdate)
+     */
+    public Iterator getUpdatedOutputPropertyNames(Context context, Component component, 
+            ServerComponentUpdate update) {
+        String[] updatedPropertyNames = update.getUpdatedPropertyNames();
+        Set propertyNames = new HashSet();
+        //FIXME. not particularly efficient.
+        for (int i = 0; i < updatedPropertyNames.length; ++i) {
+            if (stylePropertyNames.contains(updatedPropertyNames[i])
+                    || (additionalProperties != null && additionalProperties.contains(updatedPropertyNames[i]))) {
+                propertyNames.add(updatedPropertyNames[i]);
+            }
+        }
+        return propertyNames.iterator();
+    }
+
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(Context)
      */

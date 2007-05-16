@@ -31,8 +31,6 @@ import org.xml.sax.SAXException;
  * to its syncrhonization HTTP connection.
  */
 public class OutputProcessor {
-
-    private static final String[] PROPERTIES_LAYOUT_DATA = new String[]{Component.PROPERTY_LAYOUT_DATA};
     
     /**
      * <code>Context</code> implementation.
@@ -242,14 +240,14 @@ public class OutputProcessor {
                 if (updatedPropertyNames.length > 0) {
                     Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
                     upElement.setAttribute("i", UserInstance.getElementId(parentComponent));
-                    renderUpdatedProperties(upElement, parentComponent, updatedPropertyNames);
+                    renderUpdatedProperties(upElement, parentComponent, componentUpdates[i]);
                 }
                 
                 Component[] updatedLayoutDataChildren = componentUpdates[i].getUpdatedLayoutDataChildren();
                 for (int j = 0; j < updatedLayoutDataChildren.length; ++j) {
                     Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
                     upElement.setAttribute("i", UserInstance.getElementId(updatedLayoutDataChildren[j]));
-                    renderUpdatedProperties(upElement, updatedLayoutDataChildren[j], PROPERTIES_LAYOUT_DATA);
+                    renderUpdatedLayoutData(upElement, updatedLayoutDataChildren[j]);
                 }
             }
         }
@@ -444,25 +442,30 @@ public class OutputProcessor {
         }
     }
     
-    private void renderUpdatedProperties(Element upElement, Component c, 
-            String[] updatedPropertyNames) 
+    private void renderUpdatedLayoutData(Element upElement, Component c)
+    throws SerialException {
+        ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
+        if (componentPeer == null) {
+            throw new IllegalStateException("No synchronize peer found for component: " + c.getClass().getName());
+        }
+        renderProperty(upElement, componentPeer, c, Component.PROPERTY_LAYOUT_DATA, true); 
+    }
+    
+    private void renderUpdatedProperties(Element upElement, Component c, ServerComponentUpdate update) 
     throws SerialException {
         ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
         if (componentPeer == null) {
             throw new IllegalStateException("No synchronize peer found for component: " + c.getClass().getName());
         }
 
-        for (int i = 0; i < updatedPropertyNames.length; ++i) {
-            if (!componentPeer.hasOutputProperty(context, updatedPropertyNames[i])) {
-                //FIXME. We may want to handle "special" properties like style name differently.
-                // or perhaps not.  If "not" turns out to be the case, just delete this fixme comment.
-                if ("styleName".equals(updatedPropertyNames[i])) {
-                    renderComponentStyleAttributes(upElement, c);
-                }
-                continue;
-            }
-            
-            renderProperty(upElement, componentPeer, c, updatedPropertyNames[i], true);
+        Iterator propertyNameIt = componentPeer.getUpdatedOutputPropertyNames(context, c, update);
+        while (propertyNameIt.hasNext()) {
+            String propertyName = (String) propertyNameIt.next();
+            renderProperty(upElement, componentPeer, c, propertyName, true);
+        }
+        
+        if (update.hasUpdatedProperty(Component.STYLE_NAME_CHANGED_PROPERTY)) {
+            renderComponentStyleAttributes(upElement, c);
         }
     }
 }
