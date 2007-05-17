@@ -190,8 +190,7 @@ EchoRender.ComponentSync.Table.prototype.renderUpdate = function(update) {
 
 EchoRender.ComponentSync.Table.prototype.renderDispose = function(update) {
     var tableElement = document.getElementById(this.component.renderId);
-    var rowCount = this._getRowCount();
-    for (var i = 0; i < rowCount; ++i) {
+    for (var i = 0; i < tableElement.rows.length; ++i) {
         EchoWebCore.EventProcessor.removeAll(tableElement.rows[i]);
     }
 };
