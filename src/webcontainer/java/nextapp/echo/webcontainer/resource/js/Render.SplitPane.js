@@ -31,10 +31,12 @@ EchoRender.ComponentSync.SplitPane.PaneConfiguration = function(splitPanePeer, c
         var extent;
         extent = this.layoutData.getProperty("minimumSize");
         this.minimumSize = extent ? EchoWebCore.Render.extentToPixels(extent.value, extent.units, 
-                !splitPanePeer._orientationVertical) : null;
+                !splitPanePeer._orientationVertical) : 0;
         extent = this.layoutData.getProperty("maximumSize");
         this.maximumSize = extent ? EchoWebCore.Render.extentToPixels(extent.value, extent.units, 
                 !splitPanePeer._orientationVertical) : null;
+    } else {
+        this.minimumSize = 0;
     }
 };
 
@@ -460,8 +462,7 @@ EchoRender.ComponentSync.SplitPane.prototype._setSeparatorPosition = function(ne
     if (this._paneConfigurations[1]) {
         var divElement = document.getElementById(this.component.renderId);
         var totalSize = this._orientationVertical ? divElement.offsetHeight : divElement.offsetWidth;
-        if (this._paneConfigurations[1].minimumSize != null 
-                && newValue > totalSize - this._paneConfigurations[1].minimumSize - this._separatorSize) {
+        if (newValue > totalSize - this._paneConfigurations[1].minimumSize - this._separatorSize) {
             newValue = totalSize - this._paneConfigurations[1].minimumSize - this._separatorSize;
         } else if (this._paneConfigurations[1].maximumSize != null
                 && newValue < totalSize - this._paneConfigurations[1].maximumSize - this._separatorSize) {
@@ -469,7 +470,7 @@ EchoRender.ComponentSync.SplitPane.prototype._setSeparatorPosition = function(ne
         }
     }
     if (this._paneConfigurations[0]) {
-        if (this._paneConfigurations[0].minimumSize != null && newValue < this._paneConfigurations[0].minimumSize) {
+        if (newValue < this._paneConfigurations[0].minimumSize) {
             newValue = this._paneConfigurations[0].minimumSize;
         } else if (this._paneConfigurations[0].maximumSize  != null && newValue > this._paneConfigurations[0].maximumSize) {
             newValue = this._paneConfigurations[0].maximumSize;
