@@ -120,8 +120,8 @@ EchoRender.ComponentSync.SplitPane.prototype.loadRenderData = function() {
             : EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED), this._orientationVertical);
 };
 
-EchoRender.ComponentSync.SplitPane.prototype.notifyResize = function(width, height) {
-    EchoCore.Debug.consoleWrite("SplitPane resized: " + this.component.renderId);
+EchoRender.ComponentSync.SplitPane.prototype.notifyResize = function() {
+    this._setSeparatorPosition(this._separatorPosition);
 };
 
 EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseDown = function(e) {
@@ -160,7 +160,6 @@ EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseMove = functi
         }
     }
     this._setSeparatorPosition(position);
-    this._redraw();
 };
 
 EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseUp = function(e) {
@@ -459,6 +458,8 @@ EchoRender.ComponentSync.SplitPane.prototype.renderUpdate = function(update) {
 };
 
 EchoRender.ComponentSync.SplitPane.prototype._setSeparatorPosition = function(newValue) {
+    var oldValue = this._separatorPosition;
+
     if (this._paneConfigurations[1]) {
         var divElement = document.getElementById(this.component.renderId);
         var totalSize = this._orientationVertical ? divElement.offsetHeight : divElement.offsetWidth;
@@ -478,6 +479,10 @@ EchoRender.ComponentSync.SplitPane.prototype._setSeparatorPosition = function(ne
     }
     
     this._separatorPosition = newValue;
+    
+    if (oldValue != newValue) {
+        this._redraw();
+    }
 };
 
 EchoRender.registerPeer("SplitPane", EchoRender.ComponentSync.SplitPane);

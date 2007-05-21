@@ -22,6 +22,8 @@ EchoRemoteClient = function(serverUrl, domainElementId) {
     this._urlMappings.put("S", this._serverUrl + "?sid=Echo.StreamImage&imageuid=");
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
+    
+    EchoRemoteClient._activeClients.push(this);
 };
 
 EchoRemoteClient.prototype.processUrl = function(url) {
@@ -48,6 +50,8 @@ EchoRemoteClient.prototype.processUrl = function(url) {
  * bound to any particular client instance.
  */
 EchoRemoteClient.libraryServerUrl = null;
+
+EchoRemoteClient._activeClients = new Array();
 
 EchoRemoteClient.prototype.addComponentListener = function(component, eventType) {
     component.addListener(eventType, new EchoCore.MethodRef(this, this._processComponentEvent));
@@ -90,6 +94,17 @@ EchoRemoteClient.prototype._processSyncComplete = function(e) {
         EchoCore.Debug.consoleWrite(EchoCore.profilingTimer);
         EchoCore.profilingTimer = null;
     }
+};
+
+EchoRemoteClient._globalWindowResizeListener = function(e) {
+    for (var i = 0; i < EchoRemoteClient._activeClients.length; ++i) {
+        EchoRemoteClient._activeClients[i]._windowResizeListener(e);
+    }
+};
+
+EchoRemoteClient.prototype._windowResizeListener = function(e) {
+    EchoCore.Debug.consoleWrite("resize");
+    EchoRender.notifyResize(this.application.rootComponent);
 };
 
 EchoRemoteClient.prototype._processSyncResponse = function(e) {
@@ -341,3 +356,5 @@ EchoRemoteClient.ServerMessage.prototype.removeCompletionListener = function(l) 
 };
 
 EchoRemoteClient.ServerMessage.addProcessor("CSync", EchoRemoteClient.ComponentSync);
+
+EchoWebCore.DOM.addEventListener(window, "resize", EchoRemoteClient._globalWindowResizeListener, false);
