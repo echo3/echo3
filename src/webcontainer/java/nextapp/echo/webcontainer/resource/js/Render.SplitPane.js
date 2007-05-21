@@ -112,7 +112,8 @@ EchoRender.ComponentSync.SplitPane.prototype.loadRenderData = function() {
     }
 
     this._resizable = this.component.getRenderProperty("resizable");
-    this._separatorPosition = EchoRender.Property.Extent.toPixels(this.component.getRenderProperty("separatorPosition",
+    this._userSeparatorPosition = this._separatorPosition = EchoRender.Property.Extent.toPixels(
+            this.component.getRenderProperty("separatorPosition",
             EchoApp.SplitPane.DEFAULT_SEPARATOR_POSITION), this._orientationVertical);
     this._separatorSize = EchoRender.Property.Extent.toPixels(this.component.getRenderProperty(
             this._orientationVertical ? "separatorHeight" : "separatorWidth",
@@ -121,7 +122,7 @@ EchoRender.ComponentSync.SplitPane.prototype.loadRenderData = function() {
 };
 
 EchoRender.ComponentSync.SplitPane.prototype.notifyResize = function() {
-    this._setSeparatorPosition(this._separatorPosition);
+    this._setSeparatorPosition(this._userSeparatorPosition);
 };
 
 EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseDown = function(e) {
@@ -169,6 +170,7 @@ EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseUp = function
 
     this._removeSeparatorListeners();
     this.component.setProperty("separatorPosition", new EchoApp.Property.Extent(this._separatorPosition));
+    this._userSeparatorPosition = this._separatorPosition;
 
     EchoRender.notifyResize(this.component);
     

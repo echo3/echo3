@@ -15,6 +15,12 @@ EchoRender.ComponentSync.WindowPane.prototype.getContainerElement = function(com
     return document.getElementById(this.component.renderId + "_content");
 };
 
+EchoRender.ComponentSync.WindowPane.prototype.notifyResize = function() {
+    var windowPaneDivElement = document.getElementById(this.component.renderId);
+    this._containerSize = new EchoWebCore.Render.Measure(windowPaneDivElement.parentNode.parentNode);
+    this.setPosition(this._userWindowX, this._userWindowY, this._userWindowWidth, this._userWindowHeight);
+};
+
 EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseDown = function(e) {
     if (!this.component.isActive()) {
         return;
@@ -76,8 +82,6 @@ EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseMove = function(
     }
     
     this.setPosition(x, y, width, height);
-
-    this.redraw();    
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseUp = function(e) {
@@ -90,10 +94,16 @@ EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseUp = function(e)
     windowPaneDivElement.style.opacity = 1;
 
     this._removeBorderListeners();
+    
 	this.component.setProperty("positionX", new EchoApp.Property.Extent(this._windowX, "px"));
 	this.component.setProperty("positionY", new EchoApp.Property.Extent(this._windowY, "px"));
 	this.component.setProperty("width", new EchoApp.Property.Extent(this._windowWidth, "px"));
 	this.component.setProperty("height", new EchoApp.Property.Extent(this._windowHeight, "px"));
+	
+	this._userWindowX = this._windowX;
+	this._userWindowY = this._windowY;
+	this._userWindowWidth = this._windowWidth;
+	this._userWindowHeight = this._windowHeight;
     
     EchoRender.notifyResize(this.component);
     
@@ -140,7 +150,6 @@ EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseMove = functio
     var x = this._dragInitX + e.clientX - this._dragOriginX;
     var y = this._dragInitY + e.clientY - this._dragOriginY;
     this.setPosition(x, y);
-    this.redraw();
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseUp = function(e) {
@@ -153,6 +162,9 @@ EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseUp = function(
     this._removeTitleBarListeners();
 	this.component.setProperty("positionX", new EchoApp.Property.Extent(this._windowX, "px"));
 	this.component.setProperty("positionY", new EchoApp.Property.Extent(this._windowY, "px"));
+
+	this._userWindowX = this._windowX;
+	this._userWindowY = this._windowY;
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.setPosition = function(x, y, width, height) {
@@ -197,6 +209,8 @@ EchoRender.ComponentSync.WindowPane.prototype.setPosition = function(x, y, width
         }
         this._windowY = y;
     }
+    
+    this.redraw();
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.redraw = function() {
@@ -244,13 +258,13 @@ EchoRender.ComponentSync.WindowPane.prototype._removeTitleBarListeners = functio
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, parentElement) {
-    this._windowX = EchoRender.Property.Extent.toPixels(
+    this._userWindowX = this._windowX = EchoRender.Property.Extent.toPixels(
             this.component.getRenderProperty("positionX", EchoApp.WindowPane.DEFAULT_X), true);
-    this._windowY = EchoRender.Property.Extent.toPixels(
+    this._userWindowY = this._windowY = EchoRender.Property.Extent.toPixels(
             this.component.getRenderProperty("positionY", EchoApp.WindowPane.DEFAULT_Y), false);
-    this._windowWidth = EchoRender.Property.Extent.toPixels(
+    this._userWindowWidth = this._windowWidth = EchoRender.Property.Extent.toPixels(
             this.component.getRenderProperty("width", EchoApp.WindowPane.DEFAULT_WIDTH), true);
-    this._windowHeight = EchoRender.Property.Extent.toPixels(
+    this._userWindowHeight = this._windowHeight = EchoRender.Property.Extent.toPixels(
             this.component.getRenderProperty("height", EchoApp.WindowPane.DEFAULT_HEIGHT), false);
             
     this._minimumWidth = EchoRender.Property.Extent.toPixels(

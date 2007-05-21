@@ -103,7 +103,6 @@ EchoRemoteClient._globalWindowResizeListener = function(e) {
 };
 
 EchoRemoteClient.prototype._windowResizeListener = function(e) {
-    EchoCore.Debug.consoleWrite("resize");
     EchoRender.notifyResize(this.application.rootComponent);
 };
 
