@@ -59,6 +59,17 @@ EchoRender._setPeerDisposedState = function(component, disposed) {
     }
 };
 
+EchoRender.notifyResize = function(component) {
+    var count = component.getComponentCount();
+    for (var i = 0; i < count; ++i) {
+        var child = component.getComponent(i);
+        if (child.peer.notifyResize) {
+            child.peer.notifyResize();
+        }
+        EchoRender.notifyResize(child);
+    }
+};
+
 EchoRender.renderComponentAdd = function(update, component, parentElement) {
     EchoRender._loadPeer(component);
     EchoRender._setPeerDisposedState(component, false);

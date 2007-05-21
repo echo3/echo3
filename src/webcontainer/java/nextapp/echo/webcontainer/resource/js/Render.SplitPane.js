@@ -20,10 +20,22 @@ EchoRender.ComponentSync.SplitPane.prototype = new EchoRender.ComponentSync;
  * 
  * @class Describes the configuration of a child pane of the SplitPane,
  *        including the child component and scroll bar positions.
- * @param component the child component
+ * @param {EchoRender.ComponentSync.SplitPane} splitPanePeer the relevant componentPeer
+ * @param {EchoApp.Component} component the child component
+ * @constructor
  */
-EchoRender.ComponentSync.SplitPane.PaneConfiguration = function(component) {
+EchoRender.ComponentSync.SplitPane.PaneConfiguration = function(splitPanePeer, component) {
     this.component = component;
+    this.layoutData = component.getRenderProperty("layoutData");
+    if (this.layoutData) {
+        var extent;
+        extent = this.layoutData.getProperty("minimumSize");
+        this.minimumSize = extent ? EchoWebCore.Render.extentToPixels(extent.value, extent.units, 
+                !splitPanePeer._orientationVertical) : null;
+        extent = this.layoutData.getProperty("maximumSize");
+        this.maximumSize = extent ? EchoWebCore.Render.extentToPixels(extent.value, extent.units, 
+                !splitPanePeer._orientationVertical) : null;
+    }
 };
 
 EchoRender.ComponentSync.SplitPane.PaneConfiguration.prototype.loadScrollPositions = function(paneDivElement) {
@@ -106,6 +118,10 @@ EchoRender.ComponentSync.SplitPane.prototype.loadRenderData = function() {
             : EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED), this._orientationVertical);
 };
 
+EchoRender.ComponentSync.SplitPane.prototype.notifyResize = function(width, height) {
+    EchoCore.Debug.consoleWrite("SplitPane resized: " + this.component.renderId);
+};
+
 EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseDown = function(e) {
     EchoWebCore.DOM.preventEventDefault(e);
     
@@ -152,6 +168,10 @@ EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseUp = function
 
     this._removeSeparatorListeners();
     this.component.setProperty("separatorPosition", new EchoApp.Property.Extent(this._separatorPosition));
+
+    EchoRender.notifyResize(this.component);
+    
+    EchoWebCore.VirtualPosition.redraw();
 };
 
 EchoRender.ComponentSync.SplitPane.prototype._getInsetsSizeAdjustment = function(layoutData) {
@@ -223,7 +243,6 @@ EchoRender.ComponentSync.SplitPane.prototype._redraw = function() {
             this._redrawItem(separatorDivElement, "right", this._separatorPosition + "px");
         }
     }
-    EchoWebCore.VirtualPosition.redraw();
 };
 
 EchoRender.ComponentSync.SplitPane.prototype._redrawItem = function(element, styleProperty, newValue) {
@@ -394,7 +413,7 @@ EchoRender.ComponentSync.SplitPane.prototype._renderAddChild = function(update, 
     if (this._paneConfigurations[index] && this._paneConfigurations[index].component == child) {
         this._paneConfigurations[index].loadScrollPositions(paneDivElement);
     } else {
-        this._paneConfigurations[index] = new EchoRender.ComponentSync.SplitPane.PaneConfiguration(child);
+        this._paneConfigurations[index] = new EchoRender.ComponentSync.SplitPane.PaneConfiguration(this, child);
     }
 };
 
@@ -438,6 +457,25 @@ EchoRender.ComponentSync.SplitPane.prototype.renderUpdate = function(update) {
 };
 
 EchoRender.ComponentSync.SplitPane.prototype._setSeparatorPosition = function(newValue) {
+    if (this._paneConfigurations[1]) {
+        var divElement = document.getElementById(this.component.renderId);
+        var totalSize = this._orientationVertical ? divElement.offsetHeight : divElement.offsetWidth;
+        if (this._paneConfigurations[1].minimumSize != null 
+                && newValue > totalSize - this._paneConfigurations[1].minimumSize - this._separatorSize) {
+            newValue = totalSize - this._paneConfigurations[1].minimumSize - this._separatorSize;
+        } else if (this._paneConfigurations[1].maximumSize != null
+                && newValue < totalSize - this._paneConfigurations[1].maximumSize - this._separatorSize) {
+            newValue = totalSize - this._paneConfigurations[1].maximumSize - this._separatorSize;
+        }
+    }
+    if (this._paneConfigurations[0]) {
+        if (this._paneConfigurations[0].minimumSize != null && newValue < this._paneConfigurations[0].minimumSize) {
+            newValue = this._paneConfigurations[0].minimumSize;
+        } else if (this._paneConfigurations[0].maximumSize  != null && newValue > this._paneConfigurations[0].maximumSize) {
+            newValue = this._paneConfigurations[0].maximumSize;
+        }
+    }
+    
     this._separatorPosition = newValue;
 };
 

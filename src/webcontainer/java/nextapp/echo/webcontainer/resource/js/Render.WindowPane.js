@@ -95,6 +95,8 @@ EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseUp = function(e)
 	this.component.setProperty("width", new EchoApp.Property.Extent(this._windowWidth, "px"));
 	this.component.setProperty("height", new EchoApp.Property.Extent(this._windowHeight, "px"));
     
+    EchoRender.notifyResize(this.component);
+    
     // Redraw all such that content is refreshed as well.
     EchoWebCore.VirtualPosition.redraw();
 };
