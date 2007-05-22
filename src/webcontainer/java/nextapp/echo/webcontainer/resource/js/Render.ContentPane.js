@@ -71,7 +71,7 @@ EchoRender.ComponentSync.ContentPane.prototype.renderUpdate = function(update) {
                 this._renderRemoveChild(update, removedChildren[i]);
             }
         }
-        var addedChildren = update.getRemovedChildren();
+        var addedChildren = update.getAddedChildren();
         if (addedChildren) {
             // Add children.
             var contentPaneDivElemenet = document.getElementById(this.component.renderId);
