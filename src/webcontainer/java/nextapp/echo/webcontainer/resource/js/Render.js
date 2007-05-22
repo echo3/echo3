@@ -7,7 +7,7 @@
  */
 EchoRender = function() { };
 
-EchoRender._peers = new EchoCore.Collections.Map();
+EchoRender._peers = new Object();
 
 /**
  * Map containing removed components.  Maps component ids to removed components.
@@ -16,7 +16,7 @@ EchoRender._peers = new EchoCore.Collections.Map();
 EchoRender._disposedComponents = null;
 
 EchoRender.registerPeer = function(componentName, peerObject) {
-    EchoRender._peers.put(componentName, peerObject);
+    EchoRender._peers[componentName] = peerObject;
 };
 
 //FIXME.  Scrollbar position tracking code in SplitPane appears to suggest that
@@ -30,7 +30,7 @@ EchoRender._loadPeer = function(component) {
 //        throw new Error("Peer already installed: " + component);
     }
     
-    var peerClass = EchoRender._peers.get(component.componentType);
+    var peerClass = EchoRender._peers[component.componentType];
     
     if (!peerClass) {
         throw new Error("Peer not found for: " + component.componentType);
