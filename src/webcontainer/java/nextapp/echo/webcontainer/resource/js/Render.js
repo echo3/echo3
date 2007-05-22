@@ -664,7 +664,7 @@ EchoRender.Property.Insets.renderComponentProperty = function(component, compone
         element, styleProperty) { 
     var insets = component.getRenderProperty ? component.getRenderProperty(componentProperty)
             : component.getProperty(componentProperty);
-    EchoRender.Property.Insets.renderPixel(insets, element, styleProperty);
+    EchoRender.Property.Insets.renderPixel(insets ? insets : defaultValue, element, styleProperty);
 };
 
 EchoRender.Property.Insets.renderPixel = function(insets, element, styleAttribute) {
