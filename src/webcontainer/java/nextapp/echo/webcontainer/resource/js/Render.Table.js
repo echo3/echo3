@@ -176,7 +176,7 @@ EchoRender.ComponentSync.Table.prototype._renderRow = function(update, rowIndex)
         var tdElement = tdPrototype.cloneNode(false);
         tdElement.id = this.component.renderId + "_cell_" + columnIndex;
         trElement.appendChild(tdElement);
-        var child = this._getCellComponent(columnIndex, rowIndex);
+        var child = this.component.getComponent((rowIndex + (this._headerVisible ? 1 : 0)) * this._columnCount + columnIndex);
         var layoutData = child.getRenderProperty("layoutData");
         
         if (layoutData) {
@@ -203,19 +203,6 @@ EchoRender.ComponentSync.Table.prototype.renderDispose = function(update) {
     for (var i = 0; i < tableElement.rows.length; ++i) {
         EchoWebCore.EventProcessor.removeAll(tableElement.rows[i]);
     }
-};
-
-/**
- * Method to obtain the component located at the cell with given column and row indices.
- * 
- * @param {Number} columnIndex the index of the column
- * @param {Number} rowIndex the index of the row
- * @return the component.
- * @type EchoApp.Component
- */
-EchoRender.ComponentSync.Table.prototype._getCellComponent = function(columnIndex, rowIndex) {
-    var rowOffset = (this._headerVisible ? 1 : 0);
-    return this.component.getComponent((rowIndex + rowOffset) * this._columnCount + columnIndex);
 };
 
 EchoRender.ComponentSync.Table.prototype._getRowIndex = function(element) {
