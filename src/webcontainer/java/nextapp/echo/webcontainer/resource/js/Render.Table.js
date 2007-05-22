@@ -19,7 +19,20 @@ EchoRender.ComponentSync.Table._SIZING_DOTS = ". . . . . . . . . . . . . . . . .
             + ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ";
 
 EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElement) {
-    if (this._isSelectionEnabled()) {
+    this._columnCount = this.component.getRenderProperty("columnCount");
+    this._rowCount = this.component.getRenderProperty("rowCount");
+    this._selectionEnabled = this.component.getRenderProperty("selectionEnabled");
+    this._rolloverEnabled = this.component.getRenderProperty("rolloverEnabled");
+    
+    this._defaultInsets = this.component.getRenderProperty("insets");
+    if (!this._defaultInsets) {
+        this._defaultInsets = new EchoApp.Property.Insets(0);
+    }
+    this._defaultCellPadding = EchoRender.Property.Insets.toCssValue(this._defaultInsets);
+    
+    this._headerVisible = this.component.getProperty("headerVisible");
+
+    if (this._selectionEnabled) {
         this.selectionModel = new EchoApp.ListSelectionModel(parseInt(this.component.getProperty("selectionMode")));
     }
     
@@ -38,25 +51,18 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
     tableElement.appendChild(tbodyElement);
     parentElement.appendChild(tableElement);
     
-    this._defaultInsets = this.component.getRenderProperty("insets");
-    if (!this._defaultInsets) {
-        this._defaultInsets = new EchoApp.Property.Insets(0);
-    }
-    this._defaultCellPadding = EchoRender.Property.Insets.toCssValue(this._defaultInsets);
-    
-    if (this._isHeaderVisible()) {
+    if (this._headerVisible) {
         // FIXME render colgroup if needed
         tbodyElement.appendChild(this._renderRow(update, EchoRender.ComponentSync.Table._HEADER_ROW));
     }
-    var rowCount = this._getRowCount();
-    for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+    for (var rowIndex = 0; rowIndex < this._rowCount; rowIndex++) {
         tbodyElement.appendChild(this._renderRow(update, rowIndex));
     }
     if (render100PercentWidthWorkaround) {
         this._render100PercentWidthWorkaround(tableElement);
     }
     
-    if (this._isSelectionEnabled()) {
+    if (this._selectionEnabled) {
         var selectedIndices = EchoCore.tokenizeString(this.component.getProperty("selection"), ",");
         for (var i = 0; i < selectedIndices.length; i++) {
             if (selectedIndices[i] == "") {
@@ -77,7 +83,7 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
  */
 EchoRender.ComponentSync.Table.prototype._renderMainStyle = function(element, width) {
     element.style.borderCollapse = "collapse";
-    if (this._isSelectionEnabled()) {
+    if (this._selectionEnabled) {
         element.style.cursor = "pointer";
     }
     EchoRender.Property.Color.renderFB(this.component, element);
@@ -121,11 +127,11 @@ EchoRender.ComponentSync.Table.prototype._render100PercentWidthWorkaround = func
  * @param tableElement the table element, may be null
  */
 EchoRender.ComponentSync.Table.prototype._renderRowStyle = function(rowIndex, tableElement) {
-    var selected = this._isSelectionEnabled() && this.selectionModel.isSelectedIndex(rowIndex);
+    var selected = this._selectionEnabled && this.selectionModel.isSelectedIndex(rowIndex);
     if (!tableElement) {
     	tableElement = document.getElementById(this.component.renderId);
     }
-    var trElement = tableElement.rows[rowIndex + (this._isHeaderVisible() ? 1 : 0)];
+    var trElement = tableElement.rows[rowIndex + (this._headerVisible ? 1 : 0)];
     
     for (var i = 0; i < trElement.cells.length; ++i) {
         var cell = trElement.cells[i];
@@ -162,13 +168,11 @@ EchoRender.ComponentSync.Table.prototype._renderRow = function(update, rowIndex)
         trElement.id = this.component.renderId + "_tr_" + rowIndex; 
     }
     
-    var columnCount = this._getColumnCount();
-    
     var tdPrototype = document.createElement("td");
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), tdPrototype);
     tdPrototype.style.padding = this._defaultCellPadding;
     
-    for (var columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+    for (var columnIndex = 0; columnIndex < this._columnCount; columnIndex++) {
         var tdElement = tdPrototype.cloneNode(false);
         tdElement.id = this.component.renderId + "_cell_" + columnIndex;
         trElement.appendChild(tdElement);
@@ -210,8 +214,8 @@ EchoRender.ComponentSync.Table.prototype.renderDispose = function(update) {
  * @type EchoApp.Component
  */
 EchoRender.ComponentSync.Table.prototype._getCellComponent = function(columnIndex, rowIndex) {
-    var rowOffset = (this._isHeaderVisible() ? 1 : 0);
-    return this.component.getComponent((rowIndex + rowOffset) * this._getColumnCount() + columnIndex);
+    var rowOffset = (this._headerVisible ? 1 : 0);
+    return this.component.getComponent((rowIndex + rowOffset) * this._columnCount + columnIndex);
 };
 
 EchoRender.ComponentSync.Table.prototype._getRowIndex = function(element) {
@@ -237,8 +241,7 @@ EchoRender.ComponentSync.Table.prototype._setSelected = function(rowIndex, newVa
  * @param tableElement the table element, may be null
  */
 EchoRender.ComponentSync.Table.prototype._clearSelected = function(tableElement) {
-    var rowCount = this._getRowCount();
-    for (var i = 0; i < rowCount; ++i) {
+    for (var i = 0; i < this._rowCount; ++i) {
         if (this.selectionModel.isSelectedIndex(i)) {
             this._setSelected(i, false, tableElement);
         }
@@ -259,29 +262,25 @@ EchoRender.ComponentSync.Table.prototype._addEventListeners = function(tableElem
     }
     */
     
-    var selectionEnabled = this._isSelectionEnabled();
-    var rolloverEnabled = this._isRolloverEnabled();
-    
-    if (selectionEnabled || rolloverEnabled) {
-        var rowCount = this._getRowCount();
-        if (rowCount == 0) {
+    if (this._selectionEnabled || this._rolloverEnabled) {
+        if (this._rowCount == 0) {
             return;
         }
         var mouseEnterLeaveSupport = EchoWebCore.Environment.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
         var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
         var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
-        var rowOffset = (this._isHeaderVisible() ? 1 : 0);
+        var rowOffset = (this._headerVisible ? 1 : 0);
         var rolloverEnterRef = new EchoCore.MethodRef(this, this._processRolloverEnter);
         var rolloverExitRef = new EchoCore.MethodRef(this, this._processRolloverExit);
         var clickRef = new EchoCore.MethodRef(this, this._processClick);
         
-        for (var rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
+        for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
             var trElement = tableElement.rows[rowIndex + rowOffset];
-            if (rolloverEnabled) {
+            if (this._rolloverEnabled) {
                 EchoWebCore.EventProcessor.add(trElement, enterEvent, rolloverEnterRef, false);
                 EchoWebCore.EventProcessor.add(trElement, exitEvent, rolloverExitRef, false);
             }
-            if (selectionEnabled) {
+            if (this._selectionEnabled) {
                 EchoWebCore.EventProcessor.add(trElement, "click", clickRef, false);
                 EchoWebCore.EventProcessor.addSelectionDenialListener(trElement);
             }
@@ -368,28 +367,6 @@ EchoRender.ComponentSync.Table.prototype._processRolloverExit = function(e) {
     var tableElement = trElement.parentNode.parentNode;
     
     this._renderRowStyle(rowIndex, tableElement);
-};
-
-// property accessors
-
-EchoRender.ComponentSync.Table.prototype._isHeaderVisible = function() {
-    return this.component.getProperty("headerVisible");
-};
-
-EchoRender.ComponentSync.Table.prototype._isSelectionEnabled = function() {
-    return this.component.getRenderProperty("selectionEnabled");
-};
-
-EchoRender.ComponentSync.Table.prototype._isRolloverEnabled = function() {
-    return this.component.getRenderProperty("rolloverEnabled");
-};
-
-EchoRender.ComponentSync.Table.prototype._getColumnCount = function() {
-    return this.component.getRenderProperty("columnCount");
-};
-
-EchoRender.ComponentSync.Table.prototype._getRowCount = function() {
-    return this.component.getRenderProperty("rowCount");
 };
 
 EchoRender.registerPeer("Table", EchoRender.ComponentSync.Table);
