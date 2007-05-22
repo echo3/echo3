@@ -52,10 +52,10 @@ EchoRender._unloadPeer = function(component) {
 EchoRender._setPeerDisposedState = function(component, disposed) {
     if (disposed) {
         component.peer.disposed = true;
-        EchoRender._disposedComponents.put(component.renderId, component);
+        EchoRender._disposedComponents[component.renderId] = component;
     } else {
         component.peer.disposed = false;
-        EchoRender._disposedComponents.remove(component.renderId);
+        delete EchoRender._disposedComponents[component.renderId];
     }
 };
 
@@ -165,7 +165,7 @@ EchoRender.processUpdates = function(updateManager) {
     }
     
     // Create map to contain removed components (for peer unloading).
-    EchoRender._disposedComponents = new EchoCore.Collections.Map();
+    EchoRender._disposedComponents = new Object();
     
     var updates = updateManager.getUpdates();
     
@@ -222,9 +222,9 @@ EchoRender.processUpdates = function(updateManager) {
     //var ds = "DISPOSEARRAY:"; ///FIXME Remove this debug code.
     
     // Unload peers for truly removed components, destroy mapping.
-    for (var componentId in EchoRender._disposedComponents.associations) {
+    for (var componentId in EchoRender._disposedComponents) {
         //ds += "\n"; ///FIXME Remove this debug code.
-        var component = EchoRender._disposedComponents.associations[componentId];
+        var component = EchoRender._disposedComponents[componentId];
         //ds += component; ///FIXME Remove this debug code.
         EchoRender._unloadPeer(component);
     }

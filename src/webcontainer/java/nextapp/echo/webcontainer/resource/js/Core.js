@@ -589,11 +589,12 @@ EchoCore.ListenerList.prototype.fireEvent = function(event) {
  * @type Array
  */
 EchoCore.ListenerList.prototype.getListenerTypes = function() {
-    var types = new EchoCore.Collections.Set();
+    var types = new Array();
     for (var i = 0; i < this._data.length; i += 2) {
-        types.add(this._data[i]);
+        types.push(this._data[i]);
     }
-    return types.items;
+    EchoCore.Arrays.removeDuplicates(types);
+    return types;
 };
 
 /**

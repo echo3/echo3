@@ -117,7 +117,7 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     }
     
     // Profiling Timer (Uncomment to enable).
-    //EchoCore.profilingTimer = new EchoCore.Debug.Timer();
+    EchoCore.profilingTimer = new EchoCore.Debug.Timer();
 
     var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
     serverMessage.addCompletionListener(new EchoCore.MethodRef(this, this._processSyncComplete));

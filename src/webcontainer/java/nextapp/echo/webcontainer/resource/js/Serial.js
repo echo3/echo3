@@ -3,10 +3,10 @@
  */
 EchoSerial = function() { };
 
-EchoSerial._propertyTranslatorMap = new EchoCore.Collections.Map();
+EchoSerial._propertyTranslatorMap = new Object();
 
 EchoSerial.addPropertyTranslator = function(type, propertyTranslator) {
-    EchoSerial._propertyTranslatorMap.put(type, propertyTranslator);
+    EchoSerial._propertyTranslatorMap[type] = propertyTranslator;
 };
 
 /**
@@ -77,7 +77,7 @@ EchoSerial.loadProperty = function(client, propertyElement, object) {
     
     if (propertyType) {
         // Invoke custom property processor.
-        var translator = EchoSerial._propertyTranslatorMap.get(propertyType);
+        var translator = EchoSerial._propertyTranslatorMap[propertyType];
         if (!translator) {
             throw new Error("Translator not available for property type: " + propertyType);
         }
@@ -129,7 +129,7 @@ EchoSerial.storeProperty = function(client, propertyElement, propertyValue) {
     if (!propertyValue.className) {
         throw new Error("propertyValue does not provide className property, cannot determine translator.");
     }
-    var translator = EchoSerial._propertyTranslatorMap.get(propertyValue.className);
+    var translator = EchoSerial._propertyTranslatorMap[propertyValue.className];
     if (!translator || !translator.toXml) {
         throw new Error("No to-XML translator available for class name: " + propertyValue.className);
         //FIXME. silently ignore and return may be desired behavior.
