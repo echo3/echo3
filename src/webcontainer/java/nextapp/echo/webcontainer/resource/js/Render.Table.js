@@ -35,21 +35,22 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
     this._renderMainStyle(tableElement, width);
     
     var tbodyElement = document.createElement("tbody");
-    tbodyElement.id = this.component.renderId + "_tbody";
     tableElement.appendChild(tbodyElement);
     parentElement.appendChild(tableElement);
     
-    var insets = this.component.getRenderProperty("insets");
-    if (!insets) {
-        insets = new EchoApp.Property.Insets(0);
+    this._defaultInsets = this.component.getRenderProperty("insets");
+    if (!this._defaultInsets) {
+        this._defaultInsets = new EchoApp.Property.Insets(0);
     }
+    this._defaultCellPadding = EchoRender.Property.Insets.toCssValue(this._defaultInsets);
+    
     if (this._isHeaderVisible()) {
         // FIXME render colgroup if needed
-        tbodyElement.appendChild(this._renderRow(update, EchoRender.ComponentSync.Table._HEADER_ROW, insets));
+        tbodyElement.appendChild(this._renderRow(update, EchoRender.ComponentSync.Table._HEADER_ROW));
     }
     var rowCount = this._getRowCount();
     for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
-        tbodyElement.appendChild(this._renderRow(update, rowIndex, insets));
+        tbodyElement.appendChild(this._renderRow(update, rowIndex));
     }
     if (render100PercentWidthWorkaround) {
         this._render100PercentWidthWorkaround(tableElement);
@@ -153,29 +154,34 @@ EchoRender.ComponentSync.Table.prototype._renderRowStyle = function(rowIndex, ta
  * @param rowIndex {Number} the index of the row
  * @param defaultInsets {EchoApp.Property.Insets} the insets to use when no insets are specified in the layout-data
  */
-EchoRender.ComponentSync.Table.prototype._renderRow = function(update, rowIndex, defaultInsets) {
+EchoRender.ComponentSync.Table.prototype._renderRow = function(update, rowIndex) {
     var trElement = document.createElement("tr");
     if (rowIndex == EchoRender.ComponentSync.Table._HEADER_ROW) {
         trElement.id = this.component.renderId + "_tr_header";
     } else {
         trElement.id = this.component.renderId + "_tr_" + rowIndex; 
     }
+    
     var columnCount = this._getColumnCount();
+    
+    var tdPrototype = document.createElement("td");
+    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), tdPrototype);
+    tdPrototype.style.padding = this._defaultCellPadding;
+    
     for (var columnIndex = 0; columnIndex < columnCount; columnIndex++) {
-        var tdElement = document.createElement("td");
+        var tdElement = tdPrototype.cloneNode(false);
         tdElement.id = this.component.renderId + "_cell_" + columnIndex;
         trElement.appendChild(tdElement);
         var child = this._getCellComponent(columnIndex, rowIndex);
         var layoutData = child.getRenderProperty("layoutData");
+        
         if (layoutData) {
             EchoRender.Property.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
             EchoRender.Property.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
             EchoRender.Property.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
-            EchoRender.Property.Insets.renderComponentProperty(layoutData, "insets", defaultInsets, tdElement, "padding");
-        } else {
-            EchoRender.Property.Insets.renderPixel(defaultInsets, tdElement, "padding");
+            EchoRender.Property.Insets.renderComponentProperty(layoutData, "insets", this._defaultInsets, tdElement, "padding");
         }
-        EchoRender.Property.Border.render(this.component.getRenderProperty("border"), tdElement);
+
         EchoRender.renderComponentAdd(update, child, tdElement);
     }
     return trElement;

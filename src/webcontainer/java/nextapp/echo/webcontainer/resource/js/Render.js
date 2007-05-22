@@ -677,6 +677,16 @@ EchoRender.Property.Insets.renderPixel = function(insets, element, styleAttribut
     }
 };
 
+EchoRender.Property.Insets.toCssValue = function(insets) {
+    if (insets) {
+        var pixelInsets = EchoRender.Property.Insets.toPixels(insets);
+        return pixelInsets.top + "px " + pixelInsets.right + "px "
+                + pixelInsets.bottom + "px " + pixelInsets.left + "px";
+    } else {
+        return "";
+    }
+};
+
 EchoRender.Property.Insets.toPixels = function(insets) {
     var pixelInsets = new Object();
     pixelInsets.top = EchoWebCore.Render.extentToPixels(insets.top.value, insets.top.units, false);
