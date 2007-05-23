@@ -99,8 +99,8 @@ EchoRender._renderComponentDisposeImpl = function(update, component, removeIds) 
     EchoRender._setPeerDisposedState(component, true);
 
     component.peer.renderDispose(update);
-    for (var i = 0; i < component.children.items.length; ++i) {
-        EchoRender._renderComponentDisposeImpl(update, component.children.items[i], false);
+    for (var i = 0; i < component.children.length; ++i) {
+        EchoRender._renderComponentDisposeImpl(update, component.children[i], false);
     }
     
     if (removeIds) {
@@ -280,8 +280,8 @@ EchoRender.ComponentSync.Root.prototype.renderUpdate = function(update) {
     EchoWebCore.DOM.removeAllChildren(rootElement);
 
     var rootElement = document.getElementById(update.parent.renderId);
-    for (var i = 0; i < update.parent.children.items.length; ++i) {
-        EchoRender.renderComponentAdd(update, update.parent.children.items[i], rootElement);
+    for (var i = 0; i < update.parent.children.length; ++i) {
+        EchoRender.renderComponentAdd(update, update.parent.children[i], rootElement);
     }
     return true;
 };

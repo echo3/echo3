@@ -340,7 +340,7 @@ EchoApp.Component = function(componentType, renderId) {
      * This value is read-only.
      * @type Array
      */
-    this.children = new EchoCore.Collections.List();
+    this.children = new Array();
     
     /**
      * The registered application.
@@ -419,7 +419,9 @@ EchoApp.Component.prototype.add = function(component, index) {
     
     component.parent = this;
         
-    this.children.add(component, index);
+    if (index == null || index == this.children.length) {
+        this.children.push(component);
+    }
     
     if (this.application) {
         component.register(this.application);
@@ -463,7 +465,7 @@ EchoApp.Component.prototype.fireEvent = function(event) {
  * @type EchoApp.Component
  */
 EchoApp.Component.prototype.getComponent = function(index) {
-    return this.children.items[index];
+    return this.children[index];
 };
 
 /**
@@ -473,7 +475,7 @@ EchoApp.Component.prototype.getComponent = function(index) {
  * @type Number
  */
 EchoApp.Component.prototype.getComponentCount = function() {
-    return this.children.items.length;
+    return this.children.length;
 };
 
 /**
@@ -622,7 +624,12 @@ EchoApp.Component.prototype.getStyleType = function() {
  * @type Number
  */
 EchoApp.Component.prototype.indexOf = function(component) {
-    return this.children.indexOf(component);
+    for (var i = 0; i < this.children.length; ++i) {
+        if (this.children[i] == component) {
+            return i;
+        }
+    }
+    return -1;
 };
 
 /**
@@ -669,8 +676,8 @@ EchoApp.Component.prototype.register = function(application) {
 	    
 		if (this.children != null) {
 			// Recursively unregister children.
-		    for (var i = 0; i < this.children.items.length; ++i) {
-		         this.children.items[i].register(false); // Recursively unregister children.
+		    for (var i = 0; i < this.children.length; ++i) {
+		         this.children[i].register(false); // Recursively unregister children.
 			}
 		}
 		
@@ -688,8 +695,8 @@ EchoApp.Component.prototype.register = function(application) {
         
 		if (this.children != null) {
 			// Recursively register children.
-		    for (var i = 0; i < this.children.items.length; ++i) {
-		         this.children.items[i].register(application); // Recursively unregister children.
+		    for (var i = 0; i < this.children.length; ++i) {
+		         this.children[i].register(application); // Recursively unregister children.
 			}
 		}
 	}
@@ -707,13 +714,13 @@ EchoApp.Component.prototype.remove = function(componentOrIndex) {
     var index;
     if (typeof componentOrIndex == "number") {
         index = componentOrIndex;
-        component = this.children.items[index];
+        component = this.children[index];
         if (!component) {
             throw new Error("Index out of bounds: " + index);
         }
     } else {
         component = componentOrIndex;
-        index = this.children.indexOf(component);
+        index = this.indexOf(component);
         if (index == -1) {
             // Component is not a child: do nothing.
             return;
@@ -724,7 +731,7 @@ EchoApp.Component.prototype.remove = function(componentOrIndex) {
         component.register(null);
     }
     
-    this.children.remove(index);
+    this.children.splice(index, 1);
     component.parent = null;
     
     if (this.application) {
@@ -1952,8 +1959,8 @@ EchoApp.Update.ComponentUpdate.prototype._removeChild = function(child) {
     
     this._removedChildIds.push(child.renderId);
 
-    for (var i = 0; i < child.children.items.length; ++i) {
-        this._removeDescendant(child.children.items[i]);
+    for (var i = 0; i < child.children.length; ++i) {
+        this._removeDescendant(child.children[i]);
     }
 };
 
@@ -1973,8 +1980,8 @@ EchoApp.Update.ComponentUpdate.prototype._removeDescendant = function(descendant
         this._removedDescendantIds = new Array();
     }
     this._removedDescendantIds.push(descendant.renderId);
-    for (var i = 0; i < descendant.children.items.length; ++i) {
-        this._removeDescendant(descendant.children.items[i]);
+    for (var i = 0; i < descendant.children.length; ++i) {
+        this._removeDescendant(descendant.children[i]);
     }
 };
 
