@@ -434,6 +434,7 @@ public class OutputProcessor {
             }
             SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
             if (propertySyncPeer == null) {
+                System.err.println("No peer found for property class: " + propertyValue.getClass());
                 //FIXME. figure out how these should be handled...ignoring is probably best.
                 continue;
             }
