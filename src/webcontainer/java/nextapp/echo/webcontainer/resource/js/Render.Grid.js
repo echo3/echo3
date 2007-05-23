@@ -60,6 +60,10 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
         ySpan = "colspan"; 
     }
     
+    var tdPrototype = document.createElement("td");
+    EchoRender.Property.Border.render(defaultBorder, tdPrototype);
+    tdPrototype.style.padding = defaultInsets.toString();
+    
     for (var rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
         trElement = document.createElement("tr");
         tbodyElement.appendChild(trElement);
@@ -77,7 +81,7 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
             }
             renderedComponentIds[cell.component.renderId] = true;
             
-            var tdElement = document.createElement("td");
+            var tdElement = tdPrototype.cloneNode(false);
             
             tdElement.id = this.component.renderId + "_" + cell.component.renderId;
             if (cell.xSpan > 1) {
@@ -92,8 +96,6 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
                 EchoRender.Property.Color.renderComponentProperty(layoutData, "background", "", tdElement, "backgroundColor");
             }
             
-            EchoRender.Property.Border.render(defaultBorder, tdElement);
-            tdElement.style.padding = defaultInsets.toString();
             EchoRender.renderComponentAdd(update, cell.component, tdElement);
             trElement.appendChild(tdElement);
         }
