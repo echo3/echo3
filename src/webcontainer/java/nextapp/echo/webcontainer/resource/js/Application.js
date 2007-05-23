@@ -421,6 +421,8 @@ EchoApp.Component.prototype.add = function(component, index) {
         
     if (index == null || index == this.children.length) {
         this.children.push(component);
+    } else {
+        this.children.splice(index, 0, component);
     }
     
     if (this.application) {
