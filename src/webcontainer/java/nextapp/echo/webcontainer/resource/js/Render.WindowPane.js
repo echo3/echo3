@@ -15,7 +15,7 @@ EchoRender.ComponentSync.WindowPane.prototype.getContainerElement = function(com
     return document.getElementById(this.component.renderId + "_content");
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.notifyResize = function() {
+EchoRender.ComponentSync.WindowPane.prototype.renderSizeUpdate = function() {
     var windowPaneDivElement = document.getElementById(this.component.renderId);
     this._containerSize = new EchoWebCore.Render.Measure(windowPaneDivElement.parentNode.parentNode);
     this.setPosition(this._userWindowX, this._userWindowY, this._userWindowWidth, this._userWindowHeight);

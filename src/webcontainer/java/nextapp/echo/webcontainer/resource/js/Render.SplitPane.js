@@ -121,7 +121,7 @@ EchoRender.ComponentSync.SplitPane.prototype.loadRenderData = function() {
             : EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED), this._orientationVertical);
 };
 
-EchoRender.ComponentSync.SplitPane.prototype.notifyResize = function() {
+EchoRender.ComponentSync.SplitPane.prototype.renderSizeUpdate = function() {
     this._setSeparatorPosition(this._userSeparatorPosition);
 };
 

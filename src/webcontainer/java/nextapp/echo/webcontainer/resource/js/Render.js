@@ -60,13 +60,23 @@ EchoRender._setPeerDisposedState = function(component, disposed) {
 };
 
 EchoRender.notifyResize = function(component) {
+    EchoRender._resizedIds = new Object();
+    EchoRender._notifyResizeImpl(component);
+    EchoRender._resizedIds = null;
+};
+
+EchoRender._notifyResizeImpl = function(component) {
+    if (EchoRender._resizedIds[component.renderId]) {
+        return;
+    }
+    EchoRender._resizedIds[component.renderId] = true;
     var count = component.getComponentCount();
     for (var i = 0; i < count; ++i) {
         var child = component.getComponent(i);
-        if (child.peer.notifyResize) {
-            child.peer.notifyResize();
+        if (child.peer.renderSizeUpdate) {
+            child.peer.renderSizeUpdate();
         }
-        EchoRender.notifyResize(child);
+        EchoRender._notifyResizeImpl(child);
     }
 };
 
@@ -218,7 +228,16 @@ EchoRender.processUpdates = function(updateManager) {
     if (EchoCore.profilingTimer) {
         EchoCore.profilingTimer.mark("ProcessUpdates: Update Phase");
     }
+    
+    for (var i = 0; i < updates.length; ++i) {
+        for (var j = 0; j < updates[i].parent.children.length; ++j) {
+            EchoRender.notifyResize(updates[i].parent.children[j]);
+        }
+    }
 
+    if (EchoCore.profilingTimer) {
+        EchoCore.profilingTimer.mark("ProcessUpdates: SizeUpdate Phase");
+    }
     //var ds = "DISPOSEARRAY:"; ///FIXME Remove this debug code.
     
     // Unload peers for truly removed components, destroy mapping.
