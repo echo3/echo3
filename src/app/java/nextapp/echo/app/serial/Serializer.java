@@ -155,6 +155,11 @@ public class Serializer {
                     peer = (SerialPropertyPeer) factory.getPeerForProperty(propertyClass);
                 }
                 
+                int index = -1;
+                if (pElements[i].hasAttribute("x")) {
+                    index = Integer.parseInt(pElements[i].getAttribute("x"));
+                }
+                
                 if (peer == null) {
                     propertyClass = introspector.getPropertyClass(name);
                     peer = (SerialPropertyPeer) factory.getPeerForProperty(propertyClass);
@@ -170,7 +175,12 @@ public class Serializer {
                 }
                 
                 Object value = peer.toProperty(context, introspector.getObjectClass(), pElements[i]);
-                style.setProperty(name, value);
+
+                if (index == -1) {
+                    style.setProperty(name, value);
+                } else {
+                    style.setIndexedProperty(name, index, value);
+                }
             }
             
             return style;
