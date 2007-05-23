@@ -79,16 +79,24 @@ implements SerialPropertyPeer {
     public FillImage parseFillImageElement(Context context, Element fiElement) 
     throws SerialException {
         String imageType = fiElement.getAttribute("t");
-        ImageReference imageReference = null;
+        PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
+        SerialPropertyPeer imagePropertyPeer = null;
         if ("r".equals(imageType)) {
-            PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
-            SerialPropertyPeer imagePropertyPeer = propertyPeerFactory.getPeerForProperty(ResourceImageReference.class);
-            imageReference = (ImageReference) imagePropertyPeer.toProperty(context, FillImage.class, fiElement);
-        } else if (imageType == null) {
-            throw new RuntimeException("No image type specified");
+            imagePropertyPeer = propertyPeerFactory.getPeerForProperty(ResourceImageReference.class);
+        } else if (imageType != null) {
+            SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
+            try {
+                imagePropertyPeer = propertyPeerFactory.getPeerForProperty(serialContext.getClassLoader().loadClass(imageType));
+            } catch (ClassNotFoundException ex) {
+                throw new SerialException("Object class not found.", ex);  
+            }
         } else {
+            throw new RuntimeException("No image type specified");
+        }
+        if (imagePropertyPeer == null) {
             throw new RuntimeException("Unknown image type: " + imageType);
         }
+        ImageReference imageReference = (ImageReference) imagePropertyPeer.toProperty(context, FillImage.class, fiElement);
         int repeat = REPEAT_CONSTANTS.get(fiElement.getAttribute("r"), FillImage.REPEAT);
         Extent x = fiElement.hasAttribute("x") ? ExtentPeer.fromString(fiElement.getAttribute("x") ) : null;
         Extent y = fiElement.hasAttribute("y") ? ExtentPeer.fromString(fiElement.getAttribute("y") ) : null;
