@@ -29,27 +29,18 @@
 
 package nextapp.echo.app.serial.property;
 
-import org.w3c.dom.Element;
-
 import nextapp.echo.app.layout.RowLayoutData;
 import nextapp.echo.app.serial.SerialException;
-import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.serial.SerialUtil;
 import nextapp.echo.app.util.Context;
+
+import org.w3c.dom.Element;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>RowLayout</code> properties.
  */
 public class RowLayoutDataPeer
-implements SerialPropertyPeer {
-
-    /**
-     * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(Context,
-     *      Class, org.w3c.dom.Element)
-     */
-    public Object toProperty(Context context, Class objectClass, Element propertyElement) {
-        throw new UnsupportedOperationException();
-    }
+extends LayoutDataPeer {
 
     /**
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
