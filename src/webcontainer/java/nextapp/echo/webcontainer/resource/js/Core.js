@@ -113,7 +113,7 @@ EchoCore.Collections.List = function() {
  * @param {Number} the (integer) index at which to insert it (if not set, item will be added to end of list)
  */
 EchoCore.Collections.List.prototype.add = function(item, index) {
-    if (index == undefined) {
+    if (index == undefined || index == this.items.length) {
         this.items.push(item);
     } else {
         this.items.splice(index, 0, item);

@@ -213,17 +213,17 @@ EchoRemoteClient.ComponentSync.process = function(client, dirElement) {
     while (element) {
         if (element.nodeType == 1) {
             switch (element.nodeName) {
-            case "add":
-                EchoRemoteClient.ComponentSync._processComponentAdd(client, element);
-                break;
             case "rm":
                 EchoRemoteClient.ComponentSync._processComponentRemove(client, element);
                 break;
-            case "ss":
-                EchoRemoteClient.ComponentSync._processStyleSheet(client, element);
-                break;
             case "up":
                 EchoRemoteClient.ComponentSync._processComponentUpdate(client, element);
+                break;
+            case "add":
+                EchoRemoteClient.ComponentSync._processComponentAdd(client, element);
+                break;
+            case "ss":
+                EchoRemoteClient.ComponentSync._processStyleSheet(client, element);
                 break;
             }
         }
