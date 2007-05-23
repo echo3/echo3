@@ -51,12 +51,14 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
     tableElement.appendChild(tbodyElement);
     parentElement.appendChild(tableElement);
     
+    var trPrototype = this._createRowPrototype();
+    
     if (this._headerVisible) {
         // FIXME render colgroup if needed
-        tbodyElement.appendChild(this._renderRow(update, EchoRender.ComponentSync.Table._HEADER_ROW));
+        tbodyElement.appendChild(this._renderRow(update, EchoRender.ComponentSync.Table._HEADER_ROW, trPrototype));
     }
     for (var rowIndex = 0; rowIndex < this._rowCount; rowIndex++) {
-        tbodyElement.appendChild(this._renderRow(update, rowIndex));
+        tbodyElement.appendChild(this._renderRow(update, rowIndex, trPrototype));
     }
     if (render100PercentWidthWorkaround) {
         this._render100PercentWidthWorkaround(tableElement);
@@ -158,24 +160,23 @@ EchoRender.ComponentSync.Table.prototype._renderRowStyle = function(rowIndex, ta
  *
  * @param update the update
  * @param rowIndex {Number} the index of the row
- * @param defaultInsets {EchoApp.Property.Insets} the insets to use when no insets are specified in the layout-data
+ * @param trPrototype {Element} a TR element containing the appropriate number of TD elements with default
+ *        styles applied (This is created by _renderRowStyle().  Providing this attribute is optional,
+ *        and is specified for performance reasons.  If omitted one is created automatically.)
  */
-EchoRender.ComponentSync.Table.prototype._renderRow = function(update, rowIndex) {
-    var trElement = document.createElement("tr");
+EchoRender.ComponentSync.Table.prototype._renderRow = function(update, rowIndex, trPrototype) {
+    var trElement = trPrototype ? trPrototype.cloneNode(true) : this._createRowPrototype();
     if (rowIndex == EchoRender.ComponentSync.Table._HEADER_ROW) {
         trElement.id = this.component.renderId + "_tr_header";
     } else {
         trElement.id = this.component.renderId + "_tr_" + rowIndex; 
     }
     
-    var tdPrototype = document.createElement("td");
-    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), tdPrototype);
-    tdPrototype.style.padding = this._defaultCellPadding;
+    var tdElement = trElement.firstChild;
+    var columnIndex = 0;
     
-    for (var columnIndex = 0; columnIndex < this._columnCount; columnIndex++) {
-        var tdElement = tdPrototype.cloneNode(false);
+    while (columnIndex < this._columnCount) {
         tdElement.id = this.component.renderId + "_cell_" + columnIndex;
-        trElement.appendChild(tdElement);
         var child = this.component.getComponent((rowIndex + (this._headerVisible ? 1 : 0)) * this._columnCount + columnIndex);
         var layoutData = child.getRenderProperty("layoutData");
         
@@ -187,6 +188,23 @@ EchoRender.ComponentSync.Table.prototype._renderRow = function(update, rowIndex)
         }
 
         EchoRender.renderComponentAdd(update, child, tdElement);
+        
+        ++columnIndex;
+        tdElement = tdElement.nextSibling;
+    }
+    return trElement;
+};
+
+EchoRender.ComponentSync.Table.prototype._createRowPrototype = function() {
+    var trElement = document.createElement("tr");
+
+    var tdPrototype = document.createElement("td");
+    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), tdPrototype);
+    tdPrototype.style.padding = this._defaultCellPadding;
+
+    for (var columnIndex = 0; columnIndex < this._columnCount; columnIndex++) {
+        var tdElement = tdPrototype.cloneNode(false);
+        trElement.appendChild(tdElement);
     }
     return trElement;
 };
