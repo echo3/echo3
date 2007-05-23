@@ -206,11 +206,16 @@ public class Echo2StyleSheetConverter {
     private Node convertProperty(Element oldProperty) {
         if (oldProperty.hasAttribute("name")) {
             logOutput("Converting property: " + oldProperty.getAttribute("name"));
+            Element property;
             if (oldProperty.hasAttribute("value")) {
-                return convertSimpleProperty(oldProperty);
+                property = convertSimpleProperty(oldProperty);
             } else {
-                return convertNestedProperty(oldProperty);
+                property = convertNestedProperty(oldProperty);
             }
+            if (oldProperty.hasAttribute("position")) {
+                property.setAttribute("x", oldProperty.getAttribute("position"));
+            }
+            return property;
         } else { 
             logWarning("Encountered property without name, skipped");
             return null;
@@ -427,17 +432,14 @@ public class Echo2StyleSheetConverter {
             Node childNode = childNodes.item(i);
             if ("image".equals(childNode.getNodeName())) {
                 Element oldImage = DomUtil.getChildElementByTagName(oldFillImage, "image");
-                Node newImage;
                 String imageType = oldImage.getAttribute("type");
                 if ("nextapp.echo2.app.ResourceImageReference".equals(imageType)) {
                     imageType = "r";
-                    newImage = convertResourceImage(oldImage);
                 } else {
-                    logWarning("Unsupported image type: " + imageType + ", skipped");
-                    continue;
+                    logWarning("Encountered image type " + imageType + ", assuming subclass of ResourceImageReference");
                 }
                 fillImage.setAttribute("t", imageType);
-                fillImage.appendChild(newImage);
+                fillImage.appendChild(convertResourceImage(oldImage));
             } else {
                 fillImage.appendChild(outputDoc.importNode(childNode, true));
             }
