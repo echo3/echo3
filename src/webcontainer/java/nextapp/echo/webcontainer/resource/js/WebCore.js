@@ -285,13 +285,15 @@ EchoWebCore.DOM.isAncestorOf = function(ancestorNode, descendantNode) {
 
 EchoWebCore.Environment = function() { };
 
-EchoWebCore.Environment._init = function() { 
+EchoWebCore.Environment._init = function() {
     var env = EchoWebCore.Environment;
     var ua = navigator.userAgent.toLowerCase();
     env.BROWSER_OPERA = ua.indexOf("opera") != -1;
     env.BROWSER_SAFARI = ua.indexOf("safari") != -1;
     env.BROWSER_KONQUEROR = ua.indexOf("konqueror") != -1;
-    env.BROWSER_FIREFOX= ua.indexOf("firefox") != -1;
+    env.BROWSER_FIREFOX = ua.indexOf("firefox") != -1;
+    
+    env.CSS_FLOAT = "cssFloat";
 
     // Note deceptive user agent fields:
     // - Konqueror and Safari UA fields contain "like Gecko"
@@ -327,6 +329,7 @@ EchoWebCore.Environment._init = function() {
         env.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR = true;
         env.QUIRK_IE_SELECT_PERCENT_WIDTH = true;
         env.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY = true;
+        env.CSS_FLOAT = "styleFloat";
         
         if (env.BROWSER_MAJOR_VERSION < 7) {
             env.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED = true;

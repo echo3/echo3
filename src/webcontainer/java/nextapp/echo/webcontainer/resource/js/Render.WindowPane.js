@@ -481,10 +481,25 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     titleBarDivElement.id = this.component.renderId + "_titlebar";
     titleBarDivElement.style.position = "absolute";
     titleBarDivElement.style.zIndex = 3;
+    
+    var icon = this.component.getRenderProperty("icon");
+    if (icon) {
+        var titleIconDivElement = document.createElement("div");
+        titleIconDivElement.style[EchoWebCore.Environment.CSS_FLOAT] = "left";
+        EchoRender.Property.Insets.renderComponentProperty(this.component, "iconInsets", null, titleIconDivElement, "padding");
+        titleBarDivElement.appendChild(titleIconDivElement);
+        
+        var imgElement = document.createElement("img");
+        imgElement.src = icon.url;
+        titleIconDivElement.appendChild(imgElement);
+    }
 
     var title = this.component.getRenderProperty("title");
     if (title) {
         var titleTextDivElement = document.createElement("div");
+        if (icon) {
+            titleTextDivElement.style[EchoWebCore.Environment.CSS_FLOAT] = "left";
+        }
         titleTextDivElement.style.padding = "5px 10px";
         titleTextDivElement.style.whiteSpace = "nowrap";
         titleTextDivElement.appendChild(document.createTextNode(title));
@@ -526,6 +541,30 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
 
     if (!titleBackground && !titleBackgroundImage) {
         titleBarDivElement.style.backgroundColor = EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_BACKGROUND.value;
+    }
+    
+    // Close Button
+  
+    var closeDivElement = null;
+    EchoCore.Debug.consoleWrite("CLOSE:" + this.component.getRenderProperty("closable", true));
+    if (this.component.getRenderProperty("closable", true)) {
+        closeDivElement = document.createElement("div");
+        closeDivElement.id = this.component.renderId + "_close";
+        closeDivElement.style.position = "absolute";
+        closeDivElement.style.right = "0px";
+        closeDivElement.style.top = "0px";
+        closeDivElement.style.cursor = "pointer";
+        EchoRender.Property.Insets.renderComponentProperty(this.component, "closeIconInsets", null, 
+                closeDivElement, "padding");
+        var closeIcon = this.component.getRenderProperty("closeIcon"); 
+        if (closeIcon) {
+            var imgElement = document.createElement("img");
+            imgElement.src = closeIcon.url;
+            closeDivElement.appendChild(imgElement);
+        } else {
+            closeDivElement.appendChild(document.createTextNode("[X]"));
+        }
+        titleBarDivElement.appendChild(closeDivElement);
     }
     
     windowPaneDivElement.appendChild(titleBarDivElement);
