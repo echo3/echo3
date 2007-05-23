@@ -31,7 +31,7 @@ EchoApp.Application = function(rootComponentId) {
      */
     this._listenerList = new EchoCore.ListenerList();
 
-    /** 
+    /**
      * Id of root component.
      * This value is read-only.
      * @type string 

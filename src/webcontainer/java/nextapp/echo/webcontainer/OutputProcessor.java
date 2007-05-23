@@ -201,9 +201,13 @@ public class OutputProcessor {
                 
                 // Removed children.
                 Component[] removedChildren = componentUpdates[i].getRemovedChildren();
-                for (int j = 0; j < removedChildren.length; ++j) {
+                if (removedChildren.length > 0) {
                     Element rmElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "rm");
-                    rmElement.setAttribute("i", UserInstance.getElementId(removedChildren[j]));
+                    for (int j = 0; j < removedChildren.length; ++j) {
+                        Element cElement = document.createElement("c");
+                        cElement.setAttribute("i", UserInstance.getElementId(removedChildren[j]));
+                        rmElement.appendChild(cElement);
+                    }
                 }
                 
                 Component parentComponent = componentUpdates[i].getParent();

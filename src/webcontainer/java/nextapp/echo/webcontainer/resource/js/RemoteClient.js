@@ -249,13 +249,61 @@ EchoRemoteClient.ComponentSync._processComponentAdd = function(client, addElemen
     }
 };
 
+EchoRemoteClient.ComponentSync._numericReverseSort = function(a, b) {
+    return b - a;
+};
+
 EchoRemoteClient.ComponentSync._processComponentRemove = function(client, removeElement) {
-    var id = removeElement.getAttribute("i");
-    var component = client.application.getComponentByRenderId(id);
-    if (!component) {
-        return;
+    if (removeElement.childNodes.length > 5) {
+        // Special case: many children being removed: create renderId -> index map and remove by index
+        // in order to prevent Component.indexOf() of from being invoked n times.
+        
+        // Find parent component.
+        var cElement = removeElement.firstChild;
+        var parent;
+        while (cElement) {
+            var component = client.application.getComponentByRenderId(cElement.getAttribute("i"));
+            if (component) {
+                parent = component.parent;
+            }
+            cElement = cElement.nextSibling;
+        }
+        if (!parent) {
+            return;
+        }
+        
+        // Create map between ids and indices.
+        var idToIndexMap = new Object();
+        for (var i = 0; i < parent.children.length; ++i) {
+            idToIndexMap[parent.children[i].renderId] = i;
+        }
+        
+        // Create array of indices to remove.
+        var indicesToRemove = new Array();
+        cElement = removeElement.firstChild;
+        while (cElement) {
+            var index = idToIndexMap[cElement.getAttribute("i")];
+            if (index != null) {
+                indicesToRemove.push(parseInt(index));
+            }
+            cElement = cElement.nextSibling;
+        }
+        indicesToRemove.sort(EchoRemoteClient.ComponentSync._numericReverseSort);
+
+        // Remove components (last to first).
+        for (var i = 0; i < indicesToRemove.length; ++i) {
+            parent.remove(indicesToRemove[i]);
+        }
+    } else {
+        var cElement = removeElement.firstChild;
+        while (cElement) {
+            var component = client.application.getComponentByRenderId(cElement.getAttribute("i"));
+            if (component) {
+                component.parent.remove(component);
+            }
+            cElement = cElement.nextSibling;
+        }
     }
-    component.parent.remove(component);
 };
 
 EchoRemoteClient.ComponentSync._processComponentUpdate = function(client, updateElement) {
