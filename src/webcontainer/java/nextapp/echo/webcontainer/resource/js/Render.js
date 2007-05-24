@@ -228,6 +228,8 @@ EchoRender.processUpdates = function(updateManager) {
     if (EchoCore.profilingTimer) {
         EchoCore.profilingTimer.mark("ProcessUpdates: Update Phase");
     }
+
+    EchoWebCore.VirtualPosition.redraw();
     
     for (var i = 0; i < updates.length; ++i) {
         for (var j = 0; j < updates[i].parent.children.length; ++j) {
@@ -238,6 +240,7 @@ EchoRender.processUpdates = function(updateManager) {
     if (EchoCore.profilingTimer) {
         EchoCore.profilingTimer.mark("ProcessUpdates: SizeUpdate Phase");
     }
+
     //var ds = "DISPOSEARRAY:"; ///FIXME Remove this debug code.
     
     // Unload peers for truly removed components, destroy mapping.
@@ -251,8 +254,6 @@ EchoRender.processUpdates = function(updateManager) {
     //alert(ds); ///FIXME Remove this debug code.
 
     updateManager.purge();
-
-    EchoWebCore.VirtualPosition.redraw();
 };
 
 EchoRender.ComponentSync = function() { };

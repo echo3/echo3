@@ -36,7 +36,7 @@ EchoRender.ComponentSync.SplitPane.PaneConfiguration = function(splitPanePeer, c
         this.maximumSize = extent ? EchoWebCore.Render.extentToPixels(extent.value, extent.units, 
                 !splitPanePeer._orientationVertical) : null;
     } else {
-        this.minimumSize = 0;
+        this.minimumSize = 100;
     }
 };
 
