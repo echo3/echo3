@@ -71,7 +71,14 @@ implements SerialPropertyPeer {
         
         ImageReferencePeer imagePeer = (ImageReferencePeer) propertyPeer ;
         fiElement.setAttribute("u", imagePeer.getImageUrl(context, imageReference));
-        
+        Extent offsetX = fillImage.getHorizontalOffset();
+        if (offsetX != null) {
+            fiElement.setAttribute("x", ExtentPeer.toString(offsetX));
+        }
+        Extent offsetY = fillImage.getVerticalOffset();
+        if (offsetY != null) {
+            fiElement.setAttribute("y", ExtentPeer.toString(offsetY));
+        }
         fiElement.setAttribute("r", REPEAT_CONSTANTS.get(fillImage.getRepeat()));
         return fiElement;
     }
