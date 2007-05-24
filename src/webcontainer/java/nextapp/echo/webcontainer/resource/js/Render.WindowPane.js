@@ -540,7 +540,6 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     // Close Button
   
     var closeDivElement = null;
-    EchoCore.Debug.consoleWrite("CLOSE:" + this.component.getRenderProperty("closable", true));
     if (this.component.getRenderProperty("closable", true)) {
         closeDivElement = document.createElement("div");
         closeDivElement.id = this.component.renderId + "_close";
