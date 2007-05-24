@@ -254,10 +254,8 @@ EchoCore.Collections.Map.prototype.put = function(key, value) {
 EchoCore.Collections.Map.prototype._garbageCollect = function() {
     this._removeCount = 0;
     var newAssociations = new Object();
-    var i = 0;
     for (var key in this.associations) {
         newAssociations[key] = this.associations[key];
-        ++i;
     }
     this.associations = newAssociations;
 };
