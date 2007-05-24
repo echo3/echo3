@@ -66,6 +66,11 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
         EchoRender.Property.Color.renderComponentProperty(layoutData, "background", null, divElement, "backgroundColor");
         EchoRender.Property.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, divElement);
         EchoRender.Property.Insets.renderComponentProperty(layoutData, "insets", null, divElement, "padding");
+		EchoRender.Property.Alignment.renderComponentProperty(layoutData, "alignment", null, divElement, false, this.component);
+	    var height = layoutData.getProperty("height");
+	    if (height) {
+	    	divElement.style.height = EchoRender.Property.Extent.toPixels(height, false) + "px";
+	    }
     }
     
     if (index == null) {
