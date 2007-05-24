@@ -114,6 +114,8 @@ EchoRender.ComponentSync.Button.prototype._renderMain = function() {
     EchoRender.Property.Font.renderDefault(this.component, divElement);
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), divElement);
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", "", divElement, "padding");
+    EchoRender.Property.FillImage.renderComponentProperty(this.component, "backgroundImage", null, divElement);
+	EchoRender.Property.Alignment.renderComponentProperty(this.component, "alignment", null, divElement, true);
     
     var toolTipText = this.component.getRenderProperty("toolTipText");
     if (toolTipText) {
