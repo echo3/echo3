@@ -6,27 +6,43 @@ EchoRender.ComponentSync.Grid = function() {
   
 EchoRender.ComponentSync.Grid.prototype = new EchoRender.ComponentSync;
 
+EchoRender.ComponentSync.Grid._createPrototypeTable = function() {
+    var tableElement = document.createElement("table");
+    tableElement.style.outlineStyle = "none";
+    tableElement.tabIndex = "-1";
+    tableElement.style.borderCollapse = "collapse";
+    
+    var colGroupElement = document.createElement("colgroup");
+    tableElement.appendChild(colGroupElement);
+
+    var tbodyElement = document.createElement("tbody");
+    tableElement.appendChild(tbodyElement);
+    
+    return tableElement;
+};
+
+EchoRender.ComponentSync.Grid._prototypeTable = EchoRender.ComponentSync.Grid._createPrototypeTable();
+
 EchoRender.ComponentSync.Grid.prototype.getContainerElement = function(component) {
     return document.getElementById(this.component.renderId + "_" + component.renderId);
 };
 
 EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentElement) {
     var gridProcessor = new EchoRender.ComponentSync.Grid.Processor(this.component);
+    
     var columnCount = gridProcessor.getColumnCount();
     var rowCount = gridProcessor.getRowCount();
     
     var defaultInsets = this.component.getRenderProperty("insets", "0");
     var defaultBorder = this.component.getRenderProperty("border", "");
 
-    var tableElement = document.createElement("table");
+    var tableElement = EchoRender.ComponentSync.Grid._prototypeTable.cloneNode(true);
     tableElement.id = this.component.renderId;
-    tableElement.style.outlineStyle = "none";
-    tableElement.tabIndex = "-1";
     
     EchoRender.Property.Color.renderFB(this.component, tableElement);
     EchoRender.Property.Border.render(defaultBorder, tableElement);
-    tableElement.style.borderCollapse = "collapse";
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, tableElement, "padding");
+
     var width = this.component.getRenderProperty("width");
     if (width) {
         if (width.units == "%") {
@@ -35,15 +51,13 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
 	    	tableElement.style.width = EchoRender.Property.Extent.toPixels(width, true) + "px";
         }
     }
+    
     var height = this.component.getRenderProperty("height");
     if (height) {
     	tableElement.style.height = EchoRender.Property.Extent.toPixels(height, false) + "px";
     }
     
-    var tbodyElement = document.createElement("tbody");
-    tableElement.appendChild(tbodyElement);
-    
-    var colGroupElement = document.createElement("colgroup");
+    var colGroupElement = tableElement.firstChild;
     for (var columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
         var colElement = document.createElement("col");
         var width = gridProcessor.xExtents[columnIndex];
@@ -56,7 +70,8 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
         }
         colGroupElement.appendChild(colElement);
     }
-    tableElement.appendChild(colGroupElement);
+    
+    var tbodyElement = colGroupElement.nextSibling;
     
     var size = parseInt(this.component.getRenderProperty("size", 2));
     
@@ -112,6 +127,7 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
             }
             
             EchoRender.renderComponentAdd(update, cell.component, tdElement);
+
             trElement.appendChild(tdElement);
         }
     }
