@@ -76,6 +76,15 @@ EchoRender.ComponentSync.Row.prototype._renderAddChild = function(update, child,
         EchoRender.Property.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
         EchoRender.Property.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
         EchoRender.Property.Insets.renderComponentProperty(layoutData, "insets", null, tdElement, "padding");
+		EchoRender.Property.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
+	    var width = layoutData.getProperty("width");
+	    if (width) {
+	        if (width.units == "%") {
+		    	tdElement.style.width = width.toString();
+	        } else {
+		    	tdElement.style.width = EchoRender.Property.Extent.toPixels(width, true) + "px";
+	        }
+	    }
     }
     
     if (index == null) {
