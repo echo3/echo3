@@ -37,10 +37,10 @@ import nextapp.echo.app.util.Context;
 import org.w3c.dom.Element;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>RowLayout</code> properties.
+ * <code>XmlPropertyPeer</code> for <code>RowLayoutData</code> properties.
  */
 public class RowLayoutDataPeer
-extends LayoutDataPeer {
+extends CellLayoutDataPeer {
 
     /**
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
@@ -48,11 +48,8 @@ extends LayoutDataPeer {
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
+        super.toXml(context, objectClass, propertyElement, propertyValue);
         RowLayoutData layoutData = (RowLayoutData) propertyValue;
-        propertyElement.setAttribute("t", "LayoutData");
-        SerialUtil.toXml(context, RowLayoutData.class, propertyElement, "alignment", layoutData.getAlignment());
-        SerialUtil.toXml(context, RowLayoutData.class, propertyElement, "background", layoutData.getBackground());
-        SerialUtil.toXml(context, RowLayoutData.class, propertyElement, "backgroundImage", layoutData.getBackgroundImage());
-        SerialUtil.toXml(context, RowLayoutData.class, propertyElement, "insets", layoutData.getInsets());
+        SerialUtil.toXml(context, RowLayoutData.class, propertyElement, "width", layoutData.getWidth());
     }
 }
