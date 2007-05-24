@@ -65,11 +65,11 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     
     var xSpan, ySpan;
     if (gridProcessor.horizontalOrientation) {
-        xSpan = "colspan";
-        ySpan = "rowspan"; 
+        xSpan = "colSpan";
+        ySpan = "rowSpan"; 
     } else {
-        xSpan = "rowspan";
-        ySpan = "colspan"; 
+        xSpan = "rowSpan";
+        ySpan = "colSpan"; 
     }
     
     var tdPrototype = document.createElement("td");
