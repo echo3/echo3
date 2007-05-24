@@ -27,9 +27,17 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     EchoRender.Property.Border.render(defaultBorder, tableElement);
     tableElement.style.borderCollapse = "collapse";
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, tableElement, "padding");
+    var width = this.component.getRenderProperty("width");
+    if (width) {
+        if (width.units == "%") {
+	    	tableElement.style.width = width.toString();
+        } else {
+	    	tableElement.style.width = EchoRender.Property.Extent.toPixels(width, true) + "px";
+        }
+    }
     var height = this.component.getRenderProperty("height");
     if (height) {
-    	tableElement.style.height = height.toString();
+    	tableElement.style.height = EchoRender.Property.Extent.toPixels(height, false) + "px";
     }
     
     var tbodyElement = document.createElement("tbody");
@@ -97,6 +105,9 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
             
             var layoutData = cell.component.getRenderProperty("layoutData");
             if (layoutData) {
+            	EchoRender.Property.Insets.renderComponentProperty(layoutData, "insets", null, tdElement, "padding");
+            	EchoRender.Property.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
+			    EchoRender.Property.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
                 EchoRender.Property.Color.renderComponentProperty(layoutData, "background", "", tdElement, "backgroundColor");
             }
             
