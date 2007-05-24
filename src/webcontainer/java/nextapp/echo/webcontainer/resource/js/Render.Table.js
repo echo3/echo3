@@ -18,7 +18,7 @@ EchoRender.ComponentSync.Table._HEADER_ROW = -1;
 EchoRender.ComponentSync.Table._SIZING_DOTS = ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . "
             + ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ";
 
-EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElement) {
+EchoRender.ComponentSync.Table.prototype.renderAddOld = function(update, parentElement) {
     this._columnCount = this.component.getRenderProperty("columnCount");
     this._rowCount = this.component.getRenderProperty("rowCount");
     this._selectionEnabled = this.component.getRenderProperty("selectionEnabled");
@@ -49,7 +49,6 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
     
     var tbodyElement = document.createElement("tbody");
     tableElement.appendChild(tbodyElement);
-    parentElement.appendChild(tableElement);
     
     var trPrototype = this._createRowPrototype();
     
@@ -73,9 +72,74 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
             this._setSelected(parseInt(selectedIndices[i]), true, tableElement);
         }
     }
+
+    parentElement.appendChild(tableElement);
     
     this._addEventListeners(tableElement);
 };
+
+
+EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElement) {
+    this._columnCount = this.component.getRenderProperty("columnCount");
+    this._rowCount = this.component.getRenderProperty("rowCount");
+    this._selectionEnabled = this.component.getRenderProperty("selectionEnabled");
+    this._rolloverEnabled = this.component.getRenderProperty("rolloverEnabled");
+    
+    this._defaultInsets = this.component.getRenderProperty("insets");
+    if (!this._defaultInsets) {
+        this._defaultInsets = new EchoApp.Property.Insets(0);
+    }
+    this._defaultCellPadding = EchoRender.Property.Insets.toCssValue(this._defaultInsets);
+    
+    this._headerVisible = this.component.getProperty("headerVisible");
+
+    if (this._selectionEnabled) {
+        this.selectionModel = new EchoApp.ListSelectionModel(parseInt(this.component.getProperty("selectionMode")));
+    }
+    
+    var tableElement = this._renderTable();
+    tableElement.id = this.component.renderId;
+    
+    var tbodyElement = tableElement.firstChild;
+    
+    var width = this.component.getRenderProperty("width");
+    var render100PercentWidthWorkaround = false;
+    if (width && EchoWebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.value == 100 && width.units == "%") {
+        width = null;
+        render100PercentWidthWorkaround = true;
+    }
+    this._renderMainStyle(tableElement, width);
+    
+    if (this._headerVisible) {
+        // FIXME render colgroup if needed
+        this._customizeRow(update, EchoRender.ComponentSync.Table._HEADER_ROW, tbodyElement);
+    }
+    for (var rowIndex = 0; rowIndex < this._rowCount; rowIndex++) {
+        this._customizeRow(update, rowIndex, tbodyElement);
+    }
+    
+    if (render100PercentWidthWorkaround) {
+        this._render100PercentWidthWorkaround(tableElement);
+    }
+    
+    if (this._selectionEnabled) {
+        var selectedIndices = EchoCore.tokenizeString(this.component.getProperty("selection"), ",");
+        for (var i = 0; i < selectedIndices.length; i++) {
+            if (selectedIndices[i] == "") {
+                continue;
+            }
+            this._setSelected(parseInt(selectedIndices[i]), true, tableElement);
+        }
+    }
+
+    parentElement.appendChild(tableElement);
+    
+    this._addEventListeners(tableElement);
+};
+
+
+
+
 
 /**
  * Renders the main style.
@@ -155,6 +219,39 @@ EchoRender.ComponentSync.Table.prototype._renderRowStyle = function(rowIndex, ta
     }
 };
 
+EchoRender.ComponentSync.Table.prototype._customizeRow = function(update, rowIndex, tbodyElement) {
+    var trElement;
+    if (rowIndex == EchoRender.ComponentSync.Table._HEADER_ROW) {
+        trElement = tbodyElement.firstChild;
+        trElement.id = this.component.renderId + "_tr_header";
+    } else {
+        trElement = tbodyElement.childNodes[rowIndex + (this._headerVisible ? 1 : 0)];
+        trElement.id = this.component.renderId + "_tr_" + rowIndex; 
+    }
+
+    var tdElement = trElement.firstChild;
+    var columnIndex = 0;
+    
+    while (columnIndex < this._columnCount) {
+        tdElement.id = this.component.renderId + "_cell_" + columnIndex;
+        var child = this.component.getComponent((rowIndex + (this._headerVisible ? 1 : 0)) * this._columnCount + columnIndex);
+        var layoutData = child.getRenderProperty("layoutData");
+        
+        if (layoutData) {
+            EchoRender.Property.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
+            EchoRender.Property.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
+            EchoRender.Property.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
+            EchoRender.Property.Insets.renderComponentProperty(layoutData, "insets", this._defaultInsets, tdElement, "padding");
+        }
+
+        EchoRender.renderComponentAdd(update, child, tdElement);
+        
+        ++columnIndex;
+        tdElement = tdElement.nextSibling;
+    }
+    return trElement;
+};
+
 /**
  * Renders a single row.
  *
@@ -193,6 +290,32 @@ EchoRender.ComponentSync.Table.prototype._renderRow = function(update, rowIndex,
         tdElement = tdElement.nextSibling;
     }
     return trElement;
+};
+
+EchoRender.ComponentSync.Table.prototype._renderTable = function(update, rowIndex) {
+    // Fix this so it doesn't actually create an element/css style.
+    var tdPrototype = document.createElement("td");
+    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), tdPrototype);
+    tdPrototype.style.padding = this._defaultCellPadding;
+    
+    var td = "<td style=\"" + tdPrototype.style.cssText + "\"></td>";
+    var tdArray = new Array(this._columnCount);
+    for (var i = 0; i < this._columnCount; ++i) {
+        tdArray[i] = td;
+    }
+    
+    var tr = "<tr>" + tdArray.join("") + "</tr>";
+    var trCount = (this._headerVisible ? 1 : 0) + this._rowCount;
+    var trArray = new Array(this._rowCount);
+    for (var i = 0; i < trCount; ++i) {
+        trArray[i] = tr;
+    }
+    
+    var tbody = "<tbody>" + trArray.join("") + "</tbody>";
+    
+    var tableElement = document.createElement("table");
+    tableElement.innerHTML = tbody;
+    return tableElement;
 };
 
 EchoRender.ComponentSync.Table.prototype._createRowPrototype = function() {
