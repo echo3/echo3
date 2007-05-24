@@ -253,12 +253,10 @@ public class Echo2StyleSheetConverter {
         } else if (type == null && (name.equals("width") || name.endsWith("Width") || name.equals("height") || name.endsWith("Height") || name.endsWith("Position") || name.endsWith("Spacing") || name.endsWith("Size") || name.endsWith("X") || name.endsWith("Y") || name.endsWith("Margin"))) {
             type = "Extent";
         } else if ("true".equalsIgnoreCase(value)) {
-            value = "1";
             if (type == null) {
                 type = "b";
             }
         } else if ("false".equalsIgnoreCase(value)) {
-            value = "0";
             if (type == null) {
                 type = "b";
             }
