@@ -12,6 +12,17 @@ EchoRender.ComponentSync.Button = function() {
 
 EchoRender.ComponentSync.Button.prototype = new EchoRender.ComponentSync;
 
+EchoRender.ComponentSync.Button._createPrototypeButton = function() {
+    var divElement = document.createElement("div");
+    divElement.tabIndex = "0";
+    divElement.style.outlineStyle = "none";
+    divElement.style.overflow = "hidden";
+    divElement.style.cursor = "pointer";
+    return divElement;
+};
+
+EchoRender.ComponentSync.Button._prototypeButton = EchoRender.ComponentSync.Button._createPrototypeButton(); 
+
 EchoRender.ComponentSync.Button._defaultIconTextMargin = new EchoApp.Property.Extent(5);
 
 EchoRender.ComponentSync.Button.prototype.focus = function(e) {
@@ -96,14 +107,9 @@ EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentEle
 };
 
 EchoRender.ComponentSync.Button.prototype._renderMain = function() {
-    var divElement = document.createElement("div");
+    var divElement = EchoRender.ComponentSync.Button._prototypeButton.cloneNode(false); 
     divElement.id = this.component.renderId;
-    divElement.tabIndex = "0";
-    if (this.component.getRenderProperty("focusedEnabled")) {
-        divElement.style.outlineStyle = "none";
-    }
-    divElement.style.overflow = "hidden";
-    divElement.style.cursor = "pointer";
+
     EchoRender.Property.Color.renderFB(this.component, divElement);
     EchoRender.Property.Font.renderDefault(this.component, divElement);
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), divElement);
@@ -120,7 +126,6 @@ EchoRender.ComponentSync.Button.prototype._renderMain = function() {
     var height = this.component.getRenderProperty("height");
     if (height) {
     	divElement.style.height = height.toString();
-    	divElement.style.overflow = "hidden";
     }
     
     this._renderContent(divElement);
