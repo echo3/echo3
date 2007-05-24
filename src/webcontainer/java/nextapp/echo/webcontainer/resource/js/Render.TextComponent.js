@@ -27,21 +27,6 @@ EchoRender.ComponentSync.TextArea = function() { };
 
 EchoRender.ComponentSync.TextArea.prototype = new EchoRender.ComponentSync.TextComponent;
 
-EchoRender.ComponentSync.TextArea._renderTextComponentProperties = function(component, element) {
-    EchoRender.Property.Border.render(component.getRenderProperty("border"), element);
-    EchoRender.Property.Color.renderFB(component, element);
-    EchoRender.Property.Font.renderComponentProperty(component, "font", null, element);
-    EchoRender.Property.Insets.renderComponentProperty(component, "insets", null, element, "padding");
-    var width = component.getRenderProperty("width");
-    if (width) {
-    	element.style.width = width.toString();
-    }
-    var height = component.getRenderProperty("height");
-    if (height) {
-    	element.style.height = height.toString();
-    }
-};
-
 EchoRender.ComponentSync.TextArea.prototype.renderAdd = function(update, parentElement) {
     var textAreaElement = document.createElement("textarea");
     textAreaElement.id = this.component.renderId;
