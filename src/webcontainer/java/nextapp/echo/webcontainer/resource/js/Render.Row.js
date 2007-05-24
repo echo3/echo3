@@ -6,6 +6,26 @@ EchoRender.ComponentSync.Row = function() {
   
 EchoRender.ComponentSync.Row.prototype = new EchoRender.ComponentSync;
 
+EchoRender.ComponentSync.Row._createRowPrototype = function() {
+    var divElement = document.createElement("div");
+    divElement.style.outlineStyle = "none";
+    divElement.tabIndex = "-1";
+
+    var tableElement = document.createElement("table");
+    tableElement.style.borderCollapse = "collapse";
+    divElement.appendChild(tableElement);
+
+    var tbodyElement = document.createElement("tbody");
+    tableElement.appendChild(tbodyElement);
+    
+    var trElement = document.createElement("tr");
+    tbodyElement.appendChild(trElement);
+
+    return divElement;
+};
+
+EchoRender.ComponentSync.Row._rowPrototype = EchoRender.ComponentSync.Row._createRowPrototype();
+
 EchoRender.ComponentSync.Row.prototype.getContainerElement = function(component) {
     return document.getElementById(this.component.renderId + "_" + component.renderId);
 };
@@ -29,27 +49,22 @@ EchoRender.ComponentSync.Row.prototype.processKeyDown = function(e) {
     }
 };
 
+
 EchoRender.ComponentSync.Row.prototype.renderAdd = function(update, parentElement) {
     this.cellSpacing = EchoRender.Property.Extent.toPixels(this.component.getRenderProperty("cellSpacing"), false);
     var insets = this.component.getRenderProperty("insets");
 
-    var divElement = document.createElement("div");
+    var divElement = EchoRender.ComponentSync.Row._rowPrototype.cloneNode(true);
     divElement.id = this.component.renderId;
-    divElement.style.outlineStyle = "none";
-    divElement.tabIndex = "-1";
+
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), divElement);
     EchoRender.Property.Color.renderFB(this.component, divElement);
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, divElement, "padding");
     
-    var tableElement = document.createElement("table");
-    tableElement.style.borderCollapse = "collapse";
-    divElement.appendChild(tableElement);
-
-    var tbodyElement = document.createElement("tbody");
-    tableElement.appendChild(tbodyElement);
-    var trElement = document.createElement("tr");
+    //              div        table      tbody      tr
+    var trElement = divElement.firstChild.firstChild.firstChild;
+    
     trElement.id = this.component.renderId + "_tr";
-    tbodyElement.appendChild(trElement);
     
     var componentCount = this.component.getComponentCount();
     for (var i = 0; i < componentCount; ++i) {
