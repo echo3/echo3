@@ -80,6 +80,26 @@ EchoWebCore.DOM.addEventListener = function(eventSource, eventType, eventListene
 };
 
 /**
+ * Adds a rule to the document stylesheet.
+ * This method does not function in Safari/KHTML.
+ * 
+ * @param selectorText the selector
+ * @param style the style information
+ */
+EchoWebCore.DOM.addRule = function(selectorText, style) {
+    //FIXME. add code to init() to ensure document.styleSheets[0] exists.
+    // Probably remove the printed version from initial HTML service as well.
+    var ss = document.styleSheets[0];
+    if (ss.insertRule) {
+        // W3C DOM Browsers.
+        ss.insertRule(selectorText + " {" + style + "}", ss.cssRules.length);
+    } else if (ss.addRule) {
+        // IE6.
+        ss.addRule(selectorText, style);
+    }
+};
+
+/**
  * Creates a new XML DOM.
  *
  * @param namespaceUri the unique URI of the namespace of the root element in 
@@ -189,6 +209,27 @@ EchoWebCore.DOM.removeAllChildren = function(node) {
 };
 
 /**
+ * Removes an event listener from an object, using the client's supported event 
+ * model.
+ *
+ * @param eventSource the event source
+ * @param eventType the type of event (the 'on' prefix should NOT be included
+ *        in the event type, i.e., for mouse rollover events, "mouseover" would
+ *        be specified instead of "onmouseover")
+ * @param eventListener the event listener to be invoked when the event occurs
+ * @param useCapture a flag indicating whether the event listener should capture
+ *        events in the final phase of propagation (only supported by 
+ *        DOM Level 2 event model, not available on Internet Explorer)
+ */
+EchoWebCore.DOM.removeEventListener = function(eventSource, eventType, eventListener, useCapture) {
+    if (eventSource.removeEventListener) {
+        eventSource.removeEventListener(eventType, eventListener, useCapture);
+    } else if (eventSource.detachEvent) {
+        eventSource.detachEvent("on" + eventType, eventListener);
+    }
+};
+
+/**
  * Removes the specified DOM node from the DOM tree. This method employs a workaround for the
  * <code>QUIRK_PERFORMANCE_LARGE_DOM_REMOVE</code> quirk.
  *
@@ -197,13 +238,13 @@ EchoWebCore.DOM.removeAllChildren = function(node) {
 EchoWebCore.DOM.removeNode = function(node) {
     var parentNode = node.parentNode;
     if (!parentNode) {
-    	// not in DOM tree
-    	return;
+        // not in DOM tree
+        return;
     }
     if (EchoWebCore.Environment.QUIRK_PERFORMANCE_LARGE_DOM_REMOVE) {
-    	EchoWebCore.DOM._removeNodeRecursive(node);
+        EchoWebCore.DOM._removeNodeRecursive(node);
     } else {
-	  	parentNode.removeChild(node);
+        parentNode.removeChild(node);
     }
 };
 
@@ -225,23 +266,31 @@ EchoWebCore.DOM._removeNodeRecursive = function(node) {
 };
 
 /**
- * Removes an event listener from an object, using the client's supported event 
- * model.
- *
- * @param eventSource the event source
- * @param eventType the type of event (the 'on' prefix should NOT be included
- *        in the event type, i.e., for mouse rollover events, "mouseover" would
- *        be specified instead of "onmouseover")
- * @param eventListener the event listener to be invoked when the event occurs
- * @param useCapture a flag indicating whether the event listener should capture
- *        events in the final phase of propagation (only supported by 
- *        DOM Level 2 event model, not available on Internet Explorer)
+ * Removes a rule from the document stylesheet.
+ * This method does not function in Safari/KHTML.
+ * 
+ * @param selectorText the selector
  */
-EchoWebCore.DOM.removeEventListener = function(eventSource, eventType, eventListener, useCapture) {
-    if (eventSource.removeEventListener) {
-        eventSource.removeEventListener(eventType, eventListener, useCapture);
-    } else if (eventSource.detachEvent) {
-        eventSource.detachEvent("on" + eventType, eventListener);
+EchoWebCore.DOM.removeRule = function(selectorText) {
+    selectorText = selectorText.toLowerCase();
+    var ss = document.styleSheets[0];
+    
+    // Retrieve rules object for W3C DOM : IE6.
+    var rules = ss.cssRules ? ss.cssRules : ss.rules;
+    
+    for (var i = 0; i < rules.length; ++i) {
+        if (rules[i].type == 1 && rules[i].selectorText.toLowerCase() == selectorText) {
+            if (ss.deleteRule) {
+                // Delete rule: W3C DOM.
+                ss.deleteRule(i);
+                break;
+            } else if (ss.removeRule) {
+                // Delete rule: IE6.
+                //FIXME. untested.
+                ss.removeRule(i);
+                break;
+            }
+        }
     }
 };
 
