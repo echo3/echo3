@@ -2055,14 +2055,12 @@ EchoApp.Update.ComponentUpdate.PropertyUpdate = function(oldValue, newValue) {
  * @param {EchoApp.Application} application the supported application
  */
 EchoApp.Update.Manager = function(application) {
-    this.componentUpdateMap = new EchoCore.Collections.Map();
+    this._componentUpdateMap = new Object();
     this.fullRefreshRequired = false;
     this.application = application;
     this.application.addComponentUpdateListener(new EchoCore.MethodRef(this, this._processComponentUpdate));
     this._hasUpdates = true;
     this._listenerList = new EchoCore.ListenerList();
-    
-    this._last
     
     /**
      * Associative mapping between component ids and component instances for all
@@ -2101,10 +2099,10 @@ EchoApp.Update.Manager.prototype.addUpdateListener = function(l) {
  */
 EchoApp.Update.Manager.prototype._createComponentUpdate = function(parent) {
     this._hasUpdates = true;
-    var update = this.componentUpdateMap.get(parent.renderId);
+    var update = this._componentUpdateMap[parent.renderId];
     if (!update) {
         update = new EchoApp.Update.ComponentUpdate(this, parent);
-        this.componentUpdateMap.put(parent.renderId, update);
+        this._componentUpdateMap[parent.renderId] = update;
     }
     return update;
 };
@@ -2139,8 +2137,8 @@ EchoApp.Update.Manager.prototype.getComponent = function(id) {
  */
 EchoApp.Update.Manager.prototype.getUpdates = function() {
     var updates = new Array();
-    for (var key in this.componentUpdateMap.associations) {
-        updates.push(this.componentUpdateMap.associations[key]);
+    for (var key in this._componentUpdateMap) {
+        updates.push(this._componentUpdateMap[key]);
     }
     return updates;
 };
@@ -2173,7 +2171,7 @@ EchoApp.Update.Manager.prototype._isAncestorBeingAdded = function(component) {
     }
     
     while (parent) {
-        var update = this.componentUpdateMap.associations[parent.renderId];
+        var update = this._componentUpdateMap[parent.renderId];
         if (update && update._addedChildIds) {
             for (var i = 0; i < update._addedChildIds.length; ++i) {
                 if (update._addedChildIds[i] == child.renderId) {
@@ -2247,8 +2245,8 @@ EchoApp.Update.Manager.prototype._processComponentRemove = function(parent, chil
     // Search updated components for descendants of removed component.
     // Any found descendants will be removed and added to this update's
     // list of removed components.
-    for (var testParentId in this.componentUpdateMap.associations) {
-         var testUpdate = this.componentUpdateMap.associations[testParentId];
+    for (var testParentId in this._componentUpdateMap) {
+         var testUpdate = this._componentUpdateMap[testParentId];
          if (child.isAncestorOf(testUpdate.parent)) {
              update._appendRemovedDescendants(testUpdate);
              if (disposedIds == null) {
@@ -2260,7 +2258,7 @@ EchoApp.Update.Manager.prototype._processComponentRemove = function(parent, chil
     
     if (disposedIds != null) {
         for (var i = 0; i < disposedIds.length; ++i) {
-            this.componentUpdateMap.remove(disposedIds[i]);
+            delete this._componentUpdateMap[disposedIds[i]];
         }
     }
 };
@@ -2312,7 +2310,7 @@ EchoApp.Update.Manager.prototype._processComponentUpdate = function(e) {
  * Invoked after the client has repainted the screen.
  */
 EchoApp.Update.Manager.prototype.purge = function() {
-    this.componentUpdateMap = new EchoCore.Collections.Map();
+    this._componentUpdateMap = new Object();
     this.fullRefreshRequired = false;
     this._idMap = new Object();
     this._hasUpdates = false;
@@ -2339,8 +2337,8 @@ EchoApp.Update.Manager.prototype.toString = function() {
     if (this.fullRefreshRequired) {
         s += "fullRefresh";
     } else {
-		for (var key in this.componentUpdateMap.associations) {
-			s += this.componentUpdateMap.associations[key];
+		for (var key in this._componentUpdateMap) {
+			s += this._componentUpdateMap[key];
 		}
     }
     return s;
