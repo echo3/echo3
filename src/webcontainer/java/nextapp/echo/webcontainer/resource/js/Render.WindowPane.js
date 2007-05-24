@@ -15,12 +15,6 @@ EchoRender.ComponentSync.WindowPane.prototype.getContainerElement = function(com
     return document.getElementById(this.component.renderId + "_content");
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.renderSizeUpdate = function() {
-    var windowPaneDivElement = document.getElementById(this.component.renderId);
-    this._containerSize = new EchoWebCore.Render.Measure(windowPaneDivElement.parentNode.parentNode);
-    this.setPosition(this._userWindowX, this._userWindowY, this._userWindowWidth, this._userWindowHeight);
-};
-
 EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseDown = function(e) {
     if (!this.component.isActive()) {
         return;
@@ -626,6 +620,14 @@ EchoRender.ComponentSync.WindowPane.prototype.renderDispose = function(update) {
         var borderDivElement = document.getElementById(this.component.renderId + "_border_" + i);
         EchoWebCore.EventProcessor.removeAll(borderDivElement);
     }
+};
+
+EchoRender.ComponentSync.WindowPane.prototype.renderSizeUpdate = function() {
+    var windowPaneDivElement = document.getElementById(this.component.renderId);
+    this._containerSize = new EchoWebCore.Render.Measure(windowPaneDivElement.parentNode.parentNode);
+    this.setPosition(this._userWindowX, this._userWindowY, this._userWindowWidth, this._userWindowHeight);
+
+    EchoWebCore.VirtualPosition.redraw();
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.renderUpdate = function(update) {
