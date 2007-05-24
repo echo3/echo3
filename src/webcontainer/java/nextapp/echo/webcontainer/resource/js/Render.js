@@ -231,15 +231,15 @@ EchoRender.processUpdates = function(updateManager) {
 
     EchoWebCore.VirtualPosition.redraw();
     
-    for (var i = 0; i < updates.length; ++i) {
-        if (updates[i] == null) {
-            // Skip removed updates.
-            continue;
-        }
-        for (var j = 0; j < updates[i].parent.children.length; ++j) {
-            EchoRender.notifyResize(updates[i].parent.children[j]);
-        }
-    }
+//    for (var i = 0; i < updates.length; ++i) {
+//        if (updates[i] == null) {
+//            // Skip removed updates.
+//            continue;
+//        }
+//        for (var j = 0; j < updates[i].parent.children.length; ++j) {
+//            EchoRender.notifyResize(updates[i].parent.children[j]);
+//        }
+//    }
 
     if (EchoCore.profilingTimer) {
         EchoCore.profilingTimer.mark("ProcessUpdates: SizeUpdate Phase");
