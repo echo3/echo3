@@ -27,6 +27,10 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     EchoRender.Property.Border.render(defaultBorder, tableElement);
     tableElement.style.borderCollapse = "collapse";
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, tableElement, "padding");
+    var height = this.component.getRenderProperty("height");
+    if (height) {
+    	tableElement.style.height = height.toString();
+    }
     
     var tbodyElement = document.createElement("tbody");
     tableElement.appendChild(tbodyElement);
