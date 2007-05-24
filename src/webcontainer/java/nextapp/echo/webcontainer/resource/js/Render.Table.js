@@ -311,11 +311,11 @@ EchoRender.ComponentSync.Table.prototype._renderTable = function(update, rowInde
         trArray[i] = tr;
     }
     
-    var tbody = "<tbody>" + trArray.join("") + "</tbody>";
+    var table = "<table><tbody>" + trArray.join("") + "</tbody></table>";
+    var divElement = document.createElement("div");
     
-    var tableElement = document.createElement("table");
-    tableElement.innerHTML = tbody;
-    return tableElement;
+    divElement.innerHTML = table;
+    return divElement.firstChild;
 };
 
 EchoRender.ComponentSync.Table.prototype._createRowPrototype = function() {

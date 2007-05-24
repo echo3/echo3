@@ -276,7 +276,7 @@ public class TableTest extends SplitPane {
             }
         });
         
-        testTable = new Table();
+        testTable = new Table(new MultiplicationTableModel());
         testTable.setBorder(new Border(new Extent(1), Color.BLUE, Border.STYLE_SOLID));
         testColumn.add(testTable);
 
