@@ -51,14 +51,16 @@ EchoRender.ComponentSync.TextArea.prototype.renderUpdate = function(update) {
 /**
  * Component rendering peer: TextField
  */
-EchoRender.ComponentSync.TextField = function() { };
+EchoRender.ComponentSync.TextField = function() {
+	this._type = "text";
+};
 
 EchoRender.ComponentSync.TextField.prototype = new EchoRender.ComponentSync.TextComponent;
 
 EchoRender.ComponentSync.TextField.prototype.renderAdd = function(update, parentElement) {
     var inputElement = document.createElement("input");
     inputElement.id = this.component.renderId;
-    inputElement.setAttribute("type", "text");
+    inputElement.setAttribute("type", this._type);
     this._renderStyle(inputElement);
     if (this.component.getProperty("text")) {
         inputElement.setAttribute("value", this.component.getProperty("text"));
@@ -75,5 +77,15 @@ EchoRender.ComponentSync.TextField.prototype.renderUpdate = function(update) {
     return false;
 };
 
+/**
+ * Component rendering peer: PasswordField
+ */
+EchoRender.ComponentSync.PasswordField = function() {
+	this._type = "password";
+};
+
+EchoRender.ComponentSync.PasswordField.prototype = new EchoRender.ComponentSync.TextField;
+
 EchoRender.registerPeer("TextArea", EchoRender.ComponentSync.TextArea);
 EchoRender.registerPeer("TextField", EchoRender.ComponentSync.TextField);
+EchoRender.registerPeer("PasswordField", EchoRender.ComponentSync.PasswordField);
