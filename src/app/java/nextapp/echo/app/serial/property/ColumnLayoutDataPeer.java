@@ -29,26 +29,18 @@
 
 package nextapp.echo.app.serial.property;
 
-import org.w3c.dom.Element;
-
 import nextapp.echo.app.layout.ColumnLayoutData;
 import nextapp.echo.app.serial.SerialException;
-import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.serial.SerialUtil;
 import nextapp.echo.app.util.Context;
+
+import org.w3c.dom.Element;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>ColumnLayoutData</code> properties.
  */
 public class ColumnLayoutDataPeer
-implements SerialPropertyPeer {
-
-    /**
-     * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(Context, Class, org.w3c.dom.Element)
-     */
-    public Object toProperty(Context context, Class objectClass, Element propertyElement) {
-        throw new UnsupportedOperationException();
-    }
+extends CellLayoutDataPeer {
 
     /**
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context, java.lang.Class, 
@@ -56,11 +48,8 @@ implements SerialPropertyPeer {
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
+        super.toXml(context, objectClass, propertyElement, propertyValue);
         ColumnLayoutData layoutData = (ColumnLayoutData) propertyValue;
-        propertyElement.setAttribute("t", "LayoutData");
-        SerialUtil.toXml(context, ColumnLayoutData.class, propertyElement, "alignment", layoutData.getAlignment());
-        SerialUtil.toXml(context, ColumnLayoutData.class, propertyElement, "background", layoutData.getBackground());
-        SerialUtil.toXml(context, ColumnLayoutData.class, propertyElement, "backgroundImage", layoutData.getBackgroundImage());
-        SerialUtil.toXml(context, ColumnLayoutData.class, propertyElement, "insets", layoutData.getInsets());
+        SerialUtil.toXml(context, ColumnLayoutData.class, propertyElement, "height", layoutData.getHeight());
     }
 }
