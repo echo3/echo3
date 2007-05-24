@@ -492,7 +492,7 @@ EchoRender.Property.Alignment.renderComponentProperty
     var verticalValue;
     switch (vertical) {
     case EchoApp.Property.Alignment.TOP:    verticalValue = "top";      break;
-    case EchoApp.Property.Alignment.CENTER: verticalValue = "center";   break;
+    case EchoApp.Property.Alignment.CENTER: verticalValue = "middle";   break;
     case EchoApp.Property.Alignment.BOTTOM: verticalValue = "bottom";   break;
     default:                                verticalValue = "";         break;
     }
