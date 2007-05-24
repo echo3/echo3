@@ -49,7 +49,7 @@ implements SerialPropertyPeer {
         if (valueText == null) {
             return null;
         }
-        return "1".equals(valueText) ? Boolean.TRUE : Boolean.FALSE;
+        return "true".equals(valueText) ? Boolean.TRUE : Boolean.FALSE;
     }
 
     /**

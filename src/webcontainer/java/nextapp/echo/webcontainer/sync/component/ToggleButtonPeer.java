@@ -43,15 +43,13 @@ import nextapp.echo.webcontainer.service.ToggleButtonImageService;
  */
 public class ToggleButtonPeer extends AbstractButtonPeer {
     
-    private static final String PROPERTY_SELECTED = "selected";
-    
     static {
         ToggleButtonImageService.install();
     }
     
     public ToggleButtonPeer() {
         super();
-        addOutputProperty(PROPERTY_SELECTED);
+        addOutputProperty(ToggleButton.SELECTED_CHANGED_PROPERTY);
     }
     
     /**
@@ -65,7 +63,7 @@ public class ToggleButtonPeer extends AbstractButtonPeer {
      * @see ComponentSynchronizePeer#getOutputProperty(Context, Component, String, int)
      */
     public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex) {
-        if (PROPERTY_SELECTED.equals(propertyName)) {
+        if (ToggleButton.SELECTED_CHANGED_PROPERTY.equals(propertyName)) {
             ToggleButton toggleButton = (ToggleButton)component;
             return Boolean.valueOf(toggleButton.isSelected());
         }

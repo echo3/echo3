@@ -24,11 +24,11 @@
   <p n="background" t="Color" v="#4f4f5f"/>
   <p n="foreground" t="Color" v="#efefff"/>
   <p n="border" t="Border" v="1px outset #6f6f8f"/>
-  <p n="rolloverEnabled" t="b" v="1"/>
+  <p n="rolloverEnabled" t="b" v="true"/>
   <p n="rolloverBackground" t="Color" v="#6f6f87"/>
   <p n="rolloverForeground" t="Color" v="#ffffaf"/>
   <p n="rolloverBorder" t="Border" v="1px outset #8f8faf"/>
-  <p n="pressedEnabled" t="b" v="1"/>
+  <p n="pressedEnabled" t="b" v="true"/>
   <p n="pressedBackground" t="Color" v="#2f2f3f"/>
   <p n="pressedForeground" t="Color" v="#ffafaf"/>
   <p n="pressedBorder" t="Border" v="1px inset #4f4f6f"/>
@@ -44,7 +44,7 @@
   <p n="border" t="Border" v="1px inset #ffffaf"/>
  </s>
  <s n="DefaultResizable" t="nextapp.echo.app.SplitPane">
-  <p n="resizable" t="b" v="1"/>
+  <p n="resizable" t="b" v="true"/>
   <p n="separatorHorizontalImage" t="FillImage">
    <fi t="r">
     <i r="/nextapp/echo/testapp/interactive/resource/image/SplitPaneHorizontalSeparator.png"/>
@@ -79,7 +79,7 @@
  </s>
  <s n="Default" t="nextapp.echo.app.WindowPane">
   <!-- Container-specific property to enable Internet Explorer PNG Alpha Renderer for shadow window border. -->
-  <p n="ieAlphaRenderBorder" t="b" v="1"/>
+  <p n="ieAlphaRenderBorder" t="b" v="true"/>
   <p n="titleInsets" t="Insets" v="5px 10px"/>
   <p n="titleBackground" t="Color" v="#2f2f4f"/>
   <p n="titleBackgroundImage" t="FillImage">
@@ -119,7 +119,7 @@
  </s>
  <s n="GlassBlue" t="nextapp.echo.app.WindowPane">
   <!-- Container-specific property to enable Internet Explorer PNG Alpha Renderer for shadow window border. -->
-  <p n="ieAlphaRenderBorder" t="b" v="1"/>
+  <p n="ieAlphaRenderBorder" t="b" v="true"/>
   <p n="titleInsets" t="Insets" v="5px 10px"/>
   <p n="titleBackgroundImage" t="FillImage">
    <fi r="x" t="r" y="100%">
@@ -159,7 +159,7 @@
  </s>
  <s n="TransGreen" t="nextapp.echo.app.WindowPane">
   <!-- Container-specific property to enable Internet Explorer PNG Alpha Renderer for shadow window border. -->
-  <p n="ieAlphaRenderBorder" t="b" v="1"/>
+  <p n="ieAlphaRenderBorder" t="b" v="true"/>
   <p n="titleInsets" t="Insets" v="5px 10px"/>
   <p n="titleBackgroundImage" t="FillImage">
    <fi r="x" t="r" y="100%">
@@ -202,7 +202,7 @@
   <p n="lineWrap" t="b" v="0"/>
   <p n="insets" t="Insets" v="0px 8px"/>
   <p n="foreground" t="Color" v="#000000"/>
-  <p n="rolloverEnabled" t="b" v="1"/>
+  <p n="rolloverEnabled" t="b" v="true"/>
   <p n="rolloverForeground" t="Color" v="#6f0f0f"/>
  </s>
  <s n="ControlPane" t="nextapp.echo.app.Row">
@@ -259,7 +259,7 @@
  <s b="Default" n="WelcomePane" t="nextapp.echo.app.WindowPane">
   <p n="width" t="Extent" v="550px"/>
   <p n="height" t="Extent" v="300px"/>
-  <p n="resizable" t="b" v="1"/>
+  <p n="resizable" t="b" v="true"/>
   <p n="positionX" t="Extent" v="160px"/>
   <p n="positionY" t="Extent" v="300px"/>
  </s>

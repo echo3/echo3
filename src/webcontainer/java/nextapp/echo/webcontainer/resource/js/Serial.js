@@ -126,6 +126,7 @@ EchoSerial.loadStyleSheet = function(client, ssElement) {
  * Serializes a property value into an XML representation.
  */
 EchoSerial.storeProperty = function(client, propertyElement, propertyValue) {
+    EchoCore.Debug.consoleWrite("Storing property:" + propertyValue);
     if (!propertyValue.className) {
         throw new Error("propertyValue does not provide className property, cannot determine translator.");
     }
