@@ -715,6 +715,7 @@ EchoRender.Property.Insets.toPixels = function(insets) {
     pixelInsets.left = EchoWebCore.Render.extentToPixels(insets.left.value, insets.left.units, true);
     return pixelInsets;
 };
+
 /**
  * Creates a new <code>TriCellTable</code>
  * 
@@ -744,13 +745,8 @@ EchoRender.Property.Insets.toPixels = function(insets) {
  */
 EchoRender.TriCellTable = function(id, orientation0_1, margin0_1, orientation01_2, margin01_2) {
     this.id = id;
-    this.tableElement = document.createElement("table");
-    this.tableElement.style.borderCollapse = "collapse";
-    this.tableElement.style.padding = 0;
-    
-    this.tbodyElement = document.createElement("tbody");
-    this.tbodyElement.id, id + "_tbody";
-    this.tableElement.appendChild(this.tbodyElement);
+    this.tableElement = EchoRender.TriCellTable._tablePrototype.cloneNode(true);
+    this.tbodyElement = this.tableElement.firstChild;
     
     if (orientation01_2 == null) {
         this.configure2(id, orientation0_1, margin0_1);
@@ -758,6 +754,19 @@ EchoRender.TriCellTable = function(id, orientation0_1, margin0_1, orientation01_
         this.configure3(id, orientation0_1, margin0_1, orientation01_2, margin01_2);
     }
 };
+
+EchoRender.TriCellTable._createTablePrototype = function() {
+    var tableElement = document.createElement("table");
+    tableElement.style.borderCollapse = "collapse";
+    tableElement.style.padding = 0;
+    
+    tbodyElement = document.createElement("tbody");
+    tableElement.appendChild(tbodyElement);
+    
+    return tableElement;
+};
+
+EchoRender.TriCellTable._tablePrototype = EchoRender.TriCellTable._createTablePrototype();
 
 EchoRender.TriCellTable.INVERTED = 1;
 EchoRender.TriCellTable.VERTICAL = 2;
@@ -778,7 +787,7 @@ EchoRender.TriCellTable.prototype.addRow = function(tdElement) {
         return;
     }
     var trElement = document.createElement("tr");
-    trElement.appendChild(td);
+    trElement.appendChild(tdElement);
     this.tbodyElement.appendChild(trElement);
 };
 
