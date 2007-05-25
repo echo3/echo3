@@ -2310,8 +2310,8 @@ EchoApp.Update.Manager.prototype._processComponentUpdate = function(e) {
  * Invoked after the client has repainted the screen.
  */
 EchoApp.Update.Manager.prototype.purge = function() {
-    this._componentUpdateMap = new Object();
     this.fullRefreshRequired = false;
+    this._componentUpdateMap = new Object();
     this._idMap = new Object();
     this._hasUpdates = false;
     this._lastAncestorTestParentId = null;
