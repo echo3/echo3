@@ -162,7 +162,7 @@ EchoRender._processDispose = function(update) {
         }
     }
     components = update.getRemovedChildren();
-    if (update.removedChildIds) {
+    if (components) {
         for (var i = 0; i < components.length; ++i) {
             EchoRender._renderComponentDisposeImpl(update, components[i], true);
         }
