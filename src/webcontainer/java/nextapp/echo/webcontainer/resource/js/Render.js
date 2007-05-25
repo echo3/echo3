@@ -100,10 +100,7 @@ EchoRender.renderComponentDispose = function(update, component) {
 };
 
 EchoRender._renderComponentDisposeImpl = function(update, component, removeIds) {
-    if (!component.peer) {
-        return;
-    }
-    if (component.peer.disposed) {
+    if (!component.peer || component.peer.disposed) {
         return;
     }
     EchoRender._setPeerDisposedState(component, true);
