@@ -24,14 +24,17 @@ EchoRender.ComponentSync.Button._prototypeButton = EchoRender.ComponentSync.Butt
 EchoRender.ComponentSync.Button._defaultIconTextMargin = new EchoApp.Property.Extent(5);
 
 EchoRender.ComponentSync.Button.prototype.focus = function(e) {
-    var divElement = document.getElementById(this.component.renderId);
-    divElement.focus();
+    this._divElement.focus();
     this._setFocusState(true);
     this.component.application.setFocusedComponent(this.component);
 };
 
 EchoRender.ComponentSync.Button.prototype._doAction = function() {
     this.component.doAction();
+};
+
+EchoRender.ComponentSync.Button.prototype.getElement = function() {
+    return this._divElement;
 };
 
 EchoRender.ComponentSync.Button.prototype._processBlur = function(e) {
@@ -72,9 +75,8 @@ EchoRender.ComponentSync.Button.prototype._processPress = function(e) {
     if (!this.component.isActive()) {
         return;
     }
-    var divElement = document.getElementById(this.component.renderId);
-    EchoRender.Property.Color.renderComponentProperty(this.component, "pressedBackground", null, divElement, "background");
-    EchoRender.Property.Color.renderComponentProperty(this.component, "pressedForeground", null, divElement, "color");
+    EchoRender.Property.Color.renderComponentProperty(this.component, "pressedBackground", null, this._divElement, "background");
+    EchoRender.Property.Color.renderComponentProperty(this.component, "pressedForeground", null, this._divElement, "color");
     EchoWebCore.DOM.preventEventDefault(e);
 };
 
@@ -82,9 +84,8 @@ EchoRender.ComponentSync.Button.prototype._processRelease = function(e) {
     if (!this.component.isActive()) {
         return;
     }
-    var divElement = document.getElementById(this.component.renderId);
-    EchoRender.Property.Color.renderComponentProperty(this.component, "background", null, divElement, "background");
-    EchoRender.Property.Color.renderComponentProperty(this.component, "foreground", null, divElement, "color");
+    EchoRender.Property.Color.renderComponentProperty(this.component, "background", null, this._divElement, "background");
+    EchoRender.Property.Color.renderComponentProperty(this.component, "foreground", null, this._divElement, "color");
 };
 
 EchoRender.ComponentSync.Button.prototype._processRolloverEnter = function(e) {
@@ -102,60 +103,56 @@ EchoRender.ComponentSync.Button.prototype._processRolloverExit = function(e) {
 };
 
 EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentElement) {
-    var divElement = this._renderMain();
-    this._addEventListeners(divElement);
-    parentElement.appendChild(divElement);
-};
+    this._divElement = EchoRender.ComponentSync.Button._prototypeButton.cloneNode(false); 
+    this._divElement.id = this.component.renderId;
 
-EchoRender.ComponentSync.Button.prototype._renderMain = function() {
-    var divElement = EchoRender.ComponentSync.Button._prototypeButton.cloneNode(false); 
-    divElement.id = this.component.renderId;
-
-    EchoRender.Property.Color.renderFB(this.component, divElement);
-    EchoRender.Property.Font.renderDefault(this.component, divElement);
-    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), divElement);
-    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", "", divElement, "padding");
-    EchoRender.Property.FillImage.renderComponentProperty(this.component, "backgroundImage", null, divElement);
-	EchoRender.Property.Alignment.renderComponentProperty(this.component, "alignment", null, divElement, true);
+    EchoRender.Property.Color.renderFB(this.component, this._divElement);
+    EchoRender.Property.Font.renderDefault(this.component, this._divElement);
+    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._divElement);
+    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", "", this._divElement, "padding");
+    EchoRender.Property.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._divElement);
+    EchoRender.Property.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
     
     var toolTipText = this.component.getRenderProperty("toolTipText");
     if (toolTipText) {
-    	divElement.title = toolTipText;
+        this._divElement.title = toolTipText;
     }
     var width = this.component.getRenderProperty("width");
     if (width) {
-    	divElement.style.width = width.toString();
+        this._divElement.style.width = width.toString();
     }
     var height = this.component.getRenderProperty("height");
     if (height) {
-    	divElement.style.height = height.toString();
+        this._divElement.style.height = height.toString();
     }
     
-    this._renderContent(divElement);
+    this._renderContent();
     
-    return divElement;
+    this._addEventListeners(this._divElement);
+    parentElement.appendChild(this._divElement);
 };
 
-EchoRender.ComponentSync.Button.prototype._renderContent = function(divElement) {
+EchoRender.ComponentSync.Button.prototype._renderContent = function() {
     var text = this.component.getRenderProperty("text");
     var icon = this.component.getRenderProperty("icon");
 
     if (text) {
         if (icon) {
             // Text and icon.
-            var iconTextMargin = this.component.getRenderProperty("iconTextMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
+            var iconTextMargin = this.component.getRenderProperty("iconTextMargin", 
+                    EchoRender.ComponentSync.Button._defaultIconTextMargin);
             var tct = new EchoRender.TriCellTable(this.component.renderId,
                     EchoRender.TriCellTable.TRAILING_LEADING, EchoRender.Property.Extent.toPixels(iconTextMargin));
             this._renderButtonText(tct.tdElements[0], text);
             this._renderButtonIcon(tct.tdElements[1], icon);
-            divElement.appendChild(tct.tableElement);
+            this._divElement.appendChild(tct.tableElement);
         } else {
             // Text only.
-            this._renderButtonText(divElement, text);
+            this._renderButtonText(this._divElement, text);
         }
     } else if (icon) {
         // Icon only.
-        this._renderButtonIcon(divElement, icon);
+        this._renderButtonIcon(this._divElement, icon);
     }
 };
 
@@ -175,24 +172,24 @@ EchoRender.ComponentSync.Button.prototype._renderButtonIcon = function(element, 
 	return imgElement;
 };
 
-EchoRender.ComponentSync.Button.prototype._addEventListeners = function(divElement) {
-    EchoWebCore.EventProcessor.add(divElement, "click", new EchoCore.MethodRef(this, this._processClick), false);
-    EchoWebCore.EventProcessor.add(divElement, "keypress", new EchoCore.MethodRef(this, this._processKeyPress), false);
+EchoRender.ComponentSync.Button.prototype._addEventListeners = function() {
+    EchoWebCore.EventProcessor.add(this._divElement, "click", new EchoCore.MethodRef(this, this._processClick), false);
+    EchoWebCore.EventProcessor.add(this._divElement, "keypress", new EchoCore.MethodRef(this, this._processKeyPress), false);
 	if (this.component.getRenderProperty("rolloverEnabled")) {
         var mouseEnterLeaveSupport = EchoWebCore.Environment.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
         var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
         var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
-	    EchoWebCore.EventProcessor.add(divElement, enterEvent, new EchoCore.MethodRef(this, this._processRolloverEnter), false);
-    	EchoWebCore.EventProcessor.add(divElement, exitEvent, new EchoCore.MethodRef(this, this._processRolloverExit), false);
+	    EchoWebCore.EventProcessor.add(this._divElement, enterEvent, new EchoCore.MethodRef(this, this._processRolloverEnter), false);
+    	EchoWebCore.EventProcessor.add(this._divElement, exitEvent, new EchoCore.MethodRef(this, this._processRolloverExit), false);
 	}
     if (this.component.getRenderProperty("pressedEnabled")) {
-	    EchoWebCore.EventProcessor.add(divElement, "mousedown", new EchoCore.MethodRef(this, this._processPress), false);
-    	EchoWebCore.EventProcessor.add(divElement, "mouseup", new EchoCore.MethodRef(this, this._processRelease), false);
+	    EchoWebCore.EventProcessor.add(this._divElement, "mousedown", new EchoCore.MethodRef(this, this._processPress), false);
+    	EchoWebCore.EventProcessor.add(this._divElement, "mouseup", new EchoCore.MethodRef(this, this._processRelease), false);
     }
-    EchoWebCore.EventProcessor.add(divElement, "focus", new EchoCore.MethodRef(this, this._processFocus), false);
-    EchoWebCore.EventProcessor.add(divElement, "blur", new EchoCore.MethodRef(this, this._processBlur), false);
+    EchoWebCore.EventProcessor.add(this._divElement, "focus", new EchoCore.MethodRef(this, this._processFocus), false);
+    EchoWebCore.EventProcessor.add(this._divElement, "blur", new EchoCore.MethodRef(this, this._processBlur), false);
     
-    EchoWebCore.EventProcessor.addSelectionDenialListener(divElement);
+    EchoWebCore.EventProcessor.addSelectionDenialListener(this._divElement);
 };
 
 EchoRender.ComponentSync.Button.prototype._getCombinedAlignment = function() {
@@ -217,8 +214,7 @@ EchoRender.ComponentSync.Button.prototype._getCombinedAlignment = function() {
 };
 
 EchoRender.ComponentSync.Button.prototype.renderDispose = function(update) {
-    var divElement = document.getElementById(this.component.renderId);
-    EchoWebCore.EventProcessor.removeAll(divElement);
+    EchoWebCore.EventProcessor.removeAll(this._divElement);
 };
 
 EchoRender.ComponentSync.Button.prototype.renderUpdate = function(update) {
@@ -233,8 +229,6 @@ EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) 
     	return;
     }
 
-    var divElement = document.getElementById(this.component.renderId);
-    
     var bgProperty = focusState ? "focusedBackground" : "background";
     var fgProperty = focusState ? "focusedForeground" : "foreground";
     
@@ -246,12 +240,12 @@ EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) 
     	font = this.component.getRenderProperty("font");
     }
     if (font) {
-	    EchoRender.Property.Font.render(font, divElement);
+	    EchoRender.Property.Font.render(font, this._divElement);
     } else {
-	    EchoRender.Property.Font.clear(divElement);
+	    EchoRender.Property.Font.clear(this._divElement);
     }
-    EchoRender.Property.Color.renderComponentProperty(this.component, bgProperty, null, divElement, "background");
-    EchoRender.Property.Color.renderComponentProperty(this.component, fgProperty, null, divElement, "color");
+    EchoRender.Property.Color.renderComponentProperty(this.component, bgProperty, null, this._divElement, "background");
+    EchoRender.Property.Color.renderComponentProperty(this.component, fgProperty, null, this._divElement, "color");
     
     var iconElement = document.getElementById(this.component.renderId + "_icon");
     if (iconElement) {
@@ -265,8 +259,6 @@ EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) 
 EchoRender.ComponentSync.Button.prototype._setRolloverState = function(rolloverState) {
     var bgProperty = rolloverState ? "rolloverBackground" : "background";
     var fgProperty = rolloverState ? "rolloverForeground" : "foreground";
-    
-    var divElement = document.getElementById(this.component.renderId);
 
     var font;
     if (rolloverState) {
@@ -276,12 +268,12 @@ EchoRender.ComponentSync.Button.prototype._setRolloverState = function(rolloverS
     	font = this.component.getRenderProperty("font");
     }
     if (font) {
-	    EchoRender.Property.Font.render(font, divElement);
+	    EchoRender.Property.Font.render(font, this._divElement);
     } else {
-	    EchoRender.Property.Font.clear(divElement);
+	    EchoRender.Property.Font.clear(this._divElement);
     }
-    EchoRender.Property.Color.renderComponentProperty(this.component, bgProperty, null, divElement, "background");
-    EchoRender.Property.Color.renderComponentProperty(this.component, fgProperty, null, divElement, "color");
+    EchoRender.Property.Color.renderComponentProperty(this.component, bgProperty, null, this._divElement, "background");
+    EchoRender.Property.Color.renderComponentProperty(this.component, fgProperty, null, this._divElement, "color");
     
     var iconElement = document.getElementById(this.component.renderId + "_icon");
     if (iconElement) {
@@ -326,7 +318,7 @@ EchoRender.ComponentSync.ToggleButton.prototype._getStateIcon = function() {
 	return this.component.getRenderProperty(this._selected ? "selectedStateIcon" : "stateIcon");
 };
 
-EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function(divElement) {
+EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
     var text = this.component.getRenderProperty("text");
     var icon = this.component.getRenderProperty("icon");
 	var stateIcon = this._getStateIcon();
@@ -336,11 +328,11 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function(divEle
     var entityCount = (text ? 1 : 0) + (icon ? 1 : 0) + (stateIcon ? 1 : 0);
     if (entityCount == 1) {
     	if (text) {
-            this._renderButtonText(divElement, text);
+            this._renderButtonText(this._divElement, text);
     	} else if (icon) {
-	        iconElement = this._renderButtonIcon(divElement, icon);
+	        iconElement = this._renderButtonIcon(this._divElement, icon);
     	} else {
-	        this._stateIconElement = this._renderButtonIcon(divElement, stateIcon);
+	        this._stateIconElement = this._renderButtonIcon(this._divElement, stateIcon);
     	}
     } else if (entityCount == 2) {
         var orientation;
@@ -364,7 +356,7 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function(divEle
 	        iconElement = this._renderButtonIcon(tct.tdElements[0], icon);
 	        this._stateIconElement = this._renderButtonIcon(tct.tdElements[1], stateIcon);
         }
-        divElement.appendChild(tct.tableElement);
+        this._divElement.appendChild(tct.tableElement);
     } else if (entityCount == 3) {
         var orientation = EchoRender.TriCellTable.LEADING_TRAILING;
         var margin = this.component.getRenderProperty("iconTextMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
@@ -375,7 +367,7 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function(divEle
         this._renderButtonText(tct.tdElements[0], text);
         iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
         this._stateIconElement = this._renderButtonIcon(tct.tdElements[2], stateIcon);
-        divElement.appendChild(tct.tableElement);
+        this._divElement.appendChild(tct.tableElement);
     }
 };
 
