@@ -105,13 +105,14 @@ EchoRender._renderComponentDisposeImpl = function(update, component, removeIds) 
     }
     EchoRender._setPeerDisposedState(component, true);
 
+    var element = component.peer.getElement();
+    
     component.peer.renderDispose(update);
     for (var i = 0; i < component.children.length; ++i) {
         EchoRender._renderComponentDisposeImpl(update, component.children[i], false);
     }
     
     if (removeIds) {
-        var element = document.getElementById(component.renderId);
         EchoRender._renderRemoveIds(element);
     }
 };
@@ -261,6 +262,10 @@ EchoRender.ComponentSync = function() { };
 
 EchoRender.ComponentSync.prototype.getContainerElement = function(component) {
     throw new Error("Operation \"getContainerElement\" not supported (Component: " + this.component + ").");
+};
+
+EchoRender.ComponentSync.prototype.getElement = function() {
+    return document.getElementById(this.component.renderId);
 };
 
 EchoRender.ComponentSync.prototype.init = function() {

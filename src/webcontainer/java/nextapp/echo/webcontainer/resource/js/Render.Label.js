@@ -13,8 +13,11 @@ EchoRender.ComponentSync.Label.prototype._createSingleItemSpanElement = function
     return spanElement;
 };
 
+EchoRender.ComponentSync.Label.prototype.getElement = function() {
+    return this._labelElement;
+};
+
 EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElement) {
-    var labelElement;
     var icon = this.component.getRenderProperty("icon");
     var text = this.component.getRenderProperty("text");
     
@@ -33,24 +36,24 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
                 tct.tdElements[0].style.whiteSpace = "nowrap";
             }
             tct.tdElements[1].appendChild(imgElement);
-            labelElement = tct.tableElement;
+            this._labelElement = tct.tableElement;
         } else {
-            labelElement = this._createSingleItemSpanElement(document.createTextNode(text));
+            this._labelElement = this._createSingleItemSpanElement(document.createTextNode(text));
         }
     } else if (icon) {
         var imgElement = document.createElement("img");
         imgElement.src = icon.url;
-        labelElement = this._createSingleItemSpanElement(imgElement);
+        this._labelElement = this._createSingleItemSpanElement(imgElement);
     } else {
         // Neither icon nor text, render blank.
-        labelElement = this._createSingleItemSpanElement(document.createTextNode(""));
+        this._labelElement = this._createSingleItemSpanElement(document.createTextNode(""));
     }
     
-    labelElement.id = this.component.renderId;
-    EchoRender.Property.Color.renderFB(this.component, labelElement);
-    EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, labelElement);
+    this._labelElement.id = this.component.renderId;
+    EchoRender.Property.Color.renderFB(this.component, this._labelElement);
+    EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, this._labelElement);
 
-    parentElement.appendChild(labelElement);
+    parentElement.appendChild(this._labelElement);
 };
 
 EchoRender.ComponentSync.Label.prototype.renderDispose = function(update) { };
