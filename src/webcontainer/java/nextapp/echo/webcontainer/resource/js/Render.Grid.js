@@ -11,6 +11,7 @@ EchoRender.ComponentSync.Grid._createPrototypeTable = function() {
     tableElement.style.outlineStyle = "none";
     tableElement.tabIndex = "-1";
     tableElement.style.borderCollapse = "collapse";
+    tableElement.style.tableLayout = "fixed";
     
     var colGroupElement = document.createElement("colgroup");
     tableElement.appendChild(colGroupElement);
@@ -90,6 +91,7 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     var tdPrototype = document.createElement("td");
     EchoRender.Property.Border.render(defaultBorder, tdPrototype);
     tdPrototype.style.padding = defaultInsets.toString();
+    tdPrototype.style.overflow = "hidden";
     
     for (var rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
         trElement = document.createElement("tr");
