@@ -365,6 +365,7 @@ EchoWebCore.Environment._init = function() {
     
     // Set IE Quirk Flags
     if (env.BROWSER_INTERNET_EXPLORER) {
+        env.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
         env.QUIRK_IE_REPAINT = true;
         env.QUIRK_TEXTAREA_CONTENT = true;
         env.QUIRK_IE_TEXTAREA_NEWLINE_OBLITERATION = true;
@@ -390,6 +391,8 @@ EchoWebCore.Environment._init = function() {
     	if (!env.BROWSER_FIREFOX) {
     		env.QUIRK_PERFORMANCE_LARGE_DOM_REMOVE = true;
     	}
+    } else if (env.BROWSER_OPERA) {
+        env.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
     }
 };
 

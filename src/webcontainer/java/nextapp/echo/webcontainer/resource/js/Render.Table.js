@@ -55,12 +55,13 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
     if (this.component.getRenderProperty("columnWidth")) {
         // If any column widths are set, render colgroup.
         var colGroupElement = document.createElement("colgroup");
+        var renderRelative = !EchoWebCore.Environment.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS;
         for (var i = 0; i < this._columnCount; ++i) {
             var colElement = document.createElement("col");
             var width = this.component.getRenderIndexedProperty("columnWidth", i); 
             if (width != null) {
                 if (width.units == "%") {
-                    colElement.width = width.toString();
+                    colElement.width = width.value + (renderRelative ? "*" : "%");
                 } else {
                     colElement.width = EchoWebCore.Render.extentToPixels(width.value, width.units, true);
                 }
