@@ -49,7 +49,7 @@ EchoRender.ComponentSync.Column.prototype.renderAdd = function(update, parentEle
     var componentCount = this.component.getComponentCount();
     for (var i = 0; i < componentCount; ++i) {
         var child = this.component.getComponent(i);
-        this._renderAddChild(update, child, this._divElement);
+        this._renderAddChild(update, child);
     }
     
     EchoWebCore.EventProcessor.add(this._divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
@@ -57,7 +57,7 @@ EchoRender.ComponentSync.Column.prototype.renderAdd = function(update, parentEle
     parentElement.appendChild(this._divElement);
 };
 
-EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, child, parentElement, index) {
+EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, child, index) {
     if (index != null && index == update.parent.getComponentCount() - 1) {
         index = null;
     }
@@ -82,23 +82,23 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
         // Full render or append-at-end scenario
         
         // Render spacing div first if index != 0 and cell spacing enabled.
-        if (this.cellSpacing && parentElement.firstChild) {
-            parentElement.appendChild(this._spacingPrototype.cloneNode(false));
+        if (this.cellSpacing && this._divElement.firstChild) {
+            this._divElement.appendChild(this._spacingPrototype.cloneNode(false));
         }
 
         // Render child div second.
-        parentElement.appendChild(divElement);
+        this._divElement.appendChild(divElement);
     } else {
         // Partial render insert at arbitrary location scenario (but not at end)
         var insertionIndex = this.cellSpacing ? index * 2 : index;
-        var beforeElement = parentElement.childNodes[insertionIndex]
+        var beforeElement = this._divElement.childNodes[insertionIndex]
         
         // Render child div first.
-        parentElement.insertBefore(divElement, beforeElement);
+        this._divElement.insertBefore(divElement, beforeElement);
         
         // Then render spacing div if required.
         if (this.cellSpacing) {
-            parentElement.insertBefore(this._spacingPrototype.cloneNode(false), beforeElement);
+            this._divElement.insertBefore(this._spacingPrototype.cloneNode(false), beforeElement);
         }
     }
 };
@@ -140,9 +140,8 @@ EchoRender.ComponentSync.Column.prototype.renderUpdate = function(update) {
         var addedChildren = update.getAddedChildren();
         if (addedChildren) {
             // Add children.
-            var parentElement = document.getElementById(this.component.renderId);
             for (var i = 0; i < addedChildren.length; ++i) {
-                this._renderAddChild(update, addedChildren[i], parentElement, this.component.indexOf(addedChildren[i])); 
+                this._renderAddChild(update, addedChildren[i], this.component.indexOf(addedChildren[i])); 
             }
         }
     }

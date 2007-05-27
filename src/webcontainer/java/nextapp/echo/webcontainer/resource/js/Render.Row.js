@@ -49,7 +49,6 @@ EchoRender.ComponentSync.Row.prototype.processKeyDown = function(e) {
     }
 };
 
-
 EchoRender.ComponentSync.Row.prototype.renderAdd = function(update, parentElement) {
     this.cellSpacing = EchoRender.Property.Extent.toPixels(this.component.getRenderProperty("cellSpacing"), false);
     var insets = this.component.getRenderProperty("insets");
