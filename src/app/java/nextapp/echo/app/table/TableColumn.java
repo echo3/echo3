@@ -257,7 +257,7 @@ implements Serializable {
         pcs.firePropertyChange(MODEL_INDEX_CHANGED_PROPERTY, oldValue, newValue);
     }
     
-    /** 
+    /**
      * Sets the width of the column.
      * This property supports <code>Extent</code>s with
      * fixed or percentile units.

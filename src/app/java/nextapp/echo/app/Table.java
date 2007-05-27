@@ -342,31 +342,6 @@ public class Table extends Component {
         return (Border) getProperty(PROPERTY_BORDER);
     }
 
-    /**
-     * Returns the component rendered at the specified cell position.
-     * Invocation will automatically perform validation if required.
-     * 
-     * @param column the column
-     * @param row the row
-     * @return the component
-     * 
-     * @deprecated
-     */
-    public Component getCellComponent(int column, int row) {
-        if (!valid) {
-            validate();
-        }
-        if (isHeaderVisible()) {
-            return getComponent((row + 1) * columnModel.getColumnCount()   + column);
-        } else {
-            if (row == HEADER_ROW) {
-                return null;
-            } else {
-                return getComponent(row * columnModel.getColumnCount() + column);
-            }
-        }
-    }
-    
     /** 
      * Returns the <code>TableColumnModel</code> describing this table's 
      * columns.

@@ -45,6 +45,9 @@ import nextapp.echo.app.event.TableColumnModelListener;
 public class DefaultTableColumnModel
 implements Serializable, TableColumnModel {
     
+    //FIXME. add prop change listeners to table columns, fire resize events when widths change.
+    // modify tablecolumnmodellistener interface to include resize() method.
+    
     /**
      * A collection of all columns in the column model in order.
      */

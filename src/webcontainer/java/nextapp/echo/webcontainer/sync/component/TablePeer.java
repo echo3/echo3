@@ -44,6 +44,9 @@ import nextapp.echo.webcontainer.*;
 import nextapp.echo.webcontainer.service.JavaScriptService;
 import nextapp.echo.webcontainer.util.ArrayIterator;
 
+//FIXME have a renderState-like object register itself for
+// tablecolumnmodel events and re-render sizes as required.
+
 /**
  * Synchronization peer for <code>Table</code>s.
  * 
@@ -62,6 +65,7 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     private static final String[] EVENT_TYPES_ACTION = new String[] { Table.INPUT_ACTION };
     
     private static final String PROPERTY_COLUMN_COUNT = "columnCount";
+    private static final String PROPERTY_COLUMN_WIDTH = "columnWidth";
     private static final String PROPERTY_HEADER_VISIBLE = "headerVisible";
     private static final String PROPERTY_ROW_COUNT = "rowCount";
     private static final String PROPERTY_SELECTION = "selection";
@@ -75,6 +79,7 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     public TablePeer() {
         super();
         addOutputProperty(PROPERTY_COLUMN_COUNT);
+        addOutputProperty(PROPERTY_COLUMN_WIDTH, true);
         addOutputProperty(PROPERTY_HEADER_VISIBLE);
         addOutputProperty(PROPERTY_ROW_COUNT);
         addOutputProperty(PROPERTY_SELECTION);
@@ -109,6 +114,34 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     }
 
     /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputPropertyIndices(nextapp.echo.app.util.Context,
+     *      nextapp.echo.app.Component, java.lang.String)
+     */
+    public Iterator getOutputPropertyIndices(Context context, Component component, String propertyName) {
+        if (PROPERTY_COLUMN_WIDTH.equals(propertyName)) {
+            final Iterator columnIterator = ((Table) component).getColumnModel().getColumns();
+            return new Iterator() {
+                private int i = 0;
+            
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+            
+                public Object next() {
+                    columnIterator.next();
+                    return Integer.valueOf(i++);
+                }
+            
+                public boolean hasNext() {
+                    return columnIterator.hasNext();
+                }
+            };
+        } else {
+            return super.getOutputPropertyIndices(context, component, propertyName);
+        }
+    }
+    
+    /**
      * @see ComponentSynchronizePeer#getPropertyClass(String)
      */
     public Class getPropertyClass(String propertyName) {
@@ -126,6 +159,9 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
         Table table = (Table)component;
         if (PROPERTY_COLUMN_COUNT.equals(propertyName)) {
             return new Integer(table.getModel().getColumnCount());
+        } else if (PROPERTY_COLUMN_WIDTH.equals(propertyName)) {
+            System.err.println(propertyIndex + "/" + table.getColumnModel().getColumn(propertyIndex));
+            return table.getColumnModel().getColumn(propertyIndex).getWidth();
         } else if (PROPERTY_HEADER_VISIBLE.equals(propertyName)) {
             return Boolean.valueOf(table.isHeaderVisible());
         } else if (PROPERTY_ROW_COUNT.equals(propertyName)) {
@@ -140,6 +176,7 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     
     public Iterator getUpdatedOutputPropertyNames(Context context, Component component, 
             ServerComponentUpdate update) {
+        //FIXME. look for better means of doing.
         Set additionalProperties = new HashSet();
         if (update.hasUpdatedProperty(Table.MODEL_CHANGED_PROPERTY)) {
             additionalProperties.add(PROPERTY_ROW_COUNT);
@@ -184,7 +221,7 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
         }
         return selection;
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context,
      *      nextapp.echo.app.Component, java.lang.String, int, java.lang.Object)

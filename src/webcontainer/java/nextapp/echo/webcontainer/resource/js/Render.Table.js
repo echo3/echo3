@@ -38,6 +38,7 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
     
     var tableElement = document.createElement("table");
     tableElement.id = this.component.renderId;
+    tableElement.style.tableLayout = "fixed";
     
     var width = this.component.getRenderProperty("width");
     var render100PercentWidthWorkaround = false;
@@ -53,8 +54,10 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
     
     var trPrototype = this._createRowPrototype();
     
+    
+    // FIXME render colgroup if needed
+    
     if (this._headerVisible) {
-        // FIXME render colgroup if needed
         tbodyElement.appendChild(this._renderRow(update, EchoRender.ComponentSync.Table._HEADER_ROW, trPrototype));
     }
     for (var rowIndex = 0; rowIndex < this._rowCount; rowIndex++) {
@@ -200,6 +203,7 @@ EchoRender.ComponentSync.Table.prototype._createRowPrototype = function() {
 
     var tdPrototype = document.createElement("td");
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), tdPrototype);
+    tdPrototype.style.overflow = "hidden";
     tdPrototype.style.padding = this._defaultCellPadding;
 
     for (var columnIndex = 0; columnIndex < this._columnCount; columnIndex++) {

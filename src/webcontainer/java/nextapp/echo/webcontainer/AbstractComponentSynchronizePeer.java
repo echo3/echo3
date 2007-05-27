@@ -51,10 +51,17 @@ implements ComponentSynchronizePeer {
     }
     
     public void addOutputProperty(String propertyName) {
+        addOutputProperty(propertyName, false);
+    }
+
+    public void addOutputProperty(String propertyName, boolean indexed) {
         if (additionalProperties == null) {
             additionalProperties = new HashSet();
         }
         additionalProperties.add(propertyName);
+        if (indexed) {
+            indexedPropertyNames.add(propertyName);
+        }
     }
 
     /**

@@ -199,14 +199,5 @@ public class TableTest extends TestCase {
         assertTrue(((CheckBox) components[8]).isSelected());
         assertTrue(components[14] instanceof CheckBox);
         assertFalse(((CheckBox) components[14]).isSelected());
-
-        assertTrue(table.getCellComponent(0, 0) instanceof Label);
-        assertEquals("A", ((Label) table.getCellComponent(0, Table.HEADER_ROW)).getText());
-        assertTrue(table.getCellComponent(2, 0) instanceof CheckBox);
-        assertTrue(((CheckBox) table.getCellComponent(2, 0)).isSelected());
-        assertTrue(table.getCellComponent(2, 1) instanceof CheckBox);
-        assertTrue(((CheckBox) table.getCellComponent(2, 1)).isSelected());
-        assertTrue(table.getCellComponent(2, 3) instanceof CheckBox);
-        assertFalse(((CheckBox) table.getCellComponent(2, 3)).isSelected());
     }
 }
