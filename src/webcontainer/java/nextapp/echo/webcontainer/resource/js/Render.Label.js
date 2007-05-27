@@ -39,6 +39,9 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
             this._labelElement = tct.tableElement;
         } else {
             this._labelElement = this._createSingleItemSpanElement(document.createTextNode(text));
+            if (!lineWrap) {
+                this._labelElement.style.whiteSpace = "nowrap";
+            }
         }
     } else if (icon) {
         var imgElement = document.createElement("img");
