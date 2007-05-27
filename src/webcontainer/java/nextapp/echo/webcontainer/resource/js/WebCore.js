@@ -365,6 +365,7 @@ EchoWebCore.Environment._init = function() {
     
     // Set IE Quirk Flags
     if (env.BROWSER_INTERNET_EXPLORER) {
+        env.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING = true;
         env.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
         env.QUIRK_IE_REPAINT = true;
         env.QUIRK_TEXTAREA_CONTENT = true;

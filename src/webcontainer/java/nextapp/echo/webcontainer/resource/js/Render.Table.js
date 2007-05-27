@@ -52,6 +52,12 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
     
     if (this.component.getRenderProperty("columnWidth")) {
         // If any column widths are set, render colgroup.
+        var columnPixelAdjustment;
+        if (EchoWebCore.Environment.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING) {
+            var pixelInsets = EchoRender.Property.Insets.toPixels(this._defaultInsets);
+            columnPixelAdjustment = pixelsInsets.left + pixelInsets.right;
+        }
+        
         var colGroupElement = document.createElement("colgroup");
         var renderRelative = !EchoWebCore.Environment.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS;
         for (var i = 0; i < this._columnCount; ++i) {
@@ -61,7 +67,12 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
                 if (width.units == "%") {
                     colElement.width = width.value + (renderRelative ? "*" : "%");
                 } else {
-                    colElement.width = EchoWebCore.Render.extentToPixels(width.value, width.units, true);
+                    var columnPixels = EchoWebCore.Render.extentToPixels(width.value, width.units, true);
+                    if (columnPixelAdjustment) {
+                        colElement.width = columnPixels - columnPixelAdjustment;
+                    } else {
+                        colElement.width = columnPixels;
+                    }
                 }
             }
             colGroupElement.appendChild(colElement);
