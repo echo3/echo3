@@ -215,6 +215,7 @@ EchoRender.ComponentSync.Button.prototype._getCombinedAlignment = function() {
 
 EchoRender.ComponentSync.Button.prototype.renderDispose = function(update) {
     EchoWebCore.EventProcessor.removeAll(this._divElement);
+    this._divElement = null;
 };
 
 EchoRender.ComponentSync.Button.prototype.renderUpdate = function(update) {
