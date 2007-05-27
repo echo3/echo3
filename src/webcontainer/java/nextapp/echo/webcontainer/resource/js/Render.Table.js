@@ -55,7 +55,7 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
         var columnPixelAdjustment;
         if (EchoWebCore.Environment.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING) {
             var pixelInsets = EchoRender.Property.Insets.toPixels(this._defaultInsets);
-            columnPixelAdjustment = pixelsInsets.left + pixelInsets.right;
+            columnPixelAdjustment = pixelInsets.left + pixelInsets.right;
         }
         
         var colGroupElement = document.createElement("colgroup");
