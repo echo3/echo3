@@ -129,7 +129,7 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
             
                 public Object next() {
                     columnIterator.next();
-                    return Integer.valueOf(i++);
+                    return new Integer(i++);
                 }
             
                 public boolean hasNext() {
