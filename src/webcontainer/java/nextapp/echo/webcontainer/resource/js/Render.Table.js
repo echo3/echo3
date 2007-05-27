@@ -52,10 +52,25 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
     tableElement.appendChild(tbodyElement);
     parentElement.appendChild(tableElement);
     
+    if (this.component.getRenderProperty("columnWidth")) {
+        // If any column widths are set, render colgroup.
+        var colGroupElement = document.createElement("colgroup");
+        for (var i = 0; i < this._columnCount; ++i) {
+            var colElement = document.createElement("col");
+            var width = this.component.getRenderIndexedProperty("columnWidth", i); 
+            if (width != null) {
+                if (width.units == "%") {
+                    colElement.width = width.toString();
+                } else {
+                    colElement.width = EchoWebCore.Render.extentToPixels(width.value, width.units, true);
+                }
+            }
+            colGroupElement.appendChild(colElement);
+        }
+        tableElement.appendChild(colGroupElement);
+    }
+    
     var trPrototype = this._createRowPrototype();
-    
-    
-    // FIXME render colgroup if needed
     
     if (this._headerVisible) {
         tbodyElement.appendChild(this._renderRow(update, EchoRender.ComponentSync.Table._HEADER_ROW, trPrototype));

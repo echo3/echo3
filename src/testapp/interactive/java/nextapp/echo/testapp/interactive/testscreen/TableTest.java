@@ -361,6 +361,18 @@ public class TableTest extends SplitPane {
                 }
             }
         });
+        controlsColumn.addButton("Set ColumnWidths 100 - 200 - 100 ....", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                TableColumnModel columnModel = testTable.getColumnModel();
+                int columnCount = columnModel.getColumnCount();
+                    if (columnCount > 0) {
+                    for (int i = 0; i < columnCount; ++i) {
+                        Extent width = new Extent((i % 2 == 0) ? 100 : 200, Extent.PX);
+                        columnModel.getColumn(i).setWidth(width);
+                    }
+                }
+            }
+        });
         controlsColumn.addButton("Toggle Header Visible", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testTable.setHeaderVisible(!testTable.isHeaderVisible());
