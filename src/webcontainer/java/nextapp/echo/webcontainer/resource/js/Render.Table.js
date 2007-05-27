@@ -49,8 +49,6 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
     this._renderMainStyle(tableElement, width);
     
     var tbodyElement = document.createElement("tbody");
-    tableElement.appendChild(tbodyElement);
-    parentElement.appendChild(tableElement);
     
     if (this.component.getRenderProperty("columnWidth")) {
         // If any column widths are set, render colgroup.
@@ -61,6 +59,7 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
             var width = this.component.getRenderIndexedProperty("columnWidth", i); 
             if (width != null) {
                 if (width.units == "%") {
+                    EchoCore.Debug.consoleWrite(width.value + (renderRelative ? "*" : "%"));
                     colElement.width = width.value + (renderRelative ? "*" : "%");
                 } else {
                     colElement.width = EchoWebCore.Render.extentToPixels(width.value, width.units, true);
@@ -71,6 +70,9 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
         tableElement.appendChild(colGroupElement);
     }
     
+    tableElement.appendChild(tbodyElement);
+    parentElement.appendChild(tableElement);
+
     var trPrototype = this._createRowPrototype();
     
     if (this._headerVisible) {
