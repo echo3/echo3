@@ -932,9 +932,11 @@ EchoWebCore.Render.Measure = function(element) {
         document.getElementsByTagName("body")[0].appendChild(EchoWebCore.Render._measureContainerDivElement);
     }
     
-    var parentNode = element.parentNode;
+    var parentNode, nextSibling;
     
     if (!rendered) {
+    	parentNode = element.parentNode;
+    	nextSibling = element.nextSibling;
         if (parentNode) {
             parentNode.removeChild(element);
         }
@@ -947,7 +949,7 @@ EchoWebCore.Render.Measure = function(element) {
     if (!rendered) {
         EchoWebCore.Render._measureContainerDivElement.removeChild(element);
         if (parentNode) {
-            parentNode.appendChild(element);
+            parentNode.insertBefore(element, nextSibling);
         }
     }
 };
