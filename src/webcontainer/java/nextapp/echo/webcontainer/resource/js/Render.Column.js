@@ -33,23 +33,28 @@ EchoRender.ComponentSync.Column.prototype.renderAdd = function(update, parentEle
     this.cellSpacing = EchoRender.Property.Extent.toPixels(this.component.getRenderProperty("cellSpacing"), false);
     var insets = this.component.getRenderProperty("insets");
 
-    var divElement = document.createElement("div");
-    divElement.id = this.component.renderId;
-    divElement.style.outlineStyle = "none";
-    divElement.tabIndex = "-1";
-    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), divElement);
-    EchoRender.Property.Color.renderFB(this.component, divElement);
-    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, divElement, "padding");
+    this._divElement = document.createElement("div");
+    this._divElement.id = this.component.renderId;
+    this._divElement.style.outlineStyle = "none";
+    this._divElement.tabIndex = "-1";
+    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._divElement);
+    EchoRender.Property.Color.renderFB(this.component, this._divElement);
+    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
+
+    this._spacingPrototype = document.createElement("div");
+    this._spacingPrototype.style.height = this.cellSpacing + "px";
+    this._spacingPrototype.style.fontSize = "1px";
+    this._spacingPrototype.style.lineHeight = "0px";
     
     var componentCount = this.component.getComponentCount();
     for (var i = 0; i < componentCount; ++i) {
         var child = this.component.getComponent(i);
-        this._renderAddChild(update, child, divElement);
+        this._renderAddChild(update, child, this._divElement);
     }
     
-    EchoWebCore.EventProcessor.add(divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
+    EchoWebCore.EventProcessor.add(this._divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
     
-    parentElement.appendChild(divElement);
+    parentElement.appendChild(this._divElement);
 };
 
 EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, child, parentElement, index) {
@@ -78,7 +83,7 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
         
         // Render spacing div first if index != 0 and cell spacing enabled.
         if (this.cellSpacing && parentElement.firstChild) {
-            parentElement.appendChild(this._renderSpacing());
+            parentElement.appendChild(this._spacingPrototype.cloneNode(false));
         }
 
         // Render child div second.
@@ -93,17 +98,9 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
         
         // Then render spacing div if required.
         if (this.cellSpacing) {
-            parentElement.insertBefore(this._renderSpacing(), beforeElement);
+            parentElement.insertBefore(this._spacingPrototype.cloneNode(false), beforeElement);
         }
     }
-};
-
-EchoRender.ComponentSync.Column.prototype._renderSpacing = function() {
-    var spacingDivElement = document.createElement("div");
-    spacingDivElement.style.height = this.cellSpacing + "px";
-    spacingDivElement.style.fontSize = "1px";
-    spacingDivElement.style.lineHeight = "0px";
-    return spacingDivElement;
 };
 
 EchoRender.ComponentSync.Column.prototype._renderRemoveChild = function(update, child) {
@@ -122,8 +119,9 @@ EchoRender.ComponentSync.Column.prototype._renderRemoveChild = function(update, 
 };
 
 EchoRender.ComponentSync.Column.prototype.renderDispose = function(update) { 
-    var divElement = document.getElementById(this.component.renderId);
-    EchoWebCore.EventProcessor.remove(divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
+    EchoWebCore.EventProcessor.remove(this._divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
+    this._divElement = null;
+    this._spacingPrototype = null;
 };
 
 EchoRender.ComponentSync.Column.prototype.renderUpdate = function(update) {
