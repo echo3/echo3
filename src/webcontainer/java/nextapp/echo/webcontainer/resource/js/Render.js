@@ -621,10 +621,10 @@ EchoRender.Property.FillImage.clear = function(element) {
 };
 
 EchoRender.Property.FillImage.renderComponentProperty = function(component, componentProperty, defaultValue,
-        element) {
+        element, flags) {
     var fillImage = component.getRenderProperty ? component.getRenderProperty(componentProperty)
             : component.getProperty(componentProperty);
-    EchoRender.Property.FillImage.render(fillImage, element);
+    EchoRender.Property.FillImage.render(fillImage, element, flags);
 };
 
 EchoRender.Property.Font = function() { };
@@ -799,7 +799,7 @@ EchoRender.TriCellTable.prototype.addRow = function(tdElement) {
 
 EchoRender.TriCellTable.prototype.addSpacer = function(parentElement, size, vertical) {
     var imgElement = document.createElement("img");
-    imgElement.src = EchoRender.TriCellTable.TRANSPARENT_IMAGE;
+    imgElement.src = EchoRender.Util.TRANSPARENT_IMAGE;
     imgElement.style.width = vertical ? "1px" : size + "px";
     imgElement.style.height = vertical ? size + "px" : "1px";
     parentElement.appendChild(imgElement);
