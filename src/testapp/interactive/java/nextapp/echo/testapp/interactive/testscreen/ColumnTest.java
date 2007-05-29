@@ -73,6 +73,27 @@ public class ColumnTest extends SplitPane {
                 testColumn.add(new Label("Added item [" + nextValue++ + "]"), 0);
             }
         });
+        controlsColumn.addButton("Add Item (at index 1)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (testColumn.getComponentCount() >= 1) {
+                    testColumn.add(new Label("Added item [" + nextValue++ + "]"), 1);
+                }
+            }
+        });
+        controlsColumn.addButton("Add Item (at index 2)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (testColumn.getComponentCount() >= 2) {
+                    testColumn.add(new Label("Added item [" + nextValue++ + "]"), 2);
+                }
+            }
+        });
+        controlsColumn.addButton("Add Item (at end - 1)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (testColumn.getComponentCount() >= 1) {
+                    testColumn.add(new Label("Added item [" + nextValue++ + "]"), testColumn.getComponentCount() - 1);
+                }
+            }
+        });
         controlsColumn.addButton("Add Item (at end)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testColumn.add(new Label("Added item [" + nextValue++ + "]"));
@@ -84,6 +105,34 @@ public class ColumnTest extends SplitPane {
                 testColumn.add(label);
                 testColumn.remove(label);
                 testColumn.add(label);
+            }
+        });
+        controlsColumn.addButton("Remove Item 0", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (testColumn.getComponentCount() > 0) {
+                    testColumn.remove(0);
+                }
+            }
+        });
+        controlsColumn.addButton("Remove Item 1", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (testColumn.getComponentCount() > 1) {
+                    testColumn.remove(1);
+                }
+            }
+        });
+        controlsColumn.addButton("Remove Item 2", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (testColumn.getComponentCount() > 2) {
+                    testColumn.remove(2);
+                }
+            }
+        });
+        controlsColumn.addButton("Remove Second-to-Last Item", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (testColumn.getComponentCount() >= 2) {
+                    testColumn.remove(testColumn.getComponentCount() - 2);
+                }
             }
         });
         controlsColumn.addButton("Remove Last Item", new ActionListener() {
