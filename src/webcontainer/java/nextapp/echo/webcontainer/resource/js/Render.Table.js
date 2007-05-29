@@ -18,6 +18,10 @@ EchoRender.ComponentSync.Table._HEADER_ROW = -1;
 EchoRender.ComponentSync.Table._SIZING_DOTS = ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . "
             + ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ";
 
+EchoRender.ComponentSync.Table.prototype.getContainerElement = function(component) {
+    return this._childIdToElementMap[component.renderId];
+};
+
 EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElement) {
     this._columnCount = this.component.getRenderProperty("columnCount");
     this._rowCount = this.component.getRenderProperty("rowCount");
@@ -36,9 +40,9 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
         this.selectionModel = new EchoApp.ListSelectionModel(parseInt(this.component.getProperty("selectionMode")));
     }
     
-    var tableElement = document.createElement("table");
-    tableElement.id = this.component.renderId;
-    tableElement.style.tableLayout = "fixed";
+    this._tableElement = document.createElement("table");
+    this._tableElement.id = this.component.renderId;
+    this._tableElement.style.tableLayout = "fixed";
     
     var width = this.component.getRenderProperty("width");
     var render100PercentWidthWorkaround = false;
@@ -46,9 +50,25 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
         width = null;
         render100PercentWidthWorkaround = true;
     }
-    this._renderMainStyle(tableElement, width);
+
+    this._tableElement.style.borderCollapse = "collapse";
+    if (this._selectionEnabled) {
+        this._tableElement.style.cursor = "pointer";
+    }
+    EchoRender.Property.Color.renderFB(this.component, this._tableElement);
+    EchoRender.Property.Font.renderDefault(this.component, this._tableElement);
+    var border = this.component.getRenderProperty("border");
+    if (border) {
+        EchoRender.Property.Border.render(border, this._tableElement);
+        if (border.size && !EchoWebCore.Environment.QUIRK_CSS_BORDER_COLLAPSE_INSIDE) {
+            this._tableElement.style.margin = (EchoRender.Property.Extent.toPixels(border.size, false) / 2) + "px";
+        }
+    }
+    if (width) {
+        this._tableElement.style.width = width;
+    }
     
-    var tbodyElement = document.createElement("tbody");
+    this._tbodyElement = document.createElement("tbody");
     
     if (this.component.getRenderProperty("columnWidth")) {
         // If any column widths are set, render colgroup.
@@ -77,22 +97,25 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
             }
             colGroupElement.appendChild(colElement);
         }
-        tableElement.appendChild(colGroupElement);
+        this._tableElement.appendChild(colGroupElement);
     }
     
-    tableElement.appendChild(tbodyElement);
-    parentElement.appendChild(tableElement);
+    this._tableElement.appendChild(this._tbodyElement);
+    
+    parentElement.appendChild(this._tableElement);
+    
+    this._childIdToElementMap = new Object();
 
     var trPrototype = this._createRowPrototype();
     
     if (this._headerVisible) {
-        tbodyElement.appendChild(this._renderRow(update, EchoRender.ComponentSync.Table._HEADER_ROW, trPrototype));
+        this._tbodyElement.appendChild(this._renderRow(update, EchoRender.ComponentSync.Table._HEADER_ROW, trPrototype));
     }
     for (var rowIndex = 0; rowIndex < this._rowCount; rowIndex++) {
-        tbodyElement.appendChild(this._renderRow(update, rowIndex, trPrototype));
+        this._tbodyElement.appendChild(this._renderRow(update, rowIndex, trPrototype));
     }
     if (render100PercentWidthWorkaround) {
-        this._render100PercentWidthWorkaround(tableElement);
+        this._render100PercentWidthWorkaround();
     }
     
     if (this._selectionEnabled) {
@@ -101,48 +124,21 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
             if (selectedIndices[i] == "") {
                 continue;
             }
-            this._setSelected(parseInt(selectedIndices[i]), true, tableElement);
+            this._setSelected(parseInt(selectedIndices[i]), true);
         }
     }
     
-    this._addEventListeners(tableElement);
-};
-
-/**
- * Renders the main style.
- *
- * @param element the main element
- * @param width {Number} the width to use
- */
-EchoRender.ComponentSync.Table.prototype._renderMainStyle = function(element, width) {
-    element.style.borderCollapse = "collapse";
-    if (this._selectionEnabled) {
-        element.style.cursor = "pointer";
-    }
-    EchoRender.Property.Color.renderFB(this.component, element);
-    EchoRender.Property.Font.renderDefault(this.component, element);
-    var border = this.component.getRenderProperty("border");
-    if (border) {
-        EchoRender.Property.Border.render(border, element);
-        if (border.size && !EchoWebCore.Environment.QUIRK_CSS_BORDER_COLLAPSE_INSIDE) {
-            element.style.margin = (EchoRender.Property.Extent.toPixels(border.size, false) / 2) + "px";
-        }
-    }
-    if (width) {
-        element.style.width = width;
-    }
+    this._addEventListeners();
 };
 
 /**
  * Renders the IE 100% table width workaround, only call this method when the workaround should be applied.
- *
- * @param element the main element
  */
-EchoRender.ComponentSync.Table.prototype._render100PercentWidthWorkaround = function(element) {
-    if (element.rows.length == 0) {
+EchoRender.ComponentSync.Table.prototype._render100PercentWidthWorkaround = function() {
+    if (this._tableElement.rows.length == 0) {
         return;
     }
-    var columns = element.rows[0].cells;
+    var columns = this._tableElement.rows[0].cells;
     for (var i = 0; i < columns.length; ++i) {
         var sizingDivElement = document.createElement("div");
         sizingDivElement.style.fontSize = "50px";
@@ -157,14 +153,10 @@ EchoRender.ComponentSync.Table.prototype._render100PercentWidthWorkaround = func
  * Renders an appropriate style for a row (i.e. selected or deselected).
  *
  * @param rowIndex {Number} the index of the row
- * @param tableElement the table element, may be null
  */
-EchoRender.ComponentSync.Table.prototype._renderRowStyle = function(rowIndex, tableElement) {
+EchoRender.ComponentSync.Table.prototype._renderRowStyle = function(rowIndex) {
     var selected = this._selectionEnabled && this.selectionModel.isSelectedIndex(rowIndex);
-    if (!tableElement) {
-    	tableElement = document.getElementById(this.component.renderId);
-    }
-    var trElement = tableElement.rows[rowIndex + (this._headerVisible ? 1 : 0)];
+    var trElement = this._tableElement.rows[rowIndex + (this._headerVisible ? 1 : 0)];
     
     for (var i = 0; i < trElement.cells.length; ++i) {
         var cell = trElement.cells[i];
@@ -175,7 +167,7 @@ EchoRender.ComponentSync.Table.prototype._renderRowStyle = function(rowIndex, ta
             EchoRender.Property.Font.renderComponentProperty(this.component, "selectionFont", null, cell);
             EchoRender.Property.Color.renderComponentProperty(this.component, "selectionForeground", null, cell, "color");
             EchoRender.Property.Color.renderComponentProperty(this.component, "selectionBackground", null, cell, "background");
-            EchoRender.Property.FillImage.renderComponentProperty(this.component, "selectionBackgroundImage", null, cell); 
+            EchoRender.Property.FillImage.renderComponentProperty(this.component, "selectionBackgroundImage", null, cell);
         } else {
             // FIXME
             //EchoCssUtil.restoreOriginalStyle(cell);
@@ -197,9 +189,8 @@ EchoRender.ComponentSync.Table.prototype._renderRowStyle = function(rowIndex, ta
  */
 EchoRender.ComponentSync.Table.prototype._renderRow = function(update, rowIndex, trPrototype) {
     var trElement = trPrototype ? trPrototype.cloneNode(true) : this._createRowPrototype();
-    if (rowIndex == EchoRender.ComponentSync.Table._HEADER_ROW) {
-        trElement.id = this.component.renderId + "_tr_header";
-    } else {
+    
+    if (rowIndex != EchoRender.ComponentSync.Table._HEADER_ROW && (this._selectionEnabled || this._rolloverEnabled)) {
         trElement.id = this.component.renderId + "_tr_" + rowIndex; 
     }
     
@@ -207,8 +198,8 @@ EchoRender.ComponentSync.Table.prototype._renderRow = function(update, rowIndex,
     var columnIndex = 0;
     
     while (columnIndex < this._columnCount) {
-        tdElement.id = this.component.renderId + "_cell_" + columnIndex;
         var child = this.component.getComponent((rowIndex + (this._headerVisible ? 1 : 0)) * this._columnCount + columnIndex);
+        this._childIdToElementMap[child.renderId] = tdElement;
         var layoutData = child.getRenderProperty("layoutData");
         
         if (layoutData) {
@@ -249,15 +240,34 @@ EchoRender.ComponentSync.Table.prototype.renderUpdate = function(update) {
 };
 
 EchoRender.ComponentSync.Table.prototype.renderDispose = function(update) {
-    var tableElement = document.getElementById(this.component.renderId);
-    for (var i = 0; i < tableElement.rows.length; ++i) {
-        EchoWebCore.EventProcessor.removeAll(tableElement.rows[i]);
+    if (this._rolloverEnabled || this._selectionEnabled) {
+        var trElement = this._tbodyElement.firstChild;
+        if (this._headerVisible) {
+            trElement = trElement.nextSibling;
+        }
+        while (trElement) {
+            EchoWebCore.EventProcessor.removeAll(trElement);
+            trElement.id = "";
+            trElement = trElement.nextSibling;
+        }
     }
+    this._tableElement.id = "";
+    this._tableElement = null;
+    this._tbodyElement = null;
+    this._childIdToElementMap = null;
 };
 
 EchoRender.ComponentSync.Table.prototype._getRowIndex = function(element) {
-    var stringIndex = element.id.lastIndexOf("_tr_") + 4;
-    return parseInt(element.id.substring(stringIndex));
+    var testElement = this._tbodyElement.firstChild;
+    var index = this._headerVisible ? -1 : 0;
+    while (testElement) {
+        if (testElement == element) {
+            return index;
+        }
+        testElement = testElement.nextSibling;
+        ++index;
+    }
+    return -1;
 };
 
 /**
@@ -267,20 +277,18 @@ EchoRender.ComponentSync.Table.prototype._getRowIndex = function(element) {
  * @param {Boolean} newValue the new selection state
  * @param tableElement the table element, may be null
  */
-EchoRender.ComponentSync.Table.prototype._setSelected = function(rowIndex, newValue, tableElement) {
+EchoRender.ComponentSync.Table.prototype._setSelected = function(rowIndex, newValue) {
     this.selectionModel.setSelectedIndex(rowIndex, newValue);
-    this._renderRowStyle(rowIndex, tableElement);
+    this._renderRowStyle(rowIndex);
 };
 
 /**
  * Deselects all selected rows.
- * 
- * @param tableElement the table element, may be null
  */
-EchoRender.ComponentSync.Table.prototype._clearSelected = function(tableElement) {
+EchoRender.ComponentSync.Table.prototype._clearSelected = function() {
     for (var i = 0; i < this._rowCount; ++i) {
         if (this.selectionModel.isSelectedIndex(i)) {
-            this._setSelected(i, false, tableElement);
+            this._setSelected(i, false);
         }
     }
 };
@@ -289,10 +297,8 @@ EchoRender.ComponentSync.Table.prototype._clearSelected = function(tableElement)
 
 /**
  * Adds event listeners.
- *
- * @param tableElement the table element
  */
-EchoRender.ComponentSync.Table.prototype._addEventListeners = function(tableElement) {
+EchoRender.ComponentSync.Table.prototype._addEventListeners = function() {
     /*
     if (!this.component.getRenderProperty("enabled")) {
     	return;
@@ -312,7 +318,7 @@ EchoRender.ComponentSync.Table.prototype._addEventListeners = function(tableElem
         var clickRef = new EchoCore.MethodRef(this, this._processClick);
         
         for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
-            var trElement = tableElement.rows[rowIndex + rowOffset];
+            var trElement = this._tableElement.rows[rowIndex + rowOffset];
             if (this._rolloverEnabled) {
                 EchoWebCore.EventProcessor.add(trElement, enterEvent, rolloverEnterRef, false);
                 EchoWebCore.EventProcessor.add(trElement, exitEvent, rolloverExitRef, false);
@@ -341,10 +347,8 @@ EchoRender.ComponentSync.Table.prototype._processClick = function(e) {
     
     EchoWebCore.DOM.preventEventDefault(e);
 
-    var tableElement = trElement.parentNode.parentNode;
-    
     if (this.selectionModel.isSingleSelection() || !(e.shiftKey || e.ctrlKey || e.metaKey || e.altKey)) {
-        this._clearSelected(tableElement);
+        this._clearSelected(this._tableElement);
     }
 
     if (e.shiftKey && this.lastSelectedIndex != -1) {
@@ -358,11 +362,11 @@ EchoRender.ComponentSync.Table.prototype._processClick = function(e) {
             endIndex = this.lastSelectedIndex;
         }
         for (var i = startIndex; i <= endIndex; ++i) {
-            this._setSelected(i, true, tableElement);
+            this._setSelected(i, true, this._tableElement);
         }
     } else {
         this.lastSelectedIndex = rowIndex;
-        this._setSelected(rowIndex, !this.selectionModel.isSelectedIndex(rowIndex), tableElement);
+        this._setSelected(rowIndex, !this.selectionModel.isSelectedIndex(rowIndex), this._tableElement);
     }
     
     this.component.setProperty("selection", this.selectionModel.getSelectionString());
@@ -401,9 +405,7 @@ EchoRender.ComponentSync.Table.prototype._processRolloverExit = function(e) {
         return;
     }
 
-    var tableElement = trElement.parentNode.parentNode;
-    
-    this._renderRowStyle(rowIndex, tableElement);
+    this._renderRowStyle(rowIndex);
 };
 
 EchoRender.registerPeer("Table", EchoRender.ComponentSync.Table);

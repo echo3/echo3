@@ -112,13 +112,15 @@ EchoRender._renderComponentDisposeImpl = function(update, component, removeIds) 
         EchoRender._renderComponentDisposeImpl(update, component.children[i], false);
     }
     
-    if (removeIds) {
-        EchoRender._renderRemoveIds(element);
-    }
+//    if (removeIds) {
+//        EchoRender._renderRemoveIds(element);
+//    }
 };
 
 EchoRender._renderRemoveIds = function(element) {
-    element.id = "";
+    if (element.id) {
+        element.id = "";
+    }
     element = element.firstChild;
     while (element) {
         if (element.nodeType == 1) {
@@ -798,11 +800,10 @@ EchoRender.TriCellTable.prototype.addRow = function(tdElement) {
 };
 
 EchoRender.TriCellTable.prototype.addSpacer = function(parentElement, size, vertical) {
-    var imgElement = document.createElement("img");
-    imgElement.src = EchoRender.Util.TRANSPARENT_IMAGE;
-    imgElement.style.width = vertical ? "1px" : size + "px";
-    imgElement.style.height = vertical ? size + "px" : "1px";
-    parentElement.appendChild(imgElement);
+    var divElement = document.createElement("div");
+    divElement.style.width = vertical ? "1px" : size + "px";
+    divElement.style.height = vertical ? size + "px" : "1px";
+    parentElement.appendChild(divElement);
 };
 
 EchoRender.TriCellTable.prototype.configure2 = function(id, orientation0_1, margin0_1) {

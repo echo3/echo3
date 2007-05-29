@@ -14,15 +14,19 @@ EchoRender.ComponentSync.Label.prototype._createSingleItemSpanElement = function
 };
 
 EchoRender.ComponentSync.Label.prototype.getElement = function() {
-    return this._labelElement;
+    return this._labelNode;
 };
 
 EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElement) {
     var icon = this.component.getRenderProperty("icon");
     var text = this.component.getRenderProperty("text");
-    
+    var foreground = this.component.getRenderProperty("foreground");
+    var background = this.component.getRenderProperty("background");
+
     if (text) {
+        var font = this.component.getRenderProperty("background");
         var lineWrap = this.component.getRenderProperty("lineWrap", true);
+
         if (icon) {
             // Text and icon.
             var iconTextMargin = this.component.getRenderProperty("iconTextMargin", 
@@ -36,31 +40,38 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
                 tct.tdElements[0].style.whiteSpace = "nowrap";
             }
             tct.tdElements[1].appendChild(imgElement);
-            this._labelElement = tct.tableElement;
+            this._labelNode = tct.tableElement;
+            EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, this._labelNode);
+            EchoRender.Property.Color.renderFB(this.component, this._labelNode);
         } else {
-            this._labelElement = this._createSingleItemSpanElement(document.createTextNode(text));
-            if (!lineWrap) {
-                this._labelElement.style.whiteSpace = "nowrap";
+            if (!font && lineWrap && !foreground && !background) {
+                this._labelNode = document.createTextNode(text);
+            } else {
+                this._labelNode = this._createSingleItemSpanElement(document.createTextNode(text));
+                if (!lineWrap) {
+                    this._labelNode.style.whiteSpace = "nowrap";
+                }
+                EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, this._labelNode);
+                EchoRender.Property.Color.renderFB(this.component, this._labelNode);
             }
         }
     } else if (icon) {
         var imgElement = document.createElement("img");
         imgElement.src = icon.url;
-        this._labelElement = this._createSingleItemSpanElement(imgElement);
+        this._labelNode = this._createSingleItemSpanElement(imgElement);
+        EchoRender.Property.Color.renderFB(this.component, this._labelNode); // should be BG only.
     } else {
         // Neither icon nor text, render blank.
-        this._labelElement = this._createSingleItemSpanElement(document.createTextNode(""));
+        this._labelNode = null;
     }
-    
-    this._labelElement.id = this.component.renderId;
-    EchoRender.Property.Color.renderFB(this.component, this._labelElement);
-    EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, this._labelElement);
 
-    parentElement.appendChild(this._labelElement);
+    if (this._labelNode) {
+        parentElement.appendChild(this._labelNode);
+    }
 };
 
 EchoRender.ComponentSync.Label.prototype.renderDispose = function(update) { 
-    this._labelElement = null;
+    this._labelNode = null;
 };
 
 EchoRender.ComponentSync.Label.prototype.renderUpdate = function(update) {

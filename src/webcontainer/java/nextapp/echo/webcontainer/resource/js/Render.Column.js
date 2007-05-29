@@ -7,7 +7,8 @@ EchoRender.ComponentSync.Column = function() {
 EchoRender.ComponentSync.Column.prototype = new EchoRender.ComponentSync;
 
 EchoRender.ComponentSync.Column.prototype.getContainerElement = function(component) {
-    return document.getElementById(this.component.renderId + "_" + component.renderId);
+    var index = this.component.indexOf(component);
+    return this._divElement.childNodes[this._cellSpacing ? (index * 2) : index];
 };
 
 EchoRender.ComponentSync.Column.prototype.processKeyDown = function(e) { 
@@ -30,21 +31,24 @@ EchoRender.ComponentSync.Column.prototype.processKeyDown = function(e) {
 };
 
 EchoRender.ComponentSync.Column.prototype.renderAdd = function(update, parentElement) {
-    this.cellSpacing = EchoRender.Property.Extent.toPixels(this.component.getRenderProperty("cellSpacing"), false);
-    var insets = this.component.getRenderProperty("insets");
-
     this._divElement = document.createElement("div");
     this._divElement.id = this.component.renderId;
     this._divElement.style.outlineStyle = "none";
     this._divElement.tabIndex = "-1";
+
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._divElement);
     EchoRender.Property.Color.renderFB(this.component, this._divElement);
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
 
-    this._spacingPrototype = document.createElement("div");
-    this._spacingPrototype.style.height = this.cellSpacing + "px";
-    this._spacingPrototype.style.fontSize = "1px";
-    this._spacingPrototype.style.lineHeight = "0px";
+    this._cellSpacing = EchoRender.Property.Extent.toPixels(this.component.getRenderProperty("cellSpacing"), false);
+    if (this._cellSpacing) {
+        this._spacingPrototype = document.createElement("div");
+        this._spacingPrototype.style.height = this._cellSpacing + "px";
+        this._spacingPrototype.style.fontSize = "1px";
+        this._spacingPrototype.style.lineHeight = "0px";
+    }
+    
+    this._childIdToElementMap = new Object();
     
     var componentCount = this.component.getComponentCount();
     for (var i = 0; i < componentCount; ++i) {
@@ -63,7 +67,7 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
     }
     
     var divElement = document.createElement("div");
-    divElement.id = this.component.renderId + "_"+ child.renderId;
+    this._childIdToElementMap[child.renderId] = divElement;
     EchoRender.renderComponentAdd(update, child, divElement);
 
     var layoutData = child.getRenderProperty("layoutData");
@@ -82,7 +86,7 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
         // Full render or append-at-end scenario
         
         // Render spacing div first if index != 0 and cell spacing enabled.
-        if (this.cellSpacing && this._divElement.firstChild) {
+        if (this._cellSpacing && this._divElement.firstChild) {
             this._divElement.appendChild(this._spacingPrototype.cloneNode(false));
         }
 
@@ -90,37 +94,41 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
         this._divElement.appendChild(divElement);
     } else {
         // Partial render insert at arbitrary location scenario (but not at end)
-        var insertionIndex = this.cellSpacing ? index * 2 : index;
+        var insertionIndex = this._cellSpacing ? index * 2 : index;
         var beforeElement = this._divElement.childNodes[insertionIndex]
         
         // Render child div first.
         this._divElement.insertBefore(divElement, beforeElement);
         
         // Then render spacing div if required.
-        if (this.cellSpacing) {
+        if (this._cellSpacing) {
             this._divElement.insertBefore(this._spacingPrototype.cloneNode(false), beforeElement);
         }
     }
 };
 
 EchoRender.ComponentSync.Column.prototype._renderRemoveChild = function(update, child) {
-    var childElement = document.getElementById(this.component.renderId + "_" + child.renderId);
-    var parentElement = childElement.parentNode;
-    if (this.cellSpacing) {
+    var childElement = this._childIdToElementMap[child.renderId];
+
+    if (this._cellSpacing) {
         // If cell spacing is enabled, remove a spacing element, either before or after the removed child.
         // In the case of a single child existing in the column, no spacing element will be removed.
         if (childElement.previousSibling) {
-            parentElement.removeChild(childElement.previousSibling);
+            this._divElement.removeChild(childElement.previousSibling);
         } else if (childElement.nextSibling) {
-            parentElement.removeChild(childElement.nextSibling);
+            this._divElement.removeChild(childElement.nextSibling);
         }
     }
-    parentElement.removeChild(childElement);
+    this._divElement.removeChild(childElement);
+
+    delete this._childIdToElementMap[child.renderId];
 };
 
 EchoRender.ComponentSync.Column.prototype.renderDispose = function(update) { 
     EchoWebCore.EventProcessor.remove(this._divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
+    this._divElement.id = "";
     this._divElement = null;
+    this._childIdToElementMap = null;
     this._spacingPrototype = null;
 };
 
