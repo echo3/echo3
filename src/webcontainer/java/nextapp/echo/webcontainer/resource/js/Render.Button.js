@@ -144,7 +144,7 @@ EchoRender.ComponentSync.Button.prototype._renderContent = function() {
             var tct = new EchoRender.TriCellTable(this.component.renderId,
                     EchoRender.TriCellTable.TRAILING_LEADING, EchoRender.Property.Extent.toPixels(iconTextMargin));
             this._renderButtonText(tct.tdElements[0], text);
-            this._renderButtonIcon(tct.tdElements[1], icon);
+            this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
             this._divElement.appendChild(tct.tableElement);
         } else {
             // Text only.
@@ -152,7 +152,7 @@ EchoRender.ComponentSync.Button.prototype._renderContent = function() {
         }
     } else if (icon) {
         // Icon only.
-        this._renderButtonIcon(this._divElement, icon);
+        this._iconElement = this._renderButtonIcon(this._divElement, icon);
     }
 };
 
@@ -165,7 +165,6 @@ EchoRender.ComponentSync.Button.prototype._renderButtonText = function(element, 
 
 EchoRender.ComponentSync.Button.prototype._renderButtonIcon = function(element, icon) {
     var imgElement = document.createElement("img");
-    imgElement.id = this.renderId + "_icon";
     imgElement.src = icon.url ? icon.url : icon;
     imgElement.alt = "";
 	element.appendChild(imgElement);
@@ -216,6 +215,7 @@ EchoRender.ComponentSync.Button.prototype._getCombinedAlignment = function() {
 EchoRender.ComponentSync.Button.prototype.renderDispose = function(update) {
     EchoWebCore.EventProcessor.removeAll(this._divElement);
     this._divElement = null;
+    this._iconElement = null;
 };
 
 EchoRender.ComponentSync.Button.prototype.renderUpdate = function(update) {
@@ -248,11 +248,10 @@ EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) 
     EchoRender.Property.Color.renderComponentProperty(this.component, bgProperty, null, this._divElement, "background");
     EchoRender.Property.Color.renderComponentProperty(this.component, fgProperty, null, this._divElement, "color");
     
-    var iconElement = document.getElementById(this.component.renderId + "_icon");
-    if (iconElement) {
+    if (this._iconElement) {
 	    var icon = this.component.getRenderProperty(rolloverState ? "focusedIcon" : "icon");
 	    if (icon) {
-		    iconElement.src = icon.url;
+		    this._iconElement.src = icon.url;
 	    }
     }
 };
@@ -276,11 +275,10 @@ EchoRender.ComponentSync.Button.prototype._setRolloverState = function(rolloverS
     EchoRender.Property.Color.renderComponentProperty(this.component, bgProperty, null, this._divElement, "background");
     EchoRender.Property.Color.renderComponentProperty(this.component, fgProperty, null, this._divElement, "color");
     
-    var iconElement = document.getElementById(this.component.renderId + "_icon");
-    if (iconElement) {
+    if (this._iconElement) {
 	    var icon = this.component.getRenderProperty(rolloverState ? "rolloverIcon" : "icon");
 	    if (icon) {
-		    iconElement.src = icon.url;
+		    this._iconElement.src = icon.url;
 	    }
     }
 };
@@ -324,14 +322,12 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
     var icon = this.component.getRenderProperty("icon");
 	var stateIcon = this._getStateIcon();
     
-    var iconElement;
-
     var entityCount = (text ? 1 : 0) + (icon ? 1 : 0) + (stateIcon ? 1 : 0);
     if (entityCount == 1) {
     	if (text) {
             this._renderButtonText(this._divElement, text);
     	} else if (icon) {
-	        iconElement = this._renderButtonIcon(this._divElement, icon);
+	        this._iconElement = this._renderButtonIcon(this._divElement, icon);
     	} else {
 	        this._stateIconElement = this._renderButtonIcon(this._divElement, stateIcon);
     	}
@@ -349,12 +345,12 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
         if (text) {
 	        this._renderButtonText(tct.tdElements[0], text);
 	        if (icon) {
-		        iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
+		        this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
 	        } else {
 		        this._stateIconElement = this._renderButtonIcon(tct.tdElements[1], stateIcon);
 	        }
         } else {
-	        iconElement = this._renderButtonIcon(tct.tdElements[0], icon);
+	        this._iconElement = this._renderButtonIcon(tct.tdElements[0], icon);
 	        this._stateIconElement = this._renderButtonIcon(tct.tdElements[1], stateIcon);
         }
         this._divElement.appendChild(tct.tableElement);
@@ -366,7 +362,7 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
         var tct = new EchoRender.TriCellTable(this.component.renderId, orientation, 
         	EchoRender.Property.Extent.toPixels(margin), stateOrientation, EchoRender.Property.Extent.toPixels(stateMargin));
         this._renderButtonText(tct.tdElements[0], text);
-        iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
+        this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
         this._stateIconElement = this._renderButtonIcon(tct.tdElements[2], stateIcon);
         this._divElement.appendChild(tct.tableElement);
     }
