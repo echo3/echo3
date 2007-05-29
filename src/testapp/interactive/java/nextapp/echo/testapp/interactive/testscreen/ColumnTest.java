@@ -99,14 +99,6 @@ public class ColumnTest extends SplitPane {
                 testColumn.add(new Label("Added item [" + nextValue++ + "]"));
             }
         });
-        controlsColumn.addButton("Add-Remove-Add Item (at end)", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Label label = new Label("Added item [" + nextValue++ + "]");
-                testColumn.add(label);
-                testColumn.remove(label);
-                testColumn.add(label);
-            }
-        });
         controlsColumn.addButton("Remove Item 0", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (testColumn.getComponentCount() > 0) {
@@ -140,6 +132,14 @@ public class ColumnTest extends SplitPane {
                 if (testColumn.getComponentCount() > 0) {
                     testColumn.remove(testColumn.getComponentCount() - 1);
                 }
+            }
+        });
+        controlsColumn.addButton("Add-Remove-Add Item (at end)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Label label = new Label("Added item [" + nextValue++ + "]");
+                testColumn.add(label);
+                testColumn.remove(label);
+                testColumn.add(label);
             }
         });
         controlsColumn.addButton("Add Some Items, Remove Some Items", new ActionListener() {
