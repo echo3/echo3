@@ -31,6 +31,7 @@ package nextapp.echo.testapp.interactive.testscreen;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
+import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
@@ -207,6 +208,30 @@ public class TableTest extends SplitPane {
                 label.setVisible(false);
             }
             return label;
+        }
+    };
+    
+    private TableCellRenderer changingButtonCellRenderer = new TableCellRenderer() {
+        
+        /**
+         * @see nextapp.echo.app.table.TableCellRenderer#getTableCellRendererComponent(nextapp.echo.app.Table,
+         *      java.lang.Object, int, int)
+         */
+        public Component getTableCellRendererComponent(Table table, Object value, int column, int row) {
+            final Button button = new Button(value == null ? "0" : value.toString());
+            button.setStyleName("Default");
+            button.addActionListener(new ActionListener(){
+            
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        int newValue = Integer.parseInt(button.getText()) + 1;
+                        button.setText(Integer.toString(newValue));
+                    } catch (NumberFormatException ex) {
+                        button.setText("0");
+                    }
+                }
+            });
+            return button;
         }
     };
     
@@ -580,6 +605,11 @@ public class TableTest extends SplitPane {
         controlsColumn.addButton("Editing Cell Renderer (not bound to model)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testTable.setDefaultRenderer(Object.class, editingTableCellRenderer);
+            }
+        });
+        controlsColumn.addButton("Changing Button Cell Renderer", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testTable.setDefaultRenderer(Object.class, changingButtonCellRenderer);
             }
         });
         controlsColumn.addButton("Alignment = Leading/Top", new ActionListener() {
