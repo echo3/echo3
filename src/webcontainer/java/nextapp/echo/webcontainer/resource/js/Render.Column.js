@@ -7,8 +7,7 @@ EchoRender.ComponentSync.Column = function() {
 EchoRender.ComponentSync.Column.prototype = new EchoRender.ComponentSync;
 
 EchoRender.ComponentSync.Column.prototype.getContainerElement = function(component) {
-    var index = this.component.indexOf(component);
-    return this._divElement.childNodes[this._cellSpacing ? (index * 2) : index];
+    return this._childIdToElementMap[component.renderId];
 };
 
 EchoRender.ComponentSync.Column.prototype.processKeyDown = function(e) { 

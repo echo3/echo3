@@ -31,6 +31,7 @@ package nextapp.echo.testapp.interactive.testscreen;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
+import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
@@ -158,6 +159,24 @@ public class RowTest extends SplitPane {
                         testRow.add(new Label("Added item [" + nextValue++ + "]"), position);
                     }
                 }
+            }
+        });
+        controlsColumn.addButton("Add Changing Button", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                final Button button = new Button(Integer.toString(nextValue++));
+                button.setStyleName("Default");
+                button.addActionListener(new ActionListener(){
+                
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            int newValue = Integer.parseInt(button.getText()) + 1;
+                            button.setText(Integer.toString(newValue));
+                        } catch (NumberFormatException ex) {
+                            button.setText("0");
+                        }
+                    }
+                });
+                testRow.add(button);
             }
         });
         controlsColumn.addButton("Randomly Remove and Re-insert Item", new ActionListener() {

@@ -30,6 +30,7 @@
 package nextapp.echo.testapp.interactive.testscreen;
 
 import nextapp.echo.app.Border;
+import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
@@ -170,6 +171,24 @@ public class ColumnTest extends SplitPane {
                 testColumn.add(item, (int) (Math.random() * (itemCount - 1)));
             }
         }); 
+        controlsColumn.addButton("Add Changing Button", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                final Button button = new Button(Integer.toString(nextValue++));
+                button.setStyleName("Default");
+                button.addActionListener(new ActionListener(){
+                
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            int newValue = Integer.parseInt(button.getText()) + 1;
+                            button.setText(Integer.toString(newValue));
+                        } catch (NumberFormatException ex) {
+                            button.setText("0");
+                        }
+                    }
+                });
+                testColumn.add(button);
+            }
+        });
         controlsColumn.addButton("Set Foreground", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testColumn.setForeground(StyleUtil.randomColor());

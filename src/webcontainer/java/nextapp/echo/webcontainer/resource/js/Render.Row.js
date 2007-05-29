@@ -27,8 +27,7 @@ EchoRender.ComponentSync.Row._createRowPrototype = function() {
 EchoRender.ComponentSync.Row._rowPrototype = EchoRender.ComponentSync.Row._createRowPrototype();
 
 EchoRender.ComponentSync.Row.prototype.getContainerElement = function(component) {
-    var index = this.component.indexOf(component);
-    return this._trElement.childNodes[this._cellSpacing ? (index * 2) : index];
+    return this._childIdToElementMap[component.renderId];
 };
 
 EchoRender.ComponentSync.Row.prototype.processKeyDown = function(e) { 
