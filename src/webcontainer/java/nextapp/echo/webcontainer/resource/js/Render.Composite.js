@@ -6,19 +6,19 @@ EchoRender.ComponentSync.Composite = function() { };
 EchoRender.ComponentSync.Composite.prototype = new EchoRender.ComponentSync;
 
 EchoRender.ComponentSync.Composite.prototype.renderAdd = function(update, parentElement) {
-    var divElement = document.createElement("div");
-    divElement.id = this.component.renderId;
+    this._divElement = document.createElement("div");
+    this._divElement.id = this.component.renderId;
     
     var componentCount = this.component.getComponentCount();
     if (componentCount > 0) {
-	    this._renderStyle(divElement);
+	    this._renderStyle(this._divElement);
 	    for (var i = 0; i < componentCount; ++i) {
 	        var child = this.component.getComponent(i);
-		    EchoRender.renderComponentAdd(update, child, divElement);
+		    EchoRender.renderComponentAdd(update, child, this._divElement);
 	    }
     }
     
-    parentElement.appendChild(divElement);
+    parentElement.appendChild(this._divElement);
 };
 
 EchoRender.ComponentSync.Composite.prototype._renderStyle = function(element) {
@@ -26,7 +26,10 @@ EchoRender.ComponentSync.Composite.prototype._renderStyle = function(element) {
     EchoRender.Property.Font.renderDefault(this.component, element);
 };
 
-EchoRender.ComponentSync.Composite.prototype.renderDispose = function(update) { };
+EchoRender.ComponentSync.Composite.prototype.renderDispose = function(update) { 
+    this._divElement.id = "";
+    this._divElement = null;
+};
 
 EchoRender.ComponentSync.Composite.prototype.renderUpdate = function(update) {
     EchoRender.Util.renderRemove(update, update.parent);
