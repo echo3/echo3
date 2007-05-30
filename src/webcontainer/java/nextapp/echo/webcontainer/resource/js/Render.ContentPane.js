@@ -6,33 +6,34 @@ EchoRender.ComponentSync.ContentPane = function() { };
 EchoRender.ComponentSync.ContentPane.prototype = new EchoRender.ComponentSync;
 
 EchoRender.ComponentSync.ContentPane.prototype.getContainerElement = function(component) {
-    var index = component.parent.indexOf(component);
-    var contentPaneElement = document.getElementById(component.parent.renderId);
-    return contentPaneElement.childNodes[index];
+    return this._childIdToElementMap[component.renderId];
 };
 
 EchoRender.ComponentSync.ContentPane.prototype.renderAdd = function(update, parentElement) {
-    var divElement = document.createElement("div");
-    divElement.id = this.component.renderId;
-    divElement.style.position = "absolute";
-    divElement.style.width = "100%";
-    divElement.style.height = "100%";
-    divElement.style.overflow = "hidden";
-    divElement.style.zIndex = "0";
-    EchoRender.Property.Color.renderFB(this.component, divElement);
-    EchoRender.Property.FillImage.renderComponentProperty(this.component, "backgroundImage", null, divElement); 
+    this._divElement = document.createElement("div");
+    this._divElement.id = this.component.renderId;
+    this._divElement.style.position = "absolute";
+    this._divElement.style.width = "100%";
+    this._divElement.style.height = "100%";
+    this._divElement.style.overflow = "hidden";
+    this._divElement.style.zIndex = "0";
+    EchoRender.Property.Color.renderFB(this.component, this._divElement);
+    EchoRender.Property.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._divElement); 
 
+    this._childIdToElementMap = new Object();
+    
     var componentCount = this.component.getComponentCount();
     for (var i = 0; i < componentCount; ++i) {
         var child = this.component.getComponent(i);
-        this._renderAddChild(update, child, divElement);
+        this._renderAddChild(update, child);
     }
 
-    parentElement.appendChild(divElement);
+    parentElement.appendChild(this._divElement);
 };
 
-EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update, child, parentElement) {
+EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update, child) {
     var divElement = document.createElement("div");
+    this._childIdToElementMap[child.renderId] = divElement;
     divElement.id = this.component.renderId + "__" + child.renderId;
     divElement.style.position = "absolute";
     if (child.floatingPane) {
@@ -48,14 +49,24 @@ EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update
         EchoWebCore.VirtualPosition.register(divElement.id);
     }
     EchoRender.renderComponentAdd(update, child, divElement);
-    parentElement.appendChild(divElement);
+    this._divElement.appendChild(divElement);
 };
 
-EchoRender.ComponentSync.ContentPane.prototype.renderDispose = function(update) { };
+EchoRender.ComponentSync.ContentPane.prototype.renderDispose = function(update) { 
+    this._childIdToElementMap = null;
+    var childElement = this._divElement.firstChild;
+    while (childElement) {
+        childElement.id = "";
+        childElement = childElement.nextSibling;
+    }
+    this._divElement.id = "";
+    this._divElement = null;
+};
 
 EchoRender.ComponentSync.ContentPane.prototype._renderRemoveChild = function(update, child) {
-    var divElement = document.getElementById(this.component.renderId + "__" + child.renderId);
+    var divElement = this._childIdToElementMap[child.renderId];
     divElement.parentNode.removeChild(divElement);
+    delete this._childIdToElementMap[child.renderId];
 };
 
 EchoRender.ComponentSync.ContentPane.prototype.renderUpdate = function(update) {
@@ -76,7 +87,8 @@ EchoRender.ComponentSync.ContentPane.prototype.renderUpdate = function(update) {
             // Add children.
             var contentPaneDivElemenet = document.getElementById(this.component.renderId);
             for (var i = 0; i < addedChildren.length; ++i) {
-                this._renderAddChild(update, addedChildren[i], contentPaneDivElemenet, this.component.indexOf(addedChildren[i])); 
+                //FIXME. third attribute is ignored...undecided whether order matters AT ALL here (set by z-index?)
+                this._renderAddChild(update, addedChildren[i], this.component.indexOf(addedChildren[i])); 
             }
         }
     }
