@@ -1750,7 +1750,7 @@ EchoApp.Update.ComponentUpdate = function(manager, parent) {
     
     /**
      * The parent component represented in this <code>ServerComponentUpdate</code>.
-     * @type Array
+     * @type EchoApp.Component
      */
     this.parent = parent;
 
