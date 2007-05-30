@@ -146,11 +146,12 @@ EchoRender.ComponentSync.Grid.prototype.renderDispose = function(update) {
 };
 
 EchoRender.ComponentSync.Grid.prototype.renderUpdate = function(update) {
-    var fullRender = false;
-    EchoRender.Util.renderRemove(update, update.parent);
-    var containerElement = EchoRender.Util.getContainerElement(update.parent);
+    var element = this._tableElement;
+    var containerElement = element.parentNode;
+    EchoRender.renderComponentDispose(update, update.parent);
+    containerElement.removeChild(element);
     this.renderAdd(update, containerElement);
-    return fullRender;
+    return true;
 };
 
 EchoRender.ComponentSync.Grid.Processor = function(grid) {
