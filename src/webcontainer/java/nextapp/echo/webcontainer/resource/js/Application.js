@@ -270,10 +270,10 @@ EchoApp.ComponentFactory = function() { };
 /**
  * Mapping between type names and object constructors.
  * 
- * @type EchoCore.Collections.Map
+ * @type Object
  * @private
  */
-EchoApp.ComponentFactory._typeToConstructorMap = new EchoCore.Collections.Map();
+EchoApp.ComponentFactory._typeToConstructorMap = new Object();
 
 /**
  * Creates a new instance of an arbitrary component.
@@ -284,7 +284,7 @@ EchoApp.ComponentFactory._typeToConstructorMap = new EchoCore.Collections.Map();
  * @type EchoApp.Component
  */
 EchoApp.ComponentFactory.newInstance = function(typeName, renderId) {
-    var typeConstructor = EchoApp.ComponentFactory._typeToConstructorMap.get(typeName);
+    var typeConstructor = EchoApp.ComponentFactory._typeToConstructorMap[typeName];
     if (typeConstructor == null) {
         return new EchoApp.Component(typeName, renderId);
     } else {
@@ -300,7 +300,7 @@ EchoApp.ComponentFactory.newInstance = function(typeName, renderId) {
  *        (must extend EchoApp.Component)
  */
 EchoApp.ComponentFactory.registerType = function(typeName, typeConstructor) {
-    EchoApp.ComponentFactory._typeToConstructorMap.put(typeName, typeConstructor);
+    EchoApp.ComponentFactory._typeToConstructorMap[typeName] = typeConstructor;
 };
 
 /**
