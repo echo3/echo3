@@ -265,6 +265,7 @@ EchoRemoteClient.ComponentSync._processComponentRemove = function(client, remove
             var component = client.application.getComponentByRenderId(cElement.getAttribute("i"));
             if (component) {
                 parent = component.parent;
+                break;
             }
             cElement = cElement.nextSibling;
         }
