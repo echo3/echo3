@@ -2009,11 +2009,28 @@ EchoApp.Update.ComponentUpdate.PropertyUpdate = function(oldValue, newValue) {
  * @param {EchoApp.Application} application the supported application
  */
 EchoApp.Update.Manager = function(application) {
+    
+    /**
+     * Associative mapping between component ids and EchoApp.Update.ComponentUpdate
+     * instances.
+     * @type Object
+     */
     this._componentUpdateMap = new Object();
+
+    /**
+     * Flag indicating whether a full refresh or incremental update will be performed.
+     * @type Boolean
+     */
     this.fullRefreshRequired = false;
+    
     this.application = application;
-//    this.application.addComponentUpdateListener(new EchoCore.MethodRef(this, this._processComponentUpdate));
+
+    /**
+     * Flag indicating whether any updates are pending.
+     * @type Boolean
+     */
     this._hasUpdates = true;
+    
     this._listenerList = new EchoCore.ListenerList();
     
     /**
@@ -2065,7 +2082,6 @@ EchoApp.Update.Manager.prototype._createComponentUpdate = function(parent) {
  * Permanently disposes of the Update Manager, freeing any resources.
  */
 EchoApp.Update.Manager.prototype.dispose = function() {
-//    this.application.removeComponentUpdateListener(new EchoCore.MethodRef(this, this._processComponentUpdate));
     this.application = null;
 };
 
@@ -2075,8 +2091,10 @@ EchoApp.Update.Manager.prototype.dispose = function() {
  * @private
  */
 EchoApp.Update.Manager.prototype._fireUpdate = function() {
-    var e = new EchoCore.Event(this, "update");
-    this._listenerList.fireEvent(e);
+    if (!this._listenerList.isEmpty()) {
+        var e = new EchoCore.Event(this, "update");
+        this._listenerList.fireEvent(e);
+    }
 };
 
 EchoApp.Update.Manager.prototype.getComponent = function(id) {
