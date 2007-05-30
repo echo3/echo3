@@ -2097,10 +2097,6 @@ EchoApp.Update.Manager.prototype._fireUpdate = function() {
     }
 };
 
-EchoApp.Update.Manager.prototype.getComponent = function(id) {
-    return this._idMap[id];
-};
-
 /**
  * Returns the current pending updates.  Returns null in the event that that no pending updates exist.
  * 
