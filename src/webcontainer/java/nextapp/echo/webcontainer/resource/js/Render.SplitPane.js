@@ -471,8 +471,10 @@ EchoRender.ComponentSync.SplitPane.prototype.renderUpdate = function(update) {
         }
     }
     if (fullRender) {
-        EchoRender.Util.renderRemove(update, update.parent);
-        var containerElement = EchoRender.Util.getContainerElement(update.parent);
+        var element = this._splitPaneDivElement;
+        var containerElement = element.parentNode;
+        EchoRender.renderComponentDispose(update, update.parent);
+        containerElement.removeChild(element);
         this.renderAdd(update, containerElement);
     }
     

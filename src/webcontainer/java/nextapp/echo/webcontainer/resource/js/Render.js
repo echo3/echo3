@@ -96,10 +96,10 @@ EchoRender.renderComponentAdd = function(update, component, parentElement) {
  * @param component the <code>Component</code> to be disposed.
  */
 EchoRender.renderComponentDispose = function(update, component) {
-    EchoRender._renderComponentDisposeImpl(update, component, true);
+    EchoRender._renderComponentDisposeImpl(update, component);
 };
 
-EchoRender._renderComponentDisposeImpl = function(update, component, removeIds) {
+EchoRender._renderComponentDisposeImpl = function(update, component) {
     if (!component.peer || component.peer.disposed) {
         return;
     }
@@ -109,7 +109,7 @@ EchoRender._renderComponentDisposeImpl = function(update, component, removeIds) 
     
     component.peer.renderDispose(update);
     for (var i = 0; i < component.children.length; ++i) {
-        EchoRender._renderComponentDisposeImpl(update, component.children[i], false);
+        EchoRender._renderComponentDisposeImpl(update, component.children[i]);
     }
 };
 
@@ -141,13 +141,13 @@ EchoRender._processDispose = function(update) {
     var components = update.getRemovedDescendants();
     if (components) {
         for (var i = 0; i < components.length; ++i) {
-            EchoRender._renderComponentDisposeImpl(update, components[i], false);
+            EchoRender._renderComponentDisposeImpl(update, components[i]);
         }
     }
     components = update.getRemovedChildren();
     if (components) {
         for (var i = 0; i < components.length; ++i) {
-            EchoRender._renderComponentDisposeImpl(update, components[i], true);
+            EchoRender._renderComponentDisposeImpl(update, components[i]);
         }
     }
 };
@@ -1016,11 +1016,12 @@ EchoRender.Util.TRANSPARENT_IMAGE = "?sid=Echo.TransparentImage";
  * Convenience method to return the parent DOM element into which a 
  * component should be rendered.
  */
+// FIXME. deprecated remove
 EchoRender.Util.getContainerElement = function(component) {
     return component.parent.peer.getContainerElement(component);
 };
 
-//FXIME? This method is also invoking dispose on the component....this is kind of what we want, but kind of not.
+// FIXME. deprecated remove
 EchoRender.Util.renderRemove = function(update, component) {
     var element = document.getElementById(component.renderId);
     EchoRender.renderComponentDispose(update, component);
