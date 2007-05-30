@@ -53,13 +53,13 @@ EchoRender.ComponentSync.SplitPane.PaneConfiguration.prototype.storeScrollPositi
 EchoRender.ComponentSync.SplitPane.prototype.renderDispose = function(update) {
     if (this._paneConfigurations[0]) {
         var firstPaneDivElement = document.getElementById(this.component.renderId + "_pane0");
-        if (this.firstPaneDivElement) {
+        if (firstPaneDivElement) {
             this._paneConfigurations[0].storeScrollPositions(firstPaneDivElement);
         }
     }
     if (this._paneConfigurations[1]) {
         var secondPaneDivElement = document.getElementById(this.component.renderId + "_pane1");
-        if (this.secondPaneDivElement) {
+        if (secondPaneDivElement) {
             this._paneConfigurations[0].storeScrollPositions(firstPaneDivElement);
         }
     }
