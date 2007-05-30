@@ -112,14 +112,6 @@ public class WelcomePane extends ContentPane {
                 + "Note that if this is a development version of Echo, then some "
                 + "of the features and capabilities demonstrated in this application may not be complete.");
         infoColumn.add(label);
-        
-        label = new Label("Note that you may watch the AJAX XML messages being sent between the client and server by "
-                + "enabling \"Debug Mode\".  Debug Mode may be enabled "
-                + "by appending \"?debug\" to the end of the URL of this application (for example: "
-                + "\"http://demo.nextapp.com/InteractiveTest/ia?debug\"). "
-                + "Please be aware that Debug Mode will in most cases result in EXTREMELY SLOW PERFORMANCE. "
-                + "You may exit Debug Mode at any time by simply closing the Debug window.");
-        infoColumn.add(label);
 
         label = new Label("Please visit the Echo Home Page @ http://www.nextapp.com/products/echo for more information.");
         infoColumn.add(label);
