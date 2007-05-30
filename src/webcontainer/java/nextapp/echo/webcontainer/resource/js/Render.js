@@ -111,23 +111,6 @@ EchoRender._renderComponentDisposeImpl = function(update, component, removeIds) 
     for (var i = 0; i < component.children.length; ++i) {
         EchoRender._renderComponentDisposeImpl(update, component.children[i], false);
     }
-    
-//    if (removeIds) {
-//        EchoRender._renderRemoveIds(element);
-//    }
-};
-
-EchoRender._renderRemoveIds = function(element) {
-    if (element.id) {
-        element.id = "";
-    }
-    element = element.firstChild;
-    while (element) {
-        if (element.nodeType == 1) {
-            EchoRender._renderRemoveIds(element);
-        }
-        element = element.nextSibling;
-    }
 };
 
 /**
