@@ -350,11 +350,11 @@ EchoApp.Component = function(componentType, renderId) {
     this.application = null;
     
     /**
-     * Listener list.
+     * Listener list.  Lazily created.
      * @private
      * @type EchoCore.ListenerList
      */
-    this._listenerList = new EchoCore.ListenerList();
+    this._listenerList = null;
     
     /**
      * Internal style used to store properties set directly on component.
