@@ -96,26 +96,6 @@ EchoApp.Application.prototype.dispose = function() {
 };
 
 /**
- * Notifies listeners of a component update event.
- * 
- * The property name "children" indicates a child was added or removed.
- * If a child was added, the added child is provided as <code>newValue</code>
- * and the <code>oldValue</code> property is null.
- * If a child was removed, the removed child is provided as <code>oldValue</code>
- * and the <code>newValue</code> property is null.
- * 
- * @param {EchoApp.Component} parent the updated component
- * @param {String} propertyName the name of the updated property
- * @param oldValue the old value of the property
- * @param newValue the new value of the property
- * @private
- */
-EchoApp.Application.prototype._fireComponentUpdate = function(parent, propertyName, oldValue, newValue) {
-    var e = new EchoApp.Application.ComponentUpdateEvent(this, parent, propertyName, oldValue, newValue);
-    this._listenerList.fireEvent(e);
-};
-
-/**
  * Retrieves the registered component with the specified render id.
  * 
  * @param {String} renderId the render id
@@ -166,7 +146,7 @@ EchoApp.Application.prototype.getStyleSheet = function() {
  * @param newValue the new property value
  */
 EchoApp.Application.prototype.notifyComponentUpdate = function(parent, propertyName, oldValue, newValue) {
-    this._fireComponentUpdate(parent, propertyName, oldValue, newValue);
+    this.updateManager._processComponentUpdate(parent, propertyName, oldValue, newValue);
 };
 
 EchoApp.Application.prototype.publish = function() {
@@ -2058,7 +2038,7 @@ EchoApp.Update.Manager = function(application) {
     this._componentUpdateMap = new Object();
     this.fullRefreshRequired = false;
     this.application = application;
-    this.application.addComponentUpdateListener(new EchoCore.MethodRef(this, this._processComponentUpdate));
+//    this.application.addComponentUpdateListener(new EchoCore.MethodRef(this, this._processComponentUpdate));
     this._hasUpdates = true;
     this._listenerList = new EchoCore.ListenerList();
     
@@ -2111,7 +2091,7 @@ EchoApp.Update.Manager.prototype._createComponentUpdate = function(parent) {
  * Permanently disposes of the Update Manager, freeing any resources.
  */
 EchoApp.Update.Manager.prototype.dispose = function() {
-    this.application.removeComponentUpdateListener(new EchoCore.MethodRef(this, this._processComponentUpdate));
+//    this.application.removeComponentUpdateListener(new EchoCore.MethodRef(this, this._processComponentUpdate));
     this.application = null;
 };
 
@@ -2284,23 +2264,19 @@ EchoApp.Update.Manager.prototype._processComponentPropertyUpdate = function(comp
 };
 
 /**
- * ComponentUpdateEvent handler registered with the application to monitor
- * UI state changes.
- * 
- * @private
- * @param {EchoApp.Update.ComponentUpdateEvent} e the event
+ * Processes component updates received from the application instance.
  */
-EchoApp.Update.Manager.prototype._processComponentUpdate = function(e) {
-    if (e.propertyName == "children") {
-        if (e.newValue == null) {
-            this._processComponentRemove(e.parent, e.oldValue);
+EchoApp.Update.Manager.prototype._processComponentUpdate = function(parent, propertyName, oldValue, newValue) {
+    if (propertyName == "children") {
+        if (newValue == null) {
+            this._processComponentRemove(parent, oldValue);
         } else {
-            this._processComponentAdd(e.parent, e.newValue);
+            this._processComponentAdd(parent, newValue);
         }
-    } else if (e.propertyName == "layoutData") {
-        this._processComponentLayoutDataUpdate(e.parent, e.oldValue, e.newValue);
+    } else if (propertyName == "layoutData") {
+        this._processComponentLayoutDataUpdate(parent, oldValue, newValue);
     } else {
-        this._processComponentPropertyUpdate(e.parent, e.propertyName, e.oldValue, e.newValue);
+        this._processComponentPropertyUpdate(parent, propertyName, oldValue, newValue);
     }
     this._fireUpdate();
 };
