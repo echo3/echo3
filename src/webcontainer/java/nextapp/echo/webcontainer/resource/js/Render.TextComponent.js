@@ -50,6 +50,15 @@ EchoRender.ComponentSync.TextComponent.prototype._processKeyUp = function(e) {
     }
 };
 
+EchoRender.ComponentSync.TextComponent.prototype.renderUpdate = function(update) {
+    var element = this._textComponentElement;
+    var containerElement = element.parentNode;
+    EchoRender.renderComponentDispose(update, update.parent);
+    containerElement.removeChild(element);
+    this.renderAdd(update, containerElement);
+    return false; // Child elements not supported: safe to return false.
+};
+
 EchoRender.ComponentSync.TextComponent.prototype._sanitizeInput = function() {
     var maximumLength = this.component.getRenderProperty("maximumLength", -1);
     if (maximumLength >= 0) {
@@ -79,13 +88,6 @@ EchoRender.ComponentSync.TextArea.prototype.renderAdd = function(update, parentE
     parentElement.appendChild(this._textComponentElement);
 };
 
-EchoRender.ComponentSync.TextArea.prototype.renderUpdate = function(update) {
-    EchoRender.Util.renderRemove(update, update.parent);
-    var containerElement = EchoRender.Util.getContainerElement(update.parent);
-    this.renderAdd(update, containerElement);
-    return false;
-};
-
 /**
  * Component rendering peer: TextField
  */
@@ -109,13 +111,6 @@ EchoRender.ComponentSync.TextField.prototype.renderAdd = function(update, parent
         this._textComponentElement.setAttribute("value", this.component.getProperty("text"));
     }
     parentElement.appendChild(this._textComponentElement);
-};
-
-EchoRender.ComponentSync.TextField.prototype.renderUpdate = function(update) {
-    EchoRender.Util.renderRemove(update, update.parent);
-    var containerElement = EchoRender.Util.getContainerElement(update.parent);
-    this.renderAdd(update, containerElement);
-    return false;
 };
 
 EchoRender.ComponentSync.TextField.prototype._sanitizeInput = function() {
