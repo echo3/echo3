@@ -6,6 +6,8 @@ EchoRender.ComponentSync.Row = function() {
   
 EchoRender.ComponentSync.Row.prototype = new EchoRender.ComponentSync;
 
+EchoRender.ComponentSync.Row._defaultCellInsets = new EchoApp.Property.Insets(0);
+
 EchoRender.ComponentSync.Row._createRowPrototype = function() {
     var divElement = document.createElement("div");
     divElement.style.outlineStyle = "none";
@@ -89,10 +91,11 @@ EchoRender.ComponentSync.Row.prototype._renderAddChild = function(update, child,
     EchoRender.renderComponentAdd(update, child, tdElement);
 
     var layoutData = child.getRenderProperty("layoutData");
+    var insets;
     if (layoutData) {
+    	insets = layoutData.getProperty("insets");
         EchoRender.Property.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
         EchoRender.Property.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
-        EchoRender.Property.Insets.renderComponentProperty(layoutData, "insets", null, tdElement, "padding");
 		EchoRender.Property.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
 	    var width = layoutData.getProperty("width");
 	    if (width) {
@@ -103,6 +106,10 @@ EchoRender.ComponentSync.Row.prototype._renderAddChild = function(update, child,
 	        }
 	    }
     }
+    if (!insets) {
+    	insets = EchoRender.ComponentSync.Row._defaultCellInsets;
+    }
+    EchoRender.Property.Insets.renderPixel(insets, tdElement, "padding");
     
     if (index == null) {
         // Full render or append-at-end scenario
