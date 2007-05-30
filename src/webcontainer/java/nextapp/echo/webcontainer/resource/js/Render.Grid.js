@@ -24,11 +24,13 @@ EchoRender.ComponentSync.Grid._createPrototypeTable = function() {
 
 EchoRender.ComponentSync.Grid._prototypeTable = EchoRender.ComponentSync.Grid._createPrototypeTable();
 
-EchoRender.ComponentSync.Grid.prototype.getContainerElement = function(component) {
-    return document.getElementById(this.component.renderId + "_" + component.renderId);
+EchoRender.ComponentSync.Column.prototype.getContainerElement = function(component) {
+    return this._childIdToElementMap[component.renderId];
 };
 
 EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentElement) {
+    this._childIdToElementMap = new Object();
+
     var gridProcessor = new EchoRender.ComponentSync.Grid.Processor(this.component);
     
     var columnCount = gridProcessor.getColumnCount();
@@ -37,28 +39,28 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     var defaultInsets = this.component.getRenderProperty("insets", "0");
     var defaultBorder = this.component.getRenderProperty("border", "");
 
-    var tableElement = EchoRender.ComponentSync.Grid._prototypeTable.cloneNode(true);
-    tableElement.id = this.component.renderId;
+    this._tableElement = EchoRender.ComponentSync.Grid._prototypeTable.cloneNode(true);
+    this._tableElement.id = this.component.renderId;
     
-    EchoRender.Property.Color.renderFB(this.component, tableElement);
-    EchoRender.Property.Border.render(defaultBorder, tableElement);
-    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, tableElement, "padding");
+    EchoRender.Property.Color.renderFB(this.component, this._tableElement);
+    EchoRender.Property.Border.render(defaultBorder, this._tableElement);
+    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._tableElement, "padding");
 
     var width = this.component.getRenderProperty("width");
     if (width) {
         if (width.units == "%") {
-	    	tableElement.style.width = width.toString();
+	    	this._tableElement.style.width = width.toString();
         } else {
-	    	tableElement.style.width = EchoRender.Property.Extent.toPixels(width, true) + "px";
+	    	this._tableElement.style.width = EchoRender.Property.Extent.toPixels(width, true) + "px";
         }
     }
     
     var height = this.component.getRenderProperty("height");
     if (height) {
-    	tableElement.style.height = EchoRender.Property.Extent.toPixels(height, false) + "px";
+    	this._tableElement.style.height = EchoRender.Property.Extent.toPixels(height, false) + "px";
     }
     
-    var colGroupElement = tableElement.firstChild;
+    var colGroupElement = this._tableElement.firstChild;
     for (var columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
         var colElement = document.createElement("col");
         var width = gridProcessor.xExtents[columnIndex];
@@ -112,7 +114,6 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
             
             var tdElement = tdPrototype.cloneNode(false);
             
-            tdElement.id = this.component.renderId + "_" + cell.component.renderId;
             if (cell.xSpan > 1) {
                 tdElement.setAttribute(xSpan, cell.xSpan);
             }
@@ -128,17 +129,20 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
                 EchoRender.Property.Color.renderComponentProperty(layoutData, "background", "", tdElement, "backgroundColor");
             }
             
+            this._childIdToElementMap[cell.component.renderId] = tdElement;
             EchoRender.renderComponentAdd(update, cell.component, tdElement);
 
             trElement.appendChild(tdElement);
         }
     }
     
-    parentElement.appendChild(tableElement);
+    parentElement.appendChild(this._tableElement);
 };
 
-EchoRender.ComponentSync.Grid.prototype.renderDispose = function(update) { 
-    var tableElement = document.getElementById(this.component.renderId);
+EchoRender.ComponentSync.Grid.prototype.renderDispose = function(update) {
+    this._tableElement.id = "";
+    this._tableElement = null;
+    this._childIdToElementMap = null;
 };
 
 EchoRender.ComponentSync.Grid.prototype.renderUpdate = function(update) {
