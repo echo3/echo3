@@ -10,7 +10,7 @@ EchoRender.ComponentSync.SplitPane = function() {
      * Array containing two PaneConfiguration instances, representing the state of each child pane.
      * @type Array
      */
-    this._paneConfigurations = new Array(2);
+    this._childPanes = new Array(2);
 };
 
 EchoRender.ComponentSync.SplitPane.prototype = new EchoRender.ComponentSync;
@@ -24,7 +24,7 @@ EchoRender.ComponentSync.SplitPane.prototype = new EchoRender.ComponentSync;
  * @param {EchoApp.Component} component the child component
  * @constructor
  */
-EchoRender.ComponentSync.SplitPane.PaneConfiguration = function(splitPanePeer, component) {
+EchoRender.ComponentSync.SplitPane.ChildPane = function(splitPanePeer, component) {
     this.component = component;
     this.layoutData = component.getRenderProperty("layoutData");
     if (this.layoutData) {
@@ -40,40 +40,46 @@ EchoRender.ComponentSync.SplitPane.PaneConfiguration = function(splitPanePeer, c
     }
 };
 
-EchoRender.ComponentSync.SplitPane.PaneConfiguration.prototype.loadScrollPositions = function(paneDivElement) {
+EchoRender.ComponentSync.SplitPane.ChildPane.prototype.loadScrollPositions = function(paneDivElement) {
     paneDivElement.scrollLeft = this.scrollLeft;
     paneDivElement.scrollTop = this.scrollTop;
 };
 
-EchoRender.ComponentSync.SplitPane.PaneConfiguration.prototype.storeScrollPositions = function(paneDivElement) {
+EchoRender.ComponentSync.SplitPane.ChildPane.prototype.storeScrollPositions = function(paneDivElement) {
     this.scrollLeft = paneDivElement.scrollLeft;
     this.scrollTop = paneDivElement.scrollTop;
 };
 
 EchoRender.ComponentSync.SplitPane.prototype.renderDispose = function(update) {
-    if (this._paneConfigurations[0]) {
-        var firstPaneDivElement = document.getElementById(this.component.renderId + "_pane0");
-        if (firstPaneDivElement) {
-            this._paneConfigurations[0].storeScrollPositions(firstPaneDivElement);
+    if (this._firstPaneDivElement) {
+        if (this._childPanes[0]) {
+            this._childPanes[0].storeScrollPositions(this._firstPaneDivElement);
         }
+        this._firstPaneDivElement.id = "";
+        this._firstPaneDivElement = null;
     }
-    if (this._paneConfigurations[1]) {
-        var secondPaneDivElement = document.getElementById(this.component.renderId + "_pane1");
-        if (secondPaneDivElement) {
-            this._paneConfigurations[0].storeScrollPositions(firstPaneDivElement);
+    if (this._secondPaneDivElement) {
+        if (this._childPanes[1]) {
+            this._childPanes[1].storeScrollPositions(this._secondPaneDivElement);
         }
+        this._secondPaneDivElement.id = "";
+        this._secondPaneDivElement = null;
     }
     
-    var separatorDivElement = document.getElementById(this.component.renderId + "_separator");
-    if (separatorDivElement) {
-        EchoWebCore.EventProcessor.remove(separatorDivElement, "mousedown", new EchoCore.MethodRef(this,
+    if (this._separatorDivElement) {
+        EchoWebCore.EventProcessor.remove(this._separatorDivElement, "mousedown", new EchoCore.MethodRef(this,
                 this._processSeparatorMouseDown), false);
+        this._separatorDivElement.id = "";
+        this._separatorDivElement = null;
     }
+
+    this._splitPaneDivElement.id = "";
+    this._splitPaneDivElement = null;
 };
 
 EchoRender.ComponentSync.SplitPane.prototype.getContainerElement = function(component) {
-    var componentIndex = this.component.indexOf(component);
-    return document.getElementById(this.component.renderId + "_pane" + componentIndex); 
+    var index = this._getRenderedChildIndex(component);
+    return index == 0 ? this._firstPaneDivElement : this._secondPaneDivElement;
 };
 
 EchoRender.ComponentSync.SplitPane.prototype.loadRenderData = function() {
@@ -191,9 +197,9 @@ EchoRender.ComponentSync.SplitPane.prototype._getInsetsSizeAdjustment = function
 };
 
 EchoRender.ComponentSync.SplitPane.prototype._getRenderedChildIndex = function(child) {
-    if (this._paneConfigurations[0] && this._paneConfigurations[0].component == child) {
+    if (this._childPanes[0] && this._childPanes[0].component == child) {
         return 0;
-    } else if (this._paneConfigurations[1] && this._paneConfigurations[1].component == child) {
+    } else if (this._childPanes[1] && this._childPanes[1].component == child) {
         return 1;
     } else {
         throw new Error("Specified component is not a child of the SplitPane.");
@@ -201,8 +207,8 @@ EchoRender.ComponentSync.SplitPane.prototype._getRenderedChildIndex = function(c
 };
 
 EchoRender.ComponentSync.SplitPane.prototype._hasRelocatedChildren = function(update) {
-    var oldChild0 = this._paneConfigurations[0] ? this._paneConfigurations[0].component : null; 
-    var oldChild1 = this._paneConfigurations[1] ? this._paneConfigurations[1].component : null; 
+    var oldChild0 = this._childPanes[0] ? this._childPanes[0].component : null; 
+    var oldChild1 = this._childPanes[1] ? this._childPanes[1].component : null; 
     var childCount = this.component.getComponentCount();
     var newChild0 = childCount > 0 ? this.component.getComponent(0) : null;
     var newChild1 = childCount > 1 ? this.component.getComponent(1) : null;
@@ -211,10 +217,6 @@ EchoRender.ComponentSync.SplitPane.prototype._hasRelocatedChildren = function(up
 };
 
 EchoRender.ComponentSync.SplitPane.prototype._redraw = function() {
-    var firstPaneDivElement = document.getElementById(this.component.renderId + "_pane0");
-    var separatorDivElement = document.getElementById(this.component.renderId + "_separator");
-    var secondPaneDivElement = document.getElementById(this.component.renderId + "_pane1");
-    
     var insetsAdjustment = 0;
     if (this.component.getComponentCount() > 0) {
         var layoutData = this.component.getComponent(0).getRenderProperty("layoutData");
@@ -223,23 +225,23 @@ EchoRender.ComponentSync.SplitPane.prototype._redraw = function() {
 
     if (this._orientationVertical) {
         if (this._orientationTopLeft) {
-            this._redrawItem(firstPaneDivElement, "height", (this._separatorPosition - insetsAdjustment) + "px");
-            this._redrawItem(secondPaneDivElement, "top", (this._separatorPosition + this._separatorSize) + "px");
-            this._redrawItem(separatorDivElement, "top", this._separatorPosition + "px");
+            this._redrawItem(this._firstPaneDivElement, "height", (this._separatorPosition - insetsAdjustment) + "px");
+            this._redrawItem(this._secondPaneDivElement, "top", (this._separatorPosition + this._separatorSize) + "px");
+            this._redrawItem(this._separatorDivElement, "top", this._separatorPosition + "px");
         } else {
-            this._redrawItem(firstPaneDivElement, "height", (this._separatorPosition - insetsAdjustment) + "px");
-            this._redrawItem(secondPaneDivElement, "bottom", (this._separatorPosition + this._separatorSize) + "px"); 
-            this._redrawItem(separatorDivElement, "bottom", this._separatorPosition + "px");
+            this._redrawItem(this._firstPaneDivElement, "height", (this._separatorPosition - insetsAdjustment) + "px");
+            this._redrawItem(this._secondPaneDivElement, "bottom", (this._separatorPosition + this._separatorSize) + "px"); 
+            this._redrawItem(this._separatorDivElement, "bottom", this._separatorPosition + "px");
         }
     } else {
         if (this._orientationTopLeft) {
-            this._redrawItem(firstPaneDivElement, "width", (this._separatorPosition - insetsAdjustment) + "px");
-            this._redrawItem(secondPaneDivElement, "left", (this._separatorPosition + this._separatorSize) + "px");
-            this._redrawItem(separatorDivElement, "left", this._separatorPosition + "px");
+            this._redrawItem(this._firstPaneDivElement, "width", (this._separatorPosition - insetsAdjustment) + "px");
+            this._redrawItem(this._secondPaneDivElement, "left", (this._separatorPosition + this._separatorSize) + "px");
+            this._redrawItem(this._separatorDivElement, "left", this._separatorPosition + "px");
         } else {
-            this._redrawItem(firstPaneDivElement, "width", (this._separatorPosition - insetsAdjustment) + "px");
-            this._redrawItem(secondPaneDivElement, "right", (this._separatorPosition + this._separatorSize) + "px"); 
-            this._redrawItem(separatorDivElement, "right", this._separatorPosition + "px");
+            this._redrawItem(this._firstPaneDivElement, "width", (this._separatorPosition - insetsAdjustment) + "px");
+            this._redrawItem(this._secondPaneDivElement, "right", (this._separatorPosition + this._separatorSize) + "px"); 
+            this._redrawItem(this._separatorDivElement, "right", this._separatorPosition + "px");
         }
     }
 };
@@ -270,74 +272,82 @@ EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parent
     var child0 = childCount < 1 ? null : this.component.getComponent(0);
     var child1 = childCount < 2 ? null : this.component.getComponent(1);
 
-    var splitPaneDivElement = document.createElement("div");
-    splitPaneDivElement.id = this.component.renderId;
-    splitPaneDivElement.style.position = "absolute";
-    splitPaneDivElement.style.overflow = "hidden";
-    splitPaneDivElement.style.top = "0px"
-    splitPaneDivElement.style.bottom = "0px"
-    splitPaneDivElement.style.left = "0px"
-    splitPaneDivElement.style.right = "0px"
+    this._splitPaneDivElement = document.createElement("div");
+    this._splitPaneDivElement.id = this.component.renderId;
+    this._splitPaneDivElement.style.position = "absolute";
+    this._splitPaneDivElement.style.overflow = "hidden";
+    this._splitPaneDivElement.style.top = "0px"
+    this._splitPaneDivElement.style.bottom = "0px"
+    this._splitPaneDivElement.style.left = "0px"
+    this._splitPaneDivElement.style.right = "0px"
     
-    EchoWebCore.VirtualPosition.register(splitPaneDivElement.id);
-    EchoRender.Property.Color.renderFB(this.component, splitPaneDivElement);
-    EchoRender.Property.Font.renderDefault(this.component, splitPaneDivElement);
+    EchoWebCore.VirtualPosition.register(this._splitPaneDivElement.id);
+    EchoRender.Property.Color.renderFB(this.component, this._splitPaneDivElement);
+    EchoRender.Property.Font.renderDefault(this.component, this._splitPaneDivElement);
     
-    var separatorDivElement = null;
     if (this._separatorSize > 0) {
-        separatorDivElement = document.createElement("div");
-        separatorDivElement.id = this.component.renderId + "_separator";
-        separatorDivElement.style.position = "absolute";
+        this._separatorDivElement = document.createElement("div");
+        this._separatorDivElement.id = this.component.renderId + "_separator";
+        this._separatorDivElement.style.position = "absolute";
         EchoRender.Property.Color.renderComponentProperty(this.component, "separatorColor",
-                EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR, separatorDivElement, "backgroundColor");
-        separatorDivElement.style.fontSize = "1px";
-        separatorDivElement.style.lineHeight = "0";
-        separatorDivElement.style.zIndex = "2";
+                EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR, this._separatorDivElement, "backgroundColor");
+        this._separatorDivElement.style.fontSize = "1px";
+        this._separatorDivElement.style.lineHeight = "0";
+        this._separatorDivElement.style.zIndex = "2";
 
         var resizeCursor = null;
         if (this._orientationVertical) {
             if (this._orientationTopLeft) {
-                separatorDivElement.style.top = this._separatorPosition + "px";
+                this._separatorDivElement.style.top = this._separatorPosition + "px";
                 resizeCursor = "s-resize";
             } else {
-                separatorDivElement.style.bottom = this._separatorPosition + "px";
+                this._separatorDivElement.style.bottom = this._separatorPosition + "px";
                 resizeCursor = "n-resize";
             }
-            separatorDivElement.style.width = "100%";
-            separatorDivElement.style.height = this._separatorSize + "px";
+            this._separatorDivElement.style.width = "100%";
+            this._separatorDivElement.style.height = this._separatorSize + "px";
         } else {
             if (this._orientationTopLeft) {
-                separatorDivElement.style.left = this._separatorPosition + "px";
+                this._separatorDivElement.style.left = this._separatorPosition + "px";
                 resizeCursor = "e-resize";
             } else {
-                separatorDivElement.style.right = this._separatorPosition + "px";
+                this._separatorDivElement.style.right = this._separatorPosition + "px";
                 resizeCursor = "w-resize";
             }
-            separatorDivElement.style.height = "100%";
-            separatorDivElement.style.width = this._separatorSize + "px";
+            this._separatorDivElement.style.height = "100%";
+            this._separatorDivElement.style.width = this._separatorSize + "px";
         }
         if (this._resizable && resizeCursor) {
-            separatorDivElement.style.cursor = resizeCursor;
+            this._separatorDivElement.style.cursor = resizeCursor;
         }
-        splitPaneDivElement.appendChild(separatorDivElement);
+        this._splitPaneDivElement.appendChild(this._separatorDivElement);
+    } else {
+        this._separatorDivElement = null;
     }
     
     for (var i = 0; i < childCount && i < 2; ++i) {
         var child = this.component.getComponent(i);
-        this._renderAddChild(update, child, splitPaneDivElement, i);
+        this._renderAddChild(update, child, i);
     }
     
-    parentElement.appendChild(splitPaneDivElement);
+    parentElement.appendChild(this._splitPaneDivElement);
     
     if (this._resizable) {
-        EchoWebCore.EventProcessor.add(separatorDivElement, "mousedown", new EchoCore.MethodRef(this,
+        EchoWebCore.EventProcessor.add(this._separatorDivElement, "mousedown", new EchoCore.MethodRef(this,
                 this._processSeparatorMouseDown), false);
     }
 };
 
-EchoRender.ComponentSync.SplitPane.prototype._renderAddChild = function(update, child, parentElement, index) {
+EchoRender.ComponentSync.SplitPane.prototype._renderAddChild = function(update, child, index) {
     var childIndex = this.component.indexOf(child);
     var paneDivElement = document.createElement("div");
+    
+    if (index == 0) {
+       this._firstPaneDivElement = paneDivElement;
+    } else {
+       this._secondPaneDivElement = paneDivElement;
+    }
+    
     paneDivElement.id = this.component.renderId + "_pane" + childIndex;
     paneDivElement.style.position = "absolute";
     paneDivElement.style.overflow = "auto";
@@ -407,20 +417,28 @@ EchoRender.ComponentSync.SplitPane.prototype._renderAddChild = function(update, 
     EchoWebCore.VirtualPosition.register(paneDivElement.id);
     
     EchoRender.renderComponentAdd(update, child, paneDivElement);
-    parentElement.appendChild(paneDivElement);
+    this._splitPaneDivElement.appendChild(paneDivElement);
 
-    if (this._paneConfigurations[index] && this._paneConfigurations[index].component == child) {
-        this._paneConfigurations[index].loadScrollPositions(paneDivElement);
+    if (this._childPanes[index] && this._childPanes[index].component == child) {
+        this._childPanes[index].loadScrollPositions(paneDivElement);
     } else {
-        this._paneConfigurations[index] = new EchoRender.ComponentSync.SplitPane.PaneConfiguration(this, child);
+        this._childPanes[index] = new EchoRender.ComponentSync.SplitPane.ChildPane(this, child);
     }
 };
 
 EchoRender.ComponentSync.SplitPane.prototype._renderRemoveChild = function(update, child) {
     var index = this._getRenderedChildIndex(child);
-    this._paneConfigurations[index] = null;
-    var paneDivElement = document.getElementById(this.component.renderId + "_pane" + index);
-    EchoWebCore.DOM.removeNode(paneDivElement);
+    this._childPanes[index] = null;
+    switch (index) {
+    case 0:
+        EchoWebCore.DOM.removeNode(this._firstPaneDivElement);
+        this._firstPaneDivElement = null;
+        break;
+    case 1:
+        EchoWebCore.DOM.removeNode(this._secondPaneDivElement);
+        this._secondPaneDivElement = null;
+        break;
+    }
 };
 
 EchoRender.ComponentSync.SplitPane.prototype.renderSizeUpdate = function() {
@@ -447,9 +465,8 @@ EchoRender.ComponentSync.SplitPane.prototype.renderUpdate = function(update) {
         var addedChildren = update.getAddedChildren();
         if (addedChildren) {
             // Add children.
-            var splitPaneDivElement = document.getElementById(this.component.renderId);
             for (var i = 0; i < addedChildren.length; ++i) {
-                this._renderAddChild(update, addedChildren[i], splitPaneDivElement, this.component.indexOf(addedChildren[i])); 
+                this._renderAddChild(update, addedChildren[i], this.component.indexOf(addedChildren[i])); 
             }
         }
     }
@@ -465,21 +482,21 @@ EchoRender.ComponentSync.SplitPane.prototype.renderUpdate = function(update) {
 EchoRender.ComponentSync.SplitPane.prototype._setSeparatorPosition = function(newValue) {
     var oldValue = this._separatorPosition;
 
-    if (this._paneConfigurations[1]) {
-        var divElement = document.getElementById(this.component.renderId);
-        var totalSize = this._orientationVertical ? divElement.offsetHeight : divElement.offsetWidth;
-        if (newValue > totalSize - this._paneConfigurations[1].minimumSize - this._separatorSize) {
-            newValue = totalSize - this._paneConfigurations[1].minimumSize - this._separatorSize;
-        } else if (this._paneConfigurations[1].maximumSize != null
-                && newValue < totalSize - this._paneConfigurations[1].maximumSize - this._separatorSize) {
-            newValue = totalSize - this._paneConfigurations[1].maximumSize - this._separatorSize;
+    if (this._childPanes[1]) {
+        var totalSize = this._orientationVertical ? 
+                this._splitPaneDivElement.offsetHeight : this._splitPaneDivElement.offsetWidth;
+        if (newValue > totalSize - this._childPanes[1].minimumSize - this._separatorSize) {
+            newValue = totalSize - this._childPanes[1].minimumSize - this._separatorSize;
+        } else if (this._childPanes[1].maximumSize != null
+                && newValue < totalSize - this._childPanes[1].maximumSize - this._separatorSize) {
+            newValue = totalSize - this._childPanes[1].maximumSize - this._separatorSize;
         }
     }
-    if (this._paneConfigurations[0]) {
-        if (newValue < this._paneConfigurations[0].minimumSize) {
-            newValue = this._paneConfigurations[0].minimumSize;
-        } else if (this._paneConfigurations[0].maximumSize  != null && newValue > this._paneConfigurations[0].maximumSize) {
-            newValue = this._paneConfigurations[0].maximumSize;
+    if (this._childPanes[0]) {
+        if (newValue < this._childPanes[0].minimumSize) {
+            newValue = this._childPanes[0].minimumSize;
+        } else if (this._childPanes[0].maximumSize  != null && newValue > this._childPanes[0].maximumSize) {
+            newValue = this._childPanes[0].maximumSize;
         }
     }
     
