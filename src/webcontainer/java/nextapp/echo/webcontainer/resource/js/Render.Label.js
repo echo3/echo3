@@ -75,7 +75,7 @@ EchoRender.ComponentSync.Label.prototype.renderDispose = function(update) {
 };
 
 EchoRender.ComponentSync.Label.prototype.renderUpdate = function(update) {
-    EchoRender.Util.renderRemove(update, update.parent);
+    this._labelNode.parentNode.removeChild(this._labelNode);
     var containerElement = EchoRender.Util.getContainerElement(update.parent);
     this.renderAdd(update, containerElement);
 };
