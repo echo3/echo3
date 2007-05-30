@@ -219,10 +219,12 @@ EchoRender.ComponentSync.Button.prototype.renderDispose = function(update) {
 };
 
 EchoRender.ComponentSync.Button.prototype.renderUpdate = function(update) {
-    EchoRender.Util.renderRemove(update, update.parent);
-    var containerElement = EchoRender.Util.getContainerElement(update.parent);
+    var element = this._divElement;
+    var containerElement = element.parentNode;
+    EchoRender.renderComponentDispose(update, update.parent);
+    containerElement.removeChild(element);
     this.renderAdd(update, containerElement);
-    return false;
+    return false; // Child elements not supported: safe to return false.
 };
 
 EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) {

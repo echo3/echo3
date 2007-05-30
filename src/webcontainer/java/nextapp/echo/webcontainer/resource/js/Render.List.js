@@ -22,10 +22,12 @@ EchoRender.ComponentSync.ListBox.prototype.renderDispose = function(update) {
 };
 
 EchoRender.ComponentSync.ListBox.prototype.renderUpdate = function(update) {
-    EchoRender.Util.renderRemove(update, update.parent);
-    var containerElement = EchoRender.Util.getContainerElement(update.parent);
+    var element = this._selectElement;
+    var containerElement = element.parentNode;
+    EchoRender.renderComponentDispose(update, update.parent);
+    containerElement.removeChild(element);
     this.renderAdd(update, containerElement);
-    return false;
+    return false; // Child elements not supported: safe to return false.
 };
 
 /**
@@ -51,10 +53,12 @@ EchoRender.ComponentSync.SelectField.prototype.renderDispose = function(update) 
 };
 
 EchoRender.ComponentSync.SelectField.prototype.renderUpdate = function(update) {
-    EchoRender.Util.renderRemove(update, update.parent);
-    var containerElement = EchoRender.Util.getContainerElement(update.parent);
+    var element = this._selectElement;
+    var containerElement = element.parentNode;
+    EchoRender.renderComponentDispose(update, update.parent);
+    containerElement.removeChild(element);
     this.renderAdd(update, containerElement);
-    return false;
+    return false; // Child elements not supported: safe to return false.
 };
 
 EchoRender.registerPeer("ListBox", EchoRender.ComponentSync.ListBox);

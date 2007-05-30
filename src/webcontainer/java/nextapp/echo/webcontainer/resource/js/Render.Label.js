@@ -75,9 +75,13 @@ EchoRender.ComponentSync.Label.prototype.renderDispose = function(update) {
 };
 
 EchoRender.ComponentSync.Label.prototype.renderUpdate = function(update) {
-    this._labelNode.parentNode.removeChild(this._labelNode);
-    var containerElement = EchoRender.Util.getContainerElement(update.parent);
+    if (this._labelNode) {
+        this._labelNode.parentNode.removeChild(this._labelNode);
+    }
+    // Note: dispose() is not invoked here because it effecitvely does nothing.
+    var containerElement = this.component.parent.peer.getContainerElement(this.component);
     this.renderAdd(update, containerElement);
+    return false; // Child elements not supported: safe to return false.
 };
 
 EchoRender.registerPeer("Label", EchoRender.ComponentSync.Label);
