@@ -24,7 +24,7 @@ EchoRender.ComponentSync.Grid._createPrototypeTable = function() {
 
 EchoRender.ComponentSync.Grid._prototypeTable = EchoRender.ComponentSync.Grid._createPrototypeTable();
 
-EchoRender.ComponentSync.Column.prototype.getContainerElement = function(component) {
+EchoRender.ComponentSync.Grid.prototype.getContainerElement = function(component) {
     return this._childIdToElementMap[component.renderId];
 };
 
