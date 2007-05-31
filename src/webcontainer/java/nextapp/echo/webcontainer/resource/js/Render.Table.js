@@ -155,26 +155,31 @@ EchoRender.ComponentSync.Table.prototype._render100PercentWidthWorkaround = func
  * @param rowIndex {Number} the index of the row
  */
 EchoRender.ComponentSync.Table.prototype._renderRowStyle = function(rowIndex) {
+    var tableRowIndex = rowIndex + (this._headerVisible ? 1 : 0);
+    if (tableRowIndex >= this._tbodyElement.childNodes.length) {
+        return;
+    }
     var selected = this._selectionEnabled && this.selectionModel.isSelectedIndex(rowIndex);
-    var trElement = this._tableElement.rows[rowIndex + (this._headerVisible ? 1 : 0)];
+    var trElement = this._tbodyElement.childNodes[tableRowIndex];
     
-    for (var i = 0; i < trElement.cells.length; ++i) {
-        var cell = trElement.cells[i];
+    var tdElement = trElement.firstChild;
+    while (tdElement) {
         if (selected) {
             // FIXME
             //EchoCssUtil.restoreOriginalStyle(cell);
             //EchoCssUtil.applyTemporaryStyle(cell, this.selectionStyle);
-            EchoRender.Property.Font.renderComponentProperty(this.component, "selectionFont", null, cell);
-            EchoRender.Property.Color.renderComponentProperty(this.component, "selectionForeground", null, cell, "color");
-            EchoRender.Property.Color.renderComponentProperty(this.component, "selectionBackground", null, cell, "background");
-            EchoRender.Property.FillImage.renderComponentProperty(this.component, "selectionBackgroundImage", null, cell);
+            EchoRender.Property.Font.renderComponentProperty(this.component, "selectionFont", null, tdElement);
+            EchoRender.Property.Color.renderComponentProperty(this.component, "selectionForeground", null, tdElement, "color");
+            EchoRender.Property.Color.renderComponentProperty(this.component, "selectionBackground", null, tdElement, "background");
+            EchoRender.Property.FillImage.renderComponentProperty(this.component, "selectionBackgroundImage", null, tdElement);
         } else {
             // FIXME
             //EchoCssUtil.restoreOriginalStyle(cell);
-            cell.style.color = "";
-            cell.style.backgroundColor = "";
-            cell.style.backgroundImage = "";
+            tdElement.style.color = "";
+            tdElement.style.backgroundColor = "";
+            tdElement.style.backgroundImage = "";
         }
+        tdElement = tdElement.nextSibling;
     }
 };
 
