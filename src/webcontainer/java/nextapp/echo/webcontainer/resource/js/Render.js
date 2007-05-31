@@ -683,8 +683,6 @@ EchoRender.Property.Insets.renderPixel = function(insets, element, styleAttribut
         var pixelInsets = EchoRender.Property.Insets.toPixels(insets);
         element.style[styleAttribute] = pixelInsets.top + "px " + pixelInsets.right + "px "
                 + pixelInsets.bottom + "px " + pixelInsets.left + "px";
-    } else {
-        element.style[styleAttribute] = "";
     }
 };
 
