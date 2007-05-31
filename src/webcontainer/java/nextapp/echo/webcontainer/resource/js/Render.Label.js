@@ -24,7 +24,6 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
     var background = this.component.getRenderProperty("background");
 
     if (text) {
-        var font = this.component.getRenderProperty("background");
         var lineWrap = this.component.getRenderProperty("lineWrap", true);
 
         if (icon) {
@@ -44,6 +43,7 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
             EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, this._labelNode);
             EchoRender.Property.Color.renderFB(this.component, this._labelNode);
         } else {
+	        var font = this.component.getRenderProperty("font");
             if (!font && lineWrap && !foreground && !background) {
                 this._labelNode = document.createTextNode(text);
             } else {
