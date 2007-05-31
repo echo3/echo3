@@ -66,8 +66,11 @@ EchoRemoteClient.prototype.getLibraryServiceUrl = function(serviceId) {
 
 EchoRemoteClient.prototype._processComponentEvent = function(e) {
     if (!this._clientMessage) {
-        //FIXME. Central error handling for these.
-        alert("Waiting on server response.  Press the browser reload or refresh button if server fails to respond.");
+        if (new Date().getTime() - this._syncInitTime > 2000) {
+            //FIXME. Central error handling for these.
+            alert("Waiting on server response.  Press the browser reload or refresh button if server fails to respond.");
+        }
+        return;
     }
     this._clientMessage.setEvent(e.source.renderId, e.type, e.data);
     this.sync();
@@ -117,7 +120,7 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     }
     
     // Profiling Timer (Uncomment to enable).
-    EchoCore.profilingTimer = new EchoCore.Debug.Timer();
+    // EchoCore.profilingTimer = new EchoCore.Debug.Timer();
 
     var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
     serverMessage.addCompletionListener(new EchoCore.MethodRef(this, this._processSyncComplete));
@@ -125,6 +128,7 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
 };
 
 EchoRemoteClient.prototype.sync = function() {
+    this._syncInitTime = new Date().getTime();
     var conn = new EchoWebCore.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST", 
             this._clientMessage._renderXml(), "text/xml");
     this._clientMessage = null;
