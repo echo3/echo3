@@ -17,6 +17,7 @@ EchoRender.ComponentSync.ContentPane.prototype.renderAdd = function(update, pare
     this._divElement.style.height = "100%";
     this._divElement.style.overflow = "hidden";
     this._divElement.style.zIndex = "0";
+    EchoRender.Property.Font.renderDefault(this.component, this._divElement);
     EchoRender.Property.Color.renderFB(this.component, this._divElement);
     EchoRender.Property.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._divElement); 
 
