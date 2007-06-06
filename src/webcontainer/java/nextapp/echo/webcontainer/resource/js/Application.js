@@ -146,6 +146,9 @@ EchoApp.Application.prototype.getStyleSheet = function() {
  * @param newValue the new property value
  */
 EchoApp.Application.prototype.notifyComponentUpdate = function(parent, propertyName, oldValue, newValue) {
+    // FIXME check if this does not hurt performance significantly, this should probably be disabled during
+    // the deserialization phase
+    this._listenerList.fireEvent(new EchoApp.Application.ComponentUpdateEvent(this, parent, propertyName, oldValue, newValue));
     this.updateManager._processComponentUpdate(parent, propertyName, oldValue, newValue);
 };
 
