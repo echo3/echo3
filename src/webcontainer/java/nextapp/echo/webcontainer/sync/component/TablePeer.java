@@ -237,4 +237,14 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
             clientUpdateManager.setComponentProperty(component, Table.SELECTION_CHANGED_PROPERTY, selectedIndices);
         }
     }
+    
+    /**
+     * @see AbstractComponentSynchronizePeer#processEvent(Context, Component, String, Object)
+     */
+    public void processEvent(Context context, Component component, String eventType, Object eventData) {
+        if (Table.INPUT_ACTION.equals(eventType)) {
+            ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
+            clientUpdateManager.setComponentAction(component, Table.INPUT_ACTION, null);
+        }
+    }
 }
