@@ -14,7 +14,6 @@ EchoRender.ComponentSync.Button._createPrototypeButton = function() {
     var divElement = document.createElement("div");
     divElement.tabIndex = "0";
     divElement.style.outlineStyle = "none";
-    divElement.style.overflow = "hidden";
     divElement.style.cursor = "pointer";
     return divElement;
 };
@@ -124,6 +123,7 @@ EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentEle
     var height = this.component.getRenderProperty("height");
     if (height) {
         this._divElement.style.height = height.toString();
+	    this._divElement.style.overflow = "hidden";
     }
     
     this._renderContent();
