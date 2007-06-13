@@ -86,6 +86,40 @@ EchoCore.Arrays.removeDuplicates = function(array) {
 };
 
 /**
+ * Returns <tt>true</tt> if the first array contains all of the elements
+ * in the second array.
+ *
+ * @param {Array} array1 array to be checked for containment
+ * @param {Array} array2 array to be checked for containment in the first array
+ * @return <tt>true</tt> if the first array contains all of the elements
+ *	       in the second array
+ * @type Boolean
+ */
+EchoCore.Arrays.containsAll = function(array1, array2) {
+	if (array1.length < array2.length) {
+		return false;
+	}
+	if (array2.length == 0) {
+		return true;
+	}
+    var found, item;
+    for (var i = 0; i < array2.length; ++i) {
+    	found = false;
+	    item = array2[i];
+	    for (var j = 0; j < array1.length; ++j) {
+	    	if (item == array1[j]) {
+	    		found = true;
+	    		break;
+	    	}
+	    }
+	    if (!found) {
+	    	return false;
+	    }
+    }
+    return true;
+};
+
+/**
  * @class EchoCore.Collections Namespace.  Non-instantiable object.
  */
 EchoCore.Collections = function() { };
