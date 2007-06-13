@@ -18,6 +18,8 @@ EchoRender.ComponentSync.Table._HEADER_ROW = -1;
 EchoRender.ComponentSync.Table._SIZING_DOTS = ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . "
             + ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ";
 
+EchoRender.ComponentSync.Table._supportedPartialProperties = new Array("selection");
+
 EchoRender.ComponentSync.Table.prototype.getContainerElement = function(component) {
     return this._childIdToElementMap[component.renderId];
 };
@@ -119,13 +121,7 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
     }
     
     if (this._selectionEnabled) {
-        var selectedIndices = EchoCore.tokenizeString(this.component.getProperty("selection"), ",");
-        for (var i = 0; i < selectedIndices.length; i++) {
-            if (selectedIndices[i] == "") {
-                continue;
-            }
-            this._setSelected(parseInt(selectedIndices[i]), true);
-        }
+        this._setSelectedFromProperty(this.component.getProperty("selection"), false);
     }
     
     this._addEventListeners();
@@ -238,6 +234,15 @@ EchoRender.ComponentSync.Table.prototype._createRowPrototype = function() {
 };
 
 EchoRender.ComponentSync.Table.prototype.renderUpdate = function(update) {
+	if (EchoCore.Arrays.containsAll(EchoRender.ComponentSync.Table._supportedPartialProperties, update.getUpdatedPropertyNames())) {
+	    // partial update
+		var selectionUpdate = update.getUpdatedProperty("selection");
+		if (selectionUpdate) {
+			this._setSelectedFromProperty(selectionUpdate.newValue, true);
+		}
+	    return false;
+	}
+    // full update
     var element = this._tableElement;
     var containerElement = element.parentNode;
     EchoRender.renderComponentDispose(update, update.parent);
@@ -278,11 +283,32 @@ EchoRender.ComponentSync.Table.prototype._getRowIndex = function(element) {
 };
 
 /**
+ * Sets the selection state based on the given selection property value.
+ *
+ * @param {String} value the value of the selection property
+ * @param {Boolean} clearPrevious if the previous selection state should be overwritten
+ */
+EchoRender.ComponentSync.Table.prototype._setSelectedFromProperty = function(value, clearPrevious) {
+	if (value == this.selectionModel.getSelectionString()) {
+		return;
+	}
+	if (clearPrevious) {
+		this._clearSelected();
+	}
+    var selectedIndices = EchoCore.tokenizeString(value, ",");
+    for (var i = 0; i < selectedIndices.length; i++) {
+        if (selectedIndices[i] == "") {
+            continue;
+        }
+        this._setSelected(parseInt(selectedIndices[i]), true);
+    }
+};
+
+/**
  * Sets the selection state of a table row.
  *
  * @param {Number} rowIndex the index of the row
  * @param {Boolean} newValue the new selection state
- * @param tableElement the table element, may be null
  */
 EchoRender.ComponentSync.Table.prototype._setSelected = function(rowIndex, newValue) {
     this.selectionModel.setSelectedIndex(rowIndex, newValue);
@@ -355,10 +381,10 @@ EchoRender.ComponentSync.Table.prototype._processClick = function(e) {
     EchoWebCore.DOM.preventEventDefault(e);
 
     if (this.selectionModel.isSingleSelection() || !(e.shiftKey || e.ctrlKey || e.metaKey || e.altKey)) {
-        this._clearSelected(this._tableElement);
+        this._clearSelected();
     }
 
-    if (e.shiftKey && this.lastSelectedIndex != -1) {
+    if (!this.selectionModel.isSingleSelection() && e.shiftKey && this.lastSelectedIndex != -1) {
         var startIndex;
         var endIndex;
         if (this.lastSelectedIndex < rowIndex) {
@@ -369,11 +395,11 @@ EchoRender.ComponentSync.Table.prototype._processClick = function(e) {
             endIndex = this.lastSelectedIndex;
         }
         for (var i = startIndex; i <= endIndex; ++i) {
-            this._setSelected(i, true, this._tableElement);
+            this._setSelected(i, true);
         }
     } else {
         this.lastSelectedIndex = rowIndex;
-        this._setSelected(rowIndex, !this.selectionModel.isSelectedIndex(rowIndex), this._tableElement);
+        this._setSelected(rowIndex, !this.selectionModel.isSelectedIndex(rowIndex));
     }
     
     this.component.setProperty("selection", this.selectionModel.getSelectionString());
