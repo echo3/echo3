@@ -7,6 +7,7 @@ EchoRender.ComponentSync.WindowPane = function() {
 EchoRender.ComponentSync.WindowPane.prototype = new EchoRender.ComponentSync;
 
 EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_BACKGROUND = new EchoApp.Property.Color("#abcdef");
+EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_INSETS = new EchoApp.Property.Insets("5px", "10px");
 EchoRender.ComponentSync.WindowPane.ADJUSTMENT_OPACITY = 0.75;
 
 EchoRender.ComponentSync.WindowPane.adjustOpacity = false;
@@ -482,8 +483,9 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         if (icon) {
             titleTextDivElement.style[EchoWebCore.Environment.CSS_FLOAT] = "left";
         }
-        titleTextDivElement.style.padding = "5px 10px";
         titleTextDivElement.style.whiteSpace = "nowrap";
+        EchoRender.Property.Font.renderComponentProperty(this.component, "titleFont", null, titleTextDivElement);
+        EchoRender.Property.Insets.renderComponentProperty(this.component, "titleInsets", EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_INSETS, titleTextDivElement, "padding");
         titleTextDivElement.appendChild(document.createTextNode(title));
         this._titleBarDivElement.appendChild(titleTextDivElement);
     }
