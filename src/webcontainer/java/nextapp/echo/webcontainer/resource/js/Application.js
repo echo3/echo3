@@ -1887,11 +1887,47 @@ EchoApp.Update.ComponentUpdate.prototype.hasUpdatedLayoutDataChildren= function(
     return this._updatedLayoutDataChildIds != null;
 };
 
+/**
+ * Determines if this update is updating properties.
+ * 
+ * @return true if properties are being updated.
+ * @type Boolean
+ */
 EchoApp.Update.ComponentUpdate.prototype.hasUpdatedProperties = function() {
     return this._propertyUpdates != null;
 };
 
-//FIXME. methods req to get property names, property updates.
+/**
+ * Returns a <code>PropertyUpdate</code> describing an update to the
+ * property with the given <code>name</code>.
+ * 
+ * @param name the name of the property being updated
+ * @return the <code>PropertyUpdate</code>, or null if none exists.
+ */
+EchoApp.Update.ComponentUpdate.prototype.getUpdatedProperty = function(name) {
+    if (this._propertyUpdates == null) {
+    	return null;
+    }
+    return this._propertyUpdates[name];
+};
+
+/**
+ * Returns the names of all properties being updated in this update.
+ * 
+ * @return the names of all updated properties, if no properties are updated an
+ * 		empty array is returned.
+ * @type Array
+ */
+EchoApp.Update.ComponentUpdate.prototype.getUpdatedPropertyNames = function() {
+    if (this._propertyUpdates == null) {
+    	return new Array();
+    }
+    var updatedPropertyNames = new Array();
+    for (var i in this._propertyUpdates) {
+    	updatedPropertyNames.push(i);
+    }
+    return updatedPropertyNames;
+};
 
 /**
  * Records the removal of a child from the parent component.
