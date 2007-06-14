@@ -160,7 +160,6 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
         if (PROPERTY_COLUMN_COUNT.equals(propertyName)) {
             return new Integer(table.getModel().getColumnCount());
         } else if (PROPERTY_COLUMN_WIDTH.equals(propertyName)) {
-            System.err.println(propertyIndex + "/" + table.getColumnModel().getColumn(propertyIndex));
             return table.getColumnModel().getColumn(propertyIndex).getWidth();
         } else if (PROPERTY_HEADER_VISIBLE.equals(propertyName)) {
             return Boolean.valueOf(table.isHeaderVisible());

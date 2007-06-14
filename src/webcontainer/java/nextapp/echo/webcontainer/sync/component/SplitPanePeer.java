@@ -83,7 +83,6 @@ public class SplitPanePeer extends AbstractComponentSynchronizePeer {
         ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
         if (SplitPane.PROPERTY_SEPARATOR_POSITION.equals(propertyName)) {
             clientUpdateManager.setComponentProperty(component, SplitPane.PROPERTY_SEPARATOR_POSITION, newValue);
-            System.err.println("stored separator position");
         }
     }
 }
