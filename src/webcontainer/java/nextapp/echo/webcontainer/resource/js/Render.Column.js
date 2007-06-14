@@ -37,6 +37,7 @@ EchoRender.ComponentSync.Column.prototype.renderAdd = function(update, parentEle
 
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._divElement);
     EchoRender.Property.Color.renderFB(this.component, this._divElement);
+    EchoRender.Property.Font.renderDefault(this.component, this._divElement);
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
 
     this._cellSpacing = EchoRender.Property.Extent.toPixels(this.component.getRenderProperty("cellSpacing"), false);
