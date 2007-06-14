@@ -504,9 +504,15 @@ EchoApp.Component.prototype.getRenderIndexedProperty = function(name, index, def
     var value = this.getIndexedProperty(name, index);
     if (value == null) {
         if (this._style != null) {
-            value = this._style.getProperty(name, index);
+            value = this._style.getIndexedProperty(name, index);
         }
-        //FIXME. Stylesheet support.
+        if (value == null && this._styleName && this.application && this.application._styleSheet) {
+            var style = this.application._styleSheet.getRenderStyle(this._styleName, 
+                    this._styleType ? this._styleType : this.componentType);
+            if (style) {
+                value = style.getIndexedProperty(name, index);
+            }
+        }
     }
     return value == null ? defaultValue : value;
 };
