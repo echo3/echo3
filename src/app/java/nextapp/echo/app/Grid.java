@@ -220,8 +220,8 @@ public class Grid extends Component {
     
     /**
      * Sets the overall height of the grid.
-     * This property only supports <code>Extent</code>s with
-     * fixed (i.e., not percent) units.
+     * This property supports <code>Extent</code>s with
+     * fixed or percentile units.
      * 
      * @param newValue the new height
      */

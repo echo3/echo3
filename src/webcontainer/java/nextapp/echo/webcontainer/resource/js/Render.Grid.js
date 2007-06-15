@@ -57,7 +57,11 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     
     var height = this.component.getRenderProperty("height");
     if (height) {
-    	this._tableElement.style.height = EchoRender.Property.Extent.toPixels(height, false) + "px";
+        if (height.units == "%") {
+	    	this._tableElement.style.height = height.toString();
+        } else {
+	    	this._tableElement.style.height = EchoRender.Property.Extent.toPixels(height, false) + "px";
+        }
     }
     
     var colGroupElement = this._tableElement.firstChild;
