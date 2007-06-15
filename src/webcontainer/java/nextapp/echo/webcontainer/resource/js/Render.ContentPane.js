@@ -47,6 +47,7 @@ EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update
         divElement.style.top = pixelInsets.top + "px";
         divElement.style.bottom = pixelInsets.bottom + "px";
         divElement.style.right = pixelInsets.right + "px";
+        divElement.style.overflow = "auto";
         EchoWebCore.VirtualPosition.register(divElement.id);
     }
     EchoRender.renderComponentAdd(update, child, divElement);
