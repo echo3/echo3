@@ -116,6 +116,13 @@ EchoRender.ComponentSync.WindowPane.prototype.processKeyDown = function(e) {
     }
 };
 
+EchoRender.ComponentSync.WindowPane.prototype._processCloseClick = function(e) { 
+    if (!this.component.isActive()) {
+        return;
+    }
+    this.component.doWindowClosing();
+};
+
 EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseDown = function(e) {
     if (!this.component.isActive()) {
         return;
@@ -260,9 +267,9 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     this._borderInsets = EchoRender.Property.Insets.toPixels(border.borderInsets);
     this._contentInsets = EchoRender.Property.Insets.toPixels(border.contentInsets);
 
-    var movable = true;
-    var resizable = true;
-    var closable = true;
+    var movable = this.component.getRenderProperty("movable", true);
+    var resizable = this.component.getRenderProperty("resizable", true);
+    var closable = this.component.getRenderProperty("closable", true);
 
     this._windowPaneDivElement = document.createElement("div");
     this._windowPaneDivElement.id = this.component.renderId;
@@ -507,7 +514,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     this._titleBarDivElement.style.width = (this._windowWidth - this._contentInsets.left - this._contentInsets.right) + "px";
     this._titleBarDivElement.style.height = this._titleBarHeight + "px";
     this._titleBarDivElement.style.overflow = "hidden";
-    if (true || this.movable) { //FIXME. Hardcoded
+    if (movable) {
         this._titleBarDivElement.style.cursor = "move";
     }
 
@@ -529,7 +536,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     
     // Close Button
   
-    if (this.component.getRenderProperty("closable", true)) {
+    if (closable) {
         this._closeDivElement = document.createElement("div");
         this._closeDivElement.id = this.component.renderId + "_close";
         this._closeDivElement.style.position = "absolute";
@@ -584,13 +591,21 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     
     // Register event listeners.
     
-    EchoWebCore.EventProcessor.add(this._windowPaneDivElement, "keydown", 
-            new EchoCore.MethodRef(this, this.processKeyDown), false);
-    EchoWebCore.EventProcessor.add(this._titleBarDivElement, "mousedown", 
-            new EchoCore.MethodRef(this, this.processTitleBarMouseDown), true);
-    for (var i = 0; i < this._borderDivElements.length; ++i) {
-        EchoWebCore.EventProcessor.add(this._borderDivElements[i], "mousedown", 
-                new EchoCore.MethodRef(this, this.processBorderMouseDown), true);
+    if (closable) {
+	    EchoWebCore.EventProcessor.add(this._windowPaneDivElement, "keydown", 
+	            new EchoCore.MethodRef(this, this.processKeyDown), false);
+	    EchoWebCore.EventProcessor.add(this._closeDivElement, "click", 
+	            new EchoCore.MethodRef(this, this._processCloseClick), false);
+    }
+    if (movable) {
+	    EchoWebCore.EventProcessor.add(this._titleBarDivElement, "mousedown", 
+	            new EchoCore.MethodRef(this, this.processTitleBarMouseDown), true);
+    }
+    if (resizable) {
+	    for (var i = 0; i < this._borderDivElements.length; ++i) {
+	        EchoWebCore.EventProcessor.add(this._borderDivElements[i], "mousedown", 
+	                new EchoCore.MethodRef(this, this.processBorderMouseDown), true);
+	    }
     }
 };
 

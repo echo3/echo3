@@ -29,6 +29,8 @@
 
 package nextapp.echo.webcontainer.sync.component;
 
+import java.util.Iterator;
+
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.WindowPane;
@@ -39,6 +41,7 @@ import nextapp.echo.webcontainer.ServerMessage;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
+import nextapp.echo.webcontainer.util.ArrayIterator;
 
 /**
  * Synchronization peer for <code>WindowPane</code>s.
@@ -47,6 +50,8 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
 
     private static final Service WINDOW_PANE_SERVICE = JavaScriptService.forResource("Echo.WindowPane", 
             "/nextapp/echo/webcontainer/resource/js/Render.WindowPane.js");
+    
+    private static final String[] EVENT_TYPES_ACTION = new String[] { WindowPane.INPUT_CLOSE };
     
     static {
         WebContainerServlet.getServiceRegistry().add(WINDOW_PANE_SERVICE);
@@ -59,6 +64,13 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
         return WindowPane.class;
     }
 
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getImmediateEventTypes(Context, nextapp.echo.app.Component)
+     */
+    public Iterator getImmediateEventTypes(Context context, Component component) {
+        return new ArrayIterator(EVENT_TYPES_ACTION);
+    }
+    
     public Class getPropertyClass(String propertyName) {
         if (WindowPane.PROPERTY_POSITION_X.equals(propertyName)) {
             return Extent.class;
@@ -95,6 +107,16 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
             clientUpdateManager.setComponentProperty(component, WindowPane.PROPERTY_WIDTH, newValue);
         } else if (WindowPane.PROPERTY_HEIGHT.equals(propertyName)) {
             clientUpdateManager.setComponentProperty(component, WindowPane.PROPERTY_HEIGHT, newValue);
+        }
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#processEvent(nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, java.lang.Object)
+     */
+    public void processEvent(Context context, Component component, String eventType, Object eventData) {
+        if (WindowPane.INPUT_CLOSE.equals(eventType)) {
+            ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
+            clientUpdateManager.setComponentAction(component, WindowPane.INPUT_CLOSE, null);
         }
     }
 }
