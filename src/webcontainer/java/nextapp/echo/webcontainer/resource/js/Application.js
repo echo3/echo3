@@ -1842,7 +1842,9 @@ EchoApp.Update.ComponentUpdate.prototype._appendRemovedDescendants = function(up
         }
     }
     
-    EchoCore.Arrays.removeDuplicates(this._removedDescendantIds);
+    if (this._removedDescendantIds != null) {
+	    EchoCore.Arrays.removeDuplicates(this._removedDescendantIds);
+    }
 };
 
 EchoApp.Update.ComponentUpdate.prototype.getAddedChildren = function() {
