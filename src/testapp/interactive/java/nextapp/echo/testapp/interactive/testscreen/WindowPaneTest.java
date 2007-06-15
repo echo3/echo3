@@ -208,6 +208,21 @@ public class WindowPaneTest extends SplitPane {
                 windowPane.setHeight(new Extent(100 + (int) (Math.random() * 300)));
             }
         });        
+        controlsColumn.addButton("Toggle Closable", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setClosable(!windowPane.isClosable());
+            }
+        });        
+        controlsColumn.addButton("Toggle Movable", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setMovable(!windowPane.isMovable());
+            }
+        });        
+        controlsColumn.addButton("Toggle Resizable", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setResizable(!windowPane.isResizable());
+            }
+        });        
         
         // Title-Related Properties
         
