@@ -228,7 +228,7 @@ public class OutputProcessor {
                     SortedMap indexedComponents = new TreeMap();
                     for (int j = 0; j < addedChildren.length; ++j) {
                         Component addedChild = addedChildren[j];
-                        indexedComponents.put(new Integer((parentComponent.indexOf(addedChild))), addedChild);
+                        indexedComponents.put(new Integer((parentComponent.visibleIndexOf(addedChild))), addedChild);
                     }
                     Iterator indexedComponentsIter = indexedComponents.entrySet().iterator();
                     while (indexedComponentsIter.hasNext()) {
