@@ -167,6 +167,12 @@ EchoRender.ComponentSync.Button.prototype._renderButtonIcon = function(element, 
     var imgElement = document.createElement("img");
     imgElement.src = icon.url ? icon.url : icon;
     imgElement.alt = "";
+    if (icon.width) {
+	    imgElement.style.width = icon.width.toString();
+    }
+    if (icon.height) {
+	    imgElement.style.height = icon.height.toString();
+    }
 	element.appendChild(imgElement);
 	return imgElement;
 };
