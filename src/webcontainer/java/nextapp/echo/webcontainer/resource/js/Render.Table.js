@@ -234,13 +234,15 @@ EchoRender.ComponentSync.Table.prototype._createRowPrototype = function() {
 };
 
 EchoRender.ComponentSync.Table.prototype.renderUpdate = function(update) {
-	if (EchoCore.Arrays.containsAll(EchoRender.ComponentSync.Table._supportedPartialProperties, update.getUpdatedPropertyNames())) {
-	    // partial update
-		var selectionUpdate = update.getUpdatedProperty("selection");
-		if (selectionUpdate) {
-			this._setSelectedFromProperty(selectionUpdate.newValue, true);
+	if (!update.hasUpdatedLayoutDataChildren() && !update.getAddedChildren() && !update.getRemovedChildren()) {
+		if (EchoCore.Arrays.containsAll(EchoRender.ComponentSync.Table._supportedPartialProperties, update.getUpdatedPropertyNames())) {
+		    // partial update
+			var selectionUpdate = update.getUpdatedProperty("selection");
+			if (selectionUpdate) {
+				this._setSelectedFromProperty(selectionUpdate.newValue, true);
+			}
+		    return false;
 		}
-	    return false;
 	}
     // full update
     var element = this._tableElement;
