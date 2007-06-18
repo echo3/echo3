@@ -44,7 +44,7 @@ import nextapp.echo.app.event.WindowPaneListener;
 public class WindowPane extends Component 
 implements FloatingPane, ModalSupport, PaneContainer {
 
-    public static final String INPUT_CLOSE = "input_close";
+    public static final String INPUT_CLOSE = "close";
     
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
     public static final String PROPERTY_BORDER = "border";

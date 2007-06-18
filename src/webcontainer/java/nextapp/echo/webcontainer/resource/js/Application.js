@@ -2549,7 +2549,7 @@ EchoApp.WindowPane.prototype = new EchoApp.Component;
  * Programmatically perform a window closing operation.
  */
 EchoApp.WindowPane.prototype.doWindowClosing = function() {
-    var e = new EchoCore.Event(this, "input_close");
+    var e = new EchoCore.Event(this, "close");
     this.fireEvent(e);
 };
 
