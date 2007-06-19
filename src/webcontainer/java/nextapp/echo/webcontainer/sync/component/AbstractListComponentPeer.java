@@ -29,6 +29,17 @@
 
 package nextapp.echo.webcontainer.sync.component;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import nextapp.echo.app.Component;
+import nextapp.echo.app.list.AbstractListComponent;
+import nextapp.echo.app.list.ListCellRenderer;
+import nextapp.echo.app.list.ListModel;
+import nextapp.echo.app.list.ListSelectionModel;
+import nextapp.echo.app.serial.SerialContext;
+import nextapp.echo.app.serial.SerialException;
+import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
 import nextapp.echo.webcontainer.ServerMessage;
@@ -38,11 +49,106 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 
 public abstract class AbstractListComponentPeer extends AbstractComponentSynchronizePeer  {
 
-    private static final Service LIST_COMPONENT_SERVICE = JavaScriptService.forResource("Echo.ListComponent", 
-            "/nextapp/echo/webcontainer/resource/js/Render.List.js");
+    private class ListData {
+        
+        private ListModel model;
+        private ListCellRenderer renderer;
+        private ListSelectionModel selectionModel;
+        
+        ListData(AbstractListComponent component) {
+            super();
+            this.model = component.getModel();
+            this.renderer = component.getCellRenderer();
+            this.selectionModel = component.getSelectionModel();
+        }
+
+        /**
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        public boolean equals(Object o) {
+            if (!(o instanceof ListData)) {
+                return false;
+            }
+            ListData that = (ListData) o;
+            
+            if (!(this.model == that.model 
+                    || (this.model != null && this.model.equals(that.model)))) {
+                return false;
+            }
+            
+            if (!(this.renderer == that.renderer 
+                    || (this.renderer != null && this.renderer.equals(that.renderer)))) {
+                return false;
+            }
+            
+            if (!(this.selectionModel == that.selectionModel 
+                    || (this.selectionModel != null && this.selectionModel.equals(that.selectionModel)))) {
+                return false;
+            }
+            
+            return true;
+        }
+
+    }
+    
+    public static class ListDataPeer 
+    implements SerialPropertyPeer {
+    
+        /**
+         * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(nextapp.echo.app.util.Context, 
+         *      java.lang.Class, org.w3c.dom.Element)
+         */
+        public Object toProperty(Context context, Class objectClass, Element propertyElement) 
+        throws SerialException {
+            throw new UnsupportedOperationException();
+        }
+    
+        /**
+         * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context, 
+         *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
+         */
+        public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
+        throws SerialException {
+            Document document = ((SerialContext) context.get(SerialContext.class)).getDocument();
+            ListData listData = (ListData) propertyValue; 
+            propertyElement.setAttribute("t", "RemoteListData");
+            int size = listData.model.size();
+            for (int i = 0; i < size; ++i) {
+                Element eElement = document.createElement("e");
+                Object value = listData.model.get(i);
+                eElement.setAttribute("t", value.toString());
+                propertyElement.appendChild(eElement);
+                if (listData.selectionModel.isSelectedIndex(i)) {
+                    propertyElement.setAttribute("s", "1");
+                }
+            }
+        }
+    }
+    
+    private static final Service LIST_COMPONENT_SERVICE = JavaScriptService.forResources("Echo.ListComponent",
+            new String[] { "/nextapp/echo/webcontainer/resource/js/Render.List.js",
+                           "/nextapp/echo/webcontainer/resource/js/RemoteClient.List.js" });
     
     static {
         WebContainerServlet.getServiceRegistry().add(LIST_COMPONENT_SERVICE);
+    }
+
+    private static final String PROPERTY_DATA = "data";
+    
+    public AbstractListComponentPeer() {
+        super();
+        addOutputProperty(PROPERTY_DATA);
+    }
+    
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputProperty(
+     *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, int)
+     */
+    public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex) {
+        if (PROPERTY_DATA.equals(propertyName)) {
+            return new ListData((AbstractListComponent) component);
+        }
+        return super.getOutputProperty(context, component, propertyName, propertyIndex);
     }
 
     /**
