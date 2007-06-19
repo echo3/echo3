@@ -119,6 +119,16 @@ implements ComponentSynchronizePeer {
     }
     
     /**
+     * Default implementation returns null.
+     * 
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputPropertyMethodName(
+     *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String)
+     */
+    public String getOutputPropertyMethodName(Context context, Component component, String propertyName) {
+        return null;
+    }
+
+    /**
      * Default implementation: return the names of all properties currently set in the 
      * component's local <code>Style</code>.
      * 

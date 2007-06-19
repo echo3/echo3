@@ -126,6 +126,24 @@ public interface ComponentSynchronizePeer {
     public Iterator getOutputPropertyIndices(Context context, Component component, String propertyName);
     
     /**
+     * Returns the name of the method that should be invoked to set the property
+     * on the remote client.  If null is returned, the default "setProperty()" will
+     * be invoked to store the property in the remote component's style.  This
+     * default behavior should be used in almost cases.
+     * 
+     * @param contex the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
+     * @param component the component
+     * @param propertyName the property name
+     * @return the property name
+     */
+    public String getOutputPropertyMethodName(Context context, Component component, String propertyName);
+    
+    /**
      * Returns an <code>Iterator</code> over the collection of names of all
      * output properties that should be rendered to the remote client. Only the
      * names of properties with non-default values should be returned.

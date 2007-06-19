@@ -363,6 +363,11 @@ public class OutputProcessor {
         // Set property name.
         pElement.setAttribute("n", propertyName);
         
+        String methodName = componentPeer.getOutputPropertyMethodName(context, c, propertyName);
+        if (methodName != null) {
+            pElement.setAttribute("m", methodName);
+        }
+        
         if (propertyIndex != -1) {
             // Set property index.
             pElement.setAttribute("x", Integer.toString(propertyIndex));

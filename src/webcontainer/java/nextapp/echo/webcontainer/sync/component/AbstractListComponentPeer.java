@@ -158,4 +158,14 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(LIST_COMPONENT_SERVICE.getId());
     }
+
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputPropertyMethodName(nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String)
+     */
+    public String getOutputPropertyMethodName(Context context, Component component, String propertyName) {
+        if (PROPERTY_DATA.equals(propertyName)) {
+            return "updateListData";
+        }
+        return super.getOutputPropertyMethodName(context, component, propertyName);
+    }
 }
