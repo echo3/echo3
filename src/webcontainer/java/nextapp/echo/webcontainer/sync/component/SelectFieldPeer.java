@@ -38,6 +38,13 @@ import nextapp.echo.app.SelectField;
 public class SelectFieldPeer extends AbstractListComponentPeer {
 
     /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType()
+     */
+    public String getClientComponentType() {
+        return "RemoteSelectField";
+    }
+
+    /**
      * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getComponentClass()
      */
     public Class getComponentClass() {

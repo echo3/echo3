@@ -2477,6 +2477,19 @@ EchoApp.Label = function(renderId) {
 EchoApp.Label.prototype = new EchoApp.Component;
 
 /**
+ * Creates a new ListBox.
+ * 
+ * @constructor
+ * @class ListBox component.
+ * @base EchoApp.Component
+ */
+EchoApp.ListBox = function(renderId) {
+    EchoApp.Component.call(this, "ListBox", renderId);
+};
+
+EchoApp.ListBox.prototype = new EchoApp.Component;
+
+/**
  * Creates a new Row.
  * 
  * @constructor
@@ -2488,6 +2501,19 @@ EchoApp.Row = function(renderId) {
 };
 
 EchoApp.Row.prototype = new EchoApp.Component;
+
+/**
+ * Creates a new SelectField.
+ * 
+ * @constructor
+ * @class SelectField component.
+ * @base EchoApp.Component
+ */
+EchoApp.SelectField = function(renderId) {
+    EchoApp.Component.call(this, "SelectField", renderId);
+};
+
+EchoApp.SelectField.prototype = new EchoApp.Component;
 
 /**
  * Creates a new SplitPane.
@@ -2566,12 +2592,14 @@ EchoApp.WindowPane.DEFAULT_MINIMUM_WIDTH = new EchoApp.Property.Extent("100px");
 EchoApp.WindowPane.DEFAULT_MINIMUM_HEIGHT = new EchoApp.Property.Extent("100px");
 
 EchoApp.ComponentFactory.registerType("Button", EchoApp.Button);
-EchoApp.ComponentFactory.registerType("ToggleButton", EchoApp.ToggleButton);
-EchoApp.ComponentFactory.registerType("RadioButton", EchoApp.RadioButton);
 EchoApp.ComponentFactory.registerType("CheckBox", EchoApp.CheckBox);
 EchoApp.ComponentFactory.registerType("Column", EchoApp.Column);
 EchoApp.ComponentFactory.registerType("Label", EchoApp.Label);
+EchoApp.ComponentFactory.registerType("ListBox", EchoApp.ListBox);
+EchoApp.ComponentFactory.registerType("RadioButton", EchoApp.RadioButton);
 EchoApp.ComponentFactory.registerType("Row", EchoApp.Row);
+EchoApp.ComponentFactory.registerType("SelectField", EchoApp.SelectField);
 EchoApp.ComponentFactory.registerType("SplitPane", EchoApp.SplitPane);
 EchoApp.ComponentFactory.registerType("TextField", EchoApp.TextField);
+EchoApp.ComponentFactory.registerType("ToggleButton", EchoApp.ToggleButton);
 EchoApp.ComponentFactory.registerType("WindowPane", EchoApp.WindowPane);
