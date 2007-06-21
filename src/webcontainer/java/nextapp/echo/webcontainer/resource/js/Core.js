@@ -31,20 +31,7 @@ EchoCore.profilingTimer = null;
  * @type Array
  */
 EchoCore.tokenizeString = function(string, delimiter) {
-    var tokens = new Array();
-    var index = string.indexOf(delimiter);
-    var previousIndex = 0;
-    while (index != -1) {
-        var token = string.substring(previousIndex, index);
-        if (token.length != 0) {
-            tokens.push(token);
-        }
-        previousIndex = index + delimiter.length;
-        index = string.indexOf(delimiter, previousIndex);
-    }
-    tokens.push(string.substring(previousIndex));
-    
-    return tokens;
+    return string.split(delimiter);
 };
 
 EchoCore.Arrays = function() { };
