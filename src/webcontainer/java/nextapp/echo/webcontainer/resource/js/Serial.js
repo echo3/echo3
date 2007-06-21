@@ -84,7 +84,6 @@ EchoSerial.loadProperty = function(client, propertyElement, object) {
         }
         if (propertyMethod) {
             if (propertyIndex == null) {
-                alert(propertyMethod + "::::" + object[propertyMethod] + ":" + object.componentType);
                 object[propertyMethod](translator.toProperty(client, propertyElement));
             } else {
                 object[propertyMethod](propertyIndex, translator.toProperty(client, propertyElement));

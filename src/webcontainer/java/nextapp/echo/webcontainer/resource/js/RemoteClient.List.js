@@ -1,7 +1,6 @@
 EchoRemoteClient.ListComponent = function() { };
 
 EchoRemoteClient.ListComponent.updateListData = function(listdData) { 
-    alert("property set!");
 };
 
 EchoRemoteClient.ListComponent.ListBox = function(renderId) { 
@@ -28,5 +27,8 @@ EchoRemoteClient.ListComponent.ListDataTranslator.toProperty = function(client, 
 
 EchoSerial.addPropertyTranslator("RemoteListData", EchoRemoteClient.ListComponent.ListDataTranslator);
 
-EchoApp.ComponentFactory.registerType("ListBox", EchoRemoteClient.ListComponent.ListBox);
-EchoApp.ComponentFactory.registerType("SelectField", EchoRemoteClient.ListComponent.SelectField);
+EchoApp.ComponentFactory.registerType("RemoteListBox", EchoRemoteClient.ListComponent.ListBox);
+EchoApp.ComponentFactory.registerType("RemoteSelectField", EchoRemoteClient.ListComponent.SelectField);
+
+EchoRender.registerPeer("RemoteListBox", EchoRender.ComponentSync.ListBox);
+EchoRender.registerPeer("RemoteSelectField", EchoRender.ComponentSync.SelectField);
