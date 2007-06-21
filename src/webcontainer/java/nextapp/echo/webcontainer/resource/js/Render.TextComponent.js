@@ -35,6 +35,7 @@ EchoRender.ComponentSync.TextComponent.prototype._processBlur = function(e) {
     if (!this.component.isActive()) {
         return;
     }
+    this._sanitizeInput();
     this.component.setProperty("text", e.registeredTarget.value);
 };
 
