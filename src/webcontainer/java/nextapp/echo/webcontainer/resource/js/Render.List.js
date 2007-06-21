@@ -44,6 +44,15 @@ EchoRender.ComponentSync.SelectField.prototype.renderAdd = function(update, pare
     EchoRender.Property.Color.renderFB(this.component, this._selectElement);
     EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, this._selectElement);
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._selectElement, "padding");
+    
+    if (this.component.items) {
+        for (var i = 0; i < this.component.items.length; ++i) {
+            var optionElement = document.createElement("option");
+            optionElement.appendChild(document.createTextNode(this.component.items[i].toString()));
+            this._selectElement.appendChild(optionElement);
+        }
+    }
+    
     parentElement.appendChild(this._selectElement);
 };
 
