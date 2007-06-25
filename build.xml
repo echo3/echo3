@@ -29,7 +29,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
 --> 
  
-<project name="NextApp_Echo_2" default="dist" basedir=".">
+<project name="NextApp_Echo_3" default="dist" basedir=".">
 
     <property environment="env"/>
     <property file="ant.properties"/>

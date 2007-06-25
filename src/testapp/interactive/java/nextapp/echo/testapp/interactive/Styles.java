@@ -97,9 +97,12 @@ public class Styles {
             = new ResourceImageReference(IMAGE_PATH + "LogoPressed.png");
 
     public static final StyleSheet DEFAULT_STYLE_SHEET;
+    public static final StyleSheet GREEN_STYLE_SHEET;
     static {
         try {
             DEFAULT_STYLE_SHEET = nextapp.echo.app.serial.StyleSheetLoader.load(STYLE_PATH + "Default.stylesheet.xml", 
+                    Thread.currentThread().getContextClassLoader());
+            GREEN_STYLE_SHEET = nextapp.echo.app.serial.StyleSheetLoader.load(STYLE_PATH + "Green.stylesheet.xml", 
                     Thread.currentThread().getContextClassLoader());
         } catch (SerialException ex) {
             throw new RuntimeException(ex);
