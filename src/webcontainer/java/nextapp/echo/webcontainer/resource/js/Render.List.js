@@ -2,6 +2,8 @@
 // during serialization, it needs to be gutted to support IE6 (with a DIV/DHTML based listbox impl because of this browser's
 // totally broken impl of rendering listbox-style select elements.
 
+EchoRender.ComponentSync.ListComponent = function() { };
+
 /**
  * Component rendering peer: ListBox
  */
@@ -22,7 +24,7 @@ EchoRender.ComponentSync.ListBox.prototype.renderAdd = function(update, parentEl
 
 EchoRender.ComponentSync.ListBox.prototype.renderDispose = function(update) { 
     this._selectElement.id = "";
-    this._selectElement = null;    
+    this._selectElement = null;
 };
 
 EchoRender.ComponentSync.ListBox.prototype.renderUpdate = function(update) {
@@ -53,6 +55,15 @@ EchoRender.ComponentSync.SelectField.prototype.renderAdd = function(update, pare
         for (var i = 0; i < this.component.items.length; ++i) {
             var optionElement = document.createElement("option");
             optionElement.appendChild(document.createTextNode(this.component.items[i].toString()));
+            if (this.component.items[i].foreground) {
+                EchoRender.Property.Color.render(this.component.items[i].foreground, optionElement, "color");
+            }
+            if (this.component.items[i].background) {
+                EchoRender.Property.Color.render(this.component.items[i].background, optionElement, "backgroundColor");
+            }
+            if (this.component.items[i].font) {
+                EchoRender.Property.Font.render(this.component.items[i].font, optionElement);
+            }
             this._selectElement.appendChild(optionElement);
         }
     }

@@ -57,8 +57,8 @@ implements SerialPropertyPeer {
         style |= "1".equals(fElement.getAttribute("un")) ? Font.UNDERLINE : 0;
         style |= "1".equals(fElement.getAttribute("ov")) ? Font.OVERLINE : 0;
         style |= "1".equals(fElement.getAttribute("lt")) ? Font.LINE_THROUGH : 0;
-        
         Extent size = null;
+
         if (fElement.hasAttribute("sz")) {
             size = ExtentPeer.fromString(fElement.getAttribute("sz"));
         }

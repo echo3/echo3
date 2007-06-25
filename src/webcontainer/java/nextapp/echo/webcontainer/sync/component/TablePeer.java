@@ -29,9 +29,7 @@
 
 package nextapp.echo.webcontainer.sync.component;
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Table;
@@ -43,6 +41,7 @@ import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.*;
 import nextapp.echo.webcontainer.service.JavaScriptService;
 import nextapp.echo.webcontainer.util.ArrayIterator;
+import nextapp.echo.webcontainer.util.MultiIterator;
 
 //FIXME have a renderState-like object register itself for
 // tablecolumnmodel events and re-render sizes as required.
@@ -53,6 +52,26 @@ import nextapp.echo.webcontainer.util.ArrayIterator;
  * @author n.beekman
  */
 public class TablePeer extends AbstractComponentSynchronizePeer {
+
+    private static String getSelectionString(ListSelectionModel selectionModel, TableModel model) {
+        String selection = "";
+        int minimumIndex = selectionModel.getMinSelectedIndex();
+        if (minimumIndex != -1) {
+            int maximumIndex = selectionModel.getMaxSelectedIndex();
+            if (maximumIndex > model.getRowCount() - 1) {
+                maximumIndex = model.getRowCount() - 1;
+            }
+            for (int i = minimumIndex; i <= maximumIndex; ++i) {
+                if (selectionModel.isSelectedIndex(i)) {
+                    if (selection.length() > 0) {
+                        selection += ",";
+                    }
+                    selection += Integer.toString(i);
+                }
+            }
+        }
+        return selection;
+    }
 
     /**
      * Service for <code>ListSelectionModel</code>.
@@ -70,6 +89,8 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     private static final String PROPERTY_ROW_COUNT = "rowCount";
     private static final String PROPERTY_SELECTION = "selection";
     private static final String PROPERTY_SELECTION_MODE = "selectionMode";
+    
+    private static final String[] MODEL_CHANGED_UPDATE_PROPERTIES = new String[] { PROPERTY_ROW_COUNT, PROPERTY_COLUMN_COUNT };
     
     static {
         WebContainerServlet.getServiceRegistry().add(LIST_SELECTION_MODEL_SERVICE);
@@ -173,54 +194,24 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
         return super.getOutputProperty(context, component, propertyName, propertyIndex);
     }
     
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getUpdatedOutputPropertyNames(
+     *      nextapp.echo.app.util.Context,
+     *      nextapp.echo.app.Component,
+     *      nextapp.echo.app.update.ServerComponentUpdate)
+     */
     public Iterator getUpdatedOutputPropertyNames(Context context, Component component, 
             ServerComponentUpdate update) {
-        //FIXME. look for better means of doing.
-        Set additionalProperties = new HashSet();
+        Iterator normalPropertyIterator = super.getUpdatedOutputPropertyNames(context, component, update);
+        
         if (update.hasUpdatedProperty(Table.MODEL_CHANGED_PROPERTY)) {
-            additionalProperties.add(PROPERTY_ROW_COUNT);
-            additionalProperties.add(PROPERTY_COLUMN_COUNT);
+            return new MultiIterator(
+                    new Iterator[]{ normalPropertyIterator, new ArrayIterator(MODEL_CHANGED_UPDATE_PROPERTIES) });
+        } else {
+            return normalPropertyIterator;
         }
-        
-        final Iterator standardIterator = super.getUpdatedOutputPropertyNames(context, component, update);
-        final Iterator additionalIterator = additionalProperties.iterator();
-        
-        return new Iterator(){
-            
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        
-            public Object next() {
-                return standardIterator.hasNext() ? standardIterator.next() : additionalIterator.next();
-            }
-        
-            public boolean hasNext() {
-                return standardIterator.hasNext() || additionalIterator.hasNext();
-            }
-        };
     }
     
-    private static String getSelectionString(ListSelectionModel selectionModel, TableModel model) {
-        String selection = "";
-        int minimumIndex = selectionModel.getMinSelectedIndex();
-        if (minimumIndex != -1) {
-            int maximumIndex = selectionModel.getMaxSelectedIndex();
-            if (maximumIndex > model.getRowCount() - 1) {
-                maximumIndex = model.getRowCount() - 1;
-            }
-            for (int i = minimumIndex; i <= maximumIndex; ++i) {
-                if (selectionModel.isSelectedIndex(i)) {
-                    if (selection.length() > 0) {
-                        selection += ",";
-                    }
-                    selection += Integer.toString(i);
-                }
-            }
-        }
-        return selection;
-    }
-
     /**
      * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context,
      *      nextapp.echo.app.Component, java.lang.String, int, java.lang.Object)

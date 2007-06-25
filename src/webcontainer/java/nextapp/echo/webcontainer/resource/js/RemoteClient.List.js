@@ -5,7 +5,8 @@ EchoRemoteClient.ListComponent.updateListData = function(listData) {
 };
 
 EchoRemoteClient.ListComponent.ListBox = function(renderId) { 
-    EchoApp.Component.call(this, "RemoteListBox", renderId);
+    EchoApp.ListBox.call(this, renderId);
+    this.componentType = "ListBox";
 };
 
 EchoRemoteClient.ListComponent.ListBox.prototype = new EchoApp.ListBox;
@@ -13,7 +14,8 @@ EchoRemoteClient.ListComponent.ListBox.prototype = new EchoApp.ListBox;
 EchoRemoteClient.ListComponent.ListBox.prototype.updateListData = EchoRemoteClient.ListComponent.updateListData;
 
 EchoRemoteClient.ListComponent.SelectField = function(renderId) {
-    EchoApp.Component.call(this, "RemoteSelectField", renderId);
+    EchoApp.SelectField.call(this, renderId);
+    this.componentType = "RemoteSelectField";
 };
 
 EchoRemoteClient.ListComponent.SelectField.prototype = new EchoApp.SelectField;
@@ -43,7 +45,24 @@ EchoRemoteClient.ListComponent.ListDataTranslator.toProperty = function(client, 
     var eElement = propertyElement.firstChild;
     while (eElement.nextSibling) {
         var text = eElement.getAttribute("t");
-        items.push(new EchoRemoteClient.ListComponent.ListDataItem(text));
+        var item = new EchoRemoteClient.ListComponent.ListDataItem(text);
+        if (eElement.getAttribute("f")) {
+            item.foreground = new EchoApp.Property.Color(eElement.getAttribute("f"));
+        }
+        if (eElement.getAttribute("b")) {
+            item.background = new EchoApp.Property.Color(eElement.getAttribute("b"));
+        }
+        if (eElement.firstChild) {
+            var childElement = eElement.firstChild;
+            while (childElement) {
+                if (childElement.nodeName == "p" && childElement.getAttribute("t") == "Font") {
+                    item.font = EchoSerial.PropertyTranslator.Font.toProperty(client, childElement);
+                }
+                childElement = childElement.nextSibling;
+            }
+        }
+        
+        items.push(item);
         eElement = eElement.nextSibling;
     }
     return new EchoRemoteClient.ListComponent.ListData(items);

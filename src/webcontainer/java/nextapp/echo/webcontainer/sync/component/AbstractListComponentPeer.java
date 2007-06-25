@@ -33,13 +33,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.Component;
+import nextapp.echo.app.Font;
 import nextapp.echo.app.list.AbstractListComponent;
 import nextapp.echo.app.list.ListCellRenderer;
 import nextapp.echo.app.list.ListModel;
 import nextapp.echo.app.list.ListSelectionModel;
+import nextapp.echo.app.list.StyledListCell;
+import nextapp.echo.app.serial.PropertyPeerFactory;
 import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
+import nextapp.echo.app.serial.property.ColorPeer;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
 import nextapp.echo.webcontainer.ServerMessage;
@@ -54,9 +58,11 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
         private ListModel model;
         private ListCellRenderer renderer;
         private ListSelectionModel selectionModel;
+        private AbstractListComponent listComponent;
         
         ListData(AbstractListComponent component) {
             super();
+            this.listComponent = component;
             this.model = component.getModel();
             this.renderer = component.getCellRenderer();
             this.selectionModel = component.getSelectionModel();
@@ -109,7 +115,9 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
          */
         public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
         throws SerialException {
-            Document document = ((SerialContext) context.get(SerialContext.class)).getDocument();
+            SerialPropertyPeer fontPeer = null;
+            SerialContext serialContext = ((SerialContext) context.get(SerialContext.class));
+            Document document = serialContext.getDocument();
             ListData listData = (ListData) propertyValue; 
             propertyElement.setAttribute("t", "RemoteListData");
             int size = listData.model.size();
@@ -119,7 +127,29 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
                 eElement.setAttribute("t", value.toString());
                 propertyElement.appendChild(eElement);
                 if (listData.selectionModel.isSelectedIndex(i)) {
-                    propertyElement.setAttribute("s", "1");
+                    eElement.setAttribute("s", "1");
+                }
+                
+                Object cell = listData.renderer.getListCellRendererComponent(listData.listComponent, value, i);
+                
+                if (cell instanceof StyledListCell) {
+                    StyledListCell styledCell = (StyledListCell) cell;
+                    if (styledCell.getBackground() != null) {
+                        eElement.setAttribute("b", ColorPeer.toString(styledCell.getBackground()));
+                    }
+                    if (styledCell.getForeground() != null) {
+                        eElement.setAttribute("f", ColorPeer.toString(styledCell.getForeground()));
+                    }
+                    if (styledCell.getFont() != null) {
+                        if (fontPeer == null) {
+                            PropertyPeerFactory propertyPeerFactory 
+                                    = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
+                            fontPeer = propertyPeerFactory.getPeerForProperty(Font.class);
+                        }
+                        Element fontElement = document.createElement("p");
+                        eElement.appendChild(fontElement);
+                        fontPeer.toXml(context, Font.class, fontElement, styledCell.getFont());
+                    }
                 }
             }
         }

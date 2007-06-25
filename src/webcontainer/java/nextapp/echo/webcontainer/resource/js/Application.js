@@ -43,7 +43,8 @@ EchoApp.Application = function(rootComponentId) {
      * This value is read-only.
      * @type EchoApp.Component 
      */
-    this.rootComponent = new EchoApp.Component("Root", this.rootComponentId);
+    this.rootComponent = new EchoApp.Component(this.rootComponentId);
+    this.rootComponent.componentType = "Root";
     this.rootComponent.register(this);
     
     /** 
@@ -265,7 +266,9 @@ EchoApp.ComponentFactory._typeToConstructorMap = new Object();
 EchoApp.ComponentFactory.newInstance = function(typeName, renderId) {
     var typeConstructor = EchoApp.ComponentFactory._typeToConstructorMap[typeName];
     if (typeConstructor == null) {
-        return new EchoApp.Component(typeName, renderId);
+        var component = new EchoApp.Component(renderId);
+        component.componentType = typeName;
+        return component;
     } else {
         return new typeConstructor(renderId);
     }
@@ -284,13 +287,14 @@ EchoApp.ComponentFactory.registerType = function(typeName, typeConstructor) {
 
 /**
  * Base class for components.
- * Derived classes must invoke constructor with componentType (and optionally renderId) properties.
+ * Derived classes should always take renderId as the first parameter and pass it to the super-constructor.
+ * A component MUST have its componentType property set before it is used in a hierarchy.  Failing to do so
+ * will throw an exception and/or result in indeterminate behavior.
  * 
- * @param {String} componentType the component type
  * @param {String} renderId the render id
  * @constructor
  */
-EchoApp.Component = function(componentType, renderId) {
+EchoApp.Component = function(renderId) {
     if (arguments.length == 0) { return; }
     
     /**
@@ -298,7 +302,7 @@ EchoApp.Component = function(componentType, renderId) {
      * This value is read-only.
      * @type String
      */
-    this.componentType = componentType;
+    this.componentType = null;
     
     /**
      * The render id.
@@ -385,8 +389,8 @@ EchoApp.Component.prototype.add = function(component, index) {
         throw new Error("Cannot add child: specified component object is not derived from EchoApp.Component.");
     }
     if (!this.componentType) {
-        throw new Error("Cannot add child: specified component object does not have a componentType property."
-                + "Perhaps the EchoApp.Component() super-constructor was not invoked.");
+        throw new Error("Cannot add child: specified component object does not have a componentType property. "
+                + "Perhaps the EchoApp.Component() super-constructor was not invoked." + this.toString() + "::::" + component.toString());
     }
     if (!this.renderId) {
         throw new Error("Cannot add child: specified component object does not have a renderId.");
@@ -2363,7 +2367,8 @@ EchoApp.Update.Manager.prototype.toString = function() {
  * @base EchoApp.Component
  */
 EchoApp.Button = function(renderId, text, icon) {
-    EchoApp.Component.call(this, "Button", renderId);
+    EchoApp.Component.call(this, renderId);
+    this.componentType = "Button";
     if (text != null) {
         this.setProperty("text", text);
     }
@@ -2390,7 +2395,8 @@ EchoApp.Button.prototype.doAction = function() {
  * @base EchoApp.Button
  */
 EchoApp.ToggleButton = function(renderId) {
-    EchoApp.Component.call(this, "ToggleButton", renderId);
+    EchoApp.Component.call(this, renderId);
+    this.componentType = "ToggleButton";
 };
 
 EchoApp.ToggleButton.prototype = new EchoApp.Button;
@@ -2403,7 +2409,8 @@ EchoApp.ToggleButton.prototype = new EchoApp.Button;
  * @base EchoApp.ToggleButton
  */
 EchoApp.RadioButton = function(renderId) {
-    EchoApp.Component.call(this, "RadioButton", renderId);
+    EchoApp.Component.call(this, renderId);
+    this.componentType = "RadioButton";
 };
 
 EchoApp.RadioButton.prototype = new EchoApp.ToggleButton;
@@ -2416,7 +2423,8 @@ EchoApp.RadioButton.prototype = new EchoApp.ToggleButton;
  * @base EchoApp.ToggleButton
  */
 EchoApp.CheckBox = function(renderId) {
-    EchoApp.Component.call(this, "CheckBox", renderId);
+    EchoApp.Component.call(this,  renderId);
+    this.componentType = "CheckBox";
 };
 
 EchoApp.CheckBox.prototype = new EchoApp.ToggleButton;
@@ -2429,7 +2437,8 @@ EchoApp.CheckBox.prototype = new EchoApp.ToggleButton;
  * @base EchoApp.Component
  */
 EchoApp.Column = function(renderId) {
-    EchoApp.Component.call(this, "Column", renderId);
+    EchoApp.Component.call(this, renderId);
+    this.componentType = "Column";
 };
 
 EchoApp.Column.prototype = new EchoApp.Component;
@@ -2443,7 +2452,8 @@ EchoApp.Column.prototype = new EchoApp.Component;
  */
 EchoApp.ContentPane = function(renderId) {
     this.pane = true;
-    EchoApp.Component.call(this, "ContentPane", renderId);
+    EchoApp.Component.call(this, renderId);
+    this.componentType = "ContentPane";
 };
 
 EchoApp.ContentPane.prototype = new EchoApp.Component;
@@ -2456,7 +2466,8 @@ EchoApp.ContentPane.prototype = new EchoApp.Component;
  * @base EchoApp.Component
  */
 EchoApp.Grid = function(renderId) {
-    EchoApp.Component.call(this, "Grid", renderId);
+    EchoApp.Component.call(this, renderId);
+    this.componentType = "Grid";
 };
 
 EchoApp.Grid.prototype = new EchoApp.Component;
@@ -2471,7 +2482,8 @@ EchoApp.Grid.SPAN_FILL = -1;
  * @base EchoApp.Component
  */
 EchoApp.Label = function(renderId) {
-    EchoApp.Component.call(this, "Label", renderId);
+    EchoApp.Component.call(this, renderId);
+    this.componentType = "Label";
 };
 
 EchoApp.Label.prototype = new EchoApp.Component;
@@ -2484,7 +2496,8 @@ EchoApp.Label.prototype = new EchoApp.Component;
  * @base EchoApp.Component
  */
 EchoApp.ListBox = function(renderId) {
-    EchoApp.Component.call(this, "ListBox", renderId);
+    EchoApp.Component.call(this, renderId);
+    this.componentType = "ListBox";
 };
 
 EchoApp.ListBox.prototype = new EchoApp.Component;
@@ -2497,7 +2510,8 @@ EchoApp.ListBox.prototype = new EchoApp.Component;
  * @base EchoApp.Component
  */
 EchoApp.Row = function(renderId) {
-    EchoApp.Component.call(this, "Row", renderId);
+    EchoApp.Component.call(this, renderId);
+    this.componentType = "Row";
 };
 
 EchoApp.Row.prototype = new EchoApp.Component;
@@ -2510,7 +2524,8 @@ EchoApp.Row.prototype = new EchoApp.Component;
  * @base EchoApp.Component
  */
 EchoApp.SelectField = function(renderId) {
-    EchoApp.Component.call(this, "SelectField", renderId);
+    EchoApp.Component.call(this, renderId);
+    this.componentType = "SelectField";
 };
 
 EchoApp.SelectField.prototype = new EchoApp.Component;
@@ -2523,7 +2538,8 @@ EchoApp.SelectField.prototype = new EchoApp.Component;
  * @base EchoApp.Component
  */
 EchoApp.SplitPane = function(renderId) {
-    EchoApp.Component.call(this, "SplitPane", renderId);
+    EchoApp.Component.call(this, renderId);
+    this.componentType = "SplitPane";
 };
 
 EchoApp.SplitPane.prototype = new EchoApp.Component;
@@ -2552,7 +2568,8 @@ EchoApp.SplitPane.OVERFLOW_SCROLL = 2;
  * @base EchoApp.Component
  */
 EchoApp.TextField = function(renderId) {
-    EchoApp.Component.call(this, "TextField", renderId);
+    EchoApp.Component.call(this, renderId);
+    this.componentType = "TextField";
 };
 
 EchoApp.TextField.prototype = new EchoApp.Component;
@@ -2566,7 +2583,8 @@ EchoApp.TextField.prototype = new EchoApp.Component;
  */
 EchoApp.WindowPane = function(renderId) {
     this.floatingPane = this.pane = true;
-    EchoApp.Component.call(this, "WindowPane", renderId);
+    EchoApp.Component.call(this, renderId);
+    this.componentType = "WindowPane";
 };
 
 EchoApp.WindowPane.prototype = new EchoApp.Component;
@@ -2594,6 +2612,7 @@ EchoApp.WindowPane.DEFAULT_MINIMUM_HEIGHT = new EchoApp.Property.Extent("100px")
 EchoApp.ComponentFactory.registerType("Button", EchoApp.Button);
 EchoApp.ComponentFactory.registerType("CheckBox", EchoApp.CheckBox);
 EchoApp.ComponentFactory.registerType("Column", EchoApp.Column);
+EchoApp.ComponentFactory.registerType("ContentPane", EchoApp.ContentPane);
 EchoApp.ComponentFactory.registerType("Label", EchoApp.Label);
 EchoApp.ComponentFactory.registerType("ListBox", EchoApp.ListBox);
 EchoApp.ComponentFactory.registerType("RadioButton", EchoApp.RadioButton);
