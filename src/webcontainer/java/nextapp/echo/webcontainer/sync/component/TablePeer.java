@@ -81,8 +81,8 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
      */
     public static final Service LIST_SELECTION_MODEL_SERVICE = JavaScriptService.forResource("Echo.ListSelectionModel", 
             "/nextapp/echo/webcontainer/resource/js/Application.ListSelectionModel.js");
-    private static final Service TABLE_SERVICE = JavaScriptService.forResource("Echo.Table", 
-            "/nextapp/echo/webcontainer/resource/js/Render.Table.js");
+    private static final Service TABLE_SERVICE = JavaScriptService.forResource("Echo.RemoteTable", 
+            "/nextapp/echo/webcontainer/resource/js/Render.RemoteTable.js");
     
     private static final String[] EVENT_TYPES_ACTION = new String[] { Table.INPUT_ACTION };
     
@@ -110,6 +110,13 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
         addOutputProperty(PROPERTY_SELECTION_MODE);
     }
     
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType()
+     */
+    public String getClientComponentType() {
+        return "RemoteTable";
+    }
+
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getComponentClass()
      */

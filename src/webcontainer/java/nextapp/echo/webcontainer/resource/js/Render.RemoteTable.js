@@ -1,30 +1,30 @@
 // FIXME handle enabled/disabled state
 
 /**
- * Component rendering peer: Table
+ * Component rendering peer: RemoteTable
  */
-EchoRender.ComponentSync.Table = function() {
+EchoRender.ComponentSync.RemoteTable = function() {
     this.selectionModel = null;
     this.lastSelectedIndex = null;
 };
 
-EchoRender.ComponentSync.Table.prototype = new EchoRender.ComponentSync;
+EchoRender.ComponentSync.RemoteTable.prototype = new EchoRender.ComponentSync;
 
-EchoRender.ComponentSync.Table._HEADER_ROW = -1;
+EchoRender.ComponentSync.RemoteTable._HEADER_ROW = -1;
 
 /**
  * A string of periods used for the IE 100% table width workaround.
  */
-EchoRender.ComponentSync.Table._SIZING_DOTS = ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . "
+EchoRender.ComponentSync.RemoteTable._SIZING_DOTS = ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . "
             + ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ";
 
-EchoRender.ComponentSync.Table._supportedPartialProperties = new Array("selection");
+EchoRender.ComponentSync.RemoteTable._supportedPartialProperties = new Array("selection");
 
-EchoRender.ComponentSync.Table.prototype.getContainerElement = function(component) {
+EchoRender.ComponentSync.RemoteTable.prototype.getContainerElement = function(component) {
     return this._childIdToElementMap[component.renderId];
 };
 
-EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElement) {
+EchoRender.ComponentSync.RemoteTable.prototype.renderAdd = function(update, parentElement) {
     this._columnCount = this.component.getRenderProperty("columnCount");
     this._rowCount = this.component.getRenderProperty("rowCount");
     this._selectionEnabled = this.component.getRenderProperty("selectionEnabled");
@@ -111,7 +111,7 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
     var trPrototype = this._createRowPrototype();
     
     if (this._headerVisible) {
-        this._tbodyElement.appendChild(this._renderRow(update, EchoRender.ComponentSync.Table._HEADER_ROW, trPrototype));
+        this._tbodyElement.appendChild(this._renderRow(update, EchoRender.ComponentSync.RemoteTable._HEADER_ROW, trPrototype));
     }
     for (var rowIndex = 0; rowIndex < this._rowCount; rowIndex++) {
         this._tbodyElement.appendChild(this._renderRow(update, rowIndex, trPrototype));
@@ -130,7 +130,7 @@ EchoRender.ComponentSync.Table.prototype.renderAdd = function(update, parentElem
 /**
  * Renders the IE 100% table width workaround, only call this method when the workaround should be applied.
  */
-EchoRender.ComponentSync.Table.prototype._render100PercentWidthWorkaround = function() {
+EchoRender.ComponentSync.RemoteTable.prototype._render100PercentWidthWorkaround = function() {
     if (this._tableElement.rows.length == 0) {
         return;
     }
@@ -140,7 +140,7 @@ EchoRender.ComponentSync.Table.prototype._render100PercentWidthWorkaround = func
         sizingDivElement.style.fontSize = "50px";
         sizingDivElement.style.height = "0px";
         sizingDivElement.style.overflow = "hidden";
-        sizingDivElement.appendChild(document.createTextNode(EchoRender.ComponentSync.Table._SIZING_DOTS));
+        sizingDivElement.appendChild(document.createTextNode(EchoRender.ComponentSync.RemoteTable._SIZING_DOTS));
         columns[i].appendChild(sizingDivElement);
     }
 };
@@ -150,7 +150,7 @@ EchoRender.ComponentSync.Table.prototype._render100PercentWidthWorkaround = func
  *
  * @param rowIndex {Number} the index of the row
  */
-EchoRender.ComponentSync.Table.prototype._renderRowStyle = function(rowIndex) {
+EchoRender.ComponentSync.RemoteTable.prototype._renderRowStyle = function(rowIndex) {
     var tableRowIndex = rowIndex + (this._headerVisible ? 1 : 0);
     if (tableRowIndex >= this._tbodyElement.childNodes.length) {
         return;
@@ -188,10 +188,10 @@ EchoRender.ComponentSync.Table.prototype._renderRowStyle = function(rowIndex) {
  *        styles applied (This is created by _renderRowStyle().  Providing this attribute is optional,
  *        and is specified for performance reasons.  If omitted one is created automatically.)
  */
-EchoRender.ComponentSync.Table.prototype._renderRow = function(update, rowIndex, trPrototype) {
+EchoRender.ComponentSync.RemoteTable.prototype._renderRow = function(update, rowIndex, trPrototype) {
     var trElement = trPrototype ? trPrototype.cloneNode(true) : this._createRowPrototype();
     
-    if (rowIndex != EchoRender.ComponentSync.Table._HEADER_ROW && (this._selectionEnabled || this._rolloverEnabled)) {
+    if (rowIndex != EchoRender.ComponentSync.RemoteTable._HEADER_ROW && (this._selectionEnabled || this._rolloverEnabled)) {
         trElement.id = this.component.renderId + "_tr_" + rowIndex; 
     }
     
@@ -218,7 +218,7 @@ EchoRender.ComponentSync.Table.prototype._renderRow = function(update, rowIndex,
     return trElement;
 };
 
-EchoRender.ComponentSync.Table.prototype._createRowPrototype = function() {
+EchoRender.ComponentSync.RemoteTable.prototype._createRowPrototype = function() {
     var trElement = document.createElement("tr");
 
     var tdPrototype = document.createElement("td");
@@ -233,9 +233,9 @@ EchoRender.ComponentSync.Table.prototype._createRowPrototype = function() {
     return trElement;
 };
 
-EchoRender.ComponentSync.Table.prototype.renderUpdate = function(update) {
+EchoRender.ComponentSync.RemoteTable.prototype.renderUpdate = function(update) {
 	if (!update.hasUpdatedLayoutDataChildren() && !update.getAddedChildren() && !update.getRemovedChildren()) {
-		if (EchoCore.Arrays.containsAll(EchoRender.ComponentSync.Table._supportedPartialProperties, update.getUpdatedPropertyNames())) {
+		if (EchoCore.Arrays.containsAll(EchoRender.ComponentSync.RemoteTable._supportedPartialProperties, update.getUpdatedPropertyNames())) {
 		    // partial update
 			var selectionUpdate = update.getUpdatedProperty("selection");
 			if (selectionUpdate) {
@@ -253,7 +253,7 @@ EchoRender.ComponentSync.Table.prototype.renderUpdate = function(update) {
     return true;
 };
 
-EchoRender.ComponentSync.Table.prototype.renderDispose = function(update) {
+EchoRender.ComponentSync.RemoteTable.prototype.renderDispose = function(update) {
     if (this._rolloverEnabled || this._selectionEnabled) {
         var trElement = this._tbodyElement.firstChild;
         if (this._headerVisible) {
@@ -271,7 +271,7 @@ EchoRender.ComponentSync.Table.prototype.renderDispose = function(update) {
     this._childIdToElementMap = null;
 };
 
-EchoRender.ComponentSync.Table.prototype._getRowIndex = function(element) {
+EchoRender.ComponentSync.RemoteTable.prototype._getRowIndex = function(element) {
     var testElement = this._tbodyElement.firstChild;
     var index = this._headerVisible ? -1 : 0;
     while (testElement) {
@@ -290,7 +290,7 @@ EchoRender.ComponentSync.Table.prototype._getRowIndex = function(element) {
  * @param {String} value the value of the selection property
  * @param {Boolean} clearPrevious if the previous selection state should be overwritten
  */
-EchoRender.ComponentSync.Table.prototype._setSelectedFromProperty = function(value, clearPrevious) {
+EchoRender.ComponentSync.RemoteTable.prototype._setSelectedFromProperty = function(value, clearPrevious) {
 	if (value == this.selectionModel.getSelectionString()) {
 		return;
 	}
@@ -312,7 +312,7 @@ EchoRender.ComponentSync.Table.prototype._setSelectedFromProperty = function(val
  * @param {Number} rowIndex the index of the row
  * @param {Boolean} newValue the new selection state
  */
-EchoRender.ComponentSync.Table.prototype._setSelected = function(rowIndex, newValue) {
+EchoRender.ComponentSync.RemoteTable.prototype._setSelected = function(rowIndex, newValue) {
     this.selectionModel.setSelectedIndex(rowIndex, newValue);
     this._renderRowStyle(rowIndex);
 };
@@ -320,7 +320,7 @@ EchoRender.ComponentSync.Table.prototype._setSelected = function(rowIndex, newVa
 /**
  * Deselects all selected rows.
  */
-EchoRender.ComponentSync.Table.prototype._clearSelected = function() {
+EchoRender.ComponentSync.RemoteTable.prototype._clearSelected = function() {
     for (var i = 0; i < this._rowCount; ++i) {
         if (this.selectionModel.isSelectedIndex(i)) {
             this._setSelected(i, false);
@@ -333,7 +333,7 @@ EchoRender.ComponentSync.Table.prototype._clearSelected = function() {
 /**
  * Adds event listeners.
  */
-EchoRender.ComponentSync.Table.prototype._addEventListeners = function() {
+EchoRender.ComponentSync.RemoteTable.prototype._addEventListeners = function() {
     /*
     if (!this.component.getRenderProperty("enabled")) {
     	return;
@@ -366,11 +366,11 @@ EchoRender.ComponentSync.Table.prototype._addEventListeners = function() {
     }    
 };
 
-EchoRender.ComponentSync.Table.prototype._doAction = function() {
+EchoRender.ComponentSync.RemoteTable.prototype._doAction = function() {
     this.component.fireEvent(new EchoCore.Event(this.component, "action"));
 };
 
-EchoRender.ComponentSync.Table.prototype._processClick = function(e) {
+EchoRender.ComponentSync.RemoteTable.prototype._processClick = function(e) {
     if (!this.component.isActive()) {
         return;
     }
@@ -409,7 +409,7 @@ EchoRender.ComponentSync.Table.prototype._processClick = function(e) {
     this._doAction();
 };
 
-EchoRender.ComponentSync.Table.prototype._processRolloverEnter = function(e) {
+EchoRender.ComponentSync.RemoteTable.prototype._processRolloverEnter = function(e) {
     if (!this.component.isActive()) {
         return;
     }
@@ -430,7 +430,7 @@ EchoRender.ComponentSync.Table.prototype._processRolloverEnter = function(e) {
     }
 };
 
-EchoRender.ComponentSync.Table.prototype._processRolloverExit = function(e) {
+EchoRender.ComponentSync.RemoteTable.prototype._processRolloverExit = function(e) {
     if (!this.component.isActive()) {
         return;
     }
@@ -443,4 +443,4 @@ EchoRender.ComponentSync.Table.prototype._processRolloverExit = function(e) {
     this._renderRowStyle(rowIndex);
 };
 
-EchoRender.registerPeer("Table", EchoRender.ComponentSync.Table);
+EchoRender.registerPeer("RemoteTable", EchoRender.ComponentSync.RemoteTable);
