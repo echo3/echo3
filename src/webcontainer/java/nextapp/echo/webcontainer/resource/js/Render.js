@@ -267,26 +267,32 @@ EchoRender.ComponentSync.prototype.renderUpdate = function(update) {
 };
 
 /**
- * Component rendering peer: Root (not managed by server)
+ * Component rendering peer: Root
+ * 
+ * The root component is not managed by the server, but rather is an existing
+ * element within which the Echo application is rendered.
+ * This is a very special case in that there is no renderAdd() method.
  */
 EchoRender.ComponentSync.Root = function() { };
 
 EchoRender.ComponentSync.Root.prototype = new EchoRender.ComponentSync;
 
 EchoRender.ComponentSync.Root.prototype.getContainerElement = function(component) {
-    return document.getElementById(this.component.renderId);
+    return this._rootElement;
 };
 
 EchoRender.ComponentSync.Root.prototype.renderDispose = function(update) {
+    this._rootElement = null;
 };
 
 EchoRender.ComponentSync.Root.prototype.renderUpdate = function(update) {
-    var rootElement = document.getElementById(update.parent.renderId);
-    EchoWebCore.DOM.removeAllChildren(rootElement);
+    if (!this._rootElement) {
+        this._rootElement = document.getElementById(update.parent.renderId);
+    }
+    EchoWebCore.DOM.removeAllChildren(this._rootElement);
 
-    var rootElement = document.getElementById(update.parent.renderId);
     for (var i = 0; i < update.parent.children.length; ++i) {
-        EchoRender.renderComponentAdd(update, update.parent.children[i], rootElement);
+        EchoRender.renderComponentAdd(update, update.parent.children[i], this._rootElement);
     }
     return true;
 };

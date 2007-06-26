@@ -180,6 +180,7 @@ public class OutputProcessor {
                 throw new IllegalStateException("No content to render: default window has no content.");
             }
             Element addElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "add");
+            //FIXME. Specific reference to c_root.
             addElement.setAttribute("i", "c_root");
             renderComponentState(addElement, content);
         } else {
