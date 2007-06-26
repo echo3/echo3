@@ -18,6 +18,9 @@ EchoRemoteClient = function(serverUrl, domainElementId) {
     this._storeUpdates = false;
     this._updateManager = this.application.updateManager;
     
+    /**
+     * Mapping between shorthand URL codes and replacement values.
+     */
     this._urlMappings = new EchoCore.Collections.Map();
     this._urlMappings.put("S", this._serverUrl + "?sid=Echo.StreamImage&imageuid=");
     
@@ -26,6 +29,12 @@ EchoRemoteClient = function(serverUrl, domainElementId) {
     EchoRemoteClient._activeClients.push(this);
 };
 
+/**
+ * Converts a shorthand URL into a valid full-length URL.
+ *
+ * @param url the shorthand URL to process
+ * @return the full-length valid URL
+ */
 EchoRemoteClient.prototype.processUrl = function(url) {
     if (url.charAt(0) == "!") {
         var endIndex = url.indexOf("!", 1);
