@@ -257,7 +257,7 @@ EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) 
     EchoRender.Property.Color.renderComponentProperty(this.component, fgProperty, null, this._divElement, "color");
     
     if (this._iconElement) {
-	    var icon = this.component.getRenderProperty(rolloverState ? "focusedIcon" : "icon");
+	    var icon = this.component.getRenderProperty(focusState ? "focusedIcon" : "icon");
 	    if (icon) {
 		    this._iconElement.src = icon.url;
 	    }
