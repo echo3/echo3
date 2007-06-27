@@ -91,6 +91,7 @@ EchoRender.renderComponentAdd = function(update, component, parentElement) {
  * Recursively performs this action on all child components.
  * This method should be invoked by any peer that will be updating a component in such
  * a fashion that it will be destroying the rendering of its children and re-rendering them.
+ * It is not necessary to invoke this method on components that may not contain children.
  *
  * @param update the <code>ComponentUpdate</code> for which this change is being performed
  * @param component the <code>Component</code> to be disposed.

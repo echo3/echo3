@@ -54,7 +54,7 @@ EchoRender.ComponentSync.TextComponent.prototype._processKeyUp = function(e) {
 EchoRender.ComponentSync.TextComponent.prototype.renderUpdate = function(update) {
     var element = this._textComponentElement;
     var containerElement = element.parentNode;
-    EchoRender.renderComponentDispose(update, update.parent);
+    this.renderDispose(update);
     containerElement.removeChild(element);
     this.renderAdd(update, containerElement);
     return false; // Child elements not supported: safe to return false.
