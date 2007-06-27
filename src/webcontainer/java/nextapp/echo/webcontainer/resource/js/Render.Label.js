@@ -13,10 +13,6 @@ EchoRender.ComponentSync.Label.prototype._createSingleItemSpanElement = function
     return spanElement;
 };
 
-EchoRender.ComponentSync.Label.prototype.getElement = function() {
-    return this._labelNode;
-};
-
 EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElement) {
     var icon = this.component.getRenderProperty("icon");
     var text = this.component.getRenderProperty("text");
@@ -78,7 +74,7 @@ EchoRender.ComponentSync.Label.prototype.renderUpdate = function(update) {
     if (this._labelNode) {
         this._labelNode.parentNode.removeChild(this._labelNode);
     }
-    // Note: dispose() is not invoked here because it effecitvely does nothing.
+    // Note: this.renderDispose() is not invoked (it does nothing).
     var containerElement = this.component.parent.peer.getContainerElement(this.component);
     this.renderAdd(update, containerElement);
     return false; // Child elements not supported: safe to return false.
