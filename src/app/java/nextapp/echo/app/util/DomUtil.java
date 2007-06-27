@@ -217,16 +217,16 @@ public class DomUtil {
     //TODO. Doc/final impl/output props/etc.
     public static void save(Document document, OutputStream out, Properties outputProperties) 
     throws SAXException {
-        saveImpl(document, out, outputProperties);
+        saveImpl(document, new StreamResult(out), outputProperties);
     }
     
     //TODO. Doc/final impl/output props/etc.
     public static void save(Document document, PrintWriter w, Properties outputProperties) 
     throws SAXException {
-        saveImpl(document, w, outputProperties);
+        saveImpl(document, new StreamResult(w), outputProperties);
     }
     
-    private static void saveImpl(Document document, Object output, Properties outputProperties) 
+    private static void saveImpl(Document document, StreamResult output, Properties outputProperties) 
     throws SAXException {
         try {
             TransformerFactory tFactory = getTransformerFactory();
@@ -235,13 +235,8 @@ public class DomUtil {
                 transformer.setOutputProperties(outputProperties);
             }
             DOMSource source = new DOMSource(document);
-            StreamResult result;
-            if (output instanceof PrintWriter) {
-                result = new StreamResult((PrintWriter) output);
-            } else {
-                result = new StreamResult((OutputStream) output);
-            }
-            transformer.transform(source, result);
+            
+            transformer.transform(source, output);
         } catch (TransformerException ex) {
             throw new SAXException("Unable to write document to OutputStream: " + ex.toString());
         }
