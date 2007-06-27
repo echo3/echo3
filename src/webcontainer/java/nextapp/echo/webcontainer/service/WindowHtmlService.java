@@ -78,6 +78,13 @@ implements Service {
      */
     public static final String ROOT_ID = "c_root";
     
+    /**
+     * Create a new root window HTML document.
+     * 
+     * @param userInstance the user instance
+     * @param debug flag indicating whether debug capabilities should be enabled
+     * @return the created document
+     */
     private static Document createHtmlDocument(UserInstance userInstance, boolean debug) {
         Document document = DomUtil.createDocument("html", XHTML_1_0_TRANSITIONAL_PUBLIC_ID, 
                 XHTML_1_0_TRANSITIONAL_SYSTSEM_ID, XHTML_1_0_NAMESPACE_URI);
