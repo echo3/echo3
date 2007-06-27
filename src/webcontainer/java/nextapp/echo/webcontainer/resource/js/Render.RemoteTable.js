@@ -20,10 +20,6 @@ EchoRender.ComponentSync.RemoteTable._SIZING_DOTS = ". . . . . . . . . . . . . .
 
 EchoRender.ComponentSync.RemoteTable._supportedPartialProperties = new Array("selection");
 
-EchoRender.ComponentSync.RemoteTable.prototype.getContainerElement = function(component) {
-    return this._childIdToElementMap[component.renderId];
-};
-
 EchoRender.ComponentSync.RemoteTable.prototype.renderAdd = function(update, parentElement) {
     this._columnCount = this.component.getRenderProperty("columnCount");
     this._rowCount = this.component.getRenderProperty("rowCount");
@@ -106,8 +102,6 @@ EchoRender.ComponentSync.RemoteTable.prototype.renderAdd = function(update, pare
     
     parentElement.appendChild(this._tableElement);
     
-    this._childIdToElementMap = new Object();
-
     var trPrototype = this._createRowPrototype();
     
     if (this._headerVisible) {
@@ -200,7 +194,6 @@ EchoRender.ComponentSync.RemoteTable.prototype._renderRow = function(update, row
     
     while (columnIndex < this._columnCount) {
         var child = this.component.getComponent((rowIndex + (this._headerVisible ? 1 : 0)) * this._columnCount + columnIndex);
-        this._childIdToElementMap[child.renderId] = tdElement;
         var layoutData = child.getRenderProperty("layoutData");
         
         if (layoutData) {
@@ -268,7 +261,6 @@ EchoRender.ComponentSync.RemoteTable.prototype.renderDispose = function(update) 
     this._tableElement.id = "";
     this._tableElement = null;
     this._tbodyElement = null;
-    this._childIdToElementMap = null;
 };
 
 EchoRender.ComponentSync.RemoteTable.prototype._getRowIndex = function(element) {

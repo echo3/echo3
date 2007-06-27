@@ -29,10 +29,6 @@ EchoRender.ComponentSync.Row._createRowPrototype = function() {
 
 EchoRender.ComponentSync.Row._rowPrototype = EchoRender.ComponentSync.Row._createRowPrototype();
 
-EchoRender.ComponentSync.Row.prototype.getContainerElement = function(component) {
-    return this._childIdToElementMap[component.renderId];
-};
-
 EchoRender.ComponentSync.Row.prototype.processKeyDown = function(e) { 
     switch (e.keyCode) {
     case 37:

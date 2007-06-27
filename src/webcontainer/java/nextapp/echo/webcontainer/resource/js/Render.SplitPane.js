@@ -77,11 +77,6 @@ EchoRender.ComponentSync.SplitPane.prototype.renderDispose = function(update) {
     this._splitPaneDivElement = null;
 };
 
-EchoRender.ComponentSync.SplitPane.prototype.getContainerElement = function(component) {
-    var index = this._getRenderedChildIndex(component);
-    return index == 0 ? this._firstPaneDivElement : this._secondPaneDivElement;
-};
-
 EchoRender.ComponentSync.SplitPane.prototype.loadRenderData = function() {
     var orientation = this.component.getRenderProperty("orientation", 
             EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING);

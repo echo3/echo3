@@ -24,13 +24,7 @@ EchoRender.ComponentSync.Grid._createPrototypeTable = function() {
 
 EchoRender.ComponentSync.Grid._prototypeTable = EchoRender.ComponentSync.Grid._createPrototypeTable();
 
-EchoRender.ComponentSync.Grid.prototype.getContainerElement = function(component) {
-    return this._childIdToElementMap[component.renderId];
-};
-
 EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentElement) {
-    this._childIdToElementMap = new Object();
-
     var gridProcessor = new EchoRender.ComponentSync.Grid.Processor(this.component);
     
     var columnCount = gridProcessor.getColumnCount();
@@ -133,7 +127,6 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
                 EchoRender.Property.Color.renderComponentProperty(layoutData, "background", "", tdElement, "backgroundColor");
             }
             
-            this._childIdToElementMap[cell.component.renderId] = tdElement;
             EchoRender.renderComponentAdd(update, cell.component, tdElement);
 
             trElement.appendChild(tdElement);
@@ -146,7 +139,6 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
 EchoRender.ComponentSync.Grid.prototype.renderDispose = function(update) {
     this._tableElement.id = "";
     this._tableElement = null;
-    this._childIdToElementMap = null;
 };
 
 EchoRender.ComponentSync.Grid.prototype.renderUpdate = function(update) {

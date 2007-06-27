@@ -12,10 +12,6 @@ EchoRender.ComponentSync.WindowPane.ADJUSTMENT_OPACITY = 0.75;
 
 EchoRender.ComponentSync.WindowPane.adjustOpacity = false;
 
-EchoRender.ComponentSync.WindowPane.prototype.getContainerElement = function(component) {
-    return this._contentDivElement;
-};
-
 EchoRender.ComponentSync.WindowPane.prototype._loadContainerSize = function() {
     //FIXME. the "parentnode.parentnode" business needs to go.
     this._containerSize = new EchoWebCore.Render.Measure(this._windowPaneDivElement.parentNode.parentNode);

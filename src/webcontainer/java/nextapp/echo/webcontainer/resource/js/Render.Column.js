@@ -6,10 +6,6 @@ EchoRender.ComponentSync.Column = function() {
   
 EchoRender.ComponentSync.Column.prototype = new EchoRender.ComponentSync;
 
-EchoRender.ComponentSync.Column.prototype.getContainerElement = function(component) {
-    return this._childIdToElementMap[component.renderId];
-};
-
 EchoRender.ComponentSync.Column.prototype.processKeyDown = function(e) { 
     switch (e.keyCode) {
     case 38:

@@ -5,10 +5,6 @@ EchoRender.ComponentSync.ContentPane = function() { };
 
 EchoRender.ComponentSync.ContentPane.prototype = new EchoRender.ComponentSync;
 
-EchoRender.ComponentSync.ContentPane.prototype.getContainerElement = function(component) {
-    return this._childIdToElementMap[component.renderId];
-};
-
 EchoRender.ComponentSync.ContentPane.prototype.renderAdd = function(update, parentElement) {
     this._divElement = document.createElement("div");
     this._divElement.id = this.component.renderId;

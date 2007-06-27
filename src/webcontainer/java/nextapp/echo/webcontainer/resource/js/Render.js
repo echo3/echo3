@@ -245,12 +245,8 @@ EchoRender.processUpdates = function(updateManager) {
 
 EchoRender.ComponentSync = function() { };
 
-EchoRender.ComponentSync.prototype.getContainerElement = function(component) {
-    throw new Error("Operation \"getContainerElement\" not supported (Component: " + this.component + ").");
-};
-
 EchoRender.ComponentSync.prototype.init = function() {
-//    throw new Error("Operation \"renderAdd\" not supported (Component: " + this.component + ").");
+
 };
 
 EchoRender.ComponentSync.prototype.renderAdd = function(update, parentElement) {
@@ -278,10 +274,6 @@ EchoRender.ComponentSync.prototype.renderUpdate = function(update) {
 EchoRender.ComponentSync.Root = function() { };
 
 EchoRender.ComponentSync.Root.prototype = new EchoRender.ComponentSync;
-
-EchoRender.ComponentSync.Root.prototype.getContainerElement = function(component) {
-    return this._rootElement;
-};
 
 EchoRender.ComponentSync.Root.prototype.renderDispose = function(update) {
     this._rootElement = null;
