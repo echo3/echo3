@@ -45,7 +45,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -97,6 +99,25 @@ public class DomUtil {
         }
     };
     
+    /**
+     * Creates a new document.
+     * 
+     * @param qualifiedName the qualified name of the document type to be 
+     *        created
+     * @param publicId the external subset public identifier
+     * @param systemId the external subset system identifier
+     * @param namespaceUri the namespace URI of the document element to create
+     */
+    public static Document createDocument(String qualifiedName, String publicId, String systemId, String namespaceUri) {
+        DOMImplementation dom = DomUtil.getDocumentBuilder().getDOMImplementation();
+        DocumentType docType = dom.createDocumentType(qualifiedName, publicId, systemId);
+        Document document = dom.createDocument(namespaceUri, qualifiedName, docType);
+        if (namespaceUri != null) {
+            document.getDocumentElement().setAttribute("xmlns", namespaceUri);
+        }
+        return document;
+    }
+
     /**
      * Retrieves a thread-specific <code>DocumentBuilder</code>.
      * 

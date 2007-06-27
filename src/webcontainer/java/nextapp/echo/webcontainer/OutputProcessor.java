@@ -129,7 +129,7 @@ public class OutputProcessor {
      *         rendered to the client
      */
     private boolean isRendered(Context context, Component component) {
-        //FIXME. This code is 100% untested in Echo3.
+        //FIXME. This code is 99% untested in Echo3.
         Component parent = component.getParent();
         if (parent == null) {
             return true;
@@ -150,8 +150,11 @@ public class OutputProcessor {
         try {
             processServerOutput();
             conn.setContentType(ContentType.TEXT_XML);
-            serverMessage.render(conn.getWriter());
+            DomUtil.save(serverMessage.getDocument(), conn.getWriter(), null);
         } catch (SerialException ex) {
+            //FIXME. Bad exception handling.
+            throw new IOException(ex.toString());
+        } catch (SAXException ex) {
             //FIXME. Bad exception handling.
             throw new IOException(ex.toString());
         }
@@ -229,6 +232,7 @@ public class OutputProcessor {
                     SortedMap indexedComponents = new TreeMap();
                     for (int j = 0; j < addedChildren.length; ++j) {
                         Component addedChild = addedChildren[j];
+                        //FIXME. do not render lazy-rendered components.
                         indexedComponents.put(new Integer((parentComponent.visibleIndexOf(addedChild))), addedChild);
                     }
                     Iterator indexedComponentsIter = indexedComponents.entrySet().iterator();
@@ -300,6 +304,7 @@ public class OutputProcessor {
         }
         
         // Render child components.
+        //FIXME do not render lazy components as well.
         Component[] children = c.getVisibleComponents();
         for (int i = 0; i < children.length; ++i) {
             renderComponentState(cElement, children[i]);

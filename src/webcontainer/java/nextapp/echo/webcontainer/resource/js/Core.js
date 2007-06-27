@@ -78,12 +78,13 @@ EchoCore.Arrays.removeDuplicates = function(array) {
  *
  * @param {Array} array1 array to be checked for containment
  * @param {Array} array2 array to be checked for containment in the first array
+ * @param {Boolean} optional flag indicating that all elements in array2 are unique
  * @return <tt>true</tt> if the first array contains all of the elements
  *	       in the second array
  * @type Boolean
  */
-EchoCore.Arrays.containsAll = function(array1, array2) {
-	if (array1.length < array2.length) {
+EchoCore.Arrays.containsAll = function(array1, array2, unique) {
+	if (unique && array1.length < array2.length) {
 		return false;
 	}
 	if (array2.length == 0) {

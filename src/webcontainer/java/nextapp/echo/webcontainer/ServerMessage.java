@@ -7,13 +7,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import nextapp.echo.webcontainer.output.XmlDocument;
+import nextapp.echo.app.util.DomUtil;
 
 /**
  * The outgoing XML message which synchronizes the state of the client to that
  * of the server.
  */
-public class ServerMessage extends XmlDocument {
+public class ServerMessage {
     
     /**
      * Constant for the "init" message part group. Message parts in this group are
@@ -39,13 +39,18 @@ public class ServerMessage extends XmlDocument {
 
     /** Root DOM <code>server-message</code> element. */
     private Element serverMessageElement;
+    
+    /**
+     * The XML DOM.
+     */
+    private Document document;
 
     /**
      * Creates a new <code>ServerMessage</code>.
      */
     public ServerMessage() {
-        super("smsg", null, null, "http://www.nextapp.com/products/echo/svrmsg/servermessage.3.0");
-        Document document = getDocument();
+        super();
+        document = DomUtil.createDocument("smsg", null, null, "http://www.nextapp.com/products/echo/svrmsg/servermessage.3.0");
         serverMessageElement = document.getDocumentElement();
         librariesElement = document.createElement("libs");
         serverMessageElement.appendChild(librariesElement);
@@ -68,7 +73,7 @@ public class ServerMessage extends XmlDocument {
         if (addedLibraries.contains(serviceId)) {
             return;
         }
-        Element libraryElement = getDocument().createElement("lib");
+        Element libraryElement = document.createElement("lib");
         libraryElement.setAttribute("i", serviceId);
         librariesElement.appendChild(libraryElement);
         addedLibraries.add(serviceId);
@@ -83,7 +88,7 @@ public class ServerMessage extends XmlDocument {
      * @return the created "message-part-group" element.
      */
     public Element addPartGroup(String groupId) {
-        Element messagePartGroupElement = getDocument().createElement("group");
+        Element messagePartGroupElement = document.createElement("group");
         messagePartGroupElement.setAttribute("i", groupId);
         serverMessageElement.appendChild(messagePartGroupElement);
         return messagePartGroupElement;
@@ -120,7 +125,7 @@ public class ServerMessage extends XmlDocument {
      */
     public Element addDirective(String groupId, String processor) {
         Element messagePartGroupElement = getPartGroup(groupId);
-        Element messagePartElement = getDocument().createElement("dir");
+        Element messagePartElement = document.createElement("dir");
         messagePartElement.setAttribute("proc", processor);
         messagePartGroupElement.appendChild(messagePartElement);
         return messagePartElement;
@@ -153,9 +158,18 @@ public class ServerMessage extends XmlDocument {
             messagePartElement = addDirective(groupId, processor);
         }
         
-        Element directiveElement = getDocument().createElement(directiveName);
+        Element directiveElement = document.createElement(directiveName);
         messagePartElement.appendChild(directiveElement);
         return directiveElement;
+    }
+
+    /**
+     * Returns the XML DOM.
+     * 
+     * @return the XML DOM
+     */
+    public Document getDocument() {
+        return document;
     }
     
     /**

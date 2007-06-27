@@ -30,11 +30,17 @@
 package nextapp.echo.webcontainer.service;
 
 import java.io.IOException;
+import java.util.Properties;
 
+import javax.xml.transform.OutputKeys;
+
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
 
 import nextapp.echo.app.ApplicationInstance;
-import nextapp.echo.webcontainer.BaseHtmlDocument;
+import nextapp.echo.app.util.DomUtil;
 import nextapp.echo.webcontainer.Connection;
 import nextapp.echo.webcontainer.ContentType;
 import nextapp.echo.webcontainer.Service;
@@ -48,12 +54,78 @@ import nextapp.echo.webcontainer.WebContainerServlet;
 public class WindowHtmlService 
 implements Service {
     
+    public static final String XHTML_1_0_TRANSITIONAL_PUBLIC_ID = "-//W3C//DTD XHTML 1.0 Transitional//EN";
+    public static final String XHTML_1_0_TRANSITIONAL_SYSTSEM_ID = "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd";
+    public static final String XHTML_1_0_NAMESPACE_URI = "http://www.w3.org/1999/xhtml";
+
+    /**
+     * <code>OutputProperties</code> used for XML transformation.
+     */
+    private static final Properties OUTPUT_PROPERTIES = new Properties();
+    static {
+        // The XML declaration is omitted as Internet Explorer 6 will operate in quirks mode if it is present.
+        OUTPUT_PROPERTIES.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        OUTPUT_PROPERTIES.setProperty(OutputKeys.INDENT, "yes");
+        
+        OUTPUT_PROPERTIES.setProperty(OutputKeys.DOCTYPE_PUBLIC, XHTML_1_0_TRANSITIONAL_PUBLIC_ID);
+        OUTPUT_PROPERTIES.setProperty(OutputKeys.DOCTYPE_SYSTEM, XHTML_1_0_TRANSITIONAL_SYSTSEM_ID);
+    }
+    
     public static final WindowHtmlService INSTANCE = new WindowHtmlService();
 
     /**
      * Root element identifier.
      */
     public static final String ROOT_ID = "c_root";
+    
+    private static Document createHtmlDocument(UserInstance userInstance, boolean debug) {
+        Document document = DomUtil.createDocument("html", XHTML_1_0_TRANSITIONAL_PUBLIC_ID, 
+                XHTML_1_0_TRANSITIONAL_SYSTSEM_ID, XHTML_1_0_NAMESPACE_URI);
+        
+        Element htmlElement = document.getDocumentElement();
+
+        Element headElement = document.createElement("head");
+        htmlElement.appendChild(headElement);
+        
+        Element metaGeneratorElement = document.createElement("meta");
+        metaGeneratorElement.setAttribute("name", "generator");
+        metaGeneratorElement.setAttribute("content", ApplicationInstance.ID_STRING);
+        headElement.appendChild(metaGeneratorElement);
+
+        Element titleElement = document.createElement("title");
+        titleElement.appendChild(document.createTextNode(" "));
+        headElement.appendChild(titleElement);
+        
+        Element styleElement = document.createElement("style");
+        styleElement.setAttribute("type", "text/css");
+        styleElement.appendChild(document.createTextNode(" "));
+        headElement.appendChild(styleElement);
+
+        Element scriptElement = document.createElement("script");
+        Text textNode = document.createTextNode(" ");
+        scriptElement.appendChild(textNode);
+        scriptElement.setAttribute("type", "text/javascript");
+        scriptElement.setAttribute("src", userInstance.getServiceUri(BootService.SERVICE));
+        headElement.appendChild(scriptElement);
+        
+        Element bodyElement = document.createElement("body");
+        bodyElement.setAttribute("id", "body");
+        bodyElement.setAttribute("onload", "EchoBoot.boot('" + userInstance.getServletUri() + "', " 
+                + debug + ");");
+        bodyElement.setAttribute("style",
+                "position: absolute; font-family: verdana, arial, helvetica, sans-serif; "
+                + "font-size: 10pt; height: 100%; width: 100%; padding: 0px; margin: 0px; overflow: hidden;");
+        htmlElement.appendChild(bodyElement);
+        
+        Element formElement = document.createElement("form");
+        formElement.setAttribute("style", "padding:0px;margin:0px;");
+        formElement.setAttribute("action", "#");
+        formElement.setAttribute("id", ROOT_ID);
+        formElement.setAttribute("onsubmit", "return false;");
+        bodyElement.appendChild(formElement);
+        
+        return document;
+    }
     
     /**
      * @see Service#getId()
@@ -73,27 +145,16 @@ implements Service {
      * @see Service#service(nextapp.echo.webcontainer.Connection)
      */
     public void service(Connection conn) throws IOException {
-        UserInstance instance = (UserInstance) conn.getUserInstance();
-        conn.setContentType(ContentType.TEXT_HTML);
-        
-        boolean debug = !("false".equals(conn.getServlet().getInitParameter("echo.debug")));
-
-        BaseHtmlDocument baseDoc = new BaseHtmlDocument(ROOT_ID);
-        baseDoc.setGenarator(ApplicationInstance.ID_STRING);
-        baseDoc.addJavaScriptInclude(instance.getServiceUri(BootService.SERVICE));
-
-        // Add initialization directive.
-        baseDoc.getBodyElement().setAttribute("onload", "EchoBoot.boot('" + instance.getServletUri() + "', " 
-                + debug + ");");
-        
-        Element bodyElement = baseDoc.getBodyElement(); 
-        
-        // Set body element CSS style.
-        bodyElement.setAttribute("style",
-                "position: absolute; font-family: verdana, arial, helvetica, sans-serif; "
-                + "font-size: 10pt; height: 100%; width: 100%; padding: 0px; margin: 0px; overflow: hidden;");
-        
-        // Render.
-        baseDoc.render(conn.getWriter());
+        try {
+            UserInstance userInstance = (UserInstance) conn.getUserInstance();
+            boolean debug = !("false".equals(conn.getServlet().getInitParameter("echo.debug")));
+            
+            Document document = createHtmlDocument(userInstance, debug);
+            
+            conn.setContentType(ContentType.TEXT_HTML);
+            DomUtil.save(document, conn.getWriter(), OUTPUT_PROPERTIES);
+        } catch (SAXException ex) {
+            throw new IOException("Failed to write HTML document: " + ex);
+        }
     }
 }

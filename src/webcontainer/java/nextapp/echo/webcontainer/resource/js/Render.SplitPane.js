@@ -172,6 +172,9 @@ EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseUp = function
 
     this._removeSeparatorListeners();
     this.component.setProperty("separatorPosition", new EchoApp.Property.Extent(this._separatorPosition));
+    
+    // inform renderer that separatorposition is currently drawn as this._separatorPosition
+    
     this._userSeparatorPosition = this._separatorPosition;
 
     EchoRender.notifyResize(this.component);
