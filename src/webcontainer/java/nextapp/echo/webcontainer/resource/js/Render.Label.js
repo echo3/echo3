@@ -14,6 +14,7 @@ EchoRender.ComponentSync.Label.prototype._createSingleItemSpanElement = function
 };
 
 EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElement) {
+    this._containerElement = parentElement;
     var icon = this.component.getRenderProperty("icon");
     var text = this.component.getRenderProperty("text");
     var foreground = this.component.getRenderProperty("foreground");
@@ -66,7 +67,8 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
     }
 };
 
-EchoRender.ComponentSync.Label.prototype.renderDispose = function(update) { 
+EchoRender.ComponentSync.Label.prototype.renderDispose = function(update) {
+    this._containerElement = null;
     this._labelNode = null;
 };
 
@@ -75,8 +77,7 @@ EchoRender.ComponentSync.Label.prototype.renderUpdate = function(update) {
         this._labelNode.parentNode.removeChild(this._labelNode);
     }
     // Note: this.renderDispose() is not invoked (it does nothing).
-    var containerElement = this.component.parent.peer.getContainerElement(this.component);
-    this.renderAdd(update, containerElement);
+    this.renderAdd(update, this._containerElement);
     return false; // Child elements not supported: safe to return false.
 };
 
