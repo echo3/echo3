@@ -1,4 +1,4 @@
-// FIXME render enabled/disabled/pressed/rollover/focus properties
+// FIXME render enabled/disabled effects
 // FIXME TriCellTable orientations
 // FIXME alignment
 
@@ -74,17 +74,15 @@ EchoRender.ComponentSync.Button.prototype._processPress = function(e) {
     if (!this.component.isActive()) {
         return;
     }
-    EchoRender.Property.Color.renderComponentProperty(this.component, "pressedBackground", null, this._divElement, "background");
-    EchoRender.Property.Color.renderComponentProperty(this.component, "pressedForeground", null, this._divElement, "color");
     EchoWebCore.DOM.preventEventDefault(e);
+    this._setPressedState(true);
 };
 
 EchoRender.ComponentSync.Button.prototype._processRelease = function(e) {
     if (!this.component.isActive()) {
         return;
     }
-    EchoRender.Property.Color.renderComponentProperty(this.component, "background", null, this._divElement, "background");
-    EchoRender.Property.Color.renderComponentProperty(this.component, "foreground", null, this._divElement, "color");
+    this._setPressedState(false);
 };
 
 EchoRender.ComponentSync.Button.prototype._processRolloverEnter = function(e) {
@@ -233,61 +231,70 @@ EchoRender.ComponentSync.Button.prototype.renderUpdate = function(update) {
     return false; // Child elements not supported: safe to return false.
 };
 
+EchoRender.ComponentSync.Button.prototype._setPressedState = function(pressedState) {
+    var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "pressedForeground", pressedState);
+    var background = EchoRender.Property.getEffectProperty(this.component, "background", "pressedBackground", pressedState);
+    var backgroundImage = EchoRender.Property.getEffectProperty(this.component, "backgroundImage", "pressedBackgroundImage", pressedState);
+    var font = EchoRender.Property.getEffectProperty(this.component, "font", "pressedFont", pressedState);
+    var border = EchoRender.Property.getEffectProperty(this.component, "border", "pressedBorder", pressedState);
+    
+    EchoRender.Property.Color.renderClear(foreground, this._divElement, "color");
+    EchoRender.Property.Color.renderClear(background, this._divElement, "backgroundColor");
+    EchoRender.Property.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
+    EchoRender.Property.Font.renderClear(font, this._divElement);
+	EchoRender.Property.Border.renderClear(border, this._divElement);
+	
+    if (this._iconElement) {
+    	var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "pressedIcon", pressedState);
+    	if (icon) {
+		    this._iconElement.src = icon.url;
+    	}
+    }
+};
+
 EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) {
     if (!this.component.getRenderProperty("focusedEnabled")) {
     	return;
     }
 
-    var bgProperty = focusState ? "focusedBackground" : "background";
-    var fgProperty = focusState ? "focusedForeground" : "foreground";
+    var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "focusedForeground", focusState);
+    var background = EchoRender.Property.getEffectProperty(this.component, "background", "focusedBackground", focusState);
+    var backgroundImage = EchoRender.Property.getEffectProperty(this.component, "backgroundImage", "focusedBackgroundImage", focusState);
+    var font = EchoRender.Property.getEffectProperty(this.component, "font", "focusedFont", focusState);
+    var border = EchoRender.Property.getEffectProperty(this.component, "border", "focusedBorder", focusState);
     
-    var font;
-    if (focusState) {
-    	font = this.component.getRenderProperty("focusedFont");
-    }
-    if (!font) {
-    	font = this.component.getRenderProperty("font");
-    }
-    if (font) {
-	    EchoRender.Property.Font.render(font, this._divElement);
-    } else {
-	    EchoRender.Property.Font.clear(this._divElement);
-    }
-    EchoRender.Property.Color.renderComponentProperty(this.component, bgProperty, null, this._divElement, "background");
-    EchoRender.Property.Color.renderComponentProperty(this.component, fgProperty, null, this._divElement, "color");
-    
+    EchoRender.Property.Color.renderClear(foreground, this._divElement, "color");
+    EchoRender.Property.Color.renderClear(background, this._divElement, "backgroundColor");
+    EchoRender.Property.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
+    EchoRender.Property.Font.renderClear(font, this._divElement);
+	EchoRender.Property.Border.renderClear(border, this._divElement);
+
     if (this._iconElement) {
-	    var icon = this.component.getRenderProperty(focusState ? "focusedIcon" : "icon");
-	    if (icon) {
+    	var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "focusedIcon", focusState);
+    	if (icon) {
 		    this._iconElement.src = icon.url;
-	    }
+    	}
     }
 };
 
 EchoRender.ComponentSync.Button.prototype._setRolloverState = function(rolloverState) {
-    var bgProperty = rolloverState ? "rolloverBackground" : "background";
-    var fgProperty = rolloverState ? "rolloverForeground" : "foreground";
-
-    var font;
-    if (rolloverState) {
-    	font = this.component.getRenderProperty("rolloverFont");
-    }
-    if (!font) {
-    	font = this.component.getRenderProperty("font");
-    }
-    if (font) {
-	    EchoRender.Property.Font.render(font, this._divElement);
-    } else {
-	    EchoRender.Property.Font.clear(this._divElement);
-    }
-    EchoRender.Property.Color.renderComponentProperty(this.component, bgProperty, null, this._divElement, "background");
-    EchoRender.Property.Color.renderComponentProperty(this.component, fgProperty, null, this._divElement, "color");
+    var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "rolloverForeground", rolloverState);
+    var background = EchoRender.Property.getEffectProperty(this.component, "background", "rolloverBackground", rolloverState);
+    var backgroundImage = EchoRender.Property.getEffectProperty(this.component, "backgroundImage", "rolloverBackgroundImage", rolloverState);
+    var font = EchoRender.Property.getEffectProperty(this.component, "font", "rolloverFont", rolloverState);
+    var border = EchoRender.Property.getEffectProperty(this.component, "border", "rolloverBorder", rolloverState);
     
+    EchoRender.Property.Color.renderClear(foreground, this._divElement, "color");
+    EchoRender.Property.Color.renderClear(background, this._divElement, "backgroundColor");
+    EchoRender.Property.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
+    EchoRender.Property.Font.renderClear(font, this._divElement);
+	EchoRender.Property.Border.renderClear(border, this._divElement);
+
     if (this._iconElement) {
-	    var icon = this.component.getRenderProperty(rolloverState ? "rolloverIcon" : "icon");
-	    if (icon) {
+    	var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "rolloverIcon", rolloverState);
+    	if (icon) {
 		    this._iconElement.src = icon.url;
-	    }
+    	}
     }
 };
 
@@ -322,7 +329,7 @@ EchoRender.ComponentSync.ToggleButton.prototype.renderAdd = function(update, par
 };
 
 EchoRender.ComponentSync.ToggleButton.prototype._getStateIcon = function() {
-	return this.component.getRenderProperty(this._selected ? "selectedStateIcon" : "stateIcon");
+	return EchoRender.Property.getEffectProperty(this.component, "stateIcon", "selectedStateIcon", this._selected);
 };
 
 EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {

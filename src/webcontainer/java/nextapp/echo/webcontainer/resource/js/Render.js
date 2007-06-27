@@ -1,6 +1,3 @@
-// FIXME. Investigate "defaultValue" argument in property rendering peers...currently it is ignored,
-// should be delete it or should we correctly implement it?
-
 /**
  * NAMESPACE: Component Rendering Peers.
  * Do not instantiate.
@@ -433,9 +430,18 @@ EchoRender.Focus._previousSibling = function(component) {
     return component.parent.getComponent(componentIndex - 1);
 };
 
-//FIXME. determine how clearing of previously set properties is handled in property renderers.
-
 EchoRender.Property = function() {
+};
+
+EchoRender.Property.getEffectProperty = function(component, defaultPropertyName, effectPropertyName, effectState) {
+	var property;
+	if (effectState) {
+        property = component.getRenderProperty(effectPropertyName);
+	}
+	if (!property) {
+		property = component.getRenderProperty(defaultPropertyName);
+	}
+	return property;
 };
 
 EchoRender.Property.Alignment = function() { };
@@ -494,21 +500,34 @@ EchoRender.Property.Border._SIDE_RENDER_STRATEGIES
         = new Array(new Array(0, 1, 2, 3), new Array(0, 1, 2, 1), new Array(0, 1, 0, 1), new Array(0, 0, 0, 0));
 
 EchoRender.Property.Border.render = function(border, element) {
-    if (border) {
-        if (border.multisided) {
-            var renderStrategy = EchoRender.Property.Border._SIDE_RENDER_STRATEGIES[4 - border.sides.length];
-            for (var i = 0; i < 4; ++i) {
-                EchoRender.Property.Border.renderSide(border.sides[renderStrategy[i]], element, 
-                        EchoRender.Property.Border._SIDE_STYLE_NAMES[i]);
-            }
-        } else {
-            var color = border.color ? border.color.value : null;
-            element.style.border = EchoRender.Property.Extent.toPixels(border.size) + "px " + border.style + " " 
-                    + (color ? color : "");
+    if (!border) {
+    	return;
+    }
+    if (border.multisided) {
+        var renderStrategy = EchoRender.Property.Border._SIDE_RENDER_STRATEGIES[4 - border.sides.length];
+        for (var i = 0; i < 4; ++i) {
+            EchoRender.Property.Border.renderSide(border.sides[renderStrategy[i]], element, 
+                    EchoRender.Property.Border._SIDE_STYLE_NAMES[i]);
         }
     } else {
-        element.style.border = "";
+        var color = border.color ? border.color.value : null;
+        element.style.border = EchoRender.Property.Extent.toPixels(border.size) + "px " + border.style + " " 
+                + (color ? color : "");
     }
+};
+
+EchoRender.Property.Border.renderClear = function(border, element) {
+	if (border) {
+		EchoRender.Property.Border.render(border, element);
+	} else {
+		element.style.border = "";
+	}
+};
+
+EchoRender.Property.Border.renderComponentProperty = function(component, componentProperty, defaultValue, element) { 
+    var border = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+            : component.getProperty(componentProperty);
+    EchoRender.Property.Border.render(border ? border : defaultValue, element);
 };
 
 EchoRender.Property.Border.renderSide = function(borderSide, element, styleName) {
@@ -520,6 +539,12 @@ EchoRender.Property.Border.renderSide = function(borderSide, element, styleName)
 EchoRender.Property.Color = function() { };
 
 EchoRender.Property.Color.render = function(color, element, styleProperty) {
+	if (color) {
+	    element.style[styleProperty] = color.value;
+	}
+};
+
+EchoRender.Property.Color.renderClear = function(color, element, styleProperty) {
     element.style[styleProperty] = color ? color.value : "";
 };
 
@@ -530,10 +555,13 @@ EchoRender.Property.Color.renderComponentProperty = function(component, componen
 };
 
 EchoRender.Property.Color.renderFB = function(component, element) { 
-    var f = component.getRenderProperty("foreground");
-    element.style.color = f ? f.value : "";
-    var b = component.getRenderProperty("background");
-    element.style.backgroundColor = b ? b.value : "";
+	var color;
+    if (color = component.getRenderProperty("foreground")) {
+	    element.style.color = color.value;
+    }
+    if (color = component.getRenderProperty("background")) {
+	    element.style.backgroundColor = color.value;
+    }
 };
 
 EchoRender.Property.Extent = function() { };
@@ -551,18 +579,21 @@ EchoRender.Property.FillImage = function() { };
 EchoRender.Property.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER = 0x1;
 
 EchoRender.Property.FillImage.render = function(fillImage, element, flags) {
-    if (!fillImage || !fillImage.image) {
+    if (!fillImage) {
         // No image specified, do nothing.
         return;
     }
+    
+    var url = fillImage.image ? fillImage.image.url : "";
+    
     if (EchoWebCore.Environment.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED &&
             flags && (flags & EchoRender.Property.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER)) {
         // IE6 PNG workaround required.
         element.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" 
-            + fillImage.image.url + "', sizingMethod='scale')";
+            + url + "', sizingMethod='scale')";
     } else {
         // IE6 PNG workaround not required.
-        element.style.backgroundImage = "url(" + fillImage.image.url + ")";
+        element.style.backgroundImage = "url(" + url + ")";
     }
     
     if (fillImage.repeat || fillImage.repeat == EchoApp.Property.FillImage.NO_REPEAT) {
@@ -588,36 +619,24 @@ EchoRender.Property.FillImage.render = function(fillImage, element, flags) {
     }
 };
 
-/**
- * Clears the background image settings of the given element.
- * 
- * @param element the element to clear
- */
-EchoRender.Property.FillImage.clear = function(element) {
-	element.style.backgroundImage = "";
-    element.style.backgroundPosition = "";
-    element.style.backgroundRepeat = "";
+EchoRender.Property.FillImage.renderClear = function(fillImage, element, flags) {
+	if (fillImage) {
+		EchoRender.Property.FillImage.render(fillImage, element, flags);
+	} else {
+		element.style.backgroundImage = "";
+	    element.style.backgroundPosition = "";
+	    element.style.backgroundRepeat = "";
+	}
 };
 
 EchoRender.Property.FillImage.renderComponentProperty = function(component, componentProperty, defaultValue,
         element, flags) {
     var fillImage = component.getRenderProperty ? component.getRenderProperty(componentProperty)
             : component.getProperty(componentProperty);
-    EchoRender.Property.FillImage.render(fillImage, element, flags);
+    EchoRender.Property.FillImage.render(fillImage ? fillImage : defaultValue, element, flags);
 };
 
 EchoRender.Property.Font = function() { };
-
-EchoRender.Property.Font.renderDefault = function(component, element, defaultValue) {
-	EchoRender.Property.Font.renderComponentProperty(component, "font", defaultValue, element);
-};
-
-EchoRender.Property.Font.renderComponentProperty = function(component, componentProperty, defaultValue, 
-        element) {
-    var font = component.getRenderProperty ? component.getRenderProperty(componentProperty)
-            : component.getProperty(componentProperty);
-    EchoRender.Property.Font.render(font ? font : defaultValue, element);
-};
 
 EchoRender.Property.Font.render = function(font, element) {
     if (!font) {
@@ -650,17 +669,27 @@ EchoRender.Property.Font.render = function(font, element) {
     }
 };
 
-/**
- * Clears the font settings of the given element.
- * 
- * @param element the element to clear
- */
-EchoRender.Property.Font.clear = function(element) {
-	element.style.fontFamily = "";
-	element.style.fontSize = "";
-	element.style.fontWeight = "";
-	element.style.fontStyle = "";
-	element.style.textDecoration = "";
+EchoRender.Property.Font.renderClear = function(font, element) {
+    if (font) {
+    	EchoRender.Property.Font.render(font, element);
+    } else {
+		element.style.fontFamily = "";
+		element.style.fontSize = "";
+		element.style.fontWeight = "";
+		element.style.fontStyle = "";
+		element.style.textDecoration = "";
+    }
+};
+
+EchoRender.Property.Font.renderComponentProperty = function(component, componentProperty, defaultValue, 
+        element) {
+    var font = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+            : component.getProperty(componentProperty);
+    EchoRender.Property.Font.render(font ? font : defaultValue, element);
+};
+
+EchoRender.Property.Font.renderDefault = function(component, element, defaultValue) {
+	EchoRender.Property.Font.renderComponentProperty(component, "font", defaultValue, element);
 };
 
 EchoRender.Property.Insets = function() { };
