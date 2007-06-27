@@ -379,10 +379,10 @@ EchoWebCore.Environment._init = function() {
         env.PROPRIETARY_EVENT_SELECT_START_SUPPORTED = true;
         env.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR = true;
         env.QUIRK_IE_SELECT_PERCENT_WIDTH = true;
-        env.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY = true;
         env.CSS_FLOAT = "styleFloat";
         
         if (env.BROWSER_MAJOR_VERSION < 7) {
+            env.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY = true;
             env.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED = true;
             env.QUIRK_CSS_BACKGROUND_ATTACHMENT_USE_FIXED = true;
             env.QUIRK_IE_SELECT_Z_INDEX = true;

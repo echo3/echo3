@@ -169,6 +169,7 @@ EchoRender.processUpdates = function(updateManager) {
         }
     }
 
+    // Remove Phase: Invoke renderDispose on all updates.
     for (var i = updates.length - 1; i >= 0; --i) {
         if (updates[i] == null) {
             // Skip removed updates.
@@ -182,7 +183,7 @@ EchoRender.processUpdates = function(updateManager) {
         EchoCore.profilingTimer.mark("ProcessUpdates: Remove Phase");
     }
     
-    // Need to remove descendant peers if renderUpdate returns true.
+    // Update Phase: Invoke renderUpdate on all updates.
     for (var i = 0; i < updates.length; ++i) {
         if (updates[i] == null) {
             // Skip removed updates.
@@ -209,6 +210,8 @@ EchoRender.processUpdates = function(updateManager) {
     if (EchoCore.profilingTimer) {
         EchoCore.profilingTimer.mark("ProcessUpdates: Update Phase");
     }
+    
+    // Size Update Phase: Invoke renderSizeUpdate on all updates.
 
     EchoWebCore.VirtualPosition.redraw();
     
@@ -217,9 +220,7 @@ EchoRender.processUpdates = function(updateManager) {
             // Skip removed updates.
             continue;
         }
-        for (var j = 0; j < updates[i].parent.children.length; ++j) {
-            EchoRender.notifyResize(updates[i].parent.children[j]);
-        }
+        EchoRender.notifyResize(updates[i].parent);
     }
 
     if (EchoCore.profilingTimer) {
