@@ -1011,22 +1011,4 @@ EchoRender.Util = function() { };
 // FIXME abstract this somehow so it works with FreeClient too
 EchoRender.Util.TRANSPARENT_IMAGE = "?sid=Echo.TransparentImage";
 
-/**
- * Convenience method to return the parent DOM element into which a 
- * component should be rendered.
- */
-// FIXME. deprecated remove
-EchoRender.Util.getContainerElement = function(component) {
-    EchoCore.Debug.consoleWrite("EchoRender.Util.getContainerElement is deprecated and will be removed soon.");
-    return component.parent.peer.getContainerElement(component);
-};
-
-// FIXME. deprecated remove
-EchoRender.Util.renderRemove = function(update, component) {
-    EchoCore.Debug.consoleWrite("EchoRender.Util.renderRemove is deprecated and will be removed soon.");
-    var element = document.getElementById(component.renderId);
-    EchoRender.renderComponentDispose(update, component);
-    element.parentNode.removeChild(element);
-};
-
 EchoRender.registerPeer("Root", EchoRender.ComponentSync.Root);
