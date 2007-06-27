@@ -11,7 +11,6 @@ EchoRender.ComponentSync.Grid._createPrototypeTable = function() {
     tableElement.style.outlineStyle = "none";
     tableElement.tabIndex = "-1";
     tableElement.style.borderCollapse = "collapse";
-    tableElement.style.tableLayout = "fixed";
     
     var colGroupElement = document.createElement("colgroup");
     tableElement.appendChild(colGroupElement);

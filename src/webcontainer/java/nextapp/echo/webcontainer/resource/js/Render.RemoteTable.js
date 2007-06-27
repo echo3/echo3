@@ -40,7 +40,6 @@ EchoRender.ComponentSync.RemoteTable.prototype.renderAdd = function(update, pare
     
     this._tableElement = document.createElement("table");
     this._tableElement.id = this.component.renderId;
-    this._tableElement.style.tableLayout = "fixed";
     
     var width = this.component.getRenderProperty("width");
     var render100PercentWidthWorkaround = false;
