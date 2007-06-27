@@ -11,6 +11,7 @@ EchoRender.ComponentSync.Row._defaultCellInsets = new EchoApp.Property.Insets(0)
 EchoRender.ComponentSync.Row._createRowPrototype = function() {
     var divElement = document.createElement("div");
     divElement.style.outlineStyle = "none";
+    divElement.style.overflow = "hidden";
     divElement.tabIndex = "-1";
 
     var tableElement = document.createElement("table");
