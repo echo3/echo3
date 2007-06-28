@@ -1,10 +1,9 @@
 EchoDebugConsole = function() { };
 
-EchoDebugConsole._BASE_ID = "__DebugConsole__";
-EchoDebugConsole._CONTENT_ID = "__DebugConsole__Content__";
-
 EchoDebugConsole._installed = false;
 EchoDebugConsole._initalized = false;
+EchoDebugConsole._contentElement = null;
+EchoDebugConsole._windowElement = null;
 
 EchoDebugConsole.install = function() {
     if (EchoDebugConsole._installed) {
@@ -16,15 +15,13 @@ EchoDebugConsole.install = function() {
 };
 
 EchoDebugConsole._clearListener = function() {
-    var contentElement = document.getElementById(EchoDebugConsole._CONTENT_ID);
-    while (contentElement.firstChild) {
-        contentElement.removeChild(contentElement.firstChild);
+    while (EchoDebugConsole._contentElement.firstChild) {
+        EchoDebugConsole._contentElement.removeChild(EchoDebugConsole._contentElement.firstChild);
     }
 };
 
 EchoDebugConsole._closeListener = function() {
-    var windowElement = document.getElementById(EchoDebugConsole._BASE_ID);
-    windowElement.style.display = "none";
+    EchoDebugConsole._windowElement.style.display = "none";
 };
 
 EchoDebugConsole._consoleWrite = function(text) {
@@ -32,25 +29,25 @@ EchoDebugConsole._consoleWrite = function(text) {
         EchoDebugConsole._init();
     }
     
-    var contentElement = document.getElementById(EchoDebugConsole._CONTENT_ID);
     var lineElement = document.createElement("div");
     lineElement.appendChild(document.createTextNode(text));
-    contentElement.appendChild(lineElement);
+    EchoDebugConsole._contentElement.appendChild(lineElement);
+    EchoDebugConsole._contentElement.scrollTop = 10000000;
 };
 
 EchoDebugConsole._init = function() {
-    var windowElement = document.createElement("div");
-    windowElement.id = EchoDebugConsole._BASE_ID;
-    windowElement.style.position = "absolute";
-    windowElement.style.top = "20px";
-    windowElement.style.right = "20px";
-    windowElement.style.width = "300px";
-    windowElement.style.height = "300px";
-    windowElement.style.background = "#2f2f3f";
-    windowElement.style.color = "#3fff6f";
-    windowElement.style.border = "5px solid #3f6fff";
-    windowElement.style.overflow = "hidden";
-    windowElement.style.zIndex = 32767;
+    EchoDebugConsole._windowElement = document.createElement("div");
+    EchoDebugConsole._windowElement.id = "__DebugConsole__";
+    EchoDebugConsole._windowElement.style.position = "absolute";
+    EchoDebugConsole._windowElement.style.top = "20px";
+    EchoDebugConsole._windowElement.style.right = "20px";
+    EchoDebugConsole._windowElement.style.width = "300px";
+    EchoDebugConsole._windowElement.style.height = "300px";
+    EchoDebugConsole._windowElement.style.background = "#2f2f3f";
+    EchoDebugConsole._windowElement.style.color = "#3fff6f";
+    EchoDebugConsole._windowElement.style.border = "5px solid #3f6fff";
+    EchoDebugConsole._windowElement.style.overflow = "hidden";
+    EchoDebugConsole._windowElement.style.zIndex = 32767;
     
     var titleBarElement = document.createElement("div");
     titleBarElement.style.position = "absolute";
@@ -63,7 +60,7 @@ EchoDebugConsole._init = function() {
     titleBarElement.style.color = "#ffffff";
     titleBarElement.style.overflow = "hidden";
     titleBarElement.appendChild(document.createTextNode("/ Debug Console /"));
-    windowElement.appendChild(titleBarElement);
+    EchoDebugConsole._windowElement.appendChild(titleBarElement);
 
     var clearButtonElement = document.createElement("span");
     clearButtonElement.style.padding = "0px 0px 0px 20px";
@@ -77,19 +74,20 @@ EchoDebugConsole._init = function() {
     titleBarElement.appendChild(closeButtonElement);
     EchoWebCore.DOM.addEventListener(closeButtonElement, "click", EchoDebugConsole._closeListener, false);
 
-    var contentElement = document.createElement("div");
-    contentElement.setAttribute("id", EchoDebugConsole._CONTENT_ID);
-    contentElement.style.position = "absolute";
-    contentElement.style.top = "28px";
-    contentElement.style.left = "1px";
-    contentElement.style.width = "278px";
-    contentElement.style.height = "265px";
-    contentElement.style.padding = "3px 10px";
-    contentElement.style.background = "#1f1f2f";
-    contentElement.style.overflow = "auto";
-    windowElement.appendChild(contentElement);
+    EchoDebugConsole._contentElement = document.createElement("div");
+    EchoDebugConsole._contentElement.style.fontFamily = "monospace";
+    EchoDebugConsole._contentElement.style.fontSize = "8pt";
+    EchoDebugConsole._contentElement.style.position = "absolute";
+    EchoDebugConsole._contentElement.style.top = "28px";
+    EchoDebugConsole._contentElement.style.left = "1px";
+    EchoDebugConsole._contentElement.style.width = "278px";
+    EchoDebugConsole._contentElement.style.height = "265px";
+    EchoDebugConsole._contentElement.style.padding = "3px 10px";
+    EchoDebugConsole._contentElement.style.background = "#1f1f2f";
+    EchoDebugConsole._contentElement.style.overflow = "auto";
+    EchoDebugConsole._windowElement.appendChild(EchoDebugConsole._contentElement);
     
-    document.getElementsByTagName("body")[0].appendChild(windowElement);
+    document.getElementsByTagName("body")[0].appendChild(EchoDebugConsole._windowElement);
 
     EchoDebugConsole._initialized = true;
 }
@@ -101,15 +99,14 @@ EchoDebugConsole._keyListener = function(e) {
         return;
     }
     
-    var windowElement = document.getElementById(EchoDebugConsole._BASE_ID);
     if (!EchoDebugConsole._initialized) {
         EchoDebugConsole._init();
         return;
     }
     
-    if (windowElement.style.display == "block") {
-        windowElement.style.display = "none";
+    if (EchoDebugConsole._windowElement.style.display == "block") {
+        EchoDebugConsole._windowElement.style.display = "none";
     } else {
-        windowElement.style.display = "block";
+        EchoDebugConsole._windowElement.style.display = "block";
     }
 };

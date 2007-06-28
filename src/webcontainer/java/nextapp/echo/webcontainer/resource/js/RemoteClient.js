@@ -98,7 +98,7 @@ EchoRemoteClient.prototype._processComponentUpdate = function(e) {
 
 EchoRemoteClient.prototype._processSyncComplete = function(e) {
     if (EchoCore.profilingTimer) {
-        EchoCore.profilingTimer.mark("RemoteClient: Deserialized");
+        EchoCore.profilingTimer.mark("ser"); // deserialization.
     }
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);

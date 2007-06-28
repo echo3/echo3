@@ -182,7 +182,7 @@ EchoRender.processUpdates = function(updateManager) {
     }
     
     if (EchoCore.profilingTimer) {
-        EchoCore.profilingTimer.mark("ProcessUpdates: Remove Phase");
+        EchoCore.profilingTimer.mark("rem");
     }
     
     // Update Phase: Invoke renderUpdate on all updates.
@@ -210,7 +210,7 @@ EchoRender.processUpdates = function(updateManager) {
     }
     
     if (EchoCore.profilingTimer) {
-        EchoCore.profilingTimer.mark("ProcessUpdates: Update Phase");
+        EchoCore.profilingTimer.mark("up");
     }
     
     // Size Update Phase: Invoke renderSizeUpdate on all updates.
@@ -226,7 +226,7 @@ EchoRender.processUpdates = function(updateManager) {
     }
 
     if (EchoCore.profilingTimer) {
-        EchoCore.profilingTimer.mark("ProcessUpdates: SizeUpdate Phase");
+        EchoCore.profilingTimer.mark("su");
     }
 
     //var ds = "DISPOSEARRAY:"; ///FIXME Remove this debug code.

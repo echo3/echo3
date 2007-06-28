@@ -510,9 +510,9 @@ EchoCore.Debug.Timer.prototype.toString = function() {
     var out = "";
     for (var i = 1; i < this._times.length; ++i) {
         var time = this._times[i] - this._times[i - 1];
-        out += this._labels[i] + ": " + time + "ms\n";
+        out += this._labels[i] + ":" + time + " ";
     }
-    out += "TOTAL: " + (this._times[this._times.length - 1] - this._times[0]) + "ms";
+    out += "TOT:" + (this._times[this._times.length - 1] - this._times[0]) + "ms";
     return out;
 };
 
