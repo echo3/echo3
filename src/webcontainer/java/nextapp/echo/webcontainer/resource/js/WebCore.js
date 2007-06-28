@@ -1016,6 +1016,11 @@ EchoWebCore.Render.Measure.Bounds.prototype.toString = function() {
  */
 EchoWebCore.VirtualPosition = function() { };
 
+EchoWebCore.VirtualPosition._OFFSETS_VERTICAL
+        = new Array("paddingTop", "paddingBottom", "marginTop", "marginBottom", "borderTopWidth", "borderBottomWidth");
+EchoWebCore.VirtualPosition._OFFSETS_HORIZONTAL 
+        = new Array("paddingLeft", "paddingRight", "marginLeft", "marginRight", "borderLeftWidth", "borderRightWidth");
+
 /** Array containing ids of elements registered with the virtual positioning system. */
 EchoWebCore.VirtualPosition._elementIdList = new Array();
 
@@ -1039,28 +1044,18 @@ EchoWebCore.VirtualPosition._adjust = function(element) {
     // Adjust 'height' property if 'top' and 'bottom' properties are set, 
     // and if all padding/margin/borders are 0 or set in pixel units .
     if (EchoWebCore.VirtualPosition._verifyPixelValue(element.style.top)
-            && EchoWebCore.VirtualPosition._verifyPixelValue(element.style.bottom)
-            && EchoWebCore.VirtualPosition._verifyPixelOrUndefinedValue(element.style.paddingTop)
-            && EchoWebCore.VirtualPosition._verifyPixelOrUndefinedValue(element.style.paddingBottom)
-            && EchoWebCore.VirtualPosition._verifyPixelOrUndefinedValue(element.style.marginTop)
-            && EchoWebCore.VirtualPosition._verifyPixelOrUndefinedValue(element.style.marginBottom)
-            && EchoWebCore.VirtualPosition._verifyPixelOrUndefinedValue(element.style.borderTopWidth)
-            && EchoWebCore.VirtualPosition._verifyPixelOrUndefinedValue(element.style.borderBottomWidth)) {
-        var parentHeight = element.parentNode.offsetHeight;
-        var topPixels = parseInt(element.style.top);
-        var bottomPixels = parseInt(element.style.bottom);
-        var paddingPixels = EchoWebCore.VirtualPosition._toInteger(element.style.paddingTop) 
-                + EchoWebCore.VirtualPosition._toInteger(element.style.paddingBottom);
-        var marginPixels = EchoWebCore.VirtualPosition._toInteger(element.style.marginTop) 
-                + EchoWebCore.VirtualPosition._toInteger(element.style.marginBottom);
-        var borderPixels = EchoWebCore.VirtualPosition._toInteger(element.style.borderTopWidth) 
-                + EchoWebCore.VirtualPosition._toInteger(element.style.borderBottomWidth);
-        var calculatedHeight = parentHeight - topPixels - bottomPixels - paddingPixels - marginPixels - borderPixels;
-        if (calculatedHeight <= 0) {
-            element.style.height = 0;
-        } else {
-            if (element.style.height != calculatedHeight + "px") {
-	            element.style.height = calculatedHeight + "px";
+            && EchoWebCore.VirtualPosition._verifyPixelValue(element.style.bottom)) {
+        var offsets = EchoWebCore.VirtualPosition._calculateOffsets(
+                EchoWebCore.VirtualPosition._OFFSETS_VERTICAL, element.style);
+        if (offsets != -1) {
+            var calculatedHeight = element.parentNode.offsetHeight - parseInt(element.style.top) 
+                    - parseInt(element.style.bottom) - offsets;
+            if (calculatedHeight <= 0) {
+                element.style.height = 0;
+            } else {
+                if (element.style.height != calculatedHeight + "px") {
+                    element.style.height = calculatedHeight + "px";
+                }
             }
         }
     }
@@ -1068,31 +1063,43 @@ EchoWebCore.VirtualPosition._adjust = function(element) {
     // Adjust 'width' property if 'left' and 'right' properties are set, 
     // and if all padding/margin/borders are 0 or set in pixel units .
     if (EchoWebCore.VirtualPosition._verifyPixelValue(element.style.left)
-            && EchoWebCore.VirtualPosition._verifyPixelValue(element.style.right)
-            && EchoWebCore.VirtualPosition._verifyPixelOrUndefinedValue(element.style.paddingLeft)
-            && EchoWebCore.VirtualPosition._verifyPixelOrUndefinedValue(element.style.paddingRight)
-            && EchoWebCore.VirtualPosition._verifyPixelOrUndefinedValue(element.style.marginLeft)
-            && EchoWebCore.VirtualPosition._verifyPixelOrUndefinedValue(element.style.marginRight)
-            && EchoWebCore.VirtualPosition._verifyPixelOrUndefinedValue(element.style.borderLeftWidth)
-            && EchoWebCore.VirtualPosition._verifyPixelOrUndefinedValue(element.style.borderRightWidth)) {
-        var parentWidth = element.parentNode.offsetWidth;
-        var leftPixels = parseInt(element.style.left);
-        var rightPixels = parseInt(element.style.right);
-        var paddingPixels = EchoWebCore.VirtualPosition._toInteger(element.style.paddingLeft) 
-                + EchoWebCore.VirtualPosition._toInteger(element.style.paddingRight);
-        var marginPixels = EchoWebCore.VirtualPosition._toInteger(element.style.marginLeft) 
-                + EchoWebCore.VirtualPosition._toInteger(element.style.marginRight);
-        var borderPixels = EchoWebCore.VirtualPosition._toInteger(element.style.borderLeftWidth) 
-                + EchoWebCore.VirtualPosition._toInteger(element.style.borderRightWidth);
-        var calculatedWidth = parentWidth - leftPixels - rightPixels - paddingPixels - marginPixels - borderPixels;
-        if (calculatedWidth <= 0) {
-            element.style.width = 0;
-        } else {
-            if (element.style.width != calculatedWidth + "px") {
-                element.style.width = calculatedWidth + "px";
+            && EchoWebCore.VirtualPosition._verifyPixelValue(element.style.right)) {
+        var offsets = EchoWebCore.VirtualPosition._calculateOffsets(
+                EchoWebCore.VirtualPosition._OFFSETS_HORIZONTAL, element.style);
+        if (offsets != -1) {
+            var calculatedWidth = element.parentNode.offsetWidth - parseInt(element.style.left)
+                    - parseInt(element.style.right) - offsets;
+            if (calculatedWidth <= 0) {
+                element.style.width = 0;
+            } else {
+                if (element.style.width != calculatedWidth + "px") {
+                    element.style.width = calculatedWidth + "px";
+                }
             }
         }
     }
+};
+
+/**
+ * Calculates horizontal or vertical padding, border, and margin offsets for a particular style.
+ *
+ * @param offsetNames the names of the offsets styles to calculate, either
+ *        _OFFSETS_VERTICAL or _OFFSETS_HORIZONTAL.
+ * @param style the style whose offsets should be calculated
+ * @return the pixel size of the offsets, or -1 if they cannot be calculated
+ */
+EchoWebCore.VirtualPosition._calculateOffsets = function(offsetNames, style) {
+    var offsets = 0;
+    for (var i = 0; i < offsetNames.length; ++i) {
+        var value = style[offsetNames[i]];
+        if (value) {
+            if (value.toString().indexOf("px") == -1) {
+                return -1;
+            }
+            offsets += parseInt(value);
+        }
+    }
+    return offsets;
 };
 
 /**
@@ -1256,17 +1263,3 @@ EchoWebCore.VirtualPosition._verifyPixelValue = function(value) {
     return valueString == "0" || valueString.indexOf("px") != -1;
 };
 
-/** 
- * Determines if the specified value contains a pixel dimension, e.g., "20px"
- * Returns true if the value is null/whitespace/undefined.
- *
- * @param value the value to evaluate
- * @return true if the value is null or a pixel dimension, false if it is not
- */
-EchoWebCore.VirtualPosition._verifyPixelOrUndefinedValue = function(value) {
-    if (value == null || value == "" || value == undefined) {
-        return true;
-    }
-    var valueString = value.toString();
-    return valueString == "0" || valueString.indexOf("px") != -1;
-};
