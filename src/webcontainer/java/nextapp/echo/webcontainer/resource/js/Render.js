@@ -72,10 +72,12 @@ EchoRender._notifyResizeImpl = function(component) {
         var child = component.getComponent(i);
         // components that are present on the client, but are not rendered (lazy rendered as in tree), 
         // have no peer installed.
-        if (child.peer && child.peer.renderSizeUpdate) {
-            child.peer.renderSizeUpdate();
+        if (child.peer) {
+        	if (child.peer.renderSizeUpdate) {
+	            child.peer.renderSizeUpdate();
+        	}
+	        EchoRender._notifyResizeImpl(child);
         }
-        EchoRender._notifyResizeImpl(child);
     }
 };
 
