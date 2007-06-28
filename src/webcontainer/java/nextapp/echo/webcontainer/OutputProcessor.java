@@ -1,7 +1,9 @@
 package nextapp.echo.webcontainer;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
@@ -85,6 +87,12 @@ public class OutputProcessor {
     private Document document;
     
     /**
+     * Cached set of known-to-be-not-lazily-rendered components.
+     * Used to aid performance of isRendered().
+     */
+    private Set renderedComponents = new HashSet();
+    
+    /**
      * Creates a new <code>OutputProcessor</code>.
      * 
      * @param conn the <code>Connection</code> for which the output is 
@@ -128,8 +136,11 @@ public class OutputProcessor {
      * @return <code>true</code> if the <code>Component</code> has been
      *         rendered to the client
      */
-    private boolean isRendered(Context context, Component component) {
-        //FIXME. This code is 99% untested in Echo3.
+    private boolean isRendered(Component component) {
+        //FIXME. This code is 98% untested in Echo3.
+        if (renderedComponents.contains(component)) {
+            return true;
+        }
         Component parent = component.getParent();
         if (parent == null) {
             return true;
@@ -141,7 +152,11 @@ public class OutputProcessor {
                 return false;
             }
         }
-        return isRendered(context, parent);
+        boolean rendered = isRendered(parent);
+        if (rendered) {
+            renderedComponents.add(component);
+        }
+        return rendered;
     }
     
     public void process() 
@@ -192,7 +207,7 @@ public class OutputProcessor {
             // Remove any updates whose updates are descendants of components which have not been rendered to the
             // client yet due to lazy-loading containers.
             for (int i = 0; i < componentUpdates.length; ++i) {
-                if (!isRendered(context, componentUpdates[i].getParent())) {
+                if (!isRendered(componentUpdates[i].getParent())) {
                     componentUpdates[i] = null;
                 }
             }
@@ -232,8 +247,9 @@ public class OutputProcessor {
                     SortedMap indexedComponents = new TreeMap();
                     for (int j = 0; j < addedChildren.length; ++j) {
                         Component addedChild = addedChildren[j];
-                        //FIXME. do not render lazy-rendered components.
-                        indexedComponents.put(new Integer((parentComponent.visibleIndexOf(addedChild))), addedChild);
+                        if (isRendered(addedChild)) {
+                            indexedComponents.put(new Integer((parentComponent.visibleIndexOf(addedChild))), addedChild);
+                        }
                     }
                     Iterator indexedComponentsIter = indexedComponents.entrySet().iterator();
                     while (indexedComponentsIter.hasNext()) {
@@ -304,10 +320,11 @@ public class OutputProcessor {
         }
         
         // Render child components.
-        //FIXME do not render lazy components as well.
         Component[] children = c.getVisibleComponents();
         for (int i = 0; i < children.length; ++i) {
-            renderComponentState(cElement, children[i]);
+            if (isRendered(children[i])) {
+                renderComponentState(cElement, children[i]);
+            }
         }
         
         // Append component element to parent.
