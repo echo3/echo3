@@ -13,8 +13,11 @@ EchoRemoteClient = function(serverUrl, domainElementId) {
         
     EchoWebCore.init();
     
+    this._processComponentUpdateRef = new EchoCore.MethodRef(this, this._processComponentUpdate);
+    
     this.application = new EchoApp.Application(domainElementId);
-    this.application.addComponentUpdateListener(new EchoCore.MethodRef(this, this._processComponentUpdate));
+    this.application.addComponentUpdateListener(this._processComponentUpdateRef);
+
     this._storeUpdates = false;
     this._updateManager = this.application.updateManager;
     
@@ -98,9 +101,9 @@ EchoRemoteClient.prototype._processSyncComplete = function(e) {
         EchoCore.profilingTimer.mark("RemoteClient: Deserialized");
     }
     
-	EchoRender.processUpdates(this._updateManager);
-    
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
+    this.application.addComponentUpdateListener(this._processComponentUpdateRef);
+	EchoRender.processUpdates(this._updateManager);
     
     if (EchoCore.profilingTimer) {
         EchoCore.Debug.consoleWrite(EchoCore.profilingTimer);
@@ -131,6 +134,8 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     // Profiling Timer (Uncomment to enable).
     EchoCore.profilingTimer = new EchoCore.Debug.Timer();
 
+    this.application.removeComponentUpdateListener(this._processComponentUpdateRef);
+    
     var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
     serverMessage.addCompletionListener(new EchoCore.MethodRef(this, this._processSyncComplete));
     serverMessage.process();
