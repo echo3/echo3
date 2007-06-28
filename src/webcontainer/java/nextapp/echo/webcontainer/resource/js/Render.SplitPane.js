@@ -172,9 +172,9 @@ EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseUp = function
     
     this._userSeparatorPosition = this._separatorPosition;
 
+    EchoWebCore.VirtualPosition.redraw(this._splitPaneDivElement, true);
+
     EchoRender.notifyResize(this.component);
-    
-    EchoWebCore.VirtualPosition.redraw();
 };
 
 EchoRender.ComponentSync.SplitPane.prototype._getInsetsSizeAdjustment = function(layoutData) {
@@ -442,7 +442,7 @@ EchoRender.ComponentSync.SplitPane.prototype._renderRemoveChild = function(updat
 EchoRender.ComponentSync.SplitPane.prototype.renderSizeUpdate = function() {
     if (this.component.getRenderProperty("resizable")) {
         this._setSeparatorPosition(this._userSeparatorPosition);
-        EchoWebCore.VirtualPosition.redraw();
+        EchoWebCore.VirtualPosition.redraw(this._splitPaneDivElement, true);
     }
 };
 

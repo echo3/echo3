@@ -1109,21 +1109,35 @@ EchoWebCore.VirtualPosition._init = function() {
  * @param element (optional) the element to redraw; if unspecified, 
  *        all elements will be redrawn.
  */
-EchoWebCore.VirtualPosition.redraw = function(element) {
+EchoWebCore.VirtualPosition.redraw = function(element, recurse) {
     if (!EchoWebCore.VirtualPosition._enabled) {
         return;
     }
     
     var removedIds = false;
     
-    if (element != null) {
+    if (element != null && !recurse) {
         EchoWebCore.VirtualPosition._adjust(element);
     } else {
         if (!EchoWebCore.VirtualPosition._elementIdListSorted) {
             EchoWebCore.VirtualPosition._sort();
         }
         
-        for (var i = 0; i < EchoWebCore.VirtualPosition._elementIdList.length; ++i) {
+        var i = 0;
+            
+        if (element) { // element and recurse set.
+            while (i < EchoWebCore.VirtualPosition._elementIdList.length &&
+                    EchoWebCore.VirtualPosition._elementIdList[i] != element.id) {
+                // Skip irrelevant elements.
+                ++i;
+            }
+            if (i >= EchoWebCore.VirtualPosition._elementIdList.length) {
+                throw new Error("Attempt to perform VirtualPosition redraw on element no registered with" +
+                        " virtual positioning system.");
+            }
+        }
+        
+        while (i < EchoWebCore.VirtualPosition._elementIdList.length) {
             element = document.getElementById(EchoWebCore.VirtualPosition._elementIdList[i]);
             if (element) {
                 EchoWebCore.VirtualPosition._adjust(element);
@@ -1135,6 +1149,7 @@ EchoWebCore.VirtualPosition.redraw = function(element) {
                 EchoWebCore.VirtualPosition._elementIdList[i] = null;
                 removedIds = true;
             }
+            ++i;
         }
         
         // Prune removed ids from list if necessary.
