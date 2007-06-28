@@ -156,7 +156,7 @@ EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentEle
     EchoRender.Property.Color.renderFB(this.component, this._divElement);
     EchoRender.Property.Font.renderDefault(this.component, this._divElement);
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._divElement);
-    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", "", this._divElement, "padding");
+    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
     EchoRender.Property.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._divElement);
     EchoRender.Property.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
     
