@@ -383,12 +383,13 @@ public class OutputProcessor {
         // Create property element.
         Element pElement = document.createElement("p");
         
-        // Set property name.
-        pElement.setAttribute("n", propertyName);
-        
         String methodName = componentPeer.getOutputPropertyMethodName(context, c, propertyName);
         if (methodName != null) {
+            // Set method name.
             pElement.setAttribute("m", methodName);
+        } else {
+            // Set property name.
+            pElement.setAttribute("n", propertyName);
         }
         
         if (propertyIndex != -1) {

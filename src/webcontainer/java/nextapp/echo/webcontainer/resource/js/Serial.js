@@ -71,7 +71,7 @@ EchoSerial._loadComponentEvent = function(client, eventElement, component) {
  * and assigns it to the specified object.
  */
 EchoSerial.loadProperty = function(client, propertyElement, object) {
-    var propertyMethod = propertyElement.getAttribute("m");
+    var propertyName = propertyElement.getAttribute("n");
     var propertyType = propertyElement.getAttribute("t");
     var propertyIndex = propertyElement.getAttribute("x");
     
@@ -81,18 +81,20 @@ EchoSerial.loadProperty = function(client, propertyElement, object) {
         if (!translator) {
             throw new Error("Translator not available for property type: " + propertyType);
         }
-        if (propertyMethod) {
-            if (propertyIndex == null) {
-                object[propertyMethod](translator.toProperty(client, propertyElement));
-            } else {
-                object[propertyMethod](propertyIndex, translator.toProperty(client, propertyElement));
-            }
-        } else {
-            var propertyName = propertyElement.getAttribute("n");
+        if (propertyName) {
+            // Property has property name: invoke set(Indexed)Property.
             if (propertyIndex == null) {
                 object.setProperty(propertyName, translator.toProperty(client, propertyElement));
             } else {
                 object.setIndexedProperty(propertyName, propertyIndex, translator.toProperty(client, propertyElement));
+            }
+        } else {
+            // Property has method name: invoke method.
+            var propertyMethod = propertyElement.getAttribute("m");
+            if (propertyIndex == null) {
+                object[propertyMethod](translator.toProperty(client, propertyElement));
+            } else {
+                object[propertyMethod](propertyIndex, translator.toProperty(client, propertyElement));
             }
         }
     } else {
