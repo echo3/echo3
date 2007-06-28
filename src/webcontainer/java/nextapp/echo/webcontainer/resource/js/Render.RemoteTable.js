@@ -227,7 +227,7 @@ EchoRender.ComponentSync.RemoteTable.prototype._createRowPrototype = function() 
 
 EchoRender.ComponentSync.RemoteTable.prototype.renderUpdate = function(update) {
 	if (!update.hasUpdatedLayoutDataChildren() && !update.getAddedChildren() && !update.getRemovedChildren()) {
-		if (EchoCore.Arrays.containsAll(EchoRender.ComponentSync.RemoteTable._supportedPartialProperties, update.getUpdatedPropertyNames())) {
+		if (EchoCore.Arrays.containsAll(EchoRender.ComponentSync.RemoteTable._supportedPartialProperties, update.getUpdatedPropertyNames(), true)) {
 		    // partial update
 			var selectionUpdate = update.getUpdatedProperty("selection");
 			if (selectionUpdate) {
