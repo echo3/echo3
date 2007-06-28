@@ -10,6 +10,36 @@ EchoRender.ComponentSync.Button = function() {
 
 EchoRender.ComponentSync.Button.prototype = new EchoRender.ComponentSync;
 
+/**
+ * Registers listners on the button.  This method is invoked lazily, i.e., the first time the button
+ * is focused or moused over.  The initial focus/mouseover listeners are removed by this method.
+ * This strategy is used for performance reasons due to the fact that many buttons may be present 
+ * on the screen, and each button has many event listeners.
+ */
+EchoRender.ComponentSync.Button.prototype._addEventListeners = function() {
+    // Remove initialization listeners.
+    EchoWebCore.EventProcessor.remove(this._divElement, "focus", new EchoCore.MethodRef(this, this._processInitFocus), false);
+    EchoWebCore.EventProcessor.remove(this._divElement, "mouseover", new EchoCore.MethodRef(this, this._processInitMouseOver), false);
+    
+    EchoWebCore.EventProcessor.add(this._divElement, "click", new EchoCore.MethodRef(this, this._processClick), false);
+    EchoWebCore.EventProcessor.add(this._divElement, "keypress", new EchoCore.MethodRef(this, this._processKeyPress), false);
+    if (this.component.getRenderProperty("rolloverEnabled")) {
+        var mouseEnterLeaveSupport = EchoWebCore.Environment.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
+        var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
+        var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
+        EchoWebCore.EventProcessor.add(this._divElement, enterEvent, new EchoCore.MethodRef(this, this._processRolloverEnter), false);
+        EchoWebCore.EventProcessor.add(this._divElement, exitEvent, new EchoCore.MethodRef(this, this._processRolloverExit), false);
+    }
+    if (this.component.getRenderProperty("pressedEnabled")) {
+        EchoWebCore.EventProcessor.add(this._divElement, "mousedown", new EchoCore.MethodRef(this, this._processPress), false);
+        EchoWebCore.EventProcessor.add(this._divElement, "mouseup", new EchoCore.MethodRef(this, this._processRelease), false);
+    }
+    EchoWebCore.EventProcessor.add(this._divElement, "focus", new EchoCore.MethodRef(this, this._processFocus), false);
+    EchoWebCore.EventProcessor.add(this._divElement, "blur", new EchoCore.MethodRef(this, this._processBlur), false);
+    
+    EchoWebCore.EventProcessor.addSelectionDenialListener(this._divElement);
+};
+
 EchoRender.ComponentSync.Button._createPrototypeButton = function() {
     var divElement = document.createElement("div");
     divElement.tabIndex = "0";
@@ -56,6 +86,26 @@ EchoRender.ComponentSync.Button.prototype._processFocus = function(e) {
     }
     this.component.application.setFocusedComponent(this.component);
     this._setFocusState(true);
+};
+
+/**
+ * Initial focus listener.  This listener is invoked the FIRST TIME the button is focused.
+ * It invokes the addListeners() method to lazily add the full listener set to the button.
+ */
+EchoRender.ComponentSync.Button.prototype._processInitFocus = function(e) {
+    this._addEventListeners();
+    this._processFocus(e);
+};
+
+/**
+ * Initial mouse over listener.  This listener is invoked the FIRST TIME the button is moused over.
+ * It invokes the addListeners() method to lazily add the full listener set to the button.
+ */
+EchoRender.ComponentSync.Button.prototype._processInitMouseOver = function(e) {
+    this._addEventListeners();
+    if (this.component.getRenderProperty("rolloverEnabled")) {
+        this._processRolloverEnter(e);
+    }
 };
 
 EchoRender.ComponentSync.Button.prototype._processKeyPress = function(e) {
@@ -126,7 +176,12 @@ EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentEle
     
     this._renderContent();
     
-    this._addEventListeners(this._divElement);
+    // Add event listeners for focus and mouseover.  When invoked, these listeners will register the full gamut
+    // of button event listeners.  There may be a large number of such listeners depending on how many effects
+    // are enabled, and as such we do this lazily for performance reasons.
+    EchoWebCore.EventProcessor.add(this._divElement, "focus", new EchoCore.MethodRef(this, this._processInitFocus), false);
+    EchoWebCore.EventProcessor.add(this._divElement, "mouseover", new EchoCore.MethodRef(this, this._processInitMouseOver), false);
+
     parentElement.appendChild(this._divElement);
 };
 
@@ -173,26 +228,6 @@ EchoRender.ComponentSync.Button.prototype._renderButtonIcon = function(element, 
     }
 	element.appendChild(imgElement);
 	return imgElement;
-};
-
-EchoRender.ComponentSync.Button.prototype._addEventListeners = function() {
-    EchoWebCore.EventProcessor.add(this._divElement, "click", new EchoCore.MethodRef(this, this._processClick), false);
-    EchoWebCore.EventProcessor.add(this._divElement, "keypress", new EchoCore.MethodRef(this, this._processKeyPress), false);
-	if (this.component.getRenderProperty("rolloverEnabled")) {
-        var mouseEnterLeaveSupport = EchoWebCore.Environment.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
-        var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
-        var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
-	    EchoWebCore.EventProcessor.add(this._divElement, enterEvent, new EchoCore.MethodRef(this, this._processRolloverEnter), false);
-    	EchoWebCore.EventProcessor.add(this._divElement, exitEvent, new EchoCore.MethodRef(this, this._processRolloverExit), false);
-	}
-    if (this.component.getRenderProperty("pressedEnabled")) {
-	    EchoWebCore.EventProcessor.add(this._divElement, "mousedown", new EchoCore.MethodRef(this, this._processPress), false);
-    	EchoWebCore.EventProcessor.add(this._divElement, "mouseup", new EchoCore.MethodRef(this, this._processRelease), false);
-    }
-    EchoWebCore.EventProcessor.add(this._divElement, "focus", new EchoCore.MethodRef(this, this._processFocus), false);
-    EchoWebCore.EventProcessor.add(this._divElement, "blur", new EchoCore.MethodRef(this, this._processBlur), false);
-    
-    EchoWebCore.EventProcessor.addSelectionDenialListener(this._divElement);
 };
 
 EchoRender.ComponentSync.Button.prototype._getCombinedAlignment = function() {
