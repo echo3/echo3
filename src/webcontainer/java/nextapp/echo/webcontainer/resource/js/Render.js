@@ -731,7 +731,6 @@ EchoRender.Property.Insets.toPixels = function(insets) {
 /**
  * Creates a new <code>TriCellTable</code>
  * 
- * @param id the id of the root element
  * @param orientation0_1 the orientation of element 0 with respect to element 1, one of 
  *        the following values:
  *        <ul>
@@ -755,22 +754,21 @@ EchoRender.Property.Insets.toPixels = function(insets) {
  *        The margin size between the combination
  *        of elements 0 and 1 and element 2.
  */
-EchoRender.TriCellTable = function(id, orientation0_1, margin0_1, orientation01_2, margin01_2) {
-    this.id = id;
+EchoRender.TriCellTable = function(orientation0_1, margin0_1, orientation01_2, margin01_2) {
     this.tableElement = EchoRender.TriCellTable._tablePrototype.cloneNode(true);
     this.tbodyElement = this.tableElement.firstChild;
     
     if (orientation01_2 == null) {
-        this.configure2(id, orientation0_1, margin0_1);
+        this.configure2(orientation0_1, margin0_1);
     } else {
-        this.configure3(id, orientation0_1, margin0_1, orientation01_2, margin01_2);
+        this.configure3(orientation0_1, margin0_1, orientation01_2, margin01_2);
     }
 };
 
 EchoRender.TriCellTable._createTablePrototype = function() {
     var tableElement = document.createElement("table");
     tableElement.style.borderCollapse = "collapse";
-    tableElement.style.padding = 0;
+    tableElement.style.padding = "0px";
     
     tbodyElement = document.createElement("tbody");
     tableElement.appendChild(tbodyElement);
@@ -810,15 +808,18 @@ EchoRender.TriCellTable.prototype.addSpacer = function(parentElement, size, vert
     parentElement.appendChild(divElement);
 };
 
-EchoRender.TriCellTable.prototype.configure2 = function(id, orientation0_1, margin0_1) {
+/**
+ * @param id the id of 
+ */
+EchoRender.TriCellTable.prototype.configure2 = function(orientation0_1, margin0_1) {
     this.tdElements = new Array(document.createElement("td"), document.createElement("td"));
-    this.tdElements[0].style.padding = 0;
-    this.tdElements[1].style.padding = 0;
+    this.tdElements[0].style.padding = "0px";
+    this.tdElements[1].style.padding = "0px";
     this.marginTdElements = new Array(1);
     
-    if (margin0_1 != null) {
+    if (margin0_1) {
         this.marginTdElements[0] = document.createElement("td");
-        this.marginTdElements[0].style.padding = 0;
+        this.marginTdElements[0].style.padding = "0px";
         if ((orientation0_1 & EchoRender.TriCellTable.VERTICAL) == 0) {
             this.marginTdElements[0].style.width = margin0_1 + "px";
             this.addSpacer(this.marginTdElements[0], margin0_1, false);
@@ -859,16 +860,16 @@ EchoRender.TriCellTable.prototype.configure2 = function(id, orientation0_1, marg
     }
 };
 
-EchoRender.TriCellTable.prototype.configure3 = function(id, orientation0_1, margin0_1, orientation01_2, margin01_2) {
+EchoRender.TriCellTable.prototype.configure3 = function(orientation0_1, margin0_1, orientation01_2, margin01_2) {
     this.tdElements = new Array(3);
     for (var i = 0; i < 3; ++i) {
         this.tdElements[i] = document.createElement("td");
-        this.tdElements[i].style.padding = 0;
+        this.tdElements[i].style.padding = "0px";
     }
     this.marginTdElements = new Array(2);
     
-    if (margin0_1 != null || margin01_2 != null) {
-        if (margin0_1 != null && margin0_1 > 0) {
+    if (margin0_1 || margin01_2 != null) {
+        if (margin0_1 && margin0_1 > 0) {
             this.marginTdElements[0] = document.createElement("td");
             if (orientation0_1 & EchoRender.TriCellTable.VERTICAL) {
                 this.marginTdElements[0].style.height = margin0_1 + "px";
@@ -923,7 +924,7 @@ EchoRender.TriCellTable.prototype.configure3 = function(id, orientation0_1, marg
             // Horizontally oriented 01/2
             
             // Determine and apply row span based on presence of margin between 0 and 1.
-            var rows = (margin0_1 != null && margin0_1 > 0) ? 3 : 2;
+            var rows = (margin0_1 && margin0_1 > 0) ? 3 : 2;
             this.tdElements[2].rowSpan = rows;
             if (this.marginTdElements[1]) {
                 this.marginTdElements[1].rowSpan = rows;
@@ -962,7 +963,7 @@ EchoRender.TriCellTable.prototype.configure3 = function(id, orientation0_1, marg
             // vertically oriented 01/2
 
             // determine and apply column span based on presence of margin between 0 and 1
-            var columns = (margin0_1 != null && margin0_1.getValue() > 0) ? 3 : 2;
+            var columns = margin0_1 ? 3 : 2;
             this.tdElements[2].setAttribute("colspan", columns);
             if (this.marginTdElements[1] != null) {
                 this.marginTdElements[1].setAttribute("colspan", Integer.toString(columns));

@@ -27,8 +27,8 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
             // Text and icon.
             var iconTextMargin = this.component.getRenderProperty("iconTextMargin", 
                     EchoRender.ComponentSync.Label._defaultIconTextMargin);
-            var tct = new EchoRender.TriCellTable(this.component.renderId,
-                    EchoRender.TriCellTable.TRAILING_LEADING, EchoRender.Property.Extent.toPixels(iconTextMargin));
+            var tct = new EchoRender.TriCellTable(EchoRender.TriCellTable.TRAILING_LEADING, 
+                    EchoRender.Property.Extent.toPixels(iconTextMargin));
             var imgElement = document.createElement("img");
             imgElement.src = icon.url;
             tct.tdElements[0].appendChild(document.createTextNode(text));

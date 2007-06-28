@@ -139,8 +139,8 @@ EchoRender.ComponentSync.Button.prototype._renderContent = function() {
             // Text and icon.
             var iconTextMargin = this.component.getRenderProperty("iconTextMargin", 
                     EchoRender.ComponentSync.Button._defaultIconTextMargin);
-            var tct = new EchoRender.TriCellTable(this.component.renderId,
-                    EchoRender.TriCellTable.TRAILING_LEADING, EchoRender.Property.Extent.toPixels(iconTextMargin));
+            var tct = new EchoRender.TriCellTable(EchoRender.TriCellTable.TRAILING_LEADING, 
+                    EchoRender.Property.Extent.toPixels(iconTextMargin));
             this._renderButtonText(tct.tdElements[0], text);
             this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
             this._divElement.appendChild(tct.tableElement);
@@ -356,7 +356,7 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
 	        orientation = EchoRender.TriCellTable.LEADING_TRAILING;
 	        margin = this.component.getRenderProperty("iconTextMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
         }
-        var tct = new EchoRender.TriCellTable(this.component.renderId, orientation, EchoRender.Property.Extent.toPixels(margin));
+        var tct = new EchoRender.TriCellTable(orientation, EchoRender.Property.Extent.toPixels(margin));
         if (text) {
 	        this._renderButtonText(tct.tdElements[0], text);
 	        if (icon) {
@@ -374,7 +374,7 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
         var margin = this.component.getRenderProperty("iconTextMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
         var stateOrientation = EchoRender.TriCellTable.TRAILING_LEADING;
         var stateMargin = this.component.getRenderProperty("stateMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
-        var tct = new EchoRender.TriCellTable(this.component.renderId, orientation, 
+        var tct = new EchoRender.TriCellTable(orientation, 
         	EchoRender.Property.Extent.toPixels(margin), stateOrientation, EchoRender.Property.Extent.toPixels(stateMargin));
         this._renderButtonText(tct.tdElements[0], text);
         this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
