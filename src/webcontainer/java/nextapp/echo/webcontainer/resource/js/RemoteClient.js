@@ -98,7 +98,7 @@ EchoRemoteClient.prototype._processComponentUpdate = function(e) {
 
 EchoRemoteClient.prototype._processSyncComplete = function(e) {
     if (EchoCore.profilingTimer) {
-        EchoCore.profilingTimer.mark("ser"); // deserialization.
+        EchoCore.profilingTimer.mark("ser"); // Serialization
     }
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
@@ -399,7 +399,7 @@ EchoRemoteClient.ServerMessage.prototype.process = function() {
 };
 
 EchoRemoteClient.ServerMessage.prototype._processPostLibraryLoad = function() {
-    EchoCore.profilingTimer.mark("lib"); // deserialization.
+    EchoCore.profilingTimer.mark("lib"); // Library Loading
     // Processing phase 2: invoke directives.
     var groupElements = EchoWebCore.DOM.getChildElementsByTagName(this.document.documentElement, "group");
     for (var i = 0; i < groupElements.length; ++i) {
