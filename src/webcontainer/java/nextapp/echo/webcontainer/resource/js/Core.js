@@ -197,7 +197,7 @@ EchoCore.Collections.List.prototype.remove = function(index) {
  * @return the size of the list
  * @type Number
  */
-EchoCore.Collections.List.prototype.size = function(index) {
+EchoCore.Collections.List.prototype.size = function() {
     return this.items.length;
 };
 
