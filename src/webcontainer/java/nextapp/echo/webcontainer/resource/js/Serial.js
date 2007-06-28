@@ -71,10 +71,9 @@ EchoSerial._loadComponentEvent = function(client, eventElement, component) {
  * and assigns it to the specified object.
  */
 EchoSerial.loadProperty = function(client, propertyElement, object) {
-    var propertyName = propertyElement.getAttribute("n");
+    var propertyMethod = propertyElement.getAttribute("m");
     var propertyType = propertyElement.getAttribute("t");
     var propertyIndex = propertyElement.getAttribute("x");
-    var propertyMethod = propertyElement.getAttribute("m");
     
     if (propertyType) {
         // Invoke custom property processor.
@@ -89,6 +88,7 @@ EchoSerial.loadProperty = function(client, propertyElement, object) {
                 object[propertyMethod](propertyIndex, translator.toProperty(client, propertyElement));
             }
         } else {
+            var propertyName = propertyElement.getAttribute("n");
             if (propertyIndex == null) {
                 object.setProperty(propertyName, translator.toProperty(client, propertyElement));
             } else {
