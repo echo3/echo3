@@ -399,6 +399,7 @@ EchoRemoteClient.ServerMessage.prototype.process = function() {
 };
 
 EchoRemoteClient.ServerMessage.prototype._processPostLibraryLoad = function() {
+    EchoCore.profilingTimer.mark("lib"); // deserialization.
     // Processing phase 2: invoke directives.
     var groupElements = EchoWebCore.DOM.getChildElementsByTagName(this.document.documentElement, "group");
     for (var i = 0; i < groupElements.length; ++i) {
