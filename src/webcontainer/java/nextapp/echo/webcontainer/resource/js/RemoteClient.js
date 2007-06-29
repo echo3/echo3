@@ -24,8 +24,8 @@ EchoRemoteClient = function(serverUrl, domainElementId) {
     /**
      * Mapping between shorthand URL codes and replacement values.
      */
-    this._urlMappings = new EchoCore.Collections.Map();
-    this._urlMappings.put("S", this._serverUrl + "?sid=Echo.StreamImage&imageuid=");
+    this._urlMappings = new Object();
+    this._urlMappings["S"] = this._serverUrl + "?sid=Echo.StreamImage&imageuid=";
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
     
@@ -40,17 +40,18 @@ EchoRemoteClient = function(serverUrl, domainElementId) {
  */
 EchoRemoteClient.prototype.processUrl = function(url) {
     if (url.charAt(0) == "!") {
-        var endIndex = url.indexOf("!", 1);
-        if (endIndex == -1) {
+        // urlTokens[0] = empty
+        // urlTokens[1] = key
+        // urlTokens[2] = baseUrl
+        var urlTokens = url.split("!");
+        if (urlTokens.length != 3) {
             throw new IllegalArgumentException("Invalid encoded URL");
         }
-        var baseUrl = url.substring(endIndex + 1);
-        var key = url.substring(1, endIndex);
-        var replacementValue = this._urlMappings.get(key);
+        var replacementValue = this._urlMappings[urlTokens[1]]; 
         if (replacementValue == null) {
-            throw new Error("Invalid URL shorthand key \"" + key + "\".");
+            throw new Error("Invalid URL shorthand key \"" + urlTokens[1] + "\".");
         }
-        return replacementValue + baseUrl;
+        return replacementValue + urlTokens[2];
     } else {
         return url;
     }
