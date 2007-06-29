@@ -441,8 +441,9 @@ EchoRender.ComponentSync.SplitPane.prototype._renderRemoveChild = function(updat
 
 EchoRender.ComponentSync.SplitPane.prototype.renderSizeUpdate = function() {
     if (this.component.getRenderProperty("resizable")) {
-        this._setSeparatorPosition(this._userSeparatorPosition);
-        EchoWebCore.VirtualPosition.redraw(this._splitPaneDivElement, true);
+        if (this._setSeparatorPosition(this._userSeparatorPosition)) {
+            EchoWebCore.VirtualPosition.redraw(this._splitPaneDivElement, true);
+        }
     }
 };
 
@@ -505,6 +506,9 @@ EchoRender.ComponentSync.SplitPane.prototype._setSeparatorPosition = function(ne
     if (oldValue != newValue) {
         this._redraw();
     }
+    
+    //FIXME.
+    return oldValue != newValue;
 };
 
 EchoRender.registerPeer("SplitPane", EchoRender.ComponentSync.SplitPane);

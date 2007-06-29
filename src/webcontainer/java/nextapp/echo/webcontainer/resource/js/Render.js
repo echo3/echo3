@@ -213,10 +213,16 @@ EchoRender.processUpdates = function(updateManager) {
         EchoCore.profilingTimer.mark("up");
     }
     
-    // Size Update Phase: Invoke renderSizeUpdate on all updates.
-
+    // Virtual Position Redraw
+    
     EchoWebCore.VirtualPosition.redraw();
 
+    if (EchoCore.profilingTimer) {
+        EchoCore.profilingTimer.mark("rd");
+    }
+
+    // Size Update Phase: Invoke renderSizeUpdate on all updates.
+    
     for (var i = 0; i < updates.length; ++i) {
         if (updates[i] == null) {
             // Skip removed updates.

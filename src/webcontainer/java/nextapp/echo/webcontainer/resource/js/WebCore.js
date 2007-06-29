@@ -1021,14 +1021,8 @@ EchoWebCore.VirtualPosition._OFFSETS_VERTICAL
 EchoWebCore.VirtualPosition._OFFSETS_HORIZONTAL 
         = new Array("paddingLeft", "paddingRight", "marginLeft", "marginRight", "borderLeftWidth", "borderRightWidth");
 
-/** Array containing ids of elements registered with the virtual positioning system. */
-EchoWebCore.VirtualPosition._elementList = new Array();
-
 /** Flag indicating whether virtual positioning is required/enabled. */
 EchoWebCore.VirtualPosition._enabled = false;
-
-/** Flag indicating whether virtual positioning list is sorted); */
-EchoWebCore.VirtualPosition._newRegisteredElements = false;
 
 /** 
  * Adjusts the style.height and style.width attributes of an element to 
@@ -1038,26 +1032,20 @@ EchoWebCore.VirtualPosition._newRegisteredElements = false;
  * @param element the element whose height/width setting is to be calculated
  */
 EchoWebCore.VirtualPosition._adjust = function(element) {
-    if (!element.parentNode) {
-        return;
-    }
-    
     // Adjust 'height' property if 'top' and 'bottom' properties are set, 
     // and if all padding/margin/borders are 0 or set in pixel units.
-    var offsetHeight = element.parentNode.offsetHeight;
-    if (!isNaN(offsetHeight)) { // offsetHeight may be null if component is not in hierarchy.
-        if (EchoWebCore.VirtualPosition._verifyPixelValue(element.style.top)
-                && EchoWebCore.VirtualPosition._verifyPixelValue(element.style.bottom)) {
-            var offsets = EchoWebCore.VirtualPosition._calculateOffsets(
-                    EchoWebCore.VirtualPosition._OFFSETS_VERTICAL, element.style);
-            if (offsets != -1) {
-                calculatedHeight = offsetHeight - parseInt(element.style.top) - parseInt(element.style.bottom) - offsets;
-                if (calculatedHeight <= 0) {
-                    element.style.height = 0;
-                } else {
-                    if (element.style.height != calculatedHeight + "px") {
-                        element.style.height = calculatedHeight + "px";
-                    }
+    if (EchoWebCore.VirtualPosition._verifyPixelValue(element.style.top)
+            && EchoWebCore.VirtualPosition._verifyPixelValue(element.style.bottom)) {
+        var offsets = EchoWebCore.VirtualPosition._calculateOffsets(
+                EchoWebCore.VirtualPosition._OFFSETS_VERTICAL, element.style);
+        if (offsets != -1) {
+            calculatedHeight = element.parentNode.offsetHeight - parseInt(element.style.top) 
+                    - parseInt(element.style.bottom) - offsets;
+            if (calculatedHeight <= 0) {
+                element.style.height = 0;
+            } else {
+                if (element.style.height != calculatedHeight + "px") {
+                    element.style.height = calculatedHeight + "px";
                 }
             }
         }
@@ -1065,20 +1053,18 @@ EchoWebCore.VirtualPosition._adjust = function(element) {
     
     // Adjust 'width' property if 'left' and 'right' properties are set, 
     // and if all padding/margin/borders are 0 or set in pixel units.
-    var offsetWidth = element.parentNode.offsetWidth;
-    if (!isNaN(offsetWidth)) { // offsetWidth may be null if component is not in hierarchy.
-        if (EchoWebCore.VirtualPosition._verifyPixelValue(element.style.left)
-                && EchoWebCore.VirtualPosition._verifyPixelValue(element.style.right)) {
-            var offsets = EchoWebCore.VirtualPosition._calculateOffsets(
-                    EchoWebCore.VirtualPosition._OFFSETS_HORIZONTAL, element.style);
-            if (offsets != -1) {
-                calculatedWidth = offsetWidth - parseInt(element.style.left) - parseInt(element.style.right) - offsets;
-                if (calculatedWidth <= 0) {
-                    element.style.width = 0;
-                } else {
-                    if (element.style.width != calculatedWidth + "px") {
-                        element.style.width = calculatedWidth + "px";
-                    }
+    if (EchoWebCore.VirtualPosition._verifyPixelValue(element.style.left)
+            && EchoWebCore.VirtualPosition._verifyPixelValue(element.style.right)) {
+        var offsets = EchoWebCore.VirtualPosition._calculateOffsets(
+                EchoWebCore.VirtualPosition._OFFSETS_HORIZONTAL, element.style);
+        if (offsets != -1) {
+            calculatedWidth = element.parentNode.offsetWidth - parseInt(element.style.left) 
+                    - parseInt(element.style.right) - offsets;
+            if (calculatedWidth <= 0) {
+                element.style.width = 0;
+            } else {
+                if (element.style.width != calculatedWidth + "px") {
+                    element.style.width = calculatedWidth + "px";
                 }
             }
         }
@@ -1126,30 +1112,24 @@ EchoWebCore.VirtualPosition.redraw = function(element, recurse) {
         return;
     }
     
-    if (element != null && !recurse) {
-        EchoWebCore.VirtualPosition._adjust(element);
+    EchoCore.Debug.consoleWrite("VPOS:" + (element ? (element.id + "/" + element) : "ALL") + " " + (recurse == true));
+    
+    if (element) {
+        EchoWebCore.VirtualPosition._redrawImpl(element, recurse);
     } else {
-        if (EchoWebCore.VirtualPosition._newRegisteredElements) {
-            EchoWebCore.VirtualPosition._resync();
-        }
-        
-        var i = 0;
-            
-        if (element) { // element and recurse set.
-            while (i < EchoWebCore.VirtualPosition._elementList.length &&
-                    EchoWebCore.VirtualPosition._elementList[i] != element) {
-                // Skip irrelevant elements.
-                ++i;
-            }
-            if (i >= EchoWebCore.VirtualPosition._elementList.length) {
-                throw new Error("Attempt to perform VirtualPosition redraw on element not registered with" +
-                        " virtual positioning system: " + element.id + "/" + element);
-            }
-        }
-        
-        while (i < EchoWebCore.VirtualPosition._elementList.length) {
-            EchoWebCore.VirtualPosition._adjust(EchoWebCore.VirtualPosition._elementList[i]);
-            ++i;
+        EchoWebCore.VirtualPosition._redrawImpl(document.documentElement, true);
+    }
+};
+
+EchoWebCore.VirtualPosition._redrawImpl = function(element, recurse) {
+    if (element.__virtualPosition) {
+        EchoWebCore.VirtualPosition._adjust(element);
+    }
+    if (recurse) {
+        var child = element.firstChild;
+        while (child) {
+            EchoWebCore.VirtualPosition._redrawImpl(child, true);
+            child = child.nextSibling;
         }
     }
 };
@@ -1170,7 +1150,6 @@ EchoWebCore.VirtualPosition.register = function(element) {
         return;
     }
     element.__virtualPosition = true;
-    EchoWebCore.VirtualPosition._newRegisteredElements = true;
 };
 
 /**
@@ -1181,40 +1160,6 @@ EchoWebCore.VirtualPosition.register = function(element) {
 EchoWebCore.VirtualPosition._resizeListener = function(e) {
     e = e ? e : window.event;
     EchoWebCore.VirtualPosition.redraw();
-};
-
-/**
- * Visits every node in the DOM hierarchy checking for a virtual positioning
- * identifier.  Each such node is added to EchoWebCore.VirtualPosition._elementList,
- * in top-down order (guaranteeing that no child element will appear before its parent
- * element in the list, such that adjust() calls can be run correctly when iterating
- * the list forward.
- */
-EchoWebCore.VirtualPosition._resync = function() {
-    var sortedList = new Array();
-    EchoWebCore.VirtualPosition._elementList = new Array();
-    EchoWebCore.VirtualPosition._resyncImpl(document.documentElement);
-    EchoWebCore.VirtualPosition._newRegisteredElements = false;
-};
-
-/**
- * Recursive work method to support _resync().
- * 
- * @param element the current element of the hierarchy being analyzed
- */
-EchoWebCore.VirtualPosition._resyncImpl = function(element) {
-    // Determine if element has a virtual position id 
-    if (element.__virtualPosition) {
-        EchoWebCore.VirtualPosition._elementList.push(element);
-    }
-
-    var child = element.firstChild;
-    while (child) {
-        if (child.nodeType == 1) {
-            EchoWebCore.VirtualPosition._resyncImpl(child);
-        }
-        child = child.nextSibling;
-    }
 };
 
 /** 
