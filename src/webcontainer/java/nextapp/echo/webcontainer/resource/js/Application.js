@@ -880,10 +880,11 @@ EchoApp.Component.prototype.toString = function(longFormat) {
  * Layout Data Object, describing how a child component is rendered/laid out 
  * within its parent container.
  * 
+ * @param properties an associative array containing the initial properties of the layout data
  * @constructor
  */
-EchoApp.LayoutData = function() {
-    this._localStyle = new EchoApp.Style();
+EchoApp.LayoutData = function(properties) {
+    this._localStyle = new EchoApp.Style(properties);
 };
 
 /**

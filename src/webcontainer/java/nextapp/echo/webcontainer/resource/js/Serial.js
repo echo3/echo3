@@ -452,13 +452,14 @@ EchoSerial.addPropertyTranslator("Insets", EchoSerial.PropertyTranslator.Insets)
 EchoSerial.PropertyTranslator.LayoutData = function() { };
 
 EchoSerial.PropertyTranslator.LayoutData.toProperty = function(client, propertyElement) {
-    var layoutData = new EchoApp.LayoutData();
+    var styleData = new Object();
+    var layoutData = new EchoApp.LayoutData(styleData);
     var element = propertyElement.firstChild;
     while (element) {
         if (element.nodeType == 1) {
             switch (element.nodeName) {
             case "p":
-                EchoSerial.loadProperty(client, element, layoutData);
+                EchoSerial.loadProperty(client, element, layoutData, styleData);
                 break;
             }
         }
