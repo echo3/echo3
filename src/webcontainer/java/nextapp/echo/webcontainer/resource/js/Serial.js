@@ -39,6 +39,8 @@ EchoSerial.loadComponent = function(client, componentElement) {
         }
     }
     
+    var styleData = component.getLocalStyleData();
+    
     var element = componentElement.firstChild;
     while (element) {
         if (element.nodeType == 1) {
@@ -48,7 +50,7 @@ EchoSerial.loadComponent = function(client, componentElement) {
                 component.add(childComponent);
                 break;
             case "p": // Property
-                EchoSerial.loadProperty(client, element, component);
+                EchoSerial.loadProperty(client, element, component, styleData);
                 break;
             case "e": // Event
                 EchoSerial._loadComponentEvent(client, element, component);
@@ -70,7 +72,7 @@ EchoSerial._loadComponentEvent = function(client, eventElement, component) {
  * Deserializes an XML representation of a property into an instance,
  * and assigns it to the specified object.
  */
-EchoSerial.loadProperty = function(client, propertyElement, object) {
+EchoSerial.loadProperty = function(client, propertyElement, object, styleData) {
     var propertyName = propertyElement.getAttribute("n");
     var propertyType = propertyElement.getAttribute("t");
     var propertyIndex = propertyElement.getAttribute("x");
@@ -81,20 +83,35 @@ EchoSerial.loadProperty = function(client, propertyElement, object) {
         if (!translator) {
             throw new Error("Translator not available for property type: " + propertyType);
         }
+        var propertyValue = translator.toProperty(client, propertyElement);
+        
         if (propertyName) {
-            // Property has property name: invoke set(Indexed)Property.
-            if (propertyIndex == null) {
-                object.setProperty(propertyName, translator.toProperty(client, propertyElement));
+            if (styleData) {
+                if (propertyIndex == null) {
+                    styleData[propertyName] = propertyValue;
+                } else {
+                    var indexValues = styleData[propertyName];
+                    if (!indexValues) {
+                        indexValues = new Array();
+                        styleData[propertyName] = indexValues;
+                    }
+                    indexValues[propertyIndex] = propertyValue;
+                }
             } else {
-                object.setIndexedProperty(propertyName, propertyIndex, translator.toProperty(client, propertyElement));
+                // Property has property name: invoke set(Indexed)Property.
+                if (propertyIndex == null) {
+                    object.setProperty(propertyName, propertyValue);
+                } else {
+                    object.setIndexedProperty(propertyName, propertyIndex, propertyValue);
+                }
             }
         } else {
             // Property has method name: invoke method.
             var propertyMethod = propertyElement.getAttribute("m");
             if (propertyIndex == null) {
-                object[propertyMethod](translator.toProperty(client, propertyElement));
+                object[propertyMethod](propertyValue);
             } else {
-                object[propertyMethod](propertyIndex, translator.toProperty(client, propertyElement));
+                object[propertyMethod](propertyIndex, propertyValue);
             }
         }
     } else {

@@ -215,6 +215,7 @@ EchoCore.Collections.List.prototype.toString = function() {
 /**
  * Creates a new Map.
  * 
+ * @param associations an associative array (Object) containing the initial associations
  * @class Collection map implementation.
  *        Implmentation is based on an associative array.
  *        Array is periodically recreated after a significant number of
@@ -223,7 +224,7 @@ EchoCore.Collections.List.prototype.toString = function() {
  *        Null values are not permitted as keys.  Setting a key to a null value
  *        will result in the key being removed.
  */
-EchoCore.Collections.Map = function() {
+EchoCore.Collections.Map = function(associations) {
  
     /**
      * Number of removes since last associative array re-creation.
@@ -241,7 +242,7 @@ EchoCore.Collections.Map = function() {
     /**
      * Associative mapping.
      */
-    this.associations = new Object();
+    this.associations = associations ? associations : new Object();
 };
 
 /**

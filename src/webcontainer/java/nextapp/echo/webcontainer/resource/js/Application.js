@@ -344,7 +344,7 @@ EchoApp.Component = function(renderId) {
      * @private
      * @type EchoApp.Style
      */
-    this._internalStyle = new EchoApp.Style();
+    this._localStyle = new EchoApp.Style();
     
     /**
      * Referenced external style
@@ -471,7 +471,7 @@ EchoApp.Component.prototype.getComponentCount = function() {
  * @return the property value
  */
 EchoApp.Component.prototype.getIndexedProperty = function(name, index) {
-    return this._internalStyle.getIndexedProperty(name, index);
+    return this._localStyle.getIndexedProperty(name, index);
 };
 
 /**
@@ -491,7 +491,7 @@ EchoApp.Component.prototype.getLayoutDirection = function() {
  * @return the property value
  */
 EchoApp.Component.prototype.getProperty = function(name) {
-    return this._internalStyle.getProperty(name);
+    return this._localStyle.getProperty(name);
 };
 
 /**
@@ -621,6 +621,19 @@ EchoApp.Component.prototype.indexOf = function(component) {
         }
     }
     return -1;
+};
+
+/**
+ * Retrieves local style property map associations.
+ * This method should only be used by a deserialized for
+ * the purpose of rapidly loading properties into a new
+ * component.
+ * 
+ * @return the internal style property map associations
+ *         (an associative array).
+ */
+EchoApp.Component.prototype.getLocalStyleData = function() {
+    return this._localStyle._propertyMap.associations;
 };
 
 /**
@@ -760,8 +773,8 @@ EchoApp.Component.prototype.removeListener = function(eventType, eventTarget) {
  * @param newValue the new value of the property
  */
 EchoApp.Component.prototype.setIndexedProperty = function(name, index, newValue) {
-    var oldValue = this._internalStyle.getIndexedProperty(name, index);
-    this._internalStyle.setIndexedProperty(name, index, newValue);
+    var oldValue = this._localStyle.getIndexedProperty(name, index);
+    this._localStyle.setIndexedProperty(name, index, newValue);
     if (this.application) {
         this.application.notifyComponentUpdate(this, name, oldValue, newValue);
     }
@@ -783,8 +796,8 @@ EchoApp.Component.prototype.setLayoutDirection = function(newValue) {
  * @param value the new value of the property
  */
 EchoApp.Component.prototype.setProperty = function(name, newValue) {
-    var oldValue = this._internalStyle.getProperty(name);
-    this._internalStyle.setProperty(name, newValue);
+    var oldValue = this._localStyle.getProperty(name);
+    this._localStyle.setProperty(name, newValue);
     if (this._listenerList && this._listenerList.hasListeners("property")) {
         var e = new EchoCore.Event(this, "property")
         e.propertyName = name;
@@ -853,7 +866,7 @@ EchoApp.Component.prototype.toString = function(longFormat) {
     if (longFormat) {
 		out += "\n";
 		var componentCount = this.getComponentCount();
-        out += this.renderId + "/properties:" + this._internalStyle + "\n";
+        out += this.renderId + "/properties:" + this._localStyle + "\n";
 		for (var i = 0; i < componentCount; ++i) {
 			var component = this.getComponent(i);
 			out += this.renderId + "/child:" + component.renderId + "\n";
@@ -870,7 +883,7 @@ EchoApp.Component.prototype.toString = function(longFormat) {
  * @constructor
  */
 EchoApp.LayoutData = function() {
-    this._internalStyle = new EchoApp.Style();
+    this._localStyle = new EchoApp.Style();
 };
 
 /**
@@ -880,7 +893,7 @@ EchoApp.LayoutData = function() {
  * @param {Number} the (integer) property index
  */
 EchoApp.LayoutData.prototype.getIndexedProperty = function(name, index) {
-    return this._internalStyle.getIndexedProperty(name, index);
+    return this._localStyle.getIndexedProperty(name, index);
 };
 
 /**
@@ -890,7 +903,7 @@ EchoApp.LayoutData.prototype.getIndexedProperty = function(name, index) {
  * @return the property value
  */
 EchoApp.LayoutData.prototype.getProperty = function(name) {
-    return this._internalStyle.getProperty(name);
+    return this._localStyle.getProperty(name);
 };
 
 /**
@@ -901,7 +914,7 @@ EchoApp.LayoutData.prototype.getProperty = function(name) {
  * @param newValue the new property value
  */
 EchoApp.LayoutData.prototype.setIndexedProperty = function(name, index, newValue) {
-    this._internalStyle.setIndexedProperty(name, index, newValue);
+    this._localStyle.setIndexedProperty(name, index, newValue);
 };
 
 /**
@@ -911,7 +924,7 @@ EchoApp.LayoutData.prototype.setIndexedProperty = function(name, index, newValue
  * @param value the new property value
  */
 EchoApp.LayoutData.prototype.setProperty = function(name, newValue) {
-    this._internalStyle.setProperty(name, newValue);
+    this._localStyle.setProperty(name, newValue);
 };
 
 /**
@@ -1621,8 +1634,8 @@ EchoApp.Property.Insets.prototype.toString = function() {
  * @class Component Style.
  * @constructor
  */
-EchoApp.Style = function() { 
-    this._propertyMap = new EchoCore.Collections.Map();
+EchoApp.Style = function(associations) { 
+    this._propertyMap = new EchoCore.Collections.Map(associations);
 };
 
 /**
