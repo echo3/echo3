@@ -1222,20 +1222,16 @@ EchoApp.Property.Extent = function() {
          */
         this.units = arguments[1];
     } else {
-        this.value = parseFloat(arguments[0]);
-        if (isNaN(this.value)) {
+        var parts = EchoApp.Property.Extent._PATTERN.exec(arguments[0]);
+        if (!parts) {
             throw new Error("Invalid Extent: " + arguments[0]);
         }
-        if (typeof arguments[0] == "string") {
-            this.units = arguments[0].substring(this.value.toString().length);
-            if (this.units.length == 0) {
-                this.units = "px";
-            }
-        } else {
-            this.units = "px";
-        }
+        this.value = parseFloat(parts[1]);
+        this.units = parts[2] ? parts[2] : "px";
     }
 };
+
+EchoApp.Property.Extent._PATTERN = /^(-?\d+(?:\.\d+)?)(.+)?$/;
 
 /**
  * Property class name.
