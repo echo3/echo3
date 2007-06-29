@@ -39,11 +39,14 @@ EchoRemoteClient = function(serverUrl, domainElementId) {
  * @return the full-length valid URL
  */
 EchoRemoteClient.prototype.processUrl = function(url) {
-    if (url.charAt(0) == "!") {
+    var urlTokens = url.split("!");
+    if (urlTokens[0]) {
+        // urlTokens[0] is not empty: URL is not a shorthand URL.
+        return url;
+    } else {
         // urlTokens[0] = empty
         // urlTokens[1] = key
         // urlTokens[2] = baseUrl
-        var urlTokens = url.split("!");
         if (urlTokens.length != 3) {
             throw new IllegalArgumentException("Invalid encoded URL");
         }
@@ -52,8 +55,6 @@ EchoRemoteClient.prototype.processUrl = function(url) {
             throw new Error("Invalid URL shorthand key \"" + urlTokens[1] + "\".");
         }
         return replacementValue + urlTokens[2];
-    } else {
-        return url;
     }
 };
 
