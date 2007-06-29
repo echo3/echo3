@@ -288,7 +288,7 @@ EchoRender.ComponentSync.RemoteTable.prototype._setSelectedFromProperty = functi
 	if (clearPrevious) {
 		this._clearSelected();
 	}
-    var selectedIndices = EchoCore.tokenizeString(value, ",");
+    var selectedIndices = value.split(",");
     for (var i = 0; i < selectedIndices.length; i++) {
         if (selectedIndices[i] == "") {
             continue;

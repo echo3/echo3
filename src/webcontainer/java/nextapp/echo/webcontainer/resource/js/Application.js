@@ -1118,7 +1118,7 @@ EchoApp.Property.Border = function() {
         this.color = this.sides[0].color;
     } else if (arguments.length == 1 && typeof arguments[0] == "string") {
         this.multisided = false;
-        var items = EchoCore.tokenizeString(arguments[0], " ");
+        var items = arguments[0].split(" ");
         if (items.length != 3) {
             throw new Error("Invalid border string: " + arguments[0]);
         }
@@ -1147,7 +1147,7 @@ EchoApp.Property.Border.prototype.className = "Border";
  */
 EchoApp.Property.Border.Side = function() {
     if (arguments.length == 1 && typeof arguments[0] == "string") {
-        var items = EchoCore.tokenizeString(arguments[0], " ");
+        var items = arguments[0].split(" ");
         if (items.length != 3) {
             throw new Error("Invalid border string: " + arguments[0]);
         }
@@ -1559,7 +1559,7 @@ EchoApp.Property.Insets = function() {
     var values;
     if (arguments.length == 1) {
         if (typeof arguments[0] == "string") {
-            values = EchoCore.tokenizeString(arguments[0], " ");
+            values = arguments[0].split(" ");
         } else {
             values = arguments;
         }

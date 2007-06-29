@@ -22,18 +22,6 @@ EchoCore = function() { };
  */
 EchoCore.profilingTimer = null;
 
-/**
- * Returns an array of tokens representing a tring.
- * 
- * @param {String} string the string to tokenize
- * @delimiter {String} delimiter on which to tokenize
- * @return an array of tokens
- * @type Array
- */
-EchoCore.tokenizeString = function(string, delimiter) {
-    return string.split(delimiter);
-};
-
 EchoCore.Arrays = function() { };
 
 EchoCore.Arrays.remove = function(array, item) {
