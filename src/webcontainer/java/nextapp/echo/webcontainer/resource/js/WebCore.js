@@ -1145,29 +1145,9 @@ EchoWebCore.VirtualPosition.redraw = function(element, recurse) {
         }
         
         while (i < EchoWebCore.VirtualPosition._elementIdList.length) {
-            element = document.getElementById(EchoWebCore.VirtualPosition._elementIdList[i]);
-            if (element) {
-                EchoWebCore.VirtualPosition._adjust(element);
-            } else {
-                // Element no longer exists.  Replace id in elementIdList with null,
-                // and set 'removedIds' flag to true such that elementIdList will
-                // be pruned for nulls once redrawing has been completed.
-                EchoWebCore.VirtualPosition._elementIdMap.remove(EchoWebCore.VirtualPosition._elementIdList[i]);
-                EchoWebCore.VirtualPosition._elementIdList[i] = null;
-                removedIds = true;
-            }
+            element = EchoWebCore.VirtualPosition._elementMap[EchoWebCore.VirtualPosition._elementIdList[i]];
+            EchoWebCore.VirtualPosition._adjust(element);
             ++i;
-        }
-        
-        // Prune removed ids from list if necessary.
-        if (removedIds) {
-            var updatedIdList = new Array();
-            for (var i = 0; i < EchoWebCore.VirtualPosition._elementIdList.length; ++i) {
-                if (EchoWebCore.VirtualPosition._elementIdList[i] != null) {
-                    updatedIdList.push(EchoWebCore.VirtualPosition._elementIdList[i]);
-                }
-            }
-            EchoWebCore.VirtualPosition._elementIdList = updatedIdList;
         }
     }
 };
@@ -1210,6 +1190,7 @@ EchoWebCore.VirtualPosition._resizeListener = function(e) {
  * implementation.
  */
 EchoWebCore.VirtualPosition._sort = function() {
+    EchoWebCore.VirtualPosition._elementMap = new Object();
     var sortedList = new Array();
     EchoWebCore.VirtualPosition._sortImpl(document.documentElement, sortedList); 
     EchoWebCore.VirtualPosition._elementIdList = sortedList;
@@ -1225,8 +1206,9 @@ EchoWebCore.VirtualPosition._sort = function() {
  */
 EchoWebCore.VirtualPosition._sortImpl = function(element, sortedList) {
     // If element has id and element is in set of virtually positioned elements
-    if (element.id && EchoWebCore.VirtualPosition._elementIdMap.get(element.id)) {
+    if (element.id && EchoWebCore.VirtualPosition._elementIdMap.associations[element.id]) {
         sortedList.push(element.id);
+        EchoWebCore.VirtualPosition._elementMap[element.id] = element;
     }
     
     for (var child = element.firstChild; child; child = child.nextSibling) {

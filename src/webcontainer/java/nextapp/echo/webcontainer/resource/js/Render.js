@@ -216,7 +216,7 @@ EchoRender.processUpdates = function(updateManager) {
     // Size Update Phase: Invoke renderSizeUpdate on all updates.
 
     EchoWebCore.VirtualPosition.redraw();
-    
+
     for (var i = 0; i < updates.length; ++i) {
         if (updates[i] == null) {
             // Skip removed updates.
