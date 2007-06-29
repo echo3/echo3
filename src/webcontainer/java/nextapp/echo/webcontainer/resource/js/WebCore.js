@@ -25,7 +25,7 @@ EchoWebCore.init = function() {
 
     EchoWebCore.Environment._init();
     EchoWebCore.Render.calculateExtentSizes();
-    if (EchoWebCore.Environment.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY) {
+    if (true || EchoWebCore.Environment.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY) {
         // Enable virtual positioning.
         EchoWebCore.VirtualPosition._init();
     }
@@ -1031,46 +1031,54 @@ EchoWebCore.VirtualPosition._enabled = false;
 EchoWebCore.VirtualPosition._newRegisteredElements = false;
 
 /** 
- * Adjusts the style.height and style.height attributes of an element to 
+ * Adjusts the style.height and style.width attributes of an element to 
  * simulate its specified top, bottom, left, and right CSS position settings
  * The calculation makes allowances for padding, margin, and border width.
  *
- * @param element the element whose height setting is to be calculated
+ * @param element the element whose height/width setting is to be calculated
  */
 EchoWebCore.VirtualPosition._adjust = function(element) {
+    if (!element.parentNode) {
+        return;
+    }
+    
     // Adjust 'height' property if 'top' and 'bottom' properties are set, 
-    // and if all padding/margin/borders are 0 or set in pixel units .
-    if (EchoWebCore.VirtualPosition._verifyPixelValue(element.style.top)
-            && EchoWebCore.VirtualPosition._verifyPixelValue(element.style.bottom)) {
-        var offsets = EchoWebCore.VirtualPosition._calculateOffsets(
-                EchoWebCore.VirtualPosition._OFFSETS_VERTICAL, element.style);
-        if (offsets != -1) {
-            var calculatedHeight = element.parentNode.offsetHeight - parseInt(element.style.top) 
-                    - parseInt(element.style.bottom) - offsets;
-            if (calculatedHeight <= 0) {
-                element.style.height = 0;
-            } else {
-                if (element.style.height != calculatedHeight + "px") {
-                    element.style.height = calculatedHeight + "px";
+    // and if all padding/margin/borders are 0 or set in pixel units.
+    var offsetHeight = element.parentNode.offsetHeight;
+    if (!isNaN(offsetHeight)) { // offsetHeight may be null if component is not in hierarchy.
+        if (EchoWebCore.VirtualPosition._verifyPixelValue(element.style.top)
+                && EchoWebCore.VirtualPosition._verifyPixelValue(element.style.bottom)) {
+            var offsets = EchoWebCore.VirtualPosition._calculateOffsets(
+                    EchoWebCore.VirtualPosition._OFFSETS_VERTICAL, element.style);
+            if (offsets != -1) {
+                calculatedHeight = offsetHeight - parseInt(element.style.top) - parseInt(element.style.bottom) - offsets;
+                if (calculatedHeight <= 0) {
+                    element.style.height = 0;
+                } else {
+                    if (element.style.height != calculatedHeight + "px") {
+                        element.style.height = calculatedHeight + "px";
+                    }
                 }
             }
         }
     }
     
     // Adjust 'width' property if 'left' and 'right' properties are set, 
-    // and if all padding/margin/borders are 0 or set in pixel units .
-    if (EchoWebCore.VirtualPosition._verifyPixelValue(element.style.left)
-            && EchoWebCore.VirtualPosition._verifyPixelValue(element.style.right)) {
-        var offsets = EchoWebCore.VirtualPosition._calculateOffsets(
-                EchoWebCore.VirtualPosition._OFFSETS_HORIZONTAL, element.style);
-        if (offsets != -1) {
-            var calculatedWidth = element.parentNode.offsetWidth - parseInt(element.style.left)
-                    - parseInt(element.style.right) - offsets;
-            if (calculatedWidth <= 0) {
-                element.style.width = 0;
-            } else {
-                if (element.style.width != calculatedWidth + "px") {
-                    element.style.width = calculatedWidth + "px";
+    // and if all padding/margin/borders are 0 or set in pixel units.
+    var offsetWidth = element.parentNode.offsetWidth;
+    if (!isNaN(offsetWidth)) { // offsetWidth may be null if component is not in hierarchy.
+        if (EchoWebCore.VirtualPosition._verifyPixelValue(element.style.left)
+                && EchoWebCore.VirtualPosition._verifyPixelValue(element.style.right)) {
+            var offsets = EchoWebCore.VirtualPosition._calculateOffsets(
+                    EchoWebCore.VirtualPosition._OFFSETS_HORIZONTAL, element.style);
+            if (offsets != -1) {
+                calculatedWidth = offsetWidth - parseInt(element.style.left) - parseInt(element.style.right) - offsets;
+                if (calculatedWidth <= 0) {
+                    element.style.width = 0;
+                } else {
+                    if (element.style.width != calculatedWidth + "px") {
+                        element.style.width = calculatedWidth + "px";
+                    }
                 }
             }
         }
@@ -1134,8 +1142,8 @@ EchoWebCore.VirtualPosition.redraw = function(element, recurse) {
                 ++i;
             }
             if (i >= EchoWebCore.VirtualPosition._elementList.length) {
-                throw new Error("Attempt to perform VirtualPosition redraw on element no registered with" +
-                        " virtual positioning system.");
+                throw new Error("Attempt to perform VirtualPosition redraw on element not registered with" +
+                        " virtual positioning system: " + element.id + "/" + element);
             }
         }
         
