@@ -130,13 +130,14 @@ EchoSerial.loadStyleSheet = function(client, ssElement) {
     while (ssChild) {
         if (ssChild.nodeType == 1) {
             if (ssChild.nodeName == "s") {
-                var style = new EchoApp.Style();
+                var styleData = new Object();
+                var style = new EchoApp.Style(styleData);
                 var sChild = ssChild.firstChild;
                 while (sChild) {
                     if (sChild.nodeType == 1) {
                         switch (sChild.nodeName) {
                         case "p":
-                            EchoSerial.loadProperty(client, sChild, style);
+                            EchoSerial.loadProperty(client, sChild, style, styleData);
                             break;
                         }
                     }

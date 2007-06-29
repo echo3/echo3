@@ -1632,10 +1632,11 @@ EchoApp.Property.Insets.prototype.toString = function() {
 
 /**
  * @class Component Style.
+ * @param properties (optional) the initial property mapping as an associative array
  * @constructor
  */
-EchoApp.Style = function(associations) {
-    this._properties = new Object();
+EchoApp.Style = function(properties) {
+    this._properties = properties ? properties : new Object();
 };
 
 /**
