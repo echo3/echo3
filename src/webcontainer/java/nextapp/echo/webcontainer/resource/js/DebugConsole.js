@@ -76,7 +76,7 @@ EchoDebugConsole._init = function() {
 
     EchoDebugConsole._contentElement = document.createElement("div");
     EchoDebugConsole._contentElement.style.fontFamily = "monospace";
-    EchoDebugConsole._contentElement.style.fontSize = "8pt";
+    EchoDebugConsole._contentElement.style.fontSize = "9px";
     EchoDebugConsole._contentElement.style.position = "absolute";
     EchoDebugConsole._contentElement.style.top = "28px";
     EchoDebugConsole._contentElement.style.left = "1px";
