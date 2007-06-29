@@ -1707,7 +1707,7 @@ EchoApp.Style.prototype.toString = function() {
  * An application style sheet.
  */
 EchoApp.StyleSheet = function() {
-    this._nameToStyleMap = new EchoCore.Collections.Map();
+    this._nameToStyleMap = new Object();
 };
 
 /**
@@ -1732,11 +1732,11 @@ EchoApp.StyleSheet.prototype.getRenderStyle = function(name, componentType) {
  * @type EchoApp.Style
  */
 EchoApp.StyleSheet.prototype.getStyle = function(name, componentType) {
-    var typeToStyleMap = this._nameToStyleMap.get(name);
+    var typeToStyleMap = this._nameToStyleMap[name];
     if (typeToStyleMap == null) {
         return null;
     }
-    return typeToStyleMap.get(componentType);
+    return typeToStyleMap[componentType];
 };
 
 /**
@@ -1747,12 +1747,12 @@ EchoApp.StyleSheet.prototype.getStyle = function(name, componentType) {
  * @param {EchoApp.Style} the style
  */
 EchoApp.StyleSheet.prototype.setStyle = function(name, componentType, style) {
-    var typeToStyleMap = this._nameToStyleMap.get(name);
+    var typeToStyleMap = this._nameToStyleMap[name];
     if (typeToStyleMap == null) {
-        typeToStyleMap = new EchoCore.Collections.Map();
-        this._nameToStyleMap.put(name, typeToStyleMap);
+        typeToStyleMap = new Object();
+        this._nameToStyleMap[name] = typeToStyleMap;
     }
-    typeToStyleMap.put(componentType, style);
+    typeToStyleMap[componentType] = style;
 };
 
 /**
