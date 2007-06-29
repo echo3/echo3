@@ -633,7 +633,7 @@ EchoApp.Component.prototype.indexOf = function(component) {
  *         (an associative array).
  */
 EchoApp.Component.prototype.getLocalStyleData = function() {
-    return this._localStyle._propertyMap.associations;
+    return this._localStyle._properties;
 };
 
 /**
@@ -1634,8 +1634,8 @@ EchoApp.Property.Insets.prototype.toString = function() {
  * @class Component Style.
  * @constructor
  */
-EchoApp.Style = function(associations) { 
-    this._propertyMap = new EchoCore.Collections.Map(associations);
+EchoApp.Style = function(associations) {
+    this._properties = new Object();
 };
 
 /**
@@ -1646,7 +1646,7 @@ EchoApp.Style = function(associations) {
  * @return the property value  
  */
 EchoApp.Style.prototype.getIndexedProperty = function(name, index) {
-    var indexValues = this._propertyMap.get(name);
+    var indexValues = this._properties[name];
     if (!indexValues) {
         return null;
     }
@@ -1660,7 +1660,7 @@ EchoApp.Style.prototype.getIndexedProperty = function(name, index) {
  * @return the property value  
  */
 EchoApp.Style.prototype.getProperty = function(name) {
-    return this._propertyMap.get(name);
+    return this._properties[name];
 };
 
 /**
@@ -1671,10 +1671,10 @@ EchoApp.Style.prototype.getProperty = function(name) {
  * @param value the new value of the property 
  */
 EchoApp.Style.prototype.setIndexedProperty = function(name, index, value) {
-    var indexValues = this._propertyMap.get(name);
+    var indexValues = this._properties[name];
     if (!indexValues) {
         indexValues = new Array();
-        this._propertyMap.put(name, indexValues);
+        this._properties[name] = indexValues;
     }
     indexValues[index] = value;
 };
@@ -1686,7 +1686,7 @@ EchoApp.Style.prototype.setIndexedProperty = function(name, index, value) {
  * @param value the new value of the property 
  */
 EchoApp.Style.prototype.setProperty = function(name, newValue) {
-    this._propertyMap.put(name, newValue);
+    this._properties[name] = newValue;
 };
 
 /**
@@ -1696,7 +1696,11 @@ EchoApp.Style.prototype.setProperty = function(name, newValue) {
  * @type String
  */
 EchoApp.Style.prototype.toString = function() {
-    return this._propertyMap.toString();
+    var outArray = new Array();
+    for (var x in this._properties) {
+        outArray.push(x + "=" + this._properties[x]);
+    }
+    return outArray.toString();
 };
 
 /**
