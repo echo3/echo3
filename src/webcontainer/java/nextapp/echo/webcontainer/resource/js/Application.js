@@ -1231,6 +1231,10 @@ EchoApp.Property.Extent = function() {
     }
 };
 
+/**
+ * Regular expression to parse string based extents, e.g., "20px".
+ * Returned part 1 is the value, part 2 is the units (or blank).
+ */
 EchoApp.Property.Extent._PATTERN = /^(-?\d+(?:\.\d+)?)(.+)?$/;
 
 /**
