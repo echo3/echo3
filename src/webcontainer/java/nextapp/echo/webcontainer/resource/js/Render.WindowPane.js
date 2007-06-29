@@ -558,7 +558,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     
     this._contentDivElement = document.createElement("div");
     this._contentDivElement.id = this.component.renderId + "_content";
-    EchoWebCore.VirtualPosition.register(this._contentDivElement.id);
+    EchoWebCore.VirtualPosition.register(this._contentDivElement);
     
     this._contentDivElement.style.position = "absolute";
     this._contentDivElement.style.zIndex = 2;

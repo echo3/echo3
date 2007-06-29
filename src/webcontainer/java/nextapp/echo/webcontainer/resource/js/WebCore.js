@@ -1022,16 +1022,13 @@ EchoWebCore.VirtualPosition._OFFSETS_HORIZONTAL
         = new Array("paddingLeft", "paddingRight", "marginLeft", "marginRight", "borderLeftWidth", "borderRightWidth");
 
 /** Array containing ids of elements registered with the virtual positioning system. */
-EchoWebCore.VirtualPosition._elementIdList = new Array();
-
-/** Map (being used a set) containing ids of all registered elements. */
-EchoWebCore.VirtualPosition._elementIdMap = new EchoCore.Collections.Map();
+EchoWebCore.VirtualPosition._elementList = new Array();
 
 /** Flag indicating whether virtual positioning is required/enabled. */
 EchoWebCore.VirtualPosition._enabled = false;
 
 /** Flag indicating whether virtual positioning list is sorted); */
-EchoWebCore.VirtualPosition._elementIdListSorted = true;
+EchoWebCore.VirtualPosition._newRegisteredElements = false;
 
 /** 
  * Adjusts the style.height and style.height attributes of an element to 
@@ -1121,32 +1118,29 @@ EchoWebCore.VirtualPosition.redraw = function(element, recurse) {
         return;
     }
     
-    var removedIds = false;
-    
     if (element != null && !recurse) {
         EchoWebCore.VirtualPosition._adjust(element);
     } else {
-        if (!EchoWebCore.VirtualPosition._elementIdListSorted) {
-            EchoWebCore.VirtualPosition._sort();
+        if (EchoWebCore.VirtualPosition._newRegisteredElements) {
+            EchoWebCore.VirtualPosition._resync();
         }
         
         var i = 0;
             
         if (element) { // element and recurse set.
-            while (i < EchoWebCore.VirtualPosition._elementIdList.length &&
-                    EchoWebCore.VirtualPosition._elementIdList[i] != element.id) {
+            while (i < EchoWebCore.VirtualPosition._elementList.length &&
+                    EchoWebCore.VirtualPosition._elementList[i] != element) {
                 // Skip irrelevant elements.
                 ++i;
             }
-            if (i >= EchoWebCore.VirtualPosition._elementIdList.length) {
+            if (i >= EchoWebCore.VirtualPosition._elementList.length) {
                 throw new Error("Attempt to perform VirtualPosition redraw on element no registered with" +
                         " virtual positioning system.");
             }
         }
         
-        while (i < EchoWebCore.VirtualPosition._elementIdList.length) {
-            element = EchoWebCore.VirtualPosition._elementMap[EchoWebCore.VirtualPosition._elementIdList[i]];
-            EchoWebCore.VirtualPosition._adjust(element);
+        while (i < EchoWebCore.VirtualPosition._elementList.length) {
+            EchoWebCore.VirtualPosition._adjust(EchoWebCore.VirtualPosition._elementList[i]);
             ++i;
         }
     }
@@ -1161,15 +1155,14 @@ EchoWebCore.VirtualPosition.redraw = function(element, recurse) {
  *   units.</li>
  * </ul>
  *
- * @param elementId the elementId to register
+ * @param element the element to register
  */
-EchoWebCore.VirtualPosition.register = function(elementId) {
+EchoWebCore.VirtualPosition.register = function(element) {
     if (!EchoWebCore.VirtualPosition._enabled) {
         return;
     }
-    EchoWebCore.VirtualPosition._elementIdListSorted = false;
-    EchoWebCore.VirtualPosition._elementIdList.push(elementId);
-    EchoWebCore.VirtualPosition._elementIdMap.put(elementId, true);
+    element.__virtualPosition = true;
+    EchoWebCore.VirtualPosition._newRegisteredElements = true;
 };
 
 /**
@@ -1183,51 +1176,37 @@ EchoWebCore.VirtualPosition._resizeListener = function(e) {
 };
 
 /**
- * Sorts the array of virtually positioned element ids based on the order in 
- * which they appear top-to-bottom in the hierarchy.  This is necessary in order
- * that their positions will be adjusted starting at the highest level in the 
- * hierarchy.  This method delegates the real work to a recursive 
- * implementation.
+ * Visits every node in the DOM hierarchy checking for a virtual positioning
+ * identifier.  Each such node is added to EchoWebCore.VirtualPosition._elementList,
+ * in top-down order (guaranteeing that no child element will appear before its parent
+ * element in the list, such that adjust() calls can be run correctly when iterating
+ * the list forward.
  */
-EchoWebCore.VirtualPosition._sort = function() {
-    EchoWebCore.VirtualPosition._elementMap = new Object();
+EchoWebCore.VirtualPosition._resync = function() {
     var sortedList = new Array();
-    EchoWebCore.VirtualPosition._sortImpl(document.documentElement, sortedList); 
-    EchoWebCore.VirtualPosition._elementIdList = sortedList;
-    EchoWebCore.VirtualPosition._elementIdListSorted = true;
+    EchoWebCore.VirtualPosition._elementList = new Array();
+    EchoWebCore.VirtualPosition._resyncImpl(document.documentElement);
+    EchoWebCore.VirtualPosition._newRegisteredElements = false;
 };
 
 /**
- * Recursive work method to support <code>sort()</code>.
+ * Recursive work method to support _resync().
  * 
- * @param element the current element of the hierarchy being analyzed.
- * @param sortedList an array to which element ids will be appended in the
- *        order the appear in the hierarchy
+ * @param element the current element of the hierarchy being analyzed
  */
-EchoWebCore.VirtualPosition._sortImpl = function(element, sortedList) {
-    // If element has id and element is in set of virtually positioned elements
-    if (element.id && EchoWebCore.VirtualPosition._elementIdMap.associations[element.id]) {
-        sortedList.push(element.id);
-        EchoWebCore.VirtualPosition._elementMap[element.id] = element;
+EchoWebCore.VirtualPosition._resyncImpl = function(element) {
+    // Determine if element has a virtual position id 
+    if (element.__virtualPosition) {
+        EchoWebCore.VirtualPosition._elementList.push(element);
     }
-    
-    for (var child = element.firstChild; child; child = child.nextSibling) {
-        if (child.nodeType == 1) {
-            EchoWebCore.VirtualPosition._sortImpl(child, sortedList);
-        }
-    }
-};
 
-/**
- * Parses the specified value as an integer, returning 0 in the event the
- * specified value cannot be expressed as a number.
- *
- * @param value the value to parse, e.g., "20px"
- * @return the value as a integer, e.g., '20'
- */
-EchoWebCore.VirtualPosition._toInteger = function(value) {
-    value = parseInt(value);
-    return isNaN(value) ? 0 : value;
+    var child = element.firstChild;
+    while (child) {
+        if (child.nodeType == 1) {
+            EchoWebCore.VirtualPosition._resyncImpl(child);
+        }
+        child = child.nextSibling;
+    }
 };
 
 /** 

@@ -44,7 +44,7 @@ EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update
         divElement.style.bottom = pixelInsets.bottom + "px";
         divElement.style.right = pixelInsets.right + "px";
         divElement.style.overflow = "auto";
-        EchoWebCore.VirtualPosition.register(divElement.id);
+        EchoWebCore.VirtualPosition.register(divElement);
     }
     EchoRender.renderComponentAdd(update, child, divElement);
     this._divElement.appendChild(divElement);
@@ -83,7 +83,6 @@ EchoRender.ComponentSync.ContentPane.prototype.renderUpdate = function(update) {
         var addedChildren = update.getAddedChildren();
         if (addedChildren) {
             // Add children.
-            var contentPaneDivElemenet = document.getElementById(this.component.renderId);
             for (var i = 0; i < addedChildren.length; ++i) {
                 //FIXME. third attribute is ignored...undecided whether order matters AT ALL here (set by z-index?)
                 this._renderAddChild(update, addedChildren[i], this.component.indexOf(addedChildren[i])); 

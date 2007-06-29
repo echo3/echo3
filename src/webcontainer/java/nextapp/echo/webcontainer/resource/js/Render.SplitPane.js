@@ -279,7 +279,7 @@ EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parent
     this._splitPaneDivElement.style.left = "0px"
     this._splitPaneDivElement.style.right = "0px"
     
-    EchoWebCore.VirtualPosition.register(this._splitPaneDivElement.id);
+    EchoWebCore.VirtualPosition.register(this._splitPaneDivElement);
     EchoRender.Property.Color.renderFB(this.component, this._splitPaneDivElement);
     EchoRender.Property.Font.renderDefault(this.component, this._splitPaneDivElement);
     
@@ -412,7 +412,7 @@ EchoRender.ComponentSync.SplitPane.prototype._renderAddChild = function(update, 
             }
         }
     }
-    EchoWebCore.VirtualPosition.register(paneDivElement.id);
+    EchoWebCore.VirtualPosition.register(paneDivElement);
     
     EchoRender.renderComponentAdd(update, child, paneDivElement);
     this._splitPaneDivElement.appendChild(paneDivElement);
