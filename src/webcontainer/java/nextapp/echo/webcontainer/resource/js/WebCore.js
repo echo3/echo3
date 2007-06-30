@@ -25,7 +25,7 @@ EchoWebCore.init = function() {
 
     EchoWebCore.Environment._init();
     EchoWebCore.Render.calculateExtentSizes();
-    if (true || EchoWebCore.Environment.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY) {
+    if (EchoWebCore.Environment.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY) {
         // Enable virtual positioning.
         EchoWebCore.VirtualPosition._init();
     }
@@ -1113,6 +1113,19 @@ EchoWebCore.VirtualPosition.redraw = function(element, recurse) {
     }
     
     EchoCore.Debug.consoleWrite("VPOS:" + (element ? (element.id + "/" + element) : "ALL") + " " + (recurse == true));
+    
+    if (element) {
+        var testElement = element;
+        while (testElement) {
+            if (testElement == document.documentElement) {
+                break;
+            }
+            testElement = testElement.parentNode;
+        }
+        if (!testElement) {
+            throw new Error("Attempt to redraw element that is not presently in hierarchy: " + element.id + "/" + element);
+        }
+    }
     
     if (element) {
         EchoWebCore.VirtualPosition._redrawImpl(element, recurse);
