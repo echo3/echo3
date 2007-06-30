@@ -1024,6 +1024,8 @@ EchoWebCore.VirtualPosition._OFFSETS_HORIZONTAL
 /** Flag indicating whether virtual positioning is required/enabled. */
 EchoWebCore.VirtualPosition._enabled = false;
 
+EchoWebCore.VirtualPosition._elementCache = null;
+
 /** 
  * Adjusts the style.height and style.width attributes of an element to 
  * simulate its specified top, bottom, left, and right CSS position settings
@@ -1032,20 +1034,34 @@ EchoWebCore.VirtualPosition._enabled = false;
  * @param element the element whose height/width setting is to be calculated
  */
 EchoWebCore.VirtualPosition._adjust = function(element) {
+    if (!element.parentNode) {
+        // Element is in cache but has been removed from parent.
+        // An exhaustive check is not performed for performance reasons,
+        // it is theoretically cheaper to simply continue and
+        // do nothing when offsetWidth/offsetHeight calculations cannot
+        // turn out to be NaNs.
+        return;
+    }
+
     // Adjust 'height' property if 'top' and 'bottom' properties are set, 
     // and if all padding/margin/borders are 0 or set in pixel units.
     if (EchoWebCore.VirtualPosition._verifyPixelValue(element.style.top)
             && EchoWebCore.VirtualPosition._verifyPixelValue(element.style.bottom)) {
-        var offsets = EchoWebCore.VirtualPosition._calculateOffsets(
-                EchoWebCore.VirtualPosition._OFFSETS_VERTICAL, element.style);
-        if (offsets != -1) {
-            calculatedHeight = element.parentNode.offsetHeight - parseInt(element.style.top) 
-                    - parseInt(element.style.bottom) - offsets;
-            if (calculatedHeight <= 0) {
-                element.style.height = 0;
-            } else {
-                if (element.style.height != calculatedHeight + "px") {
-                    element.style.height = calculatedHeight + "px";
+        // Verify that offsetHeight is valid, and do nothing if it cannot be calculated.
+        // Such a do-nothing scenario is due to a not-up-to-date element cache,  where
+        // the element is no longer hierarchy.
+        var offsetHeight = element.parentNode.offsetHeight;
+        if (!isNaN(offsetHeight)) {
+            var offsets = EchoWebCore.VirtualPosition._calculateOffsets(
+                    EchoWebCore.VirtualPosition._OFFSETS_VERTICAL, element.style);
+            if (offsets != -1) {
+                var calculatedHeight = offsetHeight - parseInt(element.style.top) - parseInt(element.style.bottom) - offsets;
+                if (calculatedHeight <= 0) {
+                    element.style.height = 0;
+                } else {
+                    if (element.style.height != calculatedHeight + "px") {
+                        element.style.height = calculatedHeight + "px";
+                    }
                 }
             }
         }
@@ -1055,16 +1071,21 @@ EchoWebCore.VirtualPosition._adjust = function(element) {
     // and if all padding/margin/borders are 0 or set in pixel units.
     if (EchoWebCore.VirtualPosition._verifyPixelValue(element.style.left)
             && EchoWebCore.VirtualPosition._verifyPixelValue(element.style.right)) {
-        var offsets = EchoWebCore.VirtualPosition._calculateOffsets(
-                EchoWebCore.VirtualPosition._OFFSETS_HORIZONTAL, element.style);
-        if (offsets != -1) {
-            calculatedWidth = element.parentNode.offsetWidth - parseInt(element.style.left) 
-                    - parseInt(element.style.right) - offsets;
-            if (calculatedWidth <= 0) {
-                element.style.width = 0;
-            } else {
-                if (element.style.width != calculatedWidth + "px") {
-                    element.style.width = calculatedWidth + "px";
+        // Verify that offsetHeight is valid, and do nothing if it cannot be calculated.
+        // Such a do-nothing scenario is due to a not-up-to-date element cache,  where
+        // the element is no longer hierarchy.
+        var offsetWidth = element.parentNode.offsetWidth;
+        if (!isNaN(offsetWidth)) {
+            var offsets = EchoWebCore.VirtualPosition._calculateOffsets(
+                    EchoWebCore.VirtualPosition._OFFSETS_HORIZONTAL, element.style);
+            if (offsets != -1) {
+                var calculatedWidth = offsetWidth - parseInt(element.style.left) - parseInt(element.style.right) - offsets;
+                if (calculatedWidth <= 0) {
+                    element.style.width = 0;
+                } else {
+                    if (element.style.width != calculatedWidth + "px") {
+                        element.style.width = calculatedWidth + "px";
+                    }
                 }
             }
         }
@@ -1114,35 +1135,14 @@ EchoWebCore.VirtualPosition.redraw = function(element, recurse) {
     
     EchoCore.Debug.consoleWrite("VPOS:" + (element ? (element.id + "/" + element) : "ALL") + " " + (recurse == true));
     
-    if (element) {
-        var testElement = element;
-        while (testElement) {
-            if (testElement == document.documentElement) {
-                break;
-            }
-            testElement = testElement.parentNode;
-        }
-        if (!testElement) {
-            throw new Error("Attempt to redraw element that is not presently in hierarchy: " + element.id + "/" + element);
-        }
-    }
-    
-    if (element) {
-        EchoWebCore.VirtualPosition._redrawImpl(element, recurse);
-    } else {
-        EchoWebCore.VirtualPosition._redrawImpl(document.documentElement, true);
-    }
-};
-
-EchoWebCore.VirtualPosition._redrawImpl = function(element, recurse) {
-    if (element.__virtualPosition) {
+    if (element && !recurse) {
         EchoWebCore.VirtualPosition._adjust(element);
-    }
-    if (recurse) {
-        var child = element.firstChild;
-        while (child) {
-            EchoWebCore.VirtualPosition._redrawImpl(child, true);
-            child = child.nextSibling;
+    } else {
+        if (!EchoWebCore.VirtualPosition._elementCache) {
+            EchoWebCore.VirtualPosition._resync();
+        }
+        for (var i = 0; i < EchoWebCore.VirtualPosition._elementCache.length; ++i) {
+            EchoWebCore.VirtualPosition._adjust(EchoWebCore.VirtualPosition._elementCache[i]);
         }
     }
 };
@@ -1162,6 +1162,7 @@ EchoWebCore.VirtualPosition.register = function(element) {
     if (!EchoWebCore.VirtualPosition._enabled) {
         return;
     }
+    EchoWebCore.VirtualPosition._elementCache = null;
     element.__virtualPosition = true;
 };
 
@@ -1173,6 +1174,22 @@ EchoWebCore.VirtualPosition.register = function(element) {
 EchoWebCore.VirtualPosition._resizeListener = function(e) {
     e = e ? e : window.event;
     EchoWebCore.VirtualPosition.redraw();
+};
+
+EchoWebCore.VirtualPosition._resync = function() {
+    EchoWebCore.VirtualPosition._elementCache = new Array();
+    EchoWebCore.VirtualPosition._resyncImpl(document.documentElement);
+};
+
+EchoWebCore.VirtualPosition._resyncImpl = function(element) {
+    if (element.__virtualPosition) {
+        EchoWebCore.VirtualPosition._elementCache.push(element);
+    }
+    var child = element.firstChild;
+    while (child) {
+        EchoWebCore.VirtualPosition._resyncImpl(child);
+        child = child.nextSibling;
+    }
 };
 
 /** 
