@@ -113,9 +113,19 @@ EchoRender.ComponentSync.SplitPane.prototype.loadRenderData = function() {
     }
 
     this._resizable = this.component.getRenderProperty("resizable");
+    
+    /**
+     * The user's desired position of the separator.  This is the last
+     * position to which the user dragged the separator or the last position
+     * that the separator was explicitly set to.  This value may not be the
+     * actual separator position, in cases where other constraints have
+     * temporarily adjusted it.
+     * @type Integer
+     */
     this._userSeparatorPosition = this._separatorPosition = EchoRender.Property.Extent.toPixels(
             this.component.getRenderProperty("separatorPosition",
             EchoApp.SplitPane.DEFAULT_SEPARATOR_POSITION), this._orientationVertical);
+    
     this._separatorSize = EchoRender.Property.Extent.toPixels(this.component.getRenderProperty(
             this._orientationVertical ? "separatorHeight" : "separatorWidth",
             this._resizable ? EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
