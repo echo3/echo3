@@ -56,27 +56,55 @@ EchoRender._setPeerDisposedState = function(component, disposed) {
     }
 };
 
-EchoRender.notifyResize = function(component) {
+/**
+ * Notifies child components that the parent component has been reszied.
+ * Child components (and their descendants) will be notified by having 
+ * their renderSizeUpdate() implementations invoked.
+ * Note that the parent WILL NOT have its renderSizeUpdate() method
+ * invoked.
+ * 
+ * If your component requires virtual positioning (for IE6) you should invoke
+ * this method after informing the virtual positioning system to recalculate
+ * the size of your component.
+ * 
+ * @param parent the component whose size changed
+ * @type EchoApp.Component
+ */
+EchoRender.notifyResize = function(parent) {
+    EchoRender._doResize(parent, false);
+};
+
+//FIXME. this new resize code is vomit-inducing.  rewrite.
+EchoRender._doResize = function(component, resizeSelf) {
     EchoRender._resizedIds = new Object();
-    EchoRender._notifyResizeImpl(component);
+    if (resizeSelf) {
+        EchoRender._doResizeImpl(component);
+    } else {
+        var count = component.getComponentCount();
+        for (var i = 0; i < count; ++i) {
+            EchoRender._doResizeImpl(component.getComponent(i));
+        }
+    }
     EchoRender._resizedIds = null;
 };
 
-EchoRender._notifyResizeImpl = function(component) {
+EchoRender._doResizeImpl = function(component) {
     if (EchoRender._resizedIds[component.renderId]) {
+        EchoCore.Debug.consoleWrite("***** already resized: " + component);
         return;
     }
     EchoRender._resizedIds[component.renderId] = true;
-    var count = component.getComponentCount();
-    for (var i = 0; i < count; ++i) {
-        var child = component.getComponent(i);
+    
+    if (component.peer) {
         // components that are present on the client, but are not rendered (lazy rendered as in tree), 
         // have no peer installed.
-        if (child.peer) {
-        	if (child.peer.renderSizeUpdate) {
-	            child.peer.renderSizeUpdate();
-        	}
-	        EchoRender._notifyResizeImpl(child);
+        if (component.peer.renderSizeUpdate) {
+            component.peer.renderSizeUpdate();
+        }
+        
+        var count = component.getComponentCount();
+        for (var i = 0; i < count; ++i) {
+            EchoRender._doResizeImpl(component.getComponent(i));
         }
     }
 };
@@ -213,14 +241,6 @@ EchoRender.processUpdates = function(updateManager) {
         EchoCore.profilingTimer.mark("up");
     }
     
-    // Virtual Position Redraw
-    
-    EchoWebCore.VirtualPosition.redraw();
-
-    if (EchoCore.profilingTimer) {
-        EchoCore.profilingTimer.mark("rd");
-    }
-
     // Size Update Phase: Invoke renderSizeUpdate on all updates.
     
     for (var i = 0; i < updates.length; ++i) {
@@ -228,7 +248,8 @@ EchoRender.processUpdates = function(updateManager) {
             // Skip removed updates.
             continue;
         }
-        EchoRender.notifyResize(updates[i].parent);
+        //FIXME. this does needless work....resizing twice is quite possible.
+        EchoRender._doResize(updates[i].parent, true);
     }
 
     if (EchoCore.profilingTimer) {

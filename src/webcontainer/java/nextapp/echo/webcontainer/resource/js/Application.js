@@ -2558,6 +2558,7 @@ EchoApp.SelectField.prototype = new EchoApp.Component;
  */
 EchoApp.SplitPane = function(renderId) {
     EchoApp.Component.call(this, renderId);
+    this.pane = true;
     this.componentType = "SplitPane";
 };
 

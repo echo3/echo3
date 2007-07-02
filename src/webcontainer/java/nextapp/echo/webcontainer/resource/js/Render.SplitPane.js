@@ -182,7 +182,12 @@ EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseUp = function
     
     this._userSeparatorPosition = this._separatorPosition;
 
-    EchoWebCore.VirtualPosition.redraw(this._splitPaneDivElement, true);
+    if (this._firstPaneDivElement) {
+        EchoWebCore.VirtualPosition.redraw(this._firstPaneDivElement);
+    }
+    if (this._secondPaneDivElement) {
+        EchoWebCore.VirtualPosition.redraw(this._secondPaneDivElement);
+    }
 
     EchoRender.notifyResize(this.component);
 };
@@ -289,7 +294,6 @@ EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parent
     this._splitPaneDivElement.style.left = "0px"
     this._splitPaneDivElement.style.right = "0px"
     
-    EchoWebCore.VirtualPosition.register(this._splitPaneDivElement);
     EchoRender.Property.Color.renderFB(this.component, this._splitPaneDivElement);
     EchoRender.Property.Font.renderDefault(this.component, this._splitPaneDivElement);
     
@@ -422,7 +426,6 @@ EchoRender.ComponentSync.SplitPane.prototype._renderAddChild = function(update, 
             }
         }
     }
-    EchoWebCore.VirtualPosition.register(paneDivElement);
     
     EchoRender.renderComponentAdd(update, child, paneDivElement);
     this._splitPaneDivElement.appendChild(paneDivElement);
@@ -450,10 +453,15 @@ EchoRender.ComponentSync.SplitPane.prototype._renderRemoveChild = function(updat
 };
 
 EchoRender.ComponentSync.SplitPane.prototype.renderSizeUpdate = function() {
+    EchoWebCore.VirtualPosition.redraw(this._splitPaneDivElement);
     if (this.component.getRenderProperty("resizable")) {
-        if (this._setSeparatorPosition(this._userSeparatorPosition)) {
-            EchoWebCore.VirtualPosition.redraw(this._splitPaneDivElement, true);
-        }
+        this._setSeparatorPosition(this._userSeparatorPosition);
+    }
+    if (this._firstPaneDivElement) {
+        EchoWebCore.VirtualPosition.redraw(this._firstPaneDivElement);
+    }
+    if (this._secondPaneDivElement) {
+        EchoWebCore.VirtualPosition.redraw(this._secondPaneDivElement);
     }
 };
 

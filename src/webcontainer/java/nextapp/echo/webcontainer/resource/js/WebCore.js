@@ -999,20 +999,11 @@ EchoWebCore.Render.Measure.Bounds.prototype.toString = function() {
  * capabilities.  Internet Explorer 6 is ordinarily handicapped by its lack
  * of support for setting 'left' and 'right' or 'top' and 'bottom' positions
  * simultaneously on a single document element.
- *
- * To use the virtual positioning system, you must first register any elements
- * that have should be drawn using it.  To do this, invoke the register() method
- * with the id of the element. 
- *
- * When the HTML rendering of a component that may contain other components 
- * CHANGES IN SIZE, the VirtualPosition.redraw() method MUST be invoked, or
- * components that use virtual positioning will not appear correctly on screen.
- * This should be done even if the container component itself does not use
- * the virtual position capability, due to the fact that a child component might
- * be using it.
  * 
- * The VirtualPosition.redraw() method is invoked automatically whenever
- * a Client/Server synchronization is completed.
+ * To use virtual positioning, simply set the left/right/top/bottom
+ * coordinates of an element and invoke redraw().  The redraw() method
+ * must be invoked whenever the size of the element should be redrawn,
+ * e.g., when the screen or its containing element resizes.
  */
 EchoWebCore.VirtualPosition = function() { };
 
@@ -1024,22 +1015,49 @@ EchoWebCore.VirtualPosition._OFFSETS_HORIZONTAL
 /** Flag indicating whether virtual positioning is required/enabled. */
 EchoWebCore.VirtualPosition._enabled = false;
 
-EchoWebCore.VirtualPosition._elementCache = null;
+/**
+ * Calculates horizontal or vertical padding, border, and margin offsets for a particular style.
+ *
+ * @param offsetNames the names of the offsets styles to calculate, either
+ *        _OFFSETS_VERTICAL or _OFFSETS_HORIZONTAL.
+ * @param style the style whose offsets should be calculated
+ * @return the pixel size of the offsets, or -1 if they cannot be calculated
+ */
+EchoWebCore.VirtualPosition._calculateOffsets = function(offsetNames, style) {
+    var offsets = 0;
+    for (var i = 0; i < offsetNames.length; ++i) {
+        var value = style[offsetNames[i]];
+        if (value) {
+            if (value.toString().indexOf("px") == -1) {
+                return -1;
+            }
+            offsets += parseInt(value);
+        }
+    }
+    return offsets;
+};
 
-/** 
+/**
+ * Enables and initializes the virtual positioning system.
+ */
+EchoWebCore.VirtualPosition._init = function() {
+    EchoWebCore.VirtualPosition._enabled = true;
+};
+
+/**
+ * Redraws elements registered with the virtual positioning system.
  * Adjusts the style.height and style.width attributes of an element to 
  * simulate its specified top, bottom, left, and right CSS position settings
  * The calculation makes allowances for padding, margin, and border width.
  *
- * @param element the element whose height/width setting is to be calculated
+ * @param element the element to redraw
  */
-EchoWebCore.VirtualPosition._adjust = function(element) {
+EchoWebCore.VirtualPosition.redraw = function(element) {
+    if (!EchoWebCore.VirtualPosition._enabled) {
+        return;
+    }
+
     if (!element.parentNode) {
-        // Element is in cache but has been removed from parent.
-        // An exhaustive check is not performed for performance reasons,
-        // it is theoretically cheaper to simply continue and
-        // do nothing when offsetWidth/offsetHeight calculations cannot
-        // turn out to be NaNs.
         return;
     }
 
@@ -1089,106 +1107,6 @@ EchoWebCore.VirtualPosition._adjust = function(element) {
                 }
             }
         }
-    }
-};
-
-/**
- * Calculates horizontal or vertical padding, border, and margin offsets for a particular style.
- *
- * @param offsetNames the names of the offsets styles to calculate, either
- *        _OFFSETS_VERTICAL or _OFFSETS_HORIZONTAL.
- * @param style the style whose offsets should be calculated
- * @return the pixel size of the offsets, or -1 if they cannot be calculated
- */
-EchoWebCore.VirtualPosition._calculateOffsets = function(offsetNames, style) {
-    var offsets = 0;
-    for (var i = 0; i < offsetNames.length; ++i) {
-        var value = style[offsetNames[i]];
-        if (value) {
-            if (value.toString().indexOf("px") == -1) {
-                return -1;
-            }
-            offsets += parseInt(value);
-        }
-    }
-    return offsets;
-};
-
-/**
- * Enables and initializes the virtual positioning system.
- */
-EchoWebCore.VirtualPosition._init = function() {
-    EchoWebCore.VirtualPosition._enabled = true;
-    EchoWebCore.DOM.addEventListener(window, "resize", EchoWebCore.VirtualPosition._resizeListener, false);
-};
-
-/**
- * Redraws elements registered with the virtual positioning system.
- *
- * @param element (optional) the element to redraw; if unspecified, 
- *        all elements will be redrawn.
- */
-EchoWebCore.VirtualPosition.redraw = function(element, recurse) {
-    if (!EchoWebCore.VirtualPosition._enabled) {
-        return;
-    }
-    
-    EchoCore.Debug.consoleWrite("VPOS:" + (element ? (element.id + "/" + element) : "ALL") + " " + (recurse == true));
-    
-    if (element && !recurse) {
-        EchoWebCore.VirtualPosition._adjust(element);
-    } else {
-        if (!EchoWebCore.VirtualPosition._elementCache) {
-            EchoWebCore.VirtualPosition._resync();
-        }
-        for (var i = 0; i < EchoWebCore.VirtualPosition._elementCache.length; ++i) {
-            EchoWebCore.VirtualPosition._adjust(EchoWebCore.VirtualPosition._elementCache[i]);
-        }
-    }
-};
-
-/**
- * Registers an element to be drawn using the virtual positioning system.
- * The element must meet the following criteria:
- * <ul>
- *  <li>Margins and paddings, if set, must be set in pixel units.
- *  <li>Top, bottom, left, and right coordinates, if set, must be set in pixel 
- *   units.</li>
- * </ul>
- *
- * @param element the element to register
- */
-EchoWebCore.VirtualPosition.register = function(element) {
-    if (!EchoWebCore.VirtualPosition._enabled) {
-        return;
-    }
-    EchoWebCore.VirtualPosition._elementCache = null;
-    element.__virtualPosition = true;
-};
-
-/**
- * Lisetener to receive "resize" events from containing browser window.
- * 
- * @param e the DOM2 resize event
- */
-EchoWebCore.VirtualPosition._resizeListener = function(e) {
-    e = e ? e : window.event;
-    EchoWebCore.VirtualPosition.redraw();
-};
-
-EchoWebCore.VirtualPosition._resync = function() {
-    EchoWebCore.VirtualPosition._elementCache = new Array();
-    EchoWebCore.VirtualPosition._resyncImpl(document.documentElement);
-};
-
-EchoWebCore.VirtualPosition._resyncImpl = function(element) {
-    if (element.__virtualPosition) {
-        EchoWebCore.VirtualPosition._elementCache.push(element);
-    }
-    var child = element.firstChild;
-    while (child) {
-        EchoWebCore.VirtualPosition._resyncImpl(child);
-        child = child.nextSibling;
     }
 };
 

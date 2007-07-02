@@ -98,10 +98,8 @@ EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseUp = function(e)
 	this._userWindowWidth = this._windowWidth;
 	this._userWindowHeight = this._windowHeight;
     
+    EchoWebCore.VirtualPosition.redraw(this._contentDivElement);
     EchoRender.notifyResize(this.component);
-    
-    // Redraw all such that content is refreshed as well.
-    EchoWebCore.VirtualPosition.redraw();
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.processKeyDown = function(e) { 
@@ -558,7 +556,6 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     
     this._contentDivElement = document.createElement("div");
     this._contentDivElement.id = this.component.renderId + "_content";
-    EchoWebCore.VirtualPosition.register(this._contentDivElement);
     
     this._contentDivElement.style.position = "absolute";
     this._contentDivElement.style.zIndex = 2;
@@ -637,7 +634,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderDispose = function(update) {
 EchoRender.ComponentSync.WindowPane.prototype.renderSizeUpdate = function() {
     this._loadContainerSize();
     this.setPosition(this._userWindowX, this._userWindowY, this._userWindowWidth, this._userWindowHeight);
-    EchoWebCore.VirtualPosition.redraw();
+    EchoWebCore.VirtualPosition.redraw(this._contentDivElement);
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.renderUpdate = function(update) {

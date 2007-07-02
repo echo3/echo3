@@ -44,7 +44,6 @@ EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update
         divElement.style.bottom = pixelInsets.bottom + "px";
         divElement.style.right = pixelInsets.right + "px";
         divElement.style.overflow = "auto";
-        EchoWebCore.VirtualPosition.register(divElement);
     }
     EchoRender.renderComponentAdd(update, child, divElement);
     this._divElement.appendChild(divElement);
@@ -65,6 +64,14 @@ EchoRender.ComponentSync.ContentPane.prototype._renderRemoveChild = function(upd
     var divElement = this._childIdToElementMap[child.renderId];
     divElement.parentNode.removeChild(divElement);
     delete this._childIdToElementMap[child.renderId];
+};
+
+EchoRender.ComponentSync.ContentPane.prototype.renderSizeUpdate = function() {
+    var child = this._divElement.firstChild;
+    while (child) {
+        EchoWebCore.VirtualPosition.redraw(child);
+        child = child.nextSibling;
+    }
 };
 
 EchoRender.ComponentSync.ContentPane.prototype.renderUpdate = function(update) {
