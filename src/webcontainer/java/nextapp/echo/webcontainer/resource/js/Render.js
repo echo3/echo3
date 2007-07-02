@@ -74,27 +74,17 @@ EchoRender.notifyResize = function(parent) {
     EchoRender._doResize(parent, false);
 };
 
-//FIXME. this new resize code is vomit-inducing.  rewrite.
 EchoRender._doResize = function(component, resizeSelf) {
-    EchoRender._resizedIds = new Object();
     if (resizeSelf) {
         EchoRender._doResizeImpl(component);
     } else {
-        var count = component.getComponentCount();
-        for (var i = 0; i < count; ++i) {
-            EchoRender._doResizeImpl(component.getComponent(i));
+        for (var i = 0; i < component.children.length; ++i) {
+            EchoRender._doResizeImpl(component.children[i]);
         }
     }
-    EchoRender._resizedIds = null;
 };
 
 EchoRender._doResizeImpl = function(component) {
-    if (EchoRender._resizedIds[component.renderId]) {
-        EchoCore.Debug.consoleWrite("***** already resized: " + component);
-        return;
-    }
-    EchoRender._resizedIds[component.renderId] = true;
-    
     if (component.peer) {
         // components that are present on the client, but are not rendered (lazy rendered as in tree), 
         // have no peer installed.
@@ -102,9 +92,8 @@ EchoRender._doResizeImpl = function(component) {
             component.peer.renderSizeUpdate();
         }
         
-        var count = component.getComponentCount();
-        for (var i = 0; i < count; ++i) {
-            EchoRender._doResizeImpl(component.getComponent(i));
+        for (var i = 0; i < component.children.length; ++i) {
+            EchoRender._doResizeImpl(component.children[i]);
         }
     }
 };
@@ -249,6 +238,7 @@ EchoRender.processUpdates = function(updateManager) {
             continue;
         }
         //FIXME. this does needless work....resizing twice is quite possible.
+        // if property updates are present.
         EchoRender._doResize(updates[i].parent, true);
     }
 
