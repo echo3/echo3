@@ -12,12 +12,6 @@ EchoRender.ComponentSync.RemoteTable.prototype = new EchoRender.ComponentSync;
 
 EchoRender.ComponentSync.RemoteTable._HEADER_ROW = -1;
 
-/**
- * A string of periods used for the IE 100% table width workaround.
- */
-EchoRender.ComponentSync.RemoteTable._SIZING_DOTS = ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . "
-            + ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ";
-
 EchoRender.ComponentSync.RemoteTable._supportedPartialProperties = new Array("selection");
 
 EchoRender.ComponentSync.RemoteTable.prototype.renderAdd = function(update, parentElement) {
@@ -42,10 +36,9 @@ EchoRender.ComponentSync.RemoteTable.prototype.renderAdd = function(update, pare
     this._tableElement.id = this.component.renderId;
     
     var width = this.component.getRenderProperty("width");
-    var render100PercentWidthWorkaround = false;
-    if (width && EchoWebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.value == 100 && width.units == "%") {
+    if (width && EchoWebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.units == "%") {
+        this._renderPercentWidthByMeasure = width.value;
         width = null;
-        render100PercentWidthWorkaround = true;
     }
 
     this._tableElement.style.borderCollapse = "collapse";
@@ -109,33 +102,12 @@ EchoRender.ComponentSync.RemoteTable.prototype.renderAdd = function(update, pare
     for (var rowIndex = 0; rowIndex < this._rowCount; rowIndex++) {
         this._tbodyElement.appendChild(this._renderRow(update, rowIndex, trPrototype));
     }
-    if (render100PercentWidthWorkaround) {
-        this._render100PercentWidthWorkaround();
-    }
     
     if (this._selectionEnabled) {
         this._setSelectedFromProperty(this.component.getProperty("selection"), false);
     }
     
     this._addEventListeners();
-};
-
-/**
- * Renders the IE 100% table width workaround, only call this method when the workaround should be applied.
- */
-EchoRender.ComponentSync.RemoteTable.prototype._render100PercentWidthWorkaround = function() {
-    if (this._tableElement.rows.length == 0) {
-        return;
-    }
-    var columns = this._tableElement.rows[0].cells;
-    for (var i = 0; i < columns.length; ++i) {
-        var sizingDivElement = document.createElement("div");
-        sizingDivElement.style.fontSize = "50px";
-        sizingDivElement.style.height = "0px";
-        sizingDivElement.style.overflow = "hidden";
-        sizingDivElement.appendChild(document.createTextNode(EchoRender.ComponentSync.RemoteTable._SIZING_DOTS));
-        columns[i].appendChild(sizingDivElement);
-    }
 };
 
 /**
@@ -223,6 +195,14 @@ EchoRender.ComponentSync.RemoteTable.prototype._createRowPrototype = function() 
         trElement.appendChild(tdElement);
     }
     return trElement;
+};
+
+EchoRender.ComponentSync.RemoteTable.prototype.renderSizeUpdate = function() {
+    if (this._renderPercentWidthByMeasure) {
+        this._tableElement.style.width = "";
+        var percentWidth = (this._tableElement.parentNode.offsetWidth * this._renderPercentWidthByMeasure) / 100;
+        this._tableElement.style.width = percentWidth + "px";
+    }
 };
 
 EchoRender.ComponentSync.RemoteTable.prototype.renderUpdate = function(update) {

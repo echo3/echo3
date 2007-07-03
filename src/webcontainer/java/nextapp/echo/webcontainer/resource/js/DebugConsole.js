@@ -64,12 +64,14 @@ EchoDebugConsole._init = function() {
 
     var clearButtonElement = document.createElement("span");
     clearButtonElement.style.padding = "0px 0px 0px 20px";
+    clearButtonElement.style.cursor = "pointer";
     clearButtonElement.appendChild(document.createTextNode("[clear]"));
     titleBarElement.appendChild(clearButtonElement);
     EchoWebCore.DOM.addEventListener(clearButtonElement, "click", EchoDebugConsole._clearListener, false);
     
     var closeButtonElement = document.createElement("span");
     closeButtonElement.style.padding = "0px 0px 0px 20px";
+    closeButtonElement.style.cursor = "pointer";
     closeButtonElement.appendChild(document.createTextNode("[close]"));
     titleBarElement.appendChild(closeButtonElement);
     EchoWebCore.DOM.addEventListener(closeButtonElement, "click", EchoDebugConsole._closeListener, false);

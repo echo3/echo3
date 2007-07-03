@@ -40,6 +40,11 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._tableElement, "padding");
 
     var width = this.component.getRenderProperty("width");
+    if (width && EchoWebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.units == "%") {
+        this._renderPercentWidthByMeasure = width.value;
+        width = null;
+    }
+    
     if (width) {
         if (width.units == "%") {
 	    	this._tableElement.style.width = width.toString();
@@ -138,6 +143,14 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
 EchoRender.ComponentSync.Grid.prototype.renderDispose = function(update) {
     this._tableElement.id = "";
     this._tableElement = null;
+};
+
+EchoRender.ComponentSync.Grid.prototype.renderSizeUpdate = function() {
+    if (this._renderPercentWidthByMeasure) {
+        this._tableElement.style.width = "";
+        var percentWidth = (this._tableElement.parentNode.offsetWidth * this._renderPercentWidthByMeasure) / 100;
+        this._tableElement.style.width = percentWidth + "px";
+    }
 };
 
 EchoRender.ComponentSync.Grid.prototype.renderUpdate = function(update) {

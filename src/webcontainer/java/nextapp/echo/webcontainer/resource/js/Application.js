@@ -148,7 +148,8 @@ EchoApp.Application.prototype.getStyleSheet = function() {
  */
 EchoApp.Application.prototype.notifyComponentUpdate = function(parent, propertyName, oldValue, newValue) {
     if (this._listenerList.hasListeners("componentUpdate")) {
-	    this._listenerList.fireEvent(new EchoApp.Application.ComponentUpdateEvent(this, parent, propertyName, oldValue, newValue));
+	    this._listenerList.fireEvent(new EchoApp.Application.ComponentUpdateEvent(
+                this, parent, propertyName, oldValue, newValue));
     }
     this.updateManager._processComponentUpdate(parent, propertyName, oldValue, newValue);
 };
@@ -361,11 +362,11 @@ EchoApp.Component = function(renderId) {
     this._styleName = null;
 
     /**
-     * Assigned style type from application-level style sheet.
+     * Enabled state of the component (default true).
      * @private
-     * @type String
+     * @type Boolean
      */
-    this._styleType = null;
+    this._enabled = true;
 };
 
 EchoApp.Component.NOTIFY_CHILDREN = 1;
@@ -390,7 +391,8 @@ EchoApp.Component.prototype.add = function(component, index) {
     }
     if (!this.componentType) {
         throw new Error("Cannot add child: specified component object does not have a componentType property. "
-                + "Perhaps the EchoApp.Component() super-constructor was not invoked." + this.toString() + "::::" + component.toString());
+                + "Perhaps the EchoApp.Component() super-constructor was not invoked." + this.toString() + "::::" 
+                + component.toString());
     }
     if (!this.renderId) {
         throw new Error("Cannot add child: specified component object does not have a renderId.");
@@ -482,6 +484,19 @@ EchoApp.Component.prototype.getIndexedProperty = function(name, index) {
  */
 EchoApp.Component.prototype.getLayoutDirection = function() {
     return this._layoutDirection;
+};
+
+/**
+ * Retrieves local style property map associations.
+ * This method should only be used by a deserialized for
+ * the purpose of rapidly loading properties into a new
+ * component.
+ * 
+ * @return the internal style property map associations
+ *         (an associative array).
+ */
+EchoApp.Component.prototype.getLocalStyleData = function() {
+    return this._localStyle._properties;
 };
 
 /**
@@ -624,19 +639,6 @@ EchoApp.Component.prototype.indexOf = function(component) {
 };
 
 /**
- * Retrieves local style property map associations.
- * This method should only be used by a deserialized for
- * the purpose of rapidly loading properties into a new
- * component.
- * 
- * @return the internal style property map associations
- *         (an associative array).
- */
-EchoApp.Component.prototype.getLocalStyleData = function() {
-    return this._localStyle._properties;
-};
-
-/**
  * Determines if the component is active, that is, within the current modal context
  * and ready to receive input.
  * 
@@ -660,6 +662,37 @@ EchoApp.Component.prototype.isAncestorOf = function(c) {
         c = c.parent;
     }
     return c == this;
+};
+
+/**
+ * Determines the enabled state of this component.
+ * Use isRenderEnabled() to determine whether a component
+ * should be RENDERED as enabled.
+ * 
+ * @return the enabled state of this specific component
+ */
+EchoApp.Component.prototype.isEnabled = function() {
+    return this._enabled;
+};
+
+/**
+ * Determines whether this <code>Component</code> should be rendered with
+ * an enabled state.
+ * Disabled <code>Component</code>s are not eligible to receive user input.
+ * 
+ * @return true if the component should be rendered enabled.
+ * @type Boolean
+ */
+EchoApp.Component.prototype.isRenderEnabled = function() {
+    var component = this;
+    while (component != null) {
+        if (!component._enabled) {
+            EchoCore.Debug.consoleWrite("not enabled: " + component);
+            return false;
+        }
+        component = component.parent;
+    }
+    return true;
 };
 
 /**
@@ -763,6 +796,19 @@ EchoApp.Component.prototype.removeListener = function(eventType, eventTarget) {
         return;
     }
     this._listenerList.removeListener(eventType, eventTarget);
+};
+
+/**
+ * Sets the enabled state of the component.
+ * 
+ * @param newValue the new enabled state
+ */
+EchoApp.Component.prototype.setEnabled = function(newValue) {
+    var oldValue = this._enabled;
+    this._enabled = newValue;
+    if (this.application) {
+        this.application.notifyComponentUpdate(this, "enabled", oldValue, newValue);
+    }
 };
 
 /** 

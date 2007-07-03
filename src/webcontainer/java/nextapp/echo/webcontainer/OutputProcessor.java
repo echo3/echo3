@@ -8,6 +8,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import nextapp.echo.app.Command;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Style;
@@ -277,6 +278,13 @@ public class OutputProcessor {
             }
         }
         
+        // Render Commands.
+        Command[] commands = serverUpdateManager.getCommands();
+        for (int i = 0; i < commands.length; ++i) {
+            CommandSynchronizePeer commandPeer = SynchronizePeerFactory.getPeerForCommand(commands[i].getClass());
+//            commandPeer.render(context, commands[i]);
+        }
+        
         updateManager.purge();
     }
     
@@ -302,7 +310,11 @@ public class OutputProcessor {
         componentPeer.init(context);
 
         renderComponentStyleAttributes(cElement, c);
-
+        
+        if (!c.isEnabled()) {
+            cElement.setAttribute("en", "false");
+        }
+        
         // Render component properties.
         Iterator propertyNameIterator = componentPeer.getOutputPropertyNames(context, c);
         while (propertyNameIterator.hasNext()) {
@@ -500,6 +512,10 @@ public class OutputProcessor {
         
         if (update.hasUpdatedProperty(Component.STYLE_NAME_CHANGED_PROPERTY)) {
             renderComponentStyleAttributes(upElement, c);
+        }
+        
+        if (update.hasUpdatedProperty(Component.ENABLED_CHANGED_PROPERTY)) {
+            upElement.setAttribute("en", update.getParent().isEnabled() ? "true" : "false");
         }
     }
 }

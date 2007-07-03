@@ -85,6 +85,8 @@ implements Serializable {
         }
     };
     
+    private static final Command[] EMPTY_COMMAND_ARRAY = new Command[0];
+    
     private Map applicationUpdateMap;
     private ArrayList commands;
     private Map componentUpdateMap;
@@ -105,7 +107,6 @@ implements Serializable {
         super();
         this.applicationInstance = applicationInstance;
         applicationUpdateMap = new HashMap();
-        commands = new ArrayList();
         componentUpdateMap = new HashMap();
         fullRefreshUpdate = new ServerComponentUpdate(null);
     }
@@ -137,6 +138,9 @@ implements Serializable {
      * @param command the command
      */
     public void enqueueCommand(Command command) {
+        if (commands == null) {
+            commands = new ArrayList();
+        }
         commands.add(command);
     }
     
@@ -159,7 +163,11 @@ implements Serializable {
      * @return the commands
      */
     public Command[] getCommands() {
-        return (Command[])commands.toArray(new Command[commands.size()]);
+        if (commands == null) {
+            return EMPTY_COMMAND_ARRAY;
+        } else {
+            return (Command[])commands.toArray(new Command[commands.size()]);
+        }
     }
     
     /**
@@ -422,7 +430,7 @@ implements Serializable {
     void purge() {
         applicationUpdateMap.clear();
         componentUpdateMap.clear();
-        commands.clear();
+        commands = null;
         fullRefreshUpdate = null;
     }
 }

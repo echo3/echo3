@@ -4,7 +4,8 @@ import nextapp.echo.app.Command;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.CommandSynchronizePeer;
 
-public class BrowserOpenWindowCommandPeer 
+//FIXME. temporarily abstract.
+public abstract class BrowserOpenWindowCommandPeer 
 implements CommandSynchronizePeer {
 
     /**
@@ -12,7 +13,6 @@ implements CommandSynchronizePeer {
      *      nextapp.echo.app.util.Context, nextapp.echo.app.Command)
      */
     public void render(Context context, Command command) {
-        // TODO Auto-generated method stub
         
     }
 }

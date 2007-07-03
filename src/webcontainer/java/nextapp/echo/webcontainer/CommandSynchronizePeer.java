@@ -29,9 +29,6 @@
 
 package nextapp.echo.webcontainer;
 
-import nextapp.echo.app.Command;
-import nextapp.echo.app.util.Context;
-
 /**
  * A stateless peer object used to render the given type of 
  * <code>nextapp.echo.app.Command</code> to the client.
@@ -45,10 +42,15 @@ import nextapp.echo.app.util.Context;
 public interface CommandSynchronizePeer {
     
     /**
-     * Renders a directive to execute the command on the client.
-     * 
-     * @param context the relevant <code>Context</code>
-     * @param command the <code>Command</code> to execute
+     * Returns the remote client component name.
      */
-    public void render(Context context, Command command);
+    public String getClientComponentType();
+
+    /**
+     * Returns the <code>Class</code> of <code>Component</code>
+     * supported by this peer.
+     * 
+     * @return the <code>Class</code>
+     */
+    public Class getComponentClass();
 }

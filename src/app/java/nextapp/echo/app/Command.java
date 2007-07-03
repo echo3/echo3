@@ -30,7 +30,8 @@
 package nextapp.echo.app;
 
 /**
- * A stateless construct used to send arbitrary commands to 
- * the client.
+ * A stateless construct used to send an arbitrary command to 
+ * the client.  Commands, when added to an ApplicationInstance,
+ * will be invoked on the remote client at the next synchronization.
  */
 public interface Command { }

@@ -1,4 +1,3 @@
-// FIXME render enabled/disabled effects
 // FIXME TriCellTable orientations
 // FIXME alignment
 
@@ -150,14 +149,28 @@ EchoRender.ComponentSync.Button.prototype._processRolloverExit = function(e) {
 };
 
 EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentElement) {
+    this._enabled = this.component.isRenderEnabled();
+    
     this._divElement = EchoRender.ComponentSync.Button._prototypeButton.cloneNode(false); 
     this._divElement.id = this.component.renderId;
 
-    EchoRender.Property.Color.renderFB(this.component, this._divElement);
-    EchoRender.Property.Font.renderDefault(this.component, this._divElement);
-    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._divElement);
+    EchoRender.Property.Color.render(
+            EchoRender.Property.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
+            this._divElement, "color");
+    EchoRender.Property.Color.render(
+            EchoRender.Property.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
+            this._divElement, "backgroundColor");
+    EchoRender.Property.Border.render(
+            EchoRender.Property.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
+            this._divElement);
+    EchoRender.Property.Font.render(
+            EchoRender.Property.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
+            this._divElement);
+    EchoRender.Property.FillImage.render(
+            EchoRender.Property.getEffectProperty(this.component, "backgroundImage", "disabledBackgroundImage", !this._enabled),
+            this._divElement);
+    
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
-    EchoRender.Property.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._divElement);
     EchoRender.Property.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
     
     var toolTipText = this.component.getRenderProperty("toolTipText");
@@ -176,19 +189,20 @@ EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentEle
     
     this._renderContent();
     
-    // Add event listeners for focus and mouseover.  When invoked, these listeners will register the full gamut
-    // of button event listeners.  There may be a large number of such listeners depending on how many effects
-    // are enabled, and as such we do this lazily for performance reasons.
-    EchoWebCore.EventProcessor.add(this._divElement, "focus", new EchoCore.MethodRef(this, this._processInitFocus), false);
-    EchoWebCore.EventProcessor.add(this._divElement, "mouseover", new EchoCore.MethodRef(this, this._processInitMouseOver), false);
+    if (this._enabled) {
+        // Add event listeners for focus and mouseover.  When invoked, these listeners will register the full gamut
+        // of button event listeners.  There may be a large number of such listeners depending on how many effects
+        // are enabled, and as such we do this lazily for performance reasons.
+        EchoWebCore.EventProcessor.add(this._divElement, "focus", new EchoCore.MethodRef(this, this._processInitFocus), false);
+        EchoWebCore.EventProcessor.add(this._divElement, "mouseover", new EchoCore.MethodRef(this, this._processInitMouseOver), false);
+    }
 
     parentElement.appendChild(this._divElement);
 };
 
 EchoRender.ComponentSync.Button.prototype._renderContent = function() {
     var text = this.component.getRenderProperty("text");
-    var icon = this.component.getRenderProperty("icon");
-
+    var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "disabledIcon", !this._enabled);
     if (text) {
         if (icon) {
             // Text and icon.

@@ -342,6 +342,11 @@ EchoRemoteClient.ComponentSync._processComponentUpdate = function(client, update
         }
     }
     
+    var enabledState = updateElement.getAttribute("en");
+    if (enabledState) {
+        component.setEnabled(enabledState == "true");
+    }
+    
     var element = updateElement.firstChild;
     while (element) {
         switch (element.nodeName) {

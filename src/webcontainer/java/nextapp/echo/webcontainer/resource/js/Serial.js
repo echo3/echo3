@@ -30,6 +30,10 @@ EchoSerial.loadComponent = function(client, componentElement) {
 
     var component = EchoApp.ComponentFactory.newInstance(type, id);
 
+    if (componentElement.getAttribute("en") == "false") {
+        component.setEnabled(false);
+    }
+    
     var styleName = componentElement.getAttribute("s");
     if (styleName) {
         component.setStyleName(styleName);

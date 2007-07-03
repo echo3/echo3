@@ -1,0 +1,82 @@
+package nextapp.echo.webcontainer.command;
+
+/**
+ * A Web Application Container-specific <code>Command</code> to 
+ * open a new browser window displaying a specific URI.
+ * This action may not propogate to a client if the client has 
+ * pop-up blocking algorithm enabled.
+ */  
+public class BrowserOpenWindowCommand {
+
+    private String uri;
+    private String features;
+    private String name;
+    private boolean replace;
+    
+    /**
+     * Creates a new <code>BrowserOpenWindowCommand</code>.
+     * 
+     * @param uri the target URI
+     * @param name the window name (may be null)
+     * @param features the 'features' string which will be used to configure the
+     *        new browser window (may be null)
+     */
+    public BrowserOpenWindowCommand(String uri, String name, String features) {
+        this(uri, name, features, false);
+    }
+    
+    /**
+     * Creates a new <code>BrowserOpenWindowCommand</code>.
+     * 
+     * @param uri the target URI
+     * @param name the window name (may be null)
+     * @param features the 'features' string which will be used to configure the
+     *        new browser window (may be null)
+     * @param replace a flag indicating whether the new URI should replace the
+     *        previous URI in the window's history.  This flag is only relevant
+     *        when using this command to replace a browser window.
+     */
+    public BrowserOpenWindowCommand(String uri, String name, String features, boolean replace) {
+        super();
+        this.uri = uri;
+        this.name = name;
+        this.features = features;
+    }
+    
+    /**
+     * Returns the 'features' string which will be used to configure the
+     * new browser window.
+     * 
+     * @return features the 'features' string
+     */
+    public String getFeatures() {
+        return features;
+    }
+
+    /**
+     * Returns the window name.
+     * 
+     * @return the window name
+     */
+    public String getName() {
+        return name;
+    }
+    
+    /**
+     * Returns the target URI.
+     * 
+     * @return the target URI
+     */
+    public String getUri() {
+        return uri;
+    }
+    
+    /**
+     * Determines if the new URI should replace the old one in the history.
+     * 
+     * @return true if the new URI should replace the old one in the history
+     */
+    public boolean isReplace() {
+        return replace;
+    }
+}
