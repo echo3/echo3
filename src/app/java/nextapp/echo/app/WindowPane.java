@@ -229,7 +229,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the inset margin
      */
     public Insets getIconInsets() {
-        return (Insets) getProperty(PROPERTY_CLOSE_ICON_INSETS);
+        return (Insets) getProperty(PROPERTY_ICON_INSETS);
     }
     
     /**
