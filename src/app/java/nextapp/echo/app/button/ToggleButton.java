@@ -42,6 +42,8 @@ import nextapp.echo.app.event.ChangeListener;
  */
 public abstract class ToggleButton extends AbstractButton {
     
+    public static final String PROPERTY_DISABLED_STATE_ICON = "disabledStateIcon";
+    public static final String PROPERTY_DISABLED_SELECTED_STATE_ICON = "disabledSelectedStateIcon";
     public static final String PROPERTY_PRESSED_STATE_ICON = "pressedStateIcon";
     public static final String PROPERTY_PRESSED_SELECTED_STATE_ICON = "pressedSelectedStateIcon";
     public static final String PROPERTY_ROLLOVER_STATE_ICON = "rolloverStateIcon";
@@ -92,6 +94,24 @@ public abstract class ToggleButton extends AbstractButton {
         for (int index = 0; index < listeners.length; ++index) {
             ((ChangeListener) listeners[index]).stateChanged(e);
         }
+    }
+    
+    /**
+     * Returns the selected state icon when the button is disabled.
+     * 
+     * @return the icon
+     */
+    public ImageReference getDisabledSelectedStateIcon() {
+        return (ImageReference) getProperty(PROPERTY_DISABLED_SELECTED_STATE_ICON);
+    }
+    
+    /**
+     * Returns the default (non-selected) state icon when the button is disabled.
+     * 
+     * @return the icon
+     */
+    public ImageReference getDisabledStateIcon() {
+        return (ImageReference) getProperty(PROPERTY_DISABLED_STATE_ICON);
     }
     
     /**
@@ -213,6 +233,24 @@ public abstract class ToggleButton extends AbstractButton {
      */
     public void removeChangeListener(ChangeListener l) {
         getEventListenerList().removeListener(ChangeListener.class, l);
+    }
+    
+    /**
+     * Sets the selected state icon when the button is disabled.
+     * 
+     * @param newValue the new icon
+     */
+    public void setDisabledSelectedStateIcon(ImageReference newValue) {
+        setProperty(PROPERTY_DISABLED_SELECTED_STATE_ICON, newValue);
+    }
+    
+    /**
+     * Sets the default (non-selected) state icon when the button is disabled.
+     * 
+     * @param newValue the new icon
+     */
+    public void setDisabledStateIcon(ImageReference newValue) {
+        setProperty(PROPERTY_DISABLED_STATE_ICON, newValue);
     }
     
     /**

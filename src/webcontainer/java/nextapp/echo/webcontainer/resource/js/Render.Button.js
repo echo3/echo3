@@ -378,7 +378,14 @@ EchoRender.ComponentSync.ToggleButton.prototype.renderAdd = function(update, par
 };
 
 EchoRender.ComponentSync.ToggleButton.prototype._getStateIcon = function() {
-	return EchoRender.Property.getEffectProperty(this.component, "stateIcon", "selectedStateIcon", this._selected);
+	var icon;
+	if (this._selected) {
+		icon = EchoRender.Property.getEffectProperty(this.component, "selectedStateIcon", "disabledSelectedStateIcon", !this._enabled);
+	}
+	if (!icon) {
+		icon = EchoRender.Property.getEffectProperty(this.component, "stateIcon", "disabledStateIcon", !this._enabled);
+	}
+	return icon;
 };
 
 EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
