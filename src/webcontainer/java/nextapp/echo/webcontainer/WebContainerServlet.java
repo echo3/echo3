@@ -196,11 +196,11 @@ public abstract class WebContainerServlet extends HttpServlet {
      *        a previously set multipart request handler.
      */
     public static final void setMultipartRequestWrapper(MultipartRequestWrapper multipartRequestWrapper) {
-        if (multipartRequestWrapper == null) {
+        if (WebContainerServlet.multipartRequestWrapper == null) {
             WebContainerServlet.multipartRequestWrapper = multipartRequestWrapper;
         } else {
             if (multipartRequestWrapper == null || 
-                    !multipartRequestWrapper.getClass().getName().equals(
+                    !WebContainerServlet.multipartRequestWrapper.getClass().getName().equals(
                     multipartRequestWrapper.getClass().getName())) {
                 throw new IllegalStateException("MultipartRequestWrapper already set.");
             }
