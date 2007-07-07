@@ -219,6 +219,24 @@ public interface ComponentSynchronizePeer {
     public boolean isOutputPropertyIndexed(Context context, Component component, String propertyName);
     
     /**
+     * Determines if the specified property should be rendered-by-reference, i.e.,
+     * that it should be rendered one time in the initialization segment of the output
+     * message and then referenced by a unique identifier.  This is useful for properties
+     * that are typically large in terms of rendered size (e.g., models)
+     * 
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
+     * @param component the component
+     * @param propertyName the property name
+     * @return true if the property is rendered-by-reference
+     */
+    public boolean isOutputPropertyReferenced(Context context, Component component, String propertyName);
+    
+    /**
      * Processes an event received from the client.
      * Implementations must take care to implement appropriate security,
      * ensuring that the client may only fire specific appropriate events.

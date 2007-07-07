@@ -9,6 +9,10 @@ EchoSerial.addPropertyTranslator = function(type, propertyTranslator) {
     EchoSerial._propertyTranslatorMap[type] = propertyTranslator;
 };
 
+EchoSerial.getPropertyTranslator = function(type) {
+    return EchoSerial._propertyTranslatorMap[type];
+};
+
 /**
  * Deserializes an XML representation of a component into a component instance.
  * Any child components will be added to the created component instance.
@@ -21,7 +25,7 @@ EchoSerial.addPropertyTranslator = function(type, propertyTranslator) {
  * @param componentElement the 'c' DOM element to deserialize
  * @return the instantiated component.
  */
-EchoSerial.loadComponent = function(client, componentElement) {
+EchoSerial.loadComponent = function(client, componentElement, referenceMap) {
     if (!componentElement.nodeName == "c") {
         throw new Error("Element is not a component.");
     }
@@ -50,11 +54,11 @@ EchoSerial.loadComponent = function(client, componentElement) {
         if (element.nodeType == 1) {
             switch (element.nodeName) {
             case "c": // Child Component
-                var childComponent = EchoSerial.loadComponent(client, element);
+                var childComponent = EchoSerial.loadComponent(client, element, referenceMap);
                 component.add(childComponent);
                 break;
             case "p": // Property
-                EchoSerial.loadProperty(client, element, component, styleData);
+                EchoSerial.loadProperty(client, element, component, styleData, referenceMap);
                 break;
             case "e": // Event
                 EchoSerial._loadComponentEvent(client, element, component);
@@ -75,11 +79,21 @@ EchoSerial._loadComponentEvent = function(client, eventElement, component) {
 /**
  * Deserializes an XML representation of a property into an instance,
  * and assigns it to the specified object.
+ * 
+ * @param client the containing client
+ * @param {Element} propertyElement the property element to parse
+ * @param object the object on which the properties should be set (this object
+ *        must contain setProperty() and setIndexedProperty() methods
+ * @param styleData (optional) an associative array on which properties can
+ *        be directly set
+ * @param referenceMap (optional) an associative array containing previously
+ *        loaded reference-based properties
  */
-EchoSerial.loadProperty = function(client, propertyElement, object, styleData) {
+EchoSerial.loadProperty = function(client, propertyElement, object, styleData, referenceMap) {
     var propertyName = propertyElement.getAttribute("n");
     var propertyType = propertyElement.getAttribute("t");
     var propertyIndex = propertyElement.getAttribute("x");
+    var propertyValue;
     
     if (propertyType) {
         // Invoke custom property processor.
@@ -87,39 +101,45 @@ EchoSerial.loadProperty = function(client, propertyElement, object, styleData) {
         if (!translator) {
             throw new Error("Translator not available for property type: " + propertyType);
         }
-        var propertyValue = translator.toProperty(client, propertyElement);
-        
-        if (propertyName) {
-            if (styleData) {
-                if (propertyIndex == null) {
-                    styleData[propertyName] = propertyValue;
-                } else {
-                    var indexValues = styleData[propertyName];
-                    if (!indexValues) {
-                        indexValues = new Array();
-                        styleData[propertyName] = indexValues;
-                    }
-                    indexValues[propertyIndex] = propertyValue;
-                }
+        propertyValue = translator.toProperty(client, propertyElement);
+    } else if (referenceMap) {
+        var propertyReference = propertyElement.getAttribute("r");
+        if (!propertyReference) {
+            throw new Error("No property type specified for property: " + propertyName + referenceMap);
+        }
+        propertyValue = referenceMap[propertyReference];
+    } else {
+        throw new Error("No property type specified for property: " + propertyName + referenceMap);
+    }
+    
+    if (propertyName) {
+        if (styleData) {
+            if (propertyIndex == null) {
+                styleData[propertyName] = propertyValue;
             } else {
-                // Property has property name: invoke set(Indexed)Property.
-                if (propertyIndex == null) {
-                    object.setProperty(propertyName, propertyValue);
-                } else {
-                    object.setIndexedProperty(propertyName, propertyIndex, propertyValue);
+                var indexValues = styleData[propertyName];
+                if (!indexValues) {
+                    indexValues = new Array();
+                    styleData[propertyName] = indexValues;
                 }
+                indexValues[propertyIndex] = propertyValue;
             }
         } else {
-            // Property has method name: invoke method.
-            var propertyMethod = propertyElement.getAttribute("m");
+            // Property has property name: invoke set(Indexed)Property.
             if (propertyIndex == null) {
-                object[propertyMethod](propertyValue);
+                object.setProperty(propertyName, propertyValue);
             } else {
-                object[propertyMethod](propertyIndex, propertyValue);
+                object.setIndexedProperty(propertyName, propertyIndex, propertyValue);
             }
         }
     } else {
-        throw new Error("No property type specified for property: " + propertyName);
+        // Property has method name: invoke method.
+        var propertyMethod = propertyElement.getAttribute("m");
+        if (propertyIndex == null) {
+            object[propertyMethod](propertyValue);
+        } else {
+            object[propertyMethod](propertyIndex, propertyValue);
+        }
     }
 };
 
@@ -127,7 +147,7 @@ EchoSerial.loadProperty = function(client, propertyElement, object, styleData) {
  * Deserializes an XML representation of a style sheet into a
  * StyleSheet instance.
  */
-EchoSerial.loadStyleSheet = function(client, ssElement) {
+EchoSerial.loadStyleSheet = function(client, ssElement, referenceMap) {
     var styleSheet = new EchoApp.StyleSheet();
     
     var ssChild = ssElement.firstChild;
@@ -141,7 +161,7 @@ EchoSerial.loadStyleSheet = function(client, ssElement) {
                     if (sChild.nodeType == 1) {
                         switch (sChild.nodeName) {
                         case "p":
-                            EchoSerial.loadProperty(client, sChild, style, styleData);
+                            EchoSerial.loadProperty(client, sChild, style, styleData, referenceMap);
                             break;
                         }
                     }

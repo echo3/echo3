@@ -687,7 +687,6 @@ EchoApp.Component.prototype.isRenderEnabled = function() {
     var component = this;
     while (component != null) {
         if (!component._enabled) {
-            EchoCore.Debug.consoleWrite("not enabled: " + component);
             return false;
         }
         component = component.parent;

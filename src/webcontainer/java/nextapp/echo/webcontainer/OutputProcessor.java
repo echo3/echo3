@@ -1,8 +1,10 @@
 package nextapp.echo.webcontainer;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -86,6 +88,9 @@ public class OutputProcessor {
     private Context context;
     private PropertyPeerFactory propertyPeerFactory;
     private Document document;
+    private int nextPropertyKey = 0;
+    private Map propertyValueToKeyMap = null;
+    private Element spElement;
     
     /**
      * Cached set of known-to-be-not-lazily-rendered components.
@@ -395,6 +400,34 @@ public class OutputProcessor {
         // Create property element.
         Element pElement = document.createElement("p");
         
+        String propertyKey = null;
+        Element propertyDataElement;
+        if (propertyValue != null && componentPeer.isOutputPropertyReferenced(context, c, propertyName)) {
+            if (spElement == null) {
+                spElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSync", "sp");
+            }
+            
+            if (propertyValueToKeyMap == null) {
+                propertyValueToKeyMap = new HashMap();
+            } else {
+                propertyKey = (String) propertyValueToKeyMap.get(propertyValue);
+            }
+            
+            if (propertyKey == null) {
+                propertyKey = Integer.toString(nextPropertyKey++);
+                propertyValueToKeyMap.put(propertyValue, propertyKey);
+            }
+            
+            Element rpElement = document.createElement("rp");
+            rpElement.setAttribute("i", propertyKey);
+            pElement.setAttribute("r", propertyKey);
+            propertyDataElement = rpElement;
+            
+            spElement.appendChild(rpElement);
+        } else {
+            propertyDataElement = pElement;
+        }
+        
         String methodName = componentPeer.getOutputPropertyMethodName(context, c, propertyName);
         if (methodName != null) {
             // Set method name.
@@ -421,7 +454,7 @@ public class OutputProcessor {
                 return;
             }
             // Render property value.
-            propertySyncPeer.toXml(context, c.getClass(), pElement, propertyValue);
+            propertySyncPeer.toXml(context, c.getClass(), propertyDataElement, propertyValue);
         }
         
         // Append to parent element.

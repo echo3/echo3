@@ -57,7 +57,7 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
         
         private ListModel model;
         private ListCellRenderer renderer;
-        private ListSelectionModel selectionModel;
+//        private ListSelectionModel selectionModel;
         private AbstractListComponent listComponent;
         
         ListData(AbstractListComponent component) {
@@ -65,7 +65,7 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
             this.listComponent = component;
             this.model = component.getModel();
             this.renderer = component.getCellRenderer();
-            this.selectionModel = component.getSelectionModel();
+//            this.selectionModel = component.getSelectionModel();
         }
 
         /**
@@ -87,10 +87,10 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
                 return false;
             }
             
-            if (!(this.selectionModel == that.selectionModel 
-                    || (this.selectionModel != null && this.selectionModel.equals(that.selectionModel)))) {
-                return false;
-            }
+//            if (!(this.selectionModel == that.selectionModel 
+//                    || (this.selectionModel != null && this.selectionModel.equals(that.selectionModel)))) {
+//                return false;
+//            }
             
             return true;
         }
@@ -126,9 +126,9 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
                 Object value = listData.model.get(i);
                 eElement.setAttribute("t", value.toString());
                 propertyElement.appendChild(eElement);
-                if (listData.selectionModel.isSelectedIndex(i)) {
-                    eElement.setAttribute("s", "1");
-                }
+//                if (listData.selectionModel.isSelectedIndex(i)) {
+//                    eElement.setAttribute("s", "1");
+//                }
                 
                 Object cell = listData.renderer.getListCellRendererComponent(listData.listComponent, value, i);
                 
@@ -168,6 +168,7 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
     public AbstractListComponentPeer() {
         super();
         addOutputProperty(PROPERTY_DATA);
+        setOutputPropertyReferenced(PROPERTY_DATA, true);
     }
     
     /**

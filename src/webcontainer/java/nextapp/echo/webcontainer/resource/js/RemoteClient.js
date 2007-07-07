@@ -226,38 +226,38 @@ EchoRemoteClient.ClientMessage.prototype._renderXml = function() {
     return cmsgDocument;
 };
 
-EchoRemoteClient.ComponentSync = function() { };
+EchoRemoteClient.ComponentSync = function(client) { 
+    this._client = client;
+    this._referenceMap = new Object();
+};
 
-EchoRemoteClient.ComponentSync.process = function(client, dirElement) {
+EchoRemoteClient.ComponentSync._numericReverseSort = function(a, b) {
+    return b - a;
+};
+
+EchoRemoteClient.ComponentSync.prototype.process = function(dirElement) {
     var element = dirElement.firstChild;
     while (element) {
         if (element.nodeType == 1) {
             switch (element.nodeName) {
-            case "rm":
-                EchoRemoteClient.ComponentSync._processComponentRemove(client, element);
-                break;
-            case "up":
-                EchoRemoteClient.ComponentSync._processComponentUpdate(client, element);
-                break;
-            case "add":
-                EchoRemoteClient.ComponentSync._processComponentAdd(client, element);
-                break;
-            case "ss":
-                EchoRemoteClient.ComponentSync._processStyleSheet(client, element);
-                break;
+            case "rm": this._processComponentRemove(element); break;
+            case "up": this._processComponentUpdate(element); break;
+            case "add": this._processComponentAdd(element); break;
+            case "ss": this._processStyleSheet(element); break;
+            case "sp": this._processStoreProperties(element); break;
             }
         }
         element = element.nextSibling;
     }
 };
 
-EchoRemoteClient.ComponentSync._processComponentAdd = function(client, addElement) {
+EchoRemoteClient.ComponentSync.prototype._processComponentAdd = function(addElement) {
     var parentId = addElement.getAttribute("i");
-    var parentComponent = client.application.getComponentByRenderId(parentId);
+    var parentComponent = this._client.application.getComponentByRenderId(parentId);
     var element = addElement.firstChild;
     while (element) {
         if (element.nodeType == 1) {
-            var component = EchoSerial.loadComponent(client, element);
+            var component = EchoSerial.loadComponent(this._client, element, this._referenceMap);
             var index = element.getAttribute("x");
             if (index == null) {
                 parentComponent.add(component);
@@ -269,11 +269,7 @@ EchoRemoteClient.ComponentSync._processComponentAdd = function(client, addElemen
     }
 };
 
-EchoRemoteClient.ComponentSync._numericReverseSort = function(a, b) {
-    return b - a;
-};
-
-EchoRemoteClient.ComponentSync._processComponentRemove = function(client, removeElement) {
+EchoRemoteClient.ComponentSync.prototype._processComponentRemove = function(removeElement) {
     if (removeElement.childNodes.length > 5) {
         // Special case: many children being removed: create renderId -> index map and remove by index
         // in order to prevent Component.indexOf() of from being invoked n times.
@@ -282,7 +278,7 @@ EchoRemoteClient.ComponentSync._processComponentRemove = function(client, remove
         var cElement = removeElement.firstChild;
         var parent;
         while (cElement) {
-            var component = client.application.getComponentByRenderId(cElement.getAttribute("i"));
+            var component = this._client.application.getComponentByRenderId(cElement.getAttribute("i"));
             if (component) {
                 parent = component.parent;
                 break;
@@ -318,7 +314,7 @@ EchoRemoteClient.ComponentSync._processComponentRemove = function(client, remove
     } else {
         var cElement = removeElement.firstChild;
         while (cElement) {
-            var component = client.application.getComponentByRenderId(cElement.getAttribute("i"));
+            var component = this._client.application.getComponentByRenderId(cElement.getAttribute("i"));
             if (component) {
                 component.parent.remove(component);
             }
@@ -327,9 +323,9 @@ EchoRemoteClient.ComponentSync._processComponentRemove = function(client, remove
     }
 };
 
-EchoRemoteClient.ComponentSync._processComponentUpdate = function(client, updateElement) {
+EchoRemoteClient.ComponentSync.prototype._processComponentUpdate = function(updateElement) {
     var id = updateElement.getAttribute("i");
-    var component = client.application.getComponentByRenderId(id);
+    var component = this._client.application.getComponentByRenderId(id);
     
     var styleName = updateElement.getAttribute("s");
     if (styleName != null) {
@@ -351,32 +347,52 @@ EchoRemoteClient.ComponentSync._processComponentUpdate = function(client, update
     while (element) {
         switch (element.nodeName) {
         case "p": // Property
-            EchoSerial.loadProperty(client, element, component);
+            EchoSerial.loadProperty(this._client, element, component, this._referenceMap);
             break;
         }
         element = element.nextSibling;
     }
 };
 
-EchoRemoteClient.ComponentSync._processStyleSheet = function(client, ssElement) {
-    var styleSheet = EchoSerial.loadStyleSheet(client, ssElement);
-    client.application.setStyleSheet(styleSheet);
+EchoRemoteClient.ComponentSync.prototype._processStoreProperties = function(spElement) {
+    var propertyElement = spElement.firstChild;
+    while (propertyElement) {
+        switch (propertyElement.nodeName) {
+        case "rp": // Referenced Property
+            var propertyId = propertyElement.getAttribute("i");
+            var propertyType = propertyElement.getAttribute("t");
+            var translator = EchoSerial.getPropertyTranslator(propertyType);
+            if (!translator) {
+                throw new Error("Translator not available for property type: " + propertyType);
+            }
+            propertyValue = translator.toProperty(this._client, propertyElement);
+            this._referenceMap[propertyId] = propertyValue;
+            break;
+        }
+        propertyElement = propertyElement.nextSibling;
+    }
+};
+
+EchoRemoteClient.ComponentSync.prototype._processStyleSheet = function(ssElement) {
+    var styleSheet = EchoSerial.loadStyleSheet(this._client, ssElement);
+    this._client.application.setStyleSheet(styleSheet);
 };
 
 EchoRemoteClient.ServerMessage = function(client, xmlDocument) { 
     this.client = client;
     this.document = xmlDocument;
     this._listenerList = new EchoCore.ListenerList();
+    this._processorInstances = new Object();
 };
 
-EchoRemoteClient.ServerMessage._processors = new EchoCore.Collections.Map();
+EchoRemoteClient.ServerMessage._processorClasses = new Object();
 
 EchoRemoteClient.ServerMessage.prototype.addCompletionListener = function(l) {
     this._listenerList.addListener("completion", l);
 };
 
 EchoRemoteClient.ServerMessage.addProcessor = function(name, processor) {
-    EchoRemoteClient.ServerMessage._processors.put(name, processor);
+    EchoRemoteClient.ServerMessage._processorClasses[name] = processor;
 };
 
 EchoRemoteClient.ServerMessage.prototype.process = function() {
@@ -413,11 +429,16 @@ EchoRemoteClient.ServerMessage.prototype._processPostLibraryLoad = function() {
         var dirElements = EchoWebCore.DOM.getChildElementsByTagName(groupElements[i], "dir");
         for (var j = 0; j < dirElements.length; ++j) {
             var procName = dirElements[j].getAttribute("proc");
-            var processor = EchoRemoteClient.ServerMessage._processors.get(procName);
+            var processor = this._processorInstances[procName];
             if (!processor) {
-                throw new Error("Invalid processor specified in ServerMessage: " + procName);
+                // Create new processor instance.
+                processor = new EchoRemoteClient.ServerMessage._processorClasses[procName](this.client);
+                if (!processor) {
+                    throw new Error("Invalid processor specified in ServerMessage: " + procName);
+                }
+                this._processorInstances[procName] = processor;
             }
-            processor.process(this.client, dirElements[j]);
+            processor.process(dirElements[j]);
         }
     }
 

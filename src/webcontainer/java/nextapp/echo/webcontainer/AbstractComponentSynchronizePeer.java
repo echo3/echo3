@@ -17,6 +17,7 @@ implements ComponentSynchronizePeer {
     private Set additionalProperties = null;
     private Set stylePropertyNames = null;
     private Set indexedPropertyNames = null;
+    private Set referencedProperties = null;
     private String clientComponentType;
 
     public AbstractComponentSynchronizePeer() {
@@ -211,6 +212,14 @@ implements ComponentSynchronizePeer {
     }
 
     /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#isOutputPropertyReferenced(
+     *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String)
+     */
+    public boolean isOutputPropertyReferenced(Context context, Component component, String propertyName) {
+        return referencedProperties != null && referencedProperties.contains(propertyName);
+    }
+        
+    /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#processEvent(nextapp.echo.app.util.Context,
      *      nextapp.echo.app.Component, java.lang.String, java.lang.Object)
      */
@@ -218,6 +227,26 @@ implements ComponentSynchronizePeer {
         // Do nothing.
     }
 
+    /**
+     * Sets the rendered-by-reference state of a property.  By default, all properties are NOT
+     * rendered by reference.
+     * 
+     * @param propertyName the propertyName
+     * @param newValue true if the property should be rendered by reference
+     */
+    public void setOutputPropertyReferenced(String propertyName, boolean newValue) {
+        if (newValue) {
+            if (referencedProperties == null) {
+                referencedProperties = new HashSet();
+            }
+            referencedProperties.add(propertyName);
+        } else {
+            if (referencedProperties != null) {
+                referencedProperties.remove(propertyName);
+            }
+        }
+    }
+    
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context, 
      *      nextapp.echo.app.Component, java.lang.String, int, java.lang.Object)
