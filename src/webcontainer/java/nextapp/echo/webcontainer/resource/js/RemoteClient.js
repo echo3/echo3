@@ -240,6 +240,7 @@ EchoRemoteClient.ComponentSync.prototype.process = function(dirElement) {
     while (element) {
         if (element.nodeType == 1) {
             switch (element.nodeName) {
+            case "fr": this._processFullRefresh(element); break;
             case "rm": this._processComponentRemove(element); break;
             case "up": this._processComponentUpdate(element); break;
             case "add": this._processComponentAdd(element); break;
@@ -352,6 +353,10 @@ EchoRemoteClient.ComponentSync.prototype._processComponentUpdate = function(upda
         }
         element = element.nextSibling;
     }
+};
+
+EchoRemoteClient.ComponentSync.prototype._processFullRefresh = function(frElement) {
+    this._client.application.rootComponent.removeAll();
 };
 
 EchoRemoteClient.ComponentSync.prototype._processStoreProperties = function(spElement) {

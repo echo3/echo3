@@ -779,7 +779,9 @@ EchoApp.Component.prototype.remove = function(componentOrIndex) {
  * Removes all child components.
  */
 EchoApp.Component.prototype.removeAll = function() {
-    //TODO Implement
+    while (this.children.length > 0) {
+        this.remove(this.children.length - 1);
+    }
 };
 
 /**

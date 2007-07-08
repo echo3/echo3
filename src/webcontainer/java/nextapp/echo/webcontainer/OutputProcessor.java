@@ -198,6 +198,7 @@ public class OutputProcessor {
         ServerUpdateManager serverUpdateManager = updateManager.getServerUpdateManager();
         
         if (serverUpdateManager.isFullRefreshRequired()) {
+            serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSync", "fr");
             renderStyleSheet();
             ContentPane content = userInstance.getApplicationInstance().getDefaultWindow().getContent();
             if (content == null) {

@@ -114,7 +114,8 @@ public class RandomClick {
      *        search
      */
     private static void findButtons(Collection foundButtons, Component component) {
-        if (component instanceof AbstractButton && !BUTTON_BLACKLIST.contains(((AbstractButton) component).getText())) {
+        if (component instanceof AbstractButton && !BUTTON_BLACKLIST.contains(((AbstractButton) component).getText())
+                && component.isRenderEnabled()) {
             foundButtons.add(component);
         }
         Component[] children = component.getComponents();
