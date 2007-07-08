@@ -347,7 +347,7 @@ EchoRemoteClient.ComponentSync.prototype._processComponentUpdate = function(upda
     while (element) {
         switch (element.nodeName) {
         case "p": // Property
-            EchoSerial.loadProperty(this._client, element, component, this._referenceMap);
+            EchoSerial.loadProperty(this._client, element, component, null, this._referenceMap);
             break;
         }
         element = element.nextSibling;
