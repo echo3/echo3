@@ -161,12 +161,12 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
             boolean commaRequired = false;
             for (int i = min; i <= max; ++i) {
                 if (selectionModel.isSelectedIndex(i)) {
-                    out.append(i);
                     if (commaRequired) {
                         out.append(",");
                     } else {
                         commaRequired = true;
                     }
+                    out.append(i);
                 }
             }
             return out.toString();
@@ -185,7 +185,7 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
 
     public AbstractListComponentPeer() {
         super();
-        addOutputProperty(AbstractListComponent.SELECTION_MODEL_CHANGED_PROPERTY);
+        addOutputProperty(AbstractListComponent.SELECTION_CHANGED_PROPERTY);
         addOutputProperty(PROPERTY_DATA);
         setOutputPropertyReferenced(PROPERTY_DATA, true);
     }
