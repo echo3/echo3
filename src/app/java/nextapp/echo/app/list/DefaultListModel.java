@@ -84,6 +84,18 @@ public class DefaultListModel extends AbstractListModel {
     }
     
     /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object o) {
+        if (!(o instanceof DefaultListModel)) {
+            return false;
+        }
+        
+        DefaultListModel that = (DefaultListModel) o;
+        return this.items.equals(that.items);
+    }
+    
+    /**
      * Returns the item at the specified index in the list.
      *
      * @param index 
@@ -91,6 +103,13 @@ public class DefaultListModel extends AbstractListModel {
      */
     public Object get(int index) {
         return items.get(index);
+    }
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return items.hashCode();
     }
     
     /**

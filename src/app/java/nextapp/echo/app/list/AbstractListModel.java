@@ -1,4 +1,4 @@
-/* 
+/*
  * This file is part of the Echo Web Application Framework (hereinafter "Echo").
  * Copyright (C) 2002-2007 NextApp, Inc.
  *
@@ -88,7 +88,7 @@ implements ListModel, Serializable {
             ((ListDataListener) listeners[index]).contentsChanged(e);
         }
     }
-    
+
     /**
      * Notifies listeners that an interval of items was added.
      * Subclasses <strong>must</strong> call this method 
@@ -113,7 +113,7 @@ implements ListModel, Serializable {
      * 
      * @param index0 the index of the first removed index
      * @param index1 the index of the last removed index 
-     */ 
+     */
     protected void fireIntervalRemoved(int index0, int index1) {
         ListDataEvent e = new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, index0, index1);
 

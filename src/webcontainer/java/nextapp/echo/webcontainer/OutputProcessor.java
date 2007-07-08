@@ -416,14 +416,17 @@ public class OutputProcessor {
             if (propertyKey == null) {
                 propertyKey = Integer.toString(nextPropertyKey++);
                 propertyValueToKeyMap.put(propertyValue, propertyKey);
+
+                Element rpElement = document.createElement("rp");
+                rpElement.setAttribute("i", propertyKey);
+                propertyDataElement = rpElement;
+                
+                spElement.appendChild(rpElement);
+            } else {
+                propertyDataElement = null;
             }
-            
-            Element rpElement = document.createElement("rp");
-            rpElement.setAttribute("i", propertyKey);
+
             pElement.setAttribute("r", propertyKey);
-            propertyDataElement = rpElement;
-            
-            spElement.appendChild(rpElement);
         } else {
             propertyDataElement = pElement;
         }
@@ -445,14 +448,15 @@ public class OutputProcessor {
         if (propertyValue == null) {
             // Set nulll property value.
             pElement.setAttribute("t", "0");
-        } else {
-            // Set non-null property value.
+        } else if (propertyDataElement != null) {
+            // Set non-null property value (if necessary, i.e., if propertyDataElement is set).
             // Obtain appropriate peer.
             SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
             if (propertySyncPeer == null) {
                 // Unsupported property: do nothing.
                 return;
             }
+
             // Render property value.
             propertySyncPeer.toXml(context, c.getClass(), propertyDataElement, propertyValue);
         }

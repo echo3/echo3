@@ -37,7 +37,6 @@ import nextapp.echo.app.Font;
 import nextapp.echo.app.list.AbstractListComponent;
 import nextapp.echo.app.list.ListCellRenderer;
 import nextapp.echo.app.list.ListModel;
-import nextapp.echo.app.list.ListSelectionModel;
 import nextapp.echo.app.list.StyledListCell;
 import nextapp.echo.app.serial.PropertyPeerFactory;
 import nextapp.echo.app.serial.SerialContext;
@@ -54,18 +53,16 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public abstract class AbstractListComponentPeer extends AbstractComponentSynchronizePeer  {
 
     private class ListData {
-        
+
         private ListModel model;
         private ListCellRenderer renderer;
-//        private ListSelectionModel selectionModel;
         private AbstractListComponent listComponent;
-        
+
         ListData(AbstractListComponent component) {
             super();
             this.listComponent = component;
             this.model = component.getModel();
             this.renderer = component.getCellRenderer();
-//            this.selectionModel = component.getSelectionModel();
         }
 
         /**
@@ -76,30 +73,31 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
                 return false;
             }
             ListData that = (ListData) o;
-            
+
             if (!(this.model == that.model 
                     || (this.model != null && this.model.equals(that.model)))) {
                 return false;
             }
-            
+
             if (!(this.renderer == that.renderer 
                     || (this.renderer != null && this.renderer.equals(that.renderer)))) {
                 return false;
             }
-            
-//            if (!(this.selectionModel == that.selectionModel 
-//                    || (this.selectionModel != null && this.selectionModel.equals(that.selectionModel)))) {
-//                return false;
-//            }
-            
+
             return true;
         }
 
+        /**
+         * @see java.lang.Object#hashCode()
+         */
+        public int hashCode() {
+            return (model == null ? 0 : model.hashCode()) | (renderer == null ? 0 : renderer.hashCode());
+        }
     }
-    
+
     public static class ListDataPeer 
     implements SerialPropertyPeer {
-    
+
         /**
          * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(nextapp.echo.app.util.Context, 
          *      java.lang.Class, org.w3c.dom.Element)
@@ -108,7 +106,7 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
         throws SerialException {
             throw new UnsupportedOperationException();
         }
-    
+
         /**
          * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context, 
          *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
@@ -126,12 +124,9 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
                 Object value = listData.model.get(i);
                 eElement.setAttribute("t", value.toString());
                 propertyElement.appendChild(eElement);
-//                if (listData.selectionModel.isSelectedIndex(i)) {
-//                    eElement.setAttribute("s", "1");
-//                }
-                
+
                 Object cell = listData.renderer.getListCellRendererComponent(listData.listComponent, value, i);
-                
+
                 if (cell instanceof StyledListCell) {
                     StyledListCell styledCell = (StyledListCell) cell;
                     if (styledCell.getBackground() != null) {
@@ -143,7 +138,7 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
                     if (styledCell.getFont() != null) {
                         if (fontPeer == null) {
                             PropertyPeerFactory propertyPeerFactory 
-                                    = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
+                            = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
                             fontPeer = propertyPeerFactory.getPeerForProperty(Font.class);
                         }
                         Element fontElement = document.createElement("p");
@@ -154,23 +149,23 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
             }
         }
     }
-    
+
     private static final Service LIST_COMPONENT_SERVICE = JavaScriptService.forResources("Echo.ListComponent",
             new String[] { "/nextapp/echo/webcontainer/resource/js/Render.List.js",
                            "/nextapp/echo/webcontainer/resource/js/RemoteClient.List.js" });
-    
+
     static {
         WebContainerServlet.getServiceRegistry().add(LIST_COMPONENT_SERVICE);
     }
 
     private static final String PROPERTY_DATA = "data";
-    
+
     public AbstractListComponentPeer() {
         super();
         addOutputProperty(PROPERTY_DATA);
         setOutputPropertyReferenced(PROPERTY_DATA, true);
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputProperty(
      *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, int)
@@ -191,7 +186,8 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
     }
 
     /**
-     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputPropertyMethodName(nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String)
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputPropertyMethodName(
+     *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String)
      */
     public String getOutputPropertyMethodName(Context context, Component component, String propertyName) {
         if (PROPERTY_DATA.equals(propertyName)) {
