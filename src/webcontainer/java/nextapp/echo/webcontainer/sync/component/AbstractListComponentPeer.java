@@ -37,6 +37,7 @@ import nextapp.echo.app.Font;
 import nextapp.echo.app.list.AbstractListComponent;
 import nextapp.echo.app.list.ListCellRenderer;
 import nextapp.echo.app.list.ListModel;
+import nextapp.echo.app.list.ListSelectionModel;
 import nextapp.echo.app.list.StyledListCell;
 import nextapp.echo.app.serial.PropertyPeerFactory;
 import nextapp.echo.app.serial.SerialContext;
@@ -51,7 +52,7 @@ import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
 
 public abstract class AbstractListComponentPeer extends AbstractComponentSynchronizePeer  {
-
+    
     private class ListData {
 
         private ListModel model;
@@ -150,6 +151,28 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
         }
     }
 
+    private static final String getSelectionString(ListSelectionModel selectionModel) {
+        int min = selectionModel.getMinSelectedIndex();
+        int max = selectionModel.getMaxSelectedIndex();
+        if (min == max || selectionModel.getSelectionMode() != ListSelectionModel.MULTIPLE_SELECTION) {
+            return Integer.toString(min);
+        } else {
+            StringBuffer out = new StringBuffer();
+            boolean commaRequired = false;
+            for (int i = min; i <= max; ++i) {
+                if (selectionModel.isSelectedIndex(i)) {
+                    out.append(i);
+                    if (commaRequired) {
+                        out.append(",");
+                    } else {
+                        commaRequired = true;
+                    }
+                }
+            }
+            return out.toString();
+        }
+    }
+    
     private static final Service LIST_COMPONENT_SERVICE = JavaScriptService.forResources("Echo.ListComponent",
             new String[] { "/nextapp/echo/webcontainer/resource/js/Render.List.js",
                            "/nextapp/echo/webcontainer/resource/js/RemoteClient.List.js" });
@@ -162,27 +185,9 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
 
     public AbstractListComponentPeer() {
         super();
+        addOutputProperty(AbstractListComponent.SELECTION_MODEL_CHANGED_PROPERTY);
         addOutputProperty(PROPERTY_DATA);
         setOutputPropertyReferenced(PROPERTY_DATA, true);
-    }
-
-    /**
-     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputProperty(
-     *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, int)
-     */
-    public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex) {
-        if (PROPERTY_DATA.equals(propertyName)) {
-            return new ListData((AbstractListComponent) component);
-        }
-        return super.getOutputProperty(context, component, propertyName, propertyIndex);
-    }
-
-    /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
-     */
-    public void init(Context context) {
-        ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
-        serverMessage.addLibrary(LIST_COMPONENT_SERVICE.getId());
     }
 
     /**
@@ -194,5 +199,26 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
             return "updateListData";
         }
         return super.getOutputPropertyMethodName(context, component, propertyName);
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputProperty(
+     *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, int)
+     */
+    public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex) {
+        if (PROPERTY_DATA.equals(propertyName)) {
+            return new ListData((AbstractListComponent) component);
+        } else if (AbstractListComponent.SELECTION_CHANGED_PROPERTY.equals(propertyName)) {
+            return getSelectionString(((AbstractListComponent) component).getSelectionModel());
+        }
+        return super.getOutputProperty(context, component, propertyName, propertyIndex);
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
+     */
+    public void init(Context context) {
+        ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
+        serverMessage.addLibrary(LIST_COMPONENT_SERVICE.getId());
     }
 }
