@@ -125,11 +125,15 @@ EchoRemoteClient.prototype._windowResizeListener = function(e) {
 
 EchoRemoteClient.prototype._processSyncResponse = function(e) {
     var responseDocument = e.source.getResponseXml();
-    
     if (!e.valid || !responseDocument || !responseDocument.documentElement) {
         //FIXME. Central error handling for things like this.
         //FIXME. Shut down further client input with secondary "you're beating a dead horse" error message. 
-        alert("An invalid response was received from the server.  Press the browser reload or refresh button.");
+        var msg = "An invalid response was received from the server";
+        if (e.exception) {
+        	msg += ": " + e.exception;
+        }
+        msg += ". Press the browser reload or refresh button.";
+        alert(msg);
         return;
     }
     
