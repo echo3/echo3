@@ -24,11 +24,29 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
         var lineWrap = this.component.getRenderProperty("lineWrap", true);
 
         if (icon) {
+            var position = this.component.getRenderProperty("textPosition");
+            var orientation;
+            if (position) {
+                switch (position.horizontal) {
+                case EchoApp.Property.Alignment.LEADING:  orientation = EchoRender.TriCellTable.LEADING_TRAILING; break;
+                case EchoApp.Property.Alignment.TRAILING: orientation = EchoRender.TriCellTable.TRAILING_LEADING; break;
+                case EchoApp.Property.Alignment.LEFT:     orientation = EchoRender.TriCellTable.LEADING_TRAILING; break;
+                case EchoApp.Property.Alignment.RIGHT:    orientation = EchoRender.TriCellTable.TRAILING_LEADING; break;
+                default:
+                    switch (position.vertical) {
+                    case EchoApp.Property.Alignment.TOP:    orientation = EchoRender.TriCellTable.TOP_BOTTOM;       break;
+                    case EchoApp.Property.Alignment.BOTTOM: orientation = EchoRender.TriCellTable.BOTTOM_TOP;       break;
+                    default:                                orientation = EchoRender.TriCellTable.TRAILING_LEADING; break;
+                    }
+                }
+            } else {
+                orientation = EchoRender.TriCellTable.TRAILING_LEADING;
+            }
+            
             // Text and icon.
             var iconTextMargin = this.component.getRenderProperty("iconTextMargin", 
                     EchoRender.ComponentSync.Label._defaultIconTextMargin);
-            var tct = new EchoRender.TriCellTable(EchoRender.TriCellTable.TRAILING_LEADING, 
-                    EchoRender.Property.Extent.toPixels(iconTextMargin));
+            var tct = new EchoRender.TriCellTable(orientation, EchoRender.Property.Extent.toPixels(iconTextMargin));
             var imgElement = document.createElement("img");
             imgElement.src = icon.url;
             tct.tdElements[0].appendChild(document.createTextNode(text));

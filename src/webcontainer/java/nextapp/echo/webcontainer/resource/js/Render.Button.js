@@ -18,7 +18,8 @@ EchoRender.ComponentSync.Button.prototype = new EchoRender.ComponentSync;
 EchoRender.ComponentSync.Button.prototype._addEventListeners = function() {
     // Remove initialization listeners.
     EchoWebCore.EventProcessor.remove(this._divElement, "focus", new EchoCore.MethodRef(this, this._processInitFocus), false);
-    EchoWebCore.EventProcessor.remove(this._divElement, "mouseover", new EchoCore.MethodRef(this, this._processInitMouseOver), false);
+    EchoWebCore.EventProcessor.remove(this._divElement, "mouseover", 
+            new EchoCore.MethodRef(this, this._processInitMouseOver), false);
     
     EchoWebCore.EventProcessor.add(this._divElement, "click", new EchoCore.MethodRef(this, this._processClick), false);
     EchoWebCore.EventProcessor.add(this._divElement, "keypress", new EchoCore.MethodRef(this, this._processKeyPress), false);
@@ -26,8 +27,10 @@ EchoRender.ComponentSync.Button.prototype._addEventListeners = function() {
         var mouseEnterLeaveSupport = EchoWebCore.Environment.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
         var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
         var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
-        EchoWebCore.EventProcessor.add(this._divElement, enterEvent, new EchoCore.MethodRef(this, this._processRolloverEnter), false);
-        EchoWebCore.EventProcessor.add(this._divElement, exitEvent, new EchoCore.MethodRef(this, this._processRolloverExit), false);
+        EchoWebCore.EventProcessor.add(this._divElement, enterEvent, 
+                new EchoCore.MethodRef(this, this._processRolloverEnter), false);
+        EchoWebCore.EventProcessor.add(this._divElement, exitEvent, 
+                new EchoCore.MethodRef(this, this._processRolloverExit), false);
     }
     if (this.component.getRenderProperty("pressedEnabled")) {
         EchoWebCore.EventProcessor.add(this._divElement, "mousedown", new EchoCore.MethodRef(this, this._processPress), false);
@@ -194,7 +197,8 @@ EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentEle
         // of button event listeners.  There may be a large number of such listeners depending on how many effects
         // are enabled, and as such we do this lazily for performance reasons.
         EchoWebCore.EventProcessor.add(this._divElement, "focus", new EchoCore.MethodRef(this, this._processInitFocus), false);
-        EchoWebCore.EventProcessor.add(this._divElement, "mouseover", new EchoCore.MethodRef(this, this._processInitMouseOver), false);
+        EchoWebCore.EventProcessor.add(this._divElement, "mouseover", 
+                new EchoCore.MethodRef(this, this._processInitMouseOver), false);
     }
 
     parentElement.appendChild(this._divElement);
@@ -283,7 +287,8 @@ EchoRender.ComponentSync.Button.prototype.renderUpdate = function(update) {
 EchoRender.ComponentSync.Button.prototype._setPressedState = function(pressedState) {
     var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "pressedForeground", pressedState);
     var background = EchoRender.Property.getEffectProperty(this.component, "background", "pressedBackground", pressedState);
-    var backgroundImage = EchoRender.Property.getEffectProperty(this.component, "backgroundImage", "pressedBackgroundImage", pressedState);
+    var backgroundImage = EchoRender.Property.getEffectProperty(
+            this.component, "backgroundImage", "pressedBackgroundImage", pressedState);
     var font = EchoRender.Property.getEffectProperty(this.component, "font", "pressedFont", pressedState);
     var border = EchoRender.Property.getEffectProperty(this.component, "border", "pressedBorder", pressedState);
     
@@ -308,7 +313,8 @@ EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) 
 
     var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "focusedForeground", focusState);
     var background = EchoRender.Property.getEffectProperty(this.component, "background", "focusedBackground", focusState);
-    var backgroundImage = EchoRender.Property.getEffectProperty(this.component, "backgroundImage", "focusedBackgroundImage", focusState);
+    var backgroundImage = EchoRender.Property.getEffectProperty(
+            this.component, "backgroundImage", "focusedBackgroundImage", focusState);
     var font = EchoRender.Property.getEffectProperty(this.component, "font", "focusedFont", focusState);
     var border = EchoRender.Property.getEffectProperty(this.component, "border", "focusedBorder", focusState);
     
@@ -329,7 +335,8 @@ EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) 
 EchoRender.ComponentSync.Button.prototype._setRolloverState = function(rolloverState) {
     var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "rolloverForeground", rolloverState);
     var background = EchoRender.Property.getEffectProperty(this.component, "background", "rolloverBackground", rolloverState);
-    var backgroundImage = EchoRender.Property.getEffectProperty(this.component, "backgroundImage", "rolloverBackgroundImage", rolloverState);
+    var backgroundImage = EchoRender.Property.getEffectProperty(
+            this.component, "backgroundImage", "rolloverBackgroundImage", rolloverState);
     var font = EchoRender.Property.getEffectProperty(this.component, "font", "rolloverFont", rolloverState);
     var border = EchoRender.Property.getEffectProperty(this.component, "border", "rolloverBorder", rolloverState);
     
@@ -380,7 +387,8 @@ EchoRender.ComponentSync.ToggleButton.prototype.renderAdd = function(update, par
 EchoRender.ComponentSync.ToggleButton.prototype._getStateIcon = function() {
 	var icon;
 	if (this._selected) {
-		icon = EchoRender.Property.getEffectProperty(this.component, "selectedStateIcon", "disabledSelectedStateIcon", !this._enabled);
+		icon = EchoRender.Property.getEffectProperty(this.component, "selectedStateIcon", "disabledSelectedStateIcon", 
+                !this._enabled);
 	}
 	if (!icon) {
 		icon = EchoRender.Property.getEffectProperty(this.component, "stateIcon", "disabledStateIcon", !this._enabled);

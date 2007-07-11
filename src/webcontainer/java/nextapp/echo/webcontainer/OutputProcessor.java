@@ -316,7 +316,8 @@ public class OutputProcessor {
         // Render Commands.
         Command[] commands = serverUpdateManager.getCommands();
         for (int i = 0; i < commands.length; ++i) {
-            CommandSynchronizePeer commandPeer = SynchronizePeerFactory.getPeerForCommand(commands[i].getClass());
+            //FIXME impl.
+//            CommandSynchronizePeer commandPeer = SynchronizePeerFactory.getPeerForCommand(commands[i].getClass());
 //            commandPeer.render(context, commands[i]);
         }
         
