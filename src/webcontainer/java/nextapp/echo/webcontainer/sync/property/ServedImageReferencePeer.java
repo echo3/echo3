@@ -31,6 +31,7 @@ package nextapp.echo.webcontainer.sync.property;
 
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.ImageReference;
+import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.property.ExtentPeer;
 import nextapp.echo.app.serial.property.ImageReferencePeer;
@@ -79,14 +80,19 @@ public class ServedImageReferencePeer implements ImageReferencePeer {
         ImageReference imageReference = (ImageReference) propertyValue;
         propertyElement.setAttribute("t", "ImageReference");
         propertyElement.setAttribute("v", getImageUrl(context, imageReference));
-        
+
         Extent width = imageReference.getWidth();
-        if (width != null) {
-            propertyElement.setAttribute("w", ExtentPeer.toString(width));
-        }
         Extent height = imageReference.getHeight();
-        if (height != null) {
-            propertyElement.setAttribute("h", ExtentPeer.toString(height));
+        if (width != null || height != null) {
+            SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
+            Element sizeElement = serialContext.getDocument().createElement("size");
+            if (width != null ) {
+                sizeElement.setAttribute("w", ExtentPeer.toString(width));
+            }
+            if (height != null) {
+                sizeElement.setAttribute("h", ExtentPeer.toString(height));
+            }
+            propertyElement.appendChild(sizeElement);
         }
     }
 }
