@@ -131,6 +131,8 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
         var msg = "An invalid response was received from the server";
         if (e.exception) {
         	msg += ": " + e.exception;
+        } else if (e.source.getResponseText()) {
+        	msg += ": \"" + e.source.getResponseText() + "\"";
         }
         msg += ". Press the browser reload or refresh button.";
         alert(msg);
