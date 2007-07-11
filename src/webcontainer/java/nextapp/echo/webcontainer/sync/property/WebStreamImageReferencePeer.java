@@ -31,12 +31,13 @@ package nextapp.echo.webcontainer.sync.property;
 
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.ImageReference;
-import nextapp.echo.app.StreamImageReference;
+import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.property.ExtentPeer;
 import nextapp.echo.app.serial.property.ImageReferencePeer;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.UserInstance;
-import nextapp.echo.webcontainer.service.StreamImageService;
+import nextapp.echo.webcontainer.WebContainerServlet;
+import nextapp.echo.webcontainer.service.ImageService;
 
 import org.w3c.dom.Element;
 
@@ -47,7 +48,8 @@ import org.w3c.dom.Element;
 public class WebStreamImageReferencePeer implements ImageReferencePeer {
 
     static {
-        StreamImageService.install();
+        WebContainerServlet.getServiceRegistry().add(ImageService.INSTANCE);
+        ImageService.install();
     }
     
     /**
@@ -57,7 +59,7 @@ public class WebStreamImageReferencePeer implements ImageReferencePeer {
     public String getImageUrl(Context context, ImageReference imageReference) {
         UserInstance userInstance = (UserInstance) context.get(UserInstance.class);
         userInstance.getIdTable().register(imageReference);
-        return "!S!" + imageReference.getRenderId();
+        return "!I!" + imageReference.getRenderId();
     }
     
     /**
@@ -72,10 +74,11 @@ public class WebStreamImageReferencePeer implements ImageReferencePeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(Context rc, Class objectClass, Element propertyElement, Object propertyValue) {
-        StreamImageReference imageReference = (StreamImageReference) propertyValue;
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
+    throws SerialException {
+        ImageReference imageReference = (ImageReference) propertyValue;
         propertyElement.setAttribute("t", "ImageReference");
-        propertyElement.setAttribute("v", getImageUrl(rc, imageReference));
+        propertyElement.setAttribute("v", getImageUrl(context, imageReference));
         
         Extent width = imageReference.getWidth();
         if (width != null) {

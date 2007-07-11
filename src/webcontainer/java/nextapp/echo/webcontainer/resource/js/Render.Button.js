@@ -368,7 +368,7 @@ EchoRender.ComponentSync.ToggleButton.prototype = new EchoRender.ComponentSync.B
  */
 EchoRender.ComponentSync.ToggleButton._getImageUri = function(identifier) {
 	// FIXME abstract this somehow so it works with FreeClient too
-	return "?sid=Echo.ToggleButton.Image&imageuid=" + identifier;
+	return "?sid=Echo.Image&iid=" + identifier;
 };
 
 EchoRender.ComponentSync.ToggleButton.prototype.renderAdd = function(update, parentElement) {

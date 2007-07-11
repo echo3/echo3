@@ -25,7 +25,7 @@ EchoRemoteClient = function(serverUrl, domainElementId) {
      * Mapping between shorthand URL codes and replacement values.
      */
     this._urlMappings = new Object();
-    this._urlMappings["S"] = this._serverUrl + "?sid=Echo.StreamImage&imageuid=";
+    this._urlMappings["I"] = this._serverUrl + "?sid=Echo.Image&iid=";
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
     

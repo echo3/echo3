@@ -30,11 +30,13 @@
 package nextapp.echo.webcontainer.sync.component;
 
 import nextapp.echo.app.Component;
+import nextapp.echo.app.ImageReference;
+import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.button.ToggleButton;
 import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.ComponentSynchronizePeer;
-import nextapp.echo.webcontainer.service.ToggleButtonImageService;
+import nextapp.echo.webcontainer.service.ImageService;
 
 /**
  * Synchronization peer for <code>ToggleButton</code>s.
@@ -42,9 +44,28 @@ import nextapp.echo.webcontainer.service.ToggleButtonImageService;
  * @author n.beekman
  */
 public class ToggleButtonPeer extends AbstractButtonPeer {
+
+    private static final String IMAGE_ID_CHECKBOX_OFF = "checkBoxOff";
+    private static final String IMAGE_ID_CHECKBOX_ON = "checkBoxOn";
+    private static final String IMAGE_ID_RADIOBUTTON_OFF = "radioButtonOff";
+    private static final String IMAGE_ID_RADIOBUTTON_ON = "radioButtonOn";
     
+    private static final String IMAGE_PREFIX = "/nextapp/echo/webcontainer/resource/image/";
+    private static final ImageReference DEFAULT_ICON_CHECKBOX_OFF 
+            = new ResourceImageReference(IMAGE_PREFIX + "CheckBoxOff.gif");
+    private static final ImageReference DEFAULT_ICON_CHECKBOX_ON 
+            = new ResourceImageReference(IMAGE_PREFIX + "CheckBoxOn.gif");
+    private static final ImageReference DEFAULT_ICON_RADIOBUTTON_OFF 
+            = new ResourceImageReference(IMAGE_PREFIX + "RadioButtonOff.gif");
+    private static final ImageReference DEFAULT_ICON_RADIOBUTTON_ON 
+            = new ResourceImageReference(IMAGE_PREFIX + "RadioButtonOn.gif");
+
     static {
-        ToggleButtonImageService.install();
+        ImageService.install();
+        ImageService.addGlobalImage(IMAGE_ID_CHECKBOX_OFF, DEFAULT_ICON_CHECKBOX_OFF);
+        ImageService.addGlobalImage(IMAGE_ID_CHECKBOX_ON, DEFAULT_ICON_CHECKBOX_ON);
+        ImageService.addGlobalImage(IMAGE_ID_RADIOBUTTON_OFF, DEFAULT_ICON_RADIOBUTTON_OFF);
+        ImageService.addGlobalImage(IMAGE_ID_RADIOBUTTON_ON, DEFAULT_ICON_RADIOBUTTON_ON);
     }
     
     public ToggleButtonPeer() {
