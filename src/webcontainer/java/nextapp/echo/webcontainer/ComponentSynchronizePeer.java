@@ -91,6 +91,15 @@ public interface ComponentSynchronizePeer {
     public Iterator getImmediateEventTypes(Context context, Component component);
     
     /**
+     * Returns the <code>Class</code> of the specified input
+     * property of the component.
+     * 
+     * @param propertyName the name of the property
+     * @return the property <code>Class</code>
+     */
+    public Class getInputPropertyClass(String propertyName);
+    
+    /**
      * Returns the value of a specific output property.
      * 
      * @param context the relevant <code>Context</code>, provides 
@@ -160,15 +169,6 @@ public interface ComponentSynchronizePeer {
     public Iterator getOutputPropertyNames(Context context, Component component);
     
     /**
-     * Returns the <code>Class</code> of the specified input/output
-     * property of the component.
-     * 
-     * @param propertyName the name of the property
-     * @return the property <code>Class</code>
-     */
-    public Class getPropertyClass(String propertyName);
-    
-    /**
      * Returns an <code>Iterator</code> over the collection of names of all
      * output properties that should be rendered to the client to complete
      * the specified <code>update</code>.  Only the names of properties taht
@@ -219,10 +219,16 @@ public interface ComponentSynchronizePeer {
     public boolean isOutputPropertyIndexed(Context context, Component component, String propertyName);
     
     /**
-     * Determines if the specified property should be rendered-by-reference, i.e.,
-     * that it should be rendered one time in the initialization segment of the output
-     * message and then referenced by a unique identifier.  This is useful for properties
-     * that are typically large in terms of rendered size (e.g., models)
+     * Determines if the specified property should be rendered-by-reference.
+     * Properties that are rendered-by-reference will be specified in
+     * the "init" section of the outgoing server message and referenced by an identifier each time
+     * they are reused by components being rendered in that server message.  This results in 
+     * a bandwidth savings in cases where it is likely that the same property will be reused by
+     * multiple components (and assuming the rendered property value is reasonably large).
+     * The property value must implement both <code>equals()</code> and <code>hashCode()</code> or
+     * the same reference must be used for reference-based rendering to be effective.
+     * Rendering-by-reference is often best used for rendering model properties, e.g., a
+     * <code>ListModel</code> that might be used by several listboxes on the same screen.
      * 
      * @param context the relevant <code>Context</code>, provides 
      *        standard contextual information described in class description, in

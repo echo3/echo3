@@ -71,7 +71,7 @@ public abstract class TextComponentPeer extends AbstractComponentSynchronizePeer
         }
     }
 
-    public Class getPropertyClass(String propertyName) {
+    public Class getInputPropertyClass(String propertyName) {
         if (TextComponent.TEXT_CHANGED_PROPERTY.equals(propertyName)) {
             return String.class;
         }

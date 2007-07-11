@@ -71,7 +71,7 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
         return new ArrayIterator(EVENT_TYPES_ACTION);
     }
     
-    public Class getPropertyClass(String propertyName) {
+    public Class getInputPropertyClass(String propertyName) {
         if (WindowPane.PROPERTY_POSITION_X.equals(propertyName)) {
             return Extent.class;
         } else if (WindowPane.PROPERTY_POSITION_Y.equals(propertyName)) {

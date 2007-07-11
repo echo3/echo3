@@ -11,6 +11,13 @@ import nextapp.echo.app.reflect.IntrospectorFactory;
 import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.util.Context;
 
+/**
+ * Default abstract implementation of <code>ComponentSynchronizePeer</code>.
+ * Provides implementations of all methods less <code>getComponentClass()</code>.
+ * Determines properties to render to client by quertying a <code>Component</code>'s
+ * local style and using a <code>ComponentIntrospector</code> to determine whether
+ * those properties 
+ */
 public abstract class AbstractComponentSynchronizePeer 
 implements ComponentSynchronizePeer {
 
@@ -51,10 +58,25 @@ implements ComponentSynchronizePeer {
         }
     }
     
+    /**
+     * Adds a non-indexed output property.  
+     * 
+     * @see #addOutputProeprty(java.lang.String, boolean)
+     */
     public void addOutputProperty(String propertyName) {
         addOutputProperty(propertyName, false);
     }
 
+    /**
+     * Adds an output property.  
+     * Property names added via this method will be returned by the 
+     * <code>getOutputPropertyName()</code> method of this class.
+     * If the indexed flag is set, the <code>isOutputPropertyIndexed</code>
+     * method will also return true for thsi property name
+     * 
+     * @param propertyName the property name to add
+     * @param indexed a flag indicating whether the property is indexed
+     */
     public void addOutputProperty(String propertyName, boolean indexed) {
         if (additionalProperties == null) {
             additionalProperties = new HashSet();
@@ -84,6 +106,9 @@ implements ComponentSynchronizePeer {
     public abstract Class getComponentClass();
     
     /**
+     * Returns null.  Implementations should override if they wish
+     * to provide event data.
+     * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getEventDataClass(java.lang.String)
      */
     public Class getEventDataClass(String eventType) {
@@ -91,7 +116,8 @@ implements ComponentSynchronizePeer {
     }
 
     /**
-     * Default implmentation: return an empty iterator.
+     * Returns an empty iterator.  Implementations should override if they
+     * wish to support immediate event types.
      * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getImmediateEventTypes(Context, Component)
      */
@@ -100,6 +126,9 @@ implements ComponentSynchronizePeer {
     }
 
     /**
+     * Returns any property from the local style of the <code>Component</code>.
+     * Implementations should override if they wish to support additional properties.
+     * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputProperty(nextapp.echo.app.util.Context,
      *      nextapp.echo.app.Component, java.lang.String)
      */
@@ -112,6 +141,9 @@ implements ComponentSynchronizePeer {
     }
     
     /**
+     * Returns the indices of any indexed property from the local style of the <code>Component</code>.
+     * Implementations should override if they wish to support additional properties.
+     * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputPropertyIndices(nextapp.echo.app.util.Context, 
      *      nextapp.echo.app.Component, java.lang.String)
      */
@@ -120,7 +152,9 @@ implements ComponentSynchronizePeer {
     }
     
     /**
-     * Default implementation returns null.
+     * Returns null.
+     * Implementations should override if they wish to set properties on the client by invoking 
+     * specific methods other than setProperty()/setIndexedProperty().
      * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputPropertyMethodName(
      *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String)
@@ -130,8 +164,8 @@ implements ComponentSynchronizePeer {
     }
 
     /**
-     * Default implementation: return the names of all properties currently set in the 
-     * component's local <code>Style</code>.
+     * Returns the names of all properties currently set in the component's local <code>Style</code>,
+     * in addition to any properties added by invoking <code>addOutputProperty()</code>.
      * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputPropertyNames(Context, nextapp.echo.app.Component)
      */
@@ -171,9 +205,11 @@ implements ComponentSynchronizePeer {
     }
    
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getPropertyClass(java.lang.String)
+     * Returns null.  Implementations receiving input properties should override.
+     * 
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getInputPropertyClass(java.lang.String)
      */
-    public Class getPropertyClass(String propertyName) {
+    public Class getInputPropertyClass(String propertyName) {
         return null;
     }
     
@@ -197,6 +233,8 @@ implements ComponentSynchronizePeer {
     }
 
     /**
+     * Does nothing.  Implementations requiring initialization should override this method.
+     * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(Context)
      */
     public void init(Context context) {
@@ -212,6 +250,9 @@ implements ComponentSynchronizePeer {
     }
 
     /**
+     * Returns true for any property set as rendered-by-reference via the
+     * <code>setOutputPropertyReferenced()</code> method.
+     * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#isOutputPropertyReferenced(
      *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String)
      */
@@ -220,6 +261,8 @@ implements ComponentSynchronizePeer {
     }
         
     /**
+     * Does nothing.  Implementations handling events should overwrite this method.
+     * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#processEvent(nextapp.echo.app.util.Context,
      *      nextapp.echo.app.Component, java.lang.String, java.lang.Object)
      */
@@ -228,11 +271,14 @@ implements ComponentSynchronizePeer {
     }
 
     /**
-     * Sets the rendered-by-reference state of a property.  By default, all properties are NOT
-     * rendered by reference.
+     * Sets the rendered-by-reference state of a property.
+     * <code>isOutputPropertyReferenced</code> will return true for any property set as
+     * referenced using this method.
      * 
      * @param propertyName the propertyName
      * @param newValue true if the property should be rendered by reference
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#isOutputPropertyReferenced(
+     *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String)
      */
     public void setOutputPropertyReferenced(String propertyName, boolean newValue) {
         if (newValue) {
@@ -248,6 +294,8 @@ implements ComponentSynchronizePeer {
     }
     
     /**
+     * Does nothing.  Implementations that receive input from the client should override this method.
+     * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context, 
      *      nextapp.echo.app.Component, java.lang.String, int, java.lang.Object)
      */

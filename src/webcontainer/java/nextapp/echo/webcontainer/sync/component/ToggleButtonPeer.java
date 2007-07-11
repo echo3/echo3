@@ -92,13 +92,13 @@ public class ToggleButtonPeer extends AbstractButtonPeer {
     }
     
     /**
-     * @see ComponentSynchronizePeer#getPropertyClass(String)
+     * @see ComponentSynchronizePeer#getInputPropertyClass(String)
      */
-    public Class getPropertyClass(String propertyName) {
+    public Class getInputPropertyClass(String propertyName) {
         if (ToggleButton.SELECTED_CHANGED_PROPERTY.equals(propertyName)) {
             return Boolean.class;
         }
-        return super.getPropertyClass(propertyName);
+        return super.getInputPropertyClass(propertyName);
     }
     
     /**

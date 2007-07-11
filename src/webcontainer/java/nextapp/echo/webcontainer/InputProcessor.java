@@ -98,7 +98,7 @@ public class InputProcessor {
                 String propertyName = (String) updatedPropertyIt.next();
                 Element propertyElement = clientMessage.getUpdatedProperty(componentId, propertyName);
 
-                Class propertyClass = componentPeer.getPropertyClass(propertyName);
+                Class propertyClass = componentPeer.getInputPropertyClass(propertyName);
                 if (propertyClass == null) {
                     //FIXME. add ex handling.
                     System.err.println("Could not determine class of property: " + propertyName);

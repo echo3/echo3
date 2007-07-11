@@ -59,7 +59,7 @@ public class SplitPanePeer extends AbstractComponentSynchronizePeer {
         return SplitPane.class;
     }
     
-    public Class getPropertyClass(String propertyName) {
+    public Class getInputPropertyClass(String propertyName) {
         if (SplitPane.PROPERTY_SEPARATOR_POSITION.equals(propertyName)) {
             return Extent.class;
         } else {
