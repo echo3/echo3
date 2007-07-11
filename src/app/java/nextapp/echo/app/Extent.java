@@ -28,6 +28,7 @@
  */
 
 package nextapp.echo.app;
+
 import java.io.Serializable;
 
 /**
