@@ -21,12 +21,35 @@ import nextapp.echo.app.util.Context;
 public abstract class AbstractComponentSynchronizePeer 
 implements ComponentSynchronizePeer {
 
+    /**
+     * A <code>Set</code> containing the names of all additional properties to be
+     * rendered to the client.
+     */
     private Set additionalProperties = null;
+    
+    /**
+     * A <code>Set</code> containing the names of all style properties.
+     */
     private Set stylePropertyNames = null;
+    
+    /**
+     * A <code>Set</code> containing the names of all properties which are indexed.
+     */
     private Set indexedPropertyNames = null;
+    
+    
     private Set referencedProperties = null;
+    
+    /**
+     * The determined client component type.
+     * 
+     * @see #getClientComponentType()
+     */
     private String clientComponentType;
 
+    /**
+     * Default constructor.
+     */
     public AbstractComponentSynchronizePeer() {
         super();
         clientComponentType = getComponentClass().getName();
@@ -214,6 +237,10 @@ implements ComponentSynchronizePeer {
     }
     
     /**
+     * Returns property names that have been updated in the specified 
+     * <code>ServerComponentUpdate</code> that are either part of the local style
+     * or have been added via the <code>addOutputProperty()</code> method.
+     * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getUpdatedOutputPropertyNames(nextapp.echo.app.util.Context,
      *      nextapp.echo.app.Component,
      *      nextapp.echo.app.update.ServerComponentUpdate)
@@ -242,6 +269,9 @@ implements ComponentSynchronizePeer {
     }
 
     /**
+     * Determines if a local style property or additional property (added via <code>addOutputProperty()</code>)
+     * is indexed.
+     * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#isIndexedProperty(nextapp.echo.app.util.Context, 
      *      nextapp.echo.app.Component, java.lang.String)
      */
