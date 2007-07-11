@@ -34,9 +34,18 @@ import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>ImageReference</code> properties.
+ * Additional interface for <code>ImageReference</code> <code>XmlPropertyPeer</code>s.
+ * This interface is necessary for objects such as <code>FillImagePeer</code> in order
+ * to compactly render images.
  */
 public interface ImageReferencePeer extends SerialPropertyPeer {
 
+    /**
+     * Returns the URI of an image.
+     * 
+     * @param context the relevant <code>Context</code>
+     * @param imageReference the <code>ImageReference</code> to be rendered
+     * @return the URI of the image
+     */
     public String getImageUrl(Context context, ImageReference imageReference);
 }
