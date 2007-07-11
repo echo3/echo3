@@ -1310,9 +1310,9 @@ EchoApp.Property.Extent.prototype.toString = function() {
  * @param {Number} repeat the image repeat mode, one of the following values:
  *        <ul>
  *         <li>EchoApp.Property.FillImage.NO_REPEAT</li>
- *         <li>EchoApp.Property.FillImage.REPEAT_X</li>
- *         <li>EchoApp.Property.FillImage.REPEAT_Y</li>
- *         <li>EchoApp.Property.FillImage.REPEAT_ALL</li>
+ *         <li>EchoApp.Property.FillImage.REPEAT_HORIZONTAL</li>
+ *         <li>EchoApp.Property.FillImage.REPEAT_VERTICAL</li>
+ *         <li>EchoApp.Property.FillImage.REPEAT</li>
  *        </ul>
  *         
  * @param {EchoApp.Property.Extent} the horizontal alignment/position of the image
@@ -1334,9 +1334,9 @@ EchoApp.Property.FillImage = function(image, repeat, x, y) {
      * The repeat configuration, one of the following values:
      * <ul>
      *  <li>EchoApp.Property.FillImage.NO_REPEAT</li>
-     *  <li>EchoApp.Property.FillImage.REPEAT_X</li>
-     *  <li>EchoApp.Property.FillImage.REPEAT_Y</li>
-     *  <li>EchoApp.Property.FillImage.REPEAT_ALL</li>
+     *  <li>EchoApp.Property.FillImage.REPEAT_HORIZONTAL</li>
+     *  <li>EchoApp.Property.FillImage.REPEAT_VERTICAL</li>
+     *  <li>EchoApp.Property.FillImage.REPEAT</li>
      * </ul>
      * @type Number
      */
