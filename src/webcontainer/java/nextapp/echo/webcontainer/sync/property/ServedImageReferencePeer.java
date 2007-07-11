@@ -45,7 +45,7 @@ import org.w3c.dom.Element;
  * <code>ImageReferencePeer</code> implementation to provide
  * <code>StreamImage</code>s to remote web clients.
  */
-public class WebStreamImageReferencePeer implements ImageReferencePeer {
+public class ServedImageReferencePeer implements ImageReferencePeer {
 
     static {
         WebContainerServlet.getServiceRegistry().add(ImageService.INSTANCE);
