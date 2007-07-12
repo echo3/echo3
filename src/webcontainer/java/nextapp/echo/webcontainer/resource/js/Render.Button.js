@@ -212,7 +212,8 @@ EchoRender.ComponentSync.Button.prototype._renderContent = function() {
             // Text and icon.
             var iconTextMargin = this.component.getRenderProperty("iconTextMargin", 
                     EchoRender.ComponentSync.Button._defaultIconTextMargin);
-            var tct = new EchoRender.TriCellTable(EchoRender.TriCellTable.TRAILING_LEADING, 
+            var orientation = EchoRender.TriCellTable.getOrientation(this.component, "textPosition");
+            var tct = new EchoRender.TriCellTable(orientation, 
                     EchoRender.Property.Extent.toPixels(iconTextMargin));
             this._renderButtonText(tct.tdElements[0], text);
             this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);

@@ -786,6 +786,29 @@ EchoRender.TriCellTable = function(orientation0_1, margin0_1, orientation01_2, m
     }
 };
 
+//FIXME. this method will need additional information with regard to RTL settings.
+EchoRender.TriCellTable.getOrientation = function(component, propertyName) {
+    var position = component.getRenderProperty(propertyName);
+    var orientation;
+    if (position) {
+        switch (position.horizontal) {
+        case EchoApp.Property.Alignment.LEADING:  orientation = EchoRender.TriCellTable.LEADING_TRAILING; break;
+        case EchoApp.Property.Alignment.TRAILING: orientation = EchoRender.TriCellTable.TRAILING_LEADING; break;
+        case EchoApp.Property.Alignment.LEFT:     orientation = EchoRender.TriCellTable.LEADING_TRAILING; break;
+        case EchoApp.Property.Alignment.RIGHT:    orientation = EchoRender.TriCellTable.TRAILING_LEADING; break;
+        default:
+            switch (position.vertical) {
+            case EchoApp.Property.Alignment.TOP:    orientation = EchoRender.TriCellTable.TOP_BOTTOM;       break;
+            case EchoApp.Property.Alignment.BOTTOM: orientation = EchoRender.TriCellTable.BOTTOM_TOP;       break;
+            default:                                orientation = EchoRender.TriCellTable.TRAILING_LEADING; break;
+            }
+        }
+    } else {
+        orientation = EchoRender.TriCellTable.TRAILING_LEADING;
+    }
+    return orientation;
+};
+            
 EchoRender.TriCellTable._createTablePrototype = function() {
     var tableElement = document.createElement("table");
     tableElement.style.borderCollapse = "collapse";
