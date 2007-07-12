@@ -9,6 +9,9 @@ EchoRender.ComponentSync.SelectListComponent = function() { };
 
 EchoRender.ComponentSync.SelectListComponent.prototype = new EchoRender.ComponentSync();
 
+EchoRender.ComponentSync.SelectListComponent.prototype._processChange = function(e) {
+};
+
 EchoRender.ComponentSync.SelectListComponent.prototype._renderMain = function(update, parentElement, size) {
     this._selectElement = document.createElement("select");
     this._selectElement.size = size;
@@ -34,10 +37,13 @@ EchoRender.ComponentSync.SelectListComponent.prototype._renderMain = function(up
         }
     }
     
+    EchoWebCore.EventProcessor.add(this._selectElement, "change", new EchoCore.MethodRef(this, this._processChange), false);
+    
     parentElement.appendChild(this._selectElement);
 };
 
 EchoRender.ComponentSync.SelectListComponent.prototype.renderDispose = function(update) { 
+    EchoWebCore.EventProcessor.removeAll(this._selectElement);
     this._selectElement = null;
 };
 
@@ -59,6 +65,9 @@ EchoRender.ComponentSync.ListBox.prototype = new EchoRender.ComponentSync.Select
 
 EchoRender.ComponentSync.ListBox.prototype.renderAdd = function(update, parentElement) {
     this._renderMain(update, parentElement, 6);
+    if (this._multipleSelect) {
+        this._selectElement.setAttribute("multiple", "multiple");
+    }
 };
 
 /**
