@@ -400,6 +400,11 @@ EchoWebCore.Environment._init = function() {
 EchoWebCore.EventProcessor = function() { };
 
 /**
+ * The next element identifier.
+ */
+EchoWebCore.EventProcessor._nextId = 0;
+
+/**
  * Mapping between element ids and ListenerLists containing listeners to invoke during capturing phase.
  */
 EchoWebCore.EventProcessor._capturingListenerMap = new EchoCore.Collections.Map();
@@ -419,8 +424,8 @@ EchoWebCore.EventProcessor._bubblingListenerMap = new EchoCore.Collections.Map()
  *        the bubbling phase
  */
 EchoWebCore.EventProcessor.add = function(element, eventType, eventTarget, capture) {
-    if (!element.id) {
-        throw new Error("Specified element has no DOM id.");
+    if (!element.__eventProcessorId) {
+        element.__eventProcessorId = EchoWebCore.EventProcessor._nextId++;
     }
 
     var listenerList;
@@ -432,11 +437,11 @@ EchoWebCore.EventProcessor.add = function(element, eventType, eventTarget, captu
                                   : EchoWebCore.EventProcessor._bubblingListenerMap;
         
         // Obtain ListenerList based on element id.                              
-        listenerList = listenerMap.get(element.id);
+        listenerList = listenerMap.get(element.__eventProcessorId);
         if (!listenerList) {
             // Create new ListenerList if none exists.
             listenerList = new EchoCore.ListenerList();
-            listenerMap.put(element.id, listenerList);
+            listenerMap.put(element.__eventProcessorId, listenerList);
         }
         
         EchoWebCore.EventProcessor._lastElement = element;
@@ -486,7 +491,7 @@ EchoWebCore.EventProcessor._processEvent = function(e) {
     var elementAncestry = new Array();
     var targetElement = e.target;
     while (targetElement) {
-        if (targetElement.nodeType == 1 && targetElement.id) { // Element Node with DOM id.
+        if (targetElement.nodeType == 1 && targetElement.__eventProcessorId) { // Element Node with identifier.
             elementAncestry.push(targetElement);
         }
         targetElement = targetElement.parentNode;
@@ -498,7 +503,7 @@ EchoWebCore.EventProcessor._processEvent = function(e) {
     
     // Fire event to capturing listeners.
     for (var i = elementAncestry.length - 1; i >= 0; --i) {
-        listenerList = EchoWebCore.EventProcessor._capturingListenerMap.get(elementAncestry[i].id);
+        listenerList = EchoWebCore.EventProcessor._capturingListenerMap.get(elementAncestry[i].__eventProcessorId);
         if (listenerList) {
             // Set registered target on event.
             e.registeredTarget = elementAncestry[i];
@@ -515,7 +520,7 @@ EchoWebCore.EventProcessor._processEvent = function(e) {
     if (propagate) {
         // Fire event to bubbling listeners.
         for (var i = 0; i < elementAncestry.length; ++i) {
-            listenerList = EchoWebCore.EventProcessor._bubblingListenerMap.get(elementAncestry[i].id);
+            listenerList = EchoWebCore.EventProcessor._bubblingListenerMap.get(elementAncestry[i].__eventProcessorId);
             // Set registered target on event.
             e.registeredTarget = elementAncestry[i];
             if (listenerList) {
@@ -549,8 +554,8 @@ EchoWebCore.EventProcessor._processEvent = function(e) {
 EchoWebCore.EventProcessor.remove = function(element, eventType, eventTarget, capture) {
     EchoWebCore.EventProcessor._lastElement = null;
     
-    if (!element.id) {
-        throw new Error("Specified element has no DOM id.");
+    if (!element.__eventProcessorId) {
+        return;
     }
 
     // Unregister event listener on DOM element.
@@ -562,27 +567,27 @@ EchoWebCore.EventProcessor.remove = function(element, eventType, eventTarget, ca
                               : EchoWebCore.EventProcessor._bubblingListenerMap;
 
     // Obtain ListenerList based on element id.                              
-    var listenerList = listenerMap.get(element.id);
+    var listenerList = listenerMap.get(element.__eventProcessorId);
     if (listenerList) {
         // Remove event handler from the ListenerList.
         listenerList.removeListener(eventType, eventTarget);
         
         if (listenerList.isEmpty()) {
-            listenerMap.remove(element.id);
+            listenerMap.remove(element.__eventProcessorId);
         }
     }
 };
 
 EchoWebCore.EventProcessor.removeAll = function(element) {
-    if (!element.id) {
-        throw new Error("Specified element has no DOM id.");
+    if (!element.__eventProcessorId) {
+        return;
     }
     EchoWebCore.EventProcessor._unregisterAll(element, EchoWebCore.EventProcessor._capturingListenerMap);
     EchoWebCore.EventProcessor._unregisterAll(element, EchoWebCore.EventProcessor._bubblingListenerMap);
 };
 
 EchoWebCore.EventProcessor._unregisterAll = function(element, listenerMap) {
-    var listenerList = listenerMap.get(element.id);
+    var listenerList = listenerMap.get(element.__eventProcessorId);
     if (!listenerList) {
         return;
     }
@@ -592,7 +597,7 @@ EchoWebCore.EventProcessor._unregisterAll = function(element, listenerMap) {
 		EchoWebCore.DOM.removeEventListener(element, types[i], EchoWebCore.EventProcessor._processEvent, false); 
 	}
 	
-    listenerMap.remove(element.id);
+    listenerMap.remove(element.__eventProcessorId);
 };
 
 EchoWebCore.EventProcessor.toString = function() {
