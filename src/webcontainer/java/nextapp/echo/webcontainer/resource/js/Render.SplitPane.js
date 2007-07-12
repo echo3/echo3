@@ -318,6 +318,8 @@ EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parent
             }
             this._separatorDivElement.style.width = "100%";
             this._separatorDivElement.style.height = this._separatorSize + "px";
+            EchoRender.Property.FillImage.renderComponentProperty(this.component, "separatorVerticalImage", null, 
+                    this._separatorDivElement, 0);
         } else {
             if (this._orientationTopLeft) {
                 this._separatorDivElement.style.left = this._separatorPosition + "px";
@@ -328,6 +330,8 @@ EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parent
             }
             this._separatorDivElement.style.height = "100%";
             this._separatorDivElement.style.width = this._separatorSize + "px";
+            EchoRender.Property.FillImage.renderComponentProperty(this.component, "separatorHorizontalImage", null, 
+                    this._separatorDivElement, 0);
         }
         if (this._resizable && resizeCursor) {
             this._separatorDivElement.style.cursor = resizeCursor;
