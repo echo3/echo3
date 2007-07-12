@@ -11,7 +11,6 @@ EchoRender.ComponentSync.SelectListComponent.prototype = new EchoRender.Componen
 
 EchoRender.ComponentSync.SelectListComponent.prototype._renderMain = function(update, parentElement, size) {
     this._selectElement = document.createElement("select");
-    this._selectElement.id = this.component.renderId;
     this._selectElement.size = size;
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._selectElement);
     EchoRender.Property.Color.renderFB(this.component, this._selectElement);
@@ -39,7 +38,6 @@ EchoRender.ComponentSync.SelectListComponent.prototype._renderMain = function(up
 };
 
 EchoRender.ComponentSync.SelectListComponent.prototype.renderDispose = function(update) { 
-    this._selectElement.id = "";
     this._selectElement = null;
 };
 

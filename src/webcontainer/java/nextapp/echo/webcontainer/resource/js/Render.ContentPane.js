@@ -7,7 +7,6 @@ EchoRender.ComponentSync.ContentPane.prototype = new EchoRender.ComponentSync;
 
 EchoRender.ComponentSync.ContentPane.prototype.renderAdd = function(update, parentElement) {
     this._divElement = document.createElement("div");
-    this._divElement.id = this.component.renderId;
     this._divElement.style.position = "absolute";
     this._divElement.style.width = "100%";
     this._divElement.style.height = "100%";
@@ -31,7 +30,6 @@ EchoRender.ComponentSync.ContentPane.prototype.renderAdd = function(update, pare
 EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update, child) {
     var divElement = document.createElement("div");
     this._childIdToElementMap[child.renderId] = divElement;
-    divElement.id = this.component.renderId + "__" + child.renderId;
     divElement.style.position = "absolute";
     if (child.floatingPane) {
         divElement.style.zIndex = "1";
@@ -51,12 +49,6 @@ EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update
 
 EchoRender.ComponentSync.ContentPane.prototype.renderDispose = function(update) { 
     this._childIdToElementMap = null;
-    var childElement = this._divElement.firstChild;
-    while (childElement) {
-        childElement.id = "";
-        childElement = childElement.nextSibling;
-    }
-    this._divElement.id = "";
     this._divElement = null;
 };
 

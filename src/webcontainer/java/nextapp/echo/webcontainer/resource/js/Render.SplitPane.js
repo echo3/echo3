@@ -55,25 +55,21 @@ EchoRender.ComponentSync.SplitPane.prototype.renderDispose = function(update) {
         if (this._childPanes[0]) {
             this._childPanes[0].storeScrollPositions(this._firstPaneDivElement);
         }
-        this._firstPaneDivElement.id = "";
         this._firstPaneDivElement = null;
     }
     if (this._secondPaneDivElement) {
         if (this._childPanes[1]) {
             this._childPanes[1].storeScrollPositions(this._secondPaneDivElement);
         }
-        this._secondPaneDivElement.id = "";
         this._secondPaneDivElement = null;
     }
     
     if (this._separatorDivElement) {
         EchoWebCore.EventProcessor.remove(this._separatorDivElement, "mousedown", new EchoCore.MethodRef(this,
                 this._processSeparatorMouseDown), false);
-        this._separatorDivElement.id = "";
         this._separatorDivElement = null;
     }
 
-    this._splitPaneDivElement.id = "";
     this._splitPaneDivElement = null;
 };
 
@@ -286,7 +282,6 @@ EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parent
     var child1 = childCount < 2 ? null : this.component.getComponent(1);
 
     this._splitPaneDivElement = document.createElement("div");
-    this._splitPaneDivElement.id = this.component.renderId;
     this._splitPaneDivElement.style.position = "absolute";
     this._splitPaneDivElement.style.overflow = "hidden";
     this._splitPaneDivElement.style.top = "0px"
@@ -299,7 +294,6 @@ EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parent
     
     if (this._separatorSize > 0) {
         this._separatorDivElement = document.createElement("div");
-        this._separatorDivElement.id = this.component.renderId + "_separator";
         this._separatorDivElement.style.position = "absolute";
         EchoRender.Property.Color.renderComponentProperty(this.component, "separatorColor",
                 EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR, this._separatorDivElement, "backgroundColor");
@@ -364,7 +358,6 @@ EchoRender.ComponentSync.SplitPane.prototype._renderAddChild = function(update, 
        this._secondPaneDivElement = paneDivElement;
     }
     
-    paneDivElement.id = this.component.renderId + "_pane" + childIndex;
     paneDivElement.style.position = "absolute";
     paneDivElement.style.overflow = "auto";
     

@@ -27,7 +27,6 @@ EchoRender.ComponentSync.Column.prototype.processKeyDown = function(e) {
 
 EchoRender.ComponentSync.Column.prototype.renderAdd = function(update, parentElement) {
     this._divElement = document.createElement("div");
-    this._divElement.id = this.component.renderId;
     this._divElement.style.outlineStyle = "none";
     this._divElement.tabIndex = "-1";
 
@@ -122,7 +121,6 @@ EchoRender.ComponentSync.Column.prototype._renderRemoveChild = function(update, 
 
 EchoRender.ComponentSync.Column.prototype.renderDispose = function(update) { 
     EchoWebCore.EventProcessor.remove(this._divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
-    this._divElement.id = "";
     this._divElement = null;
     this._childIdToElementMap = null;
     this._spacingPrototype = null;

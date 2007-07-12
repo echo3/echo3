@@ -7,7 +7,6 @@ EchoRender.ComponentSync.Composite.prototype = new EchoRender.ComponentSync;
 
 EchoRender.ComponentSync.Composite.prototype.renderAdd = function(update, parentElement) {
     this._divElement = document.createElement("div");
-    this._divElement.id = this.component.renderId;
     
     var componentCount = this.component.getComponentCount();
     if (componentCount > 0) {
@@ -27,7 +26,6 @@ EchoRender.ComponentSync.Composite.prototype._renderStyle = function(element) {
 };
 
 EchoRender.ComponentSync.Composite.prototype.renderDispose = function(update) { 
-    this._divElement.id = "";
     this._divElement = null;
 };
 

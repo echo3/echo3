@@ -155,7 +155,6 @@ EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentEle
     this._enabled = this.component.isRenderEnabled();
     
     this._divElement = EchoRender.ComponentSync.Button._prototypeButton.cloneNode(false); 
-    this._divElement.id = this.component.renderId;
 
     EchoRender.Property.Color.render(
             EchoRender.Property.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 

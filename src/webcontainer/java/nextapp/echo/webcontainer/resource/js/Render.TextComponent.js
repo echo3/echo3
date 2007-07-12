@@ -27,7 +27,6 @@ EchoRender.ComponentSync.TextComponent.prototype._addEventHandlers = function() 
 
 EchoRender.ComponentSync.TextComponent.prototype.renderDispose = function(update) {
     EchoWebCore.EventProcessor.removeAll(this._textComponentElement);
-    this._textComponentElement.id = "";
     this._textComponentElement = null;
 };
 
@@ -78,7 +77,6 @@ EchoRender.ComponentSync.TextArea.prototype = new EchoRender.ComponentSync.TextC
 
 EchoRender.ComponentSync.TextArea.prototype.renderAdd = function(update, parentElement) {
     this._textComponentElement = document.createElement("textarea");
-    this._textComponentElement.id = this.component.renderId;
     this._renderStyle(this._textComponentElement);
     this._addEventHandlers(this._textComponentElement);
     if (this.component.getProperty("text")) {
@@ -100,7 +98,6 @@ EchoRender.ComponentSync.TextField.prototype = new EchoRender.ComponentSync.Text
 
 EchoRender.ComponentSync.TextField.prototype.renderAdd = function(update, parentElement) {
     this._textComponentElement = document.createElement("input");
-    this._textComponentElement.id = this.component.renderId;
     this._textComponentElement.setAttribute("type", this._type);
     var maximumLength = this.component.getRenderProperty("maximumLength", -1);
     if (maximumLength >= 0) {

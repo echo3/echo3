@@ -33,7 +33,6 @@ EchoRender.ComponentSync.RemoteTable.prototype.renderAdd = function(update, pare
     }
     
     this._tableElement = document.createElement("table");
-    this._tableElement.id = this.component.renderId;
     
     var width = this.component.getRenderProperty("width");
     if (width && EchoWebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.units == "%") {
@@ -156,10 +155,6 @@ EchoRender.ComponentSync.RemoteTable.prototype._renderRowStyle = function(rowInd
 EchoRender.ComponentSync.RemoteTable.prototype._renderRow = function(update, rowIndex, trPrototype) {
     var trElement = trPrototype ? trPrototype.cloneNode(true) : this._createRowPrototype();
     
-    if (rowIndex != EchoRender.ComponentSync.RemoteTable._HEADER_ROW && (this._selectionEnabled || this._rolloverEnabled)) {
-        trElement.id = this.component.renderId + "_tr_" + rowIndex; 
-    }
-    
     var tdElement = trElement.firstChild;
     var columnIndex = 0;
     
@@ -233,11 +228,9 @@ EchoRender.ComponentSync.RemoteTable.prototype.renderDispose = function(update) 
         }
         while (trElement) {
             EchoWebCore.EventProcessor.removeAll(trElement);
-            trElement.id = "";
             trElement = trElement.nextSibling;
         }
     }
-    this._tableElement.id = "";
     this._tableElement = null;
     this._tbodyElement = null;
 };

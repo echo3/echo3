@@ -33,7 +33,6 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     var defaultBorder = this.component.getRenderProperty("border", "");
 
     this._tableElement = EchoRender.ComponentSync.Grid._prototypeTable.cloneNode(true);
-    this._tableElement.id = this.component.renderId;
     
     EchoRender.Property.Color.renderFB(this.component, this._tableElement);
     EchoRender.Property.Border.render(defaultBorder, this._tableElement);
@@ -141,7 +140,6 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
 };
 
 EchoRender.ComponentSync.Grid.prototype.renderDispose = function(update) {
-    this._tableElement.id = "";
     this._tableElement = null;
 };
 

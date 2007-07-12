@@ -50,7 +50,6 @@ EchoRender.ComponentSync.Row.prototype.processKeyDown = function(e) {
 
 EchoRender.ComponentSync.Row.prototype.renderAdd = function(update, parentElement) {
     this._divElement = EchoRender.ComponentSync.Row._rowPrototype.cloneNode(true);
-    this._divElement.id = this.component.renderId;
     
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._divElement);
     EchoRender.Property.Color.renderFB(this.component, this._divElement);
@@ -153,7 +152,6 @@ EchoRender.ComponentSync.Row.prototype._renderRemoveChild = function(update, chi
 
 EchoRender.ComponentSync.Row.prototype.renderDispose = function(update) { 
     EchoWebCore.EventProcessor.remove(this._divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
-    this._divElement.id = "";
     this._divElement = null;
     this._trElement = null;
     this._childIdToElementMap = null;
