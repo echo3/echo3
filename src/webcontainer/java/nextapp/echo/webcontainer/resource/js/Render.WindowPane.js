@@ -34,18 +34,15 @@ EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseDown = function(
     this._dragOriginX = e.clientX;
     this._dragOriginY = e.clientY;
 
-    var resizingBorderElementId = e.target.id;
-    var directionId = resizingBorderElementId.substring(resizingBorderElementId.lastIndexOf("_") + 1);
-    
-    switch (directionId) {
-    case "0": this._resizeX = -1; this._resizeY = -1; break;
-    case "1":  this._resizeX =  0; this._resizeY = -1; break;
-    case "2": this._resizeX =  1; this._resizeY = -1; break;
-    case "3":  this._resizeX = -1; this._resizeY =  0; break;
-    case "4":  this._resizeX =  1; this._resizeY =  0; break;
-    case "5": this._resizeX = -1; this._resizeY =  1; break;
-    case "6":  this._resizeX =  0; this._resizeY =  1; break;
-    case "7": this._resizeX =  1; this._resizeY =  1; break;
+    switch (e.target) {
+    case this._borderDivElements[0]: this._resizeX = -1; this._resizeY = -1; break;
+    case this._borderDivElements[1]:  this._resizeX =  0; this._resizeY = -1; break;
+    case this._borderDivElements[2]: this._resizeX =  1; this._resizeY = -1; break;
+    case this._borderDivElements[3]:  this._resizeX = -1; this._resizeY =  0; break;
+    case this._borderDivElements[4]:  this._resizeX =  1; this._resizeY =  0; break;
+    case this._borderDivElements[5]: this._resizeX = -1; this._resizeY =  1; break;
+    case this._borderDivElements[6]:  this._resizeX =  0; this._resizeY =  1; break;
+    case this._borderDivElements[7]: this._resizeX =  1; this._resizeY =  1; break;
     }
     
     var bodyElement = document.getElementsByTagName("body")[0];
@@ -266,7 +263,6 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     var closable = this.component.getRenderProperty("closable", true);
 
     this._windowPaneDivElement = document.createElement("div");
-    this._windowPaneDivElement.id = this.component.renderId;
     this._windowPaneDivElement.tabIndex = "0";
 
     this._windowPaneDivElement.style.outlineStyle = "none";
@@ -294,7 +290,6 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         // Render top left corner
         if (this._borderInsets.left > 0) {
             this._borderDivElements[0] = document.createElement("div");
-            this._borderDivElements[0].id = this.component.renderId + "_border_0";
             this._borderDivElements[0].style.position = "absolute";
             this._borderDivElements[0].style.left = "0px";
             this._borderDivElements[0].style.top = "0px";
@@ -314,7 +309,6 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         
         // Render top side
         this._borderDivElements[1] = document.createElement("div");
-        this._borderDivElements[1].id = this.component.renderId + "_border_1";
         this._borderDivElements[1].style.position = "absolute";
         this._borderDivElements[1].style.left = this._borderInsets.left + "px";
         this._borderDivElements[1].style.top = "0px";
@@ -334,7 +328,6 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         // Render top right corner
         if (this._borderInsets.right > 0) {
             this._borderDivElements[2] = document.createElement("div");
-            this._borderDivElements[2].id = this.component.renderId + "_border_2";
             this._borderDivElements[2].style.position = "absolute";
             this._borderDivElements[2].style.right = "0px";
             this._borderDivElements[2].style.top = "0px";
@@ -356,7 +349,6 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     // Render left side
     if (this._borderInsets.left > 0) {
         this._borderDivElements[3] = document.createElement("div");
-        this._borderDivElements[3].id = this.component.renderId + "_border_3";
         this._borderDivElements[3].style.position = "absolute";
         this._borderDivElements[3].style.left = "0px";
         this._borderDivElements[3].style.top = this._borderInsets.top + "px";
@@ -377,7 +369,6 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     // Render right side
     if (this._borderInsets.right > 0) {
         this._borderDivElements[4] = document.createElement("div");
-        this._borderDivElements[4].id = this.component.renderId + "_border_4";
         this._borderDivElements[4].style.position = "absolute";
         this._borderDivElements[4].style.right = "0px";
         this._borderDivElements[4].style.top = this._borderInsets.top + "px";
@@ -400,7 +391,6 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         // Render bottom left corner
         if (this._borderInsets.left > 0) {
             this._borderDivElements[5] = document.createElement("div");
-            this._borderDivElements[5].id = this.component.renderId + "_border_5";
             this._borderDivElements[5].style.position = "absolute";
             this._borderDivElements[5].style.left = "0px";
             this._borderDivElements[5].style.bottom = "0px";
@@ -420,7 +410,6 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         
         // Render bottom side
         this._borderDivElements[6] = document.createElement("div");
-        this._borderDivElements[6].id = this.component.renderId + "_border_6";
         this._borderDivElements[6].style.position = "absolute";
         this._borderDivElements[6].style.left = this._borderInsets.left + "px";
         this._borderDivElements[6].style.bottom = "0px";
@@ -440,7 +429,6 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         // Render bottom right corner
         if (this._borderInsets.right > 0) {
             this._borderDivElements[7] = document.createElement("div");
-            this._borderDivElements[7].id = this.component.renderId + "_border_7";
             this._borderDivElements[7].style.position = "absolute";
             this._borderDivElements[7].style.right = "0px";
             this._borderDivElements[7].style.bottom = "0px";
@@ -462,7 +450,6 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     // Render Title Bar
     
     this._titleBarDivElement = document.createElement("div");
-    this._titleBarDivElement.id = this.component.renderId + "_titlebar";
     this._titleBarDivElement.style.position = "absolute";
     this._titleBarDivElement.style.zIndex = 3;
     
@@ -532,7 +519,6 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
   
     if (closable) {
         this._closeDivElement = document.createElement("div");
-        this._closeDivElement.id = this.component.renderId + "_close";
         this._closeDivElement.style.position = "absolute";
         this._closeDivElement.style.right = "0px";
         this._closeDivElement.style.top = "0px";
@@ -555,7 +541,6 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     // Render Content Area
     
     this._contentDivElement = document.createElement("div");
-    this._contentDivElement.id = this.component.renderId + "_content";
     
     this._contentDivElement.style.position = "absolute";
     this._contentDivElement.style.zIndex = 2;
@@ -609,25 +594,20 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAddChild = function(update, 
 EchoRender.ComponentSync.WindowPane.prototype.renderDispose = function(update) { 
     for (var i = 0; i < this._borderDivElements.length; ++i) {
         EchoWebCore.EventProcessor.removeAll(this._borderDivElements[i]);
-        this._borderDivElements[i].id = "";
         this._borderDivElements[i] = null;
     }
 
     EchoWebCore.EventProcessor.removeAll(this._titleBarDivElement);
-    this._titleBarDivElement.id = "";
     this._titleBarDivElement = null;
     
     if (this._closeDivElement) {
         EchoWebCore.EventProcessor.removeAll(this._closeDivElement);
-        this._closeDivElement.id = "";
         this._closeDivElement = null;
     }
     
-    this._contentDivElement.id = "";
     this._contentDivElement = null;
 
     EchoWebCore.EventProcessor.removeAll(this._windowPaneDivElement);
-    this._windowPaneDivElement.id = "";
     this._windowPaneDivElement = null;
 };
 
