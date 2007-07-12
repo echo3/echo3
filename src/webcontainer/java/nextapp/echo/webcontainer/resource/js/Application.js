@@ -545,19 +545,17 @@ EchoApp.Component.prototype.getRenderIndexedProperty = function(name, index, def
  * @type EchoApp.LayoutDirection
  */
 EchoApp.Component.prototype.getRenderLayoutDirection = function() {
-    if (this._layoutDirection == null) { 
-        if (this.parent == null) {
-            if (this.application == null) {
-                return null;
-            } else {
-                return this.application.getLayoutDirection();
-            }
-        } else {
-            return this.parent.getRenderLayoutDirection();
+    var component = this;
+    while (component) {
+        if (component._layoutDirection) {
+            return component._layoutDirection;
         }
-    } else {
-        return this._layoutDirection;
+        component = component.parent;
     }
+    if (this.application) {
+        return this.application.getLayoutDirection();
+    }
+    return null;
 };
 
 /**
