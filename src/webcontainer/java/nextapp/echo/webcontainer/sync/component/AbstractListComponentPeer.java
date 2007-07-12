@@ -182,11 +182,13 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
     }
 
     private static final String PROPERTY_DATA = "data";
-
+    private static final String PROPERTY_SELECTION_MODE = "selectionMode";
+    
     public AbstractListComponentPeer() {
         super();
         addOutputProperty(AbstractListComponent.SELECTION_CHANGED_PROPERTY);
         addOutputProperty(PROPERTY_DATA);
+        addOutputProperty(PROPERTY_SELECTION_MODE);
         setOutputPropertyReferenced(PROPERTY_DATA, true);
     }
 
@@ -212,6 +214,9 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
             return new ListData((AbstractListComponent) component);
         } else if (AbstractListComponent.SELECTION_CHANGED_PROPERTY.equals(propertyName)) {
             return getSelectionString(((AbstractListComponent) component).getSelectionModel());
+        } else if (PROPERTY_SELECTION_MODE.equals(propertyName)) {
+            int selectionMode = ((AbstractListComponent) component).getSelectionModel().getSelectionMode();
+            return new Integer(selectionMode);
         }
         return super.getOutputProperty(context, component, propertyName, propertyIndex);
     }

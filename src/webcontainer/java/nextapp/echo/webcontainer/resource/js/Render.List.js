@@ -15,6 +15,10 @@ EchoRender.ComponentSync.SelectListComponent.prototype._processChange = function
 EchoRender.ComponentSync.SelectListComponent.prototype._renderMain = function(update, parentElement, size) {
     this._selectElement = document.createElement("select");
     this._selectElement.size = size;
+    if (this.component.getProperty("selectionMode") == 2) {
+        this._selectElement.setAttribute("multiple", "multiple");
+    }
+    
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._selectElement);
     EchoRender.Property.Color.renderFB(this.component, this._selectElement);
     EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, this._selectElement);
@@ -75,9 +79,6 @@ EchoRender.ComponentSync.ListBox.prototype = new EchoRender.ComponentSync.Select
 
 EchoRender.ComponentSync.ListBox.prototype.renderAdd = function(update, parentElement) {
     this._renderMain(update, parentElement, 6);
-    if (this._multipleSelect) {
-        this._selectElement.setAttribute("multiple", "multiple");
-    }
 };
 
 /**
