@@ -4,6 +4,10 @@ EchoRemoteClient.ListComponent.updateListData = function(listData) {
     this.items = listData.items;
 };
 
+EchoRemoteClient.ListComponent.updateSelection = function(selection) {
+    this.selection = selection.split(",");
+};
+
 EchoRemoteClient.ListComponent.ListBox = function(renderId) { 
     EchoApp.ListBox.call(this, renderId);
     this.componentType = "ListBox";
@@ -12,6 +16,7 @@ EchoRemoteClient.ListComponent.ListBox = function(renderId) {
 EchoRemoteClient.ListComponent.ListBox.prototype = new EchoApp.ListBox;
 
 EchoRemoteClient.ListComponent.ListBox.prototype.updateListData = EchoRemoteClient.ListComponent.updateListData;
+EchoRemoteClient.ListComponent.ListBox.prototype.updateSelection = EchoRemoteClient.ListComponent.updateSelection;
 
 EchoRemoteClient.ListComponent.SelectField = function(renderId) {
     EchoApp.SelectField.call(this, renderId);
@@ -21,6 +26,7 @@ EchoRemoteClient.ListComponent.SelectField = function(renderId) {
 EchoRemoteClient.ListComponent.SelectField.prototype = new EchoApp.SelectField;
 
 EchoRemoteClient.ListComponent.SelectField.prototype.updateListData = EchoRemoteClient.ListComponent.updateListData;
+EchoRemoteClient.ListComponent.SelectField.prototype.updateSelection = EchoRemoteClient.ListComponent.updateSelection;
 
 EchoRemoteClient.ListComponent.ListData = function(items) { 
     this.items = items;

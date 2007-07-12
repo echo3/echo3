@@ -197,6 +197,8 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
     public String getOutputPropertyMethodName(Context context, Component component, String propertyName) {
         if (PROPERTY_DATA.equals(propertyName)) {
             return "updateListData";
+        } else if (AbstractListComponent.SELECTION_CHANGED_PROPERTY.equals(propertyName)) {
+            return "updateSelection";
         }
         return super.getOutputPropertyMethodName(context, component, propertyName);
     }

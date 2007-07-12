@@ -37,6 +37,16 @@ EchoRender.ComponentSync.SelectListComponent.prototype._renderMain = function(up
         }
     }
     
+    if (this.component.selection) {
+        var length = this._selectElement.childNodes.length;
+        for (var i = 0; i < this.component.selection.length; ++i) {
+            var index = this.component.selection[i];
+            if (index >= 0 && index < length) {
+                this._selectElement.childNodes[this.component.selection[i]].selected = true;
+            }
+        }
+    }
+    
     EchoWebCore.EventProcessor.add(this._selectElement, "change", new EchoCore.MethodRef(this, this._processChange), false);
     
     parentElement.appendChild(this._selectElement);
