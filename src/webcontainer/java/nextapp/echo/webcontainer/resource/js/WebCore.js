@@ -425,7 +425,7 @@ EchoWebCore.EventProcessor._bubblingListenerMap = new EchoCore.Collections.Map()
  */
 EchoWebCore.EventProcessor.add = function(element, eventType, eventTarget, capture) {
     if (!element.__eventProcessorId) {
-        element.__eventProcessorId = EchoWebCore.EventProcessor._nextId++;
+        element.__eventProcessorId = ++EchoWebCore.EventProcessor._nextId;
     }
 
     var listenerList;
