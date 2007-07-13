@@ -24,6 +24,28 @@ EchoCore.profilingTimer = null;
 
 EchoCore.Arrays = function() { };
 
+/**
+ * Returns the index of the specified item within the array, or -1 if it 
+ * is not contained in the array.  
+ * 
+ * Note on equality: This method will evaluate equality by
+ * invoking .equals() on the specified item if it provides such a method.
+ * If a .equals() implementation is not provided, equality will be determined
+ * based on the double-equal operator (==).
+ * 
+ * @param item the item
+ * @return the index of the item, or -1 if it is not present in the array
+ * @type Number
+ */
+EchoCore.Arrays.indexOf = function(array, item) {
+    for (var i = 0; i < array.length; ++i) {
+        if ((item.equals && item.equals(array[i])) || item == array[i]) {
+            return i;
+        }
+    }
+    return -1;
+};
+
 EchoCore.Arrays.remove = function(array, item) {
     for (var i = 0; i < array.length; ++i) {
         if (item == array[i]) {
@@ -154,17 +176,14 @@ EchoCore.Collections.List.prototype.get = function(index) {
  * If a .equals() implementation is not provided, equality will be determined
  * based on the double-equal operator (==).
  * 
+ * @see EchoCore.Arrays.indexOf
+ * 
  * @param item the item
  * @return the index of the item, or -1 if it is not present in the list
  * @type Number
  */
 EchoCore.Collections.List.prototype.indexOf = function(item) {
-    for (var i = 0; i < this.items.length; ++i) {
-        if ((item.equals && item.equals(this.items[i])) || item == this.items[i]) {
-            return i;
-        }
-    }
-    return -1;
+    return EchoCore.Arrays.indexOf(this.items, item);
 };
 
 /**
