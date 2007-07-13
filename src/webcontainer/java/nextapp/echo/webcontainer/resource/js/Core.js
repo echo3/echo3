@@ -754,19 +754,36 @@ EchoCore.Scheduler._execute = function() {
     
     for (var i = 0; i < EchoCore.Scheduler._runnables.length; ++i) {
         var runnable = EchoCore.Scheduler._runnables[i];
+        if (!runnable._nextExecution) {
+        	continue;
+        }
         if (runnable._nextExecution < time) {
             try {
                 runnable.run();
             } catch (ex) {
-                EchoCore.Scheduler._stop();
+                runnable._nextExecution = null;
                 throw(ex);
+            }
+            if (!runnable._nextExecution) {
+            	continue;
             }
             if (runnable.timeInterval && runnable.repeat) {
                 runnable._nextExecution = runnable.timeInterval + time;
+            } else {
+                runnable._nextExecution = null;
             }
         }
     }
 
+	var newRunnables = new Array();
+    for (var i = 0; i < EchoCore.Scheduler._runnables.length; ++i) {
+        var runnable = EchoCore.Scheduler._runnables[i];
+        if (runnable._nextExecution) {
+        	newRunnables.push(runnable);
+        }
+    }
+	EchoCore.Scheduler._runnables = newRunnables;
+	
     if (EchoCore.Scheduler._runnables.length == 0) {
         EchoCore.Scheduler._stop();
     }
@@ -779,9 +796,18 @@ EchoCore.Scheduler._execute = function() {
  */
 EchoCore.Scheduler.add = function(runnable) {
     var currentTime = new Date().getTime();
-    EchoCore.Scheduler._runnables.push(runnable);
     runnable._nextExecution = runnable.timeInterval ? runnable.timeInterval + currentTime : currentTime;
+    EchoCore.Scheduler._runnables.push(runnable);
     EchoCore.Scheduler._start();
+};
+
+/**
+ * Dequeues a Runnable so it will no longer be executed by the scheduler.
+ * 
+ * @param {EchoCore.Scheduler.Runnable} the runnable to dequeue
+ */
+EchoCore.Scheduler.remove = function(runnable) {
+    runnable._nextExecution = null;
 };
 
 /**
@@ -793,7 +819,7 @@ EchoCore.Scheduler._start = function() {
     if (EchoCore.Scheduler._interval != null) {
         return;
     }
-    EchoCore.Scheduler._interval = window.setInterval("EchoCore.Scheduler._execute();", EchoCore.Scheduler.INTERVAL);    
+    EchoCore.Scheduler._interval = window.setInterval(EchoCore.Scheduler._execute, EchoCore.Scheduler.INTERVAL);
 };
 
 /**
@@ -817,9 +843,10 @@ EchoCore.Scheduler._stop = function() {
  * @param {Number} time the time interval, in milleseconds, after which the Runnable should be executed
  *        (may be null/undefined to execute task immediately, in such cases repeat must be false)
  * @param {Boolean} repeat a flag indicating whether the task should be repeated
+ * @param methodRef a method or EchoCore.MethodRef instance to invoke, may be null/undefined
  */
-EchoCore.Scheduler.Runnable = function(timeInterval, repeat) {
-    if (timeInterval && !repeat) {
+EchoCore.Scheduler.Runnable = function(timeInterval, repeat, methodRef) {
+    if (!timeInterval && repeat) {
         throw new Error("Cannot creating repeating runnable without time delay");
     }
     
@@ -834,9 +861,18 @@ EchoCore.Scheduler.Runnable = function(timeInterval, repeat) {
      * @type Boolean
      */
     this.repeat = repeat;
+    
+    /**
+     * Method or EchoCore.MethodRef to invoke.
+     */
+    this.methodRef = methodRef;
 };
 
 /**
- * Default run() implemenation.  Should be overidden by subclasses.
+ * Default run() implementation. Should be overidden by subclasses.
  */
-EchoCore.Scheduler.Runnable.prototype.run = function() { };
+EchoCore.Scheduler.Runnable.prototype.run = function() {
+	if (this.methodRef) {
+		this.methodRef.invoke();
+	}
+};
