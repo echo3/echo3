@@ -1606,13 +1606,15 @@ EchoApp.Property.Insets = function() {
     if (arguments.length == 1) {
         if (typeof arguments[0] == "string") {
             values = arguments[0].split(" ");
+        } else if (arguments[0] instanceof Array) {
+            values = arguments[0];
         } else {
             values = arguments;
         }
     } else {
         values = arguments;
     }
-    
+
     for (var i = 0; i < values.length; ++i) {
         if (!(values[i] instanceof EchoApp.Property.Extent)) {
             values[i] = new EchoApp.Property.Extent(values[i]);
