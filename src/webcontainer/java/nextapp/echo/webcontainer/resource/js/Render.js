@@ -368,7 +368,7 @@ EchoRender.Focus._findPreviousFocusComponent = function(component) {
         component = nextComponent;
         visitedComponents[component.renderId] = true;
 
-        if (component != originComponent && component.peer.focus) {
+        if (component != originComponent && component.isRenderEnabled() && component.peer.focus) {
             return component;
         }
     }
@@ -415,7 +415,7 @@ EchoRender.Focus._findNextFocusComponent = function(component) {
         component = nextComponent;
         visitedComponents[component.renderId] = true;
 
-        if (component != originComponent && component.peer.focus) {
+        if (component != originComponent && component.isRenderEnabled() && component.peer.focus) {
             return component;
         }
     }

@@ -308,27 +308,33 @@ EchoRender.ComponentSync.Button.prototype._setPressedState = function(pressedSta
 
 EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) {
     if (!this.component.getRenderProperty("focusedEnabled")) {
+        // Render default focus aesthetic.
+        var background = this.component.getRenderProperty("background");
+        if (background != null) {
+            var newBackground = focusState ? background.adjust(0x20, 0x20, 0x20) : background;
+            EchoRender.Property.Color.render(newBackground, this._divElement, "backgroundColor");
+        }
     	return;
-    }
-
-    var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "focusedForeground", focusState);
-    var background = EchoRender.Property.getEffectProperty(this.component, "background", "focusedBackground", focusState);
-    var backgroundImage = EchoRender.Property.getEffectProperty(
-            this.component, "backgroundImage", "focusedBackgroundImage", focusState);
-    var font = EchoRender.Property.getEffectProperty(this.component, "font", "focusedFont", focusState);
-    var border = EchoRender.Property.getEffectProperty(this.component, "border", "focusedBorder", focusState);
+    } else {
+        var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "focusedForeground", focusState);
+        var background = EchoRender.Property.getEffectProperty(this.component, "background", "focusedBackground", focusState);
+        var backgroundImage = EchoRender.Property.getEffectProperty(
+                this.component, "backgroundImage", "focusedBackgroundImage", focusState);
+        var font = EchoRender.Property.getEffectProperty(this.component, "font", "focusedFont", focusState);
+        var border = EchoRender.Property.getEffectProperty(this.component, "border", "focusedBorder", focusState);
+        
+        EchoRender.Property.Color.renderClear(foreground, this._divElement, "color");
+        EchoRender.Property.Color.renderClear(background, this._divElement, "backgroundColor");
+        EchoRender.Property.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
+        EchoRender.Property.Font.renderClear(font, this._divElement);
+        EchoRender.Property.Border.renderClear(border, this._divElement);
     
-    EchoRender.Property.Color.renderClear(foreground, this._divElement, "color");
-    EchoRender.Property.Color.renderClear(background, this._divElement, "backgroundColor");
-    EchoRender.Property.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
-    EchoRender.Property.Font.renderClear(font, this._divElement);
-	EchoRender.Property.Border.renderClear(border, this._divElement);
-
-    if (this._iconElement) {
-    	var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "focusedIcon", focusState);
-    	if (icon) {
-		    this._iconElement.src = icon.url;
-    	}
+        if (this._iconElement) {
+            var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "focusedIcon", focusState);
+            if (icon) {
+                this._iconElement.src = icon.url;
+            }
+        }
     }
 };
 

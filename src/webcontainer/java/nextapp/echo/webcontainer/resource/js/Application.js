@@ -1240,6 +1240,33 @@ EchoApp.Property.Color = function(value) {
  */
 EchoApp.Property.Color.prototype.className = "Color";
 
+EchoApp.Property.Color.prototype.adjust = function(r, g, b) {
+    var colorInt = parseInt(this.value.substring(1), 16);
+    var red = parseInt(colorInt / 0x10000) + r;
+    if (red < 0) {
+        red = 0;
+    } else if (red > 255) {
+        red = 255;
+    }
+    var green = parseInt(colorInt / 0x100) % 0x100 + g;
+    if (green < 0) {
+        green = 0;
+    } else if (green > 255) {
+        green = 255;
+    }
+    var blue = colorInt % 0x100 + b;
+    if (blue < 0) {
+        blue = 0;
+    } else if (blue > 255) {
+        blue = 255;
+    }
+    EchoCore.Debug.consoleWrite(red + "," + green + "," + blue);
+    return new EchoApp.Property.Color("#"
+            + (red < 16 ? "0" : "") + red.toString(16)
+            + (green < 16 ? "0" : "") + green.toString(16)
+            + (blue < 16 ? "0" : "") + blue.toString(16)); 
+};
+
 /**
  * Creates a new Extent property.  
  * This method takes multiple configurations of arguments.
