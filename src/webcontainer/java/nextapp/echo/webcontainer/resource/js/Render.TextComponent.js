@@ -78,6 +78,7 @@ EchoRender.ComponentSync.TextArea.prototype = new EchoRender.ComponentSync.TextC
 EchoRender.ComponentSync.TextArea.prototype.renderAdd = function(update, parentElement) {
     this._textComponentElement = document.createElement("textarea");
     this._renderStyle(this._textComponentElement);
+    this._textComponentElement.style.overflow = "auto";
     this._addEventHandlers(this._textComponentElement);
     if (this.component.getProperty("text")) {
         this._textComponentElement.appendChild(document.createTextNode(this.component.getProperty("text")));
