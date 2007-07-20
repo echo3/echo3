@@ -413,7 +413,7 @@ EchoCore.Collections.Set.prototype.remove = function(item) {
  * @return the number of items in the set
  * @type Number
  */
-EchoCore.Collections.Set.prototype.size = function(index) {
+EchoCore.Collections.Set.prototype.size = function() {
     return this.items.length;
 };
 
