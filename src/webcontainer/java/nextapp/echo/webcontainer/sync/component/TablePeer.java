@@ -228,10 +228,16 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
      */
     public void storeInputProperty(Context context, Component component, String propertyName, int index, Object newValue) {
         if (PROPERTY_SELECTION.equals(propertyName)) {
-            String[] tokens = ((String)newValue).split(",");
-            int[] selectedIndices = new int[tokens.length];
-            for (int i = 0; i < tokens.length; ++i) {
-                selectedIndices[i] = Integer.parseInt(tokens[i]);
+            int[] selectedIndices;
+            String tokensString = (String)newValue;
+            if (tokensString.length() == 0) {
+                selectedIndices = new int[0];
+            } else {
+                String[] tokens = (tokensString).split(",");
+                selectedIndices = new int[tokens.length];
+                for (int i = 0; i < tokens.length; ++i) {
+                    selectedIndices[i] = Integer.parseInt(tokens[i]);
+                }
             }
             ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
             clientUpdateManager.setComponentProperty(component, Table.SELECTION_CHANGED_PROPERTY, selectedIndices);
