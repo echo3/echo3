@@ -152,7 +152,7 @@ EchoRemoteClient.prototype._processComponentUpdate = function(e) {
 };
 
 /**
- * Converts a shorthand URL into a valid full-length URL.
+ * Decompresses a shorthand URL into a valid full-length URL.
  * A shorthand URL is expressed as "!A!xxxx" where
  * "A" is a key whose value contains the first portion of the URL
  * and "xxxx" is the latter portion of the URL.  Such URLs are used
