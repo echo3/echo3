@@ -30,6 +30,7 @@
 package nextapp.echo.webcontainer;
 
 import nextapp.echo.app.ApplicationInstance;
+import nextapp.echo.webcontainer.service.AsyncMonitorService;
 import nextapp.echo.webcontainer.service.BootService;
 import nextapp.echo.webcontainer.service.NewInstanceService;
 import nextapp.echo.webcontainer.service.SessionExpiredService;
@@ -67,6 +68,7 @@ public abstract class WebContainerServlet extends HttpServlet {
         services.add(SessionExpiredService.INSTANCE);
         services.add(SynchronizeService.INSTANCE);
         services.add(WindowHtmlService.INSTANCE);
+        services.add(AsyncMonitorService.INSTANCE);
     }
     
     /**

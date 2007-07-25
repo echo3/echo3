@@ -1,8 +1,21 @@
 /**
+ * @fileoverview
  * Remote Client Implementation.
- * REQUIRES: Core, WebCore, Application, Render, Serial.
  * 
- * This client provides a view of a remote server hosted application.
+ * Requires: Core, Serial, WebCore, Application, Render.
+ */
+
+/**
+ * Creates a new RemoteClient instance.
+ * @class A client which provides a remote view of an Echo application being executed on the server.
+ *        This client exchanges data with the remote server in the form of XML messages containing
+ *        serialized components and events.
+ * @constructor
+ * @param serverUrl the URL of the server
+ * @param domainElementId the id of the DOM element which this client should use as its
+ *        root element (this element must define a horizontal and vertical space, e.g.,
+ *        it must define an absolute area or percentage of the screen)
+ * 
  */
 EchoRemoteClient = function(serverUrl, domainElementId) { 
     this._serverUrl = serverUrl;
@@ -29,14 +42,25 @@ EchoRemoteClient = function(serverUrl, domainElementId) {
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
     
+    /**
+     * MethodRef to _processComponentEvent() method.
+     */
+    this._processComponentEventRef = new EchoCore.MethodRef(this, this._processComponentEvent);
+    
     EchoRemoteClient._activeClients.push(this);
 };
 
 /**
  * Converts a shorthand URL into a valid full-length URL.
+ * A shorthand URL is expressed as "!A!xxxx" where
+ * "A" is a key whose value contains the first portion of the URL
+ * and "xxxx" is the latter portion of the URL.  Such URLs are used
+ * to reduce the amount of bandwidth used in transmitting large
+ * numbers of the same URL from server-to-client.
  *
  * @param url the shorthand URL to process
  * @return the full-length valid URL
+ * @type String
  */
 EchoRemoteClient.prototype.processUrl = function(url) {
     var urlTokens = url.split("!");
@@ -62,13 +86,27 @@ EchoRemoteClient.prototype.processUrl = function(url) {
  * Base URL from which libraries should be retrieved.
  * Libraries are loaded into global scope, and are thus not
  * bound to any particular client instance.
+ * 
+ * @type String
  */
 EchoRemoteClient.libraryServerUrl = null;
 
+/**
+ * Global array containing 
+ */
 EchoRemoteClient._activeClients = new Array();
 
+/**
+ * Adds a listener for an arbitrary event type to a component.
+ * This method is invoked by the Serial module when event tags are
+ * processed during the deserialization of component synchronization
+ * XML messages.
+ * 
+ * @param {EchoApp.Component} component the component on which the listener should be added
+ * @param {String} eventType the type of event
+ */
 EchoRemoteClient.prototype.addComponentListener = function(component, eventType) {
-    component.addListener(eventType, new EchoCore.MethodRef(this, this._processComponentEvent));
+    component.addListener(eventType, this._processComponentEventRef);
 };
 
 EchoRemoteClient.prototype.getLibraryServiceUrl = function(serviceId) {
@@ -149,6 +187,10 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     serverMessage.process();
 };
 
+EchoRemoteClient.prototype.getServiceUrl = function(serviceId) {
+    return this._serverUrl + "?sid=" + serviceId;
+};
+
 EchoRemoteClient.prototype.sync = function() {
     this._syncInitTime = new Date().getTime();
     var conn = new EchoWebCore.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST", 
@@ -156,10 +198,6 @@ EchoRemoteClient.prototype.sync = function() {
     this._clientMessage = null;
     conn.addResponseListener(new EchoCore.MethodRef(this, this._processSyncResponse));
     conn.connect();
-};
-
-EchoRemoteClient.prototype.getServiceUrl = function(serviceId) {
-    return this._serverUrl + "?sid=" + serviceId;
 };
 
 EchoRemoteClient.ClientMessage = function(client, initialize) {

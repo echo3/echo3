@@ -29,7 +29,7 @@
 
 package nextapp.echo.testapp.interactive;
 
-//import nextapp.echo.app.TaskQueueHandle;
+import nextapp.echo.app.TaskQueueHandle;
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Window;
 //import nextapp.echo.webcontainer.ContainerContext;
@@ -51,18 +51,18 @@ import nextapp.echo.app.Window;
  */
 public class InteractiveApp extends ApplicationInstance {
 
-//    private static final String[] GHOST_SCRIPT_1 = new String[] {
-//        "EnterTestApplication", 
-//        "StartTest:ButtonTest",
-//        "StartTest:SplitPaneNestedTest",
-//        "StartTest:ListBoxTest",
-//        "StartTest:TextComponentTest",
-//        "StartTest:StyleSheetTest",
-//        "StartTest:ContainerContextTest",
-//        "StartTest:GridTest",
-//        "StartTest:HierarchyTest",
-//        "ExitTestApplication"
-//    };
+    private static final String[] GHOST_SCRIPT_1 = new String[] {
+        "EnterTestApplication", 
+        "StartTest:ButtonTest",
+        "StartTest:SplitPaneNestedTest",
+        "StartTest:ListBoxTest",
+        "StartTest:TextComponentTest",
+        "StartTest:StyleSheetTest",
+        "StartTest:ContainerContextTest",
+        "StartTest:GridTest",
+        "StartTest:HierarchyTest",
+        "ExitTestApplication"
+    };
     
     /**
      * A boolean flag indicating whether the application is running on a live
@@ -96,7 +96,7 @@ public class InteractiveApp extends ApplicationInstance {
         return (InteractiveApp) ApplicationInstance.getActive();
     }
 
-//    private TaskQueueHandle ghostTaskQueue;
+    private TaskQueueHandle ghostTaskQueue;
     private Window mainWindow;
     private ConsoleWindowPane console;
     
@@ -180,44 +180,44 @@ public class InteractiveApp extends ApplicationInstance {
         return mainWindow;
     }
     
-//    /**
-//     * Sets the window title to display the current iteration of the ghost 
-//     * test.
-//     * 
-//     * @param iteration the iteration number (negative values will restore
-//     *        the window title to its normal state)
-//     */
-//    public void setGhostIterationWindowTitle(int iteration) {
-//        if (iteration < 0) {
-//            mainWindow.setTitle("NextApp Echo Test Application");
-//        } else {
-//            mainWindow.setTitle("Iteration #" + iteration);
-//        }
-//    }
-//    
-//    /**
-//     * Starts the ghost test with the specified callback interval, run-time,
-//     * and clicks-per-iteration.
-//     * 
-//     * @param interval the callback interval between ghost actions, in
-//     *        milliseconds
-//     */
-//    public void startGhostTask(GhostTask ghostTask, int interval) {
-//        if (ghostTaskQueue != null) {
-//            return;
-//        }
-//        ghostTaskQueue = createTaskQueue();
+    /**
+     * Sets the window title to display the current iteration of the ghost 
+     * test.
+     * 
+     * @param iteration the iteration number (negative values will restore
+     *        the window title to its normal state)
+     */
+    public void setGhostIterationWindowTitle(int iteration) {
+        if (iteration < 0) {
+            mainWindow.setTitle("NextApp Echo Test Application");
+        } else {
+            mainWindow.setTitle("Iteration #" + iteration);
+        }
+    }
+    
+    /**
+     * Starts the ghost test with the specified callback interval, run-time,
+     * and clicks-per-iteration.
+     * 
+     * @param interval the callback interval between ghost actions, in
+     *        milliseconds
+     */
+    public void startGhostTask(GhostTask ghostTask, int interval) {
+        if (ghostTaskQueue != null) {
+            return;
+        }
+        ghostTaskQueue = createTaskQueue();
 //        ContainerContext containerContext = 
 //                (ContainerContext) getContextProperty(ContainerContext.CONTEXT_PROPERTY_NAME);
 //        containerContext.setTaskQueueCallbackInterval(ghostTaskQueue, interval);
-//        ghostTask.startTask(this, ghostTaskQueue);
-//    }
-//    
-//    /**
-//     * Stops the currently running ghost test.
-//     */
-//    public void stopGhostTest() {
-//        removeTaskQueue(ghostTaskQueue);
-//        ghostTaskQueue = null;
-//    }
+        ghostTask.startTask(this, ghostTaskQueue);
+    }
+    
+    /**
+     * Stops the currently running ghost test.
+     */
+    public void stopGhostTest() {
+        removeTaskQueue(ghostTaskQueue);
+        ghostTaskQueue = null;
+    }
 }

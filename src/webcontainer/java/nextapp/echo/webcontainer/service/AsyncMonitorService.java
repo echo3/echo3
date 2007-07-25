@@ -35,7 +35,6 @@ import java.io.IOException;
 import nextapp.echo.webcontainer.Connection;
 import nextapp.echo.webcontainer.ContentType;
 import nextapp.echo.webcontainer.Service;
-import nextapp.echo.webcontainer.UserInstance;
 
 /**
  * Abstract base service for handling server poll requests to determine if any
@@ -46,13 +45,23 @@ import nextapp.echo.webcontainer.UserInstance;
  * An instance of this service must be registered with the 
  * <code>ServiceRegistry</code> if asynchronous polling is required.
  */
-public abstract class AsyncMonitorService 
+public class AsyncMonitorService 
 implements Service {
+    
+    /**
+     * Singleton instance.
+     */
+    public static final Service INSTANCE = new AsyncMonitorService();
 
     /**
      * Asynchronous monitoring service identifier.
      */
     public static final String SERVICE_ID = "Echo.AsyncMonitor";
+    
+    /**
+     * Private constructor: use singleton <code>INSTANCE</code>.
+     */
+    private AsyncMonitorService() { }
     
     /**
      * @see Service#getId()
@@ -67,25 +76,17 @@ implements Service {
     public int getVersion() {
         return DO_NOT_CACHE;
     }
-    
-    /**
-     * Determines if the specified <code>UserInstance</code> requires 
-     * immediate synchronization.
-     * 
-     * @param userInstance the <code>UserInstance</code>
-     * @return true if the <code>UserInstance</code> requires immediate 
-     *         client-server synchronization
-     */
-    protected abstract boolean isSynchronizationRequired(UserInstance userInstance);
-    
+
     /**
      * @see Service#service(nextapp.echo.webcontainer.Connection)
      */
     public void service(Connection conn) throws IOException {
         conn.setContentType(ContentType.TEXT_XML);
-        if (isSynchronizationRequired(conn.getUserInstance())) {
+        if (conn.getUserInstance().getApplicationInstance().hasQueuedTasks()) {
+        System.err.println("Async Monitor: TRUE");
             conn.getWriter().write("<async-monitor request-sync=\"true\"/>");
         } else {
+        System.err.println("Async Monitor: FALSE");
             conn.getWriter().write("<async-monitor request-sync=\"false\"/>");
         }
     }
