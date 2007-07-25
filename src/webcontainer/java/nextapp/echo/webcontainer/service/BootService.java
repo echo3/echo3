@@ -60,7 +60,7 @@ public class BootService {
         
         String[] resources = new String[resourceList.size()];
         resourceList.toArray(resources);
-        SERVICE =JavaScriptService.forResources("Echo.Boot", resources);
+        SERVICE = JavaScriptService.forResources("Echo.Boot", resources);
     }
     
     /**

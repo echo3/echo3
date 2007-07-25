@@ -229,13 +229,13 @@ public class OutputProcessor {
         if (serverUpdateManager.isFullRefreshRequired()) {
             serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSync", "fr");
             renderStyleSheet();
-            ContentPane content = userInstance.getApplicationInstance().getDefaultWindow().getContent();
+            Window window = userInstance.getApplicationInstance().getDefaultWindow();
+            ContentPane content = window.getContent();
             if (content == null) {
                 throw new IllegalStateException("No content to render: default window has no content.");
             }
             Element addElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "add");
-            //FIXME. Specific reference to c_root.
-            addElement.setAttribute("i", "c_root");
+            addElement.setAttribute("i", UserInstance.getElementId(window));
             renderComponentState(addElement, content);
         } else {
             ServerComponentUpdate[] componentUpdates = updateManager.getServerUpdateManager().getComponentUpdates();
@@ -271,14 +271,7 @@ public class OutputProcessor {
                 Component[] addedChildren = componentUpdates[i].getAddedChildren();
                 if (addedChildren.length > 0) {
                     Element addElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "add");
-                    String parentId;
-                    //FIXME. Ugly hack for root window id.  Need to either render window as a div...or something.
-                    if (parentComponent instanceof Window) {
-                        parentId = "c_root";
-                    } else {
-                        parentId = UserInstance.getElementId(parentComponent);
-                    }
-                    addElement.setAttribute("i", parentId);
+                    addElement.setAttribute("i", UserInstance.getElementId(parentComponent));
                     // sort components by their index
                     SortedMap indexedComponents = new TreeMap();
                     for (int j = 0; j < addedChildren.length; ++j) {
