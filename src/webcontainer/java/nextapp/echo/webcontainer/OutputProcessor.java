@@ -103,7 +103,7 @@ public class OutputProcessor {
             } else if (specificContextClass == PropertyPeerFactory.class) {
                 return propertyPeerFactory;
             } else if (specificContextClass == UserInstance.class) {
-                return conn.getUserInstance();
+                return userInstance;
             } else if (specificContextClass == ServerMessage.class) {
                 return serverMessage;
             } else {
@@ -113,6 +113,7 @@ public class OutputProcessor {
     }
     
     private Connection conn;
+    private UserInstance userInstance;
     private ServerMessage serverMessage;
     private Context context;
     private PropertyPeerFactory propertyPeerFactory;
@@ -139,6 +140,7 @@ public class OutputProcessor {
         this.context = new OutputContext();
         serverMessage = new ServerMessage();
         document = serverMessage.getDocument();
+        userInstance = conn.getUserInstance();
         propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME temporary
     }
     
@@ -196,7 +198,7 @@ public class OutputProcessor {
     
     public void process() 
     throws IOException {
-        serverMessage.setTransactionId(conn.getUserInstance().getNextTransactionId());
+        serverMessage.setTransactionId(userInstance.getNextTransactionId());
         try {
             processServerOutput();
             conn.setContentType(ContentType.TEXT_XML);
@@ -222,7 +224,6 @@ public class OutputProcessor {
 
     private void processServerOutput() 
     throws SerialException {
-        UserInstance userInstance = conn.getUserInstance();
         UpdateManager updateManager = userInstance.getUpdateManager();
         ServerUpdateManager serverUpdateManager = updateManager.getServerUpdateManager();
         
@@ -235,7 +236,7 @@ public class OutputProcessor {
                 throw new IllegalStateException("No content to render: default window has no content.");
             }
             Element addElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "add");
-            addElement.setAttribute("i", UserInstance.getElementId(window));
+            addElement.setAttribute("i", userInstance.getElementId(window));
             renderComponentState(addElement, content);
         } else {
             ServerComponentUpdate[] componentUpdates = updateManager.getServerUpdateManager().getComponentUpdates();
@@ -260,7 +261,7 @@ public class OutputProcessor {
                     Element rmElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "rm");
                     for (int j = 0; j < removedChildren.length; ++j) {
                         Element cElement = document.createElement("c");
-                        cElement.setAttribute("i", UserInstance.getElementId(removedChildren[j]));
+                        cElement.setAttribute("i", userInstance.getElementId(removedChildren[j]));
                         rmElement.appendChild(cElement);
                     }
                 }
@@ -271,7 +272,7 @@ public class OutputProcessor {
                 Component[] addedChildren = componentUpdates[i].getAddedChildren();
                 if (addedChildren.length > 0) {
                     Element addElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "add");
-                    addElement.setAttribute("i", UserInstance.getElementId(parentComponent));
+                    addElement.setAttribute("i", userInstance.getElementId(parentComponent));
                     // sort components by their index
                     SortedMap indexedComponents = new TreeMap();
                     for (int j = 0; j < addedChildren.length; ++j) {
@@ -293,14 +294,14 @@ public class OutputProcessor {
                 String[] updatedPropertyNames = componentUpdates[i].getUpdatedPropertyNames();
                 if (updatedPropertyNames.length > 0) {
                     Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
-                    upElement.setAttribute("i", UserInstance.getElementId(parentComponent));
+                    upElement.setAttribute("i", userInstance.getElementId(parentComponent));
                     renderUpdatedProperties(upElement, parentComponent, componentUpdates[i]);
                 }
                 
                 Component[] updatedLayoutDataChildren = componentUpdates[i].getUpdatedLayoutDataChildren();
                 for (int j = 0; j < updatedLayoutDataChildren.length; ++j) {
                     Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
-                    upElement.setAttribute("i", UserInstance.getElementId(updatedLayoutDataChildren[j]));
+                    upElement.setAttribute("i", userInstance.getElementId(updatedLayoutDataChildren[j]));
                     renderUpdatedLayoutData(upElement, updatedLayoutDataChildren[j]);
                 }
             }
@@ -332,7 +333,7 @@ public class OutputProcessor {
         }
         
         Element cElement = document.createElement("c");
-        cElement.setAttribute("i", UserInstance.getElementId(c));
+        cElement.setAttribute("i", userInstance.getElementId(c));
 
         cElement.setAttribute("t", componentPeer.getClientComponentType());
         
@@ -493,7 +494,7 @@ public class OutputProcessor {
     throws SerialException {
         Element ssElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "ss");
         
-        StyleSheet styleSheet = conn.getUserInstance().getApplicationInstance().getStyleSheet();
+        StyleSheet styleSheet = userInstance.getApplicationInstance().getStyleSheet();
         if (styleSheet == null) {
             return;
         }

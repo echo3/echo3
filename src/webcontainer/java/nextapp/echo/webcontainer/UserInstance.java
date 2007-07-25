@@ -54,17 +54,6 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
     public static final String PROPERTY_CLIENT_CONFIGURATION = "clientConfiguration";
 
     /**
-     * Returns the base HTML element id that should be used when rendering the
-     * specified <code>Component</code>.
-     * 
-     * @param component the component 
-     * @return the base HTML element id
-     */
-    public static String getElementId(Component component) {
-        return "c_" + component.getRenderId();
-    }
-
-    /**
      * Creates a new Web Application Container instance using the provided
      * client <code>Connection</code>.  The instance will automatically
      * be stored in the relevant <code>HttpSession</code>
@@ -219,6 +208,17 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      */
     public long getCurrentTransactionId() {
         return transactionId;
+    }
+
+    /**
+     * Returns the base HTML element id that should be used when rendering the
+     * specified <code>Component</code>.
+     * 
+     * @param component the component 
+     * @return the base HTML element id
+     */
+    public String getElementId(Component component) {
+        return "c_" + component.getRenderId();
     }
 
     /**
