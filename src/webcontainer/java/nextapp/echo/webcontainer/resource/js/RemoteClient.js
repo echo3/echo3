@@ -26,7 +26,15 @@ EchoRemoteClient = function(serverUrl, domainElementId) {
         
     EchoWebCore.init();
     
+    /**
+     * MethodRef to _processComponentUpdate() method.
+     */
+    
     this._processComponentUpdateRef = new EchoCore.MethodRef(this, this._processComponentUpdate);
+    /**
+     * MethodRef to _processComponentEvent() method.
+     */
+    this._processComponentEventRef = new EchoCore.MethodRef(this, this._processComponentEvent);
     
     this.application = new EchoApp.Application(domainElementId);
     this.application.addComponentUpdateListener(this._processComponentUpdateRef);
@@ -42,12 +50,105 @@ EchoRemoteClient = function(serverUrl, domainElementId) {
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
     
-    /**
-     * MethodRef to _processComponentEvent() method.
-     */
-    this._processComponentEventRef = new EchoCore.MethodRef(this, this._processComponentEvent);
     
     EchoRemoteClient._activeClients.push(this);
+};
+
+/**
+ * Base URL from which libraries should be retrieved.
+ * Libraries are loaded into global scope, and are thus not
+ * bound to any particular client instance.
+ * 
+ * @type String
+ */
+EchoRemoteClient.libraryServerUrl = null;
+
+/**
+ * Global array containing 
+ */
+EchoRemoteClient._activeClients = new Array();
+
+/**
+ * Global listener to respond to resizing of browser window.
+ * Invokes _windowResizeListener() on all active clients.
+ * 
+ * @param e the DOM resize event
+ */
+EchoRemoteClient._globalWindowResizeListener = function(e) {
+    for (var i = 0; i < EchoRemoteClient._activeClients.length; ++i) {
+        EchoRemoteClient._activeClients[i]._windowResizeListener(e);
+    }
+};
+
+/**
+ * Adds a listener for an arbitrary event type to a component.
+ * This method is invoked by the Serial module when event tags are
+ * processed during the deserialization of component synchronization
+ * XML messages.
+ * 
+ * @param {EchoApp.Component} component the component on which the listener should be added
+ * @param {String} eventType the type of event
+ */
+EchoRemoteClient.prototype.addComponentListener = function(component, eventType) {
+    component.addListener(eventType, this._processComponentEventRef);
+};
+
+/**
+ * Returns the URL of a library service based on the serviceId.
+ * 
+ * @param serviceId the serviceId
+ * @return the full library URL
+ * @type String
+ * @private
+ */
+EchoRemoteClient.prototype._getLibraryServiceUrl = function(serviceId) {
+    if (!EchoRemoteClient._libraryServerUrl) {
+        EchoRemoteClient._libraryServerUrl = this._serverUrl;
+    }
+    return EchoRemoteClient._libraryServerUrl + "?sid=" + serviceId;
+};
+
+/**
+ * Returns the URL of a service based on the serviceId.
+ * 
+ * @param serviceId the serviceId
+ * @return the full URL
+ * @type String
+ * @private
+ */
+EchoRemoteClient.prototype.getServiceUrl = function(serviceId) {
+    return this._serverUrl + "?sid=" + serviceId;
+};
+
+/**
+ * Processes an event from a component that requires immediate server interaction.
+ * 
+ * @param e the event to process
+ */
+EchoRemoteClient.prototype._processComponentEvent = function(e) {
+    if (!this._clientMessage) {
+        if (new Date().getTime() - this._syncInitTime > 2000) {
+            //FIXME. Central error handling for these.
+            alert("Waiting on server response.  Press the browser reload or refresh button if server fails to respond.");
+        }
+        return;
+    }
+    this._clientMessage.setEvent(e.source.renderId, e.type, e.data);
+    this.sync();
+};
+
+/**
+ * Processes an update to a component (storing the updated state in the outgoing
+ * client message).
+ * 
+ * @param e the property update event from the component
+ */
+EchoRemoteClient.prototype._processComponentUpdate = function(e) {
+    if (!this._clientMessage) {
+        //FIXME. need to work on scenarios where clientmessage is null, for both this and events too.
+        return;
+    }
+    this._clientMessage.storeProperty(e.parent.renderId, e.propertyName, e.newValue);
 };
 
 /**
@@ -62,7 +163,7 @@ EchoRemoteClient = function(serverUrl, domainElementId) {
  * @return the full-length valid URL
  * @type String
  */
-EchoRemoteClient.prototype.processUrl = function(url) {
+EchoRemoteClient.prototype.decompressUrl = function(url) {
     var urlTokens = url.split("!");
     if (urlTokens[0]) {
         // urlTokens[0] is not empty: URL is not a shorthand URL.
@@ -83,59 +184,10 @@ EchoRemoteClient.prototype.processUrl = function(url) {
 };
 
 /**
- * Base URL from which libraries should be retrieved.
- * Libraries are loaded into global scope, and are thus not
- * bound to any particular client instance.
+ * ServerMessage completion listener.
  * 
- * @type String
+ * @param e the server message completion event
  */
-EchoRemoteClient.libraryServerUrl = null;
-
-/**
- * Global array containing 
- */
-EchoRemoteClient._activeClients = new Array();
-
-/**
- * Adds a listener for an arbitrary event type to a component.
- * This method is invoked by the Serial module when event tags are
- * processed during the deserialization of component synchronization
- * XML messages.
- * 
- * @param {EchoApp.Component} component the component on which the listener should be added
- * @param {String} eventType the type of event
- */
-EchoRemoteClient.prototype.addComponentListener = function(component, eventType) {
-    component.addListener(eventType, this._processComponentEventRef);
-};
-
-EchoRemoteClient.prototype.getLibraryServiceUrl = function(serviceId) {
-    if (!EchoRemoteClient._libraryServerUrl) {
-        EchoRemoteClient._libraryServerUrl = this._serverUrl;
-    }
-    return EchoRemoteClient._libraryServerUrl + "?sid=" + serviceId;
-};
-
-EchoRemoteClient.prototype._processComponentEvent = function(e) {
-    if (!this._clientMessage) {
-        if (new Date().getTime() - this._syncInitTime > 2000) {
-            //FIXME. Central error handling for these.
-            alert("Waiting on server response.  Press the browser reload or refresh button if server fails to respond.");
-        }
-        return;
-    }
-    this._clientMessage.setEvent(e.source.renderId, e.type, e.data);
-    this.sync();
-};
-
-EchoRemoteClient.prototype._processComponentUpdate = function(e) {
-    if (!this._clientMessage) {
-        //FIXME. need to work on scenarios where clientmessage is null, for both this and events too.
-        return;
-    }
-    this._clientMessage.storeProperty(e.parent.renderId, e.propertyName, e.newValue);
-};
-
 EchoRemoteClient.prototype._processSyncComplete = function(e) {
     if (EchoCore.profilingTimer) {
         EchoCore.profilingTimer.mark("ser"); // Serialization
@@ -151,16 +203,20 @@ EchoRemoteClient.prototype._processSyncComplete = function(e) {
     }
 };
 
-EchoRemoteClient._globalWindowResizeListener = function(e) {
-    for (var i = 0; i < EchoRemoteClient._activeClients.length; ++i) {
-        EchoRemoteClient._activeClients[i]._windowResizeListener(e);
-    }
-};
-
+/**
+ * Instance listener to respond to resizing of browser window.
+ * 
+ * @param e the DOM resize event
+ */
 EchoRemoteClient.prototype._windowResizeListener = function(e) {
     EchoRender.notifyResize(this.application.rootComponent);
 };
 
+/**
+ * Process a response to a client-server synchronization.
+ * 
+ * @param e the HttpConnection response event
+ */
 EchoRemoteClient.prototype._processSyncResponse = function(e) {
     var responseDocument = e.source.getResponseXml();
     if (!e.valid || !responseDocument || !responseDocument.documentElement) {
@@ -187,10 +243,9 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     serverMessage.process();
 };
 
-EchoRemoteClient.prototype.getServiceUrl = function(serviceId) {
-    return this._serverUrl + "?sid=" + serviceId;
-};
-
+/**
+ * Initiates a client-server synchronization.
+ */
 EchoRemoteClient.prototype.sync = function() {
     this._syncInitTime = new Date().getTime();
     var conn = new EchoWebCore.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST", 
@@ -453,7 +508,7 @@ EchoRemoteClient.ServerMessage.prototype.process = function() {
         while (element) {
             if (element.nodeType == 1) {
                 if (element.nodeName == "lib") {
-                    var url = this.client.getLibraryServiceUrl(element.getAttribute("i"));
+                    var url = this.client._getLibraryServiceUrl(element.getAttribute("i"));
                     libraryGroup.add(url);
                 }
             }

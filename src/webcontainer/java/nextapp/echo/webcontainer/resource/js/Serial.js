@@ -353,8 +353,8 @@ EchoSerial.PropertyTranslator.FillImage.toProperty = function(client, propertyEl
 
 EchoSerial.PropertyTranslator.FillImage._parseElement = function(client, fiElement) {
     var url = fiElement.getAttribute("u");
-    if (client.processUrl) {
-        url = client.processUrl(url);
+    if (client.decompressUrl) {
+        url = client.decompressUrl(url);
     }
     var repeat = fiElement.getAttribute("r");
     switch (repeat) {
@@ -446,8 +446,8 @@ EchoSerial.PropertyTranslator.ImageReference = function() { };
 
 EchoSerial.PropertyTranslator.ImageReference.toProperty = function(client, propertyElement) {
     var url = propertyElement.getAttribute("v");
-    if (client.processUrl) {
-        url = client.processUrl(url);
+    if (client.decompressUrl) {
+        url = client.decompressUrl(url);
     }
     var width = propertyElement.getAttribute("w");
     width = width ? new EchoApp.Property.Extent(width) : null;
