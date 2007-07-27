@@ -26,32 +26,9 @@ EchoRemoteClient = function(serverUrl, domainElementId) {
         
     EchoWebCore.init();
     
-    /**
-     * MethodRef to _processComponentUpdate() method.
-     */
-    
-    this._processComponentUpdateRef = new EchoCore.MethodRef(this, this._processComponentUpdate);
-    /**
-     * MethodRef to _processComponentEvent() method.
-     */
-    this._processComponentEventRef = new EchoCore.MethodRef(this, this._processComponentEvent);
-    
-    this.application = new EchoApp.Application(domainElementId);
-    this.application.addComponentUpdateListener(this._processComponentUpdateRef);
-
-    this._storeUpdates = false;
-    this._updateManager = this.application.updateManager;
-    
-    /**
-     * Mapping between shorthand URL codes and replacement values.
-     */
-    this._urlMappings = new Object();
-    this._urlMappings["I"] = this._serverUrl + "?sid=Echo.Image&iid=";
-    
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
     
     
-    EchoRemoteClient._activeClients.push(this);
 };
 
 /**
@@ -118,6 +95,34 @@ EchoRemoteClient.prototype._getLibraryServiceUrl = function(serviceId) {
  */
 EchoRemoteClient.prototype.getServiceUrl = function(serviceId) {
     return this._serverUrl + "?sid=" + serviceId;
+};
+
+EchoRemoteClient.prototype.init = function() {
+    /**
+     * MethodRef to _processComponentUpdate() method.
+     */
+    this._processComponentUpdateRef = new EchoCore.MethodRef(this, this._processComponentUpdate);
+
+    /**
+     * MethodRef to _processComponentEvent() method.
+     */
+    this._processComponentEventRef = new EchoCore.MethodRef(this, this._processComponentEvent);
+    
+    this.application = new EchoApp.Application(this.domainElement.id);
+    this.application.addComponentUpdateListener(this._processComponentUpdateRef);
+
+    this._storeUpdates = false;
+    this._updateManager = this.application.updateManager;
+    
+    /**
+     * Mapping between shorthand URL codes and replacement values.
+     */
+    this._urlMappings = new Object();
+    this._urlMappings["I"] = this._serverUrl + "?sid=Echo.Image&iid=";
+    
+    EchoRemoteClient._activeClients.push(this);
+
+    this._initialized = true;
 };
 
 /**
@@ -231,6 +236,10 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
         msg += ". Press the browser reload or refresh button.";
         alert(msg);
         return;
+    }
+    
+    if (!this._initialized) {
+        this.init();
     }
     
     // Profiling Timer (Uncomment to enable).
