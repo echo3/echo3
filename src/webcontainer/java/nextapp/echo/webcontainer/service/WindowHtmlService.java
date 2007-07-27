@@ -81,9 +81,6 @@ implements Service {
      * @return the created document
      */
     private static Document createHtmlDocument(UserInstance userInstance, boolean debug) {
-        //FIXME.  Colossal hackage.
-        String rootId = "c_0"; // userInstance.getApplicationInstance().getDefaultWindow().getRenderId();
-        
         Document document = DomUtil.createDocument("html", XHTML_1_0_TRANSITIONAL_PUBLIC_ID, 
                 XHTML_1_0_TRANSITIONAL_SYSTSEM_ID, XHTML_1_0_NAMESPACE_URI);
         
@@ -115,8 +112,7 @@ implements Service {
         
         Element bodyElement = document.createElement("body");
         bodyElement.setAttribute("id", "body");
-        bodyElement.setAttribute("onload", "EchoBoot.boot('" + userInstance.getServletUri() + "', '" 
-                + rootId + "', " + debug + ");");
+        bodyElement.setAttribute("onload", "EchoBoot.boot('" + userInstance.getServletUri() + "', " + debug + ");");
         bodyElement.setAttribute("style",
                 "position: absolute; font-family: verdana, arial, helvetica, sans-serif; "
                 + "font-size: 10pt; height: 100%; width: 100%; padding: 0px; margin: 0px; overflow: hidden;");
@@ -125,7 +121,7 @@ implements Service {
         Element formElement = document.createElement("form");
         formElement.setAttribute("style", "padding:0px;margin:0px;");
         formElement.setAttribute("action", "#");
-        formElement.setAttribute("id", rootId);
+        formElement.setAttribute("id", "c_0");  //FIXME.  !!hackage!! This is a VERY BIG assumption that is not guaranteed accurate.
         formElement.setAttribute("onsubmit", "return false;");
         bodyElement.appendChild(formElement);
         

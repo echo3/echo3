@@ -17,18 +17,28 @@
  *        it must define an absolute area or percentage of the screen)
  * 
  */
-EchoRemoteClient = function(serverUrl, domainElementId) { 
+EchoRemoteClient = function(serverUrl) { 
     this._serverUrl = serverUrl;
-    this.domainElement = document.getElementById(domainElementId);
-    if (!this.domainElement) {
-        throw new Error("Cannot find domain element: " + domainElementId);
-    }
-        
+
+    /**
+     * MethodRef to _processComponentUpdate() method.
+     */
+    this._processComponentUpdateRef = new EchoCore.MethodRef(this, this._processComponentUpdate);
+
+    /**
+     * MethodRef to _processComponentEvent() method.
+     */
+    this._processComponentEventRef = new EchoCore.MethodRef(this, this._processComponentEvent);
+    
+    /**
+     * Mapping between shorthand URL codes and replacement values.
+     */
+    this._urlMappings = new Object();
+    this._urlMappings["I"] = this._serverUrl + "?sid=Echo.Image&iid=";
+    
     EchoWebCore.init();
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
-    
-    
 };
 
 /**
@@ -97,28 +107,18 @@ EchoRemoteClient.prototype.getServiceUrl = function(serviceId) {
     return this._serverUrl + "?sid=" + serviceId;
 };
 
-EchoRemoteClient.prototype.init = function() {
-    /**
-     * MethodRef to _processComponentUpdate() method.
-     */
-    this._processComponentUpdateRef = new EchoCore.MethodRef(this, this._processComponentUpdate);
-
-    /**
-     * MethodRef to _processComponentEvent() method.
-     */
-    this._processComponentEventRef = new EchoCore.MethodRef(this, this._processComponentEvent);
+EchoRemoteClient.prototype.init = function(initialResponseDocument) {
+    var domainElementId = initialResponseDocument.documentElement.getAttribute("root");
+    this.domainElement = document.getElementById(domainElementId);
+    if (!this.domainElement) {
+        throw new Error("Cannot find domain element: " + domainElementId);
+    }
     
     this.application = new EchoApp.Application(this.domainElement.id);
     this.application.addComponentUpdateListener(this._processComponentUpdateRef);
 
     this._storeUpdates = false;
     this._updateManager = this.application.updateManager;
-    
-    /**
-     * Mapping between shorthand URL codes and replacement values.
-     */
-    this._urlMappings = new Object();
-    this._urlMappings["I"] = this._serverUrl + "?sid=Echo.Image&iid=";
     
     EchoRemoteClient._activeClients.push(this);
 
@@ -239,7 +239,7 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     }
     
     if (!this._initialized) {
-        this.init();
+        this.init(responseDocument);
     }
     
     // Profiling Timer (Uncomment to enable).
@@ -248,7 +248,9 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     this.application.removeComponentUpdateListener(this._processComponentUpdateRef);
     
     var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
+    
     serverMessage.addCompletionListener(new EchoCore.MethodRef(this, this._processSyncComplete));
+    
     serverMessage.process();
 };
 

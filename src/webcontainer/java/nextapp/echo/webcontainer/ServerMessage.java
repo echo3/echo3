@@ -202,6 +202,16 @@ public class ServerMessage {
     }
     
     /**
+     * Sets an arbitrary attribute on the root element.
+     * 
+     * @param attributeName the attribute name
+     * @param attributeValue the attribute value
+     */
+    public void setAttribute(String attributeName, String attributeValue) {
+        serverMessageElement.setAttribute(attributeName, attributeValue);
+    }
+    
+    /**
      * Sets the numeric identifier for this transaction, which will be returned
      * in next client message.
      * 

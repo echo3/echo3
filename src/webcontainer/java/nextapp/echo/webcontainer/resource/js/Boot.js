@@ -4,13 +4,13 @@
  */
 EchoBoot = function() { };
 
-EchoBoot.boot = function(serverBaseUrl, rootElementId, debug) {
+EchoBoot.boot = function(serverBaseUrl, debug) {
     EchoWebCore.init();
     
     if (window.EchoDebugConsole) {
         EchoDebugConsole.install();
     }
     
-    var client = new EchoRemoteClient(serverBaseUrl, rootElementId);
+    var client = new EchoRemoteClient(serverBaseUrl);
     client.sync();
 };
