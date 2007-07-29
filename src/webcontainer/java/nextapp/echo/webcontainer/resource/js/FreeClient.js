@@ -43,7 +43,7 @@ EchoFreeClient.AutoUpdate = function(updateManager) {
     this._updateManager = updateManager;
 };
 
-EchoFreeClient.AutoUpdate.prototype = new EchoCore.Scheduler.Runnable;
+EchoFreeClient.AutoUpdate.prototype = EchoCore.derive(EchoCore.Scheduler.Runnable);
 
 EchoFreeClient.AutoUpdate.prototype.run = function() {
     EchoRender.processUpdates(this._updateManager);

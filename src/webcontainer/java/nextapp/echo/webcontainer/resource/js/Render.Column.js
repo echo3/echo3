@@ -4,7 +4,7 @@
 EchoRender.ComponentSync.Column = function() {
 };
   
-EchoRender.ComponentSync.Column.prototype = new EchoRender.ComponentSync;
+EchoRender.ComponentSync.Column.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 EchoRender.ComponentSync.Column.prototype.processKeyDown = function(e) { 
     switch (e.keyCode) {

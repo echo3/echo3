@@ -12,11 +12,7 @@ EchoApp = function() { };
  * @param {String} rootComponentId the DOM id of the root component
  */
 EchoApp.Application = function(rootComponentId) {
-    if (arguments.length == 0) {
-        // Return immediately in case that instance is being created to extend prototype.
-        return;
-    }
-    
+
     /** 
      * Mapping between component ids and component instances.
      * @private 
@@ -239,7 +235,7 @@ EchoApp.Application.ComponentUpdateEvent = function(source, parent, propertyName
     this.newValue = newValue;
 };
 
-EchoApp.Application.ComponentUpdateEvent.prototype = new EchoCore.Event;
+EchoApp.Application.ComponentUpdateEvent.prototype = EchoCore.derive(EchoCore.Event);
 
 /**
  * Factory to create new instances of arbitrary components.  This object is 
@@ -2470,7 +2466,7 @@ EchoApp.Button = function(renderId, text, icon) {
     }
 };
 
-EchoApp.Button.prototype = new EchoApp.Component;
+EchoApp.Button.prototype = EchoCore.derive(EchoApp.Component);
 
 /**
  * Programatically performs a button action.
@@ -2492,7 +2488,7 @@ EchoApp.ToggleButton = function(renderId) {
     this.componentType = "ToggleButton";
 };
 
-EchoApp.ToggleButton.prototype = new EchoApp.Button;
+EchoApp.ToggleButton.prototype = EchoCore.derive(EchoApp.Button);
 
 /**
  * RadioButton component.
@@ -2506,7 +2502,7 @@ EchoApp.RadioButton = function(renderId) {
     this.componentType = "RadioButton";
 };
 
-EchoApp.RadioButton.prototype = new EchoApp.ToggleButton;
+EchoApp.RadioButton.prototype = EchoCore.derive(EchoApp.ToggleButton);
 
 /**
  * CheckBox component.
@@ -2520,7 +2516,7 @@ EchoApp.CheckBox = function(renderId) {
     this.componentType = "CheckBox";
 };
 
-EchoApp.CheckBox.prototype = new EchoApp.ToggleButton;
+EchoApp.CheckBox.prototype = EchoCore.derive(EchoApp.ToggleButton);
 
 /**
  * Creates a new Column.
@@ -2534,7 +2530,7 @@ EchoApp.Column = function(renderId) {
     this.componentType = "Column";
 };
 
-EchoApp.Column.prototype = new EchoApp.Component;
+EchoApp.Column.prototype = EchoCore.derive(EchoApp.Component);
 
 /**
  * Creates a new ContentPane.
@@ -2549,7 +2545,7 @@ EchoApp.ContentPane = function(renderId) {
     this.componentType = "ContentPane";
 };
 
-EchoApp.ContentPane.prototype = new EchoApp.Component;
+EchoApp.ContentPane.prototype = EchoCore.derive(EchoApp.Component);
 
 /**
  * Creates a new Grid.
@@ -2563,7 +2559,7 @@ EchoApp.Grid = function(renderId) {
     this.componentType = "Grid";
 };
 
-EchoApp.Grid.prototype = new EchoApp.Component;
+EchoApp.Grid.prototype = EchoCore.derive(EchoApp.Component);
 
 EchoApp.Grid.SPAN_FILL = -1;
 
@@ -2579,7 +2575,7 @@ EchoApp.Label = function(renderId) {
     this.componentType = "Label";
 };
 
-EchoApp.Label.prototype = new EchoApp.Component;
+EchoApp.Label.prototype = EchoCore.derive(EchoApp.Component);
 
 /**
  * Creates a new ListBox.
@@ -2593,7 +2589,7 @@ EchoApp.ListBox = function(renderId) {
     this.componentType = "ListBox";
 };
 
-EchoApp.ListBox.prototype = new EchoApp.Component;
+EchoApp.ListBox.prototype = EchoCore.derive(EchoApp.Component);
 
 /**
  * Creates a new Row.
@@ -2607,7 +2603,7 @@ EchoApp.Row = function(renderId) {
     this.componentType = "Row";
 };
 
-EchoApp.Row.prototype = new EchoApp.Component;
+EchoApp.Row.prototype = EchoCore.derive(EchoApp.Component);
 
 /**
  * Creates a new SelectField.
@@ -2621,7 +2617,7 @@ EchoApp.SelectField = function(renderId) {
     this.componentType = "SelectField";
 };
 
-EchoApp.SelectField.prototype = new EchoApp.Component;
+EchoApp.SelectField.prototype = EchoCore.derive(EchoApp.Component);
 
 /**
  * Creates a new SplitPane.
@@ -2636,7 +2632,7 @@ EchoApp.SplitPane = function(renderId) {
     this.componentType = "SplitPane";
 };
 
-EchoApp.SplitPane.prototype = new EchoApp.Component;
+EchoApp.SplitPane.prototype = EchoCore.derive(EchoApp.Component);
 
 EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING = 0;
 EchoApp.SplitPane.ORIENTATION_HORIZONTAL_TRAILING_LEADING = 1;
@@ -2666,7 +2662,7 @@ EchoApp.TextField = function(renderId) {
     this.componentType = "TextField";
 };
 
-EchoApp.TextField.prototype = new EchoApp.Component;
+EchoApp.TextField.prototype = EchoCore.derive(EchoApp.Component);
 
 /**
  * Creates a new WindowPane.
@@ -2681,7 +2677,7 @@ EchoApp.WindowPane = function(renderId) {
     this.componentType = "WindowPane";
 };
 
-EchoApp.WindowPane.prototype = new EchoApp.Component;
+EchoApp.WindowPane.prototype = EchoCore.derive(EchoApp.Component);
 
 /**
  * Programmatically perform a window closing operation.

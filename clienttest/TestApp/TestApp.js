@@ -8,7 +8,7 @@ TestApp = function() {
     this.rootComponent.add(testScreen);
 };
 
-TestApp.prototype = new EchoApp.Application;
+TestApp.prototype = EchoCore.derive(EchoApp.Application);
 
 TestApp.randomColor = function() {
     var colorValue = parseInt(Math.random() * 0x1000000).toString(16);
@@ -37,7 +37,7 @@ TestApp.TestScreen = function() {
     this.testSelectSplitPane.add(testColumn2);
 };
 
-TestApp.TestScreen.prototype = new EchoApp.ContentPane;
+TestApp.TestScreen.prototype = EchoCore.derive(EchoApp.ContentPane);
 
 TestApp.TestScreen.prototype.addTest = function(testName) {
     var button = new EchoApp.Button();
@@ -78,7 +78,7 @@ TestApp.TestPane = function() {
 
 this.component = null;
 
-TestApp.TestPane.prototype = new EchoApp.ContentPane;
+TestApp.TestPane.prototype = EchoCore.derive(EchoApp.ContentPane);
 
 TestApp.TestPane.prototype.addTestButton = function(text, action) {
     var button = new EchoApp.Button();
@@ -125,7 +125,7 @@ TestApp.Tests.Column = function() {
     this.addTestButton("Set LayoutData Insets, i = 0", new EchoCore.MethodRef(this, this._setLayoutDataInsets));
 };
 
-TestApp.Tests.Column.prototype = new TestApp.TestPane;
+TestApp.Tests.Column.prototype = EchoCore.derive(TestApp.TestPane);
 
 TestApp.Tests.Column.prototype._cellSpacing0 = function() {
     this.column.setProperty("cellSpacing", new EchoApp.Property.Extent("0px"));
@@ -257,7 +257,7 @@ TestApp.Tests.SplitPane = function() {
     this.addTestButton("Remove Last Component", new EchoCore.MethodRef(this, this._removeLastComponent));
 };
 
-TestApp.Tests.SplitPane.prototype = new TestApp.TestPane;
+TestApp.Tests.SplitPane.prototype = EchoCore.derive(TestApp.TestPane);
 
 TestApp.Tests.SplitPane.prototype._addComponent = function(e) {
     if (this.splitPane.getComponentCount() >= 2) {
@@ -358,7 +358,7 @@ TestApp.Tests.TextComponent = function() {
     this.addTestButton("Set Text Null", new EchoCore.MethodRef(this, this._setTextNull));
 };
 
-TestApp.Tests.TextComponent.prototype = new TestApp.TestPane;
+TestApp.Tests.TextComponent.prototype = EchoCore.derive(TestApp.TestPane);
 
 TestApp.Tests.TextComponent.prototype._setText = function() {
     this.textField.setProperty("text", "Hello, world");
@@ -385,7 +385,7 @@ TestApp.Tests.WindowPane = function() {
 
 };
 
-TestApp.Tests.WindowPane.prototype = new TestApp.TestPane;
+TestApp.Tests.WindowPane.prototype = EchoCore.derive(TestApp.TestPane);
 
 TestApp.Tests.WindowPane.prototype._setTitle = function() {
     this.windowPane.setProperty("title", "Hello, world");

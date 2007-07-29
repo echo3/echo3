@@ -13,7 +13,7 @@ EchoRemoteClient.ListComponent.ListBox = function(renderId) {
     this.componentType = "ListBox";
 };
 
-EchoRemoteClient.ListComponent.ListBox.prototype = new EchoApp.ListBox;
+EchoRemoteClient.ListComponent.ListBox.prototype = EchoCore.derive(EchoApp.ListBox);
 
 EchoRemoteClient.ListComponent.ListBox.prototype.updateListData = EchoRemoteClient.ListComponent.updateListData;
 EchoRemoteClient.ListComponent.ListBox.prototype.updateSelection = EchoRemoteClient.ListComponent.updateSelection;
@@ -23,7 +23,7 @@ EchoRemoteClient.ListComponent.SelectField = function(renderId) {
     this.componentType = "RemoteSelectField";
 };
 
-EchoRemoteClient.ListComponent.SelectField.prototype = new EchoApp.SelectField;
+EchoRemoteClient.ListComponent.SelectField.prototype = EchoCore.derive(EchoApp.SelectField);
 
 EchoRemoteClient.ListComponent.SelectField.prototype.updateListData = EchoRemoteClient.ListComponent.updateListData;
 EchoRemoteClient.ListComponent.SelectField.prototype.updateSelection = EchoRemoteClient.ListComponent.updateSelection;

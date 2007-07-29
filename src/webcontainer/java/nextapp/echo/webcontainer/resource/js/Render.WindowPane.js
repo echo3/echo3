@@ -4,7 +4,7 @@
 EchoRender.ComponentSync.WindowPane = function() {
 };
 
-EchoRender.ComponentSync.WindowPane.prototype = new EchoRender.ComponentSync;
+EchoRender.ComponentSync.WindowPane.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_BACKGROUND = new EchoApp.Property.Color("#abcdef");
 EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_INSETS = new EchoApp.Property.Insets("5px", "10px");

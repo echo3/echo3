@@ -4,7 +4,7 @@
 EchoRender.ComponentSync.Grid = function() {
 };
   
-EchoRender.ComponentSync.Grid.prototype = new EchoRender.ComponentSync;
+EchoRender.ComponentSync.Grid.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 EchoRender.ComponentSync.Grid._createPrototypeTable = function() {
     var tableElement = document.createElement("table");

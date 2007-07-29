@@ -7,7 +7,7 @@
 EchoRender.ComponentSync.Button = function() {
 };
 
-EchoRender.ComponentSync.Button.prototype = new EchoRender.ComponentSync;
+EchoRender.ComponentSync.Button.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 /**
  * Registers listners on the button.  This method is invoked lazily, i.e., the first time the button
@@ -370,7 +370,7 @@ EchoRender.ComponentSync.ToggleButton = function() {
 	this._stateIconElement = null;
 };
 
-EchoRender.ComponentSync.ToggleButton.prototype = new EchoRender.ComponentSync.Button;
+EchoRender.ComponentSync.ToggleButton.prototype = EchoCore.derive(EchoRender.ComponentSync.Button);
 
 /**
  * Gets an URI for default toggle button images.
@@ -490,7 +490,7 @@ EchoRender.ComponentSync.RadioButton = function() {
 	this._buttonGroup = null;
 };
 
-EchoRender.ComponentSync.RadioButton.prototype = new EchoRender.ComponentSync.ToggleButton;
+EchoRender.ComponentSync.RadioButton.prototype = EchoCore.derive(EchoRender.ComponentSync.ToggleButton);
 
 /**
  * Contains mappings from RadioButton render ids to EchoApp.ButtonGroup objects.
@@ -549,7 +549,7 @@ EchoRender.registerPeer("RadioButton", EchoRender.ComponentSync.RadioButton);
 EchoRender.ComponentSync.CheckBox = function() {
 };
 
-EchoRender.ComponentSync.CheckBox.prototype = new EchoRender.ComponentSync.ToggleButton;
+EchoRender.ComponentSync.CheckBox.prototype = EchoCore.derive(EchoRender.ComponentSync.ToggleButton);
 
 EchoRender.ComponentSync.CheckBox.prototype._getStateIcon = function() {
 	var stateIcon = EchoRender.ComponentSync.ToggleButton.prototype._getStateIcon.call(this);

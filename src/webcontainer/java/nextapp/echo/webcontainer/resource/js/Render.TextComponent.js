@@ -3,7 +3,7 @@
  */
 EchoRender.ComponentSync.TextComponent = function() { };
 
-EchoRender.ComponentSync.TextComponent.prototype = new EchoRender.ComponentSync;
+EchoRender.ComponentSync.TextComponent.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 EchoRender.ComponentSync.TextComponent.prototype._renderStyle = function() {
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._textComponentElement);
@@ -73,7 +73,7 @@ EchoRender.ComponentSync.TextComponent.prototype._sanitizeInput = function() {
  */
 EchoRender.ComponentSync.TextArea = function() { };
 
-EchoRender.ComponentSync.TextArea.prototype = new EchoRender.ComponentSync.TextComponent;
+EchoRender.ComponentSync.TextArea.prototype = EchoCore.derive(EchoRender.ComponentSync.TextComponent);
 
 EchoRender.ComponentSync.TextArea.prototype.renderAdd = function(update, parentElement) {
     this._textComponentElement = document.createElement("textarea");
@@ -95,7 +95,7 @@ EchoRender.ComponentSync.TextField = function() {
 	this._type = "text";
 };
 
-EchoRender.ComponentSync.TextField.prototype = new EchoRender.ComponentSync.TextComponent;
+EchoRender.ComponentSync.TextField.prototype = EchoCore.derive(EchoRender.ComponentSync.TextComponent);
 
 EchoRender.ComponentSync.TextField.prototype.renderAdd = function(update, parentElement) {
     this._textComponentElement = document.createElement("input");
@@ -123,7 +123,7 @@ EchoRender.ComponentSync.PasswordField = function() {
 	this._type = "password";
 };
 
-EchoRender.ComponentSync.PasswordField.prototype = new EchoRender.ComponentSync.TextField;
+EchoRender.ComponentSync.PasswordField.prototype = EchoCore.derive(EchoRender.ComponentSync.TextField);
 
 EchoRender.registerPeer("TextArea", EchoRender.ComponentSync.TextArea);
 EchoRender.registerPeer("TextField", EchoRender.ComponentSync.TextField);

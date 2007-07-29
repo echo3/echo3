@@ -3,7 +3,7 @@
  */
 EchoRender.ComponentSync.Composite = function() { };
 
-EchoRender.ComponentSync.Composite.prototype = new EchoRender.ComponentSync;
+EchoRender.ComponentSync.Composite.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 EchoRender.ComponentSync.Composite.prototype.renderAdd = function(update, parentElement) {
     this._divElement = document.createElement("div");
@@ -43,7 +43,7 @@ EchoRender.ComponentSync.Composite.prototype.renderUpdate = function(update) {
  */
 EchoRender.ComponentSync.Panel = function() { };
 
-EchoRender.ComponentSync.Panel.prototype = new EchoRender.ComponentSync.Composite;
+EchoRender.ComponentSync.Panel.prototype = EchoCore.derive(EchoRender.ComponentSync.Composite);
 
 EchoRender.ComponentSync.Panel.prototype._renderStyle = function(element) {
 	EchoRender.ComponentSync.Composite.prototype._renderStyle.call(this, element);

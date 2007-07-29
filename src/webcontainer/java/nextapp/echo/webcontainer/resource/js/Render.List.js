@@ -7,7 +7,7 @@
  */
 EchoRender.ComponentSync.SelectListComponent = function() { };
 
-EchoRender.ComponentSync.SelectListComponent.prototype = new EchoRender.ComponentSync();
+EchoRender.ComponentSync.SelectListComponent.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 EchoRender.ComponentSync.SelectListComponent.prototype._processChange = function(e) {
 };
@@ -75,7 +75,7 @@ EchoRender.ComponentSync.SelectListComponent.prototype.renderUpdate = function(u
  */
 EchoRender.ComponentSync.ListBox = function() { };
 
-EchoRender.ComponentSync.ListBox.prototype = new EchoRender.ComponentSync.SelectListComponent();
+EchoRender.ComponentSync.ListBox.prototype = EchoCore.derive(EchoRender.ComponentSync.SelectListComponent);
 
 EchoRender.ComponentSync.ListBox.prototype.renderAdd = function(update, parentElement) {
     this._renderMain(update, parentElement, 6);
@@ -86,7 +86,7 @@ EchoRender.ComponentSync.ListBox.prototype.renderAdd = function(update, parentEl
  */
 EchoRender.ComponentSync.SelectField = function() { };
 
-EchoRender.ComponentSync.SelectField.prototype = new EchoRender.ComponentSync.SelectListComponent();
+EchoRender.ComponentSync.SelectField.prototype = EchoCore.derive(EchoRender.ComponentSync.SelectListComponent);
 
 EchoRender.ComponentSync.SelectField.prototype.renderAdd = function(update, parentElement) {
     this._renderMain(update, parentElement, 0);

@@ -8,7 +8,7 @@ EchoRender.ComponentSync.RemoteTable = function() {
     this.lastSelectedIndex = null;
 };
 
-EchoRender.ComponentSync.RemoteTable.prototype = new EchoRender.ComponentSync;
+EchoRender.ComponentSync.RemoteTable.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 EchoRender.ComponentSync.RemoteTable._HEADER_ROW = -1;
 

@@ -3,7 +3,7 @@
  */
 EchoRender.ComponentSync.Label = function() { };
 
-EchoRender.ComponentSync.Label.prototype = new EchoRender.ComponentSync;
+EchoRender.ComponentSync.Label.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 EchoRender.ComponentSync.Label._defaultIconTextMargin = new EchoApp.Property.Extent(5);
 

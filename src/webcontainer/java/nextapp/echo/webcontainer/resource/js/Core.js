@@ -17,6 +17,24 @@
 EchoCore = function() { };
 
 /**
+ * Creates a derived prototype instance.
+ * This method invokes the constructor of 'baseType' and subsequently removes
+ * and variables created by the constructor which are not present in the base 
+ * type prototype.
+ * 
+ * @param baseType the base type from which the new prototype should be derived
+ */
+EchoCore.derive = function(baseType) {
+    var derivedPrototype = new baseType();
+    for (var x in derivedPrototype) {
+        if (baseType.prototype[x] == undefined) {
+            delete derivedPrototype[x];
+        }
+    }
+    return derivedPrototype;
+};
+
+/**
  * This is a EchoCore.Debug.Timer object used for optimizing Echo3 JavaScript performance.
  * It should be considered undocumented and not part of the public API.
  */

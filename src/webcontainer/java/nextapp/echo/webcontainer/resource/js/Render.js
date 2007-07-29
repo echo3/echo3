@@ -291,7 +291,7 @@ EchoRender.ComponentSync.prototype.renderUpdate = function(update) {
  */
 EchoRender.ComponentSync.Root = function() { };
 
-EchoRender.ComponentSync.Root.prototype = new EchoRender.ComponentSync;
+EchoRender.ComponentSync.Root.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 EchoRender.ComponentSync.Root.prototype.renderDispose = function(update) {
     this._rootElement = null;

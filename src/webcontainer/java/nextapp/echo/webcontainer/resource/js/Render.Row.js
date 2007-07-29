@@ -4,7 +4,7 @@
 EchoRender.ComponentSync.Row = function() {
 };
   
-EchoRender.ComponentSync.Row.prototype = new EchoRender.ComponentSync;
+EchoRender.ComponentSync.Row.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 EchoRender.ComponentSync.Row._defaultCellInsets = new EchoApp.Property.Insets(0);
 
