@@ -13,7 +13,7 @@ EchoRender.ComponentSync.SplitPane = function() {
     this._childPanes = new Array(2);
 };
 
-EchoRender.ComponentSync.SplitPane.prototype = new EchoRender.ComponentSync;
+EchoRender.ComponentSync.SplitPane.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 /**
  * Creates a new PaneConfiguration instance
