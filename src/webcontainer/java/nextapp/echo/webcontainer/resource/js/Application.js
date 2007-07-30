@@ -9,9 +9,8 @@ EchoApp = function() { };
  * @class Representation of a single application instance.
  *        Derived objects must invoke construtor with root component id.
  * @constructor
- * @param {String} rootComponentId the DOM id of the root component
  */
-EchoApp.Application = function(rootComponentId) {
+EchoApp.Application = function() {
 
     /** 
      * Mapping between component ids and component instances.
@@ -27,19 +26,12 @@ EchoApp.Application = function(rootComponentId) {
      */
     this._listenerList = new EchoCore.ListenerList();
 
-    /**
-     * Id of root component.
-     * This value is read-only.
-     * @type string 
-     */
-    this.rootComponentId = rootComponentId;
-
     /** 
      * Root component instance.
      * This value is read-only.
      * @type EchoApp.Component 
      */
-    this.rootComponent = new EchoApp.Component(this.rootComponentId);
+    this.rootComponent = new EchoApp.Component();
     this.rootComponent.componentType = "Root";
     this.rootComponent.register(this);
     
@@ -319,8 +311,7 @@ EchoApp.ComponentFactory.registerType = function(typeName, typeConstructor) {
  * @constructor
  */
 EchoApp.Component = function(renderId) {
-    if (arguments.length == 0) { return; }
-    
+
     /**
      * The type name of the component.
      * This value is read-only.

@@ -221,6 +221,10 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         return "c_" + component.getRenderId();
     }
 
+    public String getRootHtmlElementId() {
+        return "approot";
+    }
+    
     /**
      * Retrieves the <code>IdTable</code> used by this 
      * <code>ContainerInstance</code> to assign weakly-referenced unique 

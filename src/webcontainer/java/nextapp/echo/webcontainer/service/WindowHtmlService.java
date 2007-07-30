@@ -57,6 +57,8 @@ implements Service {
     public static final String XHTML_1_0_TRANSITIONAL_PUBLIC_ID = "-//W3C//DTD XHTML 1.0 Transitional//EN";
     public static final String XHTML_1_0_TRANSITIONAL_SYSTSEM_ID = "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd";
     public static final String XHTML_1_0_NAMESPACE_URI = "http://www.w3.org/1999/xhtml";
+    
+    public static final String ROOT_ELEMENT_ID = "root";
 
     /**
      * <code>OutputProperties</code> used for XML transformation.
@@ -121,7 +123,7 @@ implements Service {
         Element formElement = document.createElement("form");
         formElement.setAttribute("style", "padding:0px;margin:0px;");
         formElement.setAttribute("action", "#");
-        formElement.setAttribute("id", "c_0");  //FIXME.  !!hackage!! This is a VERY BIG assumption that is not guaranteed accurate.
+        formElement.setAttribute("id", userInstance.getRootHtmlElementId());
         formElement.setAttribute("onsubmit", "return false;");
         bodyElement.appendChild(formElement);
         

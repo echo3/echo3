@@ -118,7 +118,7 @@ EchoRemoteClient.prototype.init = function(initialResponseDocument) {
         throw new Error("Cannot find domain element: " + domainElementId);
     }
     
-    var application = new EchoApp.Application(domainElementId); //FIXME
+    var application = new EchoApp.Application();
     application.addComponentUpdateListener(this._processComponentUpdateRef);
     
     this.configure(application, domainElement);
@@ -367,8 +367,13 @@ EchoRemoteClient.ComponentSync.prototype.process = function(dirElement) {
 };
 
 EchoRemoteClient.ComponentSync.prototype._processComponentAdd = function(addElement) {
-    var parentId = addElement.getAttribute("i");
-    var parentComponent = this._client.application.getComponentByRenderId(parentId);
+    var parentComponent;
+    if (addElement.getAttribute("r") == "true") {
+        parentComponent = this._client.application.rootComponent;
+    } else {
+        var parentId = addElement.getAttribute("i");
+        parentComponent = this._client.application.getComponentByRenderId(parentId);
+    }
     var element = addElement.firstChild;
     while (element) {
         if (element.nodeType == 1) {
@@ -439,8 +444,13 @@ EchoRemoteClient.ComponentSync.prototype._processComponentRemove = function(remo
 };
 
 EchoRemoteClient.ComponentSync.prototype._processComponentUpdate = function(updateElement) {
-    var id = updateElement.getAttribute("i");
-    var component = this._client.application.getComponentByRenderId(id);
+    var component;
+    if (updateElement.getAttribute("r") == "true") {
+        component = this._client.application.rootComponent;
+    } else {
+        var componentId = updateElement.getAttribute("i");
+        component = this._client.application.getComponentByRenderId(componentId);
+    }
     
     var styleName = updateElement.getAttribute("s");
     if (styleName != null) {

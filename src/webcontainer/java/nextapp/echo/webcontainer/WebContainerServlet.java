@@ -59,6 +59,8 @@ public abstract class WebContainerServlet extends HttpServlet {
      */
     public static final boolean DEBUG_PRINT_MESSAGES_TO_CONSOLE = true;
     
+    public static final String ROOT_HTML_ELEMENT_ID = "root";
+    
     /**
      * Default constructor.
      */

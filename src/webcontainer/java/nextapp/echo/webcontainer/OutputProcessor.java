@@ -229,7 +229,7 @@ public class OutputProcessor {
         
         if (serverUpdateManager.isFullRefreshRequired()) {
             serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSync", "fr");
-            serverMessage.setAttribute("root", userInstance.getElementId(userInstance.getApplicationInstance().getDefaultWindow()));
+            serverMessage.setAttribute("root", userInstance.getRootHtmlElementId());
             renderStyleSheet();
             Window window = userInstance.getApplicationInstance().getDefaultWindow();
             ContentPane content = window.getContent();
@@ -237,7 +237,7 @@ public class OutputProcessor {
                 throw new IllegalStateException("No content to render: default window has no content.");
             }
             Element addElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "add");
-            addElement.setAttribute("i", userInstance.getElementId(window));
+            addElement.setAttribute("r", "true"); // Adding to root.
             renderComponentState(addElement, content);
         } else {
             ServerComponentUpdate[] componentUpdates = updateManager.getServerUpdateManager().getComponentUpdates();
@@ -273,7 +273,7 @@ public class OutputProcessor {
                 Component[] addedChildren = componentUpdates[i].getAddedChildren();
                 if (addedChildren.length > 0) {
                     Element addElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "add");
-                    addElement.setAttribute("i", userInstance.getElementId(parentComponent));
+                    setComponentId(addElement, parentComponent);
                     // sort components by their index
                     SortedMap indexedComponents = new TreeMap();
                     for (int j = 0; j < addedChildren.length; ++j) {
@@ -295,14 +295,14 @@ public class OutputProcessor {
                 String[] updatedPropertyNames = componentUpdates[i].getUpdatedPropertyNames();
                 if (updatedPropertyNames.length > 0) {
                     Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
-                    upElement.setAttribute("i", userInstance.getElementId(parentComponent));
+                    setComponentId(upElement, parentComponent);
                     renderUpdatedProperties(upElement, parentComponent, componentUpdates[i]);
                 }
                 
                 Component[] updatedLayoutDataChildren = componentUpdates[i].getUpdatedLayoutDataChildren();
                 for (int j = 0; j < updatedLayoutDataChildren.length; ++j) {
                     Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
-                    upElement.setAttribute("i", userInstance.getElementId(updatedLayoutDataChildren[j]));
+                    setComponentId(upElement, updatedLayoutDataChildren[j]); //FIXME. verify this should not be parentComponent
                     renderUpdatedLayoutData(upElement, updatedLayoutDataChildren[j]);
                 }
             }
@@ -579,6 +579,22 @@ public class OutputProcessor {
         
         if (update.hasUpdatedProperty(Component.ENABLED_CHANGED_PROPERTY)) {
             upElement.setAttribute("en", update.getParent().isEnabled() ? "true" : "false");
+        }
+    }
+
+    /**
+     * Utility method to identify a component in an add/update directive.
+     * Adds an 'r="true"' attribute if the updating component is the root.
+     * Adds an 'i="xxx"' attribute if the updating component is not root
+     * 
+     * @param element the element to add the component identifier to
+     * @param component the component
+     */
+    private void setComponentId(Element element, Component component) {
+        if (component.getParent() == null) {
+            element.setAttribute("r", "true");
+        } else {
+            element.setAttribute("i", userInstance.getElementId(component));
         }
     }
 }
