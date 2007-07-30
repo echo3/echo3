@@ -302,7 +302,7 @@ public class OutputProcessor {
                 Component[] updatedLayoutDataChildren = componentUpdates[i].getUpdatedLayoutDataChildren();
                 for (int j = 0; j < updatedLayoutDataChildren.length; ++j) {
                     Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
-                    setComponentId(upElement, updatedLayoutDataChildren[j]); //FIXME. verify this should not be parentComponent
+                    setComponentId(upElement, updatedLayoutDataChildren[j]);
                     renderUpdatedLayoutData(upElement, updatedLayoutDataChildren[j]);
                 }
             }
