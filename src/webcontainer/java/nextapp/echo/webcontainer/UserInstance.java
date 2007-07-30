@@ -188,19 +188,30 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
     }
     
     /**
-     * Retrieves the <code>Component</code> with the specified element id.
+     * Returns the client-side render id that should be used when rendering the
+     * specified <code>Component</code>.
      * 
-     * @param elementId the element id, e.g., "c_42323"
-     * @return the component (e.g., the component whose id is "42323")
+     * @param component the component 
+     * @return the client-side render id
      */
-    public Component getComponentByElementId(String elementId) {
-        try {
-            return applicationInstance.getComponentByRenderId(elementId.substring(2));
-        } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalArgumentException("Invalid component element id: " + elementId);
-        }
+    public String getClientRenderId(Component component) {
+        return "c_" + component.getRenderId();
     }
     
+    /**
+     * Retrieves the <code>Component</code> with the specified client-side render id.
+     * 
+     * @param client-side element render id, e.g., "c_42323"
+     * @return the component (e.g., the component whose id is "42323")
+     */
+    public Component getComponentByClientRenderId(String clientRenderId) {
+        try {
+            return applicationInstance.getComponentByRenderId(clientRenderId.substring(2));
+        } catch (IndexOutOfBoundsException ex) {
+            throw new IllegalArgumentException("Invalid component element id: " + clientRenderId);
+        }
+    }
+
     /**
      * Returns the current transaction id.
      * 
@@ -210,21 +221,6 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         return transactionId;
     }
 
-    /**
-     * Returns the base HTML element id that should be used when rendering the
-     * specified <code>Component</code>.
-     * 
-     * @param component the component 
-     * @return the base HTML element id
-     */
-    public String getElementId(Component component) {
-        return "c_" + component.getRenderId();
-    }
-
-    public String getRootHtmlElementId() {
-        return "approot";
-    }
-    
     /**
      * Retrieves the <code>IdTable</code> used by this 
      * <code>ContainerInstance</code> to assign weakly-referenced unique 
@@ -248,7 +244,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
     public Map getInitialRequestParameterMap() {
         return initialRequestParameterMap;
     }
-
+    
     /**
      * Increments the current transaction id and returns it.
      * 
@@ -268,6 +264,17 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      */
     public RenderState getRenderState(Component component) {
         return (RenderState) componentToRenderStateMap.get(component);
+    }
+
+    /**
+     * Returns the id of the HTML element that will serve as the Root component.
+     * This element must already be present in the DOM when the application is
+     * first rendered.
+     * 
+     * @return the element id
+     */
+    public String getRootHtmlElementId() {
+        return "approot";
     }
     
     /**

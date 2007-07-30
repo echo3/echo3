@@ -262,7 +262,7 @@ public class OutputProcessor {
                     Element rmElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "rm");
                     for (int j = 0; j < removedChildren.length; ++j) {
                         Element cElement = document.createElement("c");
-                        cElement.setAttribute("i", userInstance.getElementId(removedChildren[j]));
+                        cElement.setAttribute("i", userInstance.getClientRenderId(removedChildren[j]));
                         rmElement.appendChild(cElement);
                     }
                 }
@@ -334,7 +334,7 @@ public class OutputProcessor {
         }
         
         Element cElement = document.createElement("c");
-        cElement.setAttribute("i", userInstance.getElementId(c));
+        cElement.setAttribute("i", userInstance.getClientRenderId(c));
 
         cElement.setAttribute("t", componentPeer.getClientComponentType());
         
@@ -594,7 +594,7 @@ public class OutputProcessor {
         if (component.getParent() == null) {
             element.setAttribute("r", "true");
         } else {
-            element.setAttribute("i", userInstance.getElementId(component));
+            element.setAttribute("i", userInstance.getClientRenderId(component));
         }
     }
 }

@@ -119,7 +119,7 @@ public class InputProcessor {
         Iterator updatedComponentIdIt  = clientMessage.getUpdatedComponentIds();
         while (updatedComponentIdIt.hasNext()) {
             String componentId = (String) updatedComponentIdIt.next();
-            Component component = userInstance.getComponentByElementId(componentId);
+            Component component = userInstance.getComponentByClientRenderId(componentId);
             ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
             
             Iterator updatedPropertyIt = clientMessage.getUpdatedPropertyNames(componentId);
@@ -153,7 +153,7 @@ public class InputProcessor {
         }
         
         if (clientMessage.getEvent() != null) {
-            Component component = userInstance.getComponentByElementId(clientMessage.getEventComponentId());
+            Component component = userInstance.getComponentByClientRenderId(clientMessage.getEventComponentId());
             ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
             Class eventDataClass = componentPeer.getEventDataClass(clientMessage.getEventType());
             if (eventDataClass == null) {
