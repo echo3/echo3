@@ -14,16 +14,18 @@ EchoClient = function() {
     this.application = null;
 };
 
+EchoClient.CONTEXT_PROPERTY_NAME = "Client";
+
 EchoClient.prototype.configure = function(application, domainElement) {
     if (this.application) {
-        this.application.setContextProperty("Client", null);
+        this.application.setContextProperty(EchoClient.CONTEXT_PROPERTY_NAME, null);
     }
     
     this.application = application;
     this.domainElement = domainElement;
 
     if (this.application) {
-        this.application.setContextProperty("Client", this);
+        this.application.setContextProperty(EchoClient.CONTEXT_PROPERTY_NAME, this);
     }
 };
 

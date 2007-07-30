@@ -404,7 +404,7 @@ init = function() {
     EchoWebCore.init();
 
     var app = new TestApp();
-    var client = new EchoFreeClient(app);
+    var client = new EchoFreeClient(app, document.getElementById("rootArea"));
     client.init();
     client.loadStyleSheet("Default.stylesheet.xml");
 };

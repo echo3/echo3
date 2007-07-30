@@ -298,13 +298,12 @@ EchoRender.ComponentSync.Root.prototype.renderDispose = function(update) {
 };
 
 EchoRender.ComponentSync.Root.prototype.renderUpdate = function(update) {
-    if (!this._rootElement) {
-        this._rootElement = document.getElementById(update.parent.renderId);
-    }
-    EchoWebCore.DOM.removeAllChildren(this._rootElement);
+    var client = this.component.application.getContextProperty(EchoClient.CONTEXT_PROPERTY_NAME);
+    
+    EchoWebCore.DOM.removeAllChildren(client.domainElement);
 
     for (var i = 0; i < update.parent.children.length; ++i) {
-        EchoRender.renderComponentAdd(update, update.parent.children[i], this._rootElement);
+        EchoRender.renderComponentAdd(update, update.parent.children[i], client.domainElement);
     }
     return true;
 };

@@ -151,7 +151,7 @@
 //        windowPane.setStyle(DEFAULT_WINDOW_STYLE);
         windowPane.setProperty("title", "This is a Window");
         contentPane.add(windowPane);
-        var client = new EchoFreeClient(app);
+        var client = new EchoFreeClient(app, document.getElementById("testArea"));
         client.init();
     }
     
