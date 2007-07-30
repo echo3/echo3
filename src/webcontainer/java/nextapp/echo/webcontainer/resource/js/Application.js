@@ -104,6 +104,20 @@ EchoApp.Application.prototype.getComponentByRenderId = function(renderId) {
 };
 
 /**
+ * Returns a context property.  Context properties may be set
+ * using the setContextProperty() method.
+ * 
+ * @param propertyName
+ * @return the property value, or null if it has not been set
+ */
+EchoApp.Application.prototype.getContextProperty = function(propertyName) {
+    if (!this._contextProperties) {
+        return null;
+    }
+    return this._contextProperties[propertyName];
+};
+
+/**
  * Returns the focused component.
  * 
  * @return the focused component
@@ -172,6 +186,19 @@ EchoApp.Application.prototype._registerComponent = function(component) {
  */
 EchoApp.Application.prototype.removeComponentUpdateListener = function(l) {
     this._listenerList.removeListener("componentUpdate", l);
+};
+
+/**
+ * Sets a context property.
+ * 
+ * @param propertyName the name of the property
+ * @param propertyValue the property value
+ */
+EchoApp.Application.prototype.setContextProperty = function(propertyName, propertyValue) {
+    if (!this._contextProperties) {
+        this._contextProperties = new Object();
+    }
+    this._contextProperties[propertyName] = propertyValue;
 };
 
 /**

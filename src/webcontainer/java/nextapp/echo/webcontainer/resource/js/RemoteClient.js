@@ -113,19 +113,19 @@ EchoRemoteClient.prototype.getServiceUrl = function(serviceId) {
 
 EchoRemoteClient.prototype.init = function(initialResponseDocument) {
     var domainElementId = initialResponseDocument.documentElement.getAttribute("root");
-    this.domainElement = document.getElementById(domainElementId);
-    if (!this.domainElement) {
+    var domainElement = document.getElementById(domainElementId);
+    if (!domainElement) {
         throw new Error("Cannot find domain element: " + domainElementId);
     }
     
-    this.application = new EchoApp.Application(this.domainElement.id);
-    this.application.addComponentUpdateListener(this._processComponentUpdateRef);
-
-    this._storeUpdates = false;
-    this._updateManager = this.application.updateManager;
+    var application = new EchoApp.Application(domainElementId); //FIXME
+    application.addComponentUpdateListener(this._processComponentUpdateRef);
+    
+    this.configure(application, domainElement);
     
     EchoRemoteClient._activeClients.push(this);
 
+    this._storeUpdates = false;
     this._initialized = true;
 };
 
@@ -204,7 +204,7 @@ EchoRemoteClient.prototype._processSyncComplete = function(e) {
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
     this.application.addComponentUpdateListener(this._processComponentUpdateRef);
-	EchoRender.processUpdates(this._updateManager);
+	EchoRender.processUpdates(this.application.updateManager);
     
     if (EchoCore.profilingTimer) {
         EchoCore.Debug.consoleWrite(EchoCore.profilingTimer);

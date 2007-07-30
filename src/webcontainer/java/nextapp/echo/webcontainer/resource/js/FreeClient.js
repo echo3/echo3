@@ -4,17 +4,18 @@
  * 
  * This API allows the development of server-independent applications.
  */
-EchoFreeClient = function(application) {
+EchoFreeClient = function(application, domainElement) {
     EchoClient.call(this);
     
-    this._application = application;
-    this._autoUpdate = new EchoFreeClient.AutoUpdate(this._application.updateManager);
+    this.configure(application, domainElement);
+    
+    this._autoUpdate = new EchoFreeClient.AutoUpdate(this.application.updateManager);
 };
 
 EchoFreeClient.prototype = EchoCore.derive(EchoClient);
 
 EchoFreeClient.prototype.dispose = function() {
-    this._application.updateManager.removeUpdateListener(new EchoCore.MethodRef(this, this._processUpdate));
+    this.application.updateManager.removeUpdateListener(new EchoCore.MethodRef(this, this._processUpdate));
 };
 
 EchoFreeClient.prototype._processUpdate = function(e) {
@@ -22,7 +23,7 @@ EchoFreeClient.prototype._processUpdate = function(e) {
 
 EchoFreeClient.prototype.init = function() {
     EchoWebCore.init();
-    this._application.updateManager.addUpdateListener(new EchoCore.MethodRef(this, this._processUpdate));
+    this.application.updateManager.addUpdateListener(new EchoCore.MethodRef(this, this._processUpdate));
     EchoCore.Scheduler.add(this._autoUpdate);
 };
 
@@ -39,7 +40,7 @@ EchoFreeClient.prototype._processStyleSheet = function(e) {
     
     var ssElement =  e.source.getResponseXml().documentElement;
     var styleSheet = EchoSerial.loadStyleSheet(this, ssElement);
-    this._application.setStyleSheet(styleSheet);
+    this.application.setStyleSheet(styleSheet);
 };
 
 EchoFreeClient.AutoUpdate = function(updateManager) {

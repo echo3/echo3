@@ -14,7 +14,22 @@ EchoClient = function() {
     this.application = null;
 };
 
-EchoClient.prototype.dispose = function() { };
+EchoClient.prototype.configure = function(application, domainElement) {
+    if (this.application) {
+        this.application.setContextProperty("Client", null);
+    }
+    
+    this.application = application;
+    this.domainElement = domainElement;
+
+    if (this.application) {
+        this.application.setContextProperty("Client", this);
+    }
+};
+
+EchoClient.prototype.dispose = function() {
+    this.configure(null, null);
+};
 
 /**
  * Returns the URL of a service based on the serviceId.
@@ -27,5 +42,8 @@ EchoClient.prototype.dispose = function() { };
  */
 EchoClient.prototype.getServiceUrl = function(serviceId) {
     return null;
+};
+
+EchoClient.prototype.setApplication = function(application) {
 };
 
