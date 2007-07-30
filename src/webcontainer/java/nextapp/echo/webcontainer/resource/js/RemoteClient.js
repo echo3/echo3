@@ -17,7 +17,9 @@
  *        it must define an absolute area or percentage of the screen)
  * 
  */
-EchoRemoteClient = function(serverUrl) { 
+EchoRemoteClient = function(serverUrl) {
+    EchoClient.call(this);
+    
     this._serverUrl = serverUrl;
 
     /**
@@ -40,6 +42,8 @@ EchoRemoteClient = function(serverUrl) {
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
 };
+
+EchoRemoteClient.prototype = EchoCore.derive(EchoClient);
 
 /**
  * Base URL from which libraries should be retrieved.

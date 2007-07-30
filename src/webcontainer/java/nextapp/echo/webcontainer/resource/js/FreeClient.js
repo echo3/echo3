@@ -4,10 +4,14 @@
  * 
  * This API allows the development of server-independent applications.
  */
-EchoFreeClient = function(application) { 
+EchoFreeClient = function(application) {
+    EchoClient.call(this);
+    
     this._application = application;
     this._autoUpdate = new EchoFreeClient.AutoUpdate(this._application.updateManager);
 };
+
+EchoFreeClient.prototype = EchoCore.derive(EchoClient);
 
 EchoFreeClient.prototype.dispose = function() {
     this._application.updateManager.removeUpdateListener(new EchoCore.MethodRef(this, this._processUpdate));
