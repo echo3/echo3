@@ -41,6 +41,8 @@ EchoRemoteClient = function(serverUrl) {
     EchoWebCore.init();
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
+
+    this._asyncManager = new EchoRemoteClient.AsyncManager(this);
 };
 
 EchoRemoteClient.prototype = EchoCore.derive(EchoClient);
@@ -262,12 +264,57 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
  * Initiates a client-server synchronization.
  */
 EchoRemoteClient.prototype.sync = function() {
+    this._asyncManager._stop();    
     this._syncInitTime = new Date().getTime();
     var conn = new EchoWebCore.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST", 
             this._clientMessage._renderXml(), "text/xml");
     this._clientMessage = null;
     conn.addResponseListener(new EchoCore.MethodRef(this, this._processSyncResponse));
     conn.connect();
+};
+
+EchoRemoteClient.AsyncManager = function(client) {
+    this._client = client;
+    this._interval = 1000;
+    this._runnable = new EchoCore.Scheduler.Runnable(this._interval, false, 
+            new EchoCore.MethodRef(this, this._pollServerForUpdates));
+};
+
+EchoRemoteClient.AsyncManager.prototype._processPollResponse = function(e) {
+    var responseDocument = e.source.getResponseXml();
+    if (!e.valid || !responseDocument || !responseDocument.documentElement) {
+        //FIXME. Central error handling for things like this.
+        //FIXME. Shut down further client input with secondary "you're beating a dead horse" error message. 
+        var msg = "An invalid response was received from the server";
+        if (e.exception) {
+            msg += ": " + e.exception;
+        } else if (e.source.getResponseText()) {
+            msg += ": \"" + e.source.getResponseText() + "\"";
+        }
+        msg += ". Press the browser reload or refresh button.";
+        alert(msg);
+        return;
+    }
+    
+    if (responseDocument.documentElement.getAttribute("request-sync") == "true") {
+        this._client.sync();
+    } else {
+        EchoCore.Scheduler.add(this._runnable);
+    }
+};
+
+EchoRemoteClient.AsyncManager.prototype._pollServerForUpdates = function() {
+    var conn = new EchoWebCore.HttpConnection(this._client.getServiceUrl("Echo.AsyncMonitor"), "GET");
+    conn.addResponseListener(new EchoCore.MethodRef(this, this._processPollResponse));
+    conn.connect();
+};
+
+EchoRemoteClient.AsyncManager.prototype._start = function() {
+    EchoCore.Scheduler.add(this._runnable);
+};
+
+EchoRemoteClient.AsyncManager.prototype._stop = function() {
+    EchoCore.Scheduler.remove(this._runnable);
 };
 
 EchoRemoteClient.ClientMessage = function(client, initialize) {
@@ -573,6 +620,11 @@ EchoRemoteClient.ServerMessage.prototype._processPostLibraryLoad = function() {
 
     // Complete: notify listeners of completion.
     this._listenerList.fireEvent(new EchoCore.Event(this, "completion"));
+    
+    // Start server push listener if required.
+    if (this.document.documentElement.getAttribute("async-interval")) {
+        this.client._asyncManager._start();
+    }
 };
 
 EchoRemoteClient.ServerMessage.prototype.removeCompletionListener = function(l) {

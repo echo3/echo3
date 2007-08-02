@@ -317,6 +317,10 @@ public class OutputProcessor {
         }
         
         updateManager.purge();
+        
+        if (userInstance.getApplicationInstance().hasTaskQueues()) {
+            serverMessage.setAttribute("async-interval", "1000"); //FIXME...not sure I want this in the root of the smsg again.
+        }
     }
     
     /**

@@ -884,7 +884,7 @@ EchoCore.Scheduler._stop = function() {
  */
 EchoCore.Scheduler.Runnable = function(timeInterval, repeat, methodRef) {
     if (!timeInterval && repeat) {
-        throw new Error("Cannot creating repeating runnable without time delay");
+        throw new Error("Cannot create repeating runnable without time delay");
     }
     
     /** 
