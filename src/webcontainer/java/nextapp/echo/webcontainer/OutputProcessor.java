@@ -64,7 +64,7 @@ import org.xml.sax.SAXException;
  * state of an application that is returned to the remote client as a response
  * to its syncrhonization HTTP connection.
  */
-public class OutputProcessor {
+class OutputProcessor {
     
     /**
      * <code>Context</code> implementation.
@@ -144,7 +144,7 @@ public class OutputProcessor {
         propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME temporary
     }
     
-    private Class getStyleClass(StyleSheet styleSheet, String styleName, Class componentClass) {
+    private Class getComponentStyleClass(StyleSheet styleSheet, String styleName, Class componentClass) {
         if (styleSheet.getStyle(styleName, componentClass, false) != null) {
             // StyleSheet provides style specifically for componentClass.
             return componentClass;
@@ -173,7 +173,7 @@ public class OutputProcessor {
      * @return <code>true</code> if the <code>Component</code> has been
      *         rendered to the client
      */
-    private boolean isRendered(Component component) {
+    private boolean isComponentRendered(Component component) {
         //FIXME. This code is 98% untested in Echo3.
         if (renderedComponents.contains(component)) {
             return true;
@@ -189,7 +189,7 @@ public class OutputProcessor {
                 return false;
             }
         }
-        boolean rendered = isRendered(parent);
+        boolean rendered = isComponentRendered(parent);
         if (rendered) {
             renderedComponents.add(component);
         }
@@ -245,7 +245,7 @@ public class OutputProcessor {
             // Remove any updates whose updates are descendants of components which have not been rendered to the
             // client yet due to lazy-loading containers.
             for (int i = 0; i < componentUpdates.length; ++i) {
-                if (!isRendered(componentUpdates[i].getParent())) {
+                if (!isComponentRendered(componentUpdates[i].getParent())) {
                     componentUpdates[i] = null;
                 }
             }
@@ -278,7 +278,7 @@ public class OutputProcessor {
                     SortedMap indexedComponents = new TreeMap();
                     for (int j = 0; j < addedChildren.length; ++j) {
                         Component addedChild = addedChildren[j];
-                        if (isRendered(addedChild)) {
+                        if (isComponentRendered(addedChild)) {
                             indexedComponents.put(new Integer((parentComponent.visibleIndexOf(addedChild))), addedChild);
                         }
                     }
@@ -296,14 +296,14 @@ public class OutputProcessor {
                 if (updatedPropertyNames.length > 0) {
                     Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
                     setComponentId(upElement, parentComponent);
-                    renderUpdatedProperties(upElement, parentComponent, componentUpdates[i]);
+                    renderComponentUpdatedProperties(upElement, parentComponent, componentUpdates[i]);
                 }
                 
                 Component[] updatedLayoutDataChildren = componentUpdates[i].getUpdatedLayoutDataChildren();
                 for (int j = 0; j < updatedLayoutDataChildren.length; ++j) {
                     Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
                     setComponentId(upElement, updatedLayoutDataChildren[j]);
-                    renderUpdatedLayoutData(upElement, updatedLayoutDataChildren[j]);
+                    renderComponentUpdatedLayoutData(upElement, updatedLayoutDataChildren[j]);
                 }
             }
         }
@@ -311,9 +311,8 @@ public class OutputProcessor {
         // Render Commands.
         Command[] commands = serverUpdateManager.getCommands();
         for (int i = 0; i < commands.length; ++i) {
-            //FIXME impl.
-//            CommandSynchronizePeer commandPeer = SynchronizePeerFactory.getPeerForCommand(commands[i].getClass());
-//            commandPeer.render(context, commands[i]);
+            CommandSynchronizePeer commandPeer = SynchronizePeerFactory.getPeerForCommand(commands[i].getClass());
+            
         }
         
         updateManager.purge();
@@ -323,87 +322,7 @@ public class OutputProcessor {
         }
     }
     
-    /**
-     * Renders the full state of a specific component.
-     * 
-     * @param parentElement the element to append the component element to
-     * @param c the rendering component
-     */
-    private Element renderComponentState(Element parentElement, Component c)
-    throws SerialException {
-        Document document = parentElement.getOwnerDocument();
-        ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
-        if (componentPeer == null) {
-            throw new IllegalStateException("No synchronize peer found for component: " + c.getClass().getName());
-        }
-        
-        Element cElement = document.createElement("c");
-        cElement.setAttribute("i", userInstance.getClientRenderId(c));
-
-        cElement.setAttribute("t", componentPeer.getClientComponentType());
-        
-        componentPeer.init(context);
-
-        renderComponentStyleAttributes(cElement, c);
-        
-        if (!c.isEnabled()) {
-            cElement.setAttribute("en", "false");
-        }
-        
-        // Render component properties.
-        Iterator propertyNameIterator = componentPeer.getOutputPropertyNames(context, c);
-        while (propertyNameIterator.hasNext()) {
-            String propertyName = (String) propertyNameIterator.next();
-            renderProperty(cElement, componentPeer, c, propertyName, false);
-        }
-        
-        // Render immediate event flags.
-        Iterator eventTypeIterator = componentPeer.getImmediateEventTypes(context, c);
-        while (eventTypeIterator.hasNext()) {
-            String eventType = (String) eventTypeIterator.next();
-            Element eElement = document.createElement("e");
-            eElement.setAttribute("t", eventType);
-            cElement.appendChild(eElement);
-        }
-        
-        // Render child components.
-        Component[] children = c.getVisibleComponents();
-        for (int i = 0; i < children.length; ++i) {
-            if (isRendered(children[i])) {
-                renderComponentState(cElement, children[i]);
-            }
-        }
-        
-        // Append component element to parent.
-        parentElement.appendChild(cElement);
-        
-        return cElement;
-    }
-    
-    /**
-     * Render style name (and style type, if necessary).
-     * 
-     * @param element the element to append the style attributes to
-     * @param c the rendering component
-     */ 
-    private void renderComponentStyleAttributes(Element element, Component c) {
-        StyleSheet styleSheet = c.getApplicationInstance().getStyleSheet();
-        if (styleSheet != null && c.getStyleName() != null) {
-            element.setAttribute("s", c.getStyleName());
-            Class styleClass = getStyleClass(styleSheet, c.getStyleName(), c.getClass());
-            if (styleClass != null && styleClass != c.getClass()) {
-                ComponentSynchronizePeer styleComponentSyncPeer 
-                        = SynchronizePeerFactory.getPeerForComponent(styleClass, false);
-                if (styleComponentSyncPeer == null) {
-                    element.setAttribute("st", styleClass.getName());
-                } else {
-                    element.setAttribute("st", styleComponentSyncPeer.getClientComponentType());
-                }
-            }
-        }
-    }
-    
-    private void renderProperty(Element parentElement, ComponentSynchronizePeer componentPeer, 
+    private void renderComponentProperty(Element parentElement, ComponentSynchronizePeer componentPeer, 
             Component c, String propertyName, boolean renderNulls) 
     throws SerialException {
         boolean indexedProperty = componentPeer.isOutputPropertyIndexed(context, c, propertyName);
@@ -411,14 +330,14 @@ public class OutputProcessor {
             Iterator indicesIt = componentPeer.getOutputPropertyIndices(context, c, propertyName);
             while (indicesIt.hasNext()) {
                 int index = ((Integer) indicesIt.next()).intValue();
-                renderPropertyImpl(parentElement, componentPeer, c, propertyName, index, renderNulls);
+                renderComponentPropertyImpl(parentElement, componentPeer, c, propertyName, index, renderNulls);
             }
         } else {
-            renderPropertyImpl(parentElement, componentPeer, c, propertyName, -1, renderNulls);
+            renderComponentPropertyImpl(parentElement, componentPeer, c, propertyName, -1, renderNulls);
         }
     }
-
-    private void renderPropertyImpl(Element parentElement, ComponentSynchronizePeer componentPeer, 
+    
+    private void renderComponentPropertyImpl(Element parentElement, ComponentSynchronizePeer componentPeer, 
             Component c, String propertyName, int propertyIndex, boolean renderNulls) 
     throws SerialException {
         Object propertyValue = componentPeer.getOutputProperty(context, c, propertyName, propertyIndex);
@@ -495,6 +414,142 @@ public class OutputProcessor {
         parentElement.appendChild(pElement);
     }
     
+    /**
+     * Renders the full state of a specific component.
+     * 
+     * @param parentElement the element to append the component element to
+     * @param c the rendering component
+     */
+    private Element renderComponentState(Element parentElement, Component c)
+    throws SerialException {
+        Document document = parentElement.getOwnerDocument();
+        ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
+        if (componentPeer == null) {
+            throw new IllegalStateException("No synchronize peer found for component: " + c.getClass().getName());
+        }
+        
+        Element cElement = document.createElement("c");
+        cElement.setAttribute("i", userInstance.getClientRenderId(c));
+
+        cElement.setAttribute("t", componentPeer.getClientComponentType());
+        
+        componentPeer.init(context);
+
+        renderComponentStyleAttributes(cElement, c);
+        
+        if (!c.isEnabled()) {
+            cElement.setAttribute("en", "false");
+        }
+        
+        // Render component properties.
+        Iterator propertyNameIterator = componentPeer.getOutputPropertyNames(context, c);
+        while (propertyNameIterator.hasNext()) {
+            String propertyName = (String) propertyNameIterator.next();
+            renderComponentProperty(cElement, componentPeer, c, propertyName, false);
+        }
+        
+        // Render immediate event flags.
+        Iterator eventTypeIterator = componentPeer.getImmediateEventTypes(context, c);
+        while (eventTypeIterator.hasNext()) {
+            String eventType = (String) eventTypeIterator.next();
+            Element eElement = document.createElement("e");
+            eElement.setAttribute("t", eventType);
+            cElement.appendChild(eElement);
+        }
+        
+        // Render child components.
+        Component[] children = c.getVisibleComponents();
+        for (int i = 0; i < children.length; ++i) {
+            if (isComponentRendered(children[i])) {
+                renderComponentState(cElement, children[i]);
+            }
+        }
+        
+        // Append component element to parent.
+        parentElement.appendChild(cElement);
+        
+        return cElement;
+    }
+
+    /**
+     * Render style name (and style type, if necessary).
+     * 
+     * @param element the element to append the style attributes to
+     * @param c the rendering component
+     */ 
+    private void renderComponentStyleAttributes(Element element, Component c) {
+        StyleSheet styleSheet = c.getApplicationInstance().getStyleSheet();
+        if (styleSheet != null && c.getStyleName() != null) {
+            element.setAttribute("s", c.getStyleName());
+            Class styleClass = getComponentStyleClass(styleSheet, c.getStyleName(), c.getClass());
+            if (styleClass != null && styleClass != c.getClass()) {
+                ComponentSynchronizePeer styleComponentSyncPeer 
+                        = SynchronizePeerFactory.getPeerForComponent(styleClass, false);
+                if (styleComponentSyncPeer == null) {
+                    element.setAttribute("st", styleClass.getName());
+                } else {
+                    element.setAttribute("st", styleComponentSyncPeer.getClientComponentType());
+                }
+            }
+        }
+    }
+    
+    private void renderComponentUpdatedLayoutData(Element upElement, Component c)
+    throws SerialException {
+        ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
+        if (componentPeer == null) {
+            throw new IllegalStateException("No synchronize peer found for component: " + c.getClass().getName());
+        }
+        renderComponentProperty(upElement, componentPeer, c, Component.PROPERTY_LAYOUT_DATA, true); 
+    }
+    
+    private void renderComponentUpdatedProperties(Element upElement, Component c, ServerComponentUpdate update) 
+    throws SerialException {
+        ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
+        if (componentPeer == null) {
+            throw new IllegalStateException("No synchronize peer found for component: " + c.getClass().getName());
+        }
+
+        Iterator propertyNameIt = componentPeer.getUpdatedOutputPropertyNames(context, c, update);
+        while (propertyNameIt.hasNext()) {
+            String propertyName = (String) propertyNameIt.next();
+            renderComponentProperty(upElement, componentPeer, c, propertyName, true);
+        }
+        
+        if (update.hasUpdatedProperty(Component.STYLE_NAME_CHANGED_PROPERTY)) {
+            renderComponentStyleAttributes(upElement, c);
+        }
+        
+        if (update.hasUpdatedProperty(Component.ENABLED_CHANGED_PROPERTY)) {
+            upElement.setAttribute("en", update.getParent().isEnabled() ? "true" : "false");
+        }
+    }
+    
+    private void renderStyle(Class objectClass, Element parentElement, Style style)
+    throws SerialException {
+        Document document = parentElement.getOwnerDocument();
+        Iterator it = style.getPropertyNames();
+        while (it.hasNext()) {
+            String propertyName = (String) it.next();
+            Object propertyValue = style.getProperty(propertyName);
+            if (propertyValue == null) {
+                continue;
+            }
+            SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
+            if (propertySyncPeer == null) {
+                System.err.println("No peer found for property class: " + propertyValue.getClass());
+                //FIXME. figure out how these should be handled...ignoring is probably best.
+                continue;
+            }
+            
+            //FIXME these need to handle indexed properties.
+            Element pElement = document.createElement("p");
+            pElement.setAttribute("n", propertyName);
+            propertySyncPeer.toXml(context, objectClass, pElement, propertyValue);
+            parentElement.appendChild(pElement);
+        }
+    }
+    
     private void renderStyleSheet() 
     throws SerialException {
         Element ssElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "ss");
@@ -527,62 +582,6 @@ public class OutputProcessor {
                 
                 ssElement.appendChild(sElement);
             }
-        }
-    }
-    
-    private void renderStyle(Class objectClass, Element parentElement, Style style)
-    throws SerialException {
-        Document document = parentElement.getOwnerDocument();
-        Iterator it = style.getPropertyNames();
-        while (it.hasNext()) {
-            String propertyName = (String) it.next();
-            Object propertyValue = style.getProperty(propertyName);
-            if (propertyValue == null) {
-                continue;
-            }
-            SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
-            if (propertySyncPeer == null) {
-                System.err.println("No peer found for property class: " + propertyValue.getClass());
-                //FIXME. figure out how these should be handled...ignoring is probably best.
-                continue;
-            }
-            
-            //FIXME these need to handle indexed properties.
-            Element pElement = document.createElement("p");
-            pElement.setAttribute("n", propertyName);
-            propertySyncPeer.toXml(context, objectClass, pElement, propertyValue);
-            parentElement.appendChild(pElement);
-        }
-    }
-    
-    private void renderUpdatedLayoutData(Element upElement, Component c)
-    throws SerialException {
-        ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
-        if (componentPeer == null) {
-            throw new IllegalStateException("No synchronize peer found for component: " + c.getClass().getName());
-        }
-        renderProperty(upElement, componentPeer, c, Component.PROPERTY_LAYOUT_DATA, true); 
-    }
-    
-    private void renderUpdatedProperties(Element upElement, Component c, ServerComponentUpdate update) 
-    throws SerialException {
-        ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
-        if (componentPeer == null) {
-            throw new IllegalStateException("No synchronize peer found for component: " + c.getClass().getName());
-        }
-
-        Iterator propertyNameIt = componentPeer.getUpdatedOutputPropertyNames(context, c, update);
-        while (propertyNameIt.hasNext()) {
-            String propertyName = (String) propertyNameIt.next();
-            renderProperty(upElement, componentPeer, c, propertyName, true);
-        }
-        
-        if (update.hasUpdatedProperty(Component.STYLE_NAME_CHANGED_PROPERTY)) {
-            renderComponentStyleAttributes(upElement, c);
-        }
-        
-        if (update.hasUpdatedProperty(Component.ENABLED_CHANGED_PROPERTY)) {
-            upElement.setAttribute("en", update.getParent().isEnabled() ? "true" : "false");
         }
     }
 

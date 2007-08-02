@@ -29,6 +29,11 @@
 
 package nextapp.echo.webcontainer;
 
+import java.util.Iterator;
+
+import nextapp.echo.app.Command;
+import nextapp.echo.app.util.Context;
+
 /**
  * A stateless peer object used to render the given type of 
  * <code>nextapp.echo.app.Command</code> to the client.
@@ -44,13 +49,93 @@ public interface CommandSynchronizePeer {
     /**
      * Returns the remote client component name.
      */
-    public String getClientComponentType();
+    public String getClientCommandType();
 
     /**
-     * Returns the <code>Class</code> of <code>Component</code>
+     * Returns the <code>Class</code> of <code>Command</code>
      * supported by this peer.
      * 
      * @return the <code>Class</code>
      */
-    public Class getComponentClass();
+    public Class getCommandClass();
+    
+    /**
+     * Returns the value of a specific property.
+     * 
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
+     * @param command the <code>Command</code> being rendered
+     * @param propertyName the name of the property being rendered
+     * @param propertyIndex the property index (only relevant for indexed properties, -1 will
+     *        be provided for non-indexed properties)
+     * @return the property value
+     */
+    public Object getProperty(Context context, Command command, String propertyName, int propertyIndex);
+    
+    /**
+     * Determines which indices of a particular property are set.
+     * This method will only be invoked on properties where
+     * <code>isPropertyIndexed()</code> has returned true.
+     * 
+     * @param contex the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
+     * @param command the command
+     * @param propertyName the property name
+     * @return an <code>Iterator</code> that returns the set indices in
+     *         incrementing order as <code>Integer</code>s
+     */
+    public Iterator getPropertyIndices(Context context, Command command, String propertyName);
+    
+    /**
+     * Returns an <code>Iterator</code> over the collection of names of all
+     * output properties that should be rendered to the remote client. Only the
+     * names of properties with non-default values should be returned.
+     * 
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
+     * @param command the command
+     * @return an <code>Iterator</code> of property names
+     */
+    public Iterator getPropertyNames(Context context, Command command);
+    
+    /**
+     * Initializes the peer.
+     * This method will be invoked prior to rendering a <b>specific</b>
+     * <code>Command</code> for the first time.
+     * 
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
+     */
+    public void init(Context context);
+    
+    /**
+     * Determines if the specified output property is indexed.
+     * 
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
+     * @param command the command
+     * @param propertyName the property name
+     * @return true if the property is indexed
+     */
+    public boolean isPropertyIndexed(Context context, Command command, String propertyName);
 }
