@@ -30,6 +30,7 @@
 package nextapp.echo.webcontainer.command;
 
 import nextapp.echo.app.Command;
+import nextapp.echo.app.Extent;
 
 /**
  * A Web Application Container-specific <code>Command</code> to 
@@ -41,8 +42,9 @@ public class BrowserOpenWindowCommand
 implements Command {
 
     private String uri;
-    private String features;
     private String name;
+    private Extent width;
+    private Extent height;
     private boolean replace;
     
     /**
@@ -53,8 +55,8 @@ implements Command {
      * @param features the 'features' string which will be used to configure the
      *        new browser window (may be null)
      */
-    public BrowserOpenWindowCommand(String uri, String name, String features) {
-        this(uri, name, features, false);
+    public BrowserOpenWindowCommand(String uri, String name) {
+        this(uri, name, null, null, false);
     }
     
     /**
@@ -68,21 +70,30 @@ implements Command {
      *        previous URI in the window's history.  This flag is only relevant
      *        when using this command to replace a browser window.
      */
-    public BrowserOpenWindowCommand(String uri, String name, String features, boolean replace) {
+    public BrowserOpenWindowCommand(String uri, String name, Extent width, Extent height, boolean replace) {
         super();
         this.uri = uri;
         this.name = name;
-        this.features = features;
+        this.width = width;
+        this.height = height;
     }
     
     /**
-     * Returns the 'features' string which will be used to configure the
-     * new browser window.
+     * Returns the width of the window to be opened.
      * 
-     * @return features the 'features' string
+     * @returnthe width
      */
-    public String getFeatures() {
-        return features;
+    public Extent getWidth() {
+        return width;
+    }
+    
+    /**
+     * Returns the height of the window to be opened.
+     * 
+     * @return the height
+     */
+    public Extent getHeight() {
+        return height;
     }
 
     /**

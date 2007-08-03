@@ -31,6 +31,7 @@ package nextapp.echo.testapp.interactive.testscreen;
 
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Column;
+import nextapp.echo.app.Extent;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
@@ -75,7 +76,7 @@ public class CommandTest extends Column {
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().enqueueCommand(
-                        new BrowserOpenWindowCommand("http://www.nextapp.com/platform/echo3/", null, null));
+                        new BrowserOpenWindowCommand("http://www.nextapp.com/platform/echo3/", null));
             }
         });
         add(button);
@@ -86,7 +87,7 @@ public class CommandTest extends Column {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().enqueueCommand(
                         new BrowserOpenWindowCommand("http://www.nextapp.com/platform/echo3/", 
-                        "auxwindow", "width=640,height=240"));
+                        "auxwindow", new Extent(640), new Extent(240), true));
             }
         });
         add(button);

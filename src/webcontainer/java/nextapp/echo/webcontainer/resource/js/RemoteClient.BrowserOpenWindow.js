@@ -7,7 +7,16 @@ EchoRemoteClient.CommandExec.BrowserOpenWindow.execute = function(client, comman
     if (!commandData.uri) {
         throw new Error("URI not specified in BrowserOpenWindowCommand.");
     }
-    window.open(commandData.uri);
+    
+    var features = new Array();
+    if (commandData.width) {
+        features.push("width=" + EchoRender.Property.Extent.toPixels(commandData.width, true));
+    }
+    if (commandData.height) {
+        features.push("height=" + EchoRender.Property.Extent.toPixels(commandData.height, false));
+    }
+    
+    window.open(commandData.uri, commandData.name, features.length == 0 ? null : features.join(","));
 };
 
 EchoRemoteClient.CommandExecProcessor.registerPeer("nextapp.echo.webcontainer.command.BrowserOpenWindowCommand", 

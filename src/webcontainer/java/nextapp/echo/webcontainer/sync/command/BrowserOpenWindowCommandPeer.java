@@ -60,9 +60,14 @@ extends AbstractCommandSynchronizePeer {
                 return ((BrowserOpenWindowCommand) command).getName();
             }
         });
-        addProperty("features", new AbstractCommandSynchronizePeer.PropertyPeer() {
+        addProperty("width", new AbstractCommandSynchronizePeer.PropertyPeer() {
             public Object getProperty(Context context, Command command) {
-                return ((BrowserOpenWindowCommand) command).getFeatures();
+                return ((BrowserOpenWindowCommand) command).getWidth();
+            }
+        });
+        addProperty("height", new AbstractCommandSynchronizePeer.PropertyPeer() {
+            public Object getProperty(Context context, Command command) {
+                return ((BrowserOpenWindowCommand) command).getHeight();
             }
         });
     }
