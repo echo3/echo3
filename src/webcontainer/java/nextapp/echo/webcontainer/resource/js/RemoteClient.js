@@ -407,6 +407,12 @@ EchoRemoteClient.CommandExecProcessor = function(client) {
     this._client = client;
 };
 
+EchoRemoteClient.CommandExecProcessor._typeToPeerMap = new Object();
+
+EchoRemoteClient.CommandExecProcessor.registerPeer = function(type, commandPeer) {
+    EchoRemoteClient.CommandExecProcessor._typeToPeerMap[type] = commandPeer;
+};
+
 /**
  * Directive processor process() implementation.
  */
@@ -414,6 +420,8 @@ EchoRemoteClient.CommandExecProcessor.prototype.process = function(dirElement) {
     var cmdElement = dirElement.firstChild;
     while (cmdElement) {
         var type = cmdElement.getAttribute("t");
+        var commandPeer = EchoRemoteClient.CommandExecProcessor._typeToPeerMap[type];
+        commandPeer.execute();
         cmdElement = cmdElement.nextSibling;
     }
 };

@@ -3,6 +3,9 @@
  */
 EchoRemoteClient.CommandExec.BrowserOpenWindow = function() { };
 
-EchoRemoteClient.CommandExec.execute = function(client, commandData) {
+EchoRemoteClient.CommandExec.BrowserOpenWindow.execute = function(client, commandData) {
     alert("BOW!");
 };
+
+EchoRemoteClient.CommandExecProcessor.registerPeer("nextapp.echo.webcontainer.command.BrowserOpenWindowCommand", 
+        EchoRemoteClient.CommandExec.BrowserOpenWindow);
