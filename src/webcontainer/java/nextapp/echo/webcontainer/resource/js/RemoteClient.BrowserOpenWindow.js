@@ -10,10 +10,18 @@ EchoRemoteClient.CommandExec.BrowserOpenWindow.execute = function(client, comman
     
     var features = new Array();
     if (commandData.width) {
-        features.push("width=" + EchoRender.Property.Extent.toPixels(commandData.width, true));
+        if (commandData.width.units == "%") {
+            features.push("width=" + screen.width * commandData.width.value / 100);
+        } else {
+            features.push("width=" + EchoRender.Property.Extent.toPixels(commandData.width, true));
+        }
     }
     if (commandData.height) {
-        features.push("height=" + EchoRender.Property.Extent.toPixels(commandData.height, false));
+        if (commandData.height.units == "%") {
+            features.push("height=" + screen.height * commandData.height.value / 100);
+        } else {
+            features.push("height=" + EchoRender.Property.Extent.toPixels(commandData.height, false));
+        }
     }
     
     window.open(commandData.uri, commandData.name, features.length == 0 ? null : features.join(","));

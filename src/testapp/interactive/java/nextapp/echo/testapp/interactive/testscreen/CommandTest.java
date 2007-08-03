@@ -81,13 +81,24 @@ public class CommandTest extends Column {
         });
         add(button);
         
-        button = new Button("Enqueue 640x240 Named Window Open Command");
+        button = new Button("Enqueue 640px x 240px Named Window Open Command");
         button.setStyleName("Default");
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().enqueueCommand(
                         new BrowserOpenWindowCommand("http://www.nextapp.com/platform/echo3/", 
                         "auxwindow", new Extent(640), new Extent(240), true));
+            }
+        });
+        add(button);
+        
+        button = new Button("Enqueue 40% x 60% Named Window Open Command");
+        button.setStyleName("Default");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                getApplicationInstance().enqueueCommand(
+                        new BrowserOpenWindowCommand("http://www.nextapp.com/platform/echo3/", 
+                        "auxwindow", new Extent(40, Extent.PERCENT), new Extent(60, Extent.PERCENT), true));
             }
         });
         add(button);
