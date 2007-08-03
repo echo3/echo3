@@ -31,17 +31,35 @@ package nextapp.echo.webcontainer.sync.command;
 
 import nextapp.echo.app.Command;
 import nextapp.echo.app.util.Context;
-import nextapp.echo.webcontainer.CommandSynchronizePeer;
+import nextapp.echo.webcontainer.AbstractCommandSynchronizePeer;
+import nextapp.echo.webcontainer.command.BrowserOpenWindowCommand;
 
-//FIXME. temporarily abstract.
-public abstract class BrowserOpenWindowCommandPeer 
-implements CommandSynchronizePeer {
-
+public class BrowserOpenWindowCommandPeer 
+extends AbstractCommandSynchronizePeer {
+    
+    public BrowserOpenWindowCommandPeer() {
+        super();
+        addProperty("uri", new AbstractCommandSynchronizePeer.PropertyPeer() {
+            public Object getProperty(Context context, Command command) {
+                return ((BrowserOpenWindowCommand) command).getUri();
+            }
+        });
+        addProperty("name", new AbstractCommandSynchronizePeer.PropertyPeer() {
+            public Object getProperty(Context context, Command command) {
+                return ((BrowserOpenWindowCommand) command).getName();
+            }
+        });
+        addProperty("features", new AbstractCommandSynchronizePeer.PropertyPeer() {
+            public Object getProperty(Context context, Command command) {
+                return ((BrowserOpenWindowCommand) command).getFeatures();
+            }
+        });
+    }
+    
     /**
-     * @see nextapp.echo.webcontainer.CommandSynchronizePeer#render(
-     *      nextapp.echo.app.util.Context, nextapp.echo.app.Command)
+     * @see nextapp.echo.webcontainer.CommandSynchronizePeer#getCommandClass()
      */
-    public void render(Context context, Command command) {
-        
+    public Class getCommandClass() {
+        return BrowserOpenWindowCommand.class;
     }
 }

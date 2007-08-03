@@ -29,13 +29,16 @@
 
 package nextapp.echo.webcontainer.command;
 
+import nextapp.echo.app.Command;
+
 /**
  * A Web Application Container-specific <code>Command</code> to 
  * open a new browser window displaying a specific URI.
  * This action may not propogate to a client if the client has 
  * pop-up blocking algorithm enabled.
  */  
-public class BrowserOpenWindowCommand {
+public class BrowserOpenWindowCommand 
+implements Command {
 
     private String uri;
     private String features;

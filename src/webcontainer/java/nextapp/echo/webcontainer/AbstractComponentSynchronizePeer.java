@@ -124,7 +124,7 @@ implements ComponentSynchronizePeer {
      * Property names added via this method will be returned by the 
      * <code>getOutputPropertyName()</code> method of this class.
      * If the indexed flag is set, the <code>isOutputPropertyIndexed</code>
-     * method will also return true for thsi property name
+     * method will also return true for this property name
      * 
      * @param propertyName the property name to add
      * @param indexed a flag indicating whether the property is indexed
