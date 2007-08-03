@@ -313,6 +313,7 @@ class OutputProcessor {
         for (int i = 0; i < commands.length; ++i) {
             CommandSynchronizePeer commandPeer = SynchronizePeerFactory.getPeerForCommand(commands[i].getClass());
             Element commandExecuteElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CmdExec", "cmd");
+            commandExecuteElement.setAttribute("t", commandPeer.getClientCommandType());
             Iterator propertyNameIt = commandPeer.getPropertyNames(context, commands[i]);
             while (propertyNameIt.hasNext()) {
                 String propertyName = (String) propertyNameIt.next();

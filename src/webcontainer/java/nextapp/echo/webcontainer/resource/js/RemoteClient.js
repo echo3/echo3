@@ -392,7 +392,11 @@ EchoRemoteClient.CommandExec = function(client) {
 };
 
 EchoRemoteClient.CommandExec.prototype.process = function(dirElement) {
-    alert("Command received....processor not implemented.");
+    var cmdElement = dirElement.firstChild;
+    while (cmdElement) {
+        var type = cmdElement.getAttribute("t");
+        cmdElement = cmdElement.nextSibling;
+    }
 };
 
 EchoRemoteClient.ComponentSync = function(client) { 
