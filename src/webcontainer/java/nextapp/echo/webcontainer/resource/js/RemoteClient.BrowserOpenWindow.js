@@ -10,7 +10,6 @@ EchoRemoteClient.CommandExec.BrowserOpenWindow.FLAG_LOCATION = 0x8;
 EchoRemoteClient.CommandExec.BrowserOpenWindow.FLAG_STATUS = 0x10;
 EchoRemoteClient.CommandExec.BrowserOpenWindow.FLAG_RESIZABLE = 0x20;
 
-
 EchoRemoteClient.CommandExec.BrowserOpenWindow.execute = function(client, commandData) {
     if (!commandData.uri) {
         throw new Error("URI not specified in BrowserOpenWindowCommand.");

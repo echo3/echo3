@@ -37,7 +37,7 @@ import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.SplitPaneLayoutData;
 import nextapp.echo.webcontainer.command.BrowserOpenWindowCommand;
-//import nextapp.echo.webcontainer.command.BrowserRedirectCommand;
+import nextapp.echo.webcontainer.command.BrowserRedirectCommand;
 
 /**
  * A test for the command infrastructures and browser control commands.
@@ -53,23 +53,23 @@ public class CommandTest extends Column {
         
         Button button;
         
-//        button = new Button("Enqueue Redirect Command");
-//        button.setStyleName("Default");
-//        button.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                getApplicationInstance().enqueueCommand(new BrowserRedirectCommand("http://www.nextapp.com/products/echo3"));
-//            }
-//        });
-//        add(button);
-//        
-//        button = new Button("Enqueue Redirect Command to mailto: URL");
-//        button.setStyleName("Default");
-//        button.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                getApplicationInstance().enqueueCommand(new BrowserRedirectCommand("mailto:info@nextapp.com"));
-//            }
-//        });
-//        add(button);
+        button = new Button("Enqueue Redirect Command");
+        button.setStyleName("Default");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                getApplicationInstance().enqueueCommand(new BrowserRedirectCommand("http://www.nextapp.com/products/echo3"));
+            }
+        });
+        add(button);
+        
+        button = new Button("Enqueue Redirect Command to mailto: URL");
+        button.setStyleName("Default");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                getApplicationInstance().enqueueCommand(new BrowserRedirectCommand("mailto:info@nextapp.com"));
+            }
+        });
+        add(button);
         
         button = new Button("Enqueue Simple Window Open Command");
         button.setStyleName("Default");

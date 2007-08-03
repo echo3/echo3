@@ -35,59 +35,32 @@ import nextapp.echo.webcontainer.AbstractCommandSynchronizePeer;
 import nextapp.echo.webcontainer.ServerMessage;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
-import nextapp.echo.webcontainer.command.BrowserOpenWindowCommand;
+import nextapp.echo.webcontainer.command.BrowserRedirectCommand;
 import nextapp.echo.webcontainer.service.JavaScriptService;
 
 /**
- * Synchronization peer for <code>BrowserOpenWindowCommand</code>.
+ * Synchronization peer for <code>BrowserRedirectCommand</code>.
  */
-public class BrowserOpenWindowCommandPeer 
+public class BrowserRedirectCommandPeer 
 extends AbstractCommandSynchronizePeer {
     
-    private static final Service BROWSER_OPEN_WINDOW_SERVICE = JavaScriptService.forResource("Echo.BrowserOpenWindow", 
-            "/nextapp/echo/webcontainer/resource/js/RemoteClient.BrowserOpenWindow.js");
+    private static final Service BROWSER_REDIRECT_SERVICE = JavaScriptService.forResource("Echo.BrowserRedirect", 
+            "/nextapp/echo/webcontainer/resource/js/RemoteClient.BrowserRedirect.js");
     
     static {
-        WebContainerServlet.getServiceRegistry().add(BROWSER_OPEN_WINDOW_SERVICE);
+        WebContainerServlet.getServiceRegistry().add(BROWSER_REDIRECT_SERVICE);
     }
 
     /**
      * Default constructor.
      */
-    public BrowserOpenWindowCommandPeer() {
+    public BrowserRedirectCommandPeer() {
         super();
         addProperty("uri", new AbstractCommandSynchronizePeer.PropertyPeer() {
             public Object getProperty(Context context, Command command) {
-                return ((BrowserOpenWindowCommand) command).getUri();
+                return ((BrowserRedirectCommand) command).getUri();
             }
         });
-        addProperty("name", new AbstractCommandSynchronizePeer.PropertyPeer() {
-            public Object getProperty(Context context, Command command) {
-                return ((BrowserOpenWindowCommand) command).getName();
-            }
-        });
-        addProperty("width", new AbstractCommandSynchronizePeer.PropertyPeer() {
-            public Object getProperty(Context context, Command command) {
-                return ((BrowserOpenWindowCommand) command).getWidth();
-            }
-        });
-        addProperty("height", new AbstractCommandSynchronizePeer.PropertyPeer() {
-            public Object getProperty(Context context, Command command) {
-                return ((BrowserOpenWindowCommand) command).getHeight();
-            }
-        });
-        addProperty("flags", new AbstractCommandSynchronizePeer.PropertyPeer() {
-            public Object getProperty(Context context, Command command) {
-                return new Integer(((BrowserOpenWindowCommand) command).getFlags());
-            }
-        });
-    }
-    
-    /**
-     * @see nextapp.echo.webcontainer.CommandSynchronizePeer#getCommandClass()
-     */
-    public Class getCommandClass() {
-        return BrowserOpenWindowCommand.class;
     }
     
     /**
@@ -95,6 +68,13 @@ extends AbstractCommandSynchronizePeer {
      */
     public void init(Context context) {
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
-        serverMessage.addLibrary(BROWSER_OPEN_WINDOW_SERVICE.getId());
+        serverMessage.addLibrary(BROWSER_REDIRECT_SERVICE.getId());
+    }
+    
+    /**
+     * @see nextapp.echo.webcontainer.CommandSynchronizePeer#getCommandClass()
+     */
+    public Class getCommandClass() {
+        return BrowserRedirectCommand.class;
     }
 }
