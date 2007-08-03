@@ -40,6 +40,14 @@ EchoRemoteClient = function(serverUrl) {
     
     EchoWebCore.init();
     
+    /**
+     * Queue of commands to be executed.  Each command occupies two
+     * indices, first index is the command peer, second is the command data.
+     * 
+     * @type Array
+     */
+    this._commandQueue = null;
+    
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
 
     this._asyncManager = new EchoRemoteClient.AsyncManager(this);
@@ -195,6 +203,31 @@ EchoRemoteClient.prototype.decompressUrl = function(url) {
 };
 
 /**
+ * Enqueues a command to be processed after component synchronization has been completed.
+ * 
+ * @param commandPeer the command peer to execute
+ * @param commandData an object containing the command data sent from the server
+ */
+EchoRemoteClient.prototype._enqueueCommand = function(commandPeer, commandData) {
+    if (this._commandQueue == null) {
+        this._commandQueue = new Array();
+    }
+    this._commandQueue.push(commandPeer, commandData);
+};
+
+/**
+ * Executes all enqued commands; empties the queue.
+ */
+EchoRemoteClient.prototype._executeCommands = function() {
+    if (this._commandQueue) {
+        for (var i = 0; i < this._commandQueue.length; i += 2) {
+            this._commandQueue[i].execute(this, this._commandQueue[i + 1]);
+        }
+        this._commandQueue = null;
+    }
+};
+
+/**
  * ServerMessage completion listener.
  * 
  * @param e the server message completion event
@@ -207,6 +240,8 @@ EchoRemoteClient.prototype._processSyncComplete = function(e) {
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
     this.application.addComponentUpdateListener(this._processComponentUpdateRef);
 	EchoRender.processUpdates(this.application.updateManager);
+    
+    this._executeCommands();
     
     if (EchoCore.profilingTimer) {
         EchoCore.Debug.consoleWrite(EchoCore.profilingTimer);
@@ -420,17 +455,14 @@ EchoRemoteClient.CommandExecProcessor.prototype.process = function(dirElement) {
     var cmdElement = dirElement.firstChild;
     while (cmdElement) {
         var type = cmdElement.getAttribute("t");
+        var commandPeer = EchoRemoteClient.CommandExecProcessor._typeToPeerMap[type];
         var commandData = new Object();
         var pElement = cmdElement.firstChild;
         while (pElement) {
             EchoSerial.loadProperty(this._client, pElement, null, commandData, null);
             pElement = pElement.nextSibling;
         }
-        
-        var commandPeer = EchoRemoteClient.CommandExecProcessor._typeToPeerMap[type];
-        //FIXME. commands may not be executed here.  They must be loaded into a queue and
-        // executed after updates by the Renderer.
-        commandPeer.execute(this._client, commandData);
+        this._client._enqueueCommand(commandPeer, commandData);
         cmdElement = cmdElement.nextSibling;
     }
 };
