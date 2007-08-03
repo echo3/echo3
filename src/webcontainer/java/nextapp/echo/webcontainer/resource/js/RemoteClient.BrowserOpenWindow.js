@@ -4,7 +4,10 @@
 EchoRemoteClient.CommandExec.BrowserOpenWindow = function() { };
 
 EchoRemoteClient.CommandExec.BrowserOpenWindow.execute = function(client, commandData) {
-    alert("BOW!");
+    if (!commandData.uri) {
+        throw new Error("URI not specified in BrowserOpenWindowCommand.");
+    }
+    window.open(commandData.uri);
 };
 
 EchoRemoteClient.CommandExecProcessor.registerPeer("nextapp.echo.webcontainer.command.BrowserOpenWindowCommand", 

@@ -420,8 +420,15 @@ EchoRemoteClient.CommandExecProcessor.prototype.process = function(dirElement) {
     var cmdElement = dirElement.firstChild;
     while (cmdElement) {
         var type = cmdElement.getAttribute("t");
+        var commandData = new Object();
+        var pElement = cmdElement.firstChild;
+        while (pElement) {
+            EchoSerial.loadProperty(this._client, pElement, null, commandData, null);
+            pElement = pElement.nextSibling;
+        }
+        
         var commandPeer = EchoRemoteClient.CommandExecProcessor._typeToPeerMap[type];
-        commandPeer.execute();
+        commandPeer.execute(this._client, commandData);
         cmdElement = cmdElement.nextSibling;
     }
 };

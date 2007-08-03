@@ -75,7 +75,7 @@ public class CommandTest extends Column {
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().enqueueCommand(
-                        new BrowserOpenWindowCommand("http://www.nextapp.com/products/echo3", null, null));
+                        new BrowserOpenWindowCommand("http://www.nextapp.com/platform/echo3/", null, null));
             }
         });
         add(button);
@@ -85,7 +85,7 @@ public class CommandTest extends Column {
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().enqueueCommand(
-                        new BrowserOpenWindowCommand("http://www.nextapp.com/products/echo3", 
+                        new BrowserOpenWindowCommand("http://www.nextapp.com/platform/echo3/", 
                         "auxwindow", "width=640,height=240"));
             }
         });
