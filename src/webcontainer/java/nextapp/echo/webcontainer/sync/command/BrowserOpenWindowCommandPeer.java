@@ -32,11 +32,22 @@ package nextapp.echo.webcontainer.sync.command;
 import nextapp.echo.app.Command;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractCommandSynchronizePeer;
+import nextapp.echo.webcontainer.ServerMessage;
+import nextapp.echo.webcontainer.Service;
+import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.command.BrowserOpenWindowCommand;
+import nextapp.echo.webcontainer.service.JavaScriptService;
 
 public class BrowserOpenWindowCommandPeer 
 extends AbstractCommandSynchronizePeer {
     
+    private static final Service BROWSER_OPEN_WINDOW_SERVICE = JavaScriptService.forResource("Echo.BrowserOpenWindow", 
+            "/nextapp/echo/webcontainer/resource/js/Render.BrowserOpenWindow.js");
+    
+    static {
+        WebContainerServlet.getServiceRegistry().add(BROWSER_OPEN_WINDOW_SERVICE);
+    }
+
     public BrowserOpenWindowCommandPeer() {
         super();
         addProperty("uri", new AbstractCommandSynchronizePeer.PropertyPeer() {
@@ -54,6 +65,11 @@ extends AbstractCommandSynchronizePeer {
                 return ((BrowserOpenWindowCommand) command).getFeatures();
             }
         });
+    }
+    
+    public void init(Context context) {
+        ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
+        serverMessage.addLibrary(BROWSER_OPEN_WINDOW_SERVICE.getId());
     }
     
     /**
