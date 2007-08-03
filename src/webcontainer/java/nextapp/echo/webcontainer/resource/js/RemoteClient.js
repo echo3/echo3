@@ -387,11 +387,30 @@ EchoRemoteClient.ClientMessage.prototype._renderXml = function() {
     return cmsgDocument;
 };
 
-EchoRemoteClient.CommandExec = function(client) { 
+/**
+ * Default constructor
+ * 
+ * @class Base class for command execution peers.
+ */
+EchoRemoteClient.CommandExec = function() {
+};
+
+/**
+ * Executes a command
+ */
+EchoRemoteClient.CommandExec.execute = function(commandData) { };
+
+/**
+ * SerevrMessage directive processor for command executions.
+ */
+EchoRemoteClient.CommandExecProcessor = function(client) { 
     this._client = client;
 };
 
-EchoRemoteClient.CommandExec.prototype.process = function(dirElement) {
+/**
+ * Directive processor process() implementation.
+ */
+EchoRemoteClient.CommandExecProcessor.prototype.process = function(dirElement) {
     var cmdElement = dirElement.firstChild;
     while (cmdElement) {
         var type = cmdElement.getAttribute("t");
@@ -399,16 +418,22 @@ EchoRemoteClient.CommandExec.prototype.process = function(dirElement) {
     }
 };
 
-EchoRemoteClient.ComponentSync = function(client) { 
+/**
+ * ServerMessage directive processor for component synchronizations.
+ */
+EchoRemoteClient.ComponentSyncProcessor = function(client) { 
     this._client = client;
     this._referenceMap = new Object();
 };
 
-EchoRemoteClient.ComponentSync._numericReverseSort = function(a, b) {
+EchoRemoteClient.ComponentSyncProcessor._numericReverseSort = function(a, b) {
     return b - a;
 };
 
-EchoRemoteClient.ComponentSync.prototype.process = function(dirElement) {
+/**
+ * Directive processor process() implementation.
+ */
+EchoRemoteClient.ComponentSyncProcessor.prototype.process = function(dirElement) {
     var element = dirElement.firstChild;
     while (element) {
         if (element.nodeType == 1) {
@@ -425,7 +450,7 @@ EchoRemoteClient.ComponentSync.prototype.process = function(dirElement) {
     }
 };
 
-EchoRemoteClient.ComponentSync.prototype._processComponentAdd = function(addElement) {
+EchoRemoteClient.ComponentSyncProcessor.prototype._processComponentAdd = function(addElement) {
     var parentComponent;
     if (addElement.getAttribute("r") == "true") {
         parentComponent = this._client.application.rootComponent;
@@ -448,7 +473,7 @@ EchoRemoteClient.ComponentSync.prototype._processComponentAdd = function(addElem
     }
 };
 
-EchoRemoteClient.ComponentSync.prototype._processComponentRemove = function(removeElement) {
+EchoRemoteClient.ComponentSyncProcessor.prototype._processComponentRemove = function(removeElement) {
     if (removeElement.childNodes.length > 5) {
         // Special case: many children being removed: create renderId -> index map and remove by index
         // in order to prevent Component.indexOf() of from being invoked n times.
@@ -484,7 +509,7 @@ EchoRemoteClient.ComponentSync.prototype._processComponentRemove = function(remo
             }
             cElement = cElement.nextSibling;
         }
-        indicesToRemove.sort(EchoRemoteClient.ComponentSync._numericReverseSort);
+        indicesToRemove.sort(EchoRemoteClient.ComponentSyncProcessor._numericReverseSort);
 
         // Remove components (last to first).
         for (var i = 0; i < indicesToRemove.length; ++i) {
@@ -502,7 +527,7 @@ EchoRemoteClient.ComponentSync.prototype._processComponentRemove = function(remo
     }
 };
 
-EchoRemoteClient.ComponentSync.prototype._processComponentUpdate = function(updateElement) {
+EchoRemoteClient.ComponentSyncProcessor.prototype._processComponentUpdate = function(updateElement) {
     var component;
     if (updateElement.getAttribute("r") == "true") {
         component = this._client.application.rootComponent;
@@ -538,11 +563,11 @@ EchoRemoteClient.ComponentSync.prototype._processComponentUpdate = function(upda
     }
 };
 
-EchoRemoteClient.ComponentSync.prototype._processFullRefresh = function(frElement) {
+EchoRemoteClient.ComponentSyncProcessor.prototype._processFullRefresh = function(frElement) {
     this._client.application.rootComponent.removeAll();
 };
 
-EchoRemoteClient.ComponentSync.prototype._processStoreProperties = function(spElement) {
+EchoRemoteClient.ComponentSyncProcessor.prototype._processStoreProperties = function(spElement) {
     var propertyElement = spElement.firstChild;
     while (propertyElement) {
         switch (propertyElement.nodeName) {
@@ -561,7 +586,7 @@ EchoRemoteClient.ComponentSync.prototype._processStoreProperties = function(spEl
     }
 };
 
-EchoRemoteClient.ComponentSync.prototype._processStyleSheet = function(ssElement) {
+EchoRemoteClient.ComponentSyncProcessor.prototype._processStyleSheet = function(ssElement) {
     var styleSheet = EchoSerial.loadStyleSheet(this._client, ssElement);
     this._client.application.setStyleSheet(styleSheet);
 };
@@ -643,7 +668,7 @@ EchoRemoteClient.ServerMessage.prototype.removeCompletionListener = function(l) 
     this._listenerList.removeListener("completion", l);
 };
 
-EchoRemoteClient.ServerMessage.addProcessor("CSync", EchoRemoteClient.ComponentSync);
-EchoRemoteClient.ServerMessage.addProcessor("CmdExec", EchoRemoteClient.CommandExec);
+EchoRemoteClient.ServerMessage.addProcessor("CSync", EchoRemoteClient.ComponentSyncProcessor);
+EchoRemoteClient.ServerMessage.addProcessor("CmdExec", EchoRemoteClient.CommandExecProcessor);
 
 EchoWebCore.DOM.addEventListener(window, "resize", EchoRemoteClient._globalWindowResizeListener, false);
