@@ -312,7 +312,20 @@ class OutputProcessor {
         Command[] commands = serverUpdateManager.getCommands();
         for (int i = 0; i < commands.length; ++i) {
             CommandSynchronizePeer commandPeer = SynchronizePeerFactory.getPeerForCommand(commands[i].getClass());
-            
+            Element commandExecuteElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CmdExec", "cmd");
+            Iterator propertyNameIt = commandPeer.getPropertyNames(context, commands[i]);
+            while (propertyNameIt.hasNext()) {
+                String propertyName = (String) propertyNameIt.next();
+                if (commandPeer.isPropertyIndexed(context, commands[i], propertyName)) {
+                    Iterator propertyIndexIt = commandPeer.getPropertyIndices(context, commands[i], propertyName);
+                    while (propertyIndexIt.hasNext()) {
+                        int propertyIndex = ((Integer) propertyIndexIt.next()).intValue();
+                        renderCommandProperty(commandExecuteElement, commandPeer, commands[i], propertyName, propertyIndex);
+                    }
+                } else {
+                    renderCommandProperty(commandExecuteElement, commandPeer, commands[i], propertyName, -1);
+                }
+            }
         }
         
         updateManager.purge();
@@ -320,6 +333,34 @@ class OutputProcessor {
         if (userInstance.getApplicationInstance().hasTaskQueues()) {
             serverMessage.setAttribute("async-interval", "1000"); //FIXME...not sure I want this in the root of the smsg again.
         }
+    }
+    
+    private void renderCommandProperty(Element parentElement, CommandSynchronizePeer commandPeer,
+            Command command, String propertyName, int propertyIndex) 
+    throws SerialException {
+        Element pElement = document.createElement("p");
+        pElement.setAttribute("n", propertyName);
+        if (propertyIndex != -1) {
+            // Set property index.
+            pElement.setAttribute("x", Integer.toString(propertyIndex));
+        }
+        Object propertyValue = commandPeer.getProperty(context, command, propertyName, propertyIndex);
+        if (propertyValue == null) {
+            // Set nulll property value.
+            pElement.setAttribute("t", "0");
+        } else {
+            SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
+            if (propertySyncPeer == null) {
+                // Unsupported property: do nothing.
+                return;
+            }
+
+            // Render property value.
+            propertySyncPeer.toXml(context, command.getClass(), pElement, propertyValue);
+        }
+        
+        // Append to parent element.
+        parentElement.appendChild(pElement);
     }
     
     private void renderComponentProperty(Element parentElement, ComponentSynchronizePeer componentPeer, 

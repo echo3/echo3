@@ -387,6 +387,14 @@ EchoRemoteClient.ClientMessage.prototype._renderXml = function() {
     return cmsgDocument;
 };
 
+EchoRemoteClient.CommandExec = function(client) { 
+    this._client = client;
+};
+
+EchoRemoteClient.CommandExec.prototype.process = function(dirElement) {
+    alert("Command received....processor not implemented.");
+};
+
 EchoRemoteClient.ComponentSync = function(client) { 
     this._client = client;
     this._referenceMap = new Object();
@@ -608,10 +616,10 @@ EchoRemoteClient.ServerMessage.prototype._processPostLibraryLoad = function() {
             var processor = this._processorInstances[procName];
             if (!processor) {
                 // Create new processor instance.
-                processor = new EchoRemoteClient.ServerMessage._processorClasses[procName](this.client);
-                if (!processor) {
+                if (!EchoRemoteClient.ServerMessage._processorClasses[procName]) {
                     throw new Error("Invalid processor specified in ServerMessage: " + procName);
                 }
+                processor = new EchoRemoteClient.ServerMessage._processorClasses[procName](this.client);
                 this._processorInstances[procName] = processor;
             }
             processor.process(dirElements[j]);
@@ -632,5 +640,6 @@ EchoRemoteClient.ServerMessage.prototype.removeCompletionListener = function(l) 
 };
 
 EchoRemoteClient.ServerMessage.addProcessor("CSync", EchoRemoteClient.ComponentSync);
+EchoRemoteClient.ServerMessage.addProcessor("CmdExec", EchoRemoteClient.CommandExec);
 
 EchoWebCore.DOM.addEventListener(window, "resize", EchoRemoteClient._globalWindowResizeListener, false);
