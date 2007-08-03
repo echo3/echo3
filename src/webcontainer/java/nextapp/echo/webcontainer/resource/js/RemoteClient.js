@@ -428,6 +428,8 @@ EchoRemoteClient.CommandExecProcessor.prototype.process = function(dirElement) {
         }
         
         var commandPeer = EchoRemoteClient.CommandExecProcessor._typeToPeerMap[type];
+        //FIXME. commands may not be executed here.  They must be loaded into a queue and
+        // executed after updates by the Renderer.
         commandPeer.execute(this._client, commandData);
         cmdElement = cmdElement.nextSibling;
     }
