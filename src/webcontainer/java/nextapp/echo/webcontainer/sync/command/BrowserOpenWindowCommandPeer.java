@@ -70,6 +70,11 @@ extends AbstractCommandSynchronizePeer {
                 return ((BrowserOpenWindowCommand) command).getHeight();
             }
         });
+        addProperty("flags", new AbstractCommandSynchronizePeer.PropertyPeer() {
+            public Object getProperty(Context context, Command command) {
+                return new Integer(((BrowserOpenWindowCommand) command).getFlags());
+            }
+        });
     }
     
     public void init(Context context) {

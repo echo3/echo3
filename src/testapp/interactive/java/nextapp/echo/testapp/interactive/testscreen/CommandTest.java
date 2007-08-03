@@ -87,7 +87,7 @@ public class CommandTest extends Column {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().enqueueCommand(
                         new BrowserOpenWindowCommand("http://www.nextapp.com/platform/echo3/", 
-                        "auxwindow", new Extent(640), new Extent(240), true));
+                        "auxwindow", new Extent(640), new Extent(240), BrowserOpenWindowCommand.FLAG_REPLACE));
             }
         });
         add(button);
@@ -98,7 +98,21 @@ public class CommandTest extends Column {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().enqueueCommand(
                         new BrowserOpenWindowCommand("http://www.nextapp.com/platform/echo3/", 
-                        "auxwindow", new Extent(40, Extent.PERCENT), new Extent(60, Extent.PERCENT), true));
+                        "auxwindow", new Extent(40, Extent.PERCENT), new Extent(60, Extent.PERCENT),
+                        BrowserOpenWindowCommand.FLAG_REPLACE));
+            }
+        });
+        add(button);
+        button = new Button("Enqueue 40% x 60% Named Window Open Command with MenuBar, Toolbar, Status, Location, Resizable");
+        button.setStyleName("Default");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                getApplicationInstance().enqueueCommand(
+                        new BrowserOpenWindowCommand("http://www.nextapp.com/platform/echo3/", 
+                        "auxwindow", new Extent(40, Extent.PERCENT), new Extent(60, Extent.PERCENT),
+                        BrowserOpenWindowCommand.FLAG_REPLACE | BrowserOpenWindowCommand.FLAG_MENUBAR |
+                        BrowserOpenWindowCommand.FLAG_TOOLBAR | BrowserOpenWindowCommand.FLAG_LOCATION | 
+                        BrowserOpenWindowCommand.FLAG_STATUS | BrowserOpenWindowCommand.FLAG_RESIZABLE));
             }
         });
         add(button);

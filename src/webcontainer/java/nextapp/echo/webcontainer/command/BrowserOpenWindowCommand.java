@@ -40,23 +40,28 @@ import nextapp.echo.app.Extent;
  */  
 public class BrowserOpenWindowCommand 
 implements Command {
-
+    
+    public static final int FLAG_REPLACE = 0x1;
+    public static final int FLAG_MENUBAR = 0x2;
+    public static final int FLAG_TOOLBAR = 0x4;
+    public static final int FLAG_LOCATION = 0x8;
+    public static final int FLAG_STATUS = 0x10;
+    public static final int FLAG_RESIZABLE = 0x20;
+    
     private String uri;
     private String name;
     private Extent width;
     private Extent height;
-    private boolean replace;
+    private int flags;
     
     /**
      * Creates a new <code>BrowserOpenWindowCommand</code>.
      * 
      * @param uri the target URI
      * @param name the window name (may be null)
-     * @param features the 'features' string which will be used to configure the
-     *        new browser window (may be null)
      */
     public BrowserOpenWindowCommand(String uri, String name) {
-        this(uri, name, null, null, false);
+        this(uri, name, null, null, 0);
     }
     
     /**
@@ -64,18 +69,25 @@ implements Command {
      * 
      * @param uri the target URI
      * @param name the window name (may be null)
-     * @param features the 'features' string which will be used to configure the
-     *        new browser window (may be null)
-     * @param replace a flag indicating whether the new URI should replace the
-     *        previous URI in the window's history.  This flag is only relevant
-     *        when using this command to replace a browser window.
+     * @param width the window width (may be null)
+     * @param height the window width (may be null)
+     * @param flags the configuration flags, zero or more of the following values ORed together:
+     *        <ul>
+     *         <li><code>FLAG_REPLACE</code></li>
+     *         <li><code>FLAG_MENUBAR</code></li>
+     *         <li><code>FLAG_TOOLBAR</code></li>
+     *         <li><code>FLAG_LOCATION</code></li>
+     *         <li><code>FLAG_STATUS</code></li>
+     *         <li><code>FLAG_RESIZABLE</code></li>
+     *        </ul>
      */
-    public BrowserOpenWindowCommand(String uri, String name, Extent width, Extent height, boolean replace) {
+    public BrowserOpenWindowCommand(String uri, String name, Extent width, Extent height, int flags) {
         super();
         this.uri = uri;
         this.name = name;
         this.width = width;
         this.height = height;
+        this.flags = flags;
     }
     
     /**
@@ -115,11 +127,19 @@ implements Command {
     }
     
     /**
-     * Determines if the new URI should replace the old one in the history.
+     * Returns the configuration flags, zero or more of the following values ORed together:
+     * <ul>
+     *  <li><code>FLAG_REPLACE</code></li>
+     *  <li><code>FLAG_MENUBAR</code></li>
+     *  <li><code>FLAG_TOOLBAR</code></li>
+     *  <li><code>FLAG_LOCATION</code></li>
+     *  <li><code>FLAG_STATUS</code></li>
+     *  <li><code>FLAG_RESIZABLE</code></li>
+     * </ul>
      * 
-     * @return true if the new URI should replace the old one in the history
+     * @return the configuration flags
      */
-    public boolean isReplace() {
-        return replace;
+    public int getFlags() {
+        return flags;
     }
 }
