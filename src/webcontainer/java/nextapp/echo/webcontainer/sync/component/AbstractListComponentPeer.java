@@ -306,6 +306,6 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
             selection[i] = Integer.parseInt(st.nextToken());
         }
         ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
-        clientUpdateManager.setComponentProperty(component, "selection", selection);
+        clientUpdateManager.setComponentProperty(component, AbstractListComponent.SELECTION_CHANGED_PROPERTY, selection);
     }
 }
