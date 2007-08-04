@@ -61,13 +61,17 @@ public class Synchronization {
             // Dispose removed children.
             disposedComponents = updates[i].getRemovedChildren();
             for (int j = 0; j < disposedComponents.length; ++j) {
-                userInstance.removeRenderState(disposedComponents[j]);
+                if (!(disposedComponents[j].isRegistered() && disposedComponents[j].isRenderVisible())) {
+                    userInstance.removeRenderState(disposedComponents[j]);
+                }
             }
             
             // Dispose descendants.
             disposedComponents = updates[i].getRemovedDescendants();
             for (int j = 0; j < disposedComponents.length; ++j) {
-                userInstance.removeRenderState(disposedComponents[j]);
+                if (!(disposedComponents[j].isRegistered() && disposedComponents[j].isRenderVisible())) {
+                    userInstance.removeRenderState(disposedComponents[j]);
+                }
             }
         }
     }
