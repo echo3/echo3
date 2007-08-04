@@ -76,11 +76,6 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
         return selection;
     }
 
-    /**
-     * Service for <code>ListSelectionModel</code>.
-     */
-    public static final Service LIST_SELECTION_MODEL_SERVICE = JavaScriptService.forResource("Echo.ListSelectionModel", 
-            "/nextapp/echo/webcontainer/resource/js/Application.ListSelectionModel.js");
     private static final Service TABLE_SERVICE = JavaScriptService.forResource("Echo.RemoteTable", 
             "/nextapp/echo/webcontainer/resource/js/Render.RemoteTable.js");
     
@@ -96,7 +91,6 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     private static final String[] MODEL_CHANGED_UPDATE_PROPERTIES = new String[] { PROPERTY_ROW_COUNT, PROPERTY_COLUMN_COUNT };
     
     static {
-        WebContainerServlet.getServiceRegistry().add(LIST_SELECTION_MODEL_SERVICE);
         WebContainerServlet.getServiceRegistry().add(TABLE_SERVICE);
     }
     
@@ -129,7 +123,7 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
      */
     public void init(Context context) {
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
-        serverMessage.addLibrary(LIST_SELECTION_MODEL_SERVICE.getId());
+        serverMessage.addLibrary(AbstractListComponentPeer.LIST_SELECTION_MODEL_SERVICE.getId());
         serverMessage.addLibrary(TABLE_SERVICE.getId());
     }
     

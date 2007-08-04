@@ -10,13 +10,26 @@ EchoRender.ComponentSync.SelectListComponent = function() { };
 EchoRender.ComponentSync.SelectListComponent.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 EchoRender.ComponentSync.SelectListComponent.prototype._processChange = function(e) {
+    if (!this.component.isActive()) {
+        EchoWebCore.DOM.preventEventDefault(e);
+        return;
+    }
+    var selectElement = e.registeredTarget;
+    if (this.component.getProperty("selectionMode") == EchoApp.ListSelectionModel.MULTIPLE_SELECTION) {
+        for (var i = 0; i < selectElement.options.length; ++i) {
+        }
+    } else {
+      //  selectElement.selectedIndex;
+    }
+    //this.component.setProperty("text", );
+    this.component.fireEvent(new EchoCore.Event(this.component, "action"));
 };
 
 EchoRender.ComponentSync.SelectListComponent.prototype._renderMain = function(update, parentElement, size) {
     this._selectElement = document.createElement("select");
     this._selectElement.size = size;
-    if (this.component.getProperty("selectionMode") == 2) {
-        this._selectElement.setAttribute("multiple", "multiple");
+    if (this.component.getProperty("selectionMode") == EchoApp.ListSelectionModel.MULTIPLE_SELECTION) {
+        this._selectElement.multiple = "multiple";
     }
     
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._selectElement);

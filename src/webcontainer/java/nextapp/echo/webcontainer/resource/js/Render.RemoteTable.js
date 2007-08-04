@@ -346,11 +346,13 @@ EchoRender.ComponentSync.RemoteTable.prototype._processClick = function(e) {
     
     EchoWebCore.DOM.preventEventDefault(e);
 
-    if (this.selectionModel.isSingleSelection() || !(e.shiftKey || e.ctrlKey || e.metaKey || e.altKey)) {
+    if (this.selectionModel.getSelectionMode() == EchoApp.ListSelectionModel.SINGLE_SELECTION 
+            || !(e.shiftKey || e.ctrlKey || e.metaKey || e.altKey)) {
         this._clearSelected();
     }
 
-    if (!this.selectionModel.isSingleSelection() && e.shiftKey && this.lastSelectedIndex != -1) {
+    if (!this.selectionModel.getSelectionMode() == EchoApp.ListSelectionModel.SINGLE_SELECTION 
+            && e.shiftKey && this.lastSelectedIndex != -1) {
         var startIndex;
         var endIndex;
         if (this.lastSelectedIndex < rowIndex) {
