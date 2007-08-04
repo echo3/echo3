@@ -29,6 +29,10 @@
 
 package nextapp.echo.webcontainer.sync.component;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -44,15 +48,22 @@ import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.serial.property.ColorPeer;
+import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
 import nextapp.echo.webcontainer.ServerMessage;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
+import nextapp.echo.webcontainer.util.MultiIterator;
 
 public abstract class AbstractListComponentPeer extends AbstractComponentSynchronizePeer  {
     
+    public Class getComponentClass() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     private class ListData {
 
         private ListModel model;
@@ -189,12 +200,13 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
     }
 
     private static final String PROPERTY_DATA = "data";
+    private static final String PROPERTY_SELECTION = "selection";
     private static final String PROPERTY_SELECTION_MODE = "selectionMode";
     
     public AbstractListComponentPeer() {
         super();
-        addOutputProperty(AbstractListComponent.SELECTION_CHANGED_PROPERTY);
         addOutputProperty(PROPERTY_DATA);
+        addOutputProperty(PROPERTY_SELECTION);
         addOutputProperty(PROPERTY_SELECTION_MODE);
         setOutputPropertyReferenced(PROPERTY_DATA, true);
     }
@@ -206,8 +218,6 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
     public String getOutputPropertyMethodName(Context context, Component component, String propertyName) {
         if (PROPERTY_DATA.equals(propertyName)) {
             return "updateListData";
-        } else if (AbstractListComponent.SELECTION_CHANGED_PROPERTY.equals(propertyName)) {
-            return "updateSelection";
         }
         return super.getOutputPropertyMethodName(context, component, propertyName);
     }
@@ -219,13 +229,35 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
     public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex) {
         if (PROPERTY_DATA.equals(propertyName)) {
             return new ListData((AbstractListComponent) component);
-        } else if (AbstractListComponent.SELECTION_CHANGED_PROPERTY.equals(propertyName)) {
+        } else if (PROPERTY_SELECTION.equals(propertyName)) {
             return getSelectionString(((AbstractListComponent) component).getSelectionModel());
         } else if (PROPERTY_SELECTION_MODE.equals(propertyName)) {
             int selectionMode = ((AbstractListComponent) component).getSelectionModel().getSelectionMode();
             return new Integer(selectionMode);
         }
         return super.getOutputProperty(context, component, propertyName, propertyIndex);
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getUpdatedOutputPropertyNames(
+     *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, nextapp.echo.app.update.ServerComponentUpdate)
+     */
+    public Iterator getUpdatedOutputPropertyNames(Context context, Component component, ServerComponentUpdate update) {
+        Set additionalPropertyNames = new HashSet();
+        if (update.hasUpdatedProperty(AbstractListComponent.SELECTION_CHANGED_PROPERTY)) {
+            additionalPropertyNames.add(PROPERTY_SELECTION);
+        }
+        if (update.hasUpdatedProperty(AbstractListComponent.SELECTION_MODEL_CHANGED_PROPERTY)) {
+            additionalPropertyNames.add(PROPERTY_SELECTION);
+            additionalPropertyNames.add(PROPERTY_SELECTION_MODE);
+        }
+        if (update.hasUpdatedProperty(AbstractListComponent.LIST_MODEL_CHANGED_PROPERTY)) {
+            additionalPropertyNames.remove(AbstractListComponent.LIST_MODEL_CHANGED_PROPERTY);
+            additionalPropertyNames.add(PROPERTY_DATA);
+        }
+        return new MultiIterator(new Iterator[]{
+                super.getUpdatedOutputPropertyNames(context, component, update), 
+                additionalPropertyNames.iterator()});
     }
 
     /**

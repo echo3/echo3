@@ -2610,6 +2610,16 @@ EchoApp.ListBox = function(renderId) {
 EchoApp.ListBox.prototype = EchoCore.derive(EchoApp.Component);
 
 /**
+ * Constant for "selectionMode" property indicating single selection.
+ */
+EchoApp.ListBox.SINGLE_SELECTION = 0;
+
+/**
+ * Constant for "selectionMode" property indicating multiple selection.
+ */
+EchoApp.ListBox.MULTIPLE_SELECTION = 2;
+
+/**
  * Creates a new Row.
  * 
  * @constructor

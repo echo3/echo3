@@ -15,20 +15,26 @@ EchoRender.ComponentSync.SelectListComponent.prototype._processChange = function
         return;
     }
     var selectElement = e.registeredTarget;
-    if (this.component.getProperty("selectionMode") == EchoApp.ListSelectionModel.MULTIPLE_SELECTION) {
+    var selection = new Array();
+    if (this.component.getProperty("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION) {
         for (var i = 0; i < selectElement.options.length; ++i) {
+            if (selectElement.options[i].selected) {
+                selection.push(i);
+            }
         }
     } else {
-      //  selectElement.selectedIndex;
+        if (selectElement.selectedIndex != -1) {
+            selection.push(selectElement.selectedIndex);
+        }
     }
-    //this.component.setProperty("text", );
+    this.component.setProperty("selection", selection.join(","));
     this.component.fireEvent(new EchoCore.Event(this.component, "action"));
 };
 
 EchoRender.ComponentSync.SelectListComponent.prototype._renderMain = function(update, parentElement, size) {
     this._selectElement = document.createElement("select");
     this._selectElement.size = size;
-    if (this.component.getProperty("selectionMode") == EchoApp.ListSelectionModel.MULTIPLE_SELECTION) {
+    if (this.component.getProperty("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION) {
         this._selectElement.multiple = "multiple";
     }
     
@@ -54,12 +60,14 @@ EchoRender.ComponentSync.SelectListComponent.prototype._renderMain = function(up
         }
     }
     
-    if (this.component.selection) {
-        var length = this._selectElement.childNodes.length;
-        for (var i = 0; i < this.component.selection.length; ++i) {
-            var index = this.component.selection[i];
-            if (index >= 0 && index < length) {
-                this._selectElement.childNodes[this.component.selection[i]].selected = true;
+    // Set selection.
+    var selectionString = this.component.getProperty("selection");
+    if (selectionString) {
+        var selectionArray = selectionString.split(",");
+        for (var i = 0; i < selectionArray.length; ++i) {
+            var index = selectionArray[i];
+            if (index >= 0 && index < this._selectElement.childNodes.length) {
+                this._selectElement.childNodes[index].selected = "selected";
             }
         }
     }
