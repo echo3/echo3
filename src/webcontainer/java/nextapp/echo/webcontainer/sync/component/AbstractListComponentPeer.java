@@ -32,6 +32,7 @@ package nextapp.echo.webcontainer.sync.component;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,6 +49,7 @@ import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.serial.property.ColorPeer;
+import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
@@ -267,5 +269,43 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(LIST_SELECTION_MODEL_SERVICE.getId());
         serverMessage.addLibrary(LIST_COMPONENT_SERVICE.getId());
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getInputPropertyClass(java.lang.String)
+     */
+    public Class getInputPropertyClass(String propertyName) {
+        if (PROPERTY_SELECTION.equals(propertyName)) {
+            return String.class;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, int, java.lang.Object)
+     */
+    public void storeInputProperty(Context context, Component component, String propertyName, int index, Object newValue) {
+        int[] selection;
+        
+        String selectionString = (String) newValue;
+        int selectionStringLength  = selectionString.length();
+        if (selectionStringLength == 0) {
+            selection = new int[0];
+        } else {
+            int itemCount = 1;
+            for (int i = 1; i < selectionStringLength - 1; ++i) {
+                if (selectionString.charAt(i) == ',') {
+                    ++itemCount;
+                }
+            }
+            selection = new int[itemCount];
+        }
+        StringTokenizer st = new StringTokenizer(selectionString, ",");
+        for (int i = 0; i < selection.length; ++i) {
+            selection[i] = Integer.parseInt(st.nextToken());
+        }
+        ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
+        clientUpdateManager.setComponentProperty(component, "selection", selection);
     }
 }
