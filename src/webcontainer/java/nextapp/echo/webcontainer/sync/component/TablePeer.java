@@ -33,8 +33,6 @@ import java.util.Iterator;
 
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Table;
-import nextapp.echo.app.list.ListSelectionModel;
-import nextapp.echo.app.table.TableModel;
 import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.util.Context;
@@ -55,26 +53,6 @@ import nextapp.echo.webcontainer.util.MultiIterator;
  * @author n.beekman
  */
 public class TablePeer extends AbstractComponentSynchronizePeer {
-
-    private static String getSelectionString(ListSelectionModel selectionModel, TableModel model) {
-        String selection = "";
-        int minimumIndex = selectionModel.getMinSelectedIndex();
-        if (minimumIndex != -1) {
-            int maximumIndex = selectionModel.getMaxSelectedIndex();
-            if (maximumIndex > model.getRowCount() - 1) {
-                maximumIndex = model.getRowCount() - 1;
-            }
-            for (int i = minimumIndex; i <= maximumIndex; ++i) {
-                if (selectionModel.isSelectedIndex(i)) {
-                    if (selection.length() > 0) {
-                        selection += ",";
-                    }
-                    selection += Integer.toString(i);
-                }
-            }
-        }
-        return selection;
-    }
 
     private static final Service TABLE_SERVICE = JavaScriptService.forResource("Echo.RemoteTable", 
             "/nextapp/echo/webcontainer/resource/js/Render.RemoteTable.js");
@@ -119,15 +97,6 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
-     */
-    public void init(Context context) {
-        ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
-        serverMessage.addLibrary(AbstractListComponentPeer.LIST_SELECTION_MODEL_SERVICE.getId());
-        serverMessage.addLibrary(TABLE_SERVICE.getId());
-    }
-    
-    /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getImmediateEventTypes(Context, nextapp.echo.app.Component)
      */
     public Iterator getImmediateEventTypes(Context context, Component component) {
@@ -136,34 +105,6 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
             return new ArrayIterator(EVENT_TYPES_ACTION);
         }
         return super.getImmediateEventTypes(context, component);
-    }
-
-    /**
-     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputPropertyIndices(nextapp.echo.app.util.Context,
-     *      nextapp.echo.app.Component, java.lang.String)
-     */
-    public Iterator getOutputPropertyIndices(Context context, Component component, String propertyName) {
-        if (PROPERTY_COLUMN_WIDTH.equals(propertyName)) {
-            final Iterator columnIterator = ((Table) component).getColumnModel().getColumns();
-            return new Iterator() {
-                private int i = 0;
-            
-                public void remove() {
-                    throw new UnsupportedOperationException();
-                }
-            
-                public Object next() {
-                    columnIterator.next();
-                    return new Integer(i++);
-                }
-            
-                public boolean hasNext() {
-                    return columnIterator.hasNext();
-                }
-            };
-        } else {
-            return super.getOutputPropertyIndices(context, component, propertyName);
-        }
     }
     
     /**
@@ -175,7 +116,7 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
         }
         return super.getInputPropertyClass(propertyName);
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputProperty(
      *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, int)
@@ -191,11 +132,39 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
         } else if (PROPERTY_ROW_COUNT.equals(propertyName)) {
             return new Integer(table.getModel().getRowCount());
         } else if (PROPERTY_SELECTION.equals(propertyName)) {
-            return getSelectionString(table.getSelectionModel(), table.getModel());
+            return ListSelectionUtil.toString(table.getSelectionModel(), table.getModel().getRowCount());
         } else if (PROPERTY_SELECTION_MODE.equals(propertyName)) {
             return new Integer(table.getSelectionModel().getSelectionMode());
         }
         return super.getOutputProperty(context, component, propertyName, propertyIndex);
+    }
+    
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputPropertyIndices(nextapp.echo.app.util.Context,
+     *      nextapp.echo.app.Component, java.lang.String)
+     */
+    public Iterator getOutputPropertyIndices(Context context, Component component, String propertyName) {
+        if (PROPERTY_COLUMN_WIDTH.equals(propertyName)) {
+            final Iterator columnIterator = ((Table) component).getColumnModel().getColumns();
+            return new Iterator() {
+                private int i = 0;
+            
+                public boolean hasNext() {
+                    return columnIterator.hasNext();
+                }
+            
+                public Object next() {
+                    columnIterator.next();
+                    return new Integer(i++);
+                }
+            
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+            };
+        } else {
+            return super.getOutputPropertyIndices(context, component, propertyName);
+        }
     }
     
     /**
@@ -217,25 +186,12 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context,
-     *      nextapp.echo.app.Component, java.lang.String, int, java.lang.Object)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
      */
-    public void storeInputProperty(Context context, Component component, String propertyName, int index, Object newValue) {
-        if (PROPERTY_SELECTION.equals(propertyName)) {
-            int[] selectedIndices;
-            String tokensString = (String)newValue;
-            if (tokensString.length() == 0) {
-                selectedIndices = new int[0];
-            } else {
-                String[] tokens = (tokensString).split(",");
-                selectedIndices = new int[tokens.length];
-                for (int i = 0; i < tokens.length; ++i) {
-                    selectedIndices[i] = Integer.parseInt(tokens[i]);
-                }
-            }
-            ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
-            clientUpdateManager.setComponentProperty(component, Table.SELECTION_CHANGED_PROPERTY, selectedIndices);
-        }
+    public void init(Context context) {
+        ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
+        serverMessage.addLibrary(AbstractListComponentPeer.LIST_SELECTION_MODEL_SERVICE.getId());
+        serverMessage.addLibrary(TABLE_SERVICE.getId());
     }
     
     /**
@@ -245,6 +201,18 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
         if (Table.INPUT_ACTION.equals(eventType)) {
             ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
             clientUpdateManager.setComponentAction(component, Table.INPUT_ACTION, null);
+        }
+    }
+    
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context,
+     *      nextapp.echo.app.Component, java.lang.String, int, java.lang.Object)
+     */
+    public void storeInputProperty(Context context, Component component, String propertyName, int index, Object newValue) {
+        if (PROPERTY_SELECTION.equals(propertyName)) {
+            int[] selection = ListSelectionUtil.toIntArray((String) newValue);
+            ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
+            clientUpdateManager.setComponentProperty(component, Table.SELECTION_CHANGED_PROPERTY, selection);
         }
     }
 }

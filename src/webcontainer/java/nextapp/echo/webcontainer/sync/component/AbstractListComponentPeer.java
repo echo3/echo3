@@ -32,7 +32,6 @@ package nextapp.echo.webcontainer.sync.component;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -42,7 +41,6 @@ import nextapp.echo.app.Font;
 import nextapp.echo.app.list.AbstractListComponent;
 import nextapp.echo.app.list.ListCellRenderer;
 import nextapp.echo.app.list.ListModel;
-import nextapp.echo.app.list.ListSelectionModel;
 import nextapp.echo.app.list.StyledListCell;
 import nextapp.echo.app.serial.PropertyPeerFactory;
 import nextapp.echo.app.serial.SerialContext;
@@ -59,13 +57,15 @@ import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
 import nextapp.echo.webcontainer.util.MultiIterator;
 
+/**
+ * Abstract base synchronization peer for <code>AbstractListComponent</code>s.
+ */
 public abstract class AbstractListComponentPeer extends AbstractComponentSynchronizePeer  {
     
-    public Class getComponentClass() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+    /**
+     * Property object describing rendered list data, 
+     * i.e., the <code>ListModel</code> and </code>ListCellRenderer</code>. 
+     */
     private class ListData {
 
         private ListModel model;
@@ -109,6 +109,9 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
         }
     }
 
+    /**
+     * Server-to-client serialization peer for <code>ListData</code> objects.
+     */
     public static class ListDataPeer 
     implements SerialPropertyPeer {
 
@@ -164,28 +167,6 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
         }
     }
 
-    private static final String getSelectionString(ListSelectionModel selectionModel) {
-        int min = selectionModel.getMinSelectedIndex();
-        int max = selectionModel.getMaxSelectedIndex();
-        if (min == max || selectionModel.getSelectionMode() != ListSelectionModel.MULTIPLE_SELECTION) {
-            return Integer.toString(min);
-        } else {
-            StringBuffer out = new StringBuffer();
-            boolean commaRequired = false;
-            for (int i = min; i <= max; ++i) {
-                if (selectionModel.isSelectedIndex(i)) {
-                    if (commaRequired) {
-                        out.append(",");
-                    } else {
-                        commaRequired = true;
-                    }
-                    out.append(i);
-                }
-            }
-            return out.toString();
-        }
-    }
-
     /**
      * Service for <code>ListSelectionModel</code>.
      */
@@ -196,21 +177,53 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
             new String[] { "/nextapp/echo/webcontainer/resource/js/Render.List.js",
                            "/nextapp/echo/webcontainer/resource/js/RemoteClient.List.js" });
 
+    private static final String PROPERTY_DATA = "data";
+
+    private static final String PROPERTY_SELECTION = "selection";
+    private static final String PROPERTY_SELECTION_MODE = "selectionMode";
     static {
         WebContainerServlet.getServiceRegistry().add(LIST_COMPONENT_SERVICE);
         WebContainerServlet.getServiceRegistry().add(LIST_SELECTION_MODEL_SERVICE);
     }
-
-    private static final String PROPERTY_DATA = "data";
-    private static final String PROPERTY_SELECTION = "selection";
-    private static final String PROPERTY_SELECTION_MODE = "selectionMode";
     
+    /**
+     * Default constructor.
+     * Installs additional output properties.
+     */
     public AbstractListComponentPeer() {
         super();
         addOutputProperty(PROPERTY_DATA);
         addOutputProperty(PROPERTY_SELECTION);
         addOutputProperty(PROPERTY_SELECTION_MODE);
         setOutputPropertyReferenced(PROPERTY_DATA, true);
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getInputPropertyClass(java.lang.String)
+     */
+    public Class getInputPropertyClass(String propertyName) {
+        if (PROPERTY_SELECTION.equals(propertyName)) {
+            return String.class;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputProperty(
+     *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, int)
+     */
+    public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex) {
+        if (PROPERTY_DATA.equals(propertyName)) {
+            return new ListData((AbstractListComponent) component);
+        } else if (PROPERTY_SELECTION.equals(propertyName)) {
+            return ListSelectionUtil.toString(((AbstractListComponent) component).getSelectionModel(),
+                    ((AbstractListComponent) component).getModel().size());
+        } else if (PROPERTY_SELECTION_MODE.equals(propertyName)) {
+            int selectionMode = ((AbstractListComponent) component).getSelectionModel().getSelectionMode();
+            return new Integer(selectionMode);
+        }
+        return super.getOutputProperty(context, component, propertyName, propertyIndex);
     }
 
     /**
@@ -222,22 +235,6 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
             return "updateListData";
         }
         return super.getOutputPropertyMethodName(context, component, propertyName);
-    }
-
-    /**
-     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputProperty(
-     *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, int)
-     */
-    public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex) {
-        if (PROPERTY_DATA.equals(propertyName)) {
-            return new ListData((AbstractListComponent) component);
-        } else if (PROPERTY_SELECTION.equals(propertyName)) {
-            return getSelectionString(((AbstractListComponent) component).getSelectionModel());
-        } else if (PROPERTY_SELECTION_MODE.equals(propertyName)) {
-            int selectionMode = ((AbstractListComponent) component).getSelectionModel().getSelectionMode();
-            return new Integer(selectionMode);
-        }
-        return super.getOutputProperty(context, component, propertyName, propertyIndex);
     }
 
     /**
@@ -272,40 +269,14 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
     }
 
     /**
-     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getInputPropertyClass(java.lang.String)
-     */
-    public Class getInputPropertyClass(String propertyName) {
-        if (PROPERTY_SELECTION.equals(propertyName)) {
-            return String.class;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, int, java.lang.Object)
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#storeInputProperty(
+     *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, int, java.lang.Object)
      */
     public void storeInputProperty(Context context, Component component, String propertyName, int index, Object newValue) {
-        int[] selection;
-        
-        String selectionString = (String) newValue;
-        int selectionStringLength  = selectionString.length();
-        if (selectionStringLength == 0) {
-            selection = new int[0];
-        } else {
-            int itemCount = 1;
-            for (int i = 1; i < selectionStringLength - 1; ++i) {
-                if (selectionString.charAt(i) == ',') {
-                    ++itemCount;
-                }
-            }
-            selection = new int[itemCount];
+        if (PROPERTY_SELECTION.equals(propertyName)) {
+            int[] selection = ListSelectionUtil.toIntArray((String) newValue);
+            ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
+            clientUpdateManager.setComponentProperty(component, AbstractListComponent.SELECTION_CHANGED_PROPERTY, selection);
         }
-        StringTokenizer st = new StringTokenizer(selectionString, ",");
-        for (int i = 0; i < selection.length; ++i) {
-            selection[i] = Integer.parseInt(st.nextToken());
-        }
-        ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
-        clientUpdateManager.setComponentProperty(component, AbstractListComponent.SELECTION_CHANGED_PROPERTY, selection);
     }
 }
