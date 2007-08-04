@@ -36,16 +36,6 @@ EchoApp.ListSelectionModel.prototype.getSelectionMode = function() {
 };
 
 /**
- * Returns whether the model is in single-selection mode. 
- * 
- * @return true if in single-selection mode
- * @type Boolean
- */
-EchoApp.ListSelectionModel.prototype.isSingleSelection = function() {
-    return this._selectionMode == EchoApp.ListSelectionModel.SINGLE_SELECTION;
-};
-
-/**
  * Determines whether an index is selected.
  * 
  * @param {Number} index the index
