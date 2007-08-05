@@ -100,5 +100,14 @@ public class TextSyncTest extends SplitPane {
                 testColumn.remove(textArea);
             }
         });
+        
+        controlsColumn.addButton("3 Second Server Interaction Delay; Add Component", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException ex) { }
+                testColumn.add(new Label("Added test label."));
+            }
+        });
     }
 }
