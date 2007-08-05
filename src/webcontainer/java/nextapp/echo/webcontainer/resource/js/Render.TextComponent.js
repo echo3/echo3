@@ -46,7 +46,13 @@ EchoRender.ComponentSync.TextComponent.prototype._processKeyUp = function(e) {
         return;
     }
     this._sanitizeInput();
-    this.component.setProperty("text", e.registeredTarget.value);
+    
+    // Store last updated text in local value, to ensure that we do not attempt to
+    // reset it to this value in renderUpdate() and miss any characters that were
+    // typed between repaints.
+    this._text = e.registeredTarget.value;
+    
+    this.component.setProperty("text", this._text);
     if (e.keyCode == 13) {
 	    this.component.fireEvent(new EchoCore.Event(this.component, "action"));
     }
@@ -64,7 +70,10 @@ EchoRender.ComponentSync.TextComponent.prototype.renderUpdate = function(update)
         this.renderAdd(update, containerElement);
     } else {
         if (update.hasUpdatedProperties()) {
-            this._textComponentElement.value = update.getUpdatedProperty("text").newValue;
+            var newText = update.getUpdatedProperty("text").newValue;
+            if (newText != this._text) {
+                this._textComponentElement.value = newText;
+            }
         }
     }
     
