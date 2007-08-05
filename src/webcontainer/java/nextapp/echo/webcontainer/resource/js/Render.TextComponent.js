@@ -5,6 +5,8 @@ EchoRender.ComponentSync.TextComponent = function() { };
 
 EchoRender.ComponentSync.TextComponent.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
+EchoRender.ComponentSync.TextComponent._supportedPartialProperties = new Array("text");
+
 EchoRender.ComponentSync.TextComponent.prototype._renderStyle = function() {
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._textComponentElement);
     EchoRender.Property.Color.renderFB(this.component, this._textComponentElement);
@@ -51,11 +53,21 @@ EchoRender.ComponentSync.TextComponent.prototype._processKeyUp = function(e) {
 };
 
 EchoRender.ComponentSync.TextComponent.prototype.renderUpdate = function(update) {
-    var element = this._textComponentElement;
-    var containerElement = element.parentNode;
-    this.renderDispose(update);
-    containerElement.removeChild(element);
-    this.renderAdd(update, containerElement);
+    var fullRender =  !EchoCore.Arrays.containsAll(EchoRender.ComponentSync.TextComponent._supportedPartialProperties, 
+                update.getUpdatedPropertyNames(), true);
+
+    if (fullRender) {
+        var element = this._textComponentElement;
+        var containerElement = element.parentNode;
+        this.renderDispose(update);
+        containerElement.removeChild(element);
+        this.renderAdd(update, containerElement);
+    } else {
+        if (update.hasUpdatedProperties()) {
+            this._textComponentElement.value = update.getUpdatedProperty("text").newValue;
+        }
+    }
+    
     return false; // Child elements not supported: safe to return false.
 };
 
