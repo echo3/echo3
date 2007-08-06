@@ -29,7 +29,6 @@
 
 package nextapp.echo.webcontainer;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.Map;
 

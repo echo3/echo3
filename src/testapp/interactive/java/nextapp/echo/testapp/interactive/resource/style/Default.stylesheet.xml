@@ -9,6 +9,7 @@
  <s n="Default" t="nextapp.echo.app.Table">
   <p n="insets" t="Insets" v="2px 5px"/>
   <p n="border" t="Border" v="2px groove #afffaf"/>
+  <p n="width" t="Extent" v="100%"/>
  </s>
  <s n="EvenCellLabel" t="nextapp.echo.app.Label">
   <p n="layoutData" t="nextapp.echo.app.layout.TableLayoutData">
