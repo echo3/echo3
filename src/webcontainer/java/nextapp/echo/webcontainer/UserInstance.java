@@ -31,7 +31,9 @@ package nextapp.echo.webcontainer;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionActivationListener;
@@ -41,6 +43,7 @@ import javax.servlet.http.HttpSessionEvent;
 
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Component;
+import nextapp.echo.app.TaskQueueHandle;
 import nextapp.echo.app.update.UpdateManager;
 import nextapp.echo.webcontainer.util.IdTable;
 
@@ -50,6 +53,11 @@ import nextapp.echo.webcontainer.util.IdTable;
  */
 public class UserInstance 
 implements HttpSessionActivationListener, HttpSessionBindingListener, Serializable {
+
+    /**
+     * Default asynchronous monitor callback interval (in milliseconds).
+     */
+    private static final int DEFAULT_CALLBACK_INTERVAL = 500;
     
     public static final String PROPERTY_CLIENT_CONFIGURATION = "clientConfiguration";
 
@@ -118,6 +126,11 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * <code>UserInstance</code> is stored.
      */
     private transient HttpSession session;
+
+    /**
+     * Map of <code>TaskQueueHandle</code>s to callback intervals.
+     */
+    private transient Map taskQueueToCallbackIntervalMap;
     
     /**
      * The current transactionId.  Used to ensure incoming ClientMessages reflect
@@ -155,6 +168,32 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         return applicationInstance;
     }
     
+    //BUGBUG. current method of iterating weak-keyed map of task queues
+    // is not adequate.  If the application were to for whatever reason hold on
+    // to a dead task queue, its interval setting would effect the
+    // calculation.
+    // One solution: add a getTaskQueues() method to ApplicationInstance
+    /**
+     * Determines the application-specified asynchronous monitoring
+     * service callback interval.
+     * 
+     * @return the callback interval, in ms
+     */
+    public int getCallbackInterval() {
+        if (taskQueueToCallbackIntervalMap == null || taskQueueToCallbackIntervalMap.size() == 0) {
+            return DEFAULT_CALLBACK_INTERVAL;
+        }
+        Iterator it = taskQueueToCallbackIntervalMap.values().iterator();
+        int returnInterval = Integer.MAX_VALUE;
+        while (it.hasNext()) {
+            int interval = ((Integer) it.next()).intValue();
+            if (interval < returnInterval) {
+                returnInterval = interval;
+            }
+        }
+        return returnInterval;
+    }
+
     /**
      * Returns the default character encoding in which responses should be
      * rendered.
@@ -376,6 +415,9 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         WebContainerServlet servlet = (WebContainerServlet) conn.getServlet();
         applicationInstance = servlet.newApplicationInstance();
         
+        ContainerContext containerContext = new ContainerContextImpl(this);
+        applicationInstance.setContextProperty(ContainerContext.CONTEXT_PROPERTY_NAME, containerContext);
+        
         try {
             ApplicationInstance.setActive(applicationInstance);
             applicationInstance.doInit();
@@ -459,6 +501,26 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         componentToRenderStateMap.put(component, renderState);
     }
 
+    /**
+     * Sets the interval between asynchronous callbacks from the client to check
+     * for queued tasks for a given <code>TaskQueue</code>.  If multiple 
+     * <code>TaskQueue</code>s are active, the smallest specified interval should
+     * be used.  The default interval is 500ms.
+     * Application access to this method should be accessed via the 
+     * <code>ContainerContext</code>.
+     * 
+     * @param taskQueue the <code>TaskQueue</code>
+     * @param ms the number of milliseconds between asynchronous client 
+     *        callbacks
+     * @see nextapp.echo2.webcontainer.ContainerContext#setTaskQueueCallbackInterval(nextapp.echo2.app.TaskQueueHandle, int)
+     */
+    public void setTaskQueueCallbackInterval(TaskQueueHandle taskQueue, int ms) {
+        if (taskQueueToCallbackIntervalMap == null) {
+            taskQueueToCallbackIntervalMap = new WeakHashMap();
+        }
+        taskQueueToCallbackIntervalMap.put(taskQueue, new Integer(ms));
+    }
+    
     /**
      * Sets the URI of the servlet managing this <code>UserInstance</code>.
      * 
