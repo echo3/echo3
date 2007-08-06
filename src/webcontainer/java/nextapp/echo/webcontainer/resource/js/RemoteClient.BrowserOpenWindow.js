@@ -42,7 +42,7 @@ EchoRemoteClient.CommandExec.BrowserOpenWindow.execute = function(client, comman
     features.push("resizable=" + (commandData.flags 
             & EchoRemoteClient.CommandExec.BrowserOpenWindow.FLAG_RESIZABLE ? "yes" : "no"));
     
-    window.open(commandData.uri, commandData.name, features.join(","));
+    window.open(commandData.uri, commandData.name, features.join(","), replace);
 };
 
 EchoRemoteClient.CommandExecProcessor.registerPeer("nextapp.echo.webcontainer.command.BrowserOpenWindowCommand", 
