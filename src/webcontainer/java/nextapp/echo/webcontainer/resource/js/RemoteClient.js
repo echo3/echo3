@@ -456,6 +456,9 @@ EchoRemoteClient.CommandExecProcessor.prototype.process = function(dirElement) {
     while (cmdElement) {
         var type = cmdElement.getAttribute("t");
         var commandPeer = EchoRemoteClient.CommandExecProcessor._typeToPeerMap[type];
+        if (!commandPeer) {
+	        throw new Error("Peer not found for: " + type);
+        }
         var commandData = new Object();
         var pElement = cmdElement.firstChild;
         while (pElement) {
