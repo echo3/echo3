@@ -355,9 +355,11 @@ EchoRemoteClient.AsyncManager.prototype._stop = function() {
 EchoRemoteClient.ClientMessage = function(client, initialize) {
     this._client = client;
     this._componentIdToPropertyMap = new EchoCore.Collections.Map();
-    this._initialize = initialize;
     
     this._document = EchoWebCore.DOM.createDocument("http://www.nextapp.com/products/echo/svrmsg/clientmessage.3.0", "cmsg");
+    if (initialize) {
+        this._document.documentElement.setAttribute("t", "init");
+    }
 };
 
 EchoRemoteClient.ClientMessage.prototype.setEvent = function(componentId, eventType, eventData) {
@@ -376,10 +378,6 @@ EchoRemoteClient.ClientMessage.prototype.storeProperty = function(componentId, p
 };
 
 EchoRemoteClient.ClientMessage.prototype._renderCSync = function() {
-    if (this._initialize) {
-        this._document.documentElement.setAttribute("t", "init");
-    }
-    
     var cSyncElement = this._document.createElement("dir");
     cSyncElement.setAttribute("proc", "CSync");
     
