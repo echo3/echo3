@@ -455,7 +455,9 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      */
     public void sessionDidActivate(HttpSessionEvent e) {
         session = e.getSession();
-        applicationInstance.activate();
+        if (applicationInstance != null) {
+            applicationInstance.activate();
+        }
     }
 
     /**
@@ -465,7 +467,9 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * Discards reference to session.
      */
     public void sessionWillPassivate(HttpSessionEvent e) {
-        applicationInstance.passivate();
+        if (applicationInstance != null) {
+            applicationInstance.passivate();
+        }
         session = null;
     }
 
