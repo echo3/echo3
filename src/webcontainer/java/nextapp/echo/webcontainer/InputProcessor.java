@@ -30,24 +30,24 @@
 package nextapp.echo.webcontainer;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import nextapp.echo.app.Component;
 import nextapp.echo.app.serial.PropertyPeerFactory;
 import nextapp.echo.app.serial.SerialContext;
-import nextapp.echo.app.serial.SerialException;
-import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.update.UpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
+import nextapp.echo.webcontainer.util.XmlRequestParser;
 
 public class InputProcessor {
-
+    
+    static {
+        ClientMessage.register("CSync", ComponentInputProcessor.class);
+    }
+    
     private class InputContext implements Context {
         
         private SerialContext serialContext = new SerialContext() {
@@ -96,11 +96,11 @@ public class InputProcessor {
     
     public void process() 
     throws IOException {
-        clientMessage = new ClientMessage(conn);
-
-        Context context = new InputContext();
+        Document document = XmlRequestParser.parse(conn.getRequest(), conn.getUserInstance().getCharacterEncoding());        
+        clientMessage = new ClientMessage(document);
         UserInstance userInstance = conn.getUserInstance();
         UpdateManager updateManager = userInstance.getUpdateManager();
+        Context context = new InputContext();
         
         if (ClientMessage.TYPE_INITIALIZE.equals(clientMessage.getType())) {
             // Flag full refresh if initializing.
@@ -115,66 +115,7 @@ public class InputProcessor {
                 throw new RuntimeException(ex);
             }
         }
-
-        Iterator updatedComponentIdIt  = clientMessage.getUpdatedComponentIds();
-        while (updatedComponentIdIt.hasNext()) {
-            String componentId = (String) updatedComponentIdIt.next();
-            Component component = userInstance.getComponentByClientRenderId(componentId);
-            ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
-            
-            Iterator updatedPropertyIt = clientMessage.getUpdatedPropertyNames(componentId);
-            while (updatedPropertyIt.hasNext()) {
-                String propertyName = (String) updatedPropertyIt.next();
-                Element propertyElement = clientMessage.getUpdatedProperty(componentId, propertyName);
-
-                Class propertyClass = componentPeer.getInputPropertyClass(propertyName);
-                if (propertyClass == null) {
-                    //FIXME. add ex handling.
-                    System.err.println("Could not determine class of property: " + propertyName);
-                    continue;
-                }
-                
-                SerialPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(propertyClass);
-                
-                if (propertyPeer == null) {
-                    //FIXME. add ex handling.
-                    System.err.println("No peer available for property: " + propertyName + " of class: " + propertyClass);
-                    continue;
-                }
-                
-                try {
-                    Object propertyValue = propertyPeer.toProperty(context, component.getClass(), propertyElement);
-                    componentPeer.storeInputProperty(context, component, propertyName, -1, propertyValue);
-                } catch (SerialException ex) {
-                    //FIXME. bad ex handling.
-                    throw new IOException(ex.toString());
-                }
-            }
-        }
         
-        if (clientMessage.getEvent() != null) {
-            Component component = userInstance.getComponentByClientRenderId(clientMessage.getEventComponentId());
-            ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
-            Class eventDataClass = componentPeer.getEventDataClass(clientMessage.getEventType());
-            if (eventDataClass == null) {
-                componentPeer.processEvent(context, component, clientMessage.getEventType(), null);
-            } else {
-                SerialPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(eventDataClass);
-                if (propertyPeer == null) {
-                    //FIXME. add ex handling.
-                    System.err.println("No peer available for event data for event type: " + clientMessage.getEventType() 
-                            + " of class: " + eventDataClass);
-                }
-                try {
-                    Object eventData = propertyPeer.toProperty(context, component.getClass(), clientMessage.getEvent());
-                    componentPeer.processEvent(context, component, clientMessage.getEventType(), eventData);
-                } catch (SerialException ex) {
-                    //FIXME. bad ex handling.
-                    throw new IOException(ex.toString());
-                }
-            }
-        }
-
-        updateManager.processClientUpdates();
+        clientMessage.process(context);
     }
 }

@@ -31,11 +31,10 @@ package nextapp.echo.webcontainer;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
+import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
-import nextapp.echo.webcontainer.util.XmlRequestParser;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -43,46 +42,31 @@ import org.w3c.dom.Element;
 public class ClientMessage {
     
     public static final String TYPE_INITIALIZE = "init";
+    
+    public static interface Processor {
+        
+        public String getProcessorName();
+        
+        public void process(Context context, Element dirElement)
+        throws IOException ;
+    }
 
+    private static final Map processorNameToClass = new HashMap();
+    
+    public static void register(String name, Class processorClass) {
+        processorNameToClass.put(name, processorClass);
+    }
+    
     private Document document;
     private String type;
-    private Map componentUpdateMap = new HashMap();
     
-    private String eventType;
-    private Element eventElement;
-    private String eventComponentId;
-    
-    public ClientMessage(Connection conn) 
+    public ClientMessage(Document document) 
     throws IOException {
         super();
-        
-        document = XmlRequestParser.parse(conn.getRequest(), conn.getUserInstance().getCharacterEncoding());
 
         // Retrieve message type.
+        this.document = document;
         type = document.getDocumentElement().getAttribute("t");
-        
-        Element[] dirElements = DomUtil.getChildElementsByTagName(document.getDocumentElement(), "dir");
-        
-        for (int i = 0; i < dirElements.length; ++i) {
-            String processorName = dirElements[i].getAttribute("proc");
-            if ("CSync".equals(processorName)) {
-                processComponentSynchronize(dirElements[i]);
-            }
-        }
-    }
-
-    public Iterator getUpdatedComponentIds() {
-        return componentUpdateMap.keySet().iterator();
-    }
-    
-    public Iterator getUpdatedPropertyNames(String componentId) {
-        Map propertyMap = (Map) componentUpdateMap.get(componentId);
-        return propertyMap.keySet().iterator();
-    }
-    
-    public Element getUpdatedProperty(String componentId, String propertyName) {
-        Map propertyMap = (Map) componentUpdateMap.get(componentId);
-        return (Element) propertyMap.get(propertyName);
     }
     
     public Document getDocument() {
@@ -93,39 +77,26 @@ public class ClientMessage {
         return type;
     }
     
-    public Element getEvent() {
-        return eventElement;
-    }
-    
-    public String getEventType() {
-        return eventType;
-    }
-    
-    public String getEventComponentId() {
-        return eventComponentId;
-    }
-    
-    private void processComponentSynchronize(Element dirElement) {
-        // Retrieve event.
-        eventElement = DomUtil.getChildElementByTagName(dirElement, "e");
-        if (eventElement != null) {
-            eventType = eventElement.getAttribute("t");
-            eventComponentId = eventElement.getAttribute("i");
-        }
-        
-        // Retrieve property updates.
-        Element[] pElements = DomUtil.getChildElementsByTagName(dirElement, "p");
-        for (int i = 0; i < pElements.length; ++i) {
-            String componentId = pElements[i].getAttribute("i");
-            String propertyName = pElements[i].getAttribute("n");
-        
-            Map propertyMap = (Map) componentUpdateMap.get(componentId);
-            if (propertyMap == null) {
-                propertyMap = new HashMap();
-                componentUpdateMap.put(componentId, propertyMap);
-            }
+    public void process(Context context)
+    throws IOException {
+        Element[] dirElements = DomUtil.getChildElementsByTagName(document.getDocumentElement(), "dir");
+        for (int i = 0; i < dirElements.length; ++i) {
+            String processorName = dirElements[i].getAttribute("proc");
             
-            propertyMap.put(propertyName, pElements[i]);
+            // Find processor class, first check local cache, then 
+            Class processorClass = (Class) processorNameToClass.get(processorName);
+            if (processorClass == null) {
+                throw new IOException("No processor exists for processor name: " + processorName);
+            }
+
+            try {
+                Processor processor = (Processor) processorClass.newInstance();
+                processor.process(context, dirElements[i]);
+            } catch (InstantiationException ex) {
+                throw new IOException("Cannot instantiate process class: " + processorClass.getName() + ": " + ex);
+            } catch (IllegalAccessException ex) {
+                throw new IOException("Cannot instantiate process class: " + processorClass.getName() + ": " + ex);
+            }
         }
     }
 }
