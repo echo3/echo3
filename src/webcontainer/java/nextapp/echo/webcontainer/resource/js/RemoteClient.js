@@ -356,6 +356,8 @@ EchoRemoteClient.ClientMessage = function(client, initialize) {
     this._client = client;
     this._componentIdToPropertyMap = new EchoCore.Collections.Map();
     this._initialize = initialize;
+    
+    this._document = EchoWebCore.DOM.createDocument("http://www.nextapp.com/products/echo/svrmsg/clientmessage.3.0", "cmsg");
 };
 
 EchoRemoteClient.ClientMessage.prototype.setEvent = function(componentId, eventType, eventData) {
@@ -373,18 +375,17 @@ EchoRemoteClient.ClientMessage.prototype.storeProperty = function(componentId, p
     propertyMap.put(propertyName, propertyValue);
 };
 
-EchoRemoteClient.ClientMessage.prototype._renderXml = function() {
-    var cmsgDocument = EchoWebCore.DOM.createDocument(
-            "http://www.nextapp.com/products/echo/svrmsg/clientmessage.3.0", "cmsg");
-    var cmsgElement = cmsgDocument.documentElement;
-    
+EchoRemoteClient.ClientMessage.prototype._renderCSync = function() {
     if (this._initialize) {
-        cmsgElement.setAttribute("t", "init");
+        this._document.documentElement.setAttribute("t", "init");
     }
+    
+    var cSyncElement = this._document.createElement("dir");
+    cSyncElement.setAttribute("proc", "CSync");
     
     // Render event information.
     if (this._eventType) {
-        var eElement = cmsgDocument.createElement("e");
+        var eElement = this._document.createElement("e");
         eElement.setAttribute("t", this._eventType);
         eElement.setAttribute("i", this._eventComponentId);
         if (this._eventData != null) {
@@ -396,7 +397,7 @@ EchoRemoteClient.ClientMessage.prototype._renderXml = function() {
                 eElement.setAttribute("v", this._eventData);
             }
         }
-        cmsgElement.appendChild(eElement);
+        cSyncElement.appendChild(eElement);
     }
     
     // Render property information.
@@ -404,7 +405,7 @@ EchoRemoteClient.ClientMessage.prototype._renderXml = function() {
         var propertyMap = this._componentIdToPropertyMap.associations[componentId];
         for (var propertyName in propertyMap.associations) {
             var propertyValue = propertyMap.associations[propertyName];
-            var pElement = cmsgDocument.createElement("p");
+            var pElement = this._document.createElement("p");
             pElement.setAttribute("i", componentId);
             pElement.setAttribute("n", propertyName);
             if (typeof (propertyValue) == "object") {
@@ -415,11 +416,19 @@ EchoRemoteClient.ClientMessage.prototype._renderXml = function() {
                 pElement.setAttribute("v", propertyValue);
             }
             
-            cmsgElement.appendChild(pElement);
+            cSyncElement.appendChild(pElement);
         }
     }
     
-    return cmsgDocument;
+    this._document.documentElement.appendChild(cSyncElement);
+};
+
+EchoRemoteClient.ClientMessage.prototype._renderXml = function() {
+    if (!this._rendered) {
+        this._renderCSync();
+        this._rendered = true;
+    }
+    return this._document;
 };
 
 /**

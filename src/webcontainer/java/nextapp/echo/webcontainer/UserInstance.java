@@ -548,7 +548,9 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * @see javax.servlet.http.HttpSessionBindingListener#valueUnbound(HttpSessionBindingEvent)
      */
     public void valueUnbound(HttpSessionBindingEvent e) {
-        applicationInstance.dispose();
+        if (applicationInstance != null) {
+            applicationInstance.dispose();
+        }
         session = null;
     }
 }

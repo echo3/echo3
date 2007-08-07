@@ -46,7 +46,7 @@ public class ClientMessage {
 
     private Document document;
     private String type;
-    private Map componentUpdateMap;
+    private Map componentUpdateMap = new HashMap();
     
     private String eventType;
     private Element eventElement;
@@ -61,27 +61,13 @@ public class ClientMessage {
         // Retrieve message type.
         type = document.getDocumentElement().getAttribute("t");
         
-        // Retrieve event.
-        eventElement = DomUtil.getChildElementByTagName(document.getDocumentElement(), "e");
-        if (eventElement != null) {
-            eventType = eventElement.getAttribute("t");
-            eventComponentId = eventElement.getAttribute("i");
-        }
+        Element[] dirElements = DomUtil.getChildElementsByTagName(document.getDocumentElement(), "dir");
         
-        // Retrieve property updates.
-        componentUpdateMap = new HashMap();
-        Element[] pElements = DomUtil.getChildElementsByTagName(document.getDocumentElement(), "p");
-        for (int i = 0; i < pElements.length; ++i) {
-            String componentId = pElements[i].getAttribute("i");
-            String propertyName = pElements[i].getAttribute("n");
-        
-            Map propertyMap = (Map) componentUpdateMap.get(componentId);
-            if (propertyMap == null) {
-                propertyMap = new HashMap();
-                componentUpdateMap.put(componentId, propertyMap);
+        for (int i = 0; i < dirElements.length; ++i) {
+            String processorName = dirElements[i].getAttribute("proc");
+            if ("CSync".equals(processorName)) {
+                processComponentSynchronize(dirElements[i]);
             }
-            
-            propertyMap.put(propertyName, pElements[i]);
         }
     }
 
@@ -117,5 +103,29 @@ public class ClientMessage {
     
     public String getEventComponentId() {
         return eventComponentId;
+    }
+    
+    private void processComponentSynchronize(Element dirElement) {
+        // Retrieve event.
+        eventElement = DomUtil.getChildElementByTagName(dirElement, "e");
+        if (eventElement != null) {
+            eventType = eventElement.getAttribute("t");
+            eventComponentId = eventElement.getAttribute("i");
+        }
+        
+        // Retrieve property updates.
+        Element[] pElements = DomUtil.getChildElementsByTagName(dirElement, "p");
+        for (int i = 0; i < pElements.length; ++i) {
+            String componentId = pElements[i].getAttribute("i");
+            String propertyName = pElements[i].getAttribute("n");
+        
+            Map propertyMap = (Map) componentUpdateMap.get(componentId);
+            if (propertyMap == null) {
+                propertyMap = new HashMap();
+                componentUpdateMap.put(componentId, propertyMap);
+            }
+            
+            propertyMap.put(propertyName, pElements[i]);
+        }
     }
 }
