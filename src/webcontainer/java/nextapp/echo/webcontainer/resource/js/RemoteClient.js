@@ -51,6 +51,14 @@ EchoRemoteClient = function(serverUrl) {
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
 
     this._asyncManager = new EchoRemoteClient.AsyncManager(this);
+    
+    this._waitIndicator = new EchoRemoteClient.WaitIndicatorImpl();
+    
+    this._preWaitIndicatorDelay = 500;
+    
+    this._waitIndicatorRunnable = new EchoCore.Scheduler.Runnable(this._preWaitIndicatorDelay, false,
+            new EchoCore.MethodRef(this, this._waitIndicatorActivate));
+    
 };
 
 EchoRemoteClient.prototype = EchoCore.derive(EchoClient);
@@ -247,6 +255,11 @@ EchoRemoteClient.prototype._processSyncComplete = function(e) {
         EchoCore.Debug.consoleWrite(EchoCore.profilingTimer);
         EchoCore.profilingTimer = null;
     }
+    
+    if (this._waitIndicatorActive) {
+        this._waitIndicatorActive = false;
+        this._waitIndicator.deactivate();
+    }
 };
 
 /**
@@ -264,6 +277,8 @@ EchoRemoteClient.prototype._windowResizeListener = function(e) {
  * @param e the HttpConnection response event
  */
 EchoRemoteClient.prototype._processSyncResponse = function(e) {
+    EchoCore.Scheduler.remove(this._waitIndicatorRunnable);
+    
     var responseDocument = e.source.getResponseXml();
     if (!e.valid || !responseDocument || !responseDocument.documentElement) {
         //FIXME. Central error handling for things like this.
@@ -299,6 +314,8 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
  * Initiates a client-server synchronization.
  */
 EchoRemoteClient.prototype.sync = function() {
+    EchoCore.Scheduler.add(this._waitIndicatorRunnable);
+
     this._asyncManager._stop();    
     this._syncInitTime = new Date().getTime();
     var conn = new EchoWebCore.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST", 
@@ -306,6 +323,11 @@ EchoRemoteClient.prototype.sync = function() {
     this._clientMessage = null;
     conn.addResponseListener(new EchoCore.MethodRef(this, this._processSyncResponse));
     conn.connect();
+};
+
+EchoRemoteClient.prototype._waitIndicatorActivate = function() {
+    this._waitIndicatorActive = true;
+    this._waitIndicator.activate();
 };
 
 EchoRemoteClient.AsyncManager = function(client) {
@@ -742,6 +764,36 @@ EchoRemoteClient.ServerMessage.prototype._processPostLibraryLoad = function() {
 
 EchoRemoteClient.ServerMessage.prototype.removeCompletionListener = function(l) {
     this._listenerList.removeListener("completion", l);
+};
+
+/**
+ * Wait indicator base class.
+ */
+EchoRemoteClient.WaitIndicator = function() { };
+
+/**
+ * Wait indicator activation method.  Invoked when the wait indicator should be activated.
+ */
+EchoRemoteClient.WaitIndicator.prototype.activate = function() { };
+
+/**
+ * Wait indicator deactivation method.  Invoked when the wait indicator should be deactivated.
+ */
+EchoRemoteClient.WaitIndicator.prototype.deactivate = function() { };
+
+/**
+ * @class Default wait indicator implementation.
+ */
+EchoRemoteClient.WaitIndicatorImpl = function() { };
+
+EchoRemoteClient.WaitIndicatorImpl.prototype = EchoCore.derive(EchoRemoteClient.WaitIndicator);
+
+EchoRemoteClient.WaitIndicatorImpl.prototype.activate = function() {
+    EchoCore.Debug.consoleWrite("WAIT: activate");
+};
+
+EchoRemoteClient.WaitIndicatorImpl.prototype.deactivate = function() {
+    EchoCore.Debug.consoleWrite("WAIT: deactivate");
 };
 
 EchoRemoteClient.ServerMessage.addProcessor("CSync", EchoRemoteClient.ComponentSyncProcessor);
