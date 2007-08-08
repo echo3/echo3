@@ -88,11 +88,9 @@ public class Synchronization {
 
             ApplicationInstance.setActive(userInstance.getApplicationInstance());
             try {
-                if (!initRequired) {
-                    // Process client input.
-                    InputProcessor inputProcessor = new InputProcessor(conn);
-                    inputProcessor.process();
-                }
+                // Process client input.
+                InputProcessor inputProcessor = new InputProcessor(conn);
+                inputProcessor.process();
                 
                 // Render updates.
                 OutputProcessor outputProcessor = new OutputProcessor(conn);
