@@ -784,16 +784,31 @@ EchoRemoteClient.WaitIndicator.prototype.deactivate = function() { };
 /**
  * @class Default wait indicator implementation.
  */
-EchoRemoteClient.WaitIndicatorImpl = function() { };
+EchoRemoteClient.WaitIndicatorImpl = function() {
+    this._divElement = document.createElement("div");
+    this._divElement.style.border = "1px outset #abcdef";
+    this._divElement.style.backgroundColor = "#abcdef";
+    this._divElement.style.color = "black";
+    this._divElement.style.width = "200px";
+    this._divElement.style.textAlign = "center";
+    this._divElement.style.position = "absolute";
+    this._divElement.style.top = "30px";
+    this._divElement.style.right = "30px";
+    this._divElement.style.padding = "20px";
+    this._divElement.appendChild(document.createTextNode("Please wait..."));
+    this._divElement.style.zIndex = 32767;
+    this._divElement.style.display = "none";
+    document.body.appendChild(this._divElement);
+};
 
 EchoRemoteClient.WaitIndicatorImpl.prototype = EchoCore.derive(EchoRemoteClient.WaitIndicator);
 
 EchoRemoteClient.WaitIndicatorImpl.prototype.activate = function() {
-    EchoCore.Debug.consoleWrite("WAIT: activate");
+    this._divElement.style.display = "block";
 };
 
 EchoRemoteClient.WaitIndicatorImpl.prototype.deactivate = function() {
-    EchoCore.Debug.consoleWrite("WAIT: deactivate");
+    this._divElement.style.display = "none";
 };
 
 EchoRemoteClient.ServerMessage.addProcessor("CSync", EchoRemoteClient.ComponentSyncProcessor);
