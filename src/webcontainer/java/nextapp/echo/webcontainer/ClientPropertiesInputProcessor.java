@@ -23,6 +23,14 @@ implements ClientMessage.Processor {
         m.put(ClientProperties.SCREEN_HEIGHT, Integer.class);
         m.put(ClientProperties.SCREEN_COLOR_DEPTH, Integer.class);
         m.put(ClientProperties.UTC_OFFSET, Integer.class);
+        m.put(ClientProperties.NAVIGATOR_APP_CODE_NAME, String.class);
+        m.put(ClientProperties.NAVIGATOR_APP_NAME, String.class);
+        m.put(ClientProperties.NAVIGATOR_APP_VERSION, String.class);
+        m.put(ClientProperties.NAVIGATOR_COOKIE_ENABLED, Boolean.class);
+        m.put(ClientProperties.NAVIGATOR_JAVA_ENABLED, Boolean.class);
+        m.put(ClientProperties.NAVIGATOR_LANGUAGE, String.class);
+        m.put(ClientProperties.NAVIGATOR_PLATFORM, String.class);
+        m.put(ClientProperties.NAVIGATOR_USER_AGENT, String.class);
         
         TYPE_MAP = Collections.unmodifiableMap(m);
     }
@@ -30,10 +38,10 @@ implements ClientMessage.Processor {
     public void process(Context context, Element dirElement) 
     throws IOException {
         ClientProperties clientProperties = new ClientProperties();
-        try {
-            PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
-            Element[] pElements = DomUtil.getChildElementsByTagName(dirElement, "p");
-            for (int i = 0; i < pElements.length; ++i) {
+        PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
+        Element[] pElements = DomUtil.getChildElementsByTagName(dirElement, "p");
+        for (int i = 0; i < pElements.length; ++i) {
+            try {
                 String propertyName = pElements[i].getAttribute("n");
                 Class propertyClass = (Class) TYPE_MAP.get(propertyName);
                 if (propertyClass == null) {
@@ -42,9 +50,9 @@ implements ClientMessage.Processor {
                 SerialPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(propertyClass);
                 Object propertyValue = propertyPeer.toProperty(context, propertyClass, pElements[i]);
                 clientProperties.setProperty(propertyName, propertyValue);
+            } catch (SerialException ex) {
+                // Do nothing: if property is not valid, it will not be set.
             }
-        } catch (SerialException ex) {
-            throw new IOException("Cannot serialize ClientProperties: " + ex);
         }
         
         UserInstance userInstance = (UserInstance) context.get(UserInstance.class);

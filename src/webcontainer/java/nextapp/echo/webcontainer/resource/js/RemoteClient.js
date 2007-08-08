@@ -424,6 +424,16 @@ EchoRemoteClient.ClientMessage.prototype._renderClientProperties = function() {
     clientPropertiesElement.appendChild(this._createPropertyElement("screenHeight", screen.height));
     clientPropertiesElement.appendChild(this._createPropertyElement("screenColorDepth", screen.colorDepth));
     clientPropertiesElement.appendChild(this._createPropertyElement("utcOffset", 0 - parseInt((new Date()).getTimezoneOffset())));
+    
+    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorAppName", window.navigator.appName));
+    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorAppVersion", window.navigator.appVersion));
+    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorAppCodeName", window.navigator.appCodeName));
+    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorCookieEnabled", window.navigator.cookieEnabled));
+    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorJavaEnabled", window.navigator.javaEnabled()));
+    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorLanguage", 
+            window.navigator.language ? window.navigator.language : window.navigator.userLanguage));
+    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorPlatform", window.navigator.userAgent));
+    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorUserAgent", window.navigator.platform));
 
     this._document.documentElement.appendChild(clientPropertiesElement);
 };
