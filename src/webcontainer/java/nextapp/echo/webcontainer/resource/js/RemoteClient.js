@@ -359,7 +359,15 @@ EchoRemoteClient.ClientMessage = function(client, initialize) {
     this._document = EchoWebCore.DOM.createDocument("http://www.nextapp.com/products/echo/svrmsg/clientmessage.3.0", "cmsg");
     if (initialize) {
         this._document.documentElement.setAttribute("t", "init");
+        this._renderClientProperties();
     }
+};
+
+EchoRemoteClient.ClientMessage.prototype._createPropertyElement = function(name, value) {
+    var element = this._document.createElement("p");
+    element.setAttribute("n", name);
+    EchoSerial.storeProperty(this._client, element, value);    
+    return element;
 };
 
 EchoRemoteClient.ClientMessage.prototype.setEvent = function(componentId, eventType, eventData) {
@@ -387,13 +395,7 @@ EchoRemoteClient.ClientMessage.prototype._renderCSync = function() {
         eElement.setAttribute("t", this._eventType);
         eElement.setAttribute("i", this._eventComponentId);
         if (this._eventData != null) {
-            if (typeof (this._eventData) == "object") {
-                if (this._eventData.className) {
-                    EchoSerial.storeProperty(this._client, eElement, this._eventData);
-                }
-            } else {
-                eElement.setAttribute("v", this._eventData);
-            }
+            EchoSerial.storeProperty(this._client, eElement, this._eventData);
         }
         cSyncElement.appendChild(eElement);
     }
@@ -406,19 +408,24 @@ EchoRemoteClient.ClientMessage.prototype._renderCSync = function() {
             var pElement = this._document.createElement("p");
             pElement.setAttribute("i", componentId);
             pElement.setAttribute("n", propertyName);
-            if (typeof (propertyValue) == "object") {
-                if (propertyValue.className) {
-                    EchoSerial.storeProperty(this._client, pElement, propertyValue);
-                }
-            } else {
-                pElement.setAttribute("v", propertyValue);
-            }
-            
+            EchoSerial.storeProperty(this._client, pElement, propertyValue);
             cSyncElement.appendChild(pElement);
         }
     }
     
     this._document.documentElement.appendChild(cSyncElement);
+};
+
+EchoRemoteClient.ClientMessage.prototype._renderClientProperties = function() {
+    var clientPropertiesElement = this._document.createElement("dir");
+
+    clientPropertiesElement.setAttribute("proc", "ClientProperties");
+    clientPropertiesElement.appendChild(this._createPropertyElement("screenWidth", screen.width));
+    clientPropertiesElement.appendChild(this._createPropertyElement("screenHeight", screen.height));
+    clientPropertiesElement.appendChild(this._createPropertyElement("screenColorDepth", screen.colorDepth));
+    clientPropertiesElement.appendChild(this._createPropertyElement("utcOffset", 0 - parseInt((new Date()).getTimezoneOffset())));
+
+    this._document.documentElement.appendChild(clientPropertiesElement);
 };
 
 EchoRemoteClient.ClientMessage.prototype._renderXml = function() {

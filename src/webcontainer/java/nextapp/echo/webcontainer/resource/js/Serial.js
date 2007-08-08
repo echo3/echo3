@@ -180,15 +180,19 @@ EchoSerial.loadStyleSheet = function(client, ssElement, referenceMap) {
  */
 EchoSerial.storeProperty = function(client, propertyElement, propertyValue) {
     EchoCore.Debug.consoleWrite("Storing property:" + propertyValue);
-    if (!propertyValue.className) {
-        throw new Error("propertyValue does not provide className property, cannot determine translator.");
+    if (typeof (propertyValue) == "object") {
+        if (!propertyValue.className) {
+            throw new Error("propertyValue does not provide className property, cannot determine translator.");
+        }
+        var translator = EchoSerial._propertyTranslatorMap[propertyValue.className];
+        if (!translator || !translator.toXml) {
+            throw new Error("No to-XML translator available for class name: " + propertyValue.className);
+            //FIXME. silently ignore and return may be desired behavior.
+        }
+        translator.toXml(client, propertyElement, propertyValue);
+    } else {
+        propertyElement.setAttribute("v", propertyValue);
     }
-    var translator = EchoSerial._propertyTranslatorMap[propertyValue.className];
-    if (!translator || !translator.toXml) {
-        throw new Error("No to-XML translator available for class name: " + propertyValue.className);
-        //FIXME. silently ignore and return may be desired behavior.
-    }
-    translator.toXml(client, propertyElement, propertyValue);
 };
 
 /**

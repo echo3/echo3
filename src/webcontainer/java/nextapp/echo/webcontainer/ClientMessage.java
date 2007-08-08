@@ -45,8 +45,6 @@ public class ClientMessage {
     
     public static interface Processor {
         
-        public String getProcessorName();
-        
         public void process(Context context, Element dirElement)
         throws IOException ;
     }

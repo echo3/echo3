@@ -24,10 +24,6 @@ implements ClientMessage.Processor {
     
     private Map componentUpdateMap = new HashMap();
     
-    public String getProcessorName() {
-        return "CSync";
-    }
-    
     private void parseDirElement(Element dirElement) {
         // Retrieve event.
         eventElement = DomUtil.getChildElementByTagName(dirElement, "e");

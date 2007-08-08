@@ -46,6 +46,7 @@ public class InputProcessor {
     
     static {
         ClientMessage.register("CSync", ComponentInputProcessor.class);
+        ClientMessage.register("ClientProperties", ClientPropertiesInputProcessor.class);
     }
     
     private class InputContext implements Context {
