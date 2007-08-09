@@ -300,7 +300,7 @@ EchoRender.ComponentSync.Button.prototype._setPressedState = function(pressedSta
 	
     if (this._iconElement) {
     	var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "pressedIcon", pressedState);
-    	if (icon) {
+    	if (icon && icon.url != this._iconElement.src) {
 		    this._iconElement.src = icon.url;
     	}
     }
@@ -331,9 +331,9 @@ EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) 
     
         if (this._iconElement) {
             var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "focusedIcon", focusState);
-            if (icon) {
-                this._iconElement.src = icon.url;
-            }
+	    	if (icon && icon.url != this._iconElement.src) {
+			    this._iconElement.src = icon.url;
+	    	}
         }
     }
 };
@@ -354,7 +354,7 @@ EchoRender.ComponentSync.Button.prototype._setRolloverState = function(rolloverS
 
     if (this._iconElement) {
     	var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "rolloverIcon", rolloverState);
-    	if (icon) {
+    	if (icon && icon.url != this._iconElement.src) {
 		    this._iconElement.src = icon.url;
     	}
     }
