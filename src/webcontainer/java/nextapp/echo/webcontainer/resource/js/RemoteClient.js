@@ -808,6 +808,12 @@ EchoRemoteClient.WaitIndicatorImpl.prototype.deactivate = function() {
 
 EchoRemoteClient.WaitIndicatorImpl.prototype._tick = function() {
     ++this._opacity;
+    // Formula explained:
+    // this._opacity starts at 0 and is incremented forever.
+    // First operation is to modulo by 20 then subtract 10, result ranges from -10 to 10.
+    // Next take the absolute value, result ranges from 10 to 0 to 10.
+    // Divide this value by 15, so the range goes from 2/3 to 0 to 2/3.
+    // Subtract that value from 1, so the range goes from 1/3 to 1 and back.
     var opacityValue = 1 - ((Math.abs((this._opacity % 20) - 10)) / 15);
     this._divElement.style.opacity = opacityValue;
 };
