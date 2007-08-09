@@ -300,12 +300,24 @@ EchoRender.ComponentSync.Root.prototype.renderDispose = function(update) {
 EchoRender.ComponentSync.Root.prototype.renderUpdate = function(update) {
     var client = this.component.application.getContextProperty(EchoClient.CONTEXT_PROPERTY_NAME);
     
-    EchoWebCore.DOM.removeAllChildren(client.domainElement);
-
-    for (var i = 0; i < update.parent.children.length; ++i) {
-        EchoRender.renderComponentAdd(update, update.parent.children[i], client.domainElement);
+    var fullRender = false;
+    if (update.hasAddedChildren() || update.hasRemovedChildren()) {
+        EchoWebCore.DOM.removeAllChildren(client.domainElement);
+    
+        for (var i = 0; i < update.parent.children.length; ++i) {
+            EchoRender.renderComponentAdd(update, update.parent.children[i], client.domainElement);
+        }
+        fullRender = true;
     }
-    return true;
+    
+    if (update.hasUpdatedProperties()) {
+        var titleUpdate = update.getUpdatedProperty("title");
+        if (titleUpdate) {
+            document.title = titleUpdate.newValue;
+        }
+    }
+    
+    return fullRender;
 };
 
 EchoRender.Focus = function() { };

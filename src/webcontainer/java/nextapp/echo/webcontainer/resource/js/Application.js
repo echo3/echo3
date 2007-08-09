@@ -2002,7 +2002,15 @@ EchoApp.Update.ComponentUpdate.prototype.getUpdatedLayoutDataChildren = function
     return components;
 };
 
-EchoApp.Update.ComponentUpdate.prototype.hasUpdatedLayoutDataChildren= function() {
+EchoApp.Update.ComponentUpdate.prototype.hasAddedChildren = function() {
+    return this._addedChildIds != null;
+};
+
+EchoApp.Update.ComponentUpdate.prototype.hasRemovedChildren = function() {
+    return this._removedChildIds != null;
+};
+
+EchoApp.Update.ComponentUpdate.prototype.hasUpdatedLayoutDataChildren = function() {
     return this._updatedLayoutDataChildIds != null;
 };
 

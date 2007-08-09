@@ -70,9 +70,9 @@ EchoRender.ComponentSync.TextComponent.prototype.renderUpdate = function(update)
         this.renderAdd(update, containerElement);
     } else {
         if (update.hasUpdatedProperties()) {
-            var newText = update.getUpdatedProperty("text").newValue;
-            if (newText != this._text) {
-                this._textComponentElement.value = newText;
+            var textUpdate = update.getUpdatedProperty("text");
+            if (textUpdate && textUpdate.newValue != this._text) {
+                this._textComponentElement.value = textUpdate.newValue;
             }
         }
     }
