@@ -786,18 +786,10 @@ EchoRemoteClient.WaitIndicator.prototype.deactivate = function() { };
  */
 EchoRemoteClient.WaitIndicatorImpl = function() {
     this._divElement = document.createElement("div");
-    this._divElement.style.border = "1px outset #abcdef";
-    this._divElement.style.backgroundColor = "#abcdef";
-    this._divElement.style.color = "black";
-    this._divElement.style.width = "200px";
-    this._divElement.style.textAlign = "center";
-    this._divElement.style.position = "absolute";
-    this._divElement.style.top = "30px";
-    this._divElement.style.right = "30px";
-    this._divElement.style.padding = "20px";
+    this._divElement.style.cssText = "display: none; z-index: 32767; position: absolute; top: 30px; right: 30px; width: 200px;"
+             + " padding: 20px; border: 1px outset #abcdef; background-color: #abcdef; color: #000000; text-align: center;";
     this._divElement.appendChild(document.createTextNode("Please wait..."));
-    this._divElement.style.zIndex = 32767;
-    this._divElement.style.display = "none";
+    this._fadeRunnable = new EchoCore.Scheduler.Runnable(50, true, new EchoCore.MethodRef(this, this._tick));
     document.body.appendChild(this._divElement);
 };
 
@@ -805,10 +797,19 @@ EchoRemoteClient.WaitIndicatorImpl.prototype = EchoCore.derive(EchoRemoteClient.
 
 EchoRemoteClient.WaitIndicatorImpl.prototype.activate = function() {
     this._divElement.style.display = "block";
+    EchoCore.Scheduler.add(this._fadeRunnable);
+    this._opacity = 0;
 };
 
 EchoRemoteClient.WaitIndicatorImpl.prototype.deactivate = function() {
     this._divElement.style.display = "none";
+    EchoCore.Scheduler.remove(this._fadeRunnable);
+};
+
+EchoRemoteClient.WaitIndicatorImpl.prototype._tick = function() {
+    ++this._opacity;
+    var opacityValue = 1 - ((Math.abs((this._opacity % 20) - 10)) / 15);
+    this._divElement.style.opacity = opacityValue;
 };
 
 EchoRemoteClient.ServerMessage.addProcessor("CSync", EchoRemoteClient.ComponentSyncProcessor);
