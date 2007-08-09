@@ -12,6 +12,7 @@ EchoRender.ComponentSync.TextComponent.prototype._renderStyle = function() {
     EchoRender.Property.Color.renderFB(this.component, this._textComponentElement);
     EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, this._textComponentElement);
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._textComponentElement, "padding");
+    EchoRender.Property.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._textComponentElement);
     var width = this.component.getRenderProperty("width");
     if (width) {
     	this._textComponentElement.style.width = width.toString();
