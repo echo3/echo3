@@ -36,6 +36,7 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     
     EchoRender.Property.Color.renderFB(this.component, this._tableElement);
     EchoRender.Property.Border.render(defaultBorder, this._tableElement);
+    EchoRender.Property.Font.renderDefault(this.component, this._tableElement);
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._tableElement, "padding");
 
     var width = this.component.getRenderProperty("width");
