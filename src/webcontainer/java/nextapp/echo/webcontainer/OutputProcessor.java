@@ -228,10 +228,17 @@ class OutputProcessor {
         ServerUpdateManager serverUpdateManager = updateManager.getServerUpdateManager();
         
         if (serverUpdateManager.isFullRefreshRequired()) {
+            // Special case: full refresh.  Render entire component hierarchy by rendering an
+            // add directive to add the Window's child ContentPane to the root.   
+            // Render all properties of Window. 
+            Window window = userInstance.getApplicationInstance().getDefaultWindow();
             serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSync", "fr");
             serverMessage.setAttribute("root", userInstance.getRootHtmlElementId());
+            
+            // Render Style Sheet
             renderStyleSheet();
-            Window window = userInstance.getApplicationInstance().getDefaultWindow();
+            
+            // Render Add ContentPane to Window
             ContentPane content = window.getContent();
             if (content == null) {
                 throw new IllegalStateException("No content to render: default window has no content.");
@@ -239,6 +246,19 @@ class OutputProcessor {
             Element addElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "add");
             addElement.setAttribute("r", "true"); // Adding to root.
             renderComponentState(addElement, content);
+
+            // Render Window properties
+            Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
+            setComponentId(upElement, window);
+            ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(window.getClass());
+            if (componentPeer == null) {
+                throw new IllegalStateException("No synchronize peer found for component: " + window.getClass().getName());
+            }
+            Iterator propertyNameIterator = componentPeer.getOutputPropertyNames(context, window);
+            while (propertyNameIterator.hasNext()) {
+                String propertyName = (String) propertyNameIterator.next();
+                renderComponentProperty(upElement, componentPeer, window, propertyName, false);
+            }
         } else {
             ServerComponentUpdate[] componentUpdates = updateManager.getServerUpdateManager().getComponentUpdates();
             
