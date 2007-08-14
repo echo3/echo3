@@ -80,23 +80,9 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
         addOutputProperty(PROPERTY_SELECTION);
         addOutputProperty(PROPERTY_SELECTION_MODE);
         
-        addEvent(new AbstractComponentSynchronizePeer.EventPeer("action", Table.ACTION_LISTENERS_CHANGED_PROPERTY) {
-            
-            /**
-             * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer.EventPeer#hasListeners(
-             *      nextapp.echo.app.util.Context, nextapp.echo.app.Component)
-             */
+        addEvent(new AbstractComponentSynchronizePeer.EventPeer(Table.INPUT_ACTION, Table.ACTION_LISTENERS_CHANGED_PROPERTY) {
             public boolean hasListeners(Context context, Component component) {
                 return ((Table) component).hasActionListeners();
-            }
-            
-            /**
-             * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer.EventPeer#processEvent(
-             *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.Object)
-             */
-            public void processEvent(Context context, Component component, Object eventData) {
-                ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
-                clientUpdateManager.setComponentAction(component, Table.INPUT_ACTION, null);
             }
         });
     }
