@@ -55,7 +55,6 @@ import nextapp.echo.webcontainer.ServerMessage;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
-import nextapp.echo.webcontainer.util.ArrayIterator;
 import nextapp.echo.webcontainer.util.MultiIterator;
 
 /**
@@ -177,8 +176,6 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
     private static final Service LIST_COMPONENT_SERVICE = JavaScriptService.forResources("Echo.ListComponent",
             new String[] { "/nextapp/echo/webcontainer/resource/js/Render.List.js",
                            "/nextapp/echo/webcontainer/resource/js/RemoteClient.List.js" });
-    
-    private static final String[] EVENT_TYPES_ACTION = new String[] { AbstractListComponent.INPUT_ACTION };
 
     private static final String PROPERTY_DATA = "data";
 
@@ -195,21 +192,18 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
      */
     public AbstractListComponentPeer() {
         super();
+        
         addOutputProperty(PROPERTY_DATA);
         addOutputProperty(PROPERTY_SELECTION);
         addOutputProperty(PROPERTY_SELECTION_MODE);
         setOutputPropertyReferenced(PROPERTY_DATA, true);
-    }
 
-    /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getImmediateEventTypes(Context, nextapp.echo.app.Component)
-     */
-    public Iterator getImmediateEventTypes(Context context, Component component) {
-        AbstractListComponent listComponent = (AbstractListComponent) component;
-        if (listComponent.hasActionListeners()) {
-            return new ArrayIterator(EVENT_TYPES_ACTION);
-        }
-        return super.getImmediateEventTypes(context, component);
+        addEvent(new AbstractComponentSynchronizePeer.EventPeer(AbstractListComponent.INPUT_ACTION,
+                AbstractListComponent.ACTION_LISTENERS_CHANGED_PROPERTY) {
+            public boolean hasListeners(Context context, Component component) {
+                return ((AbstractListComponent) component).hasActionListeners();
+            }
+        });
     }
 
     /**
@@ -280,16 +274,6 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(LIST_SELECTION_MODEL_SERVICE.getId());
         serverMessage.addLibrary(LIST_COMPONENT_SERVICE.getId());
-    }
-
-    /**
-     * @see AbstractComponentSynchronizePeer#processEvent(Context, Component, String, Object)
-     */
-    public void processEvent(Context context, Component component, String eventType, Object eventData) {
-        if (AbstractListComponent.INPUT_ACTION.equals(eventType)) {
-            ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
-            clientUpdateManager.setComponentAction(component, AbstractListComponent.INPUT_ACTION, null);
-        }
     }
     
     /**

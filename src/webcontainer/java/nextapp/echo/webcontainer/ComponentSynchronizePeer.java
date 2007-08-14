@@ -75,8 +75,9 @@ public interface ComponentSynchronizePeer {
     public Class getEventDataClass(String eventType);
 
     /**
-     * Determines the types of events which, when fired on the client,
-     * result in immediate server notification. 
+     * Determines the (client-side) types of events which, when fired on the client,
+     * can result in immediate server notification.
+     * This method should return ALL the types of ANY such events.
      * 
      * @param context the relevant <code>Context</code>, provides 
      *        standard contextual information described in class description, in
@@ -88,7 +89,7 @@ public interface ComponentSynchronizePeer {
      * @return an <code>Iterator</code> over a collection of <code>String</code>s
      *         of the remote client event type names
      */
-    public Iterator getImmediateEventTypes(Context context, Component component);
+    public Iterator getEventTypes(Context context, Component component);
     
     /**
      * Returns the <code>Class</code> of the specified input
@@ -189,6 +190,43 @@ public interface ComponentSynchronizePeer {
     public Iterator getUpdatedOutputPropertyNames(Context context, Component component, 
             ServerComponentUpdate update);
     
+    /**
+     * Determines if the specified component has any listeners registered of the 
+     * specified event type.
+     * 
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
+     * @param component the component
+     * @param clientEventType the client-side event type
+     * @return true if the server should be notified when the specified event type is
+     *         fired on the client
+     */
+    public boolean hasListeners(Context context, Component component, String clientEventType);
+
+    /**
+     * Determines if any server-side listeners for a specific client-side event type have been
+     * added or removed in the specified <code>ServerComponentUpdate</code>. 
+     * 
+     * @param context the relevant <code>Context</code>, provides 
+     *        standard contextual information described in class description, in
+     *        addition to the following:
+     *        <ul>
+     *         <li>ServerMessage</li>
+     *        </ul>
+     * @param component the component
+     * @param update the <code>ServerComponentUpdate</code> to process
+     * @param clientEventType the client-side event
+     * @return true if any listeners of the specified event type have been added or removed
+     *         on the server, thus potentially changing whether the client should or should
+     *         not immediately contact the server when the specified event is fired
+     */
+    public boolean hasUpdatedListeners(Context context, Component component, ServerComponentUpdate update, 
+            String clientEventType);
+
     /**
      * Initializes the peer.
      * This method will be invoked prior to rendering a <b>specific</b>

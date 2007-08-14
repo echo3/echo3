@@ -29,8 +29,6 @@
 
 package nextapp.echo.webcontainer.sync.component;
 
-import java.util.Iterator;
-
 import nextapp.echo.app.Component;
 import nextapp.echo.app.text.TextComponent;
 import nextapp.echo.app.update.ClientUpdateManager;
@@ -40,14 +38,11 @@ import nextapp.echo.webcontainer.ServerMessage;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
-import nextapp.echo.webcontainer.util.ArrayIterator;
 
 public abstract class TextComponentPeer extends AbstractComponentSynchronizePeer {
 
     private static final Service TEXT_COMPONENT_SERVICE = JavaScriptService.forResource("Echo.TextComponent", 
             "/nextapp/echo/webcontainer/resource/js/Render.TextComponent.js");
-    
-    private static final String[] EVENT_TYPES_ACTION = new String[] { TextComponent.INPUT_ACTION };
     
     static {
         WebContainerServlet.getServiceRegistry().add(TEXT_COMPONENT_SERVICE);
@@ -56,6 +51,11 @@ public abstract class TextComponentPeer extends AbstractComponentSynchronizePeer
     public TextComponentPeer() {
         super();
         addOutputProperty(TextComponent.TEXT_CHANGED_PROPERTY);
+        addEvent(new EventPeer(TextComponent.INPUT_ACTION, TextComponent.ACTION_LISTENERS_CHANGED_PROPERTY) {
+            public boolean hasListeners(Context context, Component c) {
+                return ((TextComponent) c).hasActionListeners();
+            }
+        });
     }
     
     /**
@@ -71,6 +71,9 @@ public abstract class TextComponentPeer extends AbstractComponentSynchronizePeer
         }
     }
 
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getInputPropertyClass(java.lang.String)
+     */
     public Class getInputPropertyClass(String propertyName) {
         if (TextComponent.TEXT_CHANGED_PROPERTY.equals(propertyName)) {
             return String.class;
@@ -85,18 +88,7 @@ public abstract class TextComponentPeer extends AbstractComponentSynchronizePeer
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(TEXT_COMPONENT_SERVICE.getId());
     }
-
-    /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getImmediateEventTypes(Context, nextapp.echo.app.Component)
-     */
-    public Iterator getImmediateEventTypes(Context context, Component component) {
-        TextComponent textComponent = (TextComponent)component;
-        if (textComponent.hasActionListeners()) {
-            return new ArrayIterator(EVENT_TYPES_ACTION);
-        }
-        return super.getImmediateEventTypes(context, component);
-    }
-
+    
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#storeInputProperty(Context, Component, String, int, Object)
      */
@@ -104,16 +96,6 @@ public abstract class TextComponentPeer extends AbstractComponentSynchronizePeer
         if (propertyName.equals(TextComponent.TEXT_CHANGED_PROPERTY)) {
             ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
             clientUpdateManager.setComponentProperty(component, TextComponent.TEXT_CHANGED_PROPERTY, newValue);
-        }
-    }
-
-    /**
-     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#processEvent(nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, java.lang.Object)
-     */
-    public void processEvent(Context context, Component component, String eventType, Object eventData) {
-        if (TextComponent.INPUT_ACTION.equals(eventType)) {
-            ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
-            clientUpdateManager.setComponentAction(component, TextComponent.INPUT_ACTION, null);
         }
     }
 }

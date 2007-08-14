@@ -58,7 +58,6 @@ EchoRemoteClient = function(serverUrl) {
     
     this._waitIndicatorRunnable = new EchoCore.Scheduler.Runnable(this._preWaitIndicatorDelay, false,
             new EchoCore.MethodRef(this, this._waitIndicatorActivate));
-    
 };
 
 EchoRemoteClient.prototype = EchoCore.derive(EchoClient);
@@ -100,6 +99,16 @@ EchoRemoteClient._globalWindowResizeListener = function(e) {
  */
 EchoRemoteClient.prototype.addComponentListener = function(component, eventType) {
     component.addListener(eventType, this._processComponentEventRef);
+};
+
+/**
+ * Removes a listener for an arbitrary event type to a component.
+ * 
+ * @param {EchoApp.Component} component the component from which the listener should be removed
+ * @param {String} eventType the type of event
+ */
+EchoRemoteClient.prototype.removeComponentListener = function(component, eventType) {
+    component.removeListener(eventType, this._processComponentEventRef);
 };
 
 /**
@@ -656,6 +665,15 @@ EchoRemoteClient.ComponentSyncProcessor.prototype._processComponentUpdate = func
         case "p": // Property
             EchoSerial.loadProperty(this._client, element, component, null, this._referenceMap);
             break;
+        case "e": // Property
+            var eventType = element.getAttribute("t");
+            if (element.getAttribute("v") == "true") {
+                this._client.removeComponentListener(component, eventType);
+                this._client.addComponentListener(component, eventType);
+            } else {
+                this._client.removeComponentListener(component, eventType);
+            }
+           
         }
         element = element.nextSibling;
     }

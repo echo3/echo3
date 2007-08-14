@@ -29,31 +29,38 @@
 
 package nextapp.echo.webcontainer.sync.component;
 
-import java.util.Iterator;
-
 import nextapp.echo.app.Component;
 import nextapp.echo.app.button.AbstractButton;
-import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
 import nextapp.echo.webcontainer.ServerMessage;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
-import nextapp.echo.webcontainer.util.ArrayIterator;
 
 /**
  * Base synchronization peer for <code>AbstractButton</code>s.
  */
 public abstract class AbstractButtonPeer extends AbstractComponentSynchronizePeer {
-
-    private static final String[] EVENT_TYPES_ACTION = new String[]{ AbstractButton.EVENT_TYPE_ACTION };
     
     protected static final Service BUTTON_SERVICE = JavaScriptService.forResource("Echo.Button", 
             "/nextapp/echo/webcontainer/resource/js/Render.Button.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(BUTTON_SERVICE);
+    }
+    
+    /**
+     * Default constructor.
+     */
+    public AbstractButtonPeer() {
+        super();
+        
+        addEvent(new AbstractComponentSynchronizePeer.EventPeer("action", AbstractButton.ACTION_LISTENERS_CHANGED_PROPERTY) {
+            public boolean hasListeners(Context context, Component component) {
+                return ((AbstractButton) component).hasActionListeners();
+            }
+        });
     }
     
     /**
@@ -64,31 +71,10 @@ public abstract class AbstractButtonPeer extends AbstractComponentSynchronizePee
     }
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getImmediateEventTypes(Context, nextapp.echo.app.Component)
-     */
-    public Iterator getImmediateEventTypes(Context context, Component component) {
-        AbstractButton button = (AbstractButton) component;
-        if (button.hasActionListeners()) {
-            return new ArrayIterator(EVENT_TYPES_ACTION);
-        }
-        return super.getImmediateEventTypes(context, component);
-    }
-
-    /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(Context)
      */
     public void init(Context context) {
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(BUTTON_SERVICE.getId());
-    }
-
-    /**
-     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#processEvent(nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, java.lang.Object)
-     */
-    public void processEvent(Context context, Component component, String eventType, Object eventData) {
-        ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
-        if (AbstractButton.EVENT_TYPE_ACTION.equals(eventType)) {
-            clientUpdateManager.setComponentAction(component, AbstractButton.EVENT_TYPE_ACTION, null);
-		}
     }
 }

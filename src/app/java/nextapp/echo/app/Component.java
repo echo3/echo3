@@ -1169,6 +1169,12 @@ implements RenderIdSupport, Serializable {
      * Derivative implementations should take care to invoke 
      * <code>super.processInput()</code>.
      * 
+     * <strong>Security note:</strong>  Because input to this method is 
+     * likely from a remote client, it should be treated as potentially hostile.
+     * All input to this method should be carefully verified.
+     * For example, directly invoking setProperty() method with the
+     * provided input would constitute a security hole. 
+     * 
      * @param inputName the name of the input
      * @param inputValue the value of the input
      * @see nextapp.echo.app.update.UpdateManager

@@ -30,13 +30,16 @@
 package nextapp.echo.webcontainer;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import nextapp.echo.app.Component;
 import nextapp.echo.app.reflect.ComponentIntrospector;
 import nextapp.echo.app.reflect.IntrospectorFactory;
+import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.util.Context;
 
@@ -50,6 +53,63 @@ import nextapp.echo.app.util.Context;
 public abstract class AbstractComponentSynchronizePeer 
 implements ComponentSynchronizePeer {
 
+    /**
+     * Peer for synchronizing events between client and server.
+     * This is a convenience object that is used with the
+     * <code>addEvent()</code> method of the <code>AbstractComponentSynchronizePeer</code>
+     * object.
+     * 
+     *  This object will often be derived with overriding implementations of the
+     *  <code>hasListeners()</code> method to return true in cases where the supported
+     *  server-side <code>Component</code> has registered listeners of the appropriate type,
+     *  such that only events that actually will result in code being executed will cause
+     *  immediate server interactions.
+     */
+    public static class EventPeer {
+        
+        private Class eventDataClass;
+        
+        private String eventName;
+        
+        private String listenerPropertyName;
+        
+        public EventPeer() {
+            this(null, null, null);
+        }
+        
+        public EventPeer(String eventName, String listenerPropertyName) {
+            this(eventName, listenerPropertyName, null);
+        }
+        
+        public EventPeer(String eventName, String listenerPropertyName, Class eventDataClass) {
+            super();
+            this.eventName = eventName;
+            this.listenerPropertyName = listenerPropertyName;
+            this.eventDataClass = eventDataClass;
+        }
+        
+        public String getEventName() {
+            return eventName;
+        }
+        
+        public String getListenerPropertyName() {
+            return listenerPropertyName;
+        }
+        
+        public Class getEventDataClass() {
+            return eventDataClass;
+        }
+        
+        public boolean hasListeners(Context context, Component c) {
+            return true;
+        }
+
+        public void processEvent(Context context, Component component, Object eventData) {
+            ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
+            clientUpdateManager.setComponentAction(component, eventName, eventData);
+        }
+    }
+    
     /**
      * A <code>Set</code> containing the names of all additional properties to be
      * rendered to the client.
@@ -76,6 +136,8 @@ implements ComponentSynchronizePeer {
      */
     private String clientComponentType;
 
+    private Map eventTypeToEventPeer;
+    
     /**
      * Default constructor.
      */
@@ -108,6 +170,13 @@ implements ComponentSynchronizePeer {
             // Should never occur.
             throw new RuntimeException("Internal error.", ex);
         }
+    }
+    
+    public void addEvent(EventPeer eventPeer) {
+        if (eventTypeToEventPeer == null) {
+            eventTypeToEventPeer = new HashMap();
+        }
+        eventTypeToEventPeer.put(eventPeer.getEventName(), eventPeer);
     }
     
     /**
@@ -164,19 +233,29 @@ implements ComponentSynchronizePeer {
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getEventDataClass(java.lang.String)
      */
     public Class getEventDataClass(String eventType) {
-        return null;
+        if (eventTypeToEventPeer == null) {
+            return null;
+        }
+        EventPeer eventPeer = (EventPeer) eventTypeToEventPeer.get(eventType);
+        if (eventPeer == null) {
+            return null;
+        }
+        return eventPeer.getEventDataClass();
     }
 
     /**
-     * Returns an empty iterator.  Implementations should override if they
-     * wish to support immediate event types.
+     * Returns an iterator containing all event types registered using <code>addEvent()</code>.
      * 
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getImmediateEventTypes(Context, Component)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getEventTypes(Context, Component)
      */
-    public Iterator getImmediateEventTypes(Context context, Component component) {
-        return Collections.EMPTY_SET.iterator();
+    public Iterator getEventTypes(Context context, Component component) {
+        if (eventTypeToEventPeer == null) {
+            return Collections.EMPTY_SET.iterator();
+        } else {
+            return Collections.unmodifiableSet(eventTypeToEventPeer.keySet()).iterator();
+        }
     }
-
+    
     /**
      * Returns any property from the local style of the <code>Component</code>.
      * Implementations should override if they wish to support additional properties.
@@ -264,7 +343,7 @@ implements ComponentSynchronizePeer {
     public Class getInputPropertyClass(String propertyName) {
         return null;
     }
-    
+
     /**
      * Returns property names that have been updated in the specified 
      * <code>ServerComponentUpdate</code> that are either part of the local style
@@ -286,6 +365,37 @@ implements ComponentSynchronizePeer {
             }
         }
         return propertyNames.iterator();
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#hasListeners(nextapp.echo.app.util.Context, 
+     *      nextapp.echo.app.Component, java.lang.String)
+     */
+    public boolean hasListeners(Context context, Component component, String eventType) {
+        if (eventTypeToEventPeer == null) {
+            return false;
+        }
+        EventPeer eventPeer = (EventPeer) eventTypeToEventPeer.get(eventType);
+        if (eventPeer == null) {
+            return false;
+        }
+        return eventPeer.hasListeners(context, component);
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#hasUpdatedListeners(nextapp.echo.app.util.Context, 
+     *      nextapp.echo.app.Component, nextapp.echo.app.update.ServerComponentUpdate, java.lang.String)
+     */
+    public boolean hasUpdatedListeners(Context context, Component component, ServerComponentUpdate update, 
+            String eventType) {
+        if (eventTypeToEventPeer == null) {
+            return false;
+        }
+        EventPeer eventPeer = (EventPeer) eventTypeToEventPeer.get(eventType);
+        if (eventPeer == null) {
+            return false;
+        }
+        return update.hasUpdatedProperty(eventPeer.getListenerPropertyName());
     }
 
     /**
@@ -326,7 +436,14 @@ implements ComponentSynchronizePeer {
      *      nextapp.echo.app.Component, java.lang.String, java.lang.Object)
      */
     public void processEvent(Context context, Component component, String eventType, Object eventData) {
-        // Do nothing.
+        if (eventTypeToEventPeer == null) {
+            return;
+        }
+        EventPeer eventPeer = (EventPeer) eventTypeToEventPeer.get(eventType);
+        if (eventPeer == null) {
+            return;
+        }
+        eventPeer.processEvent(context, component, eventData);
     }
 
     /**

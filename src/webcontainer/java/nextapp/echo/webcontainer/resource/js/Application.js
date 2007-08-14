@@ -443,6 +443,9 @@ EchoApp.Component.prototype.addListener = function(eventType, eventTarget) {
         this._listenerList = new EchoCore.ListenerList();
     }
     this._listenerList.addListener(eventType, eventTarget);
+    if (this.application) {
+        this.application.notifyComponentUpdate(this, "listeners", null, eventType);
+    }
 };
 
 /**
@@ -809,6 +812,9 @@ EchoApp.Component.prototype.removeListener = function(eventType, eventTarget) {
         return;
     }
     this._listenerList.removeListener(eventType, eventTarget);
+    if (this.application) {
+        this.application.notifyComponentUpdate(this, "listeners", eventType, null);
+    }
 };
 
 /**

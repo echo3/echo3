@@ -57,8 +57,6 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     private static final Service TABLE_SERVICE = JavaScriptService.forResource("Echo.RemoteTable", 
             "/nextapp/echo/webcontainer/resource/js/Render.RemoteTable.js");
     
-    private static final String[] EVENT_TYPES_ACTION = new String[] { Table.INPUT_ACTION };
-    
     private static final String PROPERTY_COLUMN_COUNT = "columnCount";
     private static final String PROPERTY_COLUMN_WIDTH = "columnWidth";
     private static final String PROPERTY_HEADER_VISIBLE = "headerVisible";
@@ -74,12 +72,33 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     
     public TablePeer() {
         super();
+        
         addOutputProperty(PROPERTY_COLUMN_COUNT);
         addOutputProperty(PROPERTY_COLUMN_WIDTH, true);
         addOutputProperty(PROPERTY_HEADER_VISIBLE);
         addOutputProperty(PROPERTY_ROW_COUNT);
         addOutputProperty(PROPERTY_SELECTION);
         addOutputProperty(PROPERTY_SELECTION_MODE);
+        
+        addEvent(new AbstractComponentSynchronizePeer.EventPeer("action", Table.ACTION_LISTENERS_CHANGED_PROPERTY) {
+            
+            /**
+             * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer.EventPeer#hasListeners(
+             *      nextapp.echo.app.util.Context, nextapp.echo.app.Component)
+             */
+            public boolean hasListeners(Context context, Component component) {
+                return ((Table) component).hasActionListeners();
+            }
+            
+            /**
+             * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer.EventPeer#processEvent(
+             *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.Object)
+             */
+            public void processEvent(Context context, Component component, Object eventData) {
+                ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
+                clientUpdateManager.setComponentAction(component, Table.INPUT_ACTION, null);
+            }
+        });
     }
     
     /**
@@ -96,17 +115,6 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
         return Table.class;
     }
 
-    /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getImmediateEventTypes(Context, nextapp.echo.app.Component)
-     */
-    public Iterator getImmediateEventTypes(Context context, Component component) {
-        Table table = (Table)component;
-        if (table.hasActionListeners()) {
-            return new ArrayIterator(EVENT_TYPES_ACTION);
-        }
-        return super.getImmediateEventTypes(context, component);
-    }
-    
     /**
      * @see ComponentSynchronizePeer#getInputPropertyClass(String)
      */
@@ -192,16 +200,6 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(AbstractListComponentPeer.LIST_SELECTION_MODEL_SERVICE.getId());
         serverMessage.addLibrary(TABLE_SERVICE.getId());
-    }
-    
-    /**
-     * @see AbstractComponentSynchronizePeer#processEvent(Context, Component, String, Object)
-     */
-    public void processEvent(Context context, Component component, String eventType, Object eventData) {
-        if (Table.INPUT_ACTION.equals(eventType)) {
-            ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
-            clientUpdateManager.setComponentAction(component, Table.INPUT_ACTION, null);
-        }
     }
     
     /**

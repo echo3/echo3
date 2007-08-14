@@ -49,7 +49,7 @@ import nextapp.echo.app.event.ActionListener;
  */
 public abstract class AbstractButton extends Component {
     
-    public static final String EVENT_TYPE_ACTION = "action";
+    public static final String INPUT_ACTION = "action";
     
     public static final String ACTION_LISTENERS_CHANGED_PROPERTY = "actionListeners";
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
@@ -577,7 +577,7 @@ public abstract class AbstractButton extends Component {
      */
     public void processInput(String name, Object value) {
         super.processInput(name, value);
-        if (EVENT_TYPE_ACTION.equals(name)) {
+        if (INPUT_ACTION.equals(name)) {
             doAction();
         }
     }

@@ -29,8 +29,6 @@
 
 package nextapp.echo.webcontainer.sync.component;
 
-import java.util.Iterator;
-
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.WindowPane;
@@ -41,7 +39,6 @@ import nextapp.echo.webcontainer.ServerMessage;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
-import nextapp.echo.webcontainer.util.ArrayIterator;
 
 /**
  * Synchronization peer for <code>WindowPane</code>s.
@@ -51,10 +48,16 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
     private static final Service WINDOW_PANE_SERVICE = JavaScriptService.forResource("Echo.WindowPane", 
             "/nextapp/echo/webcontainer/resource/js/Render.WindowPane.js");
     
-    private static final String[] EVENT_TYPES_ACTION = new String[] { WindowPane.INPUT_CLOSE };
-    
     static {
         WebContainerServlet.getServiceRegistry().add(WINDOW_PANE_SERVICE);
+    }
+    
+    /**
+     * Default constructor.
+     */
+    public WindowPanePeer() {
+        super();
+        addEvent(new AbstractComponentSynchronizePeer.EventPeer(WindowPane.INPUT_CLOSE, null));
     }
     
     /**
@@ -62,13 +65,6 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
      */
     public Class getComponentClass() {
         return WindowPane.class;
-    }
-
-    /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getImmediateEventTypes(Context, nextapp.echo.app.Component)
-     */
-    public Iterator getImmediateEventTypes(Context context, Component component) {
-        return new ArrayIterator(EVENT_TYPES_ACTION);
     }
     
     public Class getInputPropertyClass(String propertyName) {

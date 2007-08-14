@@ -510,11 +510,15 @@ class OutputProcessor {
         }
         
         // Render immediate event flags.
-        Iterator eventTypeIterator = componentPeer.getImmediateEventTypes(context, c);
+        Iterator eventTypeIterator = componentPeer.getEventTypes(context, c);
         while (eventTypeIterator.hasNext()) {
             String eventType = (String) eventTypeIterator.next();
+            if (!componentPeer.hasListeners(context, c, eventType)) {
+                continue;
+            }
             Element eElement = document.createElement("e");
             eElement.setAttribute("t", eventType);
+            eElement.setAttribute("v", "true");
             cElement.appendChild(eElement);
         }
         
@@ -581,8 +585,22 @@ class OutputProcessor {
             renderComponentStyleAttributes(upElement, c);
         }
         
+        // Render enabled state.
         if (update.hasUpdatedProperty(Component.ENABLED_CHANGED_PROPERTY)) {
             upElement.setAttribute("en", update.getParent().isEnabled() ? "true" : "false");
+        }
+
+        // Render immediate event flags.
+        Iterator eventTypeIterator = componentPeer.getEventTypes(context, c);
+        while (eventTypeIterator.hasNext()) {
+            String eventType = (String) eventTypeIterator.next();
+            if (!componentPeer.hasUpdatedListeners(context, c, update, eventType)) {
+                continue;
+            }
+            Element eElement = document.createElement("e");
+            eElement.setAttribute("t", eventType);
+            eElement.setAttribute("v", componentPeer.hasListeners(context, c, eventType) ? "true" : "false");
+            upElement.appendChild(eElement);
         }
     }
     
