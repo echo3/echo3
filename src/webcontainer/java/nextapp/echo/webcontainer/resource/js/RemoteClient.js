@@ -805,7 +805,11 @@ EchoRemoteClient.WaitIndicatorImpl.prototype._tick = function() {
     // Divide this value by 30, so the range goes from 2/3 to 0 to 2/3.
     // Subtract that value from 1, so the range goes from 1/3 to 1 and back.
     var opacityValue = 1 - ((Math.abs((this._opacity % 40) - 20)) / 30);
-    this._divElement.style.opacity = opacityValue;
+    if (EchoWebCore.Environment.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
+		this._divElement.style.filter = "alpha(opacity=" + opacityValue * 100 + ")";
+    } else {
+	    this._divElement.style.opacity = opacityValue;
+    }
 };
 
 EchoRemoteClient.ServerMessage.addProcessor("CSync", EchoRemoteClient.ComponentSyncProcessor);
