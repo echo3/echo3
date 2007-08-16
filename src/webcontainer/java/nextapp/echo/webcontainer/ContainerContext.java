@@ -53,7 +53,7 @@ public interface ContainerContext {
      * Property name by which a <code>ContainerContext</code> may be retrieved
      * from an <code>ApplicationInstance</code>'s context properties.
      * 
-     * @see nextapp.echo2.app.ApplicationInstance#getContextProperty(java.lang.String)
+     * @see nextapp.echo.app.ApplicationInstance#getContextProperty(java.lang.String)
      */
     public static final String CONTEXT_PROPERTY_NAME = ContainerContext.class.getName();
 

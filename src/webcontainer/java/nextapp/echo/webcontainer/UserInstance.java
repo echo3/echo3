@@ -240,7 +240,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
     /**
      * Retrieves the <code>Component</code> with the specified client-side render id.
      * 
-     * @param client-side element render id, e.g., "c_42323"
+     * @param clientRenderId client-side element render id, e.g., "c_42323"
      * @return the component (e.g., the component whose id is "42323")
      */
     public Component getComponentByClientRenderId(String clientRenderId) {
@@ -516,7 +516,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * @param taskQueue the <code>TaskQueue</code>
      * @param ms the number of milliseconds between asynchronous client 
      *        callbacks
-     * @see nextapp.echo2.webcontainer.ContainerContext#setTaskQueueCallbackInterval(nextapp.echo2.app.TaskQueueHandle, int)
+     * @see nextapp.echo.webcontainer.ContainerContext#setTaskQueueCallbackInterval(nextapp.echo.app.TaskQueueHandle, int)
      */
     public void setTaskQueueCallbackInterval(TaskQueueHandle taskQueue, int ms) {
         if (taskQueueToCallbackIntervalMap == null) {

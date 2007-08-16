@@ -93,7 +93,7 @@ implements Command {
     /**
      * Returns the width of the window to be opened.
      * 
-     * @returnthe width
+     * @return the width
      */
     public Extent getWidth() {
         return width;

@@ -122,7 +122,7 @@ public interface ComponentSynchronizePeer {
      * This method will only be invoked on properties where
      * <code>isOutputPropertyIndexed()</code> has returned true.
      * 
-     * @param contex the relevant <code>Context</code>, provides 
+     * @param context the relevant <code>Context</code>, provides 
      *        standard contextual information described in class description, in
      *        addition to the following:
      *        <ul>
@@ -141,7 +141,7 @@ public interface ComponentSynchronizePeer {
      * be invoked to store the property in the remote component's style.  This
      * default behavior should be used in almost cases.
      * 
-     * @param contex the relevant <code>Context</code>, provides 
+     * @param context the relevant <code>Context</code>, provides 
      *        standard contextual information described in class description, in
      *        addition to the following:
      *        <ul>

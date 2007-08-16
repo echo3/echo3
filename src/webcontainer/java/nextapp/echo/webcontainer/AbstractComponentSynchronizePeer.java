@@ -182,7 +182,7 @@ implements ComponentSynchronizePeer {
     /**
      * Adds a non-indexed output property.  
      * 
-     * @see #addOutputProeprty(java.lang.String, boolean)
+     * @see #addOutputProperty(java.lang.String, boolean)
      */
     public void addOutputProperty(String propertyName) {
         addOutputProperty(propertyName, false);
@@ -261,7 +261,7 @@ implements ComponentSynchronizePeer {
      * Implementations should override if they wish to support additional properties.
      * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getOutputProperty(nextapp.echo.app.util.Context,
-     *      nextapp.echo.app.Component, java.lang.String)
+     *      nextapp.echo.app.Component, java.lang.String, int)
      */
     public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex) {
         if (propertyIndex == -1) {
@@ -411,7 +411,7 @@ implements ComponentSynchronizePeer {
      * Determines if a local style property or additional property (added via <code>addOutputProperty()</code>)
      * is indexed.
      * 
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#isIndexedProperty(nextapp.echo.app.util.Context, 
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#isOutputPropertyIndexed(nextapp.echo.app.util.Context, 
      *      nextapp.echo.app.Component, java.lang.String)
      */
     public boolean isOutputPropertyIndexed(Context context, Component component, String propertyName) {

@@ -102,7 +102,7 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     }
 
     /**
-     * @see ComponentSynchronizePeer#getInputPropertyClass(String)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getInputPropertyClass(String)
      */
     public Class getInputPropertyClass(String propertyName) {
         if (PROPERTY_SELECTION.equals(propertyName)) {

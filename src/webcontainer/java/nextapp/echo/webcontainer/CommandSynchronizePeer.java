@@ -81,7 +81,7 @@ public interface CommandSynchronizePeer {
      * This method will only be invoked on properties where
      * <code>isPropertyIndexed()</code> has returned true.
      * 
-     * @param contex the relevant <code>Context</code>, provides 
+     * @param context the relevant <code>Context</code>, provides 
      *        standard contextual information described in class description, in
      *        addition to the following:
      *        <ul>
