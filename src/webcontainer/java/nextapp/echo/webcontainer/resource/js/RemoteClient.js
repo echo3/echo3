@@ -23,14 +23,14 @@ EchoRemoteClient = function(serverUrl) {
     this._serverUrl = serverUrl;
 
     /**
-     * MethodRef to _processComponentUpdate() method.
+     * MethodRef to _processClientUpdate() method.
      */
-    this._processComponentUpdateRef = new EchoCore.MethodRef(this, this._processComponentUpdate);
+    this._processClientUpdateRef = new EchoCore.MethodRef(this, this._processClientUpdate);
 
     /**
-     * MethodRef to _processComponentEvent() method.
+     * MethodRef to _processClientEvent() method.
      */
-    this._processComponentEventRef = new EchoCore.MethodRef(this, this._processComponentEvent);
+    this._processClientEventRef = new EchoCore.MethodRef(this, this._processClientEvent);
     
     /**
      * Mapping between shorthand URL codes and replacement values.
@@ -98,7 +98,7 @@ EchoRemoteClient._globalWindowResizeListener = function(e) {
  * @param {String} eventType the type of event
  */
 EchoRemoteClient.prototype.addComponentListener = function(component, eventType) {
-    component.addListener(eventType, this._processComponentEventRef);
+    component.addListener(eventType, this._processClientEventRef);
 };
 
 /**
@@ -108,7 +108,7 @@ EchoRemoteClient.prototype.addComponentListener = function(component, eventType)
  * @param {String} eventType the type of event
  */
 EchoRemoteClient.prototype.removeComponentListener = function(component, eventType) {
-    component.removeListener(eventType, this._processComponentEventRef);
+    component.removeListener(eventType, this._processClientEventRef);
 };
 
 /**
@@ -146,7 +146,7 @@ EchoRemoteClient.prototype.init = function(initialResponseDocument) {
     }
     
     var application = new EchoApp.Application();
-    application.addComponentUpdateListener(this._processComponentUpdateRef);
+    application.addComponentUpdateListener(this._processClientUpdateRef);
     
     this.configure(application, domainElement);
     
@@ -161,7 +161,7 @@ EchoRemoteClient.prototype.init = function(initialResponseDocument) {
  * 
  * @param e the event to process
  */
-EchoRemoteClient.prototype._processComponentEvent = function(e) {
+EchoRemoteClient.prototype._processClientEvent = function(e) {
     if (!this._clientMessage) {
         if (new Date().getTime() - this._syncInitTime > 2000) {
             //FIXME. Central error handling for these.
@@ -179,7 +179,7 @@ EchoRemoteClient.prototype._processComponentEvent = function(e) {
  * 
  * @param e the property update event from the component
  */
-EchoRemoteClient.prototype._processComponentUpdate = function(e) {
+EchoRemoteClient.prototype._processClientUpdate = function(e) {
     if (!this._clientMessage) {
         //FIXME. need to work on scenarios where clientmessage is null, for both this and events too.
         return;
@@ -255,7 +255,7 @@ EchoRemoteClient.prototype._processSyncComplete = function(e) {
     }
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
-    this.application.addComponentUpdateListener(this._processComponentUpdateRef);
+    this.application.addComponentUpdateListener(this._processClientUpdateRef);
 	EchoRender.processUpdates(this.application.updateManager);
     
     this._executeCommands();
@@ -310,7 +310,7 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     // Profiling Timer (Uncomment to enable).
     EchoCore.profilingTimer = new EchoCore.Debug.Timer();
 
-    this.application.removeComponentUpdateListener(this._processComponentUpdateRef);
+    this.application.removeComponentUpdateListener(this._processClientUpdateRef);
     
     var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
     
@@ -546,10 +546,8 @@ EchoRemoteClient.ComponentSyncProcessor.prototype.process = function(dirElement)
         if (element.nodeType == 1) {
             switch (element.nodeName) {
             case "fr": this._processFullRefresh(element); break;
-            case "rm": this._processComponentRemove(element); break;
-            case "up": this._processComponentUpdate(element); break;
-            case "add": this._processComponentAdd(element); break;
             case "ss": this._processStyleSheet(element); break;
+            case "up": this._processUpdate(element); break;
             case "sp": this._processStoreProperties(element); break;
             }
         }
@@ -557,125 +555,38 @@ EchoRemoteClient.ComponentSyncProcessor.prototype.process = function(dirElement)
     }
 };
 
-EchoRemoteClient.ComponentSyncProcessor.prototype._processComponentAdd = function(addElement) {
-    var parentComponent;
-    if (addElement.getAttribute("r") == "true") {
-        parentComponent = this._client.application.rootComponent;
-    } else {
-        var parentId = addElement.getAttribute("i");
-        parentComponent = this._client.application.getComponentByRenderId(parentId);
-    }
-    var element = addElement.firstChild;
-    while (element) {
-        if (element.nodeType == 1) {
-            var component = EchoSerial.loadComponent(this._client, element, this._referenceMap);
-            var index = element.getAttribute("x");
-            if (index == null) {
-                parentComponent.add(component);
-            } else {
-                parentComponent.add(component, parseInt(index));
-            }
-        }
-        element = element.nextSibling;
-    }
-};
-
-EchoRemoteClient.ComponentSyncProcessor.prototype._processComponentRemove = function(removeElement) {
-    if (removeElement.childNodes.length > 5) {
+EchoRemoteClient.ComponentSyncProcessor.prototype._processComponentRemove = function(parentComponent, childElementIds) {
+    if (childElementIds.length > 5) {
         // Special case: many children being removed: create renderId -> index map and remove by index
         // in order to prevent Component.indexOf() of from being invoked n times.
         
-        // Find parent component.
-        var cElement = removeElement.firstChild;
-        var parent;
-        while (cElement) {
-            var component = this._client.application.getComponentByRenderId(cElement.getAttribute("i"));
-            if (component) {
-                parent = component.parent;
-                break;
-            }
-            cElement = cElement.nextSibling;
-        }
-        if (!parent) {
-            return;
-        }
-        
         // Create map between ids and indices.
         var idToIndexMap = new Object();
-        for (var i = 0; i < parent.children.length; ++i) {
-            idToIndexMap[parent.children[i].renderId] = i;
+        for (var i = 0; i < parentComponent.children.length; ++i) {
+            idToIndexMap[parentComponent.children[i].renderId] = i;
         }
         
         // Create array of indices to remove.
         var indicesToRemove = new Array();
-        cElement = removeElement.firstChild;
-        while (cElement) {
-            var index = idToIndexMap[cElement.getAttribute("i")];
+        for (var i = 0; i <  childElementIds.length; ++i) {
+            var index = idToIndexMap[childElementIds[i]];
             if (index != null) {
                 indicesToRemove.push(parseInt(index));
             }
-            cElement = cElement.nextSibling;
         }
         indicesToRemove.sort(EchoRemoteClient.ComponentSyncProcessor._numericReverseSort);
 
         // Remove components (last to first).
         for (var i = 0; i < indicesToRemove.length; ++i) {
-            parent.remove(indicesToRemove[i]);
+            parentComponent.remove(indicesToRemove[i]);
         }
     } else {
-        var cElement = removeElement.firstChild;
-        while (cElement) {
-            var component = this._client.application.getComponentByRenderId(cElement.getAttribute("i"));
+        for (var i = 0; i < childElementIds.length; ++i) {
+            var component = this._client.application.getComponentByRenderId(childElementIds[i]);
             if (component) {
-                component.parent.remove(component);
+                parentComponent.remove(component);
             }
-            cElement = cElement.nextSibling;
         }
-    }
-};
-
-EchoRemoteClient.ComponentSyncProcessor.prototype._processComponentUpdate = function(updateElement) {
-    var component;
-    if (updateElement.getAttribute("r") == "true") {
-        component = this._client.application.rootComponent;
-    } else {
-        var componentId = updateElement.getAttribute("i");
-        component = this._client.application.getComponentByRenderId(componentId);
-    }
-    
-    var styleName = updateElement.getAttribute("s");
-    if (styleName != null) {
-        component.setStyleName(styleName == "" ? null : styleName); //FIXME verify this works as desired for unsets.
-        var styleType = updateElement.getAttribute("st");
-        if (styleType) {
-            component.setStyleType(styleType);
-        } else {
-            component.setStyleType(null);
-        }
-    }
-    
-    var enabledState = updateElement.getAttribute("en");
-    if (enabledState) {
-        component.setEnabled(enabledState == "true");
-    }
-    
-    var element = updateElement.firstChild;
-    while (element) {
-        switch (element.nodeName) {
-        case "p": // Property
-            EchoSerial.loadProperty(this._client, element, component, null, this._referenceMap);
-            break;
-        case "e": // Property
-            var eventType = element.getAttribute("t");
-            if (element.getAttribute("v") == "true") {
-                this._client.removeComponentListener(component, eventType);
-                this._client.addComponentListener(component, eventType);
-            } else {
-                this._client.removeComponentListener(component, eventType);
-            }
-           
-        }
-        element = element.nextSibling;
     }
 };
 
@@ -705,6 +616,67 @@ EchoRemoteClient.ComponentSyncProcessor.prototype._processStoreProperties = func
 EchoRemoteClient.ComponentSyncProcessor.prototype._processStyleSheet = function(ssElement) {
     var styleSheet = EchoSerial.loadStyleSheet(this._client, ssElement);
     this._client.application.setStyleSheet(styleSheet);
+};
+
+EchoRemoteClient.ComponentSyncProcessor.prototype._processUpdate = function(upElement) {
+    // Determine parent component
+    var parentComponent;
+    if (upElement.getAttribute("r") == "true") {
+        parentComponent = this._client.application.rootComponent;
+    } else {
+        var parentId = upElement.getAttribute("i");
+        parentComponent = this._client.application.getComponentByRenderId(parentId);
+    }
+
+    var styleName = upElement.getAttribute("s");
+    if (styleName != null) {
+        parentComponent.setStyleName(styleName == "" ? null : styleName); //FIXME verify this works as desired for unsets.
+        var styleType = upElement.getAttribute("st");
+        if (styleType) {
+            parentComponent.setStyleType(styleType);
+        } else {
+            parentComponent.setStyleType(null);
+        }
+    }
+
+    var enabledState = upElement.getAttribute("en");
+    if (enabledState) {
+        parentComponent.setEnabled(enabledState == "true");
+    }
+
+    var element = upElement.firstChild;
+    while (element) {
+        if (element.nodeType == 1) {
+            switch (element.nodeName) {
+            case "c":
+                var component = EchoSerial.loadComponent(this._client, element, this._referenceMap);
+                var index = element.getAttribute("x");
+                if (index == null) {
+                    parentComponent.add(component);
+                } else {
+                    parentComponent.add(component, parseInt(index));
+                }
+                break;
+            case "p": // Property
+                EchoSerial.loadProperty(this._client, element, parentComponent, null, this._referenceMap);
+                break;
+            case "e": // Property
+                var eventType = element.getAttribute("t");
+                if (element.getAttribute("v") == "true") {
+                    this._client.removeComponentListener(parentComponent, eventType);
+                    this._client.addComponentListener(parentComponent, eventType);
+                } else {
+                    this._client.removeComponentListener(parentComponent, eventType);
+                }
+                break;
+            case "rm":
+                var childElementIds = element.getAttribute("i").split(",");
+                this._processComponentRemove(parentComponent, childElementIds);
+                break;
+            }
+        }
+        element = element.nextSibling;
+    }
 };
 
 EchoRemoteClient.ServerMessage = function(client, xmlDocument) { 

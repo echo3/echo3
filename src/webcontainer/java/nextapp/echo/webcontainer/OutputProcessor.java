@@ -243,13 +243,12 @@ class OutputProcessor {
             if (content == null) {
                 throw new IllegalStateException("No content to render: default window has no content.");
             }
-            Element addElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "add");
-            addElement.setAttribute("r", "true"); // Adding to root.
-            renderComponentState(addElement, content);
+            
+            Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
+            upElement.setAttribute("r", "true"); // Adding to root.
+            renderComponentState(upElement, content);
 
             // Render Window properties
-            Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
-            setComponentId(upElement, window);
             ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(window.getClass());
             if (componentPeer == null) {
                 throw new IllegalStateException("No synchronize peer found for component: " + window.getClass().getName());
@@ -276,24 +275,28 @@ class OutputProcessor {
                     continue;
                 }
                 
+                Component parentComponent = componentUpdates[i].getParent();
+                Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
+                setComponentId(upElement, parentComponent);
+            
                 // Removed children.
                 Component[] removedChildren = componentUpdates[i].getRemovedChildren();
                 if (removedChildren.length > 0) {
-                    Element rmElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "rm");
+                    Element rmElement = document.createElement("rm");
+                    StringBuffer out = new StringBuffer();
                     for (int j = 0; j < removedChildren.length; ++j) {
-                        Element cElement = document.createElement("c");
-                        cElement.setAttribute("i", userInstance.getClientRenderId(removedChildren[j]));
-                        rmElement.appendChild(cElement);
+                        if (j > 0) {
+                            out.append(",");
+                        }
+                        out.append(userInstance.getClientRenderId(removedChildren[j]));
                     }
+                    rmElement.setAttribute("i", out.toString());
+                    upElement.appendChild(rmElement);
                 }
-                
-                Component parentComponent = componentUpdates[i].getParent();
-                
+
                 // Added children.
                 Component[] addedChildren = componentUpdates[i].getAddedChildren();
                 if (addedChildren.length > 0) {
-                    Element addElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "add");
-                    setComponentId(addElement, parentComponent);
                     // sort components by their index
                     SortedMap indexedComponents = new TreeMap();
                     for (int j = 0; j < addedChildren.length; ++j) {
@@ -305,24 +308,19 @@ class OutputProcessor {
                     Iterator indexedComponentsIter = indexedComponents.entrySet().iterator();
                     while (indexedComponentsIter.hasNext()) {
                         Entry entry = (Entry)indexedComponentsIter.next();
-                        Element cElement = renderComponentState(addElement, (Component)entry.getValue());
+                        Element cElement = renderComponentState(upElement, (Component) entry.getValue());
                         cElement.setAttribute("x", ((Integer)entry.getKey()).toString()); 
                     }
                 }
                 
                 // Updated properties.
-                //FIXME. move to method?
                 String[] updatedPropertyNames = componentUpdates[i].getUpdatedPropertyNames();
                 if (updatedPropertyNames.length > 0) {
-                    Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
-                    setComponentId(upElement, parentComponent);
                     renderComponentUpdatedProperties(upElement, parentComponent, componentUpdates[i]);
                 }
                 
                 Component[] updatedLayoutDataChildren = componentUpdates[i].getUpdatedLayoutDataChildren();
                 for (int j = 0; j < updatedLayoutDataChildren.length; ++j) {
-                    Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
-                    setComponentId(upElement, updatedLayoutDataChildren[j]);
                     renderComponentUpdatedLayoutData(upElement, updatedLayoutDataChildren[j]);
                 }
             }
