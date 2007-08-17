@@ -60,7 +60,6 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
     if (index != null && index == update.parent.getComponentCount() - 1) {
         index = null;
     }
-    
     var divElement = document.createElement("div");
     this._childIdToElementMap[child.renderId] = divElement;
     EchoRender.renderComponentAdd(update, child, divElement);
@@ -97,6 +96,11 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
         
         // Then render spacing div if required.
         if (this._cellSpacing) {
+            if (!beforeElement) {
+                // Multiple children are being added at the end, insert spacing div
+                // before child div.
+                beforeElement = divElement;
+            }
             this._divElement.insertBefore(this._spacingPrototype.cloneNode(false), beforeElement);
         }
     }
