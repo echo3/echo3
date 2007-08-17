@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ss>
  <s n="charlie" t="nextapp.echo.app.Label">
-  <p n="lineWrap" v="0"/>
+  <p n="lineWrap" v="false"/>
  </s>
  <s n="delta" t="nextapp.echo.app.Button">
-  <p n="lineWrap" v="1"/>
+  <p n="lineWrap" v="true"/>
  </s>
 </ss>
