@@ -32,8 +32,8 @@ package nextapp.echo.testapp.interactive;
 import nextapp.echo.app.TaskQueueHandle;
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Window;
-//import nextapp.echo.webcontainer.ContainerContext;
-//import nextapp.echo.webcontainer.ClientConfiguration;
+import nextapp.echo.webcontainer.ClientConfiguration;
+import nextapp.echo.webcontainer.ContainerContext;
 
 /**
  * Interactive Test Application Instance.
@@ -133,17 +133,17 @@ public class InteractiveApp extends ApplicationInstance {
         mainWindow.setContent(new WelcomePane());
     }
     
-//    private String getRequestParameter(String parameterName) {
-//        ContainerContext cc = (ContainerContext) getContextProperty(ContainerContext.CONTEXT_PROPERTY_NAME);
-//        Object parameterValue = cc.getInitialRequestParameterMap().get(parameterName);
-//        if (parameterValue instanceof String) {
-//            return (String) parameterValue;
-//        } else if (parameterValue instanceof String[]) {
-//            return ((String[]) parameterValue).length == 0 ? null : ((String[]) parameterValue)[0]; 
-//        } else {
-//            return parameterValue == null ? null : parameterValue.toString();
-//        }
-//    }
+    private String getRequestParameter(String parameterName) {
+        ContainerContext cc = (ContainerContext) getContextProperty(ContainerContext.CONTEXT_PROPERTY_NAME);
+        Object parameterValue = cc.getInitialRequestParameterMap().get(parameterName);
+        if (parameterValue instanceof String) {
+            return (String) parameterValue;
+        } else if (parameterValue instanceof String[]) {
+            return ((String[]) parameterValue).length == 0 ? null : ((String[]) parameterValue)[0]; 
+        } else {
+            return parameterValue == null ? null : parameterValue.toString();
+        }
+    }
 
     /**
      * @see nextapp.echo.app.ApplicationInstance#init()
@@ -154,28 +154,28 @@ public class InteractiveApp extends ApplicationInstance {
         mainWindow.setTitle("NextApp Echo Test Application");
         mainWindow.setContent(new WelcomePane());
         
-//        ContainerContext cc = (ContainerContext) getContextProperty(ContainerContext.CONTEXT_PROPERTY_NAME);
-//        if (!LIVE_DEMO_SERVER) {
-//            if (cc.getInitialRequestParameterMap().containsKey("ghost")) {
-//                GhostTask ghostTask = new GhostTask();
-//                
-//                if ("1".equals(getRequestParameter("script"))) {
-//                    ghostTask.setScript(GHOST_SCRIPT_1); 
-//                }
-//                if (cc.getInitialRequestParameterMap().containsKey("clicks")) {
-//                    ghostTask.setClicksPerIteration(Integer.parseInt(getRequestParameter("clicks")));
-//                }
-//                if (cc.getInitialRequestParameterMap().containsKey("iterations")) {
-//                    ghostTask.setTotalIterations(Integer.parseInt(getRequestParameter("iterations")));
-//                }
-//                startGhostTask(ghostTask, 0);
-//            }
-//        }
-//        
-//        ClientConfiguration clientConfiguration = new ClientConfiguration();
-//        clientConfiguration.setProperty(ClientConfiguration.PROPERTY_SERVER_ERROR_MESSAGE,
-//                "KA-BOOM! (test non-default server error message)");
-//        cc.setClientConfiguration(clientConfiguration);
+        ContainerContext cc = (ContainerContext) getContextProperty(ContainerContext.CONTEXT_PROPERTY_NAME);
+        if (!LIVE_DEMO_SERVER) {
+            if (cc.getInitialRequestParameterMap().containsKey("ghost")) {
+                GhostTask ghostTask = new GhostTask();
+                
+                if ("1".equals(getRequestParameter("script"))) {
+                    ghostTask.setScript(GHOST_SCRIPT_1); 
+                }
+                if (cc.getInitialRequestParameterMap().containsKey("clicks")) {
+                    ghostTask.setClicksPerIteration(Integer.parseInt(getRequestParameter("clicks")));
+                }
+                if (cc.getInitialRequestParameterMap().containsKey("iterations")) {
+                    ghostTask.setTotalIterations(Integer.parseInt(getRequestParameter("iterations")));
+                }
+                startGhostTask(ghostTask, 0);
+            }
+        }
+        
+        ClientConfiguration clientConfiguration = new ClientConfiguration();
+        clientConfiguration.setProperty(ClientConfiguration.PROPERTY_SERVER_ERROR_MESSAGE,
+                "KA-BOOM! (test non-default server error message)");
+        cc.setClientConfiguration(clientConfiguration);
         
         return mainWindow;
     }
@@ -207,9 +207,9 @@ public class InteractiveApp extends ApplicationInstance {
             return;
         }
         ghostTaskQueue = createTaskQueue();
-//        ContainerContext containerContext = 
-//                (ContainerContext) getContextProperty(ContainerContext.CONTEXT_PROPERTY_NAME);
-//        containerContext.setTaskQueueCallbackInterval(ghostTaskQueue, interval);
+        ContainerContext containerContext = 
+                (ContainerContext) getContextProperty(ContainerContext.CONTEXT_PROPERTY_NAME);
+        containerContext.setTaskQueueCallbackInterval(ghostTaskQueue, interval);
         ghostTask.startTask(this, ghostTaskQueue);
     }
     
