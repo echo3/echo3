@@ -355,6 +355,10 @@ implements ComponentSynchronizePeer {
      */
     public Iterator getUpdatedOutputPropertyNames(Context context, Component component, 
             ServerComponentUpdate update) {
+        if (!update.hasUpdatedProperties()) {
+            return Collections.EMPTY_SET.iterator();
+        }
+
         String[] updatedPropertyNames = update.getUpdatedPropertyNames();
         Set propertyNames = new HashSet();
         //FIXME. not particularly efficient.

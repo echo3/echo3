@@ -314,10 +314,7 @@ class OutputProcessor {
                 }
                 
                 // Updated properties.
-                String[] updatedPropertyNames = componentUpdates[i].getUpdatedPropertyNames();
-                if (updatedPropertyNames.length > 0) {
-                    renderComponentUpdatedProperties(upElement, parentComponent, componentUpdates[i]);
-                }
+                renderComponentUpdatedProperties(upElement, parentComponent, componentUpdates[i]);
                 
                 Component[] updatedLayoutDataChildren = componentUpdates[i].getUpdatedLayoutDataChildren();
                 for (int j = 0; j < updatedLayoutDataChildren.length; ++j) {
@@ -579,15 +576,17 @@ class OutputProcessor {
             renderComponentProperty(upElement, componentPeer, c, propertyName, true);
         }
         
-        if (update.hasUpdatedProperty(Component.STYLE_NAME_CHANGED_PROPERTY)) {
-            renderComponentStyleAttributes(upElement, c);
+        if (update.hasUpdatedProperties()) {
+            if (update.hasUpdatedProperty(Component.STYLE_NAME_CHANGED_PROPERTY)) {
+                renderComponentStyleAttributes(upElement, c);
+            }
+            
+            // Render enabled state.
+            if (update.hasUpdatedProperty(Component.ENABLED_CHANGED_PROPERTY)) {
+                upElement.setAttribute("en", update.getParent().isEnabled() ? "true" : "false");
+            }
         }
         
-        // Render enabled state.
-        if (update.hasUpdatedProperty(Component.ENABLED_CHANGED_PROPERTY)) {
-            upElement.setAttribute("en", update.getParent().isEnabled() ? "true" : "false");
-        }
-
         // Render immediate event flags.
         Iterator eventTypeIterator = componentPeer.getEventTypes(context, c);
         while (eventTypeIterator.hasNext()) {
