@@ -698,6 +698,10 @@ EchoRender.Property.Font.render = function(font, element) {
         } else if (font.style & EchoApp.Property.Font.LINE_THROUGH) {
             element.style.textDecoration = "line-through";
         }
+    } else if (font.style == EchoApp.Property.Font.PLAIN) {
+        element.style.fontWeight = "";
+		element.style.fontStyle = "";
+		element.style.textDecoration = "";
     }
 };
 
