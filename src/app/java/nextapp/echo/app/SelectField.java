@@ -38,6 +38,9 @@ import nextapp.echo.app.list.ListModel;
  */
 public class SelectField extends AbstractListComponent {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * Creates a new, empty <code>SelectField</code>.
      */

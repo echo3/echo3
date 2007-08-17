@@ -38,6 +38,9 @@ import java.util.EventObject;
  */
 public class ListDataEvent extends EventObject {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * An event type indicating items in the list were changed.
      */

@@ -37,6 +37,9 @@ import java.util.List;
  */
 public class DefaultListModel extends AbstractListModel {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private List items = new ArrayList();
     
     /**

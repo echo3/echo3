@@ -41,6 +41,9 @@ import java.util.EventListener;
 public class EventListenerList
 implements Serializable {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private static final Object[] EMPTY = new Object[0];
     private static final EventListener[] NO_LISTENERS = new EventListener[0];
     

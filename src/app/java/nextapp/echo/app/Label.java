@@ -34,6 +34,9 @@ package nextapp.echo.app;
  */
 public class Label extends Component {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     public static final String PROPERTY_ICON = "icon";
     public static final String PROPERTY_ICON_TEXT_MARGIN = "iconTextMargin";
     public static final String PROPERTY_LINE_WRAP = "lineWrap";

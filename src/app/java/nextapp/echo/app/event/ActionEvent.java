@@ -38,6 +38,9 @@ import java.util.EventObject;
  */
 public class ActionEvent extends EventObject {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private String command = null;
 
     /**

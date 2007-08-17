@@ -43,6 +43,9 @@ import nextapp.echo.app.LayoutData;
 public class SplitPaneLayoutData 
 implements LayoutData {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     public static final int OVERFLOW_AUTO = 0;
     public static final int OVERFLOW_HIDDEN = 1;
     public static final int OVERFLOW_SCROLL = 2;

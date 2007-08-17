@@ -39,6 +39,9 @@ import java.util.ArrayList;
  */
 public class ResizingArrayList extends ArrayList {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * @see java.util.List#add(int, java.lang.Object)
      */

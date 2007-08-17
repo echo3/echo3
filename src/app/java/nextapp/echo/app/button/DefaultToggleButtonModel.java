@@ -40,6 +40,9 @@ import nextapp.echo.app.event.ChangeListener;
 public class DefaultToggleButtonModel extends DefaultButtonModel
 implements ToggleButtonModel {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private boolean selected;
 
     /**

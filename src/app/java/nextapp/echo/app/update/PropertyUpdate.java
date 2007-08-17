@@ -37,6 +37,9 @@ import java.io.Serializable;
 public class PropertyUpdate 
 implements Serializable {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private Object newValue;
     private Object oldValue;
     

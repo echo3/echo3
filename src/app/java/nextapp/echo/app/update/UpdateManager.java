@@ -39,6 +39,9 @@ import nextapp.echo.app.ApplicationInstance;
 public class UpdateManager 
 implements Serializable {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private ClientUpdateManager clientUpdateManager;
     private ServerUpdateManager serverUpdateManager;
     private ApplicationInstance applicationInstance;

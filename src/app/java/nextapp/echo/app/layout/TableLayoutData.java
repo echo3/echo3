@@ -34,4 +34,6 @@ package nextapp.echo.app.layout;
  */
 public class TableLayoutData extends CellLayoutData {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
 }

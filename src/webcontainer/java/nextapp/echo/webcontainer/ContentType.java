@@ -40,6 +40,9 @@ import java.io.Serializable;
 public class ContentType 
 implements Serializable {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     public static final ContentType IMAGE_GIF = new ContentType("image/gif", true);
     public static final ContentType IMAGE_PNG = new ContentType("image/png", true);
     public static final ContentType IMAGE_JPEG = new ContentType("image/jpeg", true);

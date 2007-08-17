@@ -43,6 +43,9 @@ import java.util.Map;
 public class ResourceImageReference
 extends StreamImageReference {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * Size of buffer used for reading image data from CLASSPATH and writing
      * it to <code>OutputStream</code>s.

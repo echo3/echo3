@@ -35,6 +35,9 @@ package nextapp.echo.app.layout;
  */
 public class GridLayoutData extends CellLayoutData {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * A constant value for column and row spans indicating that a cell should
      * fill all remaining cells.  

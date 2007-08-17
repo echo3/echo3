@@ -45,6 +45,9 @@ import java.util.TreeMap;
 public class MutableStyle 
 implements Style {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private static final int GROW_RATE = 5 * 2;  // Must be a multiple of 2.
     
     private static final Object[] EMPTY = new Object[0];

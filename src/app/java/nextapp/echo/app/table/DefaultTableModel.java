@@ -37,6 +37,9 @@ import java.util.List;
  */
 public class DefaultTableModel extends AbstractTableModel {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private List rows;
     private List columnNames;
     

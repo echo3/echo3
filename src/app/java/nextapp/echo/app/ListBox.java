@@ -40,6 +40,9 @@ import nextapp.echo.app.list.ListSelectionModel;
  */
 public class ListBox extends AbstractListComponent {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * Creates an empty <code>ListBox</code>.
      * A <code>DefaultListModel</code> will be created. 

@@ -42,6 +42,9 @@ package nextapp.echo.app;
 public class SplitPane extends Component
 implements Pane, PaneContainer {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * An <code>orientation</code> constant indicating that the 
      * <code>SplitPane</code> should be laid out horizontally with the

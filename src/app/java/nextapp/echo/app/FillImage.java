@@ -39,6 +39,9 @@ import java.io.Serializable;
 public class FillImage 
 implements Serializable {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     public static final int NO_REPEAT = 0;
     public static final int REPEAT_HORIZONTAL = 1;
     public static final int REPEAT_VERTICAL = 2;

@@ -34,6 +34,9 @@ package nextapp.echo.app;
  */
 public class Window extends Component {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     public static final String PROPERTY_TITLE = "title";
     
     /**

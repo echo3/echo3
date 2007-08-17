@@ -40,6 +40,9 @@ package nextapp.echo.app;
  */
 public class IllegalChildException extends RuntimeException {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private Component illegalChild;
     private Component parent;
     

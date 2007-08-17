@@ -39,6 +39,9 @@ import nextapp.echo.app.Component;
 public class DefaultListCellRenderer 
 implements ListCellRenderer, Serializable {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * @see nextapp.echo.app.list.ListCellRenderer#getListCellRendererComponent(nextapp.echo.app.Component, 
      *      java.lang.Object, int)

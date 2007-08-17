@@ -46,6 +46,9 @@ import nextapp.echo.app.Component;
 public class ClientUpdateManager 
 implements Serializable {
      
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private Map clientComponentUpdateMap = new HashMap();
     private Map applicationUpdateMap = new HashMap();
     private Component actionComponent;

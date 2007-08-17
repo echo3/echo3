@@ -108,6 +108,9 @@ import nextapp.echo.app.event.EventListenerList;
 public abstract class Component 
 implements RenderIdSupport, Serializable {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * <code>ArrayList</code> capacity for child storage.
      */

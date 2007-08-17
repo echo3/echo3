@@ -39,6 +39,9 @@ import java.util.Map;
 public class ClientProperties
 implements Serializable {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     // General Browser Properties
     
     /**

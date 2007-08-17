@@ -40,6 +40,9 @@ import java.util.Set;
 public class ClientConfiguration
 implements Serializable {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * Property name constant for the alert message which should be displayed in
      * the event that a server error occurs.

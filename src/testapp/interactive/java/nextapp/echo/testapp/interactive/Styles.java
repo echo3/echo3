@@ -40,8 +40,8 @@ import nextapp.echo.app.serial.SerialException;
  */
 public class Styles {
     
-    public static final String IMAGE_PATH = "/nextapp/echo/testapp/interactive/resource/image/";
-    public static final String STYLE_PATH = "/nextapp/echo/testapp/interactive/resource/style/";
+    public static final String IMAGE_PATH = "nextapp/echo/testapp/interactive/resource/image/";
+    public static final String STYLE_PATH = "nextapp/echo/testapp/interactive/resource/style/";
 
     public static final ImageReference ICON_64_ERROR
             = new ResourceImageReference("/nextapp/echo/testapp/interactive/resource/image/Icon64Error.gif");

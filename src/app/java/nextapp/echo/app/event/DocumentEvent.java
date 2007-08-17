@@ -41,6 +41,9 @@ import nextapp.echo.app.text.Document;
  */
 public class DocumentEvent extends EventObject {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * Creates a new DocumentEvent. 
      *

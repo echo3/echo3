@@ -37,6 +37,9 @@ import java.io.Serializable;
 public class Color 
 implements Serializable {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+    
     /** The color black. */
     public static final Color BLACK     = new Color(0x00, 0x00, 0x00);
 

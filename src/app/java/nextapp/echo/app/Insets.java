@@ -40,6 +40,9 @@ import java.io.Serializable;
 public class Insets 
 implements Serializable {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private Extent top;
     private Extent bottom;
     private Extent left;

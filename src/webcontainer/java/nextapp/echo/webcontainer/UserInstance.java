@@ -54,6 +54,9 @@ import nextapp.echo.webcontainer.util.IdTable;
 public class UserInstance 
 implements HttpSessionActivationListener, HttpSessionBindingListener, Serializable {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * Default asynchronous monitor callback interval (in milliseconds).
      */

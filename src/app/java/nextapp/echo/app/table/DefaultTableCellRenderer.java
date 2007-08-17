@@ -39,6 +39,9 @@ import nextapp.echo.app.Table;
 public class DefaultTableCellRenderer 
 implements TableCellRenderer {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * Returns a <code>Label</code> containing the toString() value of the 
      * model value.  Returns null in the event the model value is null.

@@ -49,6 +49,9 @@ import nextapp.echo.app.event.ActionListener;
  */
 public abstract class AbstractButton extends Component {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     public static final String INPUT_ACTION = "action";
     
     public static final String ACTION_LISTENERS_CHANGED_PROPERTY = "actionListeners";
@@ -99,6 +102,9 @@ public abstract class AbstractButton extends Component {
      * component instance.
      */
     private ActionListener actionForwarder = new ActionListener() {
+
+        /** Serial Version UID. */
+        private static final long serialVersionUID = 20070101L;
 
         /**
          * @see nextapp.echo.app.event.ActionListener#actionPerformed(nextapp.echo.app.event.ActionEvent)

@@ -45,6 +45,9 @@ import nextapp.echo.app.RenderIdSupport;
 public class ButtonGroup 
 implements RenderIdSupport, Serializable {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private static final RadioButton[] EMPTY = new RadioButton[0];
     
     private String id = ApplicationInstance.generateSystemId();

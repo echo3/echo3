@@ -43,6 +43,9 @@ package nextapp.echo.app;
 public class ContentPane extends Component 
 implements Pane, PaneContainer {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+    
     private static final Extent PX_0 = new Extent(0);
     private static final Extent SCROLL_BOTTOM = new Extent(-1);
     

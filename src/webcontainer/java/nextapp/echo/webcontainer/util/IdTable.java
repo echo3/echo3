@@ -52,6 +52,9 @@ import nextapp.echo.app.RenderIdSupport;
 public class IdTable 
 implements Serializable {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private boolean hasHardReferences = false;
     private transient Map idToReferenceMap = new HashMap();
     private transient ReferenceQueue referenceQueue = new ReferenceQueue();

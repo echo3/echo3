@@ -35,6 +35,9 @@ package nextapp.echo.app;
 public class HttpImageReference
 implements ImageReference {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private String uri;
     private Extent width, height;
     private String id;

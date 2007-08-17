@@ -38,6 +38,9 @@ import nextapp.echo.app.table.TableModel;
  */
 public class TableModelEvent extends EventObject {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * A value for <code>column</code> parameters indicating that all columns 
      * of the table were affected by the change.

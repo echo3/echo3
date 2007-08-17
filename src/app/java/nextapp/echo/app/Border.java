@@ -37,6 +37,9 @@ import java.io.Serializable;
 public class Border 
 implements Serializable {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     public static final int SIDE_TOP = 0;
     public static final int SIDE_RIGHT = 1;
     public static final int SIDE_BOTTOM = 2;
@@ -99,6 +102,9 @@ implements Serializable {
     public static class Side
     implements Serializable {
         
+        /** Serial Version UID. */
+        private static final long serialVersionUID = 20070101L;
+
         private Extent size;
         private Color color;
         private int style;

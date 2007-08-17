@@ -40,7 +40,10 @@ package nextapp.echo.app;
  * @see nextapp.echo.app.layout.ColumnLayoutData
  */
 public class Column extends Component {
-    
+
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     public static final String PROPERTY_BORDER = "border";
     public static final String PROPERTY_CELL_SPACING = "cellSpacing";
     public static final String PROPERTY_INSETS = "insets";

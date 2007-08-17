@@ -41,6 +41,9 @@ import nextapp.echo.app.Extent;
 public class TableColumn 
 implements Serializable {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     public static final String CELL_RENDERER_CHANGED_PROPERTY = "cellRenderer";
     public static final String HEADER_RENDERER_CHANGED_PROPERTY = "headerRenderer";
     public static final String HEADER_VALUE_CHANGED_PROPERTY = "headerValue";

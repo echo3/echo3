@@ -46,6 +46,9 @@ import java.io.Serializable;
 public class FillImageBorder 
 implements Serializable {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     public static final int TOP_LEFT = 0;
     public static final int TOP = 1;
     public static final int TOP_RIGHT= 2;

@@ -34,4 +34,6 @@ package nextapp.echo.app;
  */
 public class PasswordField extends TextField {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
 }

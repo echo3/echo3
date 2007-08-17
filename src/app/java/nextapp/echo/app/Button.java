@@ -37,6 +37,9 @@ import nextapp.echo.app.button.DefaultButtonModel;
  */
 public class Button extends AbstractButton {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * Creates a button with no text or icon.
      */

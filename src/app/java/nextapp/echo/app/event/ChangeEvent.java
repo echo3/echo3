@@ -36,6 +36,9 @@ import java.util.EventObject;
  */
 public class ChangeEvent extends EventObject {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * Creates a new <code>ChangeEvent</code>.
      * 

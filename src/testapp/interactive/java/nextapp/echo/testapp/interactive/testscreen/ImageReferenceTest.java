@@ -59,7 +59,7 @@ public class ImageReferenceTest extends TestGrid {
     // Static for memory conservation w/ live demos.
     private static final AwtImageReference AWT_IMAGE_REFERENCE;
     static {
-        URL resourceUrl = ImageReferenceTest.class.getResource(RESOURCE_IMAGE_LOCATION);
+        URL resourceUrl = ImageReferenceTest.class.getClassLoader().getResource(RESOURCE_IMAGE_LOCATION);
         ImageIcon imageIcon = new ImageIcon(resourceUrl);
         BufferedImage image = new BufferedImage(85, 100, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics = (Graphics2D) image.getGraphics();
@@ -96,7 +96,7 @@ public class ImageReferenceTest extends TestGrid {
             int bytesRead = 0;
             
             try {
-                in = ImageReferenceTest.class.getResourceAsStream(RESOURCE_IMAGE_LOCATION);
+                in = ImageReferenceTest.class.getClassLoader().getResourceAsStream(RESOURCE_IMAGE_LOCATION);
                 do {
                     bytesRead = in.read(buffer);
                     if (bytesRead > 0) {

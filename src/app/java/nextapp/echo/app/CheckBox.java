@@ -37,6 +37,9 @@ import nextapp.echo.app.button.ToggleButton;
  */
 public class CheckBox extends ToggleButton {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * Creates a check box with no text or icon.
      */

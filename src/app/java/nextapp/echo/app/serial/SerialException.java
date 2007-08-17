@@ -35,6 +35,9 @@ package nextapp.echo.app.serial;
  */
 public class SerialException extends Exception {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private Throwable cause;
     
     /**

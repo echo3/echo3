@@ -42,6 +42,9 @@ import nextapp.echo.app.event.ChangeListener;
  */
 public abstract class ToggleButton extends AbstractButton {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     public static final String PROPERTY_DISABLED_STATE_ICON = "disabledStateIcon";
     public static final String PROPERTY_DISABLED_SELECTED_STATE_ICON = "disabledSelectedStateIcon";
     public static final String PROPERTY_PRESSED_STATE_ICON = "pressedStateIcon";
@@ -62,6 +65,9 @@ public abstract class ToggleButton extends AbstractButton {
      */
     private ChangeListener changeForwarder = new ChangeListener() {
 
+        /** Serial Version UID. */
+        private static final long serialVersionUID = 20070101L;
+    
         /**
          * @see nextapp.echo.app.event.ChangeListener#stateChanged(nextapp.echo.app.event.ChangeEvent)
          */

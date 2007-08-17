@@ -38,6 +38,9 @@ import nextapp.echo.app.table.TableColumnModel;
  */
 public class TableColumnModelEvent extends EventObject {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private int fromIndex;
     private int toIndex;
 

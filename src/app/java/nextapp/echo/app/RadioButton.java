@@ -42,12 +42,18 @@ import nextapp.echo.app.event.ChangeListener;
  */
 public class RadioButton extends ToggleButton {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     public static final String BUTTON_GROUP_CHANGED_PROPERTY = "buttonGroup";
     
     /**
      * Monitors state changes to enforce <code>ButtonGroup</code> behavior.
      */
     private ChangeListener changeMonitor = new ChangeListener() {
+
+        /** Serial Version UID. */
+        private static final long serialVersionUID = 20070101L;
 
         /**
          * @see nextapp.echo.app.event.ChangeListener#stateChanged(nextapp.echo.app.event.ChangeEvent)

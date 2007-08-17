@@ -36,6 +36,9 @@ import nextapp.echo.app.event.DocumentEvent;
  */
 public class StringDocument extends AbstractDocument {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private String text;
 
     /**

@@ -39,6 +39,9 @@ import java.util.Set;
  */
 public class DerivedMutableStyle extends MutableStyle {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private Style parentStyle;
     
     /**

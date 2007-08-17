@@ -44,6 +44,9 @@ import nextapp.echo.app.event.WindowPaneListener;
 public class WindowPane extends Component 
 implements FloatingPane, ModalSupport, PaneContainer {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     public static final String INPUT_CLOSE = "close";
     
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";

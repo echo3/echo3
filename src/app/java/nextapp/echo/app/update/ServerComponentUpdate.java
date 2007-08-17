@@ -50,6 +50,9 @@ import nextapp.echo.app.Component;
 public class ServerComponentUpdate 
 implements Serializable {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private static final Component[] EMPTY_COMPONENT_ARRAY = new Component[0];
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
     

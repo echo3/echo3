@@ -43,6 +43,9 @@ package nextapp.echo.app;
  */
 public class Grid extends Component {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     public static final int DEFAULT_SIZE = 2;
     
     /**

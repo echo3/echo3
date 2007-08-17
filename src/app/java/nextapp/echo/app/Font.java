@@ -37,9 +37,12 @@ import java.io.Serializable;
 public class Font 
 implements Serializable {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * An immutable representation of a type face.
-     * A typeface may specify an alternate <code>TypeFace</code> object
+     * A type face may specify an alternate <code>TypeFace</code> object
      * in the event that the primary one is not available on a given
      * client.  In this way, a chain of alternates may be created for
      * a very specific face, e.g.:
@@ -47,14 +50,17 @@ implements Serializable {
      */
     public static class Typeface 
     implements Serializable {
-        
+    
+        /** Serial Version UID. */
+        private static final long serialVersionUID = 20070101L;
+    
         private String name;
         private Typeface alternate;
         
         /**
          * Creates a new <code>Typeface</code>.
          * 
-         * @param name the typeface name
+         * @param name the type face name
          */
         public Typeface(String name) {
             this(name, null);
@@ -63,9 +69,9 @@ implements Serializable {
         /**
          * Creates a new <code>Typeface</code>.
          * 
-         * @param name the typeface name
-         * @param alternate the alternate typeface which should be used, in
-         *        case the client does not support the specified typeface
+         * @param name the type face name
+         * @param alternate the alternate type face which should be used, in
+         *        case the client does not support the specified type face
          */
         public Typeface(String name, Typeface alternate) {
             super();

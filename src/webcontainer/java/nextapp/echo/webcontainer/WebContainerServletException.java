@@ -36,6 +36,9 @@ package nextapp.echo.webcontainer;
  */
 public class WebContainerServletException extends RuntimeException {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private Throwable cause;
     
     /**

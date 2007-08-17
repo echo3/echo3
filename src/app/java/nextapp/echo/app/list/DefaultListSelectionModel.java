@@ -43,6 +43,9 @@ import nextapp.echo.app.event.EventListenerList;
 public class DefaultListSelectionModel 
 implements ListSelectionModel, Serializable {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private EventListenerList listenerList = new EventListenerList();
     private int selectionMode = SINGLE_SELECTION;
     private BitSet selection = new BitSet();

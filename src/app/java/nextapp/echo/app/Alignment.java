@@ -38,6 +38,9 @@ import java.io.Serializable;
 public class Alignment
 implements Serializable {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * A predefined alignment instance specifying left horizontal alignment and default vertical alignment.
      */

@@ -42,6 +42,9 @@ import java.util.Locale;
 public class LayoutDirection 
 implements Serializable {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private static final Collection RTL_LANGUAGES;
     static {
         Collection rtlLanguages = new HashSet();

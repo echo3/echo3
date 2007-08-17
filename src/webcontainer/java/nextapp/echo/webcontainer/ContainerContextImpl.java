@@ -49,6 +49,9 @@ import nextapp.echo.webcontainer.WebContainerServlet;;
 class ContainerContextImpl 
 implements ContainerContext, Serializable {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private UserInstance userInstance;
     
     /**

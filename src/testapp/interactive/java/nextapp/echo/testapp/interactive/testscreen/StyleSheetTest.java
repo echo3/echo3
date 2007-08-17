@@ -66,7 +66,7 @@ public class StyleSheetTest extends Column {
     static {
         InputStream in = null;
         try {
-            in = StyleSheetTest.class.getResourceAsStream(Styles.STYLE_PATH + "Default.stylesheet.xml");
+            in = StyleSheetTest.class.getClassLoader().getResourceAsStream(Styles.STYLE_PATH + "Default.stylesheet.xml");
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             StringBuffer out = new StringBuffer();
             String line;

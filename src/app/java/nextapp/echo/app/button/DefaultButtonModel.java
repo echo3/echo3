@@ -41,6 +41,9 @@ import nextapp.echo.app.event.EventListenerList;
 public class DefaultButtonModel 
 implements ButtonModel {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private EventListenerList listenerList = new EventListenerList();
     private String actionCommand;
 

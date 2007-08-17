@@ -40,6 +40,9 @@ import java.util.Set;
 public class UserInstanceUpdateManager 
 implements Serializable {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
     private Set updatedPropertyNames = new HashSet();
     

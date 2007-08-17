@@ -81,6 +81,9 @@ public abstract class AbstractListComponent extends Component {
      */
     private ChangeListener changeHandler = new ChangeListener() {
 
+        /** Serial Version UID. */
+        private static final long serialVersionUID = 20070101L;
+
         /**
          * @see nextapp.echo.app.event.ChangeListener#stateChanged(nextapp.echo.app.event.ChangeEvent)
          */
@@ -93,6 +96,9 @@ public abstract class AbstractListComponent extends Component {
      * Local handler of <code>ListDataEvent</code>s.
      */
     private ListDataListener listDataHandler = new ListDataListener() { 
+    
+        /** Serial Version UID. */
+        private static final long serialVersionUID = 20070101L;
     
         /**
          * @see nextapp.echo.app.event.ListDataListener#contentsChanged(nextapp.echo.app.event.ListDataEvent)

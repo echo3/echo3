@@ -46,6 +46,9 @@ import java.io.Serializable;
 public class Extent 
 implements Comparable, Serializable {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * Adds one <code>Extent</code> to another, returning the sum as a new
      * <code>Extent</code>.  Null is returned if the <code>Extent</code>s have

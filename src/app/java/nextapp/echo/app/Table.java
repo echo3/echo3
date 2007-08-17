@@ -58,6 +58,9 @@ import nextapp.echo.app.table.TableModel;
  */
 public class Table extends Component {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * The default renderer for table cells. 
      */
@@ -107,6 +110,9 @@ public class Table extends Component {
      */
     private TableModelListener modelListener = new TableModelListener() {
         
+        /** Serial Version UID. */
+        private static final long serialVersionUID = 20070101L;
+
         /**
          * @see nextapp.echo.app.event.TableModelListener#tableChanged(nextapp.echo.app.event.TableModelEvent)
          */
@@ -122,6 +128,9 @@ public class Table extends Component {
      * Listener to monitor changes to column model.
      */
     private TableColumnModelListener columnModelListener = new TableColumnModelListener() {
+
+        /** Serial Version UID. */
+        private static final long serialVersionUID = 20070101L;
 
         /**
          * @see nextapp.echo.app.event.TableColumnModelListener#columnAdded(nextapp.echo.app.event.TableColumnModelEvent)
@@ -149,6 +158,9 @@ public class Table extends Component {
      * Local handler for list selection events.
      */
     private ChangeListener changeHandler = new ChangeListener() {
+        
+        /** Serial Version UID. */
+        private static final long serialVersionUID = 20070101L;
         
         /**
          * @see nextapp.echo.app.event.ChangeListener#stateChanged(nextapp.echo.app.event.ChangeEvent)

@@ -50,6 +50,9 @@ import nextapp.echo.app.util.Uid;
 public abstract class ApplicationInstance 
 implements Serializable {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /** The name and version of the Echo API in use. */
     public static final String ID_STRING = "NextApp Echo v3.0.alpha0.1";
 
@@ -217,7 +220,10 @@ implements Serializable {
      * @see #removeTaskQueue(TaskQueueHandle)
      */
     public TaskQueueHandle createTaskQueue() {
-        TaskQueueHandle taskQueue = new TaskQueueHandle() { };
+        TaskQueueHandle taskQueue = new TaskQueueHandle() { 
+            /** Serial Version UID. */
+            private static final long serialVersionUID = 20070101L;
+        };
         synchronized (taskQueueMap) {
             taskQueueMap.put(taskQueue, null);
         }

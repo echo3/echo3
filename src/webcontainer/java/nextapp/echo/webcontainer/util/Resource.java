@@ -46,6 +46,9 @@ public class Resource {
      */
     public static class ResourceException extends RuntimeException {
     
+        /** Serial Version UID. */
+        private static final long serialVersionUID = 20070101L;
+    
         /**
          * Creates a resource exception.
          *

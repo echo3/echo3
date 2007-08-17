@@ -80,6 +80,9 @@ extends Component {
      */
     private DocumentListener documentListener = new DocumentListener() {
 
+        /** Serial Version UID. */
+        private static final long serialVersionUID = 20070101L;
+    
         /**
          * @see nextapp.echo.app.event.DocumentListener#documentUpdate(nextapp.echo.app.event.DocumentEvent)
          */

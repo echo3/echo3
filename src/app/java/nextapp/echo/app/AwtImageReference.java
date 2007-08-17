@@ -48,6 +48,9 @@ import java.io.ObjectOutputStream;
 public class AwtImageReference 
 implements ImageReference {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private transient Image image;
     private String id;
     

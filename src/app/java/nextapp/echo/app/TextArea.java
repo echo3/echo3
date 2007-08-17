@@ -38,6 +38,9 @@ import nextapp.echo.app.text.TextComponent;
  */
 public class TextArea extends TextComponent {
     
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     /**
      * Creates a new <code>TextArea</code> with an empty 
      * <code>StringDocument</code> as its model, and default width and

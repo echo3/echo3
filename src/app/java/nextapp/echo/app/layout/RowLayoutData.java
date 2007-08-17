@@ -37,6 +37,9 @@ import nextapp.echo.app.Extent;
  */
 public class RowLayoutData extends CellLayoutData {
 
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20070101L;
+
     private Extent width = null;
     
     /**
