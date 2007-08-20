@@ -275,50 +275,65 @@ class OutputProcessor {
                     continue;
                 }
                 
-                Component parentComponent = componentUpdates[i].getParent();
-                Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
-                setComponentId(upElement, parentComponent);
-            
-                // Removed children.
-                Component[] removedChildren = componentUpdates[i].getRemovedChildren();
-                if (removedChildren.length > 0) {
-                    Element rmElement = document.createElement("rm");
-                    StringBuffer out = new StringBuffer();
-                    for (int j = 0; j < removedChildren.length; ++j) {
-                        if (j > 0) {
-                            out.append(",");
+                // Process added/removed children and updated properties of update's parent component.
+                if (componentUpdates[i].hasAddedChildren() || componentUpdates[i].hasRemovedChildren()
+                        || componentUpdates[i].hasUpdatedProperties()) {
+                    Component parentComponent = componentUpdates[i].getParent();
+                    Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
+                    setComponentId(upElement, parentComponent);
+                
+                    // Removed children.
+                    Component[] removedChildren = componentUpdates[i].getRemovedChildren();
+                    if (removedChildren.length > 0) {
+                        Element rmElement = document.createElement("rm");
+                        StringBuffer out = new StringBuffer();
+                        for (int j = 0; j < removedChildren.length; ++j) {
+                            if (j > 0) {
+                                out.append(",");
+                            }
+                            out.append(userInstance.getClientRenderId(removedChildren[j]));
                         }
-                        out.append(userInstance.getClientRenderId(removedChildren[j]));
+                        rmElement.setAttribute("i", out.toString());
+                        upElement.appendChild(rmElement);
                     }
-                    rmElement.setAttribute("i", out.toString());
-                    upElement.appendChild(rmElement);
-                }
-
-                // Added children.
-                Component[] addedChildren = componentUpdates[i].getAddedChildren();
-                if (addedChildren.length > 0) {
-                    // sort components by their index
-                    SortedMap indexedComponents = new TreeMap();
-                    for (int j = 0; j < addedChildren.length; ++j) {
-                        Component addedChild = addedChildren[j];
-                        if (isComponentRendered(addedChild)) {
-                            indexedComponents.put(new Integer((parentComponent.visibleIndexOf(addedChild))), addedChild);
+    
+                    // Added children.
+                    Component[] addedChildren = componentUpdates[i].getAddedChildren();
+                    if (addedChildren.length > 0) {
+                        // sort components by their index
+                        SortedMap indexedComponents = new TreeMap();
+                        for (int j = 0; j < addedChildren.length; ++j) {
+                            Component addedChild = addedChildren[j];
+                            if (isComponentRendered(addedChild)) {
+                                indexedComponents.put(new Integer((parentComponent.visibleIndexOf(addedChild))), addedChild);
+                            }
+                        }
+                        Iterator indexedComponentsIter = indexedComponents.entrySet().iterator();
+                        while (indexedComponentsIter.hasNext()) {
+                            Entry entry = (Entry)indexedComponentsIter.next();
+                            Element cElement = renderComponentState(upElement, (Component) entry.getValue());
+                            cElement.setAttribute("x", ((Integer)entry.getKey()).toString()); 
                         }
                     }
-                    Iterator indexedComponentsIter = indexedComponents.entrySet().iterator();
-                    while (indexedComponentsIter.hasNext()) {
-                        Entry entry = (Entry)indexedComponentsIter.next();
-                        Element cElement = renderComponentState(upElement, (Component) entry.getValue());
-                        cElement.setAttribute("x", ((Integer)entry.getKey()).toString()); 
-                    }
+                    
+                    // Updated properties.
+                    renderComponentUpdatedProperties(upElement, parentComponent, componentUpdates[i]);
                 }
                 
-                // Updated properties.
-                renderComponentUpdatedProperties(upElement, parentComponent, componentUpdates[i]);
-                
-                Component[] updatedLayoutDataChildren = componentUpdates[i].getUpdatedLayoutDataChildren();
-                for (int j = 0; j < updatedLayoutDataChildren.length; ++j) {
-                    renderComponentUpdatedLayoutData(upElement, updatedLayoutDataChildren[j]);
+                // Process updated layout data on immediate children of update's parent component.
+                if (componentUpdates[i].hasUpdatedLayoutDataChildren()) {
+                    Component[] updatedLayoutDataChildren = componentUpdates[i].getUpdatedLayoutDataChildren();
+                    for (int j = 0; j < updatedLayoutDataChildren.length; ++j) {
+                        Component component = updatedLayoutDataChildren[j];
+                        ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
+                        if (componentPeer == null) {
+                            throw new IllegalStateException("No synchronize peer found for component: " 
+                                    + component.getClass().getName());
+                        }
+                        Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
+                        setComponentId(upElement, component);
+                        renderComponentProperty(upElement, componentPeer, component, Component.PROPERTY_LAYOUT_DATA, true); 
+                    }
                 }
             }
         }
@@ -552,15 +567,6 @@ class OutputProcessor {
                 }
             }
         }
-    }
-    
-    private void renderComponentUpdatedLayoutData(Element upElement, Component c)
-    throws SerialException {
-        ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
-        if (componentPeer == null) {
-            throw new IllegalStateException("No synchronize peer found for component: " + c.getClass().getName());
-        }
-        renderComponentProperty(upElement, componentPeer, c, Component.PROPERTY_LAYOUT_DATA, true); 
     }
     
     private void renderComponentUpdatedProperties(Element upElement, Component c, ServerComponentUpdate update) 
