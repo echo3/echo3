@@ -62,7 +62,7 @@ import org.xml.sax.SAXException;
 /**
  * Generates an XML <code>ServerMessage</code> describing server-side changes to the
  * state of an application that is returned to the remote client as a response
- * to its syncrhonization HTTP connection.
+ * to its synchronization HTTP connection.
  */
 class OutputProcessor {
     
@@ -376,7 +376,7 @@ class OutputProcessor {
         }
         Object propertyValue = commandPeer.getProperty(context, command, propertyName, propertyIndex);
         if (propertyValue == null) {
-            // Set nulll property value.
+            // Set null property value.
             pElement.setAttribute("t", "0");
         } else {
             SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
