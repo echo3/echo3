@@ -72,23 +72,6 @@ EchoRemoteClient.prototype = EchoCore.derive(EchoClient);
 EchoRemoteClient.libraryServerUrl = null;
 
 /**
- * Global array containing 
- */
-EchoRemoteClient._activeClients = new Array();
-
-/**
- * Global listener to respond to resizing of browser window.
- * Invokes _windowResizeListener() on all active clients.
- * 
- * @param e the DOM resize event
- */
-EchoRemoteClient._globalWindowResizeListener = function(e) {
-    for (var i = 0; i < EchoRemoteClient._activeClients.length; ++i) {
-        EchoRemoteClient._activeClients[i]._windowResizeListener(e);
-    }
-};
-
-/**
  * Adds a listener for an arbitrary event type to a component.
  * This method is invoked by the Serial module when event tags are
  * processed during the deserialization of component synchronization
@@ -150,8 +133,6 @@ EchoRemoteClient.prototype.init = function(initialResponseDocument) {
     
     this.configure(application, domainElement);
     
-    EchoRemoteClient._activeClients.push(this);
-
     this._storeUpdates = false;
     this._initialized = true;
 };
@@ -815,4 +796,3 @@ EchoRemoteClient.WaitIndicatorImpl.prototype._tick = function() {
 EchoRemoteClient.ServerMessage.addProcessor("CSync", EchoRemoteClient.ComponentSyncProcessor);
 EchoRemoteClient.ServerMessage.addProcessor("CmdExec", EchoRemoteClient.CommandExecProcessor);
 
-EchoWebCore.DOM.addEventListener(window, "resize", EchoRemoteClient._globalWindowResizeListener, false);

@@ -14,10 +14,28 @@ EchoClient = function() {
     this.application = null;
 };
 
+/**
+ * Global array containing all active client instances. 
+ */
+EchoClient._activeClients = new Array();
+
+/**
+ * Global listener to respond to resizing of browser window.
+ * Invokes _windowResizeListener() on all active clients.
+ * 
+ * @param e the DOM resize event
+ */
+EchoClient._globalWindowResizeListener = function(e) {
+    for (var i = 0; i < EchoClient._activeClients.length; ++i) {
+        EchoClient._activeClients[i]._windowResizeListener(e);
+    }
+};
+
 EchoClient.CONTEXT_PROPERTY_NAME = "Client";
 
 EchoClient.prototype.configure = function(application, domainElement) {
     if (this.application) {
+        EchoCore.Arrays.remove(EchoClient._activeClients, this);
         this.application.setContextProperty(EchoClient.CONTEXT_PROPERTY_NAME, null);
     }
     
@@ -26,6 +44,7 @@ EchoClient.prototype.configure = function(application, domainElement) {
 
     if (this.application) {
         this.application.setContextProperty(EchoClient.CONTEXT_PROPERTY_NAME, this);
+        EchoClient._activeClients.push(this);
     }
 };
 
@@ -48,4 +67,6 @@ EchoClient.prototype.getServiceUrl = function(serviceId) {
 
 EchoClient.prototype.setApplication = function(application) {
 };
+
+EchoWebCore.DOM.addEventListener(window, "resize", EchoClient._globalWindowResizeListener, false);
 

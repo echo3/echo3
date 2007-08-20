@@ -64,22 +64,47 @@ EchoCore.Arrays.indexOf = function(array, item) {
     return -1;
 };
 
+/**
+ * Removes the first instance of the specified item from an array.
+ * If the item does not exist in the array, no action is taken.
+ * Equality is determined using the '==' operator.
+ * 
+ * @param array the array from which the item should be removed
+ * @param item the item to remove
+ */
 EchoCore.Arrays.remove = function(array, item) {
     for (var i = 0; i < array.length; ++i) {
         if (item == array[i]) {
             array.splice(i, 1);
+            return;
         }
     }
 };
 
+/**
+ * Removes the first instance of the specified item from an array.
+ * If the item does not exist in the array, no action is taken.
+ * Equality is determined using the equals() method if the item
+ * defines it, or '==' if it does not.
+ * 
+ * @param array the array from which the item should be removed
+ * @param item the item to remove
+ */
 EchoCore.Arrays.removeEqual = function(array, item) {
     for (var i = 0; i < array.length; ++i) {
         if ((item.equals && item.equals(array[i])) || item == array[i]) {
             array.splice(i, 1);
+            return;
         }
     }
 };
 
+/**
+ * Removes duplicate items from an array.
+ * Items retained in the array may not appear in the previous order.
+ * 
+ * @param array the array from which duplicates are to be removed.
+ */
 EchoCore.Arrays.removeDuplicates = function(array) {
     array.sort();
     var removeCount = 0;
