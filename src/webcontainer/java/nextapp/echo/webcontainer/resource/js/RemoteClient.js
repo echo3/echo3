@@ -444,8 +444,8 @@ EchoRemoteClient.ClientMessage.prototype._renderClientProperties = function() {
     clientPropertiesElement.appendChild(this._createPropertyElement("navigatorJavaEnabled", window.navigator.javaEnabled()));
     clientPropertiesElement.appendChild(this._createPropertyElement("navigatorLanguage", 
             window.navigator.language ? window.navigator.language : window.navigator.userLanguage));
-    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorPlatform", window.navigator.userAgent));
-    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorUserAgent", window.navigator.platform));
+    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorPlatform", window.navigator.platform));
+    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorUserAgent", window.navigator.userAgent));
 
     this._document.documentElement.appendChild(clientPropertiesElement);
 };
