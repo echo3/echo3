@@ -79,10 +79,6 @@ EchoRender.ComponentSync.Row.prototype.renderAdd = function(update, parentElemen
 };
 
 EchoRender.ComponentSync.Row.prototype._renderAddChild = function(update, child, index) {
-    if (index != null && index == update.parent.getComponentCount() - 1) {
-        index = null;
-    }
-    
     var tdElement = document.createElement("td");
     this._childIdToElementMap[child.renderId] = tdElement;
     EchoRender.renderComponentAdd(update, child, tdElement);
@@ -108,6 +104,17 @@ EchoRender.ComponentSync.Row.prototype._renderAddChild = function(update, child,
     }
     EchoRender.Property.Insets.renderPixel(insets, tdElement, "padding");
     
+    if (index != null) {
+    	var currentChildCount;
+        if (this._trElement.childNodes.length >= 3 && this._cellSpacing) {
+        	currentChildCount = (this._trElement.childNodes.length + 1) / 2;
+        } else {
+        	currentChildCount = this._trElement.childNodes.length;
+        }
+        if (index == currentChildCount) {
+	        index = null;
+        }
+    }
     if (index == null) {
         // Full render or append-at-end scenario
         
@@ -121,7 +128,7 @@ EchoRender.ComponentSync.Row.prototype._renderAddChild = function(update, child,
     } else {
         // Partial render insert at arbitrary location scenario (but not at end)
         var insertionIndex = this._cellSpacing ? index * 2 : index;
-        var beforeElement = this._trElement.childNodes[insertionIndex]
+        var beforeElement = this._trElement.childNodes[insertionIndex];
         
         // Render child td first.
         this._trElement.insertBefore(tdElement, beforeElement);

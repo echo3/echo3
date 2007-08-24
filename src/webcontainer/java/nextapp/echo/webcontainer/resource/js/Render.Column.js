@@ -57,9 +57,6 @@ EchoRender.ComponentSync.Column.prototype.renderAdd = function(update, parentEle
 };
 
 EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, child, index) {
-    if (index != null && index == update.parent.getComponentCount() - 1) {
-        index = null;
-    }
     var divElement = document.createElement("div");
     this._childIdToElementMap[child.renderId] = divElement;
     EchoRender.renderComponentAdd(update, child, divElement);
@@ -76,6 +73,17 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
 	    }
     }
     
+    if (index != null) {
+    	var currentChildCount;
+        if (this._divElement.childNodes.length >= 3 && this._cellSpacing) {
+        	currentChildCount = (this._divElement.childNodes.length + 1) / 2;
+        } else {
+        	currentChildCount = this._divElement.childNodes.length;
+        }
+        if (index == currentChildCount) {
+	        index = null;
+        }
+    }
     if (index == null) {
         // Full render or append-at-end scenario
         
@@ -89,18 +97,13 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
     } else {
         // Partial render insert at arbitrary location scenario (but not at end)
         var insertionIndex = this._cellSpacing ? index * 2 : index;
-        var beforeElement = this._divElement.childNodes[insertionIndex]
+        var beforeElement = this._divElement.childNodes[insertionIndex];
         
         // Render child div first.
         this._divElement.insertBefore(divElement, beforeElement);
         
         // Then render spacing div if required.
         if (this._cellSpacing) {
-            if (!beforeElement) {
-                // Multiple children are being added at the end, insert spacing div
-                // before child div.
-                beforeElement = divElement;
-            }
             this._divElement.insertBefore(this._spacingPrototype.cloneNode(false), beforeElement);
         }
     }

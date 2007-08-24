@@ -101,6 +101,12 @@ public class RowTest extends SplitPane {
                 testRow.add(new Label("Added item [" + nextValue++ + "]"));
             }
         });
+        controlsColumn.addButton("Add Two Items (at end)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testRow.add(new Label("Added item [" + nextValue++ + "]"));
+                testRow.add(new Label("Added item [" + nextValue++ + "]"));
+            }
+        });
         controlsColumn.addButton("Remove Item 0", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (testRow.getComponentCount() > 0) {
