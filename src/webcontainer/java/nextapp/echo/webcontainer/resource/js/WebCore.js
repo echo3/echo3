@@ -949,8 +949,8 @@ EchoWebCore.Render.Measure = function(element) {
         EchoWebCore.Render._measureContainerDivElement.appendChild(element);
     }
     
-    this.width = parseInt(element.offsetWidth);
-    this.height = parseInt(element.offsetHeight);
+    this.width = element.offsetWidth;
+    this.height = element.offsetHeight;
     
     if (!rendered) {
         EchoWebCore.Render._measureContainerDivElement.removeChild(element);
