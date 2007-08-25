@@ -78,6 +78,7 @@ EchoRender.ComponentSync.Button.prototype._processClick = function(e) {
     if (!this.component.isActive()) {
         return;
     }
+    this.component.application.setFocusedComponent(this.component);
     this._doAction();
 };
 

@@ -113,6 +113,7 @@ public class TestPane extends ContentPane {
         addTest("ContentPane", "ContentPaneTest");
         addTest("Delay", "DelayTest");
         addTest("Exception", "ExceptionTest");
+        addTest("Focus", "FocusTest");
         addTest("Grid", "GridTest");
         addTest("Hierarchy", "HierarchyTest");
         addTest("Image", "ImageReferenceTest");
