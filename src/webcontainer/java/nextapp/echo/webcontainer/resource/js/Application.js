@@ -100,6 +100,12 @@ EchoApp.Application.prototype.dispose = function() {
     this.updateManager.dispose();
 };
 
+/**
+ * Focuses the previous/next component based on the currently focused component.
+ * 
+ * @param {Boolean} reverse false to focus the next component, true to focus the
+ *        previous component
+ */
 EchoApp.Application.prototype.focusNext = function(reverse) {
     focusedComponent = reverse ? this._focusManager.findPrevious() : this._focusManager.findNext();
     this.setFocusedComponent(focusedComponent);
@@ -1001,6 +1007,11 @@ EchoApp.Component.prototype.toString = function(longFormat) {
     return out;
 };
 
+/**
+ * Focus management handler for a specific application instance.
+ * One FocusManager is created for each application.
+ * @private 
+ */
 EchoApp.FocusManager = function(application) { 
     this._application = application;
 };
@@ -1013,6 +1024,9 @@ EchoApp.FocusManager = function(application) {
  * will have a child focus order that may be different from the order of their 
  * children).
  * This search is depth first.
+ * 
+ * @return the Component which should be focused
+ * @type EchoApp.Component
  */
 EchoApp.FocusManager.prototype.findNext = function() {
     /** The component that is currently being analyzed */
@@ -1080,6 +1094,18 @@ EchoApp.FocusManager.prototype.findNext = function() {
     }
 };
 
+/**
+ * Searches the component hierarchy for the previous component that should
+ * be focused (based on the currently focused component).
+ * Container components are queried to determine the order in which their
+ * children should naturally be focused (certain components, e.g., SplitPanes,
+ * will have a child focus order that may be different from the order of their 
+ * children).
+ * This search is depth first.
+ * 
+ * @return the Component which should be focused
+ * @type EchoApp.Component
+ */
 EchoApp.FocusManager.prototype.findPrevious = function() {
     /** The component that is currently being analyzed */
     var component = this._application.getFocusedComponent();
@@ -1462,6 +1488,16 @@ EchoApp.Property.Color = function(value) {
  */
 EchoApp.Property.Color.prototype.className = "Color";
 
+/**
+ * Adjusts the value of the color's RGB values by the
+ * specified amounts, returning a new Color.
+ * The original color is unchanged.
+ * 
+ * @param r the amount to adjust the red value of the color (-255 to 255)
+ * @param r the amount to adjust the green value of the color (-255 to 255)
+ * @param r the amount to adjust the blue value of the color (-255 to 255)
+ * @return a new adjusted color
+ */
 EchoApp.Property.Color.prototype.adjust = function(r, g, b) {
     var colorInt = parseInt(this.value.substring(1), 16);
     var red = parseInt(colorInt / 0x10000) + r;
@@ -2165,6 +2201,13 @@ EchoApp.Update.ComponentUpdate.prototype._appendRemovedDescendants = function(up
     }
 };
 
+/**
+ * Returns an array containing the children added in this update,
+ * or null if none were added.
+ * 
+ * @return the added children
+ * @type Array
+ */
 EchoApp.Update.ComponentUpdate.prototype.getAddedChildren = function() {
     if (!this._addedChildIds) {
         return null;
@@ -2176,6 +2219,13 @@ EchoApp.Update.ComponentUpdate.prototype.getAddedChildren = function() {
     return components;
 };
 
+/**
+ * Returns an array containing the children removed in this update,
+ * or null if none were removed.
+ * 
+ * @return the removed children
+ * @type Array
+ */
 EchoApp.Update.ComponentUpdate.prototype.getRemovedChildren = function() {
     if (!this._removedChildIds) {
         return null;
@@ -2187,6 +2237,14 @@ EchoApp.Update.ComponentUpdate.prototype.getRemovedChildren = function() {
     return components;
 };
 
+/**
+ * Returns an array containing the descendants of any children removed in
+ * this update, or null if none were removed.  The removed children
+ * themselves are not returned by this method.
+ * 
+ * @return the removed descendants
+ * @type Array
+ */
 EchoApp.Update.ComponentUpdate.prototype.getRemovedDescendants = function() {
     if (!this._removedDescendantIds) {
         return null;
@@ -2198,6 +2256,14 @@ EchoApp.Update.ComponentUpdate.prototype.getRemovedDescendants = function() {
     return components;
 };
 
+/**
+ * Returns an array containing the children of this component whose
+ * LayoutDatas have changed in this update, or null if no such
+ * changes were made.
+ * 
+ * @return the updated layout data children
+ * @type Array
+ */
 EchoApp.Update.ComponentUpdate.prototype.getUpdatedLayoutDataChildren = function() {
     if (!this._updatedLayoutDataChildIds) {
         return null;
@@ -2209,22 +2275,40 @@ EchoApp.Update.ComponentUpdate.prototype.getUpdatedLayoutDataChildren = function
     return components;
 };
 
+/**
+ * Determines if any children were added during this update.
+ * 
+ * @return true if any children were added
+ * @type Boolean
+ */
 EchoApp.Update.ComponentUpdate.prototype.hasAddedChildren = function() {
     return this._addedChildIds != null;
 };
 
+/**
+ * Determines if any children were removed during this update.
+ * 
+ * @return true if any children were removed
+ * @type Boolean
+ */
 EchoApp.Update.ComponentUpdate.prototype.hasRemovedChildren = function() {
     return this._removedChildIds != null;
 };
 
+/**
+ * Determines if any children had their LayoutData changed during this update.
+ * 
+ * @return true if any children had their LayoutData changed
+ * @type Boolean
+ */
 EchoApp.Update.ComponentUpdate.prototype.hasUpdatedLayoutDataChildren = function() {
     return this._updatedLayoutDataChildIds != null;
 };
 
 /**
- * Determines if this update is updating properties.
+ * Determines if this update has any changed properties.
  * 
- * @return true if properties are being updated.
+ * @return true if properties are being updated
  * @type Boolean
  */
 EchoApp.Update.ComponentUpdate.prototype.hasUpdatedProperties = function() {
@@ -2236,7 +2320,7 @@ EchoApp.Update.ComponentUpdate.prototype.hasUpdatedProperties = function() {
  * property with the given <code>name</code>.
  * 
  * @param name the name of the property being updated
- * @return the <code>PropertyUpdate</code>, or null if none exists.
+ * @return the <code>PropertyUpdate</code>, or null if none exists
  */
 EchoApp.Update.ComponentUpdate.prototype.getUpdatedProperty = function(name) {
     if (this._propertyUpdates == null) {
@@ -2249,7 +2333,7 @@ EchoApp.Update.ComponentUpdate.prototype.getUpdatedProperty = function(name) {
  * Returns the names of all properties being updated in this update.
  * 
  * @return the names of all updated properties, if no properties are updated an
- * 		empty array is returned.
+ * 		empty array is returned
  * @type Array
  */
 EchoApp.Update.ComponentUpdate.prototype.getUpdatedPropertyNames = function() {
