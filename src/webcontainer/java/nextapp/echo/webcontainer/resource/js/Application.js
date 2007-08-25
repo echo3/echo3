@@ -62,6 +62,12 @@ EchoApp.Application = function() {
      * @type EchoApp.Update.Manager
      */
     this.updateManager = new EchoApp.Update.Manager(this);
+    
+    /**
+     * FocusManager instance handling application focus behavior.
+     * @type EchoApp.FocusManager
+     */
+    this._focusManager = new EchoApp.FocusManager(this);
 };
 
 /**
@@ -74,6 +80,16 @@ EchoApp.Application.prototype.addComponentUpdateListener = function(l) {
 };
 
 /**
+ * Adds a FocusListener.  Focus listeners will be invoked when the focused
+ * component in the application changes.
+ * 
+ * @param l the listener to add (may be of type Function or EchoCore.MethodRef)
+ */
+EchoApp.Application.prototype.addFocusListener = function(l) {
+    this._listenerList.addListener("focus", l);
+};
+
+/**
  * Disposes of the application.
  * Once invoked, the application will no longer function and cannot be used again.
  * This method will free any resources allocated by the application.
@@ -82,6 +98,11 @@ EchoApp.Application.prototype.dispose = function() {
     //FIXME. Add additional functionality to fully destroy application,
     // cause release of all browser-releated resources.
     this.updateManager.dispose();
+};
+
+EchoApp.Application.prototype.focusNext = function(reverse) {
+    focusedComponent = reverse ? this._focusManager.findPrevious() : this._focusManager.findNext();
+    this.setFocusedComponent(focusedComponent);
 };
 
 /**
@@ -181,6 +202,16 @@ EchoApp.Application.prototype.removeComponentUpdateListener = function(l) {
 };
 
 /**
+ * Removes a FocusListener.  Focus listeners will be invoked when the focused
+ * component in the application changes.
+ * 
+ * @param l the listener to remove (may be of type Function or EchoCore.MethodRef)
+ */
+EchoApp.Application.prototype.removeFocusListener = function(l) {
+    this._listenerList.removeListener("focus", l);
+};
+
+/**
  * Sets a context property.
  * 
  * @param propertyName the name of the property
@@ -199,7 +230,13 @@ EchoApp.Application.prototype.setContextProperty = function(propertyName, proper
  * @param {EchoApp.Component} newValue the new focused component
  */
 EchoApp.Application.prototype.setFocusedComponent = function(newValue) {
+    // If required, find focusable parent containing 'newValue'.
+    while (newValue != null && !newValue.focusable) {
+        newValue = newValue.parent;
+    }
+    
     this._focusedComponent = newValue;
+    this._listenerList.fireEvent(new EchoCore.Event(this, "focus"));
 };
 
 /**
@@ -462,7 +499,7 @@ EchoApp.Component.prototype.fireEvent = function(event) {
 };
 
 /**
- * Retrieves the child omponent at the specified index.
+ * Retrieves the child component at the specified index.
  * 
  * @param {Number} index the (integer) index
  * @return the child component
@@ -481,6 +518,24 @@ EchoApp.Component.prototype.getComponent = function(index) {
 EchoApp.Component.prototype.getComponentCount = function() {
     return this.children.length;
 };
+
+/**
+ * Returns the child component at the specified index
+ * after sorting the children in the order which they 
+ * should be focused.  The default implementation simply
+ * returns the same value as getComponent().
+ * Implementations should override this method when
+ * the natural order to focus child components is
+ * different than their normal ordering (e.g., when
+ * the component at index 1 is positioned above the 
+ * component at index 0).
+ * 
+ * @param index the index of the child (in focus order)
+ * @return the child component
+ */
+EchoApp.Component.prototype.getFocusComponent = function(index) {
+    return this.children[index];
+}
 
 /**
  * Returns an arbitrary indexed property value.
@@ -725,6 +780,11 @@ EchoApp.Component.prototype.register = function(application) {
 
 	if (!application) { // unregistering
 	    
+	    // Change application focus in the event the focused component is being removed.
+	    if (this.application._focusedComponent == this) {
+	        this.application.setFocusedComponent(this.parent);
+	    }
+	    
 		if (this.children != null) {
 			// Recursively unregister children.
 		    for (var i = 0; i < this.children.length; ++i) {
@@ -941,6 +1001,148 @@ EchoApp.Component.prototype.toString = function(longFormat) {
     return out;
 };
 
+EchoApp.FocusManager = function(application) { 
+    this._application = application;
+};
+
+/**
+ * Searches the component hierarchy for the next component that should
+ * be focused (based on the currently focused component).
+ * Container components are queried to determine the order in which their
+ * children should naturally be focused (certain components, e.g., SplitPanes,
+ * will have a child focus order that may be different from the order of their 
+ * children).
+ * This search is depth first.
+ */
+EchoApp.FocusManager.prototype.findNext = function() {
+    /** The component that is currently being analyzed */
+    var component = this._application.getFocusedComponent();
+    if (component == null) {
+        component = this._application.rootComponent;
+    }
+    
+    /** The component which is currently focused by the application. */
+    var originComponent = component;
+    
+    /** An associative array containing the ids of all previously visited components. */
+    var visitedComponents = new Object();
+    
+    /** The value of 'component' on the previous iteration. */
+    var lastComponent = null;
+    
+    while (true) {
+        /** The candidate next component to be focused */
+        var nextComponent = null;
+        
+        if (component.getComponentCount() > 0) {
+            if (lastComponent && lastComponent.parent == component) {
+                // Previously moved up: do not move down.
+            } else {
+                // Attempt to move down.
+                nextComponent = component.getComponent(0);
+
+                if (visitedComponents[nextComponent.renderId]) {
+                    // Already visited children, cancel the move.
+                    nextComponent = null;
+                }
+            }
+        }
+        
+        if (nextComponent == null) {
+            // Attempt to move right.
+
+            // Verify component is not root.
+            if (component.parent) {
+                // Get next sibling.
+                var componentIndex = component.parent.indexOf(component);
+                if (componentIndex < component.parent.getComponentCount() - 1) {
+                    nextComponent = component.parent.getComponent(componentIndex + 1);
+                }
+            }
+        }
+        
+        if (nextComponent == null) {
+            // Attempt to move up.
+            nextComponent = component.parent;
+        }
+        
+        if (nextComponent == null) {
+            return null; // FIXME is this ever possible.
+        }
+        
+        lastComponent = component;
+        component = nextComponent;
+        visitedComponents[component.renderId] = true;
+        
+        if (component != originComponent && component.isRenderEnabled() && component.focusable) {
+            return component;
+        }
+    }
+};
+
+EchoApp.FocusManager.prototype.findPrevious = function() {
+    /** The component that is currently being analyzed */
+    var component = this._application.getFocusedComponent();
+    if (component == null) {
+        component = this._application.rootComponent;
+    }
+    
+    /** The component which is currently focused by the application. */
+    var originComponent = component;
+    
+    /** An associative array containing the ids of all previously visited components. */
+    var visitedComponents = new Object();
+    
+    /** The value of 'component' on the previous iteration. */
+    var lastComponent = null;
+    
+    while (true) {
+        /** The candidate next component to be focused */
+        var nextComponent = null;
+        if (component == originComponent || (lastComponent && lastComponent.parent == component)) {
+            // On origin component (OR) Previously moved up: do not move down.
+        } else {
+            var componentCount = component.getComponentCount();
+            if (componentCount > 0) {
+                // Attempt to move down.
+                nextComponent = component.getComponent(componentCount - 1);
+                if (visitedComponents[nextComponent.renderId]) {
+                    // Already visited children, cancel the move.
+                    nextComponent = null;
+                }
+            }
+        }
+        
+        if (nextComponent == null) {
+            // Attempt to move left.
+            if (component.parent) {
+                // Get previous sibling.
+                var componentIndex = component.parent.indexOf(component);
+                if (componentIndex > 0) {
+                    nextComponent = component.parent.getComponent(componentIndex - 1);
+                }
+            }
+        }
+        
+        if (nextComponent == null) {
+            // Move up.
+            nextComponent = nextComponent.parent;
+        }
+        
+        if (nextComponent == null) {
+            return null;
+        }
+
+        lastComponent = component;
+        component = nextComponent;
+        visitedComponents[component.renderId] = true;
+        
+        if (component != originComponent && component.isRenderEnabled() && component.focusable) {
+            return component;
+        }
+    }
+};
+    
 /**
  * Layout Data Object, describing how a child component is rendered/laid out 
  * within its parent container.
@@ -1280,7 +1482,6 @@ EchoApp.Property.Color.prototype.adjust = function(r, g, b) {
     } else if (blue > 255) {
         blue = 255;
     }
-    EchoCore.Debug.consoleWrite(red + "," + green + "," + blue);
     return new EchoApp.Property.Color("#"
             + (red < 16 ? "0" : "") + red.toString(16)
             + (green < 16 ? "0" : "") + green.toString(16)
@@ -2490,6 +2691,7 @@ EchoApp.Update.Manager.prototype.toString = function() {
 EchoApp.Button = function(renderId, text, icon) {
     EchoApp.Component.call(this, renderId);
     this.componentType = "Button";
+    this.focusable = true;
     if (text != null) {
         this.setProperty("text", text);
     }
@@ -2619,6 +2821,7 @@ EchoApp.Label.prototype = EchoCore.derive(EchoApp.Component);
 EchoApp.ListBox = function(renderId) {
     EchoApp.Component.call(this, renderId);
     this.componentType = "ListBox";
+    this.focusable = true;
 };
 
 EchoApp.ListBox.prototype = EchoCore.derive(EchoApp.Component);
@@ -2657,6 +2860,7 @@ EchoApp.Row.prototype = EchoCore.derive(EchoApp.Component);
 EchoApp.SelectField = function(renderId) {
     EchoApp.Component.call(this, renderId);
     this.componentType = "SelectField";
+    this.focusable = true;
 };
 
 EchoApp.SelectField.prototype = EchoCore.derive(EchoApp.Component);
@@ -2702,6 +2906,7 @@ EchoApp.SplitPane.OVERFLOW_SCROLL = 2;
 EchoApp.TextField = function(renderId) {
     EchoApp.Component.call(this, renderId);
     this.componentType = "TextField";
+    this.focusable = true;
 };
 
 EchoApp.TextField.prototype = EchoCore.derive(EchoApp.Component);

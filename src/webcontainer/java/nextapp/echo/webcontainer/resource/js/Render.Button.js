@@ -57,7 +57,6 @@ EchoRender.ComponentSync.Button._defaultIconTextMargin = new EchoApp.Property.Ex
 EchoRender.ComponentSync.Button.prototype.focus = function(e) {
     this._divElement.focus();
     this._setFocusState(true);
-    this.component.application.setFocusedComponent(this.component);
 };
 
 EchoRender.ComponentSync.Button.prototype._doAction = function() {
@@ -86,7 +85,6 @@ EchoRender.ComponentSync.Button.prototype._processFocus = function(e) {
     if (!this.component.isActive()) {
         return;
     }
-    this.component.application.setFocusedComponent(this.component);
     this._setFocusState(true);
 };
 
@@ -112,9 +110,9 @@ EchoRender.ComponentSync.Button.prototype._processInitMouseOver = function(e) {
 
 EchoRender.ComponentSync.Button.prototype._processKeyPress = function(e) {
     if (!this.component.isActive()) {
-        return;
+        return true;
     }
-    if (e.keyCode == 13) {
+    if (e.keyCode == 13) { // FIXME This will fail in IE (I think)
         this._doAction();
         return false;
     } else {

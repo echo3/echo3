@@ -473,7 +473,8 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         }
         titleTextDivElement.style.whiteSpace = "nowrap";
         EchoRender.Property.Font.renderComponentProperty(this.component, "titleFont", null, titleTextDivElement);
-        EchoRender.Property.Insets.renderComponentProperty(this.component, "titleInsets", EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_INSETS, titleTextDivElement, "padding");
+        EchoRender.Property.Insets.renderComponentProperty(this.component, "titleInsets", 
+                EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_INSETS, titleTextDivElement, "padding");
         titleTextDivElement.appendChild(document.createTextNode(title));
         this._titleBarDivElement.appendChild(titleTextDivElement);
     }

@@ -37,12 +37,16 @@ EchoClient.prototype.configure = function(application, domainElement) {
     if (this.application) {
         EchoCore.Arrays.remove(EchoClient._activeClients, this);
         this.application.setContextProperty(EchoClient.CONTEXT_PROPERTY_NAME, null);
+        EchoWebCore.EventProcessor.remove(domainElement, "keydown", new EchoCore.MethodRef(this, this._processKeyDown), false);
+        this.application.removeFocusListener(new EchoCore.MethodRef(this, this._processApplicationFocus));
     }
     
     this.application = application;
     this.domainElement = domainElement;
 
     if (this.application) {
+        this.application.addFocusListener(new EchoCore.MethodRef(this, this._processApplicationFocus));
+        EchoWebCore.EventProcessor.add(domainElement, "keydown", new EchoCore.MethodRef(this, this._processKeyDown), false);
         this.application.setContextProperty(EchoClient.CONTEXT_PROPERTY_NAME, this);
         EchoClient._activeClients.push(this);
     }
@@ -63,6 +67,22 @@ EchoClient.prototype.dispose = function() {
  */
 EchoClient.prototype.getServiceUrl = function(serviceId) {
     return null;
+};
+
+EchoClient.prototype._processApplicationFocus = function(e) {
+    var focusedComponent = this.application.getFocusedComponent();
+    if (focusedComponent) {
+        focusedComponent.peer.focus();
+    }
+};
+
+EchoClient.prototype._processKeyDown = function(e) {
+    if (e.keyCode == 9) { // Tab
+        EchoWebCore.DOM.preventEventDefault(e);
+        this.application.focusNext(e.shiftKey);
+        return false; // Stop propagation.
+    }
+    return true; // Allow propagation.
 };
 
 EchoClient.prototype.setApplication = function(application) {

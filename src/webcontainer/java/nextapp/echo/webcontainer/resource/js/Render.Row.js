@@ -32,20 +32,15 @@ EchoRender.ComponentSync.Row._rowPrototype = EchoRender.ComponentSync.Row._creat
 EchoRender.ComponentSync.Row.prototype.processKeyDown = function(e) { 
     switch (e.keyCode) {
     case 37:
-        var focusChanged = EchoRender.Focus.visitNextFocusComponent(this.component, true);
-        if (focusChanged) {
-            // Prevent default action (vertical scrolling).
-            EchoWebCore.DOM.preventEventDefault(e);
-        }
-        return !focusChanged;
+        EchoWebCore.DOM.preventEventDefault(e);
+        this.component.application.focusNext(true);
+        return false; // Stop propagation.
     case 39:
-        var focusChanged = EchoRender.Focus.visitNextFocusComponent(this.component, false);
-        if (focusChanged) {
-            // Prevent default action (vertical scrolling).
-            EchoWebCore.DOM.preventEventDefault(e);
-        }
-        return !focusChanged;
+        EchoWebCore.DOM.preventEventDefault(e);
+        this.component.application.focusNext(false);
+        return false; // Stop propagation.
     }
+    return true;
 };
 
 EchoRender.ComponentSync.Row.prototype.renderAdd = function(update, parentElement) {

@@ -9,20 +9,15 @@ EchoRender.ComponentSync.Column.prototype = EchoCore.derive(EchoRender.Component
 EchoRender.ComponentSync.Column.prototype.processKeyDown = function(e) { 
     switch (e.keyCode) {
     case 38:
-        var focusChanged = EchoRender.Focus.visitNextFocusComponent(this.component, true);
-        if (focusChanged) {
-            // Prevent default action (vertical scrolling).
-            EchoWebCore.DOM.preventEventDefault(e);
-        }
-        return !focusChanged;
+        EchoWebCore.DOM.preventEventDefault(e);
+        this.component.application.focusNext(true);
+        return false; // Stop propagation.
     case 40:
-        var focusChanged = EchoRender.Focus.visitNextFocusComponent(this.component, false);
-        if (focusChanged) {
-            // Prevent default action (vertical scrolling).
-            EchoWebCore.DOM.preventEventDefault(e);
-        }
-        return !focusChanged;
+        EchoWebCore.DOM.preventEventDefault(e);
+        this.component.application.focusNext(false);
+        return false; // Stop propagation.
     }
+    return true;
 };
 
 EchoRender.ComponentSync.Column.prototype.renderAdd = function(update, parentElement) {
