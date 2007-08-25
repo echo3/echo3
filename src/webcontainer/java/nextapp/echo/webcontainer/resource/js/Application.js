@@ -67,7 +67,7 @@ EchoApp.Application = function() {
      * FocusManager instance handling application focus behavior.
      * @type EchoApp.FocusManager
      */
-    this._focusManager = new EchoApp.FocusManager(this);
+    this.focusManager = new EchoApp.FocusManager(this);
 };
 
 /**
@@ -107,7 +107,7 @@ EchoApp.Application.prototype.dispose = function() {
  *        previous component
  */
 EchoApp.Application.prototype.focusNext = function(reverse) {
-    focusedComponent = reverse ? this._focusManager.findPrevious() : this._focusManager.findNext();
+    focusedComponent = reverse ? this.focusManager.findPrevious() : this.focusManager.findNext();
     this.setFocusedComponent(focusedComponent);
 };
 
@@ -1016,6 +1016,40 @@ EchoApp.FocusManager = function(application) {
     this._application = application;
 };
 
+EchoApp.FocusManager.prototype.focusNextChild = function(parentComponent, reverse) {
+    var childComponent = this._application.getFocusedComponent();
+    while (childComponent.parent != parentComponent && childComponent.parent != null) {
+        childComponent = childComponent.parent;
+    }
+    if (childComponent.parent == null) {
+        return false;
+    }
+    
+    var index = parentComponent.indexOf(childComponent);
+    if (reverse) {
+        while (index > 1) {
+            --index;
+            childComponent = parentComponent.getComponent(index);
+            if (childComponent.focusable) {
+                this._application.setFocusedComponent(childComponent);
+                return true;
+            }
+        }
+        return false;
+    } else {
+        var count = parentComponent.getComponentCount();
+        while (index < count - 1) {
+            ++index;
+            childComponent = parentComponent.getComponent(index);
+            if (childComponent.focusable) {
+                this._application.setFocusedComponent(childComponent);
+                return true;
+            }
+        }
+        return false;
+    }
+};
+
 /**
  * Searches the component hierarchy for the next component that should
  * be focused (based on the currently focused component).
@@ -1152,7 +1186,7 @@ EchoApp.FocusManager.prototype.findPrevious = function() {
         
         if (nextComponent == null) {
             // Move up.
-            nextComponent = nextComponent.parent;
+            nextComponent = component.parent;
         }
         
         if (nextComponent == null) {

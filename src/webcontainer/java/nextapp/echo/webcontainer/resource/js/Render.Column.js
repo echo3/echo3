@@ -9,13 +9,15 @@ EchoRender.ComponentSync.Column.prototype = EchoCore.derive(EchoRender.Component
 EchoRender.ComponentSync.Column.prototype.processKeyDown = function(e) { 
     switch (e.keyCode) {
     case 38:
-        EchoWebCore.DOM.preventEventDefault(e);
-        this.component.application.focusNext(true);
-        return false; // Stop propagation.
+        if (this.component.application.focusManager.focusNextChild(this.component, true)) {
+            EchoWebCore.DOM.preventEventDefault(e);
+            return false;
+        }
     case 40:
-        EchoWebCore.DOM.preventEventDefault(e);
-        this.component.application.focusNext(false);
-        return false; // Stop propagation.
+        if (this.component.application.focusManager.focusNextChild(this.component, false)) {
+            EchoWebCore.DOM.preventEventDefault(e);
+            return false;
+        }
     }
     return true;
 };

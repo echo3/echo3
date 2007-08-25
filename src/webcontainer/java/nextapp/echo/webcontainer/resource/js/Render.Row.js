@@ -32,13 +32,15 @@ EchoRender.ComponentSync.Row._rowPrototype = EchoRender.ComponentSync.Row._creat
 EchoRender.ComponentSync.Row.prototype.processKeyDown = function(e) { 
     switch (e.keyCode) {
     case 37:
-        EchoWebCore.DOM.preventEventDefault(e);
-        this.component.application.focusNext(true);
-        return false; // Stop propagation.
+        if (this.component.application.focusManager.focusNextChild(this.component, true)) {
+            EchoWebCore.DOM.preventEventDefault(e);
+            return false;
+        }
     case 39:
-        EchoWebCore.DOM.preventEventDefault(e);
-        this.component.application.focusNext(false);
-        return false; // Stop propagation.
+        if (this.component.application.focusManager.focusNextChild(this.component, false)) {
+            EchoWebCore.DOM.preventEventDefault(e);
+            return false;
+        }
     }
     return true;
 };
