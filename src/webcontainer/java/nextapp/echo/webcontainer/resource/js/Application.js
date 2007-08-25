@@ -1010,7 +1010,6 @@ EchoApp.Component.prototype.toString = function(longFormat) {
 /**
  * Focus management handler for a specific application instance.
  * One FocusManager is created for each application.
- * @private 
  */
 EchoApp.FocusManager = function(application) { 
     this._application = application;
