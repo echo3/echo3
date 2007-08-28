@@ -267,4 +267,10 @@
   <p n="positionX" t="Extent" v="160px"/>
   <p n="positionY" t="Extent" v="300px"/>
  </s>
+ <s n="Grid.StyleTest" t="nextapp.echo.app.Grid">
+  <p n="columnWidth" t="Extent" x="0" v="100px"/>
+  <p n="columnWidth" t="Extent" x="1" v="120px"/>
+  <p n="columnWidth" t="Extent" x="2" v="140px"/>
+  <p n="columnWidth" t="Extent" x="3" v="160px"/>
+ </s>
 </ss>

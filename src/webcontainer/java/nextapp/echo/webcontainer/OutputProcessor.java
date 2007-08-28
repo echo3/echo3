@@ -45,6 +45,8 @@ import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Style;
 import nextapp.echo.app.StyleSheet;
 import nextapp.echo.app.Window;
+import nextapp.echo.app.reflect.ComponentIntrospector;
+import nextapp.echo.app.reflect.IntrospectorFactory;
 import nextapp.echo.app.serial.PropertyPeerFactory;
 import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
@@ -607,28 +609,62 @@ class OutputProcessor {
         }
     }
     
-    private void renderStyle(Class objectClass, Element parentElement, Style style)
+    private void renderStyle(Class componentClass, Element parentElement, Style style)
     throws SerialException {
         Document document = parentElement.getOwnerDocument();
+        
+        ComponentIntrospector ci;
+        try {
+            ci = (ComponentIntrospector) IntrospectorFactory.get(componentClass.getName(),
+                    componentClass.getClassLoader());
+        } catch (ClassNotFoundException ex) {
+            // Should never occur.
+            throw new RuntimeException("Internal error.", ex);
+        }
+        
         Iterator it = style.getPropertyNames();
         while (it.hasNext()) {
             String propertyName = (String) it.next();
-            Object propertyValue = style.getProperty(propertyName);
-            if (propertyValue == null) {
-                continue;
+
+            if (ci.isIndexedProperty(propertyName)) {
+                Iterator indicesIt = style.getPropertyIndices(propertyName);
+                while (indicesIt.hasNext()) {
+                    int index = ((Integer) indicesIt.next()).intValue();
+                    Object propertyValue = style.getIndexedProperty(propertyName, index);
+                    if (propertyValue == null) {
+                        continue;
+                    }
+                    SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
+                    if (propertySyncPeer == null) {
+                        System.err.println("No peer found for property class: " + propertyValue.getClass());
+                        //FIXME. figure out how these should be handled...ignoring is probably best.
+                        continue;
+                    }
+                    Element pElement = document.createElement("p");
+                    pElement.setAttribute("n", propertyName);
+                    // Set property index.
+                    pElement.setAttribute("x", Integer.toString(index));
+                    propertySyncPeer.toXml(context, componentClass, pElement, propertyValue);
+                    parentElement.appendChild(pElement);
+                }
+            } else {
+                Object propertyValue = style.getProperty(propertyName);
+                if (propertyValue == null) {
+                    continue;
+                }
+                SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
+                if (propertySyncPeer == null) {
+                    System.err.println("No peer found for property class: " + propertyValue.getClass());
+                    //FIXME. figure out how these should be handled...ignoring is probably best.
+                    continue;
+                }
+                
+                //FIXME these need to handle indexed properties.
+                Element pElement = document.createElement("p");
+                pElement.setAttribute("n", propertyName);
+                propertySyncPeer.toXml(context, componentClass, pElement, propertyValue);
+                parentElement.appendChild(pElement);
             }
-            SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
-            if (propertySyncPeer == null) {
-                System.err.println("No peer found for property class: " + propertyValue.getClass());
-                //FIXME. figure out how these should be handled...ignoring is probably best.
-                continue;
-            }
-            
-            //FIXME these need to handle indexed properties.
-            Element pElement = document.createElement("p");
-            pElement.setAttribute("n", propertyName);
-            propertySyncPeer.toXml(context, objectClass, pElement, propertyValue);
-            parentElement.appendChild(pElement);
         }
     }
     
