@@ -181,6 +181,12 @@ EchoCore.Collections.List = function() {
     this.items = new Array();
 };
 
+EchoCore.Collections.List.prototype._checkBounds = function(index) {
+    if (index < 0 || index >= this.items.length) {
+        throw new Error("Index out of bounds: " + index);
+    }
+};
+
 /**
  * Adds an item to the list.
  *
@@ -196,6 +202,22 @@ EchoCore.Collections.List.prototype.add = function(item, index) {
 };
 
 /**
+ * Replaces the element at the specified position in this list with the
+ * specified item.
+ *
+ * @param {Integer} index index of item to replace.
+ * @param item item to be stored at the specified position.
+ * @return the item previously at the specified position.
+ * @throws Error in the event the specified index is out of bounds
+ */
+EchoCore.Collections.List.prototype.set = function(index, item) {
+    this._checkBounds(index);
+    var oldItem = this.get(index);
+    this.items[index] = item;
+    return oldItem;
+};
+
+/**
  * Returns a specific item from the list.
  *
  * @param {Number} index the index of the item to retrieve
@@ -203,11 +225,8 @@ EchoCore.Collections.List.prototype.add = function(item, index) {
  * @throws Error in the event the specified index is out of bounds
  */
 EchoCore.Collections.List.prototype.get = function(index) {
-    if (index < 0 || index >= this.items.length) {
-        throw new Error("Index out of bounds: " + index);
-    } else {
-        return this.items[index];
-    }
+    this._checkBounds(index);
+    return this.items[index];
 };
 
 /**
@@ -235,9 +254,7 @@ EchoCore.Collections.List.prototype.indexOf = function(item) {
  * @param {Number} index the index of the item to remove
  */
 EchoCore.Collections.List.prototype.remove = function(index) {
-    if (index < 0 || index >= this.items.length) {
-        throw new Error("Index out of bounds: " + index);
-    }
+    this._checkBounds(index);
     this.items.splice(index, 1);
 };
 
