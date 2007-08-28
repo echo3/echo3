@@ -32,11 +32,9 @@ package nextapp.echo.webcontainer;
 import java.io.IOException;
 
 import nextapp.echo.app.ApplicationInstance;
-import nextapp.echo.app.Component;
-import nextapp.echo.app.update.ServerComponentUpdate;
 
 /**
- * A single client-server synchronziation.
+ * A single client-server synchronization.
  */
 public class Synchronization {
 
@@ -47,33 +45,6 @@ public class Synchronization {
         super();
         this.conn = conn;
         this.userInstance = conn.getUserInstance();
-    }
-    
-    /**
-     * Performs dispoal operations for removed components.
-     */
-    private void disposeComponents() {
-        //FIXME.  This is not handling re-added components properly.
-        ServerComponentUpdate[] updates = userInstance.getUpdateManager().getServerUpdateManager().getComponentUpdates();
-        for (int i = 0; i < updates.length; ++i) {
-            Component[] disposedComponents;
-            
-            // Dispose removed children.
-            disposedComponents = updates[i].getRemovedChildren();
-            for (int j = 0; j < disposedComponents.length; ++j) {
-                if (!(disposedComponents[j].isRegistered() && disposedComponents[j].isRenderVisible())) {
-                    userInstance.removeRenderState(disposedComponents[j]);
-                }
-            }
-            
-            // Dispose descendants.
-            disposedComponents = updates[i].getRemovedDescendants();
-            for (int j = 0; j < disposedComponents.length; ++j) {
-                if (!(disposedComponents[j].isRegistered() && disposedComponents[j].isRenderVisible())) {
-                    userInstance.removeRenderState(disposedComponents[j]);
-                }
-            }
-        }
     }
     
     public void process() 
@@ -92,12 +63,16 @@ public class Synchronization {
                 InputProcessor inputProcessor = new InputProcessor(conn);
                 inputProcessor.process();
                 
+                // Manage render states.
+                if (userInstance.getUpdateManager().getServerUpdateManager().isFullRefreshRequired()) {
+                    userInstance.clearRenderStates();
+                } else {
+                    userInstance.purgeRenderStates();
+                }
+                
                 // Render updates.
                 OutputProcessor outputProcessor = new OutputProcessor(conn);
                 outputProcessor.process();
-
-                // Dispose of removed components.
-                disposeComponents();
                 
                 // Purge updates.
                 userInstance.getUpdateManager().purge();

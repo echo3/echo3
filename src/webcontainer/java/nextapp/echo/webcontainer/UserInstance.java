@@ -162,6 +162,13 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
     }
 
     /**
+     * Clears all <code>RenderState</code> information.
+     */
+    public void clearRenderStates() {
+        componentToRenderStateMap.clear();
+    }
+    
+    /**
      * Returns the corresponding <code>ApplicationInstance</code>
      * for this user instance.
      * 
@@ -180,7 +187,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * Determines the application-specified asynchronous monitoring
      * service callback interval.
      * 
-     * @return the callback interval, in ms
+     * @return the callback interval, in milliseconds
      */
     public int getCallbackInterval() {
         if (taskQueueToCallbackIntervalMap == null || taskQueueToCallbackIntervalMap.size() == 0) {
@@ -438,6 +445,20 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      */
     public boolean isInitialized() {
         return initialized;
+    }
+    
+    /**
+     * Removes all <code>RenderState</code>s whose components are not
+     * registered.
+     */
+    public void purgeRenderStates() {
+        Iterator it = componentToRenderStateMap.keySet().iterator();
+        while (it.hasNext()) {
+            Component component = (Component) it.next();
+            if (!component.isRegistered() || !component.isRenderVisible()) {
+                it.remove();
+            }
+        }
     }
 
     /**

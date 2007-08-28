@@ -1158,6 +1158,7 @@ EchoApp.FocusManager.prototype.findPrevious = function() {
     while (true) {
         /** The candidate next component to be focused */
         var nextComponent = null;
+        
         if (component == originComponent || (lastComponent && lastComponent.parent == component)) {
             // On origin component (OR) Previously moved up: do not move down.
         } else {
