@@ -23,7 +23,6 @@ public class FreeClientEmbedTest extends SplitPane {
         WebContainerServlet.getServiceRegistry().add(EMBED_TEST_COMPONENT_SERVICE);
     }
     
-
     private class EmbedTestComponent extends Component {
         
     }
@@ -42,6 +41,35 @@ public class FreeClientEmbedTest extends SplitPane {
          */
         public Class getComponentClass() {
             return EmbedTestComponent.class;
+        }
+
+        /**
+         * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
+         */
+        public void init(Context context) {
+            ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
+            serverMessage.addLibrary(EMBED_TEST_COMPONENT_SERVICE.getId());
+        }
+    }
+
+    private class EmbedTestPane extends Component {
+        
+    }
+    
+    public static class EmbedTestPanePeer extends AbstractComponentSynchronizePeer {
+    
+        /**
+         * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType()
+         */
+        public String getClientComponentType() {
+            return "EmbedTestPane";
+        }
+
+        /**
+         * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getComponentClass()
+         */
+        public Class getComponentClass() {
+            return EmbedTestPane.class;
         }
 
         /**
@@ -73,5 +101,7 @@ public class FreeClientEmbedTest extends SplitPane {
         add(testColumn);
         
         testColumn.add(new EmbedTestComponent());
+        
+        testColumn.add(new EmbedTestPane());
     }
 }
