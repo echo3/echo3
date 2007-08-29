@@ -33,7 +33,7 @@ import nextapp.echo.app.serial.PropertyPeerFactory;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.PeerFactory;
 
-//FIXME.  This is a temporary class to be used in refactoring the peer stuff between app and webcontaienr.
+//FIXME.  This is a temporary class to be used in refactoring the peer stuff between app and webcontainer.
 // this code will be exterminated.
 //FIXME. replace with an XmlPropertyPeerFactory from app...that's the good one, with the 1-per-classloader stuff.
 

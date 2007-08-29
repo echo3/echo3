@@ -96,7 +96,7 @@ EmbedTest.ComponentSync.TestPane.prototype._createApp = function() {
 EmbedTest.ComponentSync.TestPane.prototype.renderAdd = function(update, parentElement) {
     this._divElement = document.createElement("div");
     this._divElement.style.cssText 
-            = "position:relative; width:650px; height:450px; background-color: #3f3f6f; border: 1px #3f3f6f outset";
+            = "position:relative; width:100%; height:450px; background-color: #3f3f6f; border: 1px #3f3f6f outset";
     parentElement.appendChild(this._divElement);
 };
 
