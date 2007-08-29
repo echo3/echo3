@@ -37,7 +37,7 @@ EchoClient.prototype.configure = function(application, domainElement) {
     if (this.application) {
         EchoCore.Arrays.remove(EchoClient._activeClients, this);
         this.application.setContextProperty(EchoClient.CONTEXT_PROPERTY_NAME, null);
-        EchoWebCore.EventProcessor.remove(domainElement, "keydown", new EchoCore.MethodRef(this, this._processKeyDown), false);
+        EchoWebCore.EventProcessor.remove(this.domainElement, "keydown", new EchoCore.MethodRef(this, this._processKeyDown), false);
         this.application.removeFocusListener(new EchoCore.MethodRef(this, this._processApplicationFocus));
     }
     
@@ -46,7 +46,7 @@ EchoClient.prototype.configure = function(application, domainElement) {
 
     if (this.application) {
         this.application.addFocusListener(new EchoCore.MethodRef(this, this._processApplicationFocus));
-        EchoWebCore.EventProcessor.add(domainElement, "keydown", new EchoCore.MethodRef(this, this._processKeyDown), false);
+        EchoWebCore.EventProcessor.add(this.domainElement, "keydown", new EchoCore.MethodRef(this, this._processKeyDown), false);
         this.application.setContextProperty(EchoClient.CONTEXT_PROPERTY_NAME, this);
         EchoClient._activeClients.push(this);
     }
@@ -54,6 +54,7 @@ EchoClient.prototype.configure = function(application, domainElement) {
 
 EchoClient.prototype.dispose = function() {
     this.configure(null, null);
+    EchoCore.Debug.consoleWrite("Client dispose");
 };
 
 /**

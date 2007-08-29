@@ -6,10 +6,7 @@
  */
 EchoFreeClient = function(application, domainElement) {
     EchoClient.call(this);
-    
     this.configure(application, domainElement);
-    
-    this._autoUpdate = new EchoFreeClient.AutoUpdate(this.application.updateManager);
 };
 
 EchoFreeClient.prototype = EchoCore.derive(EchoClient);
@@ -17,6 +14,8 @@ EchoFreeClient.prototype = EchoCore.derive(EchoClient);
 EchoFreeClient.prototype.dispose = function() {
     EchoCore.Scheduler.remove(this._autoUpdate);
     this.application.updateManager.removeUpdateListener(new EchoCore.MethodRef(this, this._processUpdate));
+    this._autoUpdate = null;
+    EchoClient.prototype.dispose.call(this);
 };
 
 EchoFreeClient.prototype._processUpdate = function(e) {
@@ -24,6 +23,7 @@ EchoFreeClient.prototype._processUpdate = function(e) {
 
 EchoFreeClient.prototype.init = function() {
     EchoWebCore.init();
+    this._autoUpdate = new EchoFreeClient.AutoUpdate(this.application.updateManager);
     this.application.updateManager.addUpdateListener(new EchoCore.MethodRef(this, this._processUpdate));
     EchoCore.Scheduler.add(this._autoUpdate);
 };

@@ -95,8 +95,6 @@ EchoApp.Application.prototype.addFocusListener = function(l) {
  * This method will free any resources allocated by the application.
  */ 
 EchoApp.Application.prototype.dispose = function() {
-    //FIXME. Add additional functionality to fully destroy application,
-    // cause release of all browser-releated resources.
     this.updateManager.dispose();
 };
 
