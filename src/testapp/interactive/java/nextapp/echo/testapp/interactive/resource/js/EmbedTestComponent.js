@@ -71,6 +71,7 @@ EmbedTest.ComponentSync.TestComponent.prototype.renderUpdate = function(update) 
  * Component rendering peer: TestPane
  */
 EmbedTest.ComponentSync.TestPane = function() {
+    this._addedLabelCount = 0;
 };
 
 EmbedTest.ComponentSync.TestPane.prototype = EchoCore.derive(EchoRender.ComponentSync);
@@ -85,12 +86,45 @@ EmbedTest.ComponentSync.TestPane.prototype._createApp = function() {
     windowPane.setProperty("title", "A FreeClient WindowPane");
     contentPane.add(windowPane);
     
-    var label = new EchoApp.Label();
-    label.setProperty("text", "This is a freeclient label.");
-    windowPane.add(label);
+    var mainColumn = new EchoApp.Column();
+    mainColumn.setProperty("cellSpacing", new EchoApp.Property.Extent("5px"));
+    mainColumn.setProperty("insets", new EchoApp.Property.Insets("10px"));
+    windowPane.add(mainColumn);
+    
+    var controlsRow = new EchoApp.Row();
+    controlsRow.setProperty("cellSpacing", new EchoApp.Property.Extent("10px"));
+    mainColumn.add(controlsRow);
+    
+    var addButton = new EchoApp.Button();
+    addButton.setProperty("text", "Add Label");
+    addButton.setProperty("background", new EchoApp.Property.Color("#00ff00"));
+    addButton.addListener("action", new EchoCore.MethodRef(this, this._processAddButton));
+    controlsRow.add(addButton);
+
+    var removeButton = new EchoApp.Button();
+    removeButton.setProperty("text", "Remove Label");
+    removeButton.setProperty("background", new EchoApp.Property.Color("#ff0000"));
+    removeButton.addListener("action", new EchoCore.MethodRef(this, this._processRemoveButton));
+    controlsRow.add(removeButton);
+    
+    this._app._testColumn = new EchoApp.Column();
+    mainColumn.add(this._app._testColumn);
     
     this._freeClient = new EchoFreeClient(this._app, this._divElement); 
     this._freeClient.init();
+};
+
+EmbedTest.ComponentSync.TestPane.prototype._processAddButton = function(e) {
+    var label = new EchoApp.Label();
+    label.setProperty("text", "Added Label " + ++this._addedLabelCount);
+    this._app._testColumn.add(label);
+};
+
+EmbedTest.ComponentSync.TestPane.prototype._processRemoveButton = function(e) {
+    var count = this._app._testColumn.getComponentCount();
+    if (count > 0) {
+        this._app._testColumn.remove(count - 1);
+    }
 };
 
 EmbedTest.ComponentSync.TestPane.prototype.renderAdd = function(update, parentElement) {
