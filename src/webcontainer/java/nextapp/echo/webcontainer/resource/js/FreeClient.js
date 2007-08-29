@@ -15,6 +15,7 @@ EchoFreeClient.prototype.dispose = function() {
     EchoCore.Scheduler.remove(this._autoUpdate);
     this.application.updateManager.removeUpdateListener(new EchoCore.MethodRef(this, this._processUpdate));
     this._autoUpdate = null;
+    EchoRender.renderComponentDispose(null, this.application.rootComponent);
     EchoClient.prototype.dispose.call(this);
 };
 
