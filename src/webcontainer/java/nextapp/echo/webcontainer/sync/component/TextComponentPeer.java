@@ -85,6 +85,7 @@ public abstract class TextComponentPeer extends AbstractComponentSynchronizePeer
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
      */
     public void init(Context context) {
+        super.init(context);
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(TEXT_COMPONENT_SERVICE.getId());
     }

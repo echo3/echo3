@@ -271,6 +271,7 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
      */
     public void init(Context context) {
+        super.init(context);
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(LIST_SELECTION_MODEL_SERVICE.getId());
         serverMessage.addLibrary(LIST_COMPONENT_SERVICE.getId());

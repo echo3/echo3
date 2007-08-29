@@ -138,6 +138,8 @@ implements ComponentSynchronizePeer {
 
     private Map eventTypeToEventPeer;
     
+    private Set requiredComponentClasses;
+
     /**
      * Default constructor.
      */
@@ -187,7 +189,7 @@ implements ComponentSynchronizePeer {
     public void addOutputProperty(String propertyName) {
         addOutputProperty(propertyName, false);
     }
-
+    
     /**
      * Adds an output property.  
      * Property names added via this method will be returned by the 
@@ -206,6 +208,19 @@ implements ComponentSynchronizePeer {
         if (indexed) {
             indexedPropertyNames.add(propertyName);
         }
+    }
+
+    /**
+     * Adds a required component class that must also be initialized before this
+     * component can be rendered.
+     * 
+     * @param componentClass
+     */
+    public void addRequiredComponentClass(Class componentClass) {
+        if (requiredComponentClasses == null) {
+            requiredComponentClasses = new HashSet();
+        }
+        requiredComponentClasses.add(componentClass);
     }
 
     /**
@@ -401,14 +416,26 @@ implements ComponentSynchronizePeer {
         }
         return update.hasUpdatedProperty(eventPeer.getListenerPropertyName());
     }
-
+    
     /**
-     * Does nothing.  Implementations requiring initialization should override this method.
+     * Invokes the init() methods of peers of required component classes (added via
+     * addRequiredComponentClass()). 
+     * Implementations requiring initialization should override this method and invoke the
+     * super-implementation out of convention (even if they do not presently have any
+     * dependencies on other components). 
      * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(Context)
      */
     public void init(Context context) {
-        // Do nothing.
+        if (requiredComponentClasses == null) {
+            return;
+        }
+        Iterator componentClassIt = requiredComponentClasses.iterator();
+        while (componentClassIt.hasNext()) {
+            Class componentClass = (Class) componentClassIt.next();
+            ComponentSynchronizePeer syncPeer = SynchronizePeerFactory.getPeerForComponent(componentClass);
+            syncPeer.init(context);
+        }
     }
 
     /**

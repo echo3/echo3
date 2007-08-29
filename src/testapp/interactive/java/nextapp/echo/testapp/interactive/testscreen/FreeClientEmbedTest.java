@@ -1,10 +1,15 @@
 package nextapp.echo.testapp.interactive.testscreen;
 
+import nextapp.echo.app.Button;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
+import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Insets;
+import nextapp.echo.app.Label;
+import nextapp.echo.app.Row;
 import nextapp.echo.app.SplitPane;
+import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.SplitPaneLayoutData;
@@ -32,6 +37,11 @@ public class FreeClientEmbedTest extends SplitPane {
     
     public static class EmbedTestComponentPeer extends AbstractComponentSynchronizePeer {
     
+        public EmbedTestComponentPeer() {
+            super();
+            addRequiredComponentClass(Label.class);
+        }
+    
         /**
          * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType()
          */
@@ -50,6 +60,7 @@ public class FreeClientEmbedTest extends SplitPane {
          * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
          */
         public void init(Context context) {
+            super.init(context);
             ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
             serverMessage.addLibrary(EMBED_TEST_COMPONENT_SERVICE.getId());
         }
@@ -60,6 +71,15 @@ public class FreeClientEmbedTest extends SplitPane {
     }
     
     public static class EmbedTestPanePeer extends AbstractComponentSynchronizePeer {
+    
+        public EmbedTestPanePeer() {
+            super();
+            addRequiredComponentClass(Button.class);
+            addRequiredComponentClass(ContentPane.class);
+            addRequiredComponentClass(Label.class);
+            addRequiredComponentClass(Row.class);
+            addRequiredComponentClass(WindowPane.class);
+        }
     
         /**
          * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType()
@@ -79,6 +99,7 @@ public class FreeClientEmbedTest extends SplitPane {
          * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
          */
         public void init(Context context) {
+            super.init(context);
             ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
             serverMessage.addLibrary(EMBED_TEST_COMPONENT_SERVICE.getId());
         }
