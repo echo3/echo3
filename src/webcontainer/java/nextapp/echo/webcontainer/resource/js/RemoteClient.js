@@ -253,15 +253,6 @@ EchoRemoteClient.prototype._processSyncComplete = function(e) {
 };
 
 /**
- * Instance listener to respond to resizing of browser window.
- * 
- * @param e the DOM resize event
- */
-EchoRemoteClient.prototype._windowResizeListener = function(e) {
-    EchoRender.notifyResize(this.application.rootComponent);
-};
-
-/**
  * Process a response to a client-server synchronization.
  * 
  * @param e the HttpConnection response event

@@ -88,5 +88,14 @@ EchoClient.prototype._processKeyDown = function(e) {
 EchoClient.prototype.setApplication = function(application) {
 };
 
+/**
+ * Instance listener to respond to resizing of browser window.
+ * 
+ * @param e the DOM resize event
+ */
+EchoClient.prototype._windowResizeListener = function(e) {
+    EchoRender.notifyResize(this.application.rootComponent);
+};
+
 EchoWebCore.DOM.addEventListener(window, "resize", EchoClient._globalWindowResizeListener, false);
 
