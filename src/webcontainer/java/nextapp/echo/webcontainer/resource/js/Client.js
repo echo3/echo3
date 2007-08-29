@@ -54,7 +54,6 @@ EchoClient.prototype.configure = function(application, domainElement) {
 
 EchoClient.prototype.dispose = function() {
     this.configure(null, null);
-    EchoCore.Debug.consoleWrite("Client dispose");
 };
 
 /**
