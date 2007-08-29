@@ -81,6 +81,7 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     var size = parseInt(this.component.getRenderProperty("size", 2));
     
     var trElement;
+    var height;
     var renderedComponentIds = new Object();
     
     var xSpan, ySpan;
@@ -99,6 +100,10 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     
     for (var rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
         trElement = document.createElement("tr");
+        height = gridProcessor.yExtents[rowIndex];
+	    if (height) {
+	        trElement.style.height = EchoRender.Property.Extent.toPixels(height, false) + "px";
+	    }
         tbodyElement.appendChild(trElement);
         
         for (var columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
