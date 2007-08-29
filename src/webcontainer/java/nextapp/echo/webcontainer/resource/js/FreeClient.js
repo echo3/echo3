@@ -15,6 +15,7 @@ EchoFreeClient = function(application, domainElement) {
 EchoFreeClient.prototype = EchoCore.derive(EchoClient);
 
 EchoFreeClient.prototype.dispose = function() {
+    EchoCore.Scheduler.remove(this._autoUpdate);
     this.application.updateManager.removeUpdateListener(new EchoCore.MethodRef(this, this._processUpdate));
 };
 
@@ -53,3 +54,7 @@ EchoFreeClient.AutoUpdate.prototype = EchoCore.derive(EchoCore.Scheduler.Runnabl
 EchoFreeClient.AutoUpdate.prototype.run = function() {
     EchoRender.processUpdates(this._updateManager);
 };
+
+EchoFreeClient.AppComponent = function() {
+};
+

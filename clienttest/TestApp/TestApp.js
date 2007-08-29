@@ -1,5 +1,5 @@
 TestApp = function() {
-    EchoApp.Application.call(this, "rootArea");
+    EchoApp.Application.call(this);
     var testScreen = new TestApp.TestScreen();
     testScreen.addTest("Column");
     testScreen.addTest("SplitPane");

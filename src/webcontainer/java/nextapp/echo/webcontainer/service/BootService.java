@@ -54,6 +54,7 @@ public class BootService {
         resourceList.add(JS_RESOURCE_PATH + "Serial.js");
         resourceList.add(JS_RESOURCE_PATH + "Client.js");
         resourceList.add(JS_RESOURCE_PATH + "RemoteClient.js");
+        resourceList.add(JS_RESOURCE_PATH + "FreeClient.js");
         if (WebContainerServlet.ENABLE_CLIENT_DEBUG_CONSOLE) {
             resourceList.add(JS_RESOURCE_PATH + "DebugConsole.js");
         }
