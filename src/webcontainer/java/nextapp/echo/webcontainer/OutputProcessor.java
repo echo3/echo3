@@ -363,7 +363,8 @@ class OutputProcessor {
         }
         
         if (userInstance.getApplicationInstance().hasTaskQueues()) {
-            serverMessage.setAttribute("async-interval", "1000"); //FIXME...not sure I want this in the root of the smsg again.
+             //FIXME ...not sure I want this in the root of the smsg again.
+            serverMessage.setAttribute("async-interval", Integer.toString(userInstance.getCallbackInterval()));
         }
     }
     

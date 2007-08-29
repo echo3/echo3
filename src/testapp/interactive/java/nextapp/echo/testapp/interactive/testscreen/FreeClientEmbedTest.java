@@ -5,9 +5,12 @@ import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.SplitPane;
+import nextapp.echo.app.event.ActionEvent;
+import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.SplitPaneLayoutData;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.testapp.interactive.ButtonColumn;
+import nextapp.echo.testapp.interactive.StyleUtil;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
 import nextapp.echo.webcontainer.ServerMessage;
 import nextapp.echo.webcontainer.Service;
@@ -92,6 +95,13 @@ public class FreeClientEmbedTest extends SplitPane {
         ButtonColumn controlsColumn = new ButtonColumn();
         controlsColumn.setStyleName("TestControlsColumn");
         add(controlsColumn);
+        
+        controlsColumn.addButton("Change Background Color of Container", new ActionListener() {
+        
+            public void actionPerformed(ActionEvent e) {
+                testColumn.setBackground(StyleUtil.randomColor());
+            }
+        });
 
         testColumn = new Column();
         testColumn.setCellSpacing(new Extent(15));

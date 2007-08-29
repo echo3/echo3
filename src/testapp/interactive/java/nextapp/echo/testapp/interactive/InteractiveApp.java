@@ -64,6 +64,12 @@ public class InteractiveApp extends ApplicationInstance {
         "ExitTestApplication"
     };
     
+    private static final String[] GHOST_SCRIPT_EMBED = new String[] {
+        "EnterTestApplication", 
+        "StartTest:FreeClientEmbedTest",
+        "ExitTestApplication"
+    };
+    
     /**
      * A boolean flag indicating whether the application is running on a live
      * demo server.  This flag is used to disable certain tests based on 
@@ -161,6 +167,8 @@ public class InteractiveApp extends ApplicationInstance {
                 
                 if ("1".equals(getRequestParameter("script"))) {
                     ghostTask.setScript(GHOST_SCRIPT_1); 
+                } else if ("embed".equals(getRequestParameter("script"))) {
+                    ghostTask.setScript(GHOST_SCRIPT_EMBED);
                 }
                 if (cc.getInitialRequestParameterMap().containsKey("clicks")) {
                     ghostTask.setClicksPerIteration(Integer.parseInt(getRequestParameter("clicks")));

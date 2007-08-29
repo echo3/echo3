@@ -313,8 +313,7 @@ EchoRemoteClient.prototype._waitIndicatorActivate = function() {
 
 EchoRemoteClient.AsyncManager = function(client) {
     this._client = client;
-    this._interval = 1000;
-    this._runnable = new EchoCore.Scheduler.Runnable(this._interval, false, 
+    this._runnable = new EchoCore.Scheduler.Runnable(1000, false, 
             new EchoCore.MethodRef(this, this._pollServerForUpdates));
 };
 
@@ -345,6 +344,10 @@ EchoRemoteClient.AsyncManager.prototype._pollServerForUpdates = function() {
     var conn = new EchoWebCore.HttpConnection(this._client.getServiceUrl("Echo.AsyncMonitor"), "GET");
     conn.addResponseListener(new EchoCore.MethodRef(this, this._processPollResponse));
     conn.connect();
+};
+
+EchoRemoteClient.AsyncManager.prototype._setInterval = function(interval) {
+    this._runnable.timeInterval = interval;
 };
 
 EchoRemoteClient.AsyncManager.prototype._start = function() {
@@ -720,6 +723,7 @@ EchoRemoteClient.ServerMessage.prototype._processPostLibraryLoad = function() {
     
     // Start server push listener if required.
     if (this.document.documentElement.getAttribute("async-interval")) {
+        this.client._asyncManager._setInterval(parseInt(this.document.documentElement.getAttribute("async-interval")));
         this.client._asyncManager._start();
     }
 };
