@@ -589,7 +589,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.renderAddChild = function(update, child, parentElement) {
-    EchoRender.renderComponentAdd(update, child, parentElement);
+    EchoRender.renderComponentAdd(this.client, update, child, parentElement);
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.renderDispose = function(update) { 

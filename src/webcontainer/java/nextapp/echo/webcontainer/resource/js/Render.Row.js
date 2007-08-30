@@ -78,7 +78,7 @@ EchoRender.ComponentSync.Row.prototype.renderAdd = function(update, parentElemen
 EchoRender.ComponentSync.Row.prototype._renderAddChild = function(update, child, index) {
     var tdElement = document.createElement("td");
     this._childIdToElementMap[child.renderId] = tdElement;
-    EchoRender.renderComponentAdd(update, child, tdElement);
+    EchoRender.renderComponentAdd(this.client, update, child, tdElement);
 
     var layoutData = child.getRenderProperty("layoutData");
     var insets;

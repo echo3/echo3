@@ -426,7 +426,7 @@ EchoRender.ComponentSync.SplitPane.prototype._renderAddChild = function(update, 
         }
     }
     
-    EchoRender.renderComponentAdd(update, child, paneDivElement);
+    EchoRender.renderComponentAdd(this.client, update, child, paneDivElement);
     this._splitPaneDivElement.appendChild(paneDivElement);
 
     if (this._childPanes[index] && this._childPanes[index].component == child) {

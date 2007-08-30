@@ -43,7 +43,7 @@ EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update
         divElement.style.right = pixelInsets.right + "px";
         divElement.style.overflow = "auto";
     }
-    EchoRender.renderComponentAdd(update, child, divElement);
+    EchoRender.renderComponentAdd(this.client, update, child, divElement);
     this._divElement.appendChild(divElement);
 };
 

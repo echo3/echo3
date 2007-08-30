@@ -56,7 +56,7 @@ EchoRender.ComponentSync.Column.prototype.renderAdd = function(update, parentEle
 EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, child, index) {
     var divElement = document.createElement("div");
     this._childIdToElementMap[child.renderId] = divElement;
-    EchoRender.renderComponentAdd(update, child, divElement);
+    EchoRender.renderComponentAdd(this.client, update, child, divElement);
 
     var layoutData = child.getRenderProperty("layoutData");
     if (layoutData) {

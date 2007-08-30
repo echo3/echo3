@@ -24,7 +24,7 @@ EchoFreeClient.prototype._processUpdate = function(e) {
 
 EchoFreeClient.prototype.init = function() {
     EchoWebCore.init();
-    this._autoUpdate = new EchoFreeClient.AutoUpdate(this.application.updateManager);
+    this._autoUpdate = new EchoFreeClient.AutoUpdate(this);
     this.application.updateManager.addUpdateListener(new EchoCore.MethodRef(this, this._processUpdate));
     EchoCore.Scheduler.add(this._autoUpdate);
 };
@@ -45,15 +45,15 @@ EchoFreeClient.prototype._processStyleSheet = function(e) {
     this.application.setStyleSheet(styleSheet);
 };
 
-EchoFreeClient.AutoUpdate = function(updateManager) {
+EchoFreeClient.AutoUpdate = function(client) {
+    this.client = client;
     EchoCore.Scheduler.Runnable.call(this, 10, true);
-    this._updateManager = updateManager;
 };
 
 EchoFreeClient.AutoUpdate.prototype = EchoCore.derive(EchoCore.Scheduler.Runnable);
 
 EchoFreeClient.AutoUpdate.prototype.run = function() {
-    EchoRender.processUpdates(this._updateManager);
+    EchoRender.processUpdates(this.client);
 };
 
 EchoFreeClient.AppComponent = function() {

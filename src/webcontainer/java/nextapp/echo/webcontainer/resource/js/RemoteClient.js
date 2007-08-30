@@ -237,7 +237,7 @@ EchoRemoteClient.prototype._processSyncComplete = function(e) {
     
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
     this.application.addComponentUpdateListener(this._processClientUpdateRef);
-	EchoRender.processUpdates(this.application.updateManager);
+	EchoRender.processUpdates(this);
     
     this._executeCommands();
     

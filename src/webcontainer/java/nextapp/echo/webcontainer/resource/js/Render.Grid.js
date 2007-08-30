@@ -136,7 +136,7 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
                 EchoRender.Property.Color.renderComponentProperty(layoutData, "background", "", tdElement, "backgroundColor");
             }
             
-            EchoRender.renderComponentAdd(update, cell.component, tdElement);
+            EchoRender.renderComponentAdd(this.client, update, cell.component, tdElement);
 
             trElement.appendChild(tdElement);
         }

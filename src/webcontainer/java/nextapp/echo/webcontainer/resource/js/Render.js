@@ -20,7 +20,7 @@ EchoRender.registerPeer = function(componentName, peerObject) {
 // disposed states are not in good shape....SplitPane is being disposed when
 // parent contentPane is redrawn.
 
-EchoRender._loadPeer = function(component) {
+EchoRender._loadPeer = function(client, component) {
     if (component.peer) {
         return;
 // FIXME. which behavior is correct for this scenario: ignore or fail?    
@@ -35,6 +35,7 @@ EchoRender._loadPeer = function(component) {
     
     component.peer = new peerClass();
     component.peer.component = component;
+    component.peer.client = client;
     
     // Initialize the peer.
     component.peer.init();
@@ -42,6 +43,7 @@ EchoRender._loadPeer = function(component) {
 
 // FIXME. Ensure this is properly invoked and no peers are being leaked.
 EchoRender._unloadPeer = function(component) {
+    component.peer.client = null;
     component.peer.component = null;
     component.peer = null;
 };
@@ -98,8 +100,8 @@ EchoRender._doResizeImpl = function(component) {
     }
 };
 
-EchoRender.renderComponentAdd = function(update, component, parentElement) {
-    EchoRender._loadPeer(component);
+EchoRender.renderComponentAdd = function(client, update, component, parentElement) {
+    EchoRender._loadPeer(client, component);
     EchoRender._setPeerDisposedState(component, false);
     component.peer.renderAdd(update, parentElement);
 };
@@ -169,7 +171,9 @@ EchoRender._processDispose = function(update) {
     }
 };
 
-EchoRender.processUpdates = function(updateManager) {
+EchoRender.processUpdates = function(client) {
+    var updateManager = client.application.updateManager;
+    
     if (!updateManager.hasUpdates()) {
         return;
     }
@@ -184,7 +188,7 @@ EchoRender.processUpdates = function(updateManager) {
     for (var i = 0; i < updates.length; ++i) {
         var peers = updates[i].parent.peer;
         if (peer == null && updates[i].parent.componentType == "Root") {
-            EchoRender._loadPeer(updates[i].parent);
+            EchoRender._loadPeer(client, updates[i].parent);
         }
     }
 
@@ -298,14 +302,12 @@ EchoRender.ComponentSync.Root.prototype.renderDispose = function(update) {
 };
 
 EchoRender.ComponentSync.Root.prototype.renderUpdate = function(update) {
-    var client = this.component.application.getContextProperty(EchoClient.CONTEXT_PROPERTY_NAME);
-    
     var fullRender = false;
     if (update.hasAddedChildren() || update.hasRemovedChildren()) {
-        EchoWebCore.DOM.removeAllChildren(client.domainElement);
+        EchoWebCore.DOM.removeAllChildren(this.client.domainElement);
     
         for (var i = 0; i < update.parent.children.length; ++i) {
-            EchoRender.renderComponentAdd(update, update.parent.children[i], client.domainElement);
+            EchoRender.renderComponentAdd(this.client, update, update.parent.children[i], this.client.domainElement);
         }
         fullRender = true;
     }
