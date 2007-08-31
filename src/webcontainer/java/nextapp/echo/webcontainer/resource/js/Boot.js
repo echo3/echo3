@@ -13,8 +13,10 @@ EchoBoot.addInitMethod = function(initMethod) {
 EchoBoot.boot = function(serverBaseUrl, debug) {
     EchoWebCore.init();
     
-    EchoBoot.initMethods
-    
+    if (window.EchoDebugConsole) {
+        EchoDebugConsole.install();
+    }
+
     var client = new EchoRemoteClient(serverBaseUrl);
     for (var i = 0; i < EchoBoot.initMethods.length; ++i) {
         EchoBoot.initMethods[i](client);
