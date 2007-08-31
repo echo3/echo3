@@ -12,6 +12,11 @@ EchoClient = function() {
      * The application being managed by this client.
      */
     this.application = null;
+    
+    /**
+     * The parent client.
+     */
+    this.parent = null;
 };
 
 /**
@@ -58,15 +63,19 @@ EchoClient.prototype.dispose = function() {
 
 /**
  * Returns the URL of a service based on the serviceId.
- * Default implementation, returns null.
+ * Default implementation delegates to parent client
+ * (if one is present) or otherwise returns null.
  * 
  * @param serviceId the serviceId
  * @return the full URL
  * @type String
- * @private
  */
 EchoClient.prototype.getServiceUrl = function(serviceId) {
-    return null;
+    if (this.parent) {
+        return this.parent.getServiceUrl(serviceId);
+    } else {
+        return null;
+    }
 };
 
 EchoClient.prototype._processApplicationFocus = function(e) {
