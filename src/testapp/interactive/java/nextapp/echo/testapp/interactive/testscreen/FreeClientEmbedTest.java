@@ -75,6 +75,7 @@ public class FreeClientEmbedTest extends SplitPane {
         public EmbedTestPanePeer() {
             super();
             addRequiredComponentClass(Button.class);
+            addRequiredComponentClass(Column.class);
             addRequiredComponentClass(ContentPane.class);
             addRequiredComponentClass(Label.class);
             addRequiredComponentClass(Row.class);

@@ -154,7 +154,7 @@ EchoApp.Application.prototype.getLayoutDirection = function() {
 	// FIXME ensure layout direction gets set upon application instantiation
     return this._layoutDirection ? this._layoutDirection : EchoApp.LayoutDirection.LTR;
 };
-
+    
 /**
  * Returns the application style sheet.
  * 
