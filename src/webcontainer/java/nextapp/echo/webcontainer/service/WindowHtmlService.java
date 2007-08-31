@@ -30,6 +30,7 @@
 package nextapp.echo.webcontainer.service;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Properties;
 
 import javax.xml.transform.OutputKeys;
@@ -82,7 +83,7 @@ implements Service {
      * @param debug flag indicating whether debug capabilities should be enabled
      * @return the created document
      */
-    private static Document createHtmlDocument(UserInstance userInstance, boolean debug) {
+    private Document createHtmlDocument(Connection conn, UserInstance userInstance, boolean debug) {
         Document document = DomUtil.createDocument("html", XHTML_1_0_TRANSITIONAL_PUBLIC_ID, 
                 XHTML_1_0_TRANSITIONAL_SYSTSEM_ID, XHTML_1_0_NAMESPACE_URI);
         
@@ -111,6 +112,20 @@ implements Service {
         scriptElement.setAttribute("type", "text/javascript");
         scriptElement.setAttribute("src", userInstance.getServiceUri(BootService.SERVICE));
         headElement.appendChild(scriptElement);
+        
+        WebContainerServlet servlet = conn.getServlet();
+        Iterator scriptIt = servlet.getStartupScripts();
+        if (scriptIt != null) {
+            while (scriptIt.hasNext()) {
+                Service scriptService = (Service) scriptIt.next();
+                scriptElement = document.createElement("script");
+                textNode = document.createTextNode(" ");
+                scriptElement.appendChild(textNode);
+                scriptElement.setAttribute("type", "text/javascript");
+                scriptElement.setAttribute("src", userInstance.getServiceUri(scriptService));
+                headElement.appendChild(scriptElement);
+            }
+        }
         
         Element bodyElement = document.createElement("body");
         bodyElement.setAttribute("id", "body");
@@ -151,8 +166,7 @@ implements Service {
         try {
             UserInstance userInstance = (UserInstance) conn.getUserInstance();
             boolean debug = !("false".equals(conn.getServlet().getInitParameter("echo.debug")));
-            
-            Document document = createHtmlDocument(userInstance, debug);
+            Document document = createHtmlDocument(conn, userInstance, debug);
             
             conn.setContentType(ContentType.TEXT_HTML);
             DomUtil.save(document, conn.getWriter(), OUTPUT_PROPERTIES);

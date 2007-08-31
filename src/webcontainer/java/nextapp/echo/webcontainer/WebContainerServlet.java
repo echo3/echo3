@@ -38,6 +38,9 @@ import nextapp.echo.webcontainer.service.SynchronizeService;
 import nextapp.echo.webcontainer.service.WindowHtmlService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -59,18 +62,6 @@ public abstract class WebContainerServlet extends HttpServlet {
     public static final boolean DEBUG_PRINT_MESSAGES_TO_CONSOLE = true;
     
     public static final String ROOT_HTML_ELEMENT_ID = "root";
-    
-    /**
-     * Default constructor.
-     */
-    public WebContainerServlet() {
-        super();
-        services.add(NewInstanceService.INSTANCE);
-        services.add(SessionExpiredService.INSTANCE);
-        services.add(SynchronizeService.INSTANCE);
-        services.add(WindowHtmlService.INSTANCE);
-        services.add(AsyncMonitorService.INSTANCE);
-    }
     
     /**
      * Creates a new <code>ApplicationInstance</code> for visitor to an 
@@ -185,6 +176,15 @@ public abstract class WebContainerServlet extends HttpServlet {
     }
     
     /**
+     * Retrieves the global <code>ServiceRegistry</code>.
+     * 
+     * @return The global <code>ServiceRegistry</code>.
+     */
+    public static ServiceRegistry getServiceRegistry() {
+        return services;
+    }
+    
+    /**
      * Sets the multipart/form-data encoded HTTP request handler.
      * The multipart request wrapper can only be set one time.  It should be set
      * in a static block of your Echo application.  This method will disregard
@@ -208,6 +208,31 @@ public abstract class WebContainerServlet extends HttpServlet {
                 throw new IllegalStateException("MultipartRequestWrapper already set.");
             }
         }
+    }
+    
+    private List startupScripts = null; 
+    
+    /**
+     * Default constructor.
+     */
+    public WebContainerServlet() {
+        super();
+        services.add(NewInstanceService.INSTANCE);
+        services.add(SessionExpiredService.INSTANCE);
+        services.add(SynchronizeService.INSTANCE);
+        services.add(WindowHtmlService.INSTANCE);
+        services.add(AsyncMonitorService.INSTANCE);
+    }
+    
+    protected void addStartupScript(Service service) {
+        if (startupScripts == null) {
+            startupScripts = new ArrayList();
+        } else if (startupScripts.contains(service)) {
+            return;
+        }
+        
+        services.add(service);
+        startupScripts.add(service);
     }
     
     /**
@@ -267,13 +292,8 @@ public abstract class WebContainerServlet extends HttpServlet {
         return service;
     }
     
-    /**
-     * Retrieves the global <code>ServiceRegistry</code>.
-     * 
-     * @return The global <code>ServiceRegistry</code>.
-     */
-    public static ServiceRegistry getServiceRegistry() {
-        return services;
+    public Iterator getStartupScripts() {
+        return startupScripts == null ? null : startupScripts.iterator();
     }
     
     /**

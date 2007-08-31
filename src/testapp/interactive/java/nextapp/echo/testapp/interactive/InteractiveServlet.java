@@ -30,13 +30,30 @@
 package nextapp.echo.testapp.interactive;
 
 import nextapp.echo.app.ApplicationInstance;
+import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
+import nextapp.echo.webcontainer.service.JavaScriptService;
 
 /**
  * Interactive Test Application <code>WebContainerServlet</code> implementation.
  */
 public class InteractiveServlet extends WebContainerServlet {
 
+    /**
+     * Enable/disable this flag to test custom wait indicator.
+     */
+    private static final boolean USE_CUSTOM_WAIT_INDICATOR = false;
+
+    private static final Service CUSTOM_WAIT_INDICATOR = JavaScriptService.forResource("CustomWaitIndicator", 
+            "/nextapp/echo/testapp/interactive/resource/js/CustomWaitIndicator.js");
+
+    public InteractiveServlet() {
+        super();
+        if (USE_CUSTOM_WAIT_INDICATOR) {
+            addStartupScript(CUSTOM_WAIT_INDICATOR);
+        }
+    }
+    
     /**
      * @see nextapp.echo.webcontainer.WebContainerServlet#newApplicationInstance()
      */

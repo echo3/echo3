@@ -291,6 +291,13 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     serverMessage.process();
 };
 
+EchoRemoteClient.prototype.setWaitIndicator = function(waitIndicator) {
+    if (this._waitIndicator) {
+        this._waitIndicator.deactivate();
+    }
+    this._waitIndicator = waitIndicator;
+};
+
 /**
  * Initiates a client-server synchronization.
  */
