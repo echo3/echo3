@@ -1526,8 +1526,8 @@ EchoApp.Property.Color.prototype.className = "Color";
  * The original color is unchanged.
  * 
  * @param r the amount to adjust the red value of the color (-255 to 255)
- * @param r the amount to adjust the green value of the color (-255 to 255)
- * @param r the amount to adjust the blue value of the color (-255 to 255)
+ * @param g the amount to adjust the green value of the color (-255 to 255)
+ * @param b the amount to adjust the blue value of the color (-255 to 255)
  * @return a new adjusted color
  */
 EchoApp.Property.Color.prototype.adjust = function(r, g, b) {
@@ -1554,6 +1554,39 @@ EchoApp.Property.Color.prototype.adjust = function(r, g, b) {
             + (red < 16 ? "0" : "") + red.toString(16)
             + (green < 16 ? "0" : "") + green.toString(16)
             + (blue < 16 ? "0" : "") + blue.toString(16)); 
+};
+
+/**
+ * Returns the red value of the color.
+ * 
+ * @return the red value (0-255)
+ * @type Integer
+ */
+EchoApp.Property.Color.prototype.getRed = function() {
+    var colorInt = parseInt(this.value.substring(1), 16);
+    return parseInt(colorInt / 0x10000);
+};
+
+/**
+ * Returns the green value of the color.
+ * 
+ * @return the green value (0-255)
+ * @type Integer
+ */
+EchoApp.Property.Color.prototype.getGreen = function() {
+    var colorInt = parseInt(this.value.substring(1), 16);
+    return parseInt(colorInt / 0x100) % 0x100;
+};
+
+/**
+ * Returns the blue value of the color.
+ * 
+ * @return the blue value (0-255)
+ * @type Integer
+ */
+EchoApp.Property.Color.prototype.getBlue = function() {
+    var colorInt = parseInt(this.value.substring(1), 16);
+    return colorInt % 0x100;
 };
 
 /**

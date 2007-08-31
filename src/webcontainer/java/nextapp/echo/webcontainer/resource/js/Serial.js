@@ -328,6 +328,10 @@ EchoSerial.PropertyTranslator.Color.toProperty = function(client, propertyElemen
     return new EchoApp.Property.Color(propertyElement.getAttribute("v"));
 };
 
+EchoSerial.PropertyTranslator.Color.toXml = function(client, propertyElement, propertyValue) {
+    propertyElement.setAttribute("v", propertyValue.value);
+};
+
 EchoSerial.addPropertyTranslator("Color", EchoSerial.PropertyTranslator.Color);
 
 /**
