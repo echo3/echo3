@@ -349,9 +349,10 @@ EchoApp.ComponentFactory.registerType = function(typeName, typeConstructor) {
  * will throw an exception and/or result in indeterminate behavior.
  * 
  * @param {String} renderId the render id
+ * @param {Object} associative mapping of initial property values for local style (may be null)
  * @constructor
  */
-EchoApp.Component = function(renderId) {
+EchoApp.Component = function(renderId, properties) {
 
     /**
      * The type name of the component.
@@ -400,7 +401,7 @@ EchoApp.Component = function(renderId) {
      * @private
      * @type EchoApp.Style
      */
-    this._localStyle = new EchoApp.Style();
+    this._localStyle = new EchoApp.Style(properties);
     
     /**
      * Referenced external style
@@ -2837,16 +2838,10 @@ EchoApp.Update.Manager.prototype.toString = function() {
  * @class Button component.
  * @base EchoApp.Component
  */
-EchoApp.Button = function(renderId, text, icon) {
-    EchoApp.Component.call(this, renderId);
+EchoApp.Button = function(renderId, properties) {
+    EchoApp.Component.call(this, renderId, properties);
     this.componentType = "Button";
     this.focusable = true;
-    if (text != null) {
-        this.setProperty("text", text);
-    }
-    if (icon != null) {
-        this.setProperty("icon", icon);
-    }
 };
 
 EchoApp.Button.prototype = EchoCore.derive(EchoApp.Component);
@@ -2908,8 +2903,8 @@ EchoApp.CheckBox.prototype = EchoCore.derive(EchoApp.ToggleButton);
  * @class Column component.
  * @base EchoApp.Component
  */
-EchoApp.Column = function(renderId) {
-    EchoApp.Component.call(this, renderId);
+EchoApp.Column = function(renderId, properties) {
+    EchoApp.Component.call(this, renderId, properties);
     this.componentType = "Column";
 };
 
@@ -2922,9 +2917,9 @@ EchoApp.Column.prototype = EchoCore.derive(EchoApp.Component);
  * @class ContentPane component.
  * @base EchoApp.Component
  */
-EchoApp.ContentPane = function(renderId) {
+EchoApp.ContentPane = function(renderId, properties) {
     this.pane = true;
-    EchoApp.Component.call(this, renderId);
+    EchoApp.Component.call(this, renderId, properties);
     this.componentType = "ContentPane";
 };
 
@@ -2937,8 +2932,8 @@ EchoApp.ContentPane.prototype = EchoCore.derive(EchoApp.Component);
  * @class Grid component.
  * @base EchoApp.Component
  */
-EchoApp.Grid = function(renderId) {
-    EchoApp.Component.call(this, renderId);
+EchoApp.Grid = function(renderId, properties) {
+    EchoApp.Component.call(this, renderId, properties);
     this.componentType = "Grid";
 };
 
@@ -2953,8 +2948,8 @@ EchoApp.Grid.SPAN_FILL = -1;
  * @class Label component.
  * @base EchoApp.Component
  */
-EchoApp.Label = function(renderId) {
-    EchoApp.Component.call(this, renderId);
+EchoApp.Label = function(renderId, properties) {
+    EchoApp.Component.call(this, renderId, properties);
     this.componentType = "Label";
 };
 
@@ -2967,8 +2962,8 @@ EchoApp.Label.prototype = EchoCore.derive(EchoApp.Component);
  * @class ListBox component.
  * @base EchoApp.Component
  */
-EchoApp.ListBox = function(renderId) {
-    EchoApp.Component.call(this, renderId);
+EchoApp.ListBox = function(renderId, properties) {
+    EchoApp.Component.call(this, renderId, properties);
     this.componentType = "ListBox";
     this.focusable = true;
 };
@@ -2992,8 +2987,8 @@ EchoApp.ListBox.MULTIPLE_SELECTION = 2;
  * @class Row component.
  * @base EchoApp.Component
  */
-EchoApp.Row = function(renderId) {
-    EchoApp.Component.call(this, renderId);
+EchoApp.Row = function(renderId, properties) {
+    EchoApp.Component.call(this, renderId, properties);
     this.componentType = "Row";
 };
 
@@ -3006,8 +3001,8 @@ EchoApp.Row.prototype = EchoCore.derive(EchoApp.Component);
  * @class SelectField component.
  * @base EchoApp.Component
  */
-EchoApp.SelectField = function(renderId) {
-    EchoApp.Component.call(this, renderId);
+EchoApp.SelectField = function(renderId, properties) {
+    EchoApp.Component.call(this, renderId, properties);
     this.componentType = "SelectField";
     this.focusable = true;
 };
@@ -3021,8 +3016,8 @@ EchoApp.SelectField.prototype = EchoCore.derive(EchoApp.Component);
  * @class SplitPane component.
  * @base EchoApp.Component
  */
-EchoApp.SplitPane = function(renderId) {
-    EchoApp.Component.call(this, renderId);
+EchoApp.SplitPane = function(renderId, properties) {
+    EchoApp.Component.call(this, renderId, properties);
     this.pane = true;
     this.componentType = "SplitPane";
 };
@@ -3052,8 +3047,8 @@ EchoApp.SplitPane.OVERFLOW_SCROLL = 2;
  * @class TextField component.
  * @base EchoApp.Component
  */
-EchoApp.TextField = function(renderId) {
-    EchoApp.Component.call(this, renderId);
+EchoApp.TextField = function(renderId, properties) {
+    EchoApp.Component.call(this, renderId, properties);
     this.componentType = "TextField";
     this.focusable = true;
 };
@@ -3067,9 +3062,9 @@ EchoApp.TextField.prototype = EchoCore.derive(EchoApp.Component);
  * @class WindowPane component.
  * @base EchoApp.Component
  */
-EchoApp.WindowPane = function(renderId) {
+EchoApp.WindowPane = function(renderId, properties) {
     this.floatingPane = this.pane = true;
-    EchoApp.Component.call(this, renderId);
+    EchoApp.Component.call(this, renderId, properties);
     this.componentType = "WindowPane";
 };
 
