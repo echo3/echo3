@@ -17,21 +17,25 @@ TestApp.randomColor = function() {
 };
 
 TestApp.TestScreen = function() {
-    EchoApp.ContentPane.call(this);
-    this.setProperty("background", new EchoApp.Property.Color("#abcdef"));
+    EchoApp.ContentPane.call(this, null, {
+        background: new EchoApp.Property.Color("#abcdef")
+    });
 
-    this.testSelectSplitPane = new EchoApp.SplitPane();
+    this.testSelectSplitPane = new EchoApp.SplitPane(null, {
+        separatorPosition: new EchoApp.Property.Extent("180px")
+    });
     this.testSelectSplitPane.setStyleName("DefaultResizable");
-    this.testSelectSplitPane.setProperty("separatorPosition", new EchoApp.Property.Extent("180px"));
     this.add(this.testSelectSplitPane);
 
-    this.testSelectColumn = new EchoApp.Column();
-    this.testSelectColumn.setProperty("insets", new EchoApp.Property.Insets("5px 10px"));
+    this.testSelectColumn = new EchoApp.Column({
+        insets: new EchoApp.Property.Insets("5px 10px")
+    });
     this.testSelectSplitPane.add(this.testSelectColumn);
     
     var testColumn2 = new EchoApp.Column();
-    var label = new EchoApp.Label();
-    label.setProperty("text", "Welcome to the Experimental Echo Client Test Application!");
+    var label = new EchoApp.Label(null, {
+        text: "Welcome to the Experimental Echo Client Test Application!"
+    });
     label.setStyleName("Default");
     testColumn2.add(label);
     this.testSelectSplitPane.add(testColumn2);
@@ -40,9 +44,10 @@ TestApp.TestScreen = function() {
 TestApp.TestScreen.prototype = EchoCore.derive(EchoApp.ContentPane);
 
 TestApp.TestScreen.prototype.addTest = function(testName) {
-    var button = new EchoApp.Button();
+    var button = new EchoApp.Button(null, {
+        text: testName
+    });
     button.setStyleName("Default");
-    button.setProperty("text", testName);
     button.addListener("action", new EchoCore.MethodRef(this, this._launchTest));
     this.testSelectColumn.add(button);
 };

@@ -477,7 +477,6 @@ EchoWebCore.EventProcessor._selectionDenialHandler = function(e) {
 };
 
 EchoWebCore.EventProcessor._processEvent = function(e) {
-
     e = e ? e : window.event;
     if (!e.target && e.srcElement) {
         // The Internet Explorer event model stores the target element in the 'srcElement' property of an event.
