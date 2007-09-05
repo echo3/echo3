@@ -448,7 +448,6 @@ EchoWebCore.EventProcessor.add = function(element, eventType, eventTarget, captu
         EchoWebCore.EventProcessor._lastCapture = capture;
         EchoWebCore.EventProcessor._lastListenerList = listenerList;
     }
-    
 
     // Add event handler to the ListenerList.
     listenerList.addListener(eventType, eventTarget);
@@ -490,12 +489,12 @@ EchoWebCore.EventProcessor._processEvent = function(e) {
     var elementAncestry = new Array();
     var targetElement = e.target;
     while (targetElement) {
-        if (targetElement.nodeType == 1 && targetElement.__eventProcessorId) { // Element Node with identifier.
+        if (targetElement.__eventProcessorId) { // Element Node with identifier.
             elementAncestry.push(targetElement);
         }
         targetElement = targetElement.parentNode;
     }
-    
+
     var listenerList;
     
     var propagate = true;
@@ -538,7 +537,6 @@ EchoWebCore.EventProcessor._processEvent = function(e) {
         // Inform DOM to stop propagation of event.
         EchoWebCore.DOM.stopEventPropagation(e);
     }
-    
 };
 
 /**
