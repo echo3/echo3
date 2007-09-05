@@ -612,7 +612,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderDispose = function(update) {
     this._windowPaneDivElement = null;
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.renderSizeUpdate = function() {
+EchoRender.ComponentSync.WindowPane.prototype.renderDisplay = function() {
     this._loadContainerSize();
     this.setPosition(this._userWindowX, this._userWindowY, this._userWindowWidth, this._userWindowHeight);
     EchoWebCore.VirtualPosition.redraw(this._contentDivElement);

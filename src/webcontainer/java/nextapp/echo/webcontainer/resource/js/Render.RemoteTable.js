@@ -192,7 +192,7 @@ EchoRender.ComponentSync.RemoteTable.prototype._createRowPrototype = function() 
     return trElement;
 };
 
-EchoRender.ComponentSync.RemoteTable.prototype.renderSizeUpdate = function() {
+EchoRender.ComponentSync.RemoteTable.prototype.renderDisplay = function() {
     if (this._renderPercentWidthByMeasure) {
         this._tableElement.style.width = "";
         var percentWidth = (this._tableElement.parentNode.offsetWidth * this._renderPercentWidthByMeasure) / 100;

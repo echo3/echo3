@@ -58,7 +58,7 @@ EchoRender.ComponentSync.ContentPane.prototype._renderRemoveChild = function(upd
     delete this._childIdToElementMap[child.renderId];
 };
 
-EchoRender.ComponentSync.ContentPane.prototype.renderSizeUpdate = function() {
+EchoRender.ComponentSync.ContentPane.prototype.renderDisplay = function() {
     var child = this._divElement.firstChild;
     while (child) {
         EchoWebCore.VirtualPosition.redraw(child);

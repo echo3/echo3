@@ -149,7 +149,7 @@ EchoRender.ComponentSync.Grid.prototype.renderDispose = function(update) {
     this._tableElement = null;
 };
 
-EchoRender.ComponentSync.Grid.prototype.renderSizeUpdate = function() {
+EchoRender.ComponentSync.Grid.prototype.renderDisplay = function() {
     if (this._renderPercentWidthByMeasure) {
         this._tableElement.style.width = "";
         var percentWidth = (this._tableElement.parentNode.offsetWidth * this._renderPercentWidthByMeasure) / 100;

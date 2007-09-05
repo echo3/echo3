@@ -59,10 +59,12 @@ EchoRender._setPeerDisposedState = function(component, disposed) {
 };
 
 /**
- * Notifies child components that the parent component has been reszied.
+ * Notifies child components that the parent component has been drawn
+ * or resized.  At this point the parent component is on the screen
+ * (the parent element is part of the DOM hierarchy).
  * Child components (and their descendants) will be notified by having 
- * their renderSizeUpdate() implementations invoked.
- * Note that the parent WILL NOT have its renderSizeUpdate() method
+ * their renderDisplay() implementations invoked.
+ * Note that the parent WILL NOT have its renderDisplay() method
  * invoked.
  * 
  * If your component requires virtual positioning (for IE6) you should invoke
@@ -90,8 +92,8 @@ EchoRender._doResizeImpl = function(component) {
     if (component.peer) {
         // components that are present on the client, but are not rendered (lazy rendered as in tree), 
         // have no peer installed.
-        if (component.peer.renderSizeUpdate) {
-            component.peer.renderSizeUpdate();
+        if (component.peer.renderDisplay) {
+            component.peer.renderDisplay();
         }
         
         for (var i = 0; i < component.children.length; ++i) {
@@ -234,7 +236,7 @@ EchoRender.processUpdates = function(client) {
         EchoCore.profilingTimer.mark("up");
     }
     
-    // Size Update Phase: Invoke renderSizeUpdate on all updates.
+    // Display Phase: Invoke renderDisplay on all updates.
     
     for (var i = 0; i < updates.length; ++i) {
         if (updates[i] == null) {

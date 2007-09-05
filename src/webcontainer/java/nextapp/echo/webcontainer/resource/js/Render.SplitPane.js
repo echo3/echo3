@@ -451,7 +451,7 @@ EchoRender.ComponentSync.SplitPane.prototype._renderRemoveChild = function(updat
     }
 };
 
-EchoRender.ComponentSync.SplitPane.prototype.renderSizeUpdate = function() {
+EchoRender.ComponentSync.SplitPane.prototype.renderDisplay = function() {
     EchoWebCore.VirtualPosition.redraw(this._splitPaneDivElement);
     if (this.component.getRenderProperty("resizable")) {
         this._setSeparatorPosition(this._userSeparatorPosition);
