@@ -51,6 +51,10 @@ import nextapp.echo.app.util.Context;
 public class LayoutDataPeer 
 implements SerialPropertyPeer {
     
+    /**
+     * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(nextapp.echo.app.util.Context, 
+     *      java.lang.Class, org.w3c.dom.Element)
+     */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws SerialException {        
         try {

@@ -255,6 +255,28 @@ EchoSerial.PropertyTranslator.String.toProperty = function(client, propertyEleme
 
 EchoSerial.addPropertyTranslator("s", EchoSerial.PropertyTranslator.String);
 
+
+/**
+ * Map (Associative Array) PropertyTranslator Singleton.
+ */
+EchoSerial.PropertyTranslator.Map = function() { };
+
+EchoSerial.PropertyTranslator.Map.toProperty = function(client, propertyElement) {
+    var mapObject = new Object();
+    var element = propertyElement.firstChild;
+    while (element) {
+        if (element.nodeType != 1) {
+            continue;
+        }
+
+        EchoSerial.loadProperty(client, element, null, mapObject, null);
+        element = element.nextSibling;
+    }
+    return mapObject;
+};
+
+EchoSerial.addPropertyTranslator("map", EchoSerial.PropertyTranslator.Map);
+
 /**
  * Alignment PropertyTranslator Singleton.
  */
