@@ -584,6 +584,7 @@ EchoCore.Debug.Timer.prototype.toString = function() {
     return out;
 };
 
+//FIXME This APi should be type, source, data...I think.
 /**
  * Creates a new event object.
  * 

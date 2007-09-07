@@ -29,9 +29,14 @@
 
 package nextapp.echo.app.serial.property;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import org.w3c.dom.Element;
 
+import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
+import nextapp.echo.app.serial.SerialPeerFactory;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
 
@@ -53,6 +58,23 @@ implements SerialPropertyPeer {
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
-        throw new UnsupportedOperationException();
+        propertyElement.setAttribute("t", "map");
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
+        SerialPeerFactory peerFactory = SerialPeerFactory.forClassLoader(serialContext.getClassLoader());
+        Map map = (Map) propertyValue;
+        Iterator keyIt = map.keySet().iterator();
+        while (keyIt.hasNext()) {
+            String key = keyIt.next().toString();
+            Object value = map.get(key);
+            if (value == null) {
+                continue;
+            } 
+            Class propertyClass = value.getClass();
+            SerialPropertyPeer peer = peerFactory.getPeerForProperty(propertyClass);
+            Element element = serialContext.getDocument().createElement("p");
+            element.setAttribute("n", key);
+            peer.toXml(context, propertyClass, element, value);
+            propertyElement.appendChild(element);
+        }
     }
 }
