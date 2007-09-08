@@ -55,7 +55,8 @@ EchoRender.ComponentSync.TextComponent.prototype._processKeyUp = function(e) {
     
     this.component.setProperty("text", this._text);
     if (e.keyCode == 13) {
-	    this.component.fireEvent(new EchoCore.Event(this.component, "action"));
+        //FIXME fire from component.
+	    this.component.fireEvent(new EchoCore.Event("action", this.component));
     }
 };
 

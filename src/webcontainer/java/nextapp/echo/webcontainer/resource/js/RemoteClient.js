@@ -726,7 +726,7 @@ EchoRemoteClient.ServerMessage.prototype._processPostLibraryLoad = function() {
     }
 
     // Complete: notify listeners of completion.
-    this._listenerList.fireEvent(new EchoCore.Event(this, "completion"));
+    this._listenerList.fireEvent(new EchoCore.Event("completion", this));
     
     // Start server push listener if required.
     if (this.document.documentElement.getAttribute("async-interval")) {

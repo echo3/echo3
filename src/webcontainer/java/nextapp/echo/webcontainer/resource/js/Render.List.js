@@ -28,7 +28,8 @@ EchoRender.ComponentSync.SelectListComponent.prototype._processChange = function
         }
     }
     this.component.setProperty("selection", selection.join(","));
-    this.component.fireEvent(new EchoCore.Event(this.component, "action"));
+    //FIXME fire from component
+    this.component.fireEvent(new EchoCore.Event("action", this.component));
 };
 
 EchoRender.ComponentSync.SelectListComponent.prototype._renderMain = function(update, parentElement, size) {

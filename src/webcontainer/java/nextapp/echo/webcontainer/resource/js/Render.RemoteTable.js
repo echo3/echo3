@@ -331,7 +331,8 @@ EchoRender.ComponentSync.RemoteTable.prototype._addEventListeners = function() {
 };
 
 EchoRender.ComponentSync.RemoteTable.prototype._doAction = function() {
-    this.component.fireEvent(new EchoCore.Event(this.component, "action"));
+    //FIXME fire from component.
+    this.component.fireEvent(new EchoCore.Event("action", this.component));
 };
 
 EchoRender.ComponentSync.RemoteTable.prototype._processClick = function(e) {

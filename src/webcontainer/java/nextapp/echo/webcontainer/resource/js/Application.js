@@ -240,7 +240,7 @@ EchoApp.Application.prototype.setFocusedComponent = function(newValue) {
     }
     
     this._focusedComponent = newValue;
-    this._listenerList.fireEvent(new EchoCore.Event(this, "focus"));
+    this._listenerList.fireEvent(new EchoCore.Event("focus", this));
 };
 
 /**
@@ -288,7 +288,7 @@ EchoApp.Application.prototype._unregisterComponent = function(component) {
  * @param newValue the new value of the property
  */
 EchoApp.Application.ComponentUpdateEvent = function(source, parent, propertyName, oldValue, newValue) {
-    EchoCore.Event.call(this, source, "componentUpdate");
+    EchoCore.Event.call(this, "componentUpdate", source);
     this.parent = parent;
     this.propertyName = propertyName;
     this.oldValue = oldValue;
@@ -933,7 +933,7 @@ EchoApp.Component.prototype.setProperty = function(name, newValue) {
     var oldValue = this._localStyle.getProperty(name);
     this._localStyle.setProperty(name, newValue);
     if (this._listenerList && this._listenerList.hasListeners("property")) {
-        var e = new EchoCore.Event(this, "property")
+        var e = new EchoCore.Event("property", this);
         e.propertyName = name;
         e.oldValue = oldValue;
         e.newValue = newValue;
@@ -2619,7 +2619,7 @@ EchoApp.Update.Manager.prototype.dispose = function() {
  */
 EchoApp.Update.Manager.prototype._fireUpdate = function() {
     if (!this._listenerList.isEmpty()) {
-        var e = new EchoCore.Event(this, "update");
+        var e = new EchoCore.Event("update", this);
         this._listenerList.fireEvent(e);
     }
 };
@@ -2854,7 +2854,7 @@ EchoApp.Button.prototype = EchoCore.derive(EchoApp.Component);
  * Programatically performs a button action.
  */
 EchoApp.Button.prototype.doAction = function() {
-    var e = new EchoCore.Event(this, "action");
+    var e = new EchoCore.Event("action", this);
     this.fireEvent(e);
 };
 
@@ -3078,7 +3078,7 @@ EchoApp.WindowPane.prototype = EchoCore.derive(EchoApp.Component);
  * Programmatically perform a window closing operation.
  */
 EchoApp.WindowPane.prototype.doWindowClosing = function() {
-    var e = new EchoCore.Event(this, "close");
+    var e = new EchoCore.Event("close", this);
     this.fireEvent(e);
 };
 
