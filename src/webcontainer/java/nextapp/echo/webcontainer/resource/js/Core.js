@@ -824,7 +824,7 @@ EchoCore.ResourceBundle = function(map) {
  */
 EchoCore.ResourceBundle.prototype.get = function(key) {
     var value = this.map[key];
-    if (value == null && parent != null) {
+    if (value == null && this.parent != null) {
         return this.parent.get(key);
     } else {
         return value;
