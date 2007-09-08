@@ -806,6 +806,32 @@ EchoCore.MethodRef.prototype.invoke = function(args) {
 };
 
 /**
+ * Creates a Resourcebundle
+ * 
+ * @class A localized resource bundle instance.
+ * @param map initial mappings
+ */
+EchoCore.ResourceBundle = function(map) {
+    this.map = map ? map : new Object();
+    this.parent = null;
+};
+
+/**
+ * Retrieves a value.
+ * 
+ * @param key the key
+ * @return the value
+ */
+EchoCore.ResourceBundle.prototype.get = function(key) {
+    var value = this.map[key];
+    if (value == null && parent != null) {
+        return this.parent.get(key);
+    } else {
+        return value;
+    }
+};
+
+/**
  * Scheduler namespace.  Non-instantiable object.
  * Provides capability to invoke code at regular intervals, after a delay, 
  * or after the current JavaScript execution context has completed.
