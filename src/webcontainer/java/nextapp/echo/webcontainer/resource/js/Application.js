@@ -323,11 +323,14 @@ EchoApp.ComponentFactory._typeToConstructorMap = new Object();
 EchoApp.ComponentFactory.newInstance = function(typeName, renderId) {
     var typeConstructor = EchoApp.ComponentFactory._typeToConstructorMap[typeName];
     if (typeConstructor == null) {
-        var component = new EchoApp.Component(renderId);
+        var component = new EchoApp.Component();
+        component.renderId = renderId;
         component.componentType = typeName;
         return component;
     } else {
-        return new typeConstructor(renderId);
+        var component = new typeConstructor();
+        component.renderId = renderId;
+        return component;
     }
 };
 
@@ -352,7 +355,7 @@ EchoApp.ComponentFactory.registerType = function(typeName, typeConstructor) {
  * @param {Object} associative mapping of initial property values for local style (may be null)
  * @constructor
  */
-EchoApp.Component = function(renderId, properties) {
+EchoApp.Component = function(properties) {
 
     /**
      * The type name of the component.
@@ -366,7 +369,7 @@ EchoApp.Component = function(renderId, properties) {
      * This value is read-only.
      * @type String
      */
-    this.renderId = renderId ? renderId : "cl_" + ++EchoApp.Component._nextRenderId;
+    this.renderId = null;
     
     /**
      * The parent component.
@@ -449,9 +452,6 @@ EchoApp.Component.prototype.add = function(component, index) {
         throw new Error("Cannot add child: specified component object does not have a componentType property. "
                 + "Perhaps the EchoApp.Component() super-constructor was not invoked." + this.toString() + "::::" 
                 + component.toString());
-    }
-    if (!this.renderId) {
-        throw new Error("Cannot add child: specified component object does not have a renderId.");
     }
 
 	if (component.parent) {
@@ -805,6 +805,10 @@ EchoApp.Component.prototype.register = function(application) {
     this.application = application;
 
 	if (application) { // registering
+	    
+	    if (this.renderId == null) {
+            this.renderId = "cl_" + ++EchoApp.Component._nextRenderId;
+        }
 
         // Notify application.
         this.application._registerComponent(this);
@@ -2838,8 +2842,8 @@ EchoApp.Update.Manager.prototype.toString = function() {
  * @class Button component.
  * @base EchoApp.Component
  */
-EchoApp.Button = function(renderId, properties) {
-    EchoApp.Component.call(this, renderId, properties);
+EchoApp.Button = function(properties) {
+    EchoApp.Component.call(this, properties);
     this.componentType = "Button";
     this.focusable = true;
 };
@@ -2903,8 +2907,8 @@ EchoApp.CheckBox.prototype = EchoCore.derive(EchoApp.ToggleButton);
  * @class Column component.
  * @base EchoApp.Component
  */
-EchoApp.Column = function(renderId, properties) {
-    EchoApp.Component.call(this, renderId, properties);
+EchoApp.Column = function(properties) {
+    EchoApp.Component.call(this, properties);
     this.componentType = "Column";
 };
 
@@ -2917,9 +2921,9 @@ EchoApp.Column.prototype = EchoCore.derive(EchoApp.Component);
  * @class ContentPane component.
  * @base EchoApp.Component
  */
-EchoApp.ContentPane = function(renderId, properties) {
+EchoApp.ContentPane = function(properties) {
     this.pane = true;
-    EchoApp.Component.call(this, renderId, properties);
+    EchoApp.Component.call(this, properties);
     this.componentType = "ContentPane";
 };
 
@@ -2932,8 +2936,8 @@ EchoApp.ContentPane.prototype = EchoCore.derive(EchoApp.Component);
  * @class Grid component.
  * @base EchoApp.Component
  */
-EchoApp.Grid = function(renderId, properties) {
-    EchoApp.Component.call(this, renderId, properties);
+EchoApp.Grid = function(properties) {
+    EchoApp.Component.call(this, properties);
     this.componentType = "Grid";
 };
 
@@ -2948,8 +2952,8 @@ EchoApp.Grid.SPAN_FILL = -1;
  * @class Label component.
  * @base EchoApp.Component
  */
-EchoApp.Label = function(renderId, properties) {
-    EchoApp.Component.call(this, renderId, properties);
+EchoApp.Label = function(properties) {
+    EchoApp.Component.call(this, properties);
     this.componentType = "Label";
 };
 
@@ -2962,8 +2966,8 @@ EchoApp.Label.prototype = EchoCore.derive(EchoApp.Component);
  * @class ListBox component.
  * @base EchoApp.Component
  */
-EchoApp.ListBox = function(renderId, properties) {
-    EchoApp.Component.call(this, renderId, properties);
+EchoApp.ListBox = function(properties) {
+    EchoApp.Component.call(this, properties);
     this.componentType = "ListBox";
     this.focusable = true;
 };
@@ -2987,8 +2991,8 @@ EchoApp.ListBox.MULTIPLE_SELECTION = 2;
  * @class Row component.
  * @base EchoApp.Component
  */
-EchoApp.Row = function(renderId, properties) {
-    EchoApp.Component.call(this, renderId, properties);
+EchoApp.Row = function(properties) {
+    EchoApp.Component.call(this, properties);
     this.componentType = "Row";
 };
 
@@ -3001,8 +3005,8 @@ EchoApp.Row.prototype = EchoCore.derive(EchoApp.Component);
  * @class SelectField component.
  * @base EchoApp.Component
  */
-EchoApp.SelectField = function(renderId, properties) {
-    EchoApp.Component.call(this, renderId, properties);
+EchoApp.SelectField = function(properties) {
+    EchoApp.Component.call(this, properties);
     this.componentType = "SelectField";
     this.focusable = true;
 };
@@ -3016,8 +3020,8 @@ EchoApp.SelectField.prototype = EchoCore.derive(EchoApp.Component);
  * @class SplitPane component.
  * @base EchoApp.Component
  */
-EchoApp.SplitPane = function(renderId, properties) {
-    EchoApp.Component.call(this, renderId, properties);
+EchoApp.SplitPane = function(properties) {
+    EchoApp.Component.call(this, properties);
     this.pane = true;
     this.componentType = "SplitPane";
 };
@@ -3047,8 +3051,8 @@ EchoApp.SplitPane.OVERFLOW_SCROLL = 2;
  * @class TextField component.
  * @base EchoApp.Component
  */
-EchoApp.TextField = function(renderId, properties) {
-    EchoApp.Component.call(this, renderId, properties);
+EchoApp.TextField = function(properties) {
+    EchoApp.Component.call(this, properties);
     this.componentType = "TextField";
     this.focusable = true;
 };
@@ -3062,9 +3066,9 @@ EchoApp.TextField.prototype = EchoCore.derive(EchoApp.Component);
  * @class WindowPane component.
  * @base EchoApp.Component
  */
-EchoApp.WindowPane = function(renderId, properties) {
+EchoApp.WindowPane = function(properties) {
     this.floatingPane = this.pane = true;
-    EchoApp.Component.call(this, renderId, properties);
+    EchoApp.Component.call(this, properties);
     this.componentType = "WindowPane";
 };
 

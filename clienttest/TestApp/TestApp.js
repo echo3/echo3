@@ -17,11 +17,11 @@ TestApp.randomColor = function() {
 };
 
 TestApp.TestScreen = function() {
-    EchoApp.ContentPane.call(this, null, {
+    EchoApp.ContentPane.call(this, {
         background: new EchoApp.Property.Color("#abcdef")
     });
 
-    this.testSelectSplitPane = new EchoApp.SplitPane(null, {
+    this.testSelectSplitPane = new EchoApp.SplitPane({
         separatorPosition: new EchoApp.Property.Extent("180px")
     });
     this.testSelectSplitPane.setStyleName("DefaultResizable");
@@ -33,7 +33,7 @@ TestApp.TestScreen = function() {
     this.testSelectSplitPane.add(this.testSelectColumn);
     
     var testColumn2 = new EchoApp.Column();
-    var label = new EchoApp.Label(null, {
+    var label = new EchoApp.Label({
         text: "Welcome to the Experimental Echo Client Test Application!"
     });
     label.setStyleName("Default");
@@ -44,7 +44,7 @@ TestApp.TestScreen = function() {
 TestApp.TestScreen.prototype = EchoCore.derive(EchoApp.ContentPane);
 
 TestApp.TestScreen.prototype.addTest = function(testName) {
-    var button = new EchoApp.Button(null, {
+    var button = new EchoApp.Button({
         text: testName
     });
     button.setStyleName("Default");
