@@ -520,7 +520,7 @@ EchoRender.ComponentSync.RadioButton.prototype.renderAdd = function(update, pare
 };
 
 EchoRender.ComponentSync.RadioButton.prototype._createStateElement = function() {
-    var stateIcon = EchoRender.ComponentSync.ToggleButton.prototype._getStateIcon.call(this);
+    var stateIcon = this._getStateIcon();
     var stateElement;
     if (stateIcon) {
         stateElement = document.createElement("img");
