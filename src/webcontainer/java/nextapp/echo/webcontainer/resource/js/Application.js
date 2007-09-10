@@ -3046,19 +3046,61 @@ EchoApp.SplitPane.OVERFLOW_HIDDEN = 1;
 EchoApp.SplitPane.OVERFLOW_SCROLL = 2;
 
 /**
+ * Abstract base class for text components.
+ * 
+ * @private
+ * @constructor
+ * @class TextComponent component.
+ * @base EchoApp.Component
+ */
+EchoApp.TextComponent = function(properties) {
+    EchoApp.Component.call(this, properties);
+    this.focusable = true;
+};
+
+EchoApp.TextComponent.prototype = EchoCore.derive(EchoApp.Component);
+
+/**
+ * Creates a new TextArea.
+ * 
+ * @constructor
+ * @class TextArea component.
+ * @base EchoApp.TextComponent
+ */
+EchoApp.TextArea = function(properties) {
+    EchoApp.TextComponent.call(this, properties);
+    this.componentType = "TextArea";
+};
+
+EchoApp.TextArea.prototype = EchoCore.derive(EchoApp.TextComponent);
+
+/**
  * Creates a new TextField.
  * 
  * @constructor
  * @class TextField component.
- * @base EchoApp.Component
+ * @base EchoApp.TextComponent
  */
 EchoApp.TextField = function(properties) {
-    EchoApp.Component.call(this, properties);
+    EchoApp.TextComponent.call(this, properties);
     this.componentType = "TextField";
-    this.focusable = true;
 };
 
-EchoApp.TextField.prototype = EchoCore.derive(EchoApp.Component);
+EchoApp.TextField.prototype = EchoCore.derive(EchoApp.TextComponent);
+
+/**
+ * Creates a new PasswordField.
+ * 
+ * @constructor
+ * @class PasswordField component.
+ * @base EchoApp.TextField
+ */
+EchoApp.PasswordField = function(properties) {
+    EchoApp.TextField.call(this, properties);
+    this.componentType = "PasswordField";
+};
+
+EchoApp.PasswordField.prototype = EchoCore.derive(EchoApp.TextField);
 
 /**
  * Creates a new WindowPane.
@@ -3101,10 +3143,12 @@ EchoApp.ComponentFactory.registerType("Column", EchoApp.Column);
 EchoApp.ComponentFactory.registerType("ContentPane", EchoApp.ContentPane);
 EchoApp.ComponentFactory.registerType("Label", EchoApp.Label);
 EchoApp.ComponentFactory.registerType("ListBox", EchoApp.ListBox);
+EchoApp.ComponentFactory.registerType("PasswordField", EchoApp.PasswordField);
 EchoApp.ComponentFactory.registerType("RadioButton", EchoApp.RadioButton);
 EchoApp.ComponentFactory.registerType("Row", EchoApp.Row);
 EchoApp.ComponentFactory.registerType("SelectField", EchoApp.SelectField);
 EchoApp.ComponentFactory.registerType("SplitPane", EchoApp.SplitPane);
+EchoApp.ComponentFactory.registerType("TextArea", EchoApp.TextArea);
 EchoApp.ComponentFactory.registerType("TextField", EchoApp.TextField);
 EchoApp.ComponentFactory.registerType("ToggleButton", EchoApp.ToggleButton);
 EchoApp.ComponentFactory.registerType("WindowPane", EchoApp.WindowPane);
