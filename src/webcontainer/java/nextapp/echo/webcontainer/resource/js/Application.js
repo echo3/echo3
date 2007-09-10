@@ -2873,6 +2873,20 @@ EchoApp.ToggleButton = function(renderId) {
 EchoApp.ToggleButton.prototype = EchoCore.derive(EchoApp.Button);
 
 /**
+ * CheckBox component.
+ * 
+ * @constructor
+ * @class CheckBox component.
+ * @base EchoApp.ToggleButton
+ */
+EchoApp.CheckBox = function(renderId) {
+    EchoApp.Component.call(this,  renderId);
+    this.componentType = "CheckBox";
+};
+
+EchoApp.CheckBox.prototype = EchoCore.derive(EchoApp.ToggleButton);
+
+/**
  * RadioButton component.
  * 
  * @constructor
@@ -2886,19 +2900,6 @@ EchoApp.RadioButton = function(renderId) {
 
 EchoApp.RadioButton.prototype = EchoCore.derive(EchoApp.ToggleButton);
 
-/**
- * CheckBox component.
- * 
- * @constructor
- * @class CheckBox component.
- * @base EchoApp.ToggleButton
- */
-EchoApp.CheckBox = function(renderId) {
-    EchoApp.Component.call(this,  renderId);
-    this.componentType = "CheckBox";
-};
-
-EchoApp.CheckBox.prototype = EchoCore.derive(EchoApp.ToggleButton);
 
 /**
  * Creates a new Column.

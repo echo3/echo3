@@ -270,7 +270,6 @@ EchoRender.ComponentSync.Button.prototype._getCombinedAlignment = function() {
 
 EchoRender.ComponentSync.Button.prototype.renderDispose = function(update) {
     EchoWebCore.EventProcessor.removeAll(this._divElement);
-    this._divElement = null;
     this._iconElement = null;
 };
 
@@ -366,7 +365,7 @@ EchoRender.registerPeer("Button", EchoRender.ComponentSync.Button);
  */
 EchoRender.ComponentSync.ToggleButton = function() {
 	this._selected = false;
-	this._stateIconElement = null;
+	this._stateElement = null;
 };
 
 EchoRender.ComponentSync.ToggleButton.prototype = EchoCore.derive(EchoRender.ComponentSync.Button);
@@ -404,21 +403,21 @@ EchoRender.ComponentSync.ToggleButton.prototype._getStateIcon = function() {
 EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
     var text = this.component.getRenderProperty("text");
     var icon = this.component.getRenderProperty("icon");
-	var stateIcon = this._getStateIcon();
+    this._stateElement = this._createStateElement();
     
-    var entityCount = (text ? 1 : 0) + (icon ? 1 : 0) + (stateIcon ? 1 : 0);
+    var entityCount = (text ? 1 : 0) + (icon ? 1 : 0) + (this._stateElement ? 1 : 0);
     if (entityCount == 1) {
     	if (text) {
             this._renderButtonText(this._divElement, text);
     	} else if (icon) {
 	        this._iconElement = this._renderButtonIcon(this._divElement, icon);
     	} else {
-	        this._stateIconElement = this._renderButtonIcon(this._divElement, stateIcon);
+    	    this._divElement.appendChild(this._stateElement);
     	}
     } else if (entityCount == 2) {
         var orientation;
         var margin;
-        if (stateIcon) {
+        if (this._stateElement) {
 	        orientation = EchoRender.TriCellTable.TRAILING_LEADING;
 	        margin = this.component.getRenderProperty("stateMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
         } else {
@@ -431,11 +430,11 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
 	        if (icon) {
 		        this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
 	        } else {
-		        this._stateIconElement = this._renderButtonIcon(tct.tdElements[1], stateIcon);
+                tct.tdElements[1].appendChild(this._stateElement);
 	        }
         } else {
 	        this._iconElement = this._renderButtonIcon(tct.tdElements[0], icon);
-	        this._stateIconElement = this._renderButtonIcon(tct.tdElements[1], stateIcon);
+            tct.tdElements[1].appendChild(this._stateElement);
         }
         this._divElement.appendChild(tct.tableElement);
     } else if (entityCount == 3) {
@@ -447,14 +446,17 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
         	EchoRender.Property.Extent.toPixels(margin), stateOrientation, EchoRender.Property.Extent.toPixels(stateMargin));
         this._renderButtonText(tct.tdElements[0], text);
         this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
-        this._stateIconElement = this._renderButtonIcon(tct.tdElements[2], stateIcon);
+        tct.tdElements[2].appendChild(this._stateElement);
         this._divElement.appendChild(tct.tableElement);
     }
 };
 
 EchoRender.ComponentSync.ToggleButton.prototype.renderDispose = function(update) {
 	EchoRender.ComponentSync.Button.prototype.renderDispose.call(this, update);
-	this._stateIconElement = null;
+	if (this._stateElement) {
+	    EchoWebCore.EventProcessor.removeAll(this._stateElement);
+	    this._stateElement = null;
+	}
 };
 
 EchoRender.ComponentSync.ToggleButton.prototype._doAction = function() {
@@ -474,10 +476,13 @@ EchoRender.ComponentSync.ToggleButton.prototype.setSelected = function(newState)
 	this._selected = newState;
 	this.component.setProperty("selected", newState);
 	
-	if (this._stateIconElement) {
-		var stateIcon = this._getStateIcon();
-		this._stateIconElement.src = stateIcon.url ? stateIcon.url : stateIcon;
-	}
+	this._updateStateElement();
+};
+
+EchoRender.ComponentSync.ToggleButton.prototype._createStateElement = function() {
+};
+
+EchoRender.ComponentSync.ToggleButton.prototype._updateStateElement = function() {
 };
 
 EchoRender.registerPeer("ToggleButton", EchoRender.ComponentSync.ToggleButton);
@@ -488,6 +493,8 @@ EchoRender.registerPeer("ToggleButton", EchoRender.ComponentSync.ToggleButton);
 EchoRender.ComponentSync.RadioButton = function() {
 	this._buttonGroup = null;
 };
+
+EchoRender.ComponentSync.RadioButton._nextNameId = 0;
 
 EchoRender.ComponentSync.RadioButton.prototype = EchoCore.derive(EchoRender.ComponentSync.ToggleButton);
 
@@ -512,14 +519,24 @@ EchoRender.ComponentSync.RadioButton.prototype.renderAdd = function(update, pare
 	EchoRender.ComponentSync.ToggleButton.prototype.renderAdd.call(this, update, parentElement);
 };
 
-EchoRender.ComponentSync.RadioButton.prototype._getStateIcon = function() {
-	var stateIcon = EchoRender.ComponentSync.ToggleButton.prototype._getStateIcon.call(this);
-	if (stateIcon) {
-		return stateIcon;
-	} else {
-		var imageId = this._selected ? "radioButtonOn" : "radioButtonOff";
-		return EchoRender.ComponentSync.ToggleButton._getImageUri(imageId);
-	}
+EchoRender.ComponentSync.RadioButton.prototype._createStateElement = function() {
+    var stateIcon = EchoRender.ComponentSync.ToggleButton.prototype._getStateIcon.call(this);
+    var stateElement;
+    if (stateIcon) {
+        stateElement = document.createElement("img");
+        stateElement.src = stateIcon.url;
+    } else {
+        stateElement = document.createElement("input");
+        stateElement.type = "radio";
+        stateElement.name = "__echo_" + EchoRender.ComponentSync.RadioButton._nextNameId++;
+        stateElement.checked = this._selected ? true : false;
+        EchoWebCore.EventProcessor.add(stateElement, "change", new EchoCore.MethodRef(this, this._processStateChange), false);
+    }
+    return stateElement;
+};
+
+EchoRender.ComponentSync.RadioButton.prototype._processStateChange = function(e) {
+    this._updateStateElement();
 };
 
 EchoRender.ComponentSync.RadioButton.prototype.renderDispose = function(update) {
@@ -531,6 +548,15 @@ EchoRender.ComponentSync.RadioButton.prototype.renderDispose = function(update) 
 		}
 		this._buttonGroup = null;
 	}
+};
+
+EchoRender.ComponentSync.RadioButton.prototype._updateStateElement = function() {
+    var stateIcon = this._getStateIcon();
+    if (stateIcon) {
+        this._stateElement.src = stateIcon.url;
+    } else {
+        this._stateElement.checked = this._selected ? true : false;
+    }
 };
 
 EchoRender.ComponentSync.RadioButton.prototype._doAction = function() {
@@ -550,14 +576,32 @@ EchoRender.ComponentSync.CheckBox = function() {
 
 EchoRender.ComponentSync.CheckBox.prototype = EchoCore.derive(EchoRender.ComponentSync.ToggleButton);
 
-EchoRender.ComponentSync.CheckBox.prototype._getStateIcon = function() {
-	var stateIcon = EchoRender.ComponentSync.ToggleButton.prototype._getStateIcon.call(this);
-	if (stateIcon) {
-		return stateIcon;
-	} else {
-		var imageId = this._selected ? "checkBoxOn" : "checkBoxOff";
-		return EchoRender.ComponentSync.ToggleButton._getImageUri(imageId);
-	}
+EchoRender.ComponentSync.CheckBox.prototype._createStateElement = function() {
+    var stateIcon = this._getStateIcon();
+    var stateElement;
+    if (stateIcon) {
+        stateElement = document.createElement("img");
+        stateElement.src = stateIcon.url;
+    } else {
+        stateElement = document.createElement("input");
+        stateElement.type = "checkbox";
+        stateElement.checked = this._selected ? true : false;
+        EchoWebCore.EventProcessor.add(stateElement, "change", new EchoCore.MethodRef(this, this._processStateChange), false);
+    }
+    return stateElement;
+};
+
+EchoRender.ComponentSync.CheckBox.prototype._processStateChange = function(e) {
+    this._updateStateElement();
+};
+    
+EchoRender.ComponentSync.CheckBox.prototype._updateStateElement = function() {
+    var stateIcon = this._getStateIcon();
+    if (stateIcon) {
+        this._stateElement.src = stateIcon.url;
+    } else {
+        this._stateElement.checked = this._selected ? true : false;
+    }
 };
 
 EchoRender.registerPeer("CheckBox", EchoRender.ComponentSync.CheckBox);
