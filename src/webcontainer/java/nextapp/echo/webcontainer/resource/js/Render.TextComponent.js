@@ -23,7 +23,12 @@ EchoRender.ComponentSync.TextComponent.prototype._renderStyle = function() {
     }
 };
 
+EchoRender.ComponentSync.TextComponent.prototype.focus = function() {
+    this._textComponentElement.focus();
+};
+
 EchoRender.ComponentSync.TextComponent.prototype._addEventHandlers = function() {
+    EchoWebCore.EventProcessor.add(this._textComponentElement, "click", new EchoCore.MethodRef(this, this._processClick), false);
     EchoWebCore.EventProcessor.add(this._textComponentElement, "blur", new EchoCore.MethodRef(this, this._processBlur), false);
     EchoWebCore.EventProcessor.add(this._textComponentElement, "keyup", new EchoCore.MethodRef(this, this._processKeyUp), false);
 };
@@ -39,6 +44,13 @@ EchoRender.ComponentSync.TextComponent.prototype._processBlur = function(e) {
     }
     this._sanitizeInput();
     this.component.setProperty("text", e.registeredTarget.value);
+};
+
+EchoRender.ComponentSync.TextComponent.prototype._processClick = function(e) {
+    if (!this.component.isActive()) {
+        return;
+    }
+    this.component.application.setFocusedComponent(this.component);
 };
 
 EchoRender.ComponentSync.TextComponent.prototype._processKeyUp = function(e) {
