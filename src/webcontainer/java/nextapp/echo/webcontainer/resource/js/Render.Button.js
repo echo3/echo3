@@ -529,7 +529,7 @@ EchoRender.ComponentSync.RadioButton.prototype._createStateElement = function() 
         stateElement = document.createElement("input");
         stateElement.type = "radio";
         stateElement.name = "__echo_" + EchoRender.ComponentSync.RadioButton._nextNameId++;
-        stateElement.checked = this._selected ? true : false;
+        stateElement.defaultChecked = this._selected ? true : false;
         EchoWebCore.EventProcessor.add(stateElement, "change", new EchoCore.MethodRef(this, this._processStateChange), false);
     }
     return stateElement;
@@ -585,7 +585,7 @@ EchoRender.ComponentSync.CheckBox.prototype._createStateElement = function() {
     } else {
         stateElement = document.createElement("input");
         stateElement.type = "checkbox";
-        stateElement.checked = this._selected ? true : false;
+        stateElement.defaultChecked = this._selected ? true : false;
         EchoWebCore.EventProcessor.add(stateElement, "change", new EchoCore.MethodRef(this, this._processStateChange), false);
     }
     return stateElement;
