@@ -346,14 +346,22 @@ EchoApp.ComponentFactory.registerType = function(typeName, typeConstructor) {
 };
 
 /**
- * Base class for components.
+ * Creates a new Component.
+ *  
+ * @param {String} renderId the render id
+ * @param {Object} associative mapping of initial property values (may be null)
+ *        By default, all properties will be placed into the local style, except for the following:
+ *        <ul>
+ *         <li><code>styleName</code> specifies the component stylesheet style name</li>
+ *         <li><code>style</code> specifies the referenced component style</li>
+ *         <li><code>renderId</code> specifies the render id</li>
+ *        </ul>
+ * @constructor
+ * 
+ * @class Base class for components.
  * Derived classes should always take renderId as the first parameter and pass it to the super-constructor.
  * A component MUST have its componentType property set before it is used in a hierarchy.  Failing to do so
  * will throw an exception and/or result in indeterminate behavior.
- * 
- * @param {String} renderId the render id
- * @param {Object} associative mapping of initial property values for local style (may be null)
- * @constructor
  */
 EchoApp.Component = function(properties) {
 
@@ -400,13 +408,6 @@ EchoApp.Component = function(properties) {
     this._listenerList = null;
     
     /**
-     * Internal style used to store properties set directly on component.
-     * @private
-     * @type EchoApp.Style
-     */
-    this._localStyle = new EchoApp.Style(properties);
-    
-    /**
      * Referenced external style
      * @private
      * @type EchoApp.Style
@@ -426,6 +427,30 @@ EchoApp.Component = function(properties) {
      * @type Boolean
      */
     this._enabled = true;
+    
+    var localStyleProperties = null;
+    if (properties) {
+        for (var name in properties) {
+            switch (name) {
+            case "style": this._style = properties.style; break;
+            case "styleName": this._styleName = properties.styleName; break;
+            case "renderId": this._renderId = properties.renderId; break;
+            default:
+                if (localStyleProperties == null) {
+                    localStyleProperties = new Object();
+                }
+                localStyleProperties[name] = properties[name];
+                break;
+            }
+        }
+    }
+    
+    /**
+     * Internal style used to store properties set directly on component.
+     * @private
+     * @type EchoApp.Style
+     */
+    this._localStyle = new EchoApp.Style(localStyleProperties);
 };
 
 EchoApp.Component.NOTIFY_CHILDREN = 1;
