@@ -286,7 +286,7 @@ EchoWebCore.DOM.removeRule = function(selectorText) {
                 break;
             } else if (ss.removeRule) {
                 // Delete rule: IE6.
-                //FIXME. untested.
+                //FIXME untested.
                 ss.removeRule(i);
                 break;
             }

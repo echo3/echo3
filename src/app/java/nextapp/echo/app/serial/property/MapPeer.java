@@ -34,9 +34,9 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
+import nextapp.echo.app.serial.PropertyPeerFactory;
 import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
-import nextapp.echo.app.serial.SerialPeerFactory;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
 
@@ -58,9 +58,9 @@ implements SerialPropertyPeer {
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
-        propertyElement.setAttribute("t", "map");
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
-        SerialPeerFactory peerFactory = SerialPeerFactory.forClassLoader(serialContext.getClassLoader());
+        PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
+        propertyElement.setAttribute("t", "map");
         Map map = (Map) propertyValue;
         Iterator keyIt = map.keySet().iterator();
         while (keyIt.hasNext()) {
@@ -70,7 +70,7 @@ implements SerialPropertyPeer {
                 continue;
             } 
             Class propertyClass = value.getClass();
-            SerialPropertyPeer peer = peerFactory.getPeerForProperty(propertyClass);
+            SerialPropertyPeer peer = propertyPeerFactory.getPeerForProperty(propertyClass);
             Element element = serialContext.getDocument().createElement("p");
             element.setAttribute("n", key);
             peer.toXml(context, propertyClass, element, value);
