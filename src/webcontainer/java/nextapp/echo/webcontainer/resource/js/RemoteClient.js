@@ -121,6 +121,10 @@ EchoRemoteClient.prototype.getServiceUrl = function(serviceId) {
     return this._serverUrl + "?sid=" + serviceId;
 };
 
+EchoRemoteClient.prototype.getDefaultImage = function(imageName) {
+    return new EchoApp.Property.ImageReference(this._serverUrl + "?sid=Echo.Image&iid=" + imageName);
+};
+
 EchoRemoteClient.prototype.init = function(initialResponseDocument) {
     var domainElementId = initialResponseDocument.documentElement.getAttribute("root");
     var domainElement = document.getElementById(domainElementId);

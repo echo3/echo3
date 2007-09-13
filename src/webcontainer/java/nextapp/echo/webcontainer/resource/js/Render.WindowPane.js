@@ -524,9 +524,9 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         this._closeDivElement.style.right = "0px";
         this._closeDivElement.style.top = "0px";
         this._closeDivElement.style.cursor = "pointer";
-        EchoRender.Property.Insets.renderComponentProperty(this.component, "closeIconInsets", null, 
-                this._closeDivElement, "padding");
-        var closeIcon = this.component.getRenderProperty("closeIcon"); 
+        EchoRender.Property.Insets.renderComponentProperty(this.component, "closeIconInsets", 
+                EchoApp.WindowPane.DEFAULT_CLOSE_ICON_INSETS, this._closeDivElement, "padding");
+        var closeIcon = this.component.getRenderProperty("closeIcon", this.client.getDefaultImage("Echo.WindowPane.closeIcon")); 
         if (closeIcon) {
             var imgElement = document.createElement("img");
             imgElement.src = closeIcon.url;

@@ -3161,6 +3161,7 @@ EchoApp.WindowPane.DEFAULT_X = new EchoApp.Property.Extent("100px");
 EchoApp.WindowPane.DEFAULT_Y = new EchoApp.Property.Extent("50px");
 EchoApp.WindowPane.DEFAULT_MINIMUM_WIDTH = new EchoApp.Property.Extent("100px");
 EchoApp.WindowPane.DEFAULT_MINIMUM_HEIGHT = new EchoApp.Property.Extent("100px");
+EchoApp.WindowPane.DEFAULT_CLOSE_ICON_INSETS = new EchoApp.Property.Insets("4px");
 
 EchoApp.ComponentFactory.registerType("Button", EchoApp.Button);
 EchoApp.ComponentFactory.registerType("CheckBox", EchoApp.CheckBox);

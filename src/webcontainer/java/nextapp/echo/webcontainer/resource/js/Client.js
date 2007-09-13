@@ -62,6 +62,15 @@ EchoClient.prototype.dispose = function() {
 };
 
 /**
+ * Returns a default named image.
+ * May return null if the client does not provide a default iamge for the specified name.
+ * Default implementation simply returns null.
+ */
+EchoClient.prototype.getDefaultImage = function(imageName) {
+    return null;
+};
+
+/**
  * Returns the URL of a service based on the serviceId.
  * Default implementation delegates to parent client
  * (if one is present) or otherwise returns null.
