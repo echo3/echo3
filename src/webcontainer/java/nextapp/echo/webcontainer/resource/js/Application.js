@@ -2879,7 +2879,7 @@ EchoApp.Button.prototype = EchoCore.derive(EchoApp.Component);
  * Programatically performs a button action.
  */
 EchoApp.Button.prototype.doAction = function() {
-    var e = new EchoCore.Event("action", this);
+    var e = new EchoCore.Event("action", this, this.getProperty("actionCommand"));
     this.fireEvent(e);
 };
 
