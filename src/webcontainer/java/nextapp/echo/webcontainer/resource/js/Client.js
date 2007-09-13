@@ -64,10 +64,15 @@ EchoClient.prototype.dispose = function() {
 /**
  * Returns a default named image.
  * May return null if the client does not provide a default iamge for the specified name.
- * Default implementation simply returns null.
+ * Default implementation delegates to parent client
+ * (if one is present) or otherwise returns null.
  */
 EchoClient.prototype.getDefaultImage = function(imageName) {
-    return null;
+    if (this.parent) {
+        return this.parent.getDefaultImage(imageName);
+    } else {
+        return null;
+    }
 };
 
 /**
