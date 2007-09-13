@@ -191,7 +191,8 @@ EchoSerial.storeProperty = function(client, propertyElement, propertyValue) {
         }
         translator.toXml(client, propertyElement, propertyValue);
     } else {
-        propertyElement.setAttribute("v", propertyValue);
+        // call toString here, IE will otherwise convert boolean values to integers
+        propertyElement.setAttribute("v", propertyValue.toString());
     }
 };
 
