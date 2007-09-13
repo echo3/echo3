@@ -419,7 +419,7 @@ EchoWebCore.EventProcessor._bubblingListenerMap = new EchoCore.Collections.Map()
  *
  * @param element the DOM element on which to add the event handler
  * @param eventType the DOM event type
- * @param eventTarget the method of MethodRef to invoke when the event is fired
+ * @param eventTarget the method or MethodRef to invoke when the event is fired
  * @param capture true to fire the event during the capturing phase, false to fire the event during
  *        the bubbling phase
  */
