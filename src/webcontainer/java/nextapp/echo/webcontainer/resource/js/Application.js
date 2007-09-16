@@ -68,6 +68,15 @@ EchoApp.Application = function() {
      * @type EchoApp.FocusManager
      */
     this.focusManager = new EchoApp.FocusManager(this);
+    
+    /**
+     * The active state of the application, a value of true indicating the
+     * application is ready to receive input.
+     * 
+     * @private
+     * @type Boolean
+     */
+    this._active = true;
 };
 
 /**
@@ -166,6 +175,18 @@ EchoApp.Application.prototype.getStyleSheet = function() {
 };
 
 /**
+ * Returns the active state of the application.
+ * 
+ * @return the active state of the application, a value of 
+ *         true indicating the application is ready for user
+ *         input, a value of false indicating otherwise
+ * @type Boolean
+ */
+EchoApp.Application.prototype.isActive = function() {
+    return this._active;
+};
+
+/**
  * Notifies the application of an update to a component.
  * 
  * @param {EchoApp.Component} parent the parent component
@@ -213,6 +234,15 @@ EchoApp.Application.prototype.removeComponentUpdateListener = function(l) {
  */
 EchoApp.Application.prototype.removeFocusListener = function(l) {
     this._listenerList.removeListener("focus", l);
+};
+
+/**
+ * Sets the active state of the application.
+ * 
+ * @param {Boolean} newValue the new active state of the application
+ */
+EchoApp.Application.prototype.setActive = function(newValue) {
+    this._active = newValue;
 };
 
 /**
@@ -746,7 +776,12 @@ EchoApp.Component.prototype.indexOf = function(component) {
  * @type Boolean
  */
 EchoApp.Component.prototype.isActive = function() {
-    // FIXME implement this
+    if (!this.isRenderEnabled()) {
+        return false;
+    }
+    if (!this.application || !this.application.isActive()) {
+        return false;
+    }
     return true;
 };
 
