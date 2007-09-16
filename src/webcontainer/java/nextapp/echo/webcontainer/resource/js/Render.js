@@ -263,10 +263,26 @@ EchoRender.processUpdates = function(client) {
     }
     EchoRender._disposedComponents = null;
     //alert(ds); ///FIXME Remove this debug code.
-
+    
     updateManager.purge();
+    
+    var component = client.application.getFocusedComponent();
+    if (component && component.peer && component.peer.renderFocus) {
+        component.peer.renderFocus();
+    }
 };
 
+/**
+ * Component synchronization peer.
+ * <p>
+ * <strong>Optional methods:</strong>
+ * <ul>
+ *  <li><code>renderFocus()</code>: Invoked when component is rendered focused.</li>
+ *  <li><code>renderDisplay()</code>: Invoked when the component has been added to the hierarchy and first appears
+ *                                    on screen, and when ancestors of the component (or the containing window) have
+ *                                    resized.</li>
+ * </ul>
+ */
 EchoRender.ComponentSync = function() { };
 
 EchoRender.ComponentSync.prototype.init = function() {

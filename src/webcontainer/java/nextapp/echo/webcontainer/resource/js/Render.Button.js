@@ -273,6 +273,10 @@ EchoRender.ComponentSync.Button.prototype.renderDispose = function(update) {
     this._iconElement = null;
 };
 
+EchoRender.ComponentSync.Button.prototype.renderFocus = function() {
+    EchoCore.Scheduler.add(new EchoCore.Scheduler.Runnable(null, false, new EchoCore.MethodRef(this, this.focus)));
+};
+
 EchoRender.ComponentSync.Button.prototype.renderUpdate = function(update) {
     var element = this._divElement;
     var containerElement = element.parentNode;

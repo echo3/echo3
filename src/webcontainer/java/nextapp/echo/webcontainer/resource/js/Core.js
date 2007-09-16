@@ -831,6 +831,8 @@ EchoCore.ResourceBundle.prototype.get = function(key) {
     }
 };
 
+//FIXME Perhaps add runDelayed/execLater or some method that just execs in next thread.
+
 /**
  * Scheduler namespace.  Non-instantiable object.
  * Provides capability to invoke code at regular intervals, after a delay, 
@@ -941,6 +943,7 @@ EchoCore.Scheduler._stop = function() {
     EchoCore.Scheduler._interval = null;
 };
 
+//FIXME Worst argument order...EVER.
 /**
  * Creates a new Runnable.
  *
