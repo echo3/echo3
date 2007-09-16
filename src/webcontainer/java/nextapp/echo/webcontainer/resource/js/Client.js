@@ -42,7 +42,10 @@ EchoClient.prototype.configure = function(application, domainElement) {
     if (this.application) {
         EchoCore.Arrays.remove(EchoClient._activeClients, this);
         this.application.setContextProperty(EchoClient.CONTEXT_PROPERTY_NAME, null);
-        EchoWebCore.EventProcessor.remove(this.domainElement, "keydown", new EchoCore.MethodRef(this, this._processKeyDown), false);
+        EchoWebCore.EventProcessor.remove(this.domainElement, "keydown", 
+                new EchoCore.MethodRef(this, this._processKeyDown), false);
+        EchoWebCore.EventProcessor.remove(this.domainElement, "keypress", 
+                new EchoCore.MethodRef(this, this._processKeyPress), false);
         this.application.removeFocusListener(new EchoCore.MethodRef(this, this._processApplicationFocus));
     }
     
@@ -51,7 +54,10 @@ EchoClient.prototype.configure = function(application, domainElement) {
 
     if (this.application) {
         this.application.addFocusListener(new EchoCore.MethodRef(this, this._processApplicationFocus));
-        EchoWebCore.EventProcessor.add(this.domainElement, "keydown", new EchoCore.MethodRef(this, this._processKeyDown), false);
+        EchoWebCore.EventProcessor.add(this.domainElement, "keydown", 
+                new EchoCore.MethodRef(this, this._processKeyDown), false);
+        EchoWebCore.EventProcessor.add(this.domainElement, "keypress", 
+                new EchoCore.MethodRef(this, this._processKeyPress), false);
         this.application.setContextProperty(EchoClient.CONTEXT_PROPERTY_NAME, this);
         EchoClient._activeClients.push(this);
     }
@@ -103,6 +109,14 @@ EchoClient.prototype._processKeyDown = function(e) {
     if (e.keyCode == 9) { // Tab
         EchoWebCore.DOM.preventEventDefault(e);
         this.application.focusNext(e.shiftKey);
+        return false; // Stop propagation.
+    }
+    return true; // Allow propagation.
+};
+
+EchoClient.prototype._processKeyPress = function(e) {
+    if (e.keyCode == 9) { // Tab
+        EchoWebCore.DOM.preventEventDefault(e);
         return false; // Stop propagation.
     }
     return true; // Allow propagation.
