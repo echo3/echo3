@@ -54,13 +54,34 @@ EchoRender.ComponentSync.Button._prototypeButton = EchoRender.ComponentSync.Butt
 
 EchoRender.ComponentSync.Button._defaultIconTextMargin = new EchoApp.Property.Extent(5);
 
+EchoRender.ComponentSync.Button.prototype._doAction = function() {
+    this.component.doAction();
+};
+
 EchoRender.ComponentSync.Button.prototype.focus = function(e) {
     this._divElement.focus();
     this._setFocusState(true);
 };
 
-EchoRender.ComponentSync.Button.prototype._doAction = function() {
-    this.component.doAction();
+EchoRender.ComponentSync.Button.prototype._getCombinedAlignment = function() {
+    var primary = this.component.getRenderProperty("alignment");
+    var secondary = this.component.getRenderProperty("textAlignment");
+    
+    if (primary == null) {
+        return secondary;
+    } else if (secondary == null) {
+        return primary;
+    }
+    
+    var horizontal = primary.horizontal;
+    if (horizontal == EchoApp.Property.Alignment.DEFAULT) {
+        horizontal = secondary.horizontal;
+    }
+    var vertical = primary.vertical;
+    if (vertical == EchoApp.Property.Alignment.DEFAULT) {
+        vertical = secondary.vertical;
+    }
+    return new EchoApp.Property.Alignment(horizontal, vertical);
 };
 
 EchoRender.ComponentSync.Button.prototype.getElement = function() {
@@ -247,27 +268,6 @@ EchoRender.ComponentSync.Button.prototype._renderButtonIcon = function(element, 
 	return imgElement;
 };
 
-EchoRender.ComponentSync.Button.prototype._getCombinedAlignment = function() {
-	var primary = this.component.getRenderProperty("alignment");
-	var secondary = this.component.getRenderProperty("textAlignment");
-    
-    if (primary == null) {
-        return secondary;
-    } else if (secondary == null) {
-        return primary;
-    }
-    
-    var horizontal = primary.horizontal;
-    if (horizontal == EchoApp.Property.Alignment.DEFAULT) {
-    	horizontal = secondary.horizontal;
-    }
-    var vertical = primary.vertical;
-    if (vertical == EchoApp.Property.Alignment.DEFAULT) {
-    	vertical = secondary.vertical;
-    }
-    return new EchoApp.Property.Alignment(horizontal, vertical);
-};
-
 EchoRender.ComponentSync.Button.prototype.renderDispose = function(update) {
     EchoWebCore.EventProcessor.removeAll(this._divElement);
     this._iconElement = null;
@@ -280,6 +280,38 @@ EchoRender.ComponentSync.Button.prototype.renderUpdate = function(update) {
     containerElement.removeChild(element);
     this.renderAdd(update, containerElement);
     return false; // Child elements not supported: safe to return false.
+};
+
+EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) {
+    if (!this.component.getRenderProperty("focusedEnabled")) {
+        // Render default focus aesthetic.
+        var background = this.component.getRenderProperty("background");
+        if (background != null) {
+            var newBackground = focusState ? background.adjust(0x20, 0x20, 0x20) : background;
+            EchoRender.Property.Color.render(newBackground, this._divElement, "backgroundColor");
+        }
+        return;
+    } else {
+        var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "focusedForeground", focusState);
+        var background = EchoRender.Property.getEffectProperty(this.component, "background", "focusedBackground", focusState);
+        var backgroundImage = EchoRender.Property.getEffectProperty(
+                this.component, "backgroundImage", "focusedBackgroundImage", focusState);
+        var font = EchoRender.Property.getEffectProperty(this.component, "font", "focusedFont", focusState);
+        var border = EchoRender.Property.getEffectProperty(this.component, "border", "focusedBorder", focusState);
+        
+        EchoRender.Property.Color.renderClear(foreground, this._divElement, "color");
+        EchoRender.Property.Color.renderClear(background, this._divElement, "backgroundColor");
+        EchoRender.Property.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
+        EchoRender.Property.Font.renderClear(font, this._divElement);
+        EchoRender.Property.Border.renderClear(border, this._divElement);
+    
+        if (this._iconElement) {
+            var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "focusedIcon", focusState);
+            if (icon && icon.url != this._iconElement.src) {
+                this._iconElement.src = icon.url;
+            }
+        }
+    }
 };
 
 EchoRender.ComponentSync.Button.prototype._setPressedState = function(pressedState) {
@@ -301,38 +333,6 @@ EchoRender.ComponentSync.Button.prototype._setPressedState = function(pressedSta
     	if (icon && icon.url != this._iconElement.src) {
 		    this._iconElement.src = icon.url;
     	}
-    }
-};
-
-EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) {
-    if (!this.component.getRenderProperty("focusedEnabled")) {
-        // Render default focus aesthetic.
-        var background = this.component.getRenderProperty("background");
-        if (background != null) {
-            var newBackground = focusState ? background.adjust(0x20, 0x20, 0x20) : background;
-            EchoRender.Property.Color.render(newBackground, this._divElement, "backgroundColor");
-        }
-    	return;
-    } else {
-        var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "focusedForeground", focusState);
-        var background = EchoRender.Property.getEffectProperty(this.component, "background", "focusedBackground", focusState);
-        var backgroundImage = EchoRender.Property.getEffectProperty(
-                this.component, "backgroundImage", "focusedBackgroundImage", focusState);
-        var font = EchoRender.Property.getEffectProperty(this.component, "font", "focusedFont", focusState);
-        var border = EchoRender.Property.getEffectProperty(this.component, "border", "focusedBorder", focusState);
-        
-        EchoRender.Property.Color.renderClear(foreground, this._divElement, "color");
-        EchoRender.Property.Color.renderClear(background, this._divElement, "backgroundColor");
-        EchoRender.Property.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
-        EchoRender.Property.Font.renderClear(font, this._divElement);
-        EchoRender.Property.Border.renderClear(border, this._divElement);
-    
-        if (this._iconElement) {
-            var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "focusedIcon", focusState);
-	    	if (icon && icon.url != this._iconElement.src) {
-			    this._iconElement.src = icon.url;
-	    	}
-        }
     }
 };
 
@@ -369,6 +369,14 @@ EchoRender.ComponentSync.ToggleButton = function() {
 };
 
 EchoRender.ComponentSync.ToggleButton.prototype = EchoCore.derive(EchoRender.ComponentSync.Button);
+
+EchoRender.ComponentSync.ToggleButton.prototype._createStateElement = function() {
+};
+
+EchoRender.ComponentSync.ToggleButton.prototype._doAction = function() {
+    this.setSelected(!this._selected);
+    EchoRender.ComponentSync.Button.prototype._doAction.call(this);
+};
 
 /**
  * Gets an URI for default toggle button images.
@@ -459,11 +467,6 @@ EchoRender.ComponentSync.ToggleButton.prototype.renderDispose = function(update)
 	}
 };
 
-EchoRender.ComponentSync.ToggleButton.prototype._doAction = function() {
-	this.setSelected(!this._selected);
-	EchoRender.ComponentSync.Button.prototype._doAction.call(this);
-};
-
 /**
  * Selects or deselects this button.
  * 
@@ -479,14 +482,48 @@ EchoRender.ComponentSync.ToggleButton.prototype.setSelected = function(newState)
 	this._updateStateElement();
 };
 
-EchoRender.ComponentSync.ToggleButton.prototype._createStateElement = function() {
-};
-
 EchoRender.ComponentSync.ToggleButton.prototype._updateStateElement = function() {
 };
 
 EchoRender.registerPeer("ToggleButton", EchoRender.ComponentSync.ToggleButton);
 
+/**
+ * Component rendering peer: CheckBox
+ */
+EchoRender.ComponentSync.CheckBox = function() {
+};
+
+EchoRender.ComponentSync.CheckBox.prototype = EchoCore.derive(EchoRender.ComponentSync.ToggleButton);
+
+EchoRender.ComponentSync.CheckBox.prototype._createStateElement = function() {
+    var stateIcon = this._getStateIcon();
+    var stateElement;
+    if (stateIcon) {
+        stateElement = document.createElement("img");
+        stateElement.src = stateIcon.url;
+    } else {
+        stateElement = document.createElement("input");
+        stateElement.type = "checkbox";
+        stateElement.defaultChecked = this._selected ? true : false;
+        EchoWebCore.EventProcessor.add(stateElement, "change", new EchoCore.MethodRef(this, this._processStateChange), false);
+    }
+    return stateElement;
+};
+
+EchoRender.ComponentSync.CheckBox.prototype._processStateChange = function(e) {
+    this._updateStateElement();
+};
+    
+EchoRender.ComponentSync.CheckBox.prototype._updateStateElement = function() {
+    var stateIcon = this._getStateIcon();
+    if (stateIcon) {
+        this._stateElement.src = stateIcon.url;
+    } else {
+        this._stateElement.checked = this._selected ? true : false;
+    }
+};
+
+EchoRender.registerPeer("CheckBox", EchoRender.ComponentSync.CheckBox);
 /**
  * Component rendering peer: RadioButton
  */
@@ -504,6 +541,13 @@ EchoRender.ComponentSync.RadioButton.prototype = EchoCore.derive(EchoRender.Comp
  * @type {EchoCore.Collections.Map}
  */
 EchoRender.ComponentSync.RadioButton._groups = new EchoCore.Collections.Map();
+
+EchoRender.ComponentSync.RadioButton.prototype._doAction = function() {
+    if (this._buttonGroup) {
+        this._buttonGroup.deselect();
+    }
+    EchoRender.ComponentSync.ToggleButton.prototype._doAction.call(this);
+};
 
 EchoRender.ComponentSync.RadioButton.prototype.renderAdd = function(update, parentElement) {
 	var groupId = this.component.getRenderProperty("group");
@@ -559,49 +603,5 @@ EchoRender.ComponentSync.RadioButton.prototype._updateStateElement = function() 
     }
 };
 
-EchoRender.ComponentSync.RadioButton.prototype._doAction = function() {
-	if (this._buttonGroup) {
-		this._buttonGroup.deselect();
-	}
-	EchoRender.ComponentSync.ToggleButton.prototype._doAction.call(this);
-};
-
 EchoRender.registerPeer("RadioButton", EchoRender.ComponentSync.RadioButton);
 
-/**
- * Component rendering peer: CheckBox
- */
-EchoRender.ComponentSync.CheckBox = function() {
-};
-
-EchoRender.ComponentSync.CheckBox.prototype = EchoCore.derive(EchoRender.ComponentSync.ToggleButton);
-
-EchoRender.ComponentSync.CheckBox.prototype._createStateElement = function() {
-    var stateIcon = this._getStateIcon();
-    var stateElement;
-    if (stateIcon) {
-        stateElement = document.createElement("img");
-        stateElement.src = stateIcon.url;
-    } else {
-        stateElement = document.createElement("input");
-        stateElement.type = "checkbox";
-        stateElement.defaultChecked = this._selected ? true : false;
-        EchoWebCore.EventProcessor.add(stateElement, "change", new EchoCore.MethodRef(this, this._processStateChange), false);
-    }
-    return stateElement;
-};
-
-EchoRender.ComponentSync.CheckBox.prototype._processStateChange = function(e) {
-    this._updateStateElement();
-};
-    
-EchoRender.ComponentSync.CheckBox.prototype._updateStateElement = function() {
-    var stateIcon = this._getStateIcon();
-    if (stateIcon) {
-        this._stateElement.src = stateIcon.url;
-    } else {
-        this._stateElement.checked = this._selected ? true : false;
-    }
-};
-
-EchoRender.registerPeer("CheckBox", EchoRender.ComponentSync.CheckBox);
