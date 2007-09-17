@@ -72,6 +72,10 @@ EchoRender.ComponentSync.TextComponent.prototype._processKeyUp = function(e) {
     }
 };
 
+EchoRender.ComponentSync.TextComponent.prototype.renderFocus = function() {
+    EchoCore.Scheduler.run(new EchoCore.MethodRef(this, this.focus));
+};
+
 EchoRender.ComponentSync.TextComponent.prototype.renderUpdate = function(update) {
     var fullRender =  !EchoCore.Arrays.containsAll(EchoRender.ComponentSync.TextComponent._supportedPartialProperties, 
                 update.getUpdatedPropertyNames(), true);

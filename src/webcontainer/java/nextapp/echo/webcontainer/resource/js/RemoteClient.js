@@ -244,6 +244,10 @@ EchoRemoteClient.prototype._processSyncComplete = function(e) {
     
     this._executeCommands();
     
+    if (this._focusedComponent) {
+        this.application.setFocusedComponent(this._focusedComponent);
+    }
+
     if (EchoCore.profilingTimer) {
         EchoCore.Debug.consoleWrite(EchoCore.profilingTimer);
         EchoCore.profilingTimer = null;
@@ -507,6 +511,32 @@ EchoRemoteClient.CommandExecProcessor.prototype.process = function(dirElement) {
         this._client._enqueueCommand(commandPeer, commandData);
         cmdElement = cmdElement.nextSibling;
     }
+};
+
+/**
+ * ServerMessage directive processor for component focus.
+ */
+EchoRemoteClient.ComponentFocusProcessor = function(client) { 
+    this._client = client;
+};
+
+/**
+ * Directive processor process() implementation.
+ */
+EchoRemoteClient.ComponentFocusProcessor.prototype.process = function(dirElement) {
+    var element = dirElement.firstChild;
+    while (element) {
+        if (element.nodeType == 1) {
+            switch (element.nodeName) {
+               case "focus": this._processFocus(element); break;
+            }
+        }
+        element = element.nextSibling;
+    }
+};
+
+EchoRemoteClient.ComponentFocusProcessor.prototype._processFocus = function(focusElement) {
+    this._client._focusedComponent = this._client.application.getComponentByRenderId(focusElement.getAttribute("i"));
 };
 
 /**
@@ -798,6 +828,7 @@ EchoRemoteClient.WaitIndicatorImpl.prototype._tick = function() {
     }
 };
 
+EchoRemoteClient.ServerMessage.addProcessor("CFocus", EchoRemoteClient.ComponentFocusProcessor);
 EchoRemoteClient.ServerMessage.addProcessor("CSync", EchoRemoteClient.ComponentSyncProcessor);
 EchoRemoteClient.ServerMessage.addProcessor("CmdExec", EchoRemoteClient.CommandExecProcessor);
 

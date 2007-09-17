@@ -7,6 +7,8 @@ import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.SplitPane;
+import nextapp.echo.app.TextArea;
+import nextapp.echo.app.TextField;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.SplitPaneLayoutData;
@@ -20,6 +22,8 @@ public class FocusTest extends SplitPane {
     
     private Column focusColumn;
     private Row focusRow;
+    private TextField focusTextField;
+    private TextArea focusTextArea;
 
     public FocusTest() {
         super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
@@ -61,6 +65,22 @@ public class FocusTest extends SplitPane {
                 }
             });
         }
+        
+        focusTextField = new TextField();
+        controlsColumn.addButton("Focus TextField", new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                getApplicationInstance().setFocusedComponent(focusTextField);
+            }
+        });
+        testColumn.add(focusTextField);
+        
+        focusTextArea = new TextArea();
+        controlsColumn.addButton("Focus TextArea", new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                getApplicationInstance().setFocusedComponent(focusTextArea);
+            }
+        });
+        testColumn.add(focusTextArea);
     }
     
     private void createFocusColumn() {
