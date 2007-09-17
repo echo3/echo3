@@ -55,9 +55,8 @@ EchoRemoteClient = function(serverUrl) {
     this._waitIndicator = new EchoRemoteClient.WaitIndicatorImpl();
     
     this._preWaitIndicatorDelay = 500;
-    
-    this._waitIndicatorRunnable = new EchoCore.Scheduler.Runnable(this._preWaitIndicatorDelay, false,
-            new EchoCore.MethodRef(this, this._waitIndicatorActivate));
+    this._waitIndicatorRunnable = new EchoCore.Scheduler.Runnable(new EchoCore.MethodRef(this, this._waitIndicatorActivate), 
+            this._preWaitIndicatorDelay, false);
 };
 
 EchoRemoteClient.prototype = EchoCore.derive(EchoClient);
@@ -324,8 +323,7 @@ EchoRemoteClient.prototype._waitIndicatorActivate = function() {
 
 EchoRemoteClient.AsyncManager = function(client) {
     this._client = client;
-    this._runnable = new EchoCore.Scheduler.Runnable(1000, false, 
-            new EchoCore.MethodRef(this, this._pollServerForUpdates));
+    this._runnable = new EchoCore.Scheduler.Runnable(new EchoCore.MethodRef(this, this._pollServerForUpdates), 1000, false);
 };
 
 EchoRemoteClient.AsyncManager.prototype._processPollResponse = function(e) {
@@ -766,7 +764,7 @@ EchoRemoteClient.WaitIndicatorImpl = function() {
     this._divElement.style.cssText = "display: none; z-index: 32767; position: absolute; top: 30px; right: 30px; width: 200px;"
              + " padding: 20px; border: 1px outset #abcdef; background-color: #abcdef; color: #000000; text-align: center;";
     this._divElement.appendChild(document.createTextNode("Please wait..."));
-    this._fadeRunnable = new EchoCore.Scheduler.Runnable(50, true, new EchoCore.MethodRef(this, this._tick));
+    this._fadeRunnable = new EchoCore.Scheduler.Runnable(new EchoCore.MethodRef(this, this._tick), 50, true);
     document.body.appendChild(this._divElement);
 };
 

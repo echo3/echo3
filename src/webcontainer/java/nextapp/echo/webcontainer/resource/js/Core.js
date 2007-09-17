@@ -919,6 +919,22 @@ EchoCore.Scheduler.remove = function(runnable) {
 };
 
 /**
+ * Creates a new Runnable that executes the specified method and enqueues it into the scheduler.
+ * 
+ * @param {Number} time the time interval, in milleseconds, after which the Runnable should be executed
+ *        (may be null/undefined to execute task immediately, in such cases repeat must be false)
+ * @param {Boolean} repeat a flag indicating whether the task should be repeated
+ * @param methodRef a method or EchoCore.MethodRef instance to invoke, may be null/undefined
+ * @return the created Runnable.
+ * @type EchoCore.Scheduler.Runnable 
+ */
+EchoCore.Scheduler.run = function(methodRef, timeInterval, repeat) {
+    var runnable = new EchoCore.Scheduler.Runnable(methodRef, timeInterval, repeat);
+    this.add(runnable);
+    return runnable;
+};
+
+/**
  * Starts the scheduler "thread".
  * If the scheduler is already running, no action is taken.
  * @private
@@ -943,7 +959,6 @@ EchoCore.Scheduler._stop = function() {
     EchoCore.Scheduler._interval = null;
 };
 
-//FIXME Worst argument order...EVER.
 /**
  * Creates a new Runnable.
  *
@@ -954,10 +969,12 @@ EchoCore.Scheduler._stop = function() {
  * @param {Boolean} repeat a flag indicating whether the task should be repeated
  * @param methodRef a method or EchoCore.MethodRef instance to invoke, may be null/undefined
  */
-EchoCore.Scheduler.Runnable = function(timeInterval, repeat, methodRef) {
+EchoCore.Scheduler.Runnable = function(methodRef, timeInterval, repeat) {
     if (!timeInterval && repeat) {
-        throw new Error("Cannot create repeating runnable without time delay");
+        throw new Error("Cannot create repeating runnable without time delay:" + methodRef);
     }
+    
+    this.methodRef = methodRef;
     
     /** 
      * Time interval, in milleseconds after which the Runnable should be executed.
@@ -970,11 +987,6 @@ EchoCore.Scheduler.Runnable = function(timeInterval, repeat, methodRef) {
      * @type Boolean
      */
     this.repeat = repeat;
-    
-    /**
-     * Method or EchoCore.MethodRef to invoke.
-     */
-    this.methodRef = methodRef;
 };
 
 /**

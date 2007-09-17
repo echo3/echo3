@@ -47,7 +47,7 @@ EchoFreeClient.prototype._processStyleSheet = function(e) {
 
 EchoFreeClient.AutoUpdate = function(client) {
     this.client = client;
-    EchoCore.Scheduler.Runnable.call(this, 10, true);
+    EchoCore.Scheduler.Runnable.call(this, null, 10, true);
 };
 
 EchoFreeClient.AutoUpdate.prototype = EchoCore.derive(EchoCore.Scheduler.Runnable);

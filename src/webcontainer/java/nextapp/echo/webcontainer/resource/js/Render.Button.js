@@ -274,7 +274,7 @@ EchoRender.ComponentSync.Button.prototype.renderDispose = function(update) {
 };
 
 EchoRender.ComponentSync.Button.prototype.renderFocus = function() {
-    EchoCore.Scheduler.add(new EchoCore.Scheduler.Runnable(null, false, new EchoCore.MethodRef(this, this.focus)));
+    EchoCore.Scheduler.run(new EchoCore.MethodRef(this, this.focus));
 };
 
 EchoRender.ComponentSync.Button.prototype.renderUpdate = function(update) {
