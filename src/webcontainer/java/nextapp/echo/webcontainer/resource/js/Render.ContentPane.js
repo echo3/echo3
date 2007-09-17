@@ -24,6 +24,11 @@ EchoRender.ComponentSync.ContentPane.prototype.renderAdd = function(update, pare
         this._renderAddChild(update, child);
     }
 
+    // Store values of horizontal/vertical scroll such that 
+    // renderDisplay() will adjust scrollbars appropriately after rendering.
+    this._pendingScrollX = this.component.getRenderProperty("horizontalScroll");
+    this._pendingScrollY = this.component.getRenderProperty("verticalScroll");
+    
     parentElement.appendChild(this._divElement);
 };
 
@@ -63,6 +68,26 @@ EchoRender.ComponentSync.ContentPane.prototype.renderDisplay = function() {
     while (child) {
         EchoWebCore.VirtualPosition.redraw(child);
         child = child.nextSibling;
+    }
+
+    // If a scrollbar adjustment has been requested by renderAdd, perform it.
+    if (this._pendingScrollX || this._pendingScrollY) {
+        var componentCount = this.component.getComponentCount();
+        for (var i = 0; i < componentCount; ++i) {
+            var child = this.component.getComponent(i);
+            if (!child.floatingPane) {
+                var contentElement = this._childIdToElementMap[child.renderId];
+                if (this._pendingScrollX) {
+                    contentElement.scrollLeft = this._pendingScrollX.value < 0 ? 1000000 : this._pendingScrollX.value;
+                    this._pendingScrollX = null;
+                }
+                if (this._pendingScrollY) {
+                    contentElement.scrollTop = this._pendingScrollY.value < 0 ? 1000000 : this._pendingScrollY.value;
+                    this._pendingScrollY = null;
+                }
+                break;
+            }
+        }
     }
 };
 
