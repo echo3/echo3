@@ -46,6 +46,8 @@ EchoClient.prototype.configure = function(application, domainElement) {
                 new EchoCore.MethodRef(this, this._processKeyDown), false);
         EchoWebCore.EventProcessor.remove(this.domainElement, "keypress", 
                 new EchoCore.MethodRef(this, this._processKeyPress), false);
+        EchoWebCore.EventProcessor.remove(this.domainElement, "keyup", 
+                new EchoCore.MethodRef(this, this._processKeyUp), false);
         this.application.removeFocusListener(new EchoCore.MethodRef(this, this._processApplicationFocus));
     }
     
@@ -56,6 +58,8 @@ EchoClient.prototype.configure = function(application, domainElement) {
         this.application.addFocusListener(new EchoCore.MethodRef(this, this._processApplicationFocus));
         EchoWebCore.EventProcessor.add(this.domainElement, "keydown", 
                 new EchoCore.MethodRef(this, this._processKeyDown), false);
+        EchoWebCore.EventProcessor.add(this.domainElement, "keyup", 
+                new EchoCore.MethodRef(this, this._processKeyUp), false);
         EchoWebCore.EventProcessor.add(this.domainElement, "keypress", 
                 new EchoCore.MethodRef(this, this._processKeyPress), false);
         this.application.setContextProperty(EchoClient.CONTEXT_PROPERTY_NAME, this);
@@ -107,8 +111,11 @@ EchoClient.prototype._processApplicationFocus = function(e) {
 
 EchoClient.prototype._processKeyDown = function(e) {
     if (e.keyCode == 9) { // Tab
+        if (!this._tabDown) {
+            this._tabDown = true;
+            this.application.focusNext(e.shiftKey);
+        }
         EchoWebCore.DOM.preventEventDefault(e);
-        this.application.focusNext(e.shiftKey);
         return false; // Stop propagation.
     }
     return true; // Allow propagation.
@@ -116,10 +123,19 @@ EchoClient.prototype._processKeyDown = function(e) {
 
 EchoClient.prototype._processKeyPress = function(e) {
     if (e.keyCode == 9) { // Tab
+        if (!this._tabDown) {
+            this._tabDown = true;
+            this.application.focusNext(e.shiftKey);
+        }
         EchoWebCore.DOM.preventEventDefault(e);
         return false; // Stop propagation.
     }
     return true; // Allow propagation.
+};
+
+EchoClient.prototype._processKeyUp = function(e) {
+    this._tabDown = false;
+    return true;
 };
 
 EchoClient.prototype.setApplication = function(application) {
