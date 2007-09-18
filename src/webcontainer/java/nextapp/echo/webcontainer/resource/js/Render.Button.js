@@ -166,10 +166,10 @@ EchoRender.ComponentSync.Button.prototype._processRolloverEnter = function(e) {
 };
 
 EchoRender.ComponentSync.Button.prototype._processRolloverExit = function(e) {
-    this.component.application.removeFocusListener(new EchoCore.MethodRef(this, this._processRolloverExit));
     if (!this.component.isActive()) {
         return;
     }
+    this.component.application.removeFocusListener(new EchoCore.MethodRef(this, this._processRolloverExit));
     this._setRolloverState(false);
 };
 
@@ -271,6 +271,7 @@ EchoRender.ComponentSync.Button.prototype._renderButtonIcon = function(element, 
 };
 
 EchoRender.ComponentSync.Button.prototype.renderDispose = function(update) {
+    this.client.application.removeFocusListener(new EchoCore.MethodRef(this, this._processRolloverExit));
     EchoWebCore.EventProcessor.removeAll(this._divElement);
     this._iconElement = null;
 };
