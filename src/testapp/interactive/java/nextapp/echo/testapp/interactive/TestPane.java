@@ -174,4 +174,12 @@ public class TestPane extends ContentPane {
             return null;
         }
     }
+    
+    /**
+     * @see nextapp.echo.app.Component#init()
+     */
+    public void init() {
+        super.init();
+        getApplicationInstance().setFocusedComponent(testLaunchButtonsColumn.getComponent(0));
+    };
 }
