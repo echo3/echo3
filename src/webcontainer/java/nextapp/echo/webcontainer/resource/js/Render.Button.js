@@ -161,10 +161,12 @@ EchoRender.ComponentSync.Button.prototype._processRolloverEnter = function(e) {
     if (!this.component.isActive() || EchoWebCore.dragInProgress) {
         return;
     }
+    this.component.application.addFocusListener(new EchoCore.MethodRef(this, this._processRolloverExit));
     this._setRolloverState(true);
 };
 
 EchoRender.ComponentSync.Button.prototype._processRolloverExit = function(e) {
+    this.component.application.removeFocusListener(new EchoCore.MethodRef(this, this._processRolloverExit));
     if (!this.component.isActive()) {
         return;
     }
