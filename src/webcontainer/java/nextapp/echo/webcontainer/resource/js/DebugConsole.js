@@ -38,6 +38,7 @@ EchoDebugConsole._consoleWrite = function(text) {
 EchoDebugConsole._init = function() {
     EchoDebugConsole._windowElement = document.createElement("div");
     EchoDebugConsole._windowElement.id = "__DebugConsole__";
+    EchoDebugConsole._windowElement.style.display = "none";
     EchoDebugConsole._windowElement.style.position = "absolute";
     EchoDebugConsole._windowElement.style.top = "20px";
     EchoDebugConsole._windowElement.style.right = "20px";
