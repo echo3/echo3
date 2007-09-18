@@ -451,12 +451,12 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
         }
         this._divElement.appendChild(tct.tableElement);
     } else if (entityCount == 3) {
-        var orientation = EchoRender.TriCellTable.LEADING_TRAILING;
+        var orientation = EchoRender.TriCellTable.TRAILING_LEADING;
         var margin = this.component.getRenderProperty("iconTextMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
         var stateOrientation = EchoRender.TriCellTable.TRAILING_LEADING;
         var stateMargin = this.component.getRenderProperty("stateMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
-        var tct = new EchoRender.TriCellTable(stateOrientation, 
-        	EchoRender.Property.Extent.toPixels(margin), orientation, EchoRender.Property.Extent.toPixels(stateMargin));
+        var tct = new EchoRender.TriCellTable(orientation, 
+        	EchoRender.Property.Extent.toPixels(margin), stateOrientation, EchoRender.Property.Extent.toPixels(stateMargin));
         this._renderButtonText(tct.tdElements[0], text);
         this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
         tct.tdElements[2].appendChild(this._stateElement);
