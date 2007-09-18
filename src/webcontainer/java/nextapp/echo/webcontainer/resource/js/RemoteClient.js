@@ -404,6 +404,21 @@ EchoRemoteClient.ClientMessage.prototype.storeProperty = function(componentId, p
     propertyMap.put(propertyName, propertyValue);
 };
 
+EchoRemoteClient.ClientMessage.prototype._renderCFocus = function() {
+    if (!this._client.application) {
+        return;
+    }
+    var focusedComponent = this._client.application.getFocusedComponent();
+    if (focusedComponent && focusedComponent.renderId.substring(0,2) == "c_") {
+        var cFocusElement = this._document.createElement("dir");
+        cFocusElement.setAttribute("proc", "CFocus");
+        var focusElement = this._document.createElement("focus");
+        focusElement.setAttribute("i", focusedComponent.renderId);
+        cFocusElement.appendChild(focusElement);
+        this._document.documentElement.appendChild(cFocusElement);
+    }
+};
+
 EchoRemoteClient.ClientMessage.prototype._renderCSync = function() {
     var cSyncElement = this._document.createElement("dir");
     cSyncElement.setAttribute("proc", "CSync");
@@ -459,6 +474,7 @@ EchoRemoteClient.ClientMessage.prototype._renderClientProperties = function() {
 
 EchoRemoteClient.ClientMessage.prototype._renderXml = function() {
     if (!this._rendered) {
+        this._renderCFocus();
         this._renderCSync();
         this._rendered = true;
     }
