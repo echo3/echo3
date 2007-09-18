@@ -430,10 +430,10 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
         var orientation;
         var margin;
         if (this._stateElement) {
-	        orientation = EchoRender.TriCellTable.TRAILING_LEADING;
+	        orientation = EchoRender.TriCellTable.LEADING_TRAILING;
 	        margin = this.component.getRenderProperty("stateMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
         } else {
-	        orientation = EchoRender.TriCellTable.LEADING_TRAILING;
+	        orientation = EchoRender.TriCellTable.TRAILING_LEADING;
 	        margin = this.component.getRenderProperty("iconTextMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
         }
         var tct = new EchoRender.TriCellTable(orientation, EchoRender.Property.Extent.toPixels(margin));
