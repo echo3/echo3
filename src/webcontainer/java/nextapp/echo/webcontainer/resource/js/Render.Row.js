@@ -50,6 +50,7 @@ EchoRender.ComponentSync.Row.prototype.renderAdd = function(update, parentElemen
     
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._divElement);
     EchoRender.Property.Color.renderFB(this.component, this._divElement);
+    EchoRender.Property.Font.renderDefault(this.component, this._divElement);
     EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
     EchoRender.Property.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
     
