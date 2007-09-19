@@ -21,10 +21,14 @@ EchoRender.ComponentSync.TextComponent.prototype._renderStyle = function() {
     if (height) {
     	this._textComponentElement.style.height = height.toString();
     }
+    var toolTipText = this.component.getRenderProperty("toolTipText");
+    if (toolTipText) {
+        this._textComponentElement.title = toolTipText;
+    }
 };
 
 EchoRender.ComponentSync.TextComponent.prototype.focus = function() {
-    this._textComponentElement.focus();
+	this._textComponentElement.focus();
 };
 
 EchoRender.ComponentSync.TextComponent.prototype._addEventHandlers = function() {
