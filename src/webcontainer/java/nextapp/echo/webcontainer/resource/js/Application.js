@@ -1092,7 +1092,7 @@ EchoApp.FocusManager.prototype.focusNextChild = function(parentComponent, revers
         while (index > 1) {
             --index;
             childComponent = parentComponent.getComponent(index);
-            if (childComponent.focusable) {
+            if (childComponent.focusable && childComponent.isActive() ) {
                 this._application.setFocusedComponent(childComponent);
                 return true;
             }
@@ -1103,7 +1103,7 @@ EchoApp.FocusManager.prototype.focusNextChild = function(parentComponent, revers
         while (index < count - 1) {
             ++index;
             childComponent = parentComponent.getComponent(index);
-            if (childComponent.focusable) {
+            if (childComponent.focusable && childComponent.isActive() ) {
                 this._application.setFocusedComponent(childComponent);
                 return true;
             }
@@ -1184,7 +1184,7 @@ EchoApp.FocusManager.prototype.findNext = function() {
         component = nextComponent;
         visitedComponents[component.renderId] = true;
         
-        if (component != originComponent && component.isRenderEnabled() && component.focusable) {
+        if (component != originComponent && component.isActive() && component.focusable) {
             return component;
         }
     }
@@ -1260,7 +1260,7 @@ EchoApp.FocusManager.prototype.findPrevious = function() {
         component = nextComponent;
         visitedComponents[component.renderId] = true;
         
-        if (component != originComponent && component.isRenderEnabled() && component.focusable) {
+        if (component != originComponent && component.isActive() && component.focusable) {
             return component;
         }
     }
