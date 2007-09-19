@@ -13,11 +13,13 @@ EchoRender.ComponentSync.Column.prototype.processKeyDown = function(e) {
             EchoWebCore.DOM.preventEventDefault(e);
             return false;
         }
+        break;
     case 40:
         if (this.component.application.focusManager.focusNextChild(this.component, false)) {
             EchoWebCore.DOM.preventEventDefault(e);
             return false;
         }
+        break;
     }
     return true;
 };

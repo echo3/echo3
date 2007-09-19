@@ -1078,21 +1078,29 @@ EchoApp.FocusManager = function(application) {
     this._application = application;
 };
 
+/**
+ * Focuses next (or previous) child of a parent component.
+ * If the next immediate child is not focusable, its descendants will
+ * be investigated and the first focusable descendant will be focused. 
+ */
 EchoApp.FocusManager.prototype.focusNextChild = function(parentComponent, reverse) {
     var childComponent = this._application.getFocusedComponent();
+    
+    // Determine which child of the parentComponent is focused, or which child has
+    // a focused descendant.
     while (childComponent.parent != parentComponent && childComponent.parent != null) {
         childComponent = childComponent.parent;
     }
     if (childComponent.parent == null) {
         return false;
     }
-    
     var index = parentComponent.indexOf(childComponent);
+
     if (reverse) {
-        while (index > 1) {
+        while (index > 0) {
             --index;
             childComponent = parentComponent.getComponent(index);
-            if (childComponent.focusable && childComponent.isActive() ) {
+            if (childComponent.focusable && childComponent.isActive()) {
                 this._application.setFocusedComponent(childComponent);
                 return true;
             }
@@ -1103,7 +1111,7 @@ EchoApp.FocusManager.prototype.focusNextChild = function(parentComponent, revers
         while (index < count - 1) {
             ++index;
             childComponent = parentComponent.getComponent(index);
-            if (childComponent.focusable && childComponent.isActive() ) {
+            if (childComponent.focusable && childComponent.isActive()) {
                 this._application.setFocusedComponent(childComponent);
                 return true;
             }
@@ -1177,7 +1185,7 @@ EchoApp.FocusManager.prototype.findNext = function() {
         }
         
         if (nextComponent == null) {
-            return null; // FIXME is this ever possible.
+            return null;
         }
         
         lastComponent = component;

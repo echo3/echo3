@@ -17,6 +17,8 @@ EchoClient = function() {
      * The parent client.
      */
     this.parent = null;
+    
+    this._tabDown = 0;
 };
 
 /**
@@ -111,8 +113,10 @@ EchoClient.prototype._processApplicationFocus = function(e) {
 
 EchoClient.prototype._processKeyDown = function(e) {
     if (e.keyCode == 9) { // Tab
-        if (!this._tabDown) {
-            this._tabDown = true;
+        if (this._tabDown == 1) {
+            this._tabDown = 2;
+        } else {
+            this._tabDown++;
             this.application.focusNext(e.shiftKey);
         }
         EchoWebCore.DOM.preventEventDefault(e);
@@ -123,8 +127,10 @@ EchoClient.prototype._processKeyDown = function(e) {
 
 EchoClient.prototype._processKeyPress = function(e) {
     if (e.keyCode == 9) { // Tab
-        if (!this._tabDown) {
-            this._tabDown = true;
+        if (this._tabDown == 1) {
+            this._tabDown = 2;
+        } else {
+            this._tabDown++;
             this.application.focusNext(e.shiftKey);
         }
         EchoWebCore.DOM.preventEventDefault(e);
@@ -134,7 +140,7 @@ EchoClient.prototype._processKeyPress = function(e) {
 };
 
 EchoClient.prototype._processKeyUp = function(e) {
-    this._tabDown = false;
+    this._tabDown = 0;
     return true;
 };
 
