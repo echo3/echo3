@@ -115,7 +115,11 @@ EchoApp.Application.prototype.dispose = function() {
  */
 EchoApp.Application.prototype.focusNext = function(reverse) {
     focusedComponent = reverse ? this.focusManager.findPrevious() : this.focusManager.findNext();
-    this.setFocusedComponent(focusedComponent);
+    if (focusedComponent == null) {
+        //FIXME Focus first or last component
+    } else {
+        this.setFocusedComponent(focusedComponent);
+    }
 };
 
 /**
