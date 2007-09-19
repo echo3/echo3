@@ -385,18 +385,6 @@ EchoRender.ComponentSync.ToggleButton.prototype._doAction = function() {
     EchoRender.ComponentSync.Button.prototype._doAction.call(this);
 };
 
-/**
- * Gets an URI for default toggle button images.
- * 
- * @param {String} identifier the image identifier
- * @return the image URI
- * @type {String}
- */
-EchoRender.ComponentSync.ToggleButton._getImageUri = function(identifier) {
-	// FIXME abstract this somehow so it works with FreeClient too
-	return "?sid=Echo.Image&iid=" + identifier;
-};
-
 EchoRender.ComponentSync.ToggleButton.prototype.renderAdd = function(update, parentElement) {
 	this._selected = this.component.getRenderProperty("selected");
 	
