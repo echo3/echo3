@@ -277,6 +277,8 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     this._windowPaneDivElement.style.width = this._windowWidth + "px";
     this._windowPaneDivElement.style.height = this._windowHeight + "px";
     
+    EchoRender.Property.Font.renderDefault(this.component, this._windowPaneDivElement);
+    
     var borderSideWidth = this._windowWidth - this._borderInsets.left - this._borderInsets.right;
     var borderSideHeight = this._windowHeight - this._borderInsets.top - this._borderInsets.bottom;
     
