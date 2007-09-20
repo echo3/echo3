@@ -1,8 +1,16 @@
 /**
- * Minimalistic representation of ListSelectionModel.
+ * @fileoverview
+ * List Selection Model.
+ * Requires Core, Application.
+ */
+
+/**
+ * Creates a ListSelectionModel.
  * 
  * @param {Number} selectionMode the selectionMode
  * @constructor
+ *
+ * @class Minimalistic representation of ListSelectionModel.
  */
 EchoApp.ListSelectionModel = function(selectionMode) {
     this._selectionState = new Array();

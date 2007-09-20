@@ -1,5 +1,11 @@
 /**
- * Library for Application-Rendered Component support.
+ * @fileoverview
+ * Application rendered component module.
+ * Requires Core, WebCore, Application, Render, Serial, Client, FreeClient.
+ */
+
+/**
+ * @class Namespace for application-rendered component support.  Non-instantiable object.
  */
 EchoArc = function() { }
 
@@ -17,7 +23,7 @@ EchoArc.Client.prototype = EchoCore.derive(EchoFreeClient);
 /**
  * @class Component synchronization peer for application rendered components.
  * Application rendered component peers should extend this peer.
- * The super-implementations of the renderAdd(), renderdispose(),
+ * The super-implementations of the renderAdd(), renderDispose(),
  * renderDisplay(), and renderUpdate() methods must be invoked.
  */
 EchoArc.ComponentSync = function() {
@@ -44,8 +50,14 @@ EchoArc.ComponentSync.prototype.createBaseComponent = function() { };
  */
 EchoArc.ComponentSync.prototype.getDomainElement = function() { };
 
+/**
+ * renderAdd() implementation: must be invoked by overriding method.
+ */
 EchoRender.ComponentSync.prototype.renderAdd = function(update, parentElement) { };
 
+/**
+ * renderDispose() implementation: must be invoked by overriding method.
+ */
 EchoArc.ComponentSync.prototype.renderDispose = function(update) {
     if (this.arcClient) {
         this.arcClient.dispose();
@@ -58,6 +70,9 @@ EchoArc.ComponentSync.prototype.renderDispose = function(update) {
     }
 };
 
+/**
+ * renderDispose() implementation: must be invoked by overriding method.
+ */
 EchoArc.ComponentSync.prototype.renderDisplay = function() {
     if (!this.arcApplication) {
         this.arcApplication = new EchoApp.Application();
@@ -70,4 +85,7 @@ EchoArc.ComponentSync.prototype.renderDisplay = function() {
     }
 };
 
+/**
+ * renderUpdate() implementation: must be invoked by overriding method.
+ */
 EchoRender.ComponentSync.prototype.renderUpdate = function(update) { };

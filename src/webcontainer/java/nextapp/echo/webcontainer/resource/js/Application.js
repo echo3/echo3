@@ -1,6 +1,11 @@
 /**
- * Namespace for application framework.  Non-instantiable object.
- * REQUIRES: Core.
+ * @fileoverview
+ * Application framework main module.
+ * Requires Core.
+ */
+
+/**
+ * @class Namespace for application framework.  Non-instantiable object.
  */
 EchoApp = function() { };
 

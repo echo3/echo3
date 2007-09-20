@@ -21,6 +21,10 @@ EchoClient = function() {
     /**
      * Number of tab keyDown/keyPress events since the last tab keyUp event.
      * Used to handle out-of-order keyDown/keyPress events presented by browsers (IE).
+     * It is necessary to capture keyDown and keyPress events in order to invoke
+     * preventEventDefault() and manually manage all tab processing.  The out-of-order
+     * events are handled by ignoring the second KeyPress or KeyDown tab event since the
+     * last KeyUp event. 
      */
     this._tabDown = 0;
 };
@@ -90,9 +94,11 @@ EchoClient.prototype.dispose = function() {
 
 /**
  * Returns a default named image.
- * May return null if the client does not provide a default iamge for the specified name.
+ * May return null if the client does not provide a default image for the specified name.
  * Default implementation delegates to parent client
  * (if one is present) or otherwise returns null.
+ * 
+ * @param {String} imageName the image name 
  */
 EchoClient.prototype.getDefaultImage = function(imageName) {
     if (this.parent) {
@@ -107,7 +113,7 @@ EchoClient.prototype.getDefaultImage = function(imageName) {
  * Default implementation delegates to parent client
  * (if one is present) or otherwise returns null.
  * 
- * @param serviceId the serviceId
+ * @param {String} serviceId the serviceId
  * @return the full URL
  * @type String
  */
@@ -119,6 +125,12 @@ EchoClient.prototype.getServiceUrl = function(serviceId) {
     }
 };
 
+/**
+ * Listener for application change of component focus:
+ * invokes focus() method on focused component's peer.
+ * 
+ * @param {Event} e the event
+ */
 EchoClient.prototype._processApplicationFocus = function(e) {
     var focusedComponent = this.application.getFocusedComponent();
     if (focusedComponent) {
@@ -135,10 +147,7 @@ EchoClient.prototype._processApplicationFocus = function(e) {
 EchoClient.prototype._processKeyDown = function(e) {
     if (e.keyCode == 9) { // Tab
         if (this._tabDown != 1) {
-            // Do not focus next component when tab keypress/keydown count is 1, such
-            // that pressing tab one time does not cause two focus changes.  This unusual 
-            // code is in place due to some browsers (IE) not providing keydown/keypress
-            // events in the correct order.
+            // See this._tabDown comment for explanation of this unsual code.
             this.application.focusNext(e.shiftKey);
         }
         this._tabDown++;
@@ -157,10 +166,7 @@ EchoClient.prototype._processKeyDown = function(e) {
 EchoClient.prototype._processKeyPress = function(e) {
     if (e.keyCode == 9) { // Tab
         if (this._tabDown != 1) {
-            // Do not focus next component when tab keypress/keydown count is 1, such
-            // that pressing tab one time does not cause two focus changes.  This unusual 
-            // code is in place due to some browsers (IE) not providing keydown/keypress
-            // events in the correct order.
+            // See this._tabDown comment for explanation of this unsual code.
             this.application.focusNext(e.shiftKey);
         }
         this._tabDown++;

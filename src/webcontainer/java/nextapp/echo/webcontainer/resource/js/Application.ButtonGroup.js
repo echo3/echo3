@@ -1,7 +1,15 @@
 /**
- * RadioButton group.
+ * @fileoverview
+ * Button Group.
+ * Requires Core, Application.
+ */
+
+/**
+ * Creates a RadioButton group.
  * 
  * @param id {String} the id
+ * 
+ * @class RadioButton group
  */
 EchoApp.ButtonGroup = function(id) {
 	this._id = id;
