@@ -18,17 +18,21 @@ EchoClient = function() {
      */
     this.parent = null;
     
+    /**
+     * Number of tab keyDown/keyPress events since the last tab keyUp event.
+     * Used to handle out-of-order keyDown/keyPress events presented by browsers (IE).
+     */
     this._tabDown = 0;
 };
 
 /**
- * Global array containing all active client instances. 
+ * Global array containing all active client instances in the current browser window.
  */
 EchoClient._activeClients = new Array();
 
 /**
  * Global listener to respond to resizing of browser window.
- * Invokes _windowResizeListener() on all active clients.
+ * Invokes _windowResizeListener() method on all active clients.
  * 
  * @param e the DOM resize event
  */
@@ -38,12 +42,9 @@ EchoClient._globalWindowResizeListener = function(e) {
     }
 };
 
-EchoClient.CONTEXT_PROPERTY_NAME = "Client";
-
 EchoClient.prototype.configure = function(application, domainElement) {
     if (this.application) {
         EchoCore.Arrays.remove(EchoClient._activeClients, this);
-        this.application.setContextProperty(EchoClient.CONTEXT_PROPERTY_NAME, null);
         EchoWebCore.EventProcessor.remove(this.domainElement, "keydown", 
                 new EchoCore.MethodRef(this, this._processKeyDown), false);
         EchoWebCore.EventProcessor.remove(this.domainElement, "keypress", 
@@ -64,7 +65,6 @@ EchoClient.prototype.configure = function(application, domainElement) {
                 new EchoCore.MethodRef(this, this._processKeyUp), false);
         EchoWebCore.EventProcessor.add(this.domainElement, "keypress", 
                 new EchoCore.MethodRef(this, this._processKeyPress), false);
-        this.application.setContextProperty(EchoClient.CONTEXT_PROPERTY_NAME, this);
         EchoClient._activeClients.push(this);
     }
 };
