@@ -584,7 +584,6 @@ EchoCore.Debug.Timer.prototype.toString = function() {
     return out;
 };
 
-//FIXME This APi should be type, source, data...I think.
 /**
  * Creates a new event object.
  * 
@@ -830,8 +829,6 @@ EchoCore.ResourceBundle.prototype.get = function(key) {
         return value;
     }
 };
-
-//FIXME Perhaps add runDelayed/execLater or some method that just execs in next thread.
 
 /**
  * Scheduler namespace.  Non-instantiable object.
