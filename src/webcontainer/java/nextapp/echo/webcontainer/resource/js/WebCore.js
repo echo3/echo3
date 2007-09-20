@@ -128,6 +128,25 @@ EchoWebCore.DOM.createDocument = function(namespaceUri, qualifiedName) {
     }
 };
 
+/**
+ * Focuses the given DOM element.
+ * 
+ * @param element the DOM element to focus
+ */
+EchoWebCore.DOM.focusElement = function(element) {
+    if (EchoWebCore.Environment.QUIRK_DELAYED_FOCUS_REQUIRED) {
+        EchoCore.Scheduler.run(new EchoCore.MethodRef(window, EchoWebCore.DOM._focusElementImpl, element));
+    } else {
+        EchoWebCore.DOM._focusElementImpl(element);
+    }
+};
+
+EchoWebCore.DOM._focusElementImpl = function(element) {
+    if (element.focus) {
+        element.focus();
+    }
+};
+
 EchoWebCore.DOM.getChildElementByTagName = function(parentElement, tagName) {
     var element = parentElement.firstChild;
     while (element) {
@@ -352,12 +371,21 @@ EchoWebCore.Environment._init = function() {
     env.BROWSER_MOZILLA = !env.DECEPTIVE_USER_AGENT && ua.indexOf("gecko") != -1;
     env.BROWSER_INTERNET_EXPLORER = !env.DECEPTIVE_USER_AGENT && ua.indexOf("msie") != -1;
     
+    //FIXME This should handle arbitrary version numbers.
     // Retrieve Version Info (as necessary).
     if (env.BROWSER_INTERNET_EXPLORER) {
         if (ua.indexOf("msie 6.") != -1) {
             env.BROWSER_MAJOR_VERSION = 6;
         } else if (ua.indexOf("msie 7.") != -1) {
             env.BROWSER_MAJOR_VERSION = 7;
+        }
+    } else if (env.BROWSER_FIREFOX) {
+        if (ua.indexOf("firefox/1.") != -1) {
+            env.BROWSER_MAJOR_VERSION = 1;
+        } else if (ua.indexOf("firefox/2.") != -1) {
+            env.BROWSER_MAJOR_VERSION = 2;
+        } else if (ua.indexOf("firefox/3.") != -1) {
+            env.BROWSER_MAJOR_VERSION = 3;
         }
     }
     
@@ -387,11 +415,17 @@ EchoWebCore.Environment._init = function() {
             env.QUIRK_CSS_BACKGROUND_ATTACHMENT_USE_FIXED = true;
             env.QUIRK_IE_SELECT_Z_INDEX = true;
             env.NOT_SUPPORTED_CSS_MAX_HEIGHT = true;
+            env.QUIRK_DELAYED_FOCUS_REQUIRED = TRUE;
         }
     } else if (env.BROWSER_MOZILLA) {
-    	if (!env.BROWSER_FIREFOX) {
-    		env.QUIRK_PERFORMANCE_LARGE_DOM_REMOVE = true;
-    	}
+        if (env.BROWSER_FIREFOX) {
+            if (env.BROWSER_MAJOR_VERSION < 2) {
+                env.QUIRK_DELAYED_FOCUS_REQUIRED = true;
+            }
+        } else {
+            env.QUIRK_PERFORMANCE_LARGE_DOM_REMOVE = true;
+            env.QUIRK_DELAYED_FOCUS_REQUIRED = true;
+        }
     } else if (env.BROWSER_OPERA) {
         env.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
     }

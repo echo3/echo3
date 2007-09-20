@@ -780,6 +780,12 @@ EchoCore.ListenerList.prototype.toString = function() {
 EchoCore.MethodRef = function(instance, method) {
     this.instance = instance;
     this.method = method;
+    if (arguments.length > 2) {
+        this.arguments = 0;
+        for (var i = 2; i < arguments.length; ++i) {
+            this.arguments.push(arguments[i]);
+        }
+    }
 };
 
 /**
@@ -797,10 +803,18 @@ EchoCore.MethodRef.prototype.equals = function(that) {
  * @return the value returned by the method
  */
 EchoCore.MethodRef.prototype.invoke = function(args) {
-    if (args instanceof Array) {
-        return this.method.apply(this.instance, args);
+    if (args) {
+        if (args instanceof Array) {
+            return this.method.apply(this.instance, args);
+        } else {
+            return this.method.call(this.instance, args);
+        }
     } else {
-        return this.method.call(this.instance, args);
+        if (this.arguments) {
+            return this.method.apply(this.instance, this.arguments);
+        } else {
+            return this.method.call(this.instance);
+        }
     }
 };
 
