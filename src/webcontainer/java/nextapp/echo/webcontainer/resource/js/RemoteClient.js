@@ -15,7 +15,6 @@
  * @param domainElementId the id of the DOM element which this client should use as its
  *        root element (this element must define a horizontal and vertical space, e.g.,
  *        it must define an absolute area or percentage of the screen)
- * 
  */
 EchoRemoteClient = function(serverUrl) {
     EchoClient.call(this);
