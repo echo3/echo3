@@ -52,7 +52,7 @@ EchoRemoteClient = function(serverUrl) {
 
     this._asyncManager = new EchoRemoteClient.AsyncManager(this);
     
-    this._waitIndicator = new EchoRemoteClient.WaitIndicatorImpl();
+    this._waitIndicator = new EchoRemoteClient.DefaultWaitIndicator();
     
     this._preWaitIndicatorDelay = 500;
     this._waitIndicatorRunnable = new EchoCore.Scheduler.Runnable(new EchoCore.MethodRef(this, this._waitIndicatorActivate), 
@@ -82,95 +82,6 @@ EchoRemoteClient.libraryServerUrl = null;
 EchoRemoteClient.prototype.addComponentListener = function(component, eventType) {
     component.addListener(eventType, this._processClientEventRef);
 };
-
-/**
- * Removes a listener for an arbitrary event type to a component.
- * 
- * @param {EchoApp.Component} component the component from which the listener should be removed
- * @param {String} eventType the type of event
- */
-EchoRemoteClient.prototype.removeComponentListener = function(component, eventType) {
-    component.removeListener(eventType, this._processClientEventRef);
-};
-
-/**
- * Returns the URL of a library service based on the serviceId.
- * 
- * @param serviceId the serviceId
- * @return the full library URL
- * @type String
- * @private
- */
-EchoRemoteClient.prototype._getLibraryServiceUrl = function(serviceId) {
-    if (!EchoRemoteClient._libraryServerUrl) {
-        EchoRemoteClient._libraryServerUrl = this._serverUrl;
-    }
-    return EchoRemoteClient._libraryServerUrl + "?sid=" + serviceId;
-};
-
-/**
- * Returns the URL of a service based on the serviceId.
- * 
- * @param serviceId the serviceId
- * @return the full URL
- * @type String
- * @private
- */
-EchoRemoteClient.prototype.getServiceUrl = function(serviceId) {
-    return this._serverUrl + "?sid=" + serviceId;
-};
-
-EchoRemoteClient.prototype.getDefaultImage = function(imageName) {
-    return new EchoApp.Property.ImageReference(this._serverUrl + "?sid=Echo.Image&iid=" + imageName);
-};
-
-EchoRemoteClient.prototype.init = function(initialResponseDocument) {
-    var domainElementId = initialResponseDocument.documentElement.getAttribute("root");
-    var domainElement = document.getElementById(domainElementId);
-    if (!domainElement) {
-        throw new Error("Cannot find domain element: " + domainElementId);
-    }
-    
-    var application = new EchoApp.Application();
-    application.addComponentUpdateListener(this._processClientUpdateRef);
-    
-    this.configure(application, domainElement);
-    
-    this._storeUpdates = false;
-    this._initialized = true;
-};
-
-/**
- * Processes an event from a component that requires immediate server interaction.
- * 
- * @param e the event to process
- */
-EchoRemoteClient.prototype._processClientEvent = function(e) {
-    if (!this._clientMessage) {
-        if (new Date().getTime() - this._syncInitTime > 2000) {
-            //FIXME. Central error handling for these.
-            alert("Waiting on server response.  Press the browser reload or refresh button if server fails to respond.");
-        }
-        return;
-    }
-    this._clientMessage.setEvent(e.source.renderId, e.type, e.data);
-    this.sync();
-};
-
-/**
- * Processes an update to a component (storing the updated state in the outgoing
- * client message).
- * 
- * @param e the property update event from the component
- */
-EchoRemoteClient.prototype._processClientUpdate = function(e) {
-    if (!this._clientMessage) {
-        //FIXME. need to work on scenarios where clientmessage is null, for both this and events too.
-        return;
-    }
-    this._clientMessage.storeProperty(e.parent.renderId, e.propertyName, e.newValue);
-};
-
 /**
  * Decompresses a shorthand URL into a valid full-length URL.
  * A shorthand URL is expressed as "!A!xxxx" where
@@ -226,6 +137,82 @@ EchoRemoteClient.prototype._executeCommands = function() {
         }
         this._commandQueue = null;
     }
+};
+
+/**
+ * @see EchoClient#getDefaultImage
+ */
+EchoRemoteClient.prototype.getDefaultImage = function(imageName) {
+    return new EchoApp.Property.ImageReference(this._serverUrl + "?sid=Echo.Image&iid=" + imageName);
+};
+
+/**
+ * Returns the URL of a library service based on the serviceId.
+ * 
+ * @param serviceId the serviceId
+ * @return the full library URL
+ * @type String
+ * @private
+ */
+EchoRemoteClient.prototype._getLibraryServiceUrl = function(serviceId) {
+    if (!EchoRemoteClient._libraryServerUrl) {
+        EchoRemoteClient._libraryServerUrl = this._serverUrl;
+    }
+    return EchoRemoteClient._libraryServerUrl + "?sid=" + serviceId;
+};
+
+/**
+ * @see EchoClient#getServiceUrl
+ */
+EchoRemoteClient.prototype.getServiceUrl = function(serviceId) {
+    return this._serverUrl + "?sid=" + serviceId;
+};
+
+EchoRemoteClient.prototype.init = function(initialResponseDocument) {
+    var domainElementId = initialResponseDocument.documentElement.getAttribute("root");
+    var domainElement = document.getElementById(domainElementId);
+    if (!domainElement) {
+        throw new Error("Cannot find domain element: " + domainElementId);
+    }
+    
+    var application = new EchoApp.Application();
+    application.addComponentUpdateListener(this._processClientUpdateRef);
+    
+    this.configure(application, domainElement);
+    
+    this._storeUpdates = false;
+    this._initialized = true;
+};
+
+/**
+ * Processes an event from a component that requires immediate server interaction.
+ * 
+ * @param e the event to process
+ */
+EchoRemoteClient.prototype._processClientEvent = function(e) {
+    if (!this._clientMessage) {
+        if (new Date().getTime() - this._syncInitTime > 2000) {
+            //FIXME. Central error handling for these.
+            alert("Waiting on server response.  Press the browser reload or refresh button if server fails to respond.");
+        }
+        return;
+    }
+    this._clientMessage.setEvent(e.source.renderId, e.type, e.data);
+    this.sync();
+};
+
+/**
+ * Processes an update to a component (storing the updated state in the outgoing
+ * client message).
+ * 
+ * @param e the property update event from the component
+ */
+EchoRemoteClient.prototype._processClientUpdate = function(e) {
+    if (!this._clientMessage) {
+        //FIXME. need to work on scenarios where clientmessage is null, for both this and events too.
+        return;
+    }
+    this._clientMessage.storeProperty(e.parent.renderId, e.propertyName, e.newValue);
 };
 
 /**
@@ -298,6 +285,16 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     serverMessage.process();
 };
 
+/**
+ * Removes a listener for an arbitrary event type to a component.
+ * 
+ * @param {EchoApp.Component} component the component from which the listener should be removed
+ * @param {String} eventType the type of event
+ */
+EchoRemoteClient.prototype.removeComponentListener = function(component, eventType) {
+    component.removeListener(eventType, this._processClientEventRef);
+};
+
 EchoRemoteClient.prototype.setWaitIndicator = function(waitIndicator) {
     if (this._waitIndicator) {
         this._waitIndicator.deactivate();
@@ -330,6 +327,12 @@ EchoRemoteClient.AsyncManager = function(client) {
     this._runnable = new EchoCore.Scheduler.Runnable(new EchoCore.MethodRef(this, this._pollServerForUpdates), 1000, false);
 };
 
+EchoRemoteClient.AsyncManager.prototype._pollServerForUpdates = function() {
+    var conn = new EchoWebCore.HttpConnection(this._client.getServiceUrl("Echo.AsyncMonitor"), "GET");
+    conn.addResponseListener(new EchoCore.MethodRef(this, this._processPollResponse));
+    conn.connect();
+};
+
 EchoRemoteClient.AsyncManager.prototype._processPollResponse = function(e) {
     var responseDocument = e.source.getResponseXml();
     if (!e.valid || !responseDocument || !responseDocument.documentElement) {
@@ -351,12 +354,6 @@ EchoRemoteClient.AsyncManager.prototype._processPollResponse = function(e) {
     } else {
         EchoCore.Scheduler.add(this._runnable);
     }
-};
-
-EchoRemoteClient.AsyncManager.prototype._pollServerForUpdates = function() {
-    var conn = new EchoWebCore.HttpConnection(this._client.getServiceUrl("Echo.AsyncMonitor"), "GET");
-    conn.addResponseListener(new EchoCore.MethodRef(this, this._processPollResponse));
-    conn.connect();
 };
 
 EchoRemoteClient.AsyncManager.prototype._setInterval = function(interval) {
@@ -387,21 +384,6 @@ EchoRemoteClient.ClientMessage.prototype._createPropertyElement = function(name,
     element.setAttribute("n", name);
     EchoSerial.storeProperty(this._client, element, value);    
     return element;
-};
-
-EchoRemoteClient.ClientMessage.prototype.setEvent = function(componentId, eventType, eventData) {
-    this._eventComponentId = componentId;
-    this._eventType = eventType;
-    this._eventData = eventData;
-};
-
-EchoRemoteClient.ClientMessage.prototype.storeProperty = function(componentId, propertyName, propertyValue) {
-    var propertyMap = this._componentIdToPropertyMap.get(componentId);
-    if (!propertyMap) {
-        propertyMap = new EchoCore.Collections.Map();
-        this._componentIdToPropertyMap.put(componentId, propertyMap);
-    }
-    propertyMap.put(propertyName, propertyValue);
 };
 
 EchoRemoteClient.ClientMessage.prototype._renderCFocus = function() {
@@ -479,6 +461,21 @@ EchoRemoteClient.ClientMessage.prototype._renderXml = function() {
         this._rendered = true;
     }
     return this._document;
+};
+
+EchoRemoteClient.ClientMessage.prototype.setEvent = function(componentId, eventType, eventData) {
+    this._eventComponentId = componentId;
+    this._eventType = eventType;
+    this._eventData = eventData;
+};
+
+EchoRemoteClient.ClientMessage.prototype.storeProperty = function(componentId, propertyName, propertyValue) {
+    var propertyMap = this._componentIdToPropertyMap.get(componentId);
+    if (!propertyMap) {
+        propertyMap = new EchoCore.Collections.Map();
+        this._componentIdToPropertyMap.put(componentId, propertyMap);
+    }
+    propertyMap.put(propertyName, propertyValue);
 };
 
 /**
@@ -718,12 +715,12 @@ EchoRemoteClient.ServerMessage = function(client, xmlDocument) {
 
 EchoRemoteClient.ServerMessage._processorClasses = new Object();
 
-EchoRemoteClient.ServerMessage.prototype.addCompletionListener = function(l) {
-    this._listenerList.addListener("completion", l);
-};
-
 EchoRemoteClient.ServerMessage.addProcessor = function(name, processor) {
     EchoRemoteClient.ServerMessage._processorClasses[name] = processor;
+};
+
+EchoRemoteClient.ServerMessage.prototype.addCompletionListener = function(l) {
+    this._listenerList.addListener("completion", l);
 };
 
 EchoRemoteClient.ServerMessage.prototype.process = function() {
@@ -805,7 +802,7 @@ EchoRemoteClient.WaitIndicator.prototype.deactivate = function() { };
 /**
  * @class Default wait indicator implementation.
  */
-EchoRemoteClient.WaitIndicatorImpl = function() {
+EchoRemoteClient.DefaultWaitIndicator = function() {
     this._divElement = document.createElement("div");
     this._divElement.style.cssText = "display: none; z-index: 32767; position: absolute; top: 30px; right: 30px; width: 200px;"
              + " padding: 20px; border: 1px outset #abcdef; background-color: #abcdef; color: #000000; text-align: center;";
@@ -814,20 +811,20 @@ EchoRemoteClient.WaitIndicatorImpl = function() {
     document.body.appendChild(this._divElement);
 };
 
-EchoRemoteClient.WaitIndicatorImpl.prototype = EchoCore.derive(EchoRemoteClient.WaitIndicator);
+EchoRemoteClient.DefaultWaitIndicator.prototype = EchoCore.derive(EchoRemoteClient.WaitIndicator);
 
-EchoRemoteClient.WaitIndicatorImpl.prototype.activate = function() {
+EchoRemoteClient.DefaultWaitIndicator.prototype.activate = function() {
     this._divElement.style.display = "block";
     EchoCore.Scheduler.add(this._fadeRunnable);
     this._opacity = 0;
 };
 
-EchoRemoteClient.WaitIndicatorImpl.prototype.deactivate = function() {
+EchoRemoteClient.DefaultWaitIndicator.prototype.deactivate = function() {
     this._divElement.style.display = "none";
     EchoCore.Scheduler.remove(this._fadeRunnable);
 };
 
-EchoRemoteClient.WaitIndicatorImpl.prototype._tick = function() {
+EchoRemoteClient.DefaultWaitIndicator.prototype._tick = function() {
     ++this._opacity;
     // Formula explained:
     // this._opacity starts at 0 and is incremented forever.
@@ -836,10 +833,7 @@ EchoRemoteClient.WaitIndicatorImpl.prototype._tick = function() {
     // Divide this value by 30, so the range goes from 2/3 to 0 to 2/3.
     // Subtract that value from 1, so the range goes from 1/3 to 1 and back.
     var opacityValue = 1 - ((Math.abs((this._opacity % 40) - 20)) / 30);
-    if (EchoWebCore.Environment.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
-    	// FIXME disabled until a non-resource hogging solution is found
-//		this._divElement.style.filter = "alpha(opacity=" + opacityValue * 100 + ")";
-    } else {
+    if (!EchoWebCore.Environment.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
 	    this._divElement.style.opacity = opacityValue;
     }
 };
@@ -847,4 +841,3 @@ EchoRemoteClient.WaitIndicatorImpl.prototype._tick = function() {
 EchoRemoteClient.ServerMessage.addProcessor("CFocus", EchoRemoteClient.ComponentFocusProcessor);
 EchoRemoteClient.ServerMessage.addProcessor("CSync", EchoRemoteClient.ComponentSyncProcessor);
 EchoRemoteClient.ServerMessage.addProcessor("CmdExec", EchoRemoteClient.CommandExecProcessor);
-

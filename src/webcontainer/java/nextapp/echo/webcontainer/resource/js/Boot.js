@@ -1,15 +1,31 @@
 /**
- * Boot namespace.  DO NOT INSTANTIATE.
- * REQUIRES: Core, WebCore, Application, Render, Serial.
+ * @fileoverview
+ * 
+ * Requires Core, WebCore, Application, Render, Serial, Client, RemoteClient.
+ */
+
+/**
+ * Boot namespace.  Do not instantiate.
  */
 EchoBoot = function() { };
 
-EchoBoot.initMethods = new Array();
+/**
+ * Array of methods which should be invoked at boot.
+ */
+EchoBoot._initMethods = new Array();
 
+/**
+ * Adds a method to be invoked at boot.
+ */
 EchoBoot.addInitMethod = function(initMethod) {
-    EchoBoot.initMethods.push(initMethod);
+    EchoBoot._initMethods.push(initMethod);
 };
 
+/**
+ * Boots a remote client.
+ * 
+ * @param serverBaseUrl the servlet URL
+ */
 EchoBoot.boot = function(serverBaseUrl, debug) {
     EchoWebCore.init();
     
@@ -18,8 +34,8 @@ EchoBoot.boot = function(serverBaseUrl, debug) {
     }
 
     var client = new EchoRemoteClient(serverBaseUrl);
-    for (var i = 0; i < EchoBoot.initMethods.length; ++i) {
-        EchoBoot.initMethods[i](client);
+    for (var i = 0; i < EchoBoot._initMethods.length; ++i) {
+        EchoBoot._initMethods[i](client);
     }
     client.sync();
 };
