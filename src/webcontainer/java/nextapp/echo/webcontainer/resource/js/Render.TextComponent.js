@@ -60,7 +60,7 @@ EchoRender.ComponentSync.TextComponent.prototype._processClick = function(e) {
 EchoRender.ComponentSync.TextComponent.prototype._processKeyUp = function(e) {
     if (!this.component.isActive()) {
 		EchoWebCore.DOM.preventEventDefault(e);
-        return;
+        return true;
     }
     this._sanitizeInput();
     
@@ -74,6 +74,7 @@ EchoRender.ComponentSync.TextComponent.prototype._processKeyUp = function(e) {
         //FIXME fire from component.
 	    this.component.fireEvent(new EchoCore.Event("action", this.component));
     }
+    return true;
 };
 
 EchoRender.ComponentSync.TextComponent.prototype.renderFocus = function() {
