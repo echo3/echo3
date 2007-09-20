@@ -134,7 +134,7 @@ EchoWebCore.DOM.createDocument = function(namespaceUri, qualifiedName) {
  * @param element the DOM element to focus
  */
 EchoWebCore.DOM.focusElement = function(element) {
-    if (EchoWebCore.Environment.QUIRK_DELAYED_FOCUS_REQUIRED) {
+    if (true || EchoWebCore.Environment.QUIRK_DELAYED_FOCUS_REQUIRED) {
         EchoCore.Scheduler.run(new EchoCore.MethodRef(window, EchoWebCore.DOM._focusElementImpl, element));
     } else {
         EchoWebCore.DOM._focusElementImpl(element);
@@ -415,7 +415,7 @@ EchoWebCore.Environment._init = function() {
             env.QUIRK_CSS_BACKGROUND_ATTACHMENT_USE_FIXED = true;
             env.QUIRK_IE_SELECT_Z_INDEX = true;
             env.NOT_SUPPORTED_CSS_MAX_HEIGHT = true;
-            env.QUIRK_DELAYED_FOCUS_REQUIRED = TRUE;
+            env.QUIRK_DELAYED_FOCUS_REQUIRED = true;
         }
     } else if (env.BROWSER_MOZILLA) {
         if (env.BROWSER_FIREFOX) {

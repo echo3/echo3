@@ -781,7 +781,7 @@ EchoCore.MethodRef = function(instance, method) {
     this.instance = instance;
     this.method = method;
     if (arguments.length > 2) {
-        this.arguments = 0;
+        this.arguments = new Array();
         for (var i = 2; i < arguments.length; ++i) {
             this.arguments.push(arguments[i]);
         }

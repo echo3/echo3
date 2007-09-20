@@ -27,10 +27,6 @@ EchoRender.ComponentSync.TextComponent.prototype._renderStyle = function() {
     }
 };
 
-EchoRender.ComponentSync.TextComponent.prototype.focus = function() {
-	this._textComponentElement.focus();
-};
-
 EchoRender.ComponentSync.TextComponent.prototype._addEventHandlers = function() {
     EchoWebCore.EventProcessor.add(this._textComponentElement, "click", new EchoCore.MethodRef(this, this._processClick), false);
     EchoWebCore.EventProcessor.add(this._textComponentElement, "blur", new EchoCore.MethodRef(this, this._processBlur), false);
@@ -78,7 +74,7 @@ EchoRender.ComponentSync.TextComponent.prototype._processKeyUp = function(e) {
 };
 
 EchoRender.ComponentSync.TextComponent.prototype.renderFocus = function() {
-    EchoCore.Scheduler.run(new EchoCore.MethodRef(this, this.focus));
+    EchoWebCore.DOM.focusElement(this._textComponentElement);
 };
 
 EchoRender.ComponentSync.TextComponent.prototype.renderUpdate = function(update) {

@@ -58,11 +58,6 @@ EchoRender.ComponentSync.Button.prototype._doAction = function() {
     this.component.doAction();
 };
 
-EchoRender.ComponentSync.Button.prototype.focus = function(e) {
-    this._divElement.focus();
-    this._setFocusState(true);
-};
-
 EchoRender.ComponentSync.Button.prototype._getCombinedAlignment = function() {
     var primary = this.component.getRenderProperty("alignment");
     var secondary = this.component.getRenderProperty("textAlignment");
@@ -277,7 +272,8 @@ EchoRender.ComponentSync.Button.prototype.renderDispose = function(update) {
 };
 
 EchoRender.ComponentSync.Button.prototype.renderFocus = function() {
-    EchoCore.Scheduler.run(new EchoCore.MethodRef(this, this.focus));
+    EchoWebCore.DOM.focusElement(this._divElement);
+    this._setFocusState(true);
 };
 
 EchoRender.ComponentSync.Button.prototype.renderUpdate = function(update) {

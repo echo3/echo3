@@ -133,8 +133,8 @@ EchoClient.prototype.getServiceUrl = function(serviceId) {
  */
 EchoClient.prototype._processApplicationFocus = function(e) {
     var focusedComponent = this.application.getFocusedComponent();
-    if (focusedComponent && focusedComponent.peer && focusedComponent.peer.focus) {
-        focusedComponent.peer.focus();
+    if (focusedComponent && focusedComponent.peer && focusedComponent.peer.renderFocus) {
+        focusedComponent.peer.renderFocus();
     }
 };
 
