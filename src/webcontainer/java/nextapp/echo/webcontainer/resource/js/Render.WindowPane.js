@@ -105,6 +105,7 @@ EchoRender.ComponentSync.WindowPane.prototype.processKeyDown = function(e) {
         this.component.doWindowClosing();
         break;
     }
+    return true;
 };
 
 EchoRender.ComponentSync.WindowPane.prototype._processCloseClick = function(e) { 
