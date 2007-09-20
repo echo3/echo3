@@ -42,6 +42,17 @@ EchoClient._globalWindowResizeListener = function(e) {
     }
 };
 
+/**
+ * Configures/Deconfigures the client.  This method must be invoked
+ * with the supported application/containing domain element before
+ * the client is used, and invoked with null values before it is
+ * disposed (in order to clean up resources).
+ * 
+ * @param application the application the client will support (if configuring)
+ *        or null (if deconfiguring)
+ * @param domainElement the DOM element into which the client will be rendered (if configuring),
+ *        or null (if deconfiguring)
+ */
 EchoClient.prototype.configure = function(application, domainElement) {
     if (this.application) {
         EchoCore.Arrays.remove(EchoClient._activeClients, this);
@@ -69,6 +80,10 @@ EchoClient.prototype.configure = function(application, domainElement) {
     }
 };
 
+/**
+ * Default dispose implementation.
+ * Invokes configure(null, null) to deconfigure the client. 
+ */
 EchoClient.prototype.dispose = function() {
     this.configure(null, null);
 };
@@ -111,40 +126,59 @@ EchoClient.prototype._processApplicationFocus = function(e) {
     }
 };
 
+/**
+ * Root KeyDown event handler.
+ * Specifically processes tab key events for focus management.
+ * 
+ * @param {Event} e the event
+ */
 EchoClient.prototype._processKeyDown = function(e) {
     if (e.keyCode == 9) { // Tab
-        if (this._tabDown == 1) {
-            this._tabDown = 2;
-        } else {
-            this._tabDown++;
+        if (this._tabDown != 1) {
+            // Do not focus next component when tab keypress/keydown count is 1, such
+            // that pressing tab one time does not cause two focus changes.  This unusual 
+            // code is in place due to some browsers (IE) not providing keydown/keypress
+            // events in the correct order.
             this.application.focusNext(e.shiftKey);
         }
+        this._tabDown++;
         EchoWebCore.DOM.preventEventDefault(e);
         return false; // Stop propagation.
     }
     return true; // Allow propagation.
 };
 
+/**
+ * Root KeyPress event handler.
+ * Specifically processes tab key events for focus management.
+ * 
+ * @param {Event} e the event
+ */
 EchoClient.prototype._processKeyPress = function(e) {
     if (e.keyCode == 9) { // Tab
-        if (this._tabDown == 1) {
-            this._tabDown = 2;
-        } else {
-            this._tabDown++;
+        if (this._tabDown != 1) {
+            // Do not focus next component when tab keypress/keydown count is 1, such
+            // that pressing tab one time does not cause two focus changes.  This unusual 
+            // code is in place due to some browsers (IE) not providing keydown/keypress
+            // events in the correct order.
             this.application.focusNext(e.shiftKey);
         }
+        this._tabDown++;
         EchoWebCore.DOM.preventEventDefault(e);
         return false; // Stop propagation.
     }
     return true; // Allow propagation.
 };
 
+/**
+ * Root KeyUp event handler.
+ * Specifically processes tab key events for focus management.
+ * 
+ * @param {Event} e the event
+ */
 EchoClient.prototype._processKeyUp = function(e) {
     this._tabDown = 0;
     return true;
-};
-
-EchoClient.prototype.setApplication = function(application) {
 };
 
 /**
@@ -156,5 +190,6 @@ EchoClient.prototype._windowResizeListener = function(e) {
     EchoRender.notifyResize(this.application.rootComponent);
 };
 
+// Register resize listener on containing window one time.
 EchoWebCore.DOM.addEventListener(window, "resize", EchoClient._globalWindowResizeListener, false);
 
