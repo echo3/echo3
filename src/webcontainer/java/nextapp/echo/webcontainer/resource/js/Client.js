@@ -20,11 +20,11 @@ EchoClient = function() {
     
     /**
      * Number of tab keyDown/keyPress events since the last tab keyUp event.
-     * Used to handle out-of-order keyDown/keyPress events presented by browsers (IE).
+     * Used to handle out-of-order/missing keyDown/keyPress events presented by browsers
      * It is necessary to capture keyDown and keyPress events in order to invoke
-     * preventEventDefault() and manually manage all tab processing.  The out-of-order
-     * events are handled by ignoring the second KeyPress or KeyDown tab event since the
-     * last KeyUp event. 
+     * preventEventDefault() and manually manage all tab processing.  The missing/out-of-order
+     * event scenario is handled by ignoring the second KeyPress or KeyDown tab event since the
+     * last KeyUp event.
      */
     this._tabDown = 0;
 };
