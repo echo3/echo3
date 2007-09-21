@@ -134,7 +134,7 @@ EchoWebCore.DOM.createDocument = function(namespaceUri, qualifiedName) {
  * @param element the DOM element to focus
  */
 EchoWebCore.DOM.focusElement = function(element) {
-    if (true || EchoWebCore.Environment.QUIRK_DELAYED_FOCUS_REQUIRED) {
+    if (EchoWebCore.Environment.QUIRK_DELAYED_FOCUS_REQUIRED) {
         EchoCore.Scheduler.run(new EchoCore.MethodRef(window, EchoWebCore.DOM._focusElementImpl, element));
     } else {
         EchoWebCore.DOM._focusElementImpl(element);
