@@ -33,6 +33,7 @@ import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>String</code> properties.
@@ -45,7 +46,12 @@ implements SerialPropertyPeer {
      *      Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) {
-        return propertyElement.getAttribute("v");
+        if (propertyElement.hasAttribute("v")) {
+            return propertyElement.getAttribute("v");
+        } else if (propertyElement.hasChildNodes()) {
+            return propertyElement.getFirstChild().getNodeValue();
+        }
+        return null;
     }
 
     /**
@@ -55,6 +61,7 @@ implements SerialPropertyPeer {
     public void toXml(Context context, Class objectClass,
             Element propertyElement, Object propertyValue) {
         propertyElement.setAttribute("t", "s");
-        propertyElement.setAttribute("v", (String) propertyValue);
+        Text textNode = propertyElement.getOwnerDocument().createTextNode((String) propertyValue);
+        propertyElement.appendChild(textNode);
     }
 }

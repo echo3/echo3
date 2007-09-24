@@ -252,7 +252,7 @@ EchoSerial.addPropertyTranslator("i", EchoSerial.PropertyTranslator.Integer);
 EchoSerial.PropertyTranslator.String = function() { };
 
 EchoSerial.PropertyTranslator.String.toProperty = function(client, propertyElement) {
-    return propertyElement.getAttribute("v");
+	return propertyElement.firstChild.nodeValue;
 };
 
 EchoSerial.addPropertyTranslator("s", EchoSerial.PropertyTranslator.String);
