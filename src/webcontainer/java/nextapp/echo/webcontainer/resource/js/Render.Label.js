@@ -13,6 +13,28 @@ EchoRender.ComponentSync.Label.prototype._createSingleItemSpanElement = function
     return spanElement;
 };
 
+/**
+ * Formats the whitespace in the given text for use in HTML.
+ * 
+ * @param text {String} the text to format
+ * @param parentElement the element to append the text to
+ */
+EchoRender.ComponentSync.Label.prototype._formatWhitespace = function(text, parentElement) {
+	// switch between spaces and non-breaking spaces to preserve line wrapping
+	text = text.replace(/\t/g, " \u00a0 \u00a0");
+	text = text.replace(/ {2}/g, " \u00a0");
+	var lines = text.split('\n');
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+		if (i > 0) {
+			parentElement.appendChild(document.createElement("br"));
+		}
+		if (line.length > 0) {
+			parentElement.appendChild(document.createTextNode(line));
+		}
+	}
+};
+
 EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElement) {
     this._containerElement = parentElement;
     var icon = this.component.getRenderProperty("icon");
@@ -22,7 +44,9 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
 
     if (text) {
         var lineWrap = this.component.getRenderProperty("lineWrap", true);
-
+		var formatWhitespace = this.component.getRenderProperty("formatWhitespace", false)
+		        && (text.indexOf(' ') != -1 || text.indexOf('\n') != -1 || text.indexOf('\t') != -1);
+		
         if (icon) {
             // Text and icon.
             var iconTextMargin = this.component.getRenderProperty("iconTextMargin", 
@@ -31,7 +55,11 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
             var tct = new EchoRender.TriCellTable(orientation, EchoRender.Property.Extent.toPixels(iconTextMargin));
             var imgElement = document.createElement("img");
             imgElement.src = icon.url;
-            tct.tdElements[0].appendChild(document.createTextNode(text));
+            if (formatWhitespace) {
+            	this._formatWhitespace(text, tct.tdElements[0]);
+            } else {
+            	tct.tdElements[0].appendChild(document.createTextNode(text));
+            }
             if (!lineWrap) {
                 tct.tdElements[0].style.whiteSpace = "nowrap";
             }
@@ -41,10 +69,15 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
             EchoRender.Property.Color.renderFB(this.component, this._labelNode);
         } else {
 	        var font = this.component.getRenderProperty("font");
-            if (!font && lineWrap && !foreground && !background) {
+            if (!font && lineWrap && !foreground && !background && !formatWhitespace) {
                 this._labelNode = document.createTextNode(text);
             } else {
-                this._labelNode = this._createSingleItemSpanElement(document.createTextNode(text));
+                this._labelNode = document.createElement("span");
+                if (formatWhitespace) {
+                	this._formatWhitespace(text, this._labelNode);
+                } else {
+                	this._labelNode.appendChild(document.createTextNode(text));
+                }
                 if (!lineWrap) {
                     this._labelNode.style.whiteSpace = "nowrap";
                 }

@@ -186,6 +186,35 @@ public class LabelTest extends SplitPane {
                 });
             }
         });
+        controlsColumn.addButton("Set Text = Formatted", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(Label label) {
+                        if (label.getText() != null) {
+                            label.setText("This is a label that uses newlines, tabs and multiple spaces:\nThe\tquick   brown  fox jumps  over   the\tlazy   brown  dog.");
+                        }
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set Format Whitespace = true", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(Label label) {
+                        label.setFormatWhitespace(true);
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set Format Whitespace = false", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(Label label) {
+                        label.setFormatWhitespace(false);
+                    }
+                });
+            }
+        });
         controlsColumn.addButton("Set Line Wrap = true", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator() {

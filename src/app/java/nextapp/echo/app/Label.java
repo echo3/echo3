@@ -37,6 +37,7 @@ public class Label extends Component {
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
+    public static final String PROPERTY_FORMAT_WHITESPACE = "formatWhitespace";
     public static final String PROPERTY_ICON = "icon";
     public static final String PROPERTY_ICON_TEXT_MARGIN = "iconTextMargin";
     public static final String PROPERTY_LINE_WRAP = "lineWrap";
@@ -141,6 +142,17 @@ public class Label extends Component {
     }
     
     /**
+     * Determines if the text of the label should be formatted in case the 
+     * target renderer does not preserve whitespace. Default value is false.
+     * 
+     * @return the format whitespace state
+     */
+    public boolean isFormatWhitespace() {
+        Boolean value = (Boolean) getProperty(PROPERTY_FORMAT_WHITESPACE);
+        return value == null ? false : value.booleanValue();
+    }
+    
+    /**
      * Determines if the text of the label should wrap in the event that 
      * horizontal space is limited.  Default value is true.
      * 
@@ -158,6 +170,16 @@ public class Label extends Component {
      */
     public boolean isValidChild(Component component) {
         return false;
+    }
+
+    /**
+     * Sets whether the text of the label should be formatted in case the target
+     * renderer does not preserve whitespace. Default value is false.
+     * 
+     * @param newValue the new format whitespace state
+     */
+    public void setFormatWhitespace(boolean newValue) {
+        setProperty(PROPERTY_FORMAT_WHITESPACE, newValue ? Boolean.TRUE : Boolean.FALSE);
     }
     
     /**
