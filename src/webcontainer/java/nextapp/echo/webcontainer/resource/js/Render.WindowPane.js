@@ -293,6 +293,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         // Render top left corner
         if (this._borderInsets.left > 0) {
             this._borderDivElements[0] = document.createElement("div");
+		    this._borderDivElements[0].style.fontSize = "1px";
             this._borderDivElements[0].style.position = "absolute";
             this._borderDivElements[0].style.left = "0px";
             this._borderDivElements[0].style.top = "0px";
@@ -312,6 +313,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         
         // Render top side
         this._borderDivElements[1] = document.createElement("div");
+	    this._borderDivElements[1].style.fontSize = "1px";
         this._borderDivElements[1].style.position = "absolute";
         this._borderDivElements[1].style.left = this._borderInsets.left + "px";
         this._borderDivElements[1].style.top = "0px";
@@ -331,6 +333,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         // Render top right corner
         if (this._borderInsets.right > 0) {
             this._borderDivElements[2] = document.createElement("div");
+		    this._borderDivElements[2].style.fontSize = "1px";
             this._borderDivElements[2].style.position = "absolute";
             this._borderDivElements[2].style.right = "0px";
             this._borderDivElements[2].style.top = "0px";
@@ -352,6 +355,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     // Render left side
     if (this._borderInsets.left > 0) {
         this._borderDivElements[3] = document.createElement("div");
+	    this._borderDivElements[3].style.fontSize = "1px";
         this._borderDivElements[3].style.position = "absolute";
         this._borderDivElements[3].style.left = "0px";
         this._borderDivElements[3].style.top = this._borderInsets.top + "px";
@@ -372,6 +376,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     // Render right side
     if (this._borderInsets.right > 0) {
         this._borderDivElements[4] = document.createElement("div");
+	    this._borderDivElements[4].style.fontSize = "1px";
         this._borderDivElements[4].style.position = "absolute";
         this._borderDivElements[4].style.right = "0px";
         this._borderDivElements[4].style.top = this._borderInsets.top + "px";
@@ -394,6 +399,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         // Render bottom left corner
         if (this._borderInsets.left > 0) {
             this._borderDivElements[5] = document.createElement("div");
+		    this._borderDivElements[5].style.fontSize = "1px";
             this._borderDivElements[5].style.position = "absolute";
             this._borderDivElements[5].style.left = "0px";
             this._borderDivElements[5].style.bottom = "0px";
@@ -413,6 +419,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         
         // Render bottom side
         this._borderDivElements[6] = document.createElement("div");
+	    this._borderDivElements[6].style.fontSize = "1px";
         this._borderDivElements[6].style.position = "absolute";
         this._borderDivElements[6].style.left = this._borderInsets.left + "px";
         this._borderDivElements[6].style.bottom = "0px";
@@ -432,6 +439,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         // Render bottom right corner
         if (this._borderInsets.right > 0) {
             this._borderDivElements[7] = document.createElement("div");
+		    this._borderDivElements[7].style.fontSize = "1px";
             this._borderDivElements[7].style.position = "absolute";
             this._borderDivElements[7].style.right = "0px";
             this._borderDivElements[7].style.bottom = "0px";
