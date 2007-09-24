@@ -432,25 +432,32 @@ EchoRemoteClient.ClientMessage.prototype._renderCSync = function() {
 };
 
 EchoRemoteClient.ClientMessage.prototype._renderClientProperties = function() {
-    var clientPropertiesElement = this._document.createElement("dir");
-
-    clientPropertiesElement.setAttribute("proc", "ClientProperties");
-    clientPropertiesElement.appendChild(this._createPropertyElement("screenWidth", screen.width));
-    clientPropertiesElement.appendChild(this._createPropertyElement("screenHeight", screen.height));
-    clientPropertiesElement.appendChild(this._createPropertyElement("screenColorDepth", screen.colorDepth));
-    clientPropertiesElement.appendChild(this._createPropertyElement("utcOffset", 0 - parseInt((new Date()).getTimezoneOffset())));
+    var properties = new EchoRemoteClient.ClientMessage._ClientProperties(this);
     
-    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorAppName", window.navigator.appName));
-    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorAppVersion", window.navigator.appVersion));
-    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorAppCodeName", window.navigator.appCodeName));
-    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorCookieEnabled", window.navigator.cookieEnabled));
-    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorJavaEnabled", window.navigator.javaEnabled()));
-    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorLanguage", 
-            window.navigator.language ? window.navigator.language : window.navigator.userLanguage));
-    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorPlatform", window.navigator.platform));
-    clientPropertiesElement.appendChild(this._createPropertyElement("navigatorUserAgent", window.navigator.userAgent));
-
-    this._document.documentElement.appendChild(clientPropertiesElement);
+    properties._add("screenWidth", screen.width);
+    properties._add("screenHeight", screen.height);
+    properties._add("screenColorDepth", screen.colorDepth);
+    properties._add("utcOffset", 0 - parseInt((new Date()).getTimezoneOffset()));
+    
+    properties._add("navigatorAppName", window.navigator.appName);
+    properties._add("navigatorAppVersion", window.navigator.appVersion);
+    properties._add("navigatorAppCodeName", window.navigator.appCodeName);
+    properties._add("navigatorCookieEnabled", window.navigator.cookieEnabled);
+    properties._add("navigatorJavaEnabled", window.navigator.javaEnabled());
+    properties._add("navigatorLanguage", 
+            window.navigator.language ? window.navigator.language : window.navigator.userLanguage);
+    properties._add("navigatorPlatform", window.navigator.platform);
+    properties._add("navigatorUserAgent", window.navigator.userAgent);
+    
+    var env = EchoWebCore.Environment;
+    properties._add("browserOpera", env.BROWSER_OPERA);
+    properties._add("browserSafari", env.BROWSER_SAFARI);
+    properties._add("browserKonqueror", env.BROWSER_KONQUEROR);
+    properties._add("browserMozillaFirefox", env.BROWSER_FIREFOX);
+    properties._add("browserMozilla", env.BROWSER_MOZILLA);
+    properties._add("browserInternetExplorer", env.BROWSER_INTERNET_EXPLORER);
+    properties._add("browserVersionMajor", env.BROWSER_MAJOR_VERSION);
+    properties._add("browserVersionMinor", env.BROWSER_MINOR_VERSION);
 };
 
 EchoRemoteClient.ClientMessage.prototype._renderXml = function() {
@@ -475,6 +482,30 @@ EchoRemoteClient.ClientMessage.prototype.storeProperty = function(componentId, p
         this._componentIdToPropertyMap.put(componentId, propertyMap);
     }
     propertyMap.put(propertyName, propertyValue);
+};
+
+/**
+ * @class Utility class for constructing the client properties directive.
+ * @private
+ * 
+ * @param clientMessage the client message object
+ */
+EchoRemoteClient.ClientMessage._ClientProperties = function(clientMessage) {
+    this._element = clientMessage._document.createElement("dir");
+    this._element.setAttribute("proc", "ClientProperties");
+    clientMessage._document.documentElement.appendChild(this._element);
+    this._clientMessage = clientMessage;
+};
+
+/**
+ * Constructs a property element with the given key-value pair and adds that to the 
+ * client properties directive in the client message.
+ * 
+ * @param key the key
+ * @param value the value
+ */
+EchoRemoteClient.ClientMessage._ClientProperties.prototype._add = function(key, value) {
+    this._element.appendChild(this._clientMessage._createPropertyElement(key, value));
 };
 
 /**

@@ -371,22 +371,19 @@ EchoWebCore.Environment._init = function() {
     env.BROWSER_MOZILLA = !env.DECEPTIVE_USER_AGENT && ua.indexOf("gecko") != -1;
     env.BROWSER_INTERNET_EXPLORER = !env.DECEPTIVE_USER_AGENT && ua.indexOf("msie") != -1;
     
-    //FIXME This should handle arbitrary version numbers.
     // Retrieve Version Info (as necessary).
     if (env.BROWSER_INTERNET_EXPLORER) {
-        if (ua.indexOf("msie 6.") != -1) {
-            env.BROWSER_MAJOR_VERSION = 6;
-        } else if (ua.indexOf("msie 7.") != -1) {
-            env.BROWSER_MAJOR_VERSION = 7;
-        }
+        env._parseVersionInfo(ua, "msie ");
     } else if (env.BROWSER_FIREFOX) {
-        if (ua.indexOf("firefox/1.") != -1) {
-            env.BROWSER_MAJOR_VERSION = 1;
-        } else if (ua.indexOf("firefox/2.") != -1) {
-            env.BROWSER_MAJOR_VERSION = 2;
-        } else if (ua.indexOf("firefox/3.") != -1) {
-            env.BROWSER_MAJOR_VERSION = 3;
-        }
+        env._parseVersionInfo(ua, "firefox/");
+    } else if (env.BROWSER_OPERA) {
+        env._parseVersionInfo(ua, "opera/");
+    } else if (env.BROWSER_SAFARI) {
+        env._parseVersionInfo(ua, "version/");
+    } else if (env.BROWSER_MOZILLA) {
+        env._parseVersionInfo(ua, "rv:")
+    } else if (env.BROWSER_KONQUEROR) {
+        env._parseVersionInf(ua, "konqueror/");
     }
     
     //FIXME Quirk flags not refined yet, some quirk flags from Echo 2.0/1 will/may be deprecated/removed.
@@ -428,6 +425,47 @@ EchoWebCore.Environment._init = function() {
         }
     } else if (env.BROWSER_OPERA) {
         env.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
+    }
+};
+
+/**
+ * @private
+ * 
+ * Parses version information from user agent string. The text argument specifies
+ * the string that prefixes the version info in the ua string (ie 'version/' for Safari for example).
+ * <p>
+ * The major version is retrieved by getting the int between text and the first dot. The minor version
+ * is retrieved by getting the int between the first dot and the first non-numeric character that appears
+ * after the dot, or the end of the ua string (whichever comes first).
+ * If the ua string does not supply a minor version, the minor version is assumed to be 0.
+ * 
+ * @param ua the lower cased user agent string
+ * @param searchString the text that prefixes the version info (version info must be the first appearance of 
+ *          this text in the ua string)
+ */
+EchoWebCore.Environment._parseVersionInfo = function(ua, searchString) {
+    var ix1 = ua.indexOf(searchString);
+    var ix2 = ua.indexOf(".", ix1);
+    var ix3 = ua.length;
+    
+    if (ix2 == -1) {
+        ix2 = ua.length;
+    } else {
+        // search for the first non-number character after the dot
+        for (var i = ix2 + 1; i < ua.length; i++) {
+            var c = ua.charAt(i);
+            if (isNaN(c)) {
+                ix3 = i;
+                break;
+            }
+        }
+    }
+    
+    EchoWebCore.Environment.BROWSER_MAJOR_VERSION = parseInt(ua.substring(ix1 + searchString.length, ix2));
+    if (ix2 == ua.length) {
+        EchoWebCore.Environment.BROWSER_MINOR_VERSION = 0;
+    } else {
+        EchoWebCore.Environment.BROWSER_MINOR_VERSION = parseInt(ua.substring(ix2 + 1, ix3));
     }
 };
 

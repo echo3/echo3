@@ -30,17 +30,21 @@
 package nextapp.echo.webcontainer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-
-import org.w3c.dom.Element;
 
 import nextapp.echo.app.serial.PropertyPeerFactory;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
+
+import org.w3c.dom.Element;
 
 /**
  * <code>ClientMessage.Processor</code> which generates a
@@ -70,6 +74,15 @@ implements ClientMessage.Processor {
         m.put(ClientProperties.NAVIGATOR_LANGUAGE, String.class);
         m.put(ClientProperties.NAVIGATOR_PLATFORM, String.class);
         m.put(ClientProperties.NAVIGATOR_USER_AGENT, String.class);
+
+        m.put(ClientProperties.BROWSER_OPERA, Boolean.class);
+        m.put(ClientProperties.BROWSER_KONQUEROR, Boolean.class);
+        m.put(ClientProperties.BROWSER_SAFARI, Boolean.class);
+        m.put(ClientProperties.BROWSER_MOZILLA, Boolean.class);
+        m.put(ClientProperties.BROWSER_MOZILLA_FIREFOX, Boolean.class);
+        m.put(ClientProperties.BROWSER_INTERNET_EXPLORER, Boolean.class);
+        m.put(ClientProperties.BROWSER_VERSION_MAJOR, Integer.class);
+        m.put(ClientProperties.BROWSER_VERSION_MINOR, Integer.class);
         
         TYPE_MAP = Collections.unmodifiableMap(m);
     }
@@ -80,6 +93,16 @@ implements ClientMessage.Processor {
     public void process(Context context, Element dirElement) 
     throws IOException {
         ClientProperties clientProperties = new ClientProperties();
+        Connection conn = WebContainerServlet.getActiveConnection();
+        
+        Enumeration localeEnum = conn.getRequest().getLocales();
+        List localeList = new ArrayList();
+        while (localeEnum.hasMoreElements()) {
+            localeList.add(localeEnum.nextElement());
+        }
+        clientProperties.setProperty(ClientProperties.LOCALES, localeList.toArray(new Locale[localeList.size()]));
+        clientProperties.setProperty(ClientProperties.REMOTE_HOST, conn.getRequest().getRemoteHost());
+        
         PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
         Element[] pElements = DomUtil.getChildElementsByTagName(dirElement, "p");
         for (int i = 0; i < pElements.length; ++i) {
