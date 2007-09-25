@@ -120,6 +120,10 @@ EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseDown = functio
         return;
     }
 
+    // Raise window, resultant event will adjust CSS z-index.
+    var floatingPaneManager = this.component.parent.peer.getFloatingPaneManager();
+    floatingPaneManager.add(this.component.renderId); 
+    
     // Prevent selections.
     EchoWebCore.dragInProgress = true;
     EchoWebCore.DOM.preventEventDefault(e);
@@ -158,6 +162,11 @@ EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseUp = function(
 
 	this._userWindowX = this._windowX;
 	this._userWindowY = this._windowY;
+};
+
+EchoRender.ComponentSync.WindowPane.prototype._processZIndexChanged = function(e) {
+    var floatingPaneManager = this.component.parent.peer.getFloatingPaneManager();
+    this._windowPaneDivElement.parentNode.style.zIndex = floatingPaneManager.getIndex(this.component.renderId);
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.setPosition = function(x, y, width, height) {
@@ -597,6 +606,10 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
 	                new EchoCore.MethodRef(this, this.processBorderMouseDown), true);
 	    }
     }
+    
+    var floatingPaneManager = this.component.parent.peer.getFloatingPaneManager();
+    this._windowPaneDivElement.style.zIndex = floatingPaneManager.add(this.component.renderId);
+    floatingPaneManager.addZIndexListener(new EchoCore.MethodRef(this, this._processZIndexChanged));
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.renderAddChild = function(update, child, parentElement) {
@@ -604,6 +617,10 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAddChild = function(update, 
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.renderDispose = function(update) { 
+    var floatingPaneManager = this.component.parent.peer.getFloatingPaneManager();
+    floatingPaneManager.removeZIndexListener(new EchoCore.MethodRef(this, this._processZIndexChanged));
+    floatingPaneManager.remove(this.component.renderId);
+
     for (var i = 0; i < this._borderDivElements.length; ++i) {
         EchoWebCore.EventProcessor.removeAll(this._borderDivElements[i]);
         this._borderDivElements[i] = null;

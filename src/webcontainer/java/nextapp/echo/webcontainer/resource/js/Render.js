@@ -340,6 +340,100 @@ EchoRender.ComponentSync.Root.prototype.renderUpdate = function(update) {
     return fullRender;
 };
 
+/**
+ * Creates a new Floating Pane Manager.
+ * 
+ * @class Manages floating windows, e.g., window panes in a content pane.
+ * Provides listener facility to receive notifications when the panes are raised or lowered,
+ * such that floating panes may adjust their z-indices appropriately for correct display.
+ * 
+ * Registered listeners will be notified when one or more z-indices have changed.
+ */
+EchoRender.FloatingPaneManager = function() {
+    this._floatingPanes = null;
+    this._listeners = null;
+};
+
+/**
+ * Adds a floating pane to be managed, or, if the floating pane already exists,
+ * raises it to the top.
+ * The floating pane will be placed above all others, at the highest z-index.
+ * 
+ * @param {String} renderId the id of the floating pane
+ * @return the initial z-index of the added floating pane
+ */
+EchoRender.FloatingPaneManager.prototype.add = function(renderId) {
+    if (!this._floatingPanes) {
+        this._floatingPanes = new Array();
+    }
+    EchoCore.Arrays.remove(this._floatingPanes, renderId);
+    this._floatingPanes.push(renderId);
+    this._fireZIndexEvent();
+    return this._floatingPanes.length;
+};
+
+/**
+ * Adds a z-index listener.  
+ * 
+ * @param the listener to add (a method or MethodRef)
+ */
+EchoRender.FloatingPaneManager.prototype.addZIndexListener = function(l) {
+    if (!this._listeners) {
+        this._listeners = new EchoCore.ListenerList();
+    }
+    this._listeners.addListener("zIndex", l);
+};
+
+/**
+ * Notifies listeners of a z-index change.
+ */
+EchoRender.FloatingPaneManager.prototype._fireZIndexEvent = function() {
+    if (this._listeners) {
+        this._listeners.fireEvent(new EchoCore.Event("zIndex", this));
+    }
+};
+
+/**
+ * Returns the z-index of the floating pane with the specified id.
+ * -1 is returned if the pane is not registered.
+ * 
+ * @param {String} renderId the id of the floating pane
+ * @return the z-index
+ */
+EchoRender.FloatingPaneManager.prototype.getIndex = function(renderId) {
+    if (this._floatingPanes) {
+        var index = EchoCore.Arrays.indexOf(this._floatingPanes, renderId);
+        return index == -1 ? -1 : index + 1;
+    } else {
+        return -1;
+    }
+};
+
+/**
+ * Removes a floating pane from being managed.
+ * 
+ * @param {String} renderId the id of the floating pane
+ */
+EchoRender.FloatingPaneManager.prototype.remove = function(renderId) {
+    if (!this._floatingPanes) {
+        return;
+    }
+    EchoCore.Arrays.remove(this._floatingPanes, renderId);
+    this._fireZIndexEvent();
+};
+
+/**
+ * Removes a z-index listener.
+ * 
+ * @param the listener to remove (a method or MethodRef)
+ */
+EchoRender.FloatingPaneManager.prototype.removeZIndexListener = function(l) {
+    if (!this._listeners) {
+        return;
+    }
+    this._listeners.removeListener("zIndex", l);
+};
+
 EchoRender.Property = function() {
 };
 

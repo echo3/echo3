@@ -1,9 +1,18 @@
 /**
  * Component rendering peer: ContentPane
  */
-EchoRender.ComponentSync.ContentPane = function() { };
+EchoRender.ComponentSync.ContentPane = function() {
+    this._floatingPaneManager = null;
+};
 
 EchoRender.ComponentSync.ContentPane.prototype = EchoCore.derive(EchoRender.ComponentSync);
+
+EchoRender.ComponentSync.ContentPane.prototype.getFloatingPaneManager = function() {
+    if (!this._floatingPaneManager) {
+        this._floatingPaneManager = new EchoRender.FloatingPaneManager();
+    }
+    return this._floatingPaneManager;
+};
 
 EchoRender.ComponentSync.ContentPane.prototype.renderAdd = function(update, parentElement) {
     this._divElement = document.createElement("div");
