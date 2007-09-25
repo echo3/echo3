@@ -13,7 +13,10 @@ EchoRender.ComponentSync.ContentPane.prototype._processZIndexChanged = function(
             continue;
         }
         var index = this._floatingPaneManager.getIndex(this.component.children[i].renderId);
-        this._childIdToElementMap[this.component.children[i].renderId].style.zIndex = index;
+        var childElement = this._childIdToElementMap[this.component.children[i].renderId];
+        if (childElement) {
+            childElement.style.zIndex = index;
+        }
     }
 };
 
