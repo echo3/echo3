@@ -7,11 +7,22 @@ EchoRender.ComponentSync.ContentPane = function() {
 
 EchoRender.ComponentSync.ContentPane.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
-EchoRender.ComponentSync.ContentPane.prototype.getFloatingPaneManager = function() {
+EchoRender.ComponentSync.ContentPane.prototype._processZIndexChanged = function(e) {
+    for (var i = 0; i < this.component.children.length; ++i) {
+        if (!this.component.children[i].floatingPane) {
+            continue;
+        }
+        var index = this._floatingPaneManager.getIndex(this.component.children[i].renderId);
+        this._childIdToElementMap[this.component.children[i].renderId].style.zIndex = index;
+    }
+};
+
+EchoRender.ComponentSync.ContentPane.prototype.raise = function(child) {
     if (!this._floatingPaneManager) {
         this._floatingPaneManager = new EchoRender.FloatingPaneManager();
+        this._floatingPaneManager.addZIndexListener(new EchoCore.MethodRef(this, this._processZIndexChanged));
     }
-    return this._floatingPaneManager;
+    this._floatingPaneManager.add(child.renderId);
 };
 
 EchoRender.ComponentSync.ContentPane.prototype.renderAdd = function(update, parentElement) {
@@ -59,6 +70,10 @@ EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update
     }
     EchoRender.renderComponentAdd(this.client, update, child, divElement);
     this._divElement.appendChild(divElement);
+    
+    if (child.floatingPane) {
+        this.raise(child);
+    }
 };
 
 EchoRender.ComponentSync.ContentPane.prototype.renderDispose = function(update) { 
@@ -67,6 +82,10 @@ EchoRender.ComponentSync.ContentPane.prototype.renderDispose = function(update) 
 };
 
 EchoRender.ComponentSync.ContentPane.prototype._renderRemoveChild = function(update, child) {
+    if (child.floatingPane && this._floatingPaneManager) {
+        this._floatingPaneManager.remove(child.renderId);
+    }
+    
     var divElement = this._childIdToElementMap[child.renderId];
     divElement.parentNode.removeChild(divElement);
     delete this._childIdToElementMap[child.renderId];

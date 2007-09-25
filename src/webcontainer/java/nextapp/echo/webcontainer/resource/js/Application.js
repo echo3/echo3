@@ -386,7 +386,7 @@ EchoApp.Component = function(properties) {
     
     /**
      * The render id.
-     * This value is read-only.
+     * This value should be treated as read-only and immutable.
      * @type String
      */
     this.renderId = null;
