@@ -126,6 +126,7 @@ public class TestPane extends ContentPane {
         addTest("Push (Basic)", "PushTest");
         addTest("Push (Ghost Test)", "PushGhostTest");
         addTest("Random Click", "RandomClickTest");
+        addTest("Reparent", "ReparentTest");
         addTest("Row", "RowTest");
         addTest("SplitPane (Basic)", "SplitPaneTest");
         addTest("SplitPane (Nested)", "SplitPaneNestedTest");
