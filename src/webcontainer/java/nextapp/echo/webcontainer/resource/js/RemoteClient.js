@@ -598,14 +598,26 @@ EchoRemoteClient.ComponentSyncProcessor._numericReverseSort = function(a, b) {
  * Directive processor process() implementation.
  */
 EchoRemoteClient.ComponentSyncProcessor.prototype.process = function(dirElement) {
-    var element = dirElement.firstChild;
+    var element;
+    
+    element = dirElement.firstChild;
     while (element) {
         if (element.nodeType == 1) {
             switch (element.nodeName) {
             case "fr": this._processFullRefresh(element); break;
             case "ss": this._processStyleSheet(element); break;
-            case "up": this._processUpdate(element); break;
+            case "up": this._processUpdatePhase1(element); break;
             case "sp": this._processStoreProperties(element); break;
+            }
+        }
+        element = element.nextSibling;
+    }
+
+    element = dirElement.firstChild;
+    while (element) {
+        if (element.nodeType == 1) {
+            switch (element.nodeName) {
+            case "up": this._processUpdatePhase2(element); break;
             }
         }
         element = element.nextSibling;
@@ -675,7 +687,31 @@ EchoRemoteClient.ComponentSyncProcessor.prototype._processStyleSheet = function(
     this._client.application.setStyleSheet(styleSheet);
 };
 
-EchoRemoteClient.ComponentSyncProcessor.prototype._processUpdate = function(upElement) {
+EchoRemoteClient.ComponentSyncProcessor.prototype._processUpdatePhase1 = function(upElement) {
+    // Determine parent component
+    var parentComponent;
+    if (upElement.getAttribute("r") == "true") {
+        parentComponent = this._client.application.rootComponent;
+    } else {
+        var parentId = upElement.getAttribute("i");
+        parentComponent = this._client.application.getComponentByRenderId(parentId);
+    }
+
+    var element = upElement.firstChild;
+    while (element) {
+        if (element.nodeType == 1) {
+            switch (element.nodeName) {
+            case "rm": // Removed child(ren).
+                var childElementIds = element.getAttribute("i").split(",");
+                this._processComponentRemove(parentComponent, childElementIds);
+                break;
+            }
+        }
+        element = element.nextSibling;
+    }
+};
+
+EchoRemoteClient.ComponentSyncProcessor.prototype._processUpdatePhase2 = function(upElement) {
     // Determine parent component
     var parentComponent;
     if (upElement.getAttribute("r") == "true") {
@@ -705,7 +741,7 @@ EchoRemoteClient.ComponentSyncProcessor.prototype._processUpdate = function(upEl
     while (element) {
         if (element.nodeType == 1) {
             switch (element.nodeName) {
-            case "c":
+            case "c": // Added child.
                 var component = EchoSerial.loadComponent(this._client, element, this._referenceMap);
                 var index = element.getAttribute("x");
                 if (index == null) {
@@ -714,10 +750,10 @@ EchoRemoteClient.ComponentSyncProcessor.prototype._processUpdate = function(upEl
                     parentComponent.add(component, parseInt(index));
                 }
                 break;
-            case "p": // Property
+            case "p": // Property update.
                 EchoSerial.loadProperty(this._client, element, parentComponent, null, this._referenceMap);
                 break;
-            case "e": // Property
+            case "e": // Event update.
                 var eventType = element.getAttribute("t");
                 if (element.getAttribute("v") == "true") {
                     this._client.removeComponentListener(parentComponent, eventType);
@@ -725,10 +761,6 @@ EchoRemoteClient.ComponentSyncProcessor.prototype._processUpdate = function(upEl
                 } else {
                     this._client.removeComponentListener(parentComponent, eventType);
                 }
-                break;
-            case "rm":
-                var childElementIds = element.getAttribute("i").split(",");
-                this._processComponentRemove(parentComponent, childElementIds);
                 break;
             }
         }
