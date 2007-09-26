@@ -57,7 +57,7 @@ EmbedTest.ComponentSync.TestComponent.prototype.renderDispose = function(update)
     this._divElement = null;
 };
 
-EmbedTest.ComponentSync.TestComponent.prototype.renderSizeUpdate = function(update) {
+EmbedTest.ComponentSync.TestComponent.prototype.renderDisplay = function(update) {
     if (!this._appInitialized) {
         this._createApp();
         this._appInitialized = true;
@@ -147,7 +147,7 @@ EmbedTest.ComponentSync.TestPane.prototype.renderDispose = function(update) {
     this._divElement = null;
 };
 
-EmbedTest.ComponentSync.TestPane.prototype.renderSizeUpdate = function(update) {
+EmbedTest.ComponentSync.TestPane.prototype.renderDisplay = function(update) {
     if (!this._appInitialized) {
         this._createApp();
         this._appInitialized = true;
