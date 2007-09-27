@@ -30,6 +30,7 @@
 package nextapp.echo.app.test;
 
 import nextapp.echo.app.ApplicationInstance;
+import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.WindowPane;
 import junit.framework.TestCase;
 
@@ -103,5 +104,64 @@ public class ModalTest extends TestCase {
         windowPane.setVisible(false);
         app.getDefaultWindow().getContent().add(windowPane);
         assertEquals(null, app.getModalContextRoot());
+    }
+    
+    public void testMultipleModals() {
+        ContentPane rootContent = app.getDefaultWindow().getContent();
+        
+        WindowPane a = new WindowPane();
+        a.setModal(true);
+        
+        WindowPane b = new WindowPane();
+        b.setModal(true);
+        
+        WindowPane c = new WindowPane();
+        c.setModal(true);
+        
+        rootContent.add(a);
+        rootContent.add(b);
+        
+        assertEquals(b, app.getModalContextRoot());
+        
+        rootContent.add(c);
+
+        assertEquals(c, app.getModalContextRoot());
+        
+        c.setModal(false);
+        
+        assertEquals(b, app.getModalContextRoot());
+        
+        ContentPane cContent = new ContentPane();
+        c.add(cContent);
+        
+        WindowPane c1 = new WindowPane();
+        c1.setModal(true);
+        cContent.add(c1);
+        
+        assertEquals(c1, app.getModalContextRoot());
+        
+        ContentPane bContent = new ContentPane();
+        b.add(bContent);
+        
+        WindowPane b1 = new WindowPane();
+        bContent.add(b1);
+        
+        assertEquals(c1, app.getModalContextRoot());
+        
+        b1.setModal(true);
+
+        assertEquals(c1, app.getModalContextRoot());
+        
+        c.setModal(true);
+
+        assertEquals(c1, app.getModalContextRoot());
+        
+        c.setModal(true);
+
+        assertEquals(c1, app.getModalContextRoot());
+        
+        c1.setModal(false);
+        
+        assertEquals(c, app.getModalContextRoot());
     }
 }

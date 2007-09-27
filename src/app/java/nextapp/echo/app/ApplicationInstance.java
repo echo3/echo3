@@ -35,10 +35,12 @@ import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import nextapp.echo.app.update.ServerUpdateManager;
 import nextapp.echo.app.update.UpdateManager;
@@ -66,6 +68,30 @@ implements Serializable {
      * <code>ApplicationInstance</code> relevant to the current thread.
      */ 
     private static final ThreadLocal activeInstance = new InheritableThreadLocal();
+    
+    /**
+     * Determines the current modal component by searching the entire hierarchy for modal components.
+     * This operation is only performed when multiple visibly rendered components are registered as modal.
+     * 
+     * @param searchComponent
+     * @param visibleModalComponents
+     * @return
+     */
+    private static Component findCurrentModalComponent(Component searchComponent, Set visibleModalComponents) {
+        int count = searchComponent.getComponentCount();
+        for (int i = count - 1; i >= 0; --i) {
+            Component foundComponent = findCurrentModalComponent(searchComponent.getComponent(i), visibleModalComponents);
+            if (foundComponent != null) {
+                return foundComponent;
+            }
+        }
+        
+        if (searchComponent instanceof ModalSupport && ((ModalSupport) searchComponent).isModal()) {
+            return searchComponent;
+        }
+        
+        return null;
+    }
     
     /**
      * Generates a system-level identifier (an identifier which is unique to all
@@ -412,17 +438,24 @@ implements Serializable {
      */
     public Component getModalContextRoot() {
         if (modalComponents == null || modalComponents.size() == 0) {
+            // No components marked as modal.
             return null;
-        } else {
-            for (int i = modalComponents.size() - 1; i >= 0; --i) {
-                Component component = (Component) modalComponents.get(i);
-                // Ignore invisible components.
-                if (component.isRenderVisible()) {
-                    return component;
-                }
-            }
-            return null;  
+        } else if (modalComponents.size() == 1) {
+            // One component marked as modal, return it if visible, null otherwise.
+            Component component = (Component) modalComponents.get(0);
+            return component.isRenderVisible() ? component : null;
         }
+
+        // Multiple modal components.
+        Set visibleModalComponents = new HashSet();
+        for (int i = modalComponents.size() - 1; i >= 0; --i) {
+            Component component = (Component) modalComponents.get(i);
+            if (component.isRenderVisible()) {
+                visibleModalComponents.add(component);;
+            }
+        }
+        
+        return findCurrentModalComponent(getDefaultWindow(), visibleModalComponents);  
     }
     
     /**

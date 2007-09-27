@@ -62,6 +62,7 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
     public WindowPanePeer() {
         super();
         addEvent(new AbstractComponentSynchronizePeer.EventPeer(WindowPane.INPUT_CLOSE, null));
+        addOutputProperty(WindowPane.MODAL_CHANGED_PROPERTY);
     }
     
     /**
@@ -85,6 +86,19 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
         }
     };
     
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputProperty(
+     *     nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, int)
+     */
+    public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex) {
+        WindowPane windowPane = (WindowPane) component;
+        if (WindowPane.MODAL_CHANGED_PROPERTY.equals(propertyName)) {
+            return Boolean.valueOf(windowPane.isModal());
+        } else {
+            return super.getOutputProperty(context, component, propertyName, propertyIndex);
+        }
+    }
+
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
      */
