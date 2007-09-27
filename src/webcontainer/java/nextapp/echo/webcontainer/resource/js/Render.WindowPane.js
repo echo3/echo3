@@ -164,6 +164,7 @@ EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseUp = function(
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.setPosition = function(x, y, width, height) {
+    EchoCore.Debug.consoleWrite("SP x=" + x + ",y=" + y);
     if (width != null) {
         if (width < this._minimumWidth) {
             if (x != null) {
@@ -184,27 +185,29 @@ EchoRender.ComponentSync.WindowPane.prototype.setPosition = function(x, y, width
         this._windowHeight = height;
     }
 
-    if (x != null) {
+    if (x == null) {
+        x = parseInt((this._containerSize.width - this._windowWidth) / 2);
+    } else {
         if (this._containerSize.width > 0 && x > this._containerSize.width - this._windowWidth) {
             x = this._containerSize.width - this._windowWidth;
         }
-
-        if (x < 0) {
-            x = 0;
-        }
-        this._windowX = x;
     }
+    if (x < 0) {
+        x = 0;
+    }
+    this._windowX = x;
 
-    if (y != null) {
+    if (y == null) {
+        y = parseInt((this._containerSize.height - this._windowHeight) / 2); 
+    } else {
         if (this._containerSize.height > 0 && y > this._containerSize.height - this._windowHeight) {
             y = this._containerSize.height - this._windowHeight;
         }
-
-        if (y < 0) {
-            y = 0;
-        }
-        this._windowY = y;
     }
+    if (y < 0) {
+        y = 0;
+    }
+    this._windowY = y;
     
     this.redraw();
 };
@@ -243,10 +246,10 @@ EchoRender.ComponentSync.WindowPane.prototype._removeTitleBarListeners = functio
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, parentElement) {
-    this._userWindowX = this._windowX = EchoRender.Property.Extent.toPixels(
-            this.component.getRenderProperty("positionX", EchoApp.WindowPane.DEFAULT_X), true);
-    this._userWindowY = this._windowY = EchoRender.Property.Extent.toPixels(
-            this.component.getRenderProperty("positionY", EchoApp.WindowPane.DEFAULT_Y), false);
+    var positionX = this.component.getRenderProperty("positionX");
+    var positionY = this.component.getRenderProperty("positionY");
+    this._userWindowX = this._windowX = positionX == null ? null : EchoRender.Property.Extent.toPixels(positionX, true); 
+    this._userWindowY = this._windowY = positionY == null ? null :EchoRender.Property.Extent.toPixels(positionY, false);
     this._userWindowWidth = this._windowWidth = EchoRender.Property.Extent.toPixels(
             this.component.getRenderProperty("width", EchoApp.WindowPane.DEFAULT_WIDTH), true);
     this._userWindowHeight = this._windowHeight = EchoRender.Property.Extent.toPixels(
@@ -275,8 +278,12 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     
     this._windowPaneDivElement.style.overflow = "hidden";
     
-    this._windowPaneDivElement.style.left = this._windowX + "px";
-    this._windowPaneDivElement.style.top = this._windowY + "px";
+    if (this._windowX != null) {
+        this._windowPaneDivElement.style.left = this._windowX + "px";
+    }
+    if (this._windowY != null) {
+        this._windowPaneDivElement.style.top = this._windowY + "px";
+    }
     this._windowPaneDivElement.style.width = this._windowWidth + "px";
     this._windowPaneDivElement.style.height = this._windowHeight + "px";
     
