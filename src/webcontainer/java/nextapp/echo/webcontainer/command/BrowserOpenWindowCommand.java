@@ -35,7 +35,7 @@ import nextapp.echo.app.Extent;
 /**
  * A Web Application Container-specific <code>Command</code> to 
  * open a new browser window displaying a specific URI.
- * This action may not propogate to a client if the client has 
+ * This action may not propagate to a client if the client has 
  * pop-up blocking algorithm enabled.
  */  
 public class BrowserOpenWindowCommand 
@@ -61,7 +61,7 @@ implements Command {
      * @param name the window name (may be null)
      */
     public BrowserOpenWindowCommand(String uri, String name) {
-        this(uri, name, null, null, 0);
+        this(uri, name, null, null, FLAG_MENUBAR | FLAG_TOOLBAR | FLAG_LOCATION | FLAG_RESIZABLE);
     }
     
     /**
