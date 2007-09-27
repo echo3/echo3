@@ -112,6 +112,21 @@ EchoApp.Application.prototype.dispose = function() {
     this.updateManager.dispose();
 };
 
+EchoApp.Application.prototype._findCurrentModalComponent = function(searchComponent) {
+    for (var i = searchComponent.children.length - 1; i >= 0; --i) {
+        var foundComponent = this._findCurrentModalComponent(searchComponent.children[i]);
+        if (foundComponent) {
+            return foundComponent;
+        }
+    }
+    
+    if (searchComponent.modalSupport && searchComponent.getProperty("modal")) {
+        return searchComponent;
+    }
+    
+    return null;
+};
+
 /**
  * Focuses the previous/next component based on the currently focused component.
  * 
@@ -159,12 +174,14 @@ EchoApp.Application.prototype.getLayoutDirection = function() {
     return this._layoutDirection ? this._layoutDirection : EchoApp.LayoutDirection.LTR;
 };
     
-EchoApp.Application.prototype.getModalContext = function() {
-    if (this.modalComponents.length == 0) {
+EchoApp.Application.prototype.getModalContextRoot = function() {
+    if (this._modalComponents.length == 0) {
         return null;
-    } else if (modalComponents.length == 1) {
-        return modalComponents[0];
+    } else if (this._modalComponents.length == 1) {
+        return this._modalComponents[0];
     }
+    
+    return this._findCurrentModalComponent(this.rootComponent);
 };
 
 /**
@@ -766,12 +783,22 @@ EchoApp.Component.prototype.indexOf = function(component) {
  * @type Boolean
  */
 EchoApp.Component.prototype.isActive = function() {
+    // Verify the component and its ancestors are all enabled.
     if (!this.isRenderEnabled()) {
         return false;
     }
+    
+    // Verify component is registered to an application, and that the application is active.
     if (!this.application || !this.application.isActive()) {
         return false;
     }
+    
+    // Verify component is in modal context.
+    var modalContextRoot = this.application.getModalContextRoot();
+    if (modalContextRoot != null && !modalContextRoot.isAncestorOf(this)) {
+        return false;
+    }
+    
     return true;
 };
 
