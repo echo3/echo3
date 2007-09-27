@@ -41,11 +41,11 @@ EchoApp.Application = function() {
     this.rootComponent.register(this);
     
     /** 
-     * Root component of modal context.
+     * Array of modal components.
      * This value is read-only.
-     * @type EchoApp.Component 
+     * @type Array 
      */
-    this.modalContext = null;
+    this._modalComponents = new Array();
     
     /** 
      * Displayed style sheet.
@@ -159,6 +159,14 @@ EchoApp.Application.prototype.getLayoutDirection = function() {
     return this._layoutDirection ? this._layoutDirection : EchoApp.LayoutDirection.LTR;
 };
     
+EchoApp.Application.prototype.getModalContext = function() {
+    if (this.modalComponents.length == 0) {
+        return null;
+    } else if (modalComponents.length == 1) {
+        return modalComponents[0];
+    }
+};
+
 /**
  * Returns the application style sheet.
  * 
@@ -3160,7 +3168,7 @@ EchoApp.PasswordField.prototype = EchoCore.derive(EchoApp.TextField);
  * @base EchoApp.Component
  */
 EchoApp.WindowPane = function(properties) {
-    this.floatingPane = this.pane = true;
+    this.modalSupport = this.floatingPane = this.pane = true;
     EchoApp.Component.call(this, properties);
     this.componentType = "WindowPane";
 };
