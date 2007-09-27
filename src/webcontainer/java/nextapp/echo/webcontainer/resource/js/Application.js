@@ -215,6 +215,9 @@ EchoApp.Application.prototype.isActive = function() {
  * @param newValue the new property value
  */
 EchoApp.Application.prototype.notifyComponentUpdate = function(parent, propertyName, oldValue, newValue) {
+    if (parent.modalSupport && propertyName == "modal") {
+        this._setModal(parent, newValue);
+    }
     if (this._listenerList.hasListeners("componentUpdate")) {
 	    this._listenerList.fireEvent(new EchoApp.Application.ComponentUpdateEvent(
                 this, parent, propertyName, oldValue, newValue));
@@ -235,6 +238,9 @@ EchoApp.Application.prototype._registerComponent = function(component) {
         throw new Error("Component already exists with id: " + component.renderId);
     }
     this._idToComponentMap.put(component.renderId, component);
+    if (component.modalSupport && component.getProperty("modal")) {
+        this._setModal(component, true);
+    }
 };
 
 /**
@@ -290,6 +296,18 @@ EchoApp.Application.prototype.setLayoutDirection = function(newValue) {
 };
 
 /**
+ * Informs the application of the modal state of a specific component.
+ * When modal components are unregistered, this method must be executed
+ * in order to avoid a memory leak.
+ */
+EchoApp.Application.prototype._setModal = function(component, modal) {
+    EchoCore.Arrays.remove(this._modalComponents, component);
+    if (modal) {
+        this._modalComponents.push(component);
+    }
+};
+
+/**
  * Sets the application style sheet.
  * 
  * @param {EchoApp.StyleSheet} newValue the new style sheet
@@ -311,6 +329,9 @@ EchoApp.Application.prototype.setStyleSheet = function(newValue) {
  */
 EchoApp.Application.prototype._unregisterComponent = function(component) {
     this._idToComponentMap.remove(component.renderId);
+    if (component.modalSupport) {
+        this._setModal(component, false);
+    }
 };
 
 /**

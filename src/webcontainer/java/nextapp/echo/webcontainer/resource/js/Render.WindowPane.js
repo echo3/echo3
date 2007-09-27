@@ -256,8 +256,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
             this.component.getRenderProperty("minimumWidth", EchoApp.WindowPane.DEFAULT_MINIMUM_WIDTH), true);
     this._minimumHeight = EchoRender.Property.Extent.toPixels(
             this.component.getRenderProperty("minimumHeight", EchoApp.WindowPane.DEFAULT_MINIMUM_HEIGHT), false);
-            
-            
+
     var border = this.component.getRenderProperty("border", EchoApp.WindowPane.DEFAULT_BORDER);
     this._borderInsets = EchoRender.Property.Insets.toPixels(border.borderInsets);
     this._contentInsets = EchoRender.Property.Insets.toPixels(border.contentInsets);
