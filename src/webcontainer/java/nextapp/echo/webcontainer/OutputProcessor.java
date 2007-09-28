@@ -234,7 +234,7 @@ class OutputProcessor {
             // add directive to add the Window's child ContentPane to the root.   
             // Render all properties of Window. 
             Window window = userInstance.getApplicationInstance().getDefaultWindow();
-            serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSync", "fr");
+            serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSyncUp", "fr");
             serverMessage.setAttribute("root", userInstance.getRootHtmlElementId());
             
             // Render Style Sheet
@@ -246,7 +246,7 @@ class OutputProcessor {
                 throw new IllegalStateException("No content to render: default window has no content.");
             }
             
-            Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
+            Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSyncUp", "up");
             upElement.setAttribute("r", "true"); // Adding to root.
             renderComponentState(upElement, content);
 
@@ -270,7 +270,31 @@ class OutputProcessor {
                     componentUpdates[i] = null;
                 }
             }
+            
+            // Render Component Synchronization Removes
+            for (int i = 0; i < componentUpdates.length; ++i) {
+                if (componentUpdates[i] == null || !componentUpdates[i].hasRemovedChildren()) {
+                    // Update removed, or update has no removed children: do nothing.
+                    continue;
+                }
 
+                Element rmElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSyncRm", "rm");
+
+                Component parentComponent = componentUpdates[i].getParent();
+                setComponentId(rmElement, parentComponent);
+                    
+                Component[] removedChildren = componentUpdates[i].getRemovedChildren();
+                StringBuffer out = new StringBuffer();
+                for (int j = 0; j < removedChildren.length; ++j) {
+                    if (j > 0) {
+                        out.append(",");
+                    }
+                    out.append(userInstance.getClientRenderId(removedChildren[j]));
+                }
+                rmElement.setAttribute("rm", out.toString());
+            }
+
+            // Render Component Synchronization Updates
             for (int i = 0; i < componentUpdates.length; ++i) {
                 if (componentUpdates[i] == null) {
                     // Update removed, do nothing.
@@ -278,27 +302,11 @@ class OutputProcessor {
                 }
                 
                 // Process added/removed children and updated properties of update's parent component.
-                if (componentUpdates[i].hasAddedChildren() || componentUpdates[i].hasRemovedChildren()
-                        || componentUpdates[i].hasUpdatedProperties()) {
+                if (componentUpdates[i].hasAddedChildren() || componentUpdates[i].hasUpdatedProperties()) {
                     Component parentComponent = componentUpdates[i].getParent();
-                    Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
+                    Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSyncUp", "up");
                     setComponentId(upElement, parentComponent);
                 
-                    // Removed children.
-                    Component[] removedChildren = componentUpdates[i].getRemovedChildren();
-                    if (removedChildren.length > 0) {
-                        Element rmElement = document.createElement("rm");
-                        StringBuffer out = new StringBuffer();
-                        for (int j = 0; j < removedChildren.length; ++j) {
-                            if (j > 0) {
-                                out.append(",");
-                            }
-                            out.append(userInstance.getClientRenderId(removedChildren[j]));
-                        }
-                        rmElement.setAttribute("i", out.toString());
-                        upElement.appendChild(rmElement);
-                    }
-    
                     // Added children.
                     Component[] addedChildren = componentUpdates[i].getAddedChildren();
                     if (addedChildren.length > 0) {
@@ -332,7 +340,7 @@ class OutputProcessor {
                             throw new IllegalStateException("No synchronize peer found for component: " 
                                     + component.getClass().getName());
                         }
-                        Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "up");
+                        Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSyncUp", "up");
                         setComponentId(upElement, component);
                         renderComponentProperty(upElement, componentPeer, component, Component.PROPERTY_LAYOUT_DATA, true); 
                     }
@@ -437,7 +445,7 @@ class OutputProcessor {
         Element propertyDataElement;
         if (propertyValue != null && componentPeer.isOutputPropertyReferenced(context, c, propertyName)) {
             if (spElement == null) {
-                spElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSync", "sp");
+                spElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSyncUp", "sp");
             }
             
             if (propertyValueToKeyMap == null) {
@@ -681,7 +689,7 @@ class OutputProcessor {
     
     private void renderStyleSheet() 
     throws SerialException {
-        Element ssElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSync", "ss");
+        Element ssElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSyncUp", "ss");
         
         StyleSheet styleSheet = userInstance.getApplicationInstance().getStyleSheet();
         if (styleSheet == null) {

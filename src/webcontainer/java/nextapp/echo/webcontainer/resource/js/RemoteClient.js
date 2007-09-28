@@ -583,48 +583,37 @@ EchoRemoteClient.ComponentFocusProcessor.prototype._processFocus = function(focu
 };
 
 /**
- * ServerMessage directive processor for component synchronizations.
+ * ServerMessage directive processor for component synchronizations (remove phase).
  */
-EchoRemoteClient.ComponentSyncProcessor = function(client) { 
+EchoRemoteClient.ComponentSyncRemoveProcessor = function(client) { 
     this._client = client;
-    this._referenceMap = new Object();
-};
+}
 
-EchoRemoteClient.ComponentSyncProcessor._numericReverseSort = function(a, b) {
-    return b - a;
-};
-
-/**
- * Directive processor process() implementation.
- */
-EchoRemoteClient.ComponentSyncProcessor.prototype.process = function(dirElement) {
-    var element;
-    
-    element = dirElement.firstChild;
-    while (element) {
-        if (element.nodeType == 1) {
-            switch (element.nodeName) {
-            case "fr": this._processFullRefresh(element); break;
-            case "ss": this._processStyleSheet(element); break;
-            case "up": this._processUpdatePhase1(element); break;
-            case "sp": this._processStoreProperties(element); break;
-            }
+EchoRemoteClient.ComponentSyncRemoveProcessor.prototype.process = function(dirElement) {
+    var rmElement = dirElement.firstChild;
+    while (rmElement) {
+        if (rmElement.nodeType != 1) {
+            continue;
         }
-        element = element.nextSibling;
-    }
-
-    element = dirElement.firstChild;
-    while (element) {
-        if (element.nodeType == 1) {
-            switch (element.nodeName) {
-            case "up": this._processUpdatePhase2(element); break;
-            }
+        
+        // Determine parent component.
+        var parentComponent;
+        if (rmElement.getAttribute("r") == "true") {
+            parentComponent = this._client.application.rootComponent;
+        } else {
+            var parentId = rmElement.getAttribute("i");
+            parentComponent = this._client.application.getComponentByRenderId(parentId);
         }
-        element = element.nextSibling;
+
+        // Retrive child ids and remove.
+        var childElementIds = rmElement.getAttribute("rm").split(",");
+        this._processComponentRemove(parentComponent, childElementIds);
+        
+        rmElement = rmElement.nextSibling;
     }
 };
 
-EchoRemoteClient.ComponentSyncProcessor.prototype._processComponentRemove = function(parentComponent, childElementIds) {
+EchoRemoteClient.ComponentSyncRemoveProcessor.prototype._processComponentRemove = function(parentComponent, childElementIds) {
     if (childElementIds.length > 5) {
         // Special case: many children being removed: create renderId -> index map and remove by index
         // in order to prevent Component.indexOf() of from being invoked n times.
@@ -643,7 +632,7 @@ EchoRemoteClient.ComponentSyncProcessor.prototype._processComponentRemove = func
                 indicesToRemove.push(parseInt(index));
             }
         }
-        indicesToRemove.sort(EchoRemoteClient.ComponentSyncProcessor._numericReverseSort);
+        indicesToRemove.sort(EchoRemoteClient.ComponentSyncUpdateProcessor._numericReverseSort);
 
         // Remove components (last to first).
         for (var i = 0; i < indicesToRemove.length; ++i) {
@@ -659,11 +648,43 @@ EchoRemoteClient.ComponentSyncProcessor.prototype._processComponentRemove = func
     }
 };
 
-EchoRemoteClient.ComponentSyncProcessor.prototype._processFullRefresh = function(frElement) {
+/**
+ * ServerMessage directive processor for component synchronizations (update phase).
+ */
+EchoRemoteClient.ComponentSyncUpdateProcessor = function(client) { 
+    this._client = client;
+    this._referenceMap = new Object();
+};
+
+EchoRemoteClient.ComponentSyncUpdateProcessor._numericReverseSort = function(a, b) {
+    return b - a;
+};
+
+/**
+ * Directive processor process() implementation.
+ */
+EchoRemoteClient.ComponentSyncUpdateProcessor.prototype.process = function(dirElement) {
+    var element;
+    
+    element = dirElement.firstChild;
+    while (element) {
+        if (element.nodeType == 1) {
+            switch (element.nodeName) {
+            case "fr": this._processFullRefresh(element); break;
+            case "ss": this._processStyleSheet(element); break;
+            case "up": this._processUpdate(element); break;
+            case "sp": this._processStoreProperties(element); break;
+            }
+        }
+        element = element.nextSibling;
+    }
+};
+
+EchoRemoteClient.ComponentSyncUpdateProcessor.prototype._processFullRefresh = function(frElement) {
     this._client.application.rootComponent.removeAll();
 };
 
-EchoRemoteClient.ComponentSyncProcessor.prototype._processStoreProperties = function(spElement) {
+EchoRemoteClient.ComponentSyncUpdateProcessor.prototype._processStoreProperties = function(spElement) {
     var propertyElement = spElement.firstChild;
     while (propertyElement) {
         switch (propertyElement.nodeName) {
@@ -682,36 +703,12 @@ EchoRemoteClient.ComponentSyncProcessor.prototype._processStoreProperties = func
     }
 };
 
-EchoRemoteClient.ComponentSyncProcessor.prototype._processStyleSheet = function(ssElement) {
+EchoRemoteClient.ComponentSyncUpdateProcessor.prototype._processStyleSheet = function(ssElement) {
     var styleSheet = EchoSerial.loadStyleSheet(this._client, ssElement);
     this._client.application.setStyleSheet(styleSheet);
 };
 
-EchoRemoteClient.ComponentSyncProcessor.prototype._processUpdatePhase1 = function(upElement) {
-    // Determine parent component
-    var parentComponent;
-    if (upElement.getAttribute("r") == "true") {
-        parentComponent = this._client.application.rootComponent;
-    } else {
-        var parentId = upElement.getAttribute("i");
-        parentComponent = this._client.application.getComponentByRenderId(parentId);
-    }
-
-    var element = upElement.firstChild;
-    while (element) {
-        if (element.nodeType == 1) {
-            switch (element.nodeName) {
-            case "rm": // Removed child(ren).
-                var childElementIds = element.getAttribute("i").split(",");
-                this._processComponentRemove(parentComponent, childElementIds);
-                break;
-            }
-        }
-        element = element.nextSibling;
-    }
-};
-
-EchoRemoteClient.ComponentSyncProcessor.prototype._processUpdatePhase2 = function(upElement) {
+EchoRemoteClient.ComponentSyncUpdateProcessor.prototype._processUpdate = function(upElement) {
     // Determine parent component
     var parentComponent;
     if (upElement.getAttribute("r") == "true") {
@@ -901,5 +898,6 @@ EchoRemoteClient.DefaultWaitIndicator.prototype._tick = function() {
 };
 
 EchoRemoteClient.ServerMessage.addProcessor("CFocus", EchoRemoteClient.ComponentFocusProcessor);
-EchoRemoteClient.ServerMessage.addProcessor("CSync", EchoRemoteClient.ComponentSyncProcessor);
+EchoRemoteClient.ServerMessage.addProcessor("CSyncUp", EchoRemoteClient.ComponentSyncUpdateProcessor);
+EchoRemoteClient.ServerMessage.addProcessor("CSyncRm", EchoRemoteClient.ComponentSyncRemoveProcessor);
 EchoRemoteClient.ServerMessage.addProcessor("CmdExec", EchoRemoteClient.CommandExecProcessor);
