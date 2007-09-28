@@ -164,7 +164,6 @@ EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseUp = function(
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.setPosition = function(x, y, width, height) {
-    EchoCore.Debug.consoleWrite("SP x=" + x + ",y=" + y);
     if (width != null) {
         if (width < this._minimumWidth) {
             if (x != null) {
@@ -185,29 +184,25 @@ EchoRender.ComponentSync.WindowPane.prototype.setPosition = function(x, y, width
         this._windowHeight = height;
     }
 
-    if (x == null) {
-        x = parseInt((this._containerSize.width - this._windowWidth) / 2);
-    } else {
+    if (x != null) {
         if (this._containerSize.width > 0 && x > this._containerSize.width - this._windowWidth) {
             x = this._containerSize.width - this._windowWidth;
         }
+        if (x < 0) {
+            x = 0;
+        }
+        this._windowX = x;
     }
-    if (x < 0) {
-        x = 0;
-    }
-    this._windowX = x;
 
-    if (y == null) {
-        y = parseInt((this._containerSize.height - this._windowHeight) / 2); 
-    } else {
+    if (y != null) { 
         if (this._containerSize.height > 0 && y > this._containerSize.height - this._windowHeight) {
             y = this._containerSize.height - this._windowHeight;
         }
+        if (y < 0) {
+            y = 0;
+        }
+        this._windowY = y;
     }
-    if (y < 0) {
-        y = 0;
-    }
-    this._windowY = y;
     
     this.redraw();
 };
@@ -639,6 +634,15 @@ EchoRender.ComponentSync.WindowPane.prototype.renderDispose = function(update) {
 
 EchoRender.ComponentSync.WindowPane.prototype.renderDisplay = function() {
     this._loadContainerSize();
+    
+    // Center window if user x/y coordinates are not specified.
+    if (this._userWindowX == null) {
+        this._userWindowX = parseInt((this._containerSize.width - this._windowWidth) / 2);
+    }
+    if (this._userWindowY == null) {
+        this._userWindowY = parseInt((this._containerSize.height - this._windowHeight) / 2); 
+    }
+        
     this.setPosition(this._userWindowX, this._userWindowY, this._userWindowWidth, this._userWindowHeight);
     EchoWebCore.VirtualPosition.redraw(this._contentDivElement);
 };
