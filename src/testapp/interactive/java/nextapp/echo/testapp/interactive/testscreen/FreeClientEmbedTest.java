@@ -1,5 +1,4 @@
 package nextapp.echo.testapp.interactive.testscreen;
-
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
@@ -31,8 +30,17 @@ public class FreeClientEmbedTest extends SplitPane {
         WebContainerServlet.getServiceRegistry().add(EMBED_TEST_COMPONENT_SERVICE);
     }
     
-    private class EmbedTestComponent extends Component {
+    public class EmbedTestComponent extends Component {
         
+        public static final String PROPERTY_TEXT = "text";
+        
+        public String getText() {
+            return (String) getProperty(PROPERTY_TEXT);
+        }
+        
+        public void setText(String newValue) {
+            setProperty(PROPERTY_TEXT, newValue);
+        }
     }
     
     public static class EmbedTestComponentPeer extends AbstractComponentSynchronizePeer {
@@ -55,7 +63,7 @@ public class FreeClientEmbedTest extends SplitPane {
         public Class getComponentClass() {
             return EmbedTestComponent.class;
         }
-
+        
         /**
          * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
          */
@@ -107,6 +115,7 @@ public class FreeClientEmbedTest extends SplitPane {
     }
 
     private Column testColumn;
+    private EmbedTestComponent embedTestComponent;
     
     public FreeClientEmbedTest() {
         super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
@@ -125,6 +134,20 @@ public class FreeClientEmbedTest extends SplitPane {
             }
         });
 
+        controlsColumn.addButton("Set component text: null", new ActionListener() {
+        
+            public void actionPerformed(ActionEvent e) {
+                embedTestComponent.setText(null);
+            }
+        });
+
+        controlsColumn.addButton("Set component text: \"text\"", new ActionListener() {
+        
+            public void actionPerformed(ActionEvent e) {
+                embedTestComponent.setText("text");
+            }
+        });
+
         testColumn = new Column();
         testColumn.setCellSpacing(new Extent(15));
         splitPaneLayoutData = new SplitPaneLayoutData();
@@ -132,7 +155,8 @@ public class FreeClientEmbedTest extends SplitPane {
         testColumn.setLayoutData(splitPaneLayoutData);
         add(testColumn);
         
-        testColumn.add(new EmbedTestComponent());
+        embedTestComponent = new EmbedTestComponent();
+        testColumn.add(embedTestComponent);
         
         testColumn.add(new EmbedTestPane());
     }

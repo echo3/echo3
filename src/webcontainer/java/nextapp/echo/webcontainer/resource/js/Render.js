@@ -316,14 +316,12 @@ EchoRender.ComponentSync.Root = function() { };
 EchoRender.ComponentSync.Root.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 EchoRender.ComponentSync.Root.prototype.renderDispose = function(update) {
-    this._rootElement = null;
 };
 
 EchoRender.ComponentSync.Root.prototype.renderUpdate = function(update) {
     var fullRender = false;
     if (update.hasAddedChildren() || update.hasRemovedChildren()) {
         EchoWebCore.DOM.removeAllChildren(this.client.domainElement);
-    
         for (var i = 0; i < update.parent.children.length; ++i) {
             EchoRender.renderComponentAdd(this.client, update, update.parent.children[i], this.client.domainElement);
         }

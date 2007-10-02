@@ -48,12 +48,19 @@ EchoArc.ComponentSync.prototype.createBaseComponent = function() { };
  * 
  * @type Element
  */
-EchoArc.ComponentSync.prototype.getDomainElement = function() { };
+EchoArc.ComponentSync.prototype.getDomainElement = function() { 
+    return this._defaultDomainElement;
+};
 
 /**
  * renderAdd() implementation: must be invoked by overriding method.
  */
-EchoRender.ComponentSync.prototype.renderAdd = function(update, parentElement) { };
+EchoArc.ComponentSync.prototype.renderAdd = function(update, parentElement) {
+    if (!this.getDomainElement()) {
+        this._defaultDomainElement = document.createElement("div");
+        parentElement.appendChild(this._defaultDomainElement);
+    }
+};
 
 /**
  * renderDispose() implementation: must be invoked by overriding method.
@@ -68,6 +75,7 @@ EchoArc.ComponentSync.prototype.renderDispose = function(update) {
         this.arcApplication = null;
         this.baseComponent = null;
     }
+    this._defaultDomainElement = null;
 };
 
 /**
@@ -78,6 +86,9 @@ EchoArc.ComponentSync.prototype.renderDisplay = function() {
         this.arcApplication = new EchoApp.Application();
         this.arcApplication.setStyleSheet(this.client.application.getStyleSheet());
         this.baseComponent = this.createBaseComponent();
+        if (this.baseComponent == null) {
+            throw new Error("Invalid base component: null");
+        }
         this.arcApplication.rootComponent.add(this.baseComponent);
         this.arcClient = new EchoArc.Client(this.arcApplication, this.getDomainElement());
         this.arcClient.parent = this.client;
@@ -88,4 +99,10 @@ EchoArc.ComponentSync.prototype.renderDisplay = function() {
 /**
  * renderUpdate() implementation: must be invoked by overriding method.
  */
-EchoRender.ComponentSync.prototype.renderUpdate = function(update) { };
+EchoArc.ComponentSync.prototype.renderUpdate = function(update) {
+    var domainElement = this.getDomainElement();
+    var containerElement = domainElement.parentNode;
+    EchoRender.renderComponentDispose(update, update.parent);
+    containerElement.removeChild(domainElement);
+    this.renderAdd(update, containerElement);
+};

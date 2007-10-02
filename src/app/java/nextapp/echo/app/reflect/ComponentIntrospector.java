@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Extends <code>ObjectIntrospector</code> to proivde
+ * Extends <code>ObjectIntrospector</code> to provide
  * <code>nextapp.echo.app.Component</code>-specific functionality,
  * i.e., introspection of style constants names.
  */

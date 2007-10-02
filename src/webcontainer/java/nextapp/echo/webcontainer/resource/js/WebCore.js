@@ -496,6 +496,9 @@ EchoWebCore.EventProcessor._bubblingListenerMap = new EchoCore.Collections.Map()
  *        the bubbling phase
  */
 EchoWebCore.EventProcessor.add = function(element, eventType, eventTarget, capture) {
+    if (!element) {
+        alert(eventType + eventTarget);
+    }
     if (!element.__eventProcessorId) {
         element.__eventProcessorId = ++EchoWebCore.EventProcessor._nextId;
     }

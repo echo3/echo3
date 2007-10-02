@@ -28,43 +28,12 @@ EmbedTest.ComponentSync = function() { };
 EmbedTest.ComponentSync.TestComponent = function() {
 };
 
-EmbedTest.ComponentSync.TestComponent.prototype = EchoCore.derive(EchoRender.ComponentSync);
+EmbedTest.ComponentSync.TestComponent.prototype = EchoCore.derive(EchoArc.ComponentSync);
 
-EmbedTest.ComponentSync.TestComponent.prototype._createApp = function() {
-    this._app = new EchoApp.Application();
+EmbedTest.ComponentSync.TestComponent.prototype.createBaseComponent = function() {
     var label = new EchoApp.Label();
-    label.setProperty("text", "This is a freeclient label.");
-    this._app.rootComponent.add(label);
-    this._freeClient = new EchoFreeClient(this._app, this._divElement); 
-    this._freeClient.init();
-};
-
-EmbedTest.ComponentSync.TestComponent.prototype.renderAdd = function(update, parentElement) {
-    this._divElement = document.createElement("div");
-    parentElement.appendChild(this._divElement);
-};
-
-EmbedTest.ComponentSync.TestComponent.prototype.renderDispose = function(update) {
-    if (this._freeClient) {
-        this._freeClient.dispose();
-        this._freeClient = null;
-    }
-    if (this._appInitialized) {
-        this._app.dispose();
-        this._appInitialized = false;
-        this._app = null;
-    }
-    this._divElement = null;
-};
-
-EmbedTest.ComponentSync.TestComponent.prototype.renderDisplay = function(update) {
-    if (!this._appInitialized) {
-        this._createApp();
-        this._appInitialized = true;
-    }
-};
-
-EmbedTest.ComponentSync.TestComponent.prototype.renderUpdate = function(update) {
+    label.setProperty("text", "This is a freeclient label: " + this.component.getRenderProperty("text"));
+    return label;
 };
 
 /**
@@ -74,13 +43,10 @@ EmbedTest.ComponentSync.TestPane = function() {
     this._addedLabelCount = 0;
 };
 
-EmbedTest.ComponentSync.TestPane.prototype = EchoCore.derive(EchoRender.ComponentSync);
+EmbedTest.ComponentSync.TestPane.prototype = EchoCore.derive(EchoArc.ComponentSync);
 
-EmbedTest.ComponentSync.TestPane.prototype._createApp = function() {
-    this._app = new EchoApp.Application();
-    
+EmbedTest.ComponentSync.TestPane.prototype.createBaseComponent = function() {
     var contentPane = new EchoApp.ContentPane();
-    this._app.rootComponent.add(contentPane);
     
     var windowPane = new EchoApp.WindowPane();
     windowPane.setProperty("title", "A FreeClient WindowPane");
@@ -107,27 +73,31 @@ EmbedTest.ComponentSync.TestPane.prototype._createApp = function() {
     removeButton.addListener("action", new EchoCore.MethodRef(this, this._processRemoveButton));
     controlsRow.add(removeButton);
     
-    this._app._testColumn = new EchoApp.Column();
-    mainColumn.add(this._app._testColumn);
-    
-    this._freeClient = new EchoFreeClient(this._app, this._divElement); 
-    this._freeClient.init();
+    this._testColumn = new EchoApp.Column();
+    mainColumn.add(this._testColumn);
+
+    return contentPane;
+};
+
+EmbedTest.ComponentSync.TestPane.prototype.getDomainElement = function() {
+    return this._divElement;
 };
 
 EmbedTest.ComponentSync.TestPane.prototype._processAddButton = function(e) {
     var label = new EchoApp.Label();
     label.setProperty("text", "Added Label " + ++this._addedLabelCount);
-    this._app._testColumn.add(label);
+    this._testColumn.add(label);
 };
 
 EmbedTest.ComponentSync.TestPane.prototype._processRemoveButton = function(e) {
-    var count = this._app._testColumn.getComponentCount();
+    var count = this._testColumn.getComponentCount();
     if (count > 0) {
-        this._app._testColumn.remove(count - 1);
+        this._testColumn.remove(count - 1);
     }
 };
 
 EmbedTest.ComponentSync.TestPane.prototype.renderAdd = function(update, parentElement) {
+    EchoArc.ComponentSync.prototype.renderAdd.call(this, update, parentElement);
     this._divElement = document.createElement("div");
     this._divElement.style.cssText 
             = "position:relative; width:100%; height:450px; background-color: #3f3f6f; border: 1px #3f3f6f outset";
@@ -135,26 +105,9 @@ EmbedTest.ComponentSync.TestPane.prototype.renderAdd = function(update, parentEl
 };
 
 EmbedTest.ComponentSync.TestPane.prototype.renderDispose = function(update) {
-    if (this._freeClient) {
-        this._freeClient.dispose();
-        this._freeClient = null;
-    }
-    if (this._appInitialized) {
-        this._app.dispose();
-        this._appInitialized = false;
-        this._app = null;
-    }
+    EchoArc.ComponentSync.prototype.renderDispose.call(this, update);
+    this._testColumn = null;
     this._divElement = null;
-};
-
-EmbedTest.ComponentSync.TestPane.prototype.renderDisplay = function(update) {
-    if (!this._appInitialized) {
-        this._createApp();
-        this._appInitialized = true;
-    }
-};
-
-EmbedTest.ComponentSync.TestPane.prototype.renderUpdate = function(update) {
 };
 
 EchoApp.ComponentFactory.registerType("EmbedTestComponent", EmbedTest.TestComponent);
