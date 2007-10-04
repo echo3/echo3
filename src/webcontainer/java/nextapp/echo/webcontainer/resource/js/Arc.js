@@ -121,3 +121,56 @@ EchoArc.ComponentSync.prototype.renderUpdate = function(update) {
     containerElement.removeChild(domainElement);
     this.renderAdd(update, containerElement);
 };
+
+/**
+ * A simple container in which to render children of an application rendered component.
+ * This container will render as a simple DIV element.
+ */
+EchoArc.ChildContainer = function(properties) {
+    EchoApp.Component.call(this, properties);
+    this.componentType = "ArcChildContainer";
+};
+
+EchoArc.ChildContainer.prototype = EchoCore.derive(EchoApp.Component);
+
+/**
+ * Synchronization peer for ChildContainer.
+ */
+EchoArc.ChildContainerPeer = function() {
+};
+
+EchoArc.ChildContainerPeer.prototype = EchoCore.derive(EchoRender.ComponentSync); 
+
+EchoArc.ChildContainerPeer.prototype.renderAdd = function(update, parentElement) {
+    this._divElement = document.createElement("div");
+    var component = this.component.getProperty("component");
+    if (component) {
+        if (!component.parent || !component.parent.peer || !component.parent.peer.client) {
+            throw new Error("Invalid component: not part of registered hierarchy.");
+        }
+        EchoRender.renderComponentAdd(component.parent.peer.client, null, component, this._divElement);
+    }
+    parentElement.appendChild(this._divElement);
+};
+
+EchoArc.ChildContainerPeer.prototype.renderDisplay = function() {
+    var component = this.component.getProperty("component");
+    if (component) {
+        EchoRender.renderComponentDisplay(component);
+    }
+};
+
+EchoArc.ChildContainerPeer.prototype.renderDispose = function(update) {
+    var component = this.component.getProperty("component");
+    if (component) {
+        EchoRender.renderComponentDispose(null, component);
+    }
+    this._divElement = null;
+};
+
+EchoArc.ChildContainerPeer.prototype.renderUpdate = function(update) {
+};
+
+EchoApp.ComponentFactory.registerType("ArcChildContainer", EchoArc.ChildContainer);
+EchoRender.registerPeer("ArcChildContainer", EchoArc.ChildContainerPeer);
+

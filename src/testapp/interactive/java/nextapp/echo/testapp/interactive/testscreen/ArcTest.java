@@ -115,8 +115,47 @@ public class ArcTest extends SplitPane {
         }
     }
 
+    public class ArcTestContainer extends Component {
+        
+    }
+    
+    public static class ArcTestContainerPeer extends AbstractComponentSynchronizePeer {
+    
+        public ArcTestContainerPeer() {
+            super();
+            addRequiredComponentClass(ContentPane.class);
+            addRequiredComponentClass(WindowPane.class);
+        }
+    
+        /**
+         * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType()
+         */
+        public String getClientComponentType() {
+            return "ArcTestContainer";
+        }
+
+        /**
+         * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getComponentClass()
+         */
+        public Class getComponentClass() {
+            return ArcTestContainer.class;
+        }
+        
+        /**
+         * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
+         */
+        public void init(Context context) {
+            super.init(context);
+            ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
+            serverMessage.addLibrary(ARC_TEST_COMPONENT_SERVICE.getId());
+        }
+    }
+    
+    
+    
     private Column testColumn;
     private ArcTestComponent arcTestComponent;
+    private ArcTestContainer arcTestContainer;
     
     public ArcTest() {
         super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
@@ -148,6 +187,20 @@ public class ArcTest extends SplitPane {
                 arcTestComponent.setText("text");
             }
         });
+        
+        controlsColumn.addButton("Add To Container", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                arcTestContainer.add(new Label("TEST"));
+            }
+        });
+
+        controlsColumn.addButton("Remove To Container", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (arcTestContainer.getComponentCount() > 0) {
+                    arcTestContainer.remove(arcTestContainer.getComponentCount() - 1);
+                }
+            }
+        });
 
         testColumn = new Column();
         testColumn.setCellSpacing(new Extent(15));
@@ -160,5 +213,8 @@ public class ArcTest extends SplitPane {
         testColumn.add(arcTestComponent);
         
         testColumn.add(new ArcTestPane());
+        
+        arcTestContainer = new ArcTestContainer();
+        testColumn.add(arcTestContainer);
     }
 }

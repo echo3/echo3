@@ -11,6 +11,16 @@ ArcTest.TestComponent = function(renderId) {
 ArcTest.TestComponent.prototype = EchoCore.derive(EchoApp.Component);
 
 /**
+ * TestContainer component.
+ */
+ArcTest.TestContainer = function(renderId) {
+    EchoApp.Component.call(this, renderId);
+    this.componentType = "ArcTestContainer";
+};
+
+ArcTest.TestContainer.prototype = EchoCore.derive(EchoApp.Component);
+
+/**
  * TestPane component.
  */
 ArcTest.TestPane = function(renderId) {
@@ -34,6 +44,50 @@ ArcTest.ComponentSync.TestComponent.prototype.createBaseComponent = function() {
     var label = new EchoApp.Label();
     label.setProperty("text", "This is a freeclient label: " + this.component.getRenderProperty("text"));
     return label;
+};
+
+/**
+ * Component rendering peer: TestContainer
+ */
+ArcTest.ComponentSync.TestContainer = function() {
+};
+
+ArcTest.ComponentSync.TestContainer.prototype = EchoCore.derive(EchoArc.ComponentSync);
+
+ArcTest.ComponentSync.TestContainer.prototype.createBaseComponent = function() {
+    var contentPane = new EchoApp.ContentPane();
+    for (var i = 0; i < this.component.children.length; ++i) {
+        var windowPane = new EchoApp.WindowPane({
+            positionX: new EchoApp.Property.Extent(120 * (i % 4)),
+            positionY: new EchoApp.Property.Extent(120 * parseInt(i / 4)),
+            width: new EchoApp.Property.Extent(100),
+            height: new EchoApp.Property.Extent(100)
+        });
+        contentPane.add(windowPane);
+        
+        var childContainer = new EchoArc.ChildContainer({
+            component: this.component.children[i]
+        });
+        windowPane.add(childContainer);
+    }
+    return contentPane;
+};
+
+ArcTest.ComponentSync.TestContainer.prototype.getDomainElement = function() {
+    return this._divElement;
+};
+
+ArcTest.ComponentSync.TestContainer.prototype.renderAdd = function(update, parentElement) {
+    EchoArc.ComponentSync.prototype.renderAdd.call(this, update, parentElement);
+    this._divElement = document.createElement("div");
+    this._divElement.style.cssText 
+            = "position:relative; width:100%; height:450px; background-color: #3f3f6f; border: 1px #3f3f6f outset";
+    parentElement.appendChild(this._divElement);
+};
+
+ArcTest.ComponentSync.TestContainer.prototype.renderDispose = function(update) {
+    EchoArc.ComponentSync.prototype.renderDispose.call(this, update);
+    this._divElement = null;
 };
 
 /**
@@ -112,6 +166,9 @@ ArcTest.ComponentSync.TestPane.prototype.renderDispose = function(update) {
 
 EchoApp.ComponentFactory.registerType("ArcTestComponent", ArcTest.TestComponent);
 EchoRender.registerPeer("ArcTestComponent", ArcTest.ComponentSync.TestComponent);
+
+EchoApp.ComponentFactory.registerType("ArcTestContainer", ArcTest.TestContainer);
+EchoRender.registerPeer("ArcTestContainer", ArcTest.ComponentSync.TestContainer);
 
 EchoApp.ComponentFactory.registerType("ArcTestPane", ArcTest.TestPane);
 EchoRender.registerPeer("ArcTestPane", ArcTest.ComponentSync.TestPane);

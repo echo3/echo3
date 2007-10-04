@@ -78,6 +78,15 @@ EchoRender.notifyResize = function(parent) {
     EchoRender._doResize(parent, false);
 };
 
+//FIXME this needs clean up notifyResize/renderComponentDisplay/_doResizeXXX methods needs to be re-API'd probably.
+//  ...based around the term "renderDisplay" probably.
+/**
+ * 
+ */
+EchoRender.renderComponentDisplay = function(parent) {
+    EchoRender._doResize(parent, false);
+};
+
 EchoRender._doResize = function(component, resizeSelf) {
     if (resizeSelf) {
         EchoRender._doResizeImpl(component);
@@ -102,6 +111,7 @@ EchoRender._doResizeImpl = function(component) {
     }
 };
 
+//FIXME perhaps change this so client is not passed in: get client from parent component.
 EchoRender.renderComponentAdd = function(client, update, component, parentElement) {
     EchoRender._loadPeer(client, component);
     EchoRender._setPeerDisposedState(component, false);
