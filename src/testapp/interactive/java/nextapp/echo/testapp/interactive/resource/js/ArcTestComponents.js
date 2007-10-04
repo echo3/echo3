@@ -1,36 +1,36 @@
-EmbedTest = function() { };
+ArcTest = function() { };
 
 /**
  * TestComponent component.
  */
-EmbedTest.TestComponent = function(renderId) {
+ArcTest.TestComponent = function(renderId) {
     EchoApp.Component.call(this, renderId);
-    this.componentType = "EmbedTestComponent";
+    this.componentType = "ArcTestComponent";
 };
 
-EmbedTest.TestComponent.prototype = EchoCore.derive(EchoApp.Component);
+ArcTest.TestComponent.prototype = EchoCore.derive(EchoApp.Component);
 
 /**
  * TestPane component.
  */
-EmbedTest.TestPane = function(renderId) {
+ArcTest.TestPane = function(renderId) {
     EchoApp.Component.call(this, renderId);
-    this.componentType = "EmbedTestPane";
+    this.componentType = "ArcTestPane";
 };
 
-EmbedTest.TestPane.prototype = EchoCore.derive(EchoApp.Component);
+ArcTest.TestPane.prototype = EchoCore.derive(EchoApp.Component);
 
-EmbedTest.ComponentSync = function() { };
+ArcTest.ComponentSync = function() { };
 
 /**
  * Component rendering peer: TestComponent
  */
-EmbedTest.ComponentSync.TestComponent = function() {
+ArcTest.ComponentSync.TestComponent = function() {
 };
 
-EmbedTest.ComponentSync.TestComponent.prototype = EchoCore.derive(EchoArc.ComponentSync);
+ArcTest.ComponentSync.TestComponent.prototype = EchoCore.derive(EchoArc.ComponentSync);
 
-EmbedTest.ComponentSync.TestComponent.prototype.createBaseComponent = function() {
+ArcTest.ComponentSync.TestComponent.prototype.createBaseComponent = function() {
     var label = new EchoApp.Label();
     label.setProperty("text", "This is a freeclient label: " + this.component.getRenderProperty("text"));
     return label;
@@ -39,13 +39,13 @@ EmbedTest.ComponentSync.TestComponent.prototype.createBaseComponent = function()
 /**
  * Component rendering peer: TestPane
  */
-EmbedTest.ComponentSync.TestPane = function() {
+ArcTest.ComponentSync.TestPane = function() {
     this._addedLabelCount = 0;
 };
 
-EmbedTest.ComponentSync.TestPane.prototype = EchoCore.derive(EchoArc.ComponentSync);
+ArcTest.ComponentSync.TestPane.prototype = EchoCore.derive(EchoArc.ComponentSync);
 
-EmbedTest.ComponentSync.TestPane.prototype.createBaseComponent = function() {
+ArcTest.ComponentSync.TestPane.prototype.createBaseComponent = function() {
     var contentPane = new EchoApp.ContentPane();
     
     var windowPane = new EchoApp.WindowPane();
@@ -79,24 +79,24 @@ EmbedTest.ComponentSync.TestPane.prototype.createBaseComponent = function() {
     return contentPane;
 };
 
-EmbedTest.ComponentSync.TestPane.prototype.getDomainElement = function() {
+ArcTest.ComponentSync.TestPane.prototype.getDomainElement = function() {
     return this._divElement;
 };
 
-EmbedTest.ComponentSync.TestPane.prototype._processAddButton = function(e) {
+ArcTest.ComponentSync.TestPane.prototype._processAddButton = function(e) {
     var label = new EchoApp.Label();
     label.setProperty("text", "Added Label " + ++this._addedLabelCount);
     this._testColumn.add(label);
 };
 
-EmbedTest.ComponentSync.TestPane.prototype._processRemoveButton = function(e) {
+ArcTest.ComponentSync.TestPane.prototype._processRemoveButton = function(e) {
     var count = this._testColumn.getComponentCount();
     if (count > 0) {
         this._testColumn.remove(count - 1);
     }
 };
 
-EmbedTest.ComponentSync.TestPane.prototype.renderAdd = function(update, parentElement) {
+ArcTest.ComponentSync.TestPane.prototype.renderAdd = function(update, parentElement) {
     EchoArc.ComponentSync.prototype.renderAdd.call(this, update, parentElement);
     this._divElement = document.createElement("div");
     this._divElement.style.cssText 
@@ -104,14 +104,14 @@ EmbedTest.ComponentSync.TestPane.prototype.renderAdd = function(update, parentEl
     parentElement.appendChild(this._divElement);
 };
 
-EmbedTest.ComponentSync.TestPane.prototype.renderDispose = function(update) {
+ArcTest.ComponentSync.TestPane.prototype.renderDispose = function(update) {
     EchoArc.ComponentSync.prototype.renderDispose.call(this, update);
     this._testColumn = null;
     this._divElement = null;
 };
 
-EchoApp.ComponentFactory.registerType("EmbedTestComponent", EmbedTest.TestComponent);
-EchoRender.registerPeer("EmbedTestComponent", EmbedTest.ComponentSync.TestComponent);
+EchoApp.ComponentFactory.registerType("ArcTestComponent", ArcTest.TestComponent);
+EchoRender.registerPeer("ArcTestComponent", ArcTest.ComponentSync.TestComponent);
 
-EchoApp.ComponentFactory.registerType("EmbedTestPane", EmbedTest.TestPane);
-EchoRender.registerPeer("EmbedTestPane", EmbedTest.ComponentSync.TestPane);
+EchoApp.ComponentFactory.registerType("ArcTestPane", ArcTest.TestPane);
+EchoRender.registerPeer("ArcTestPane", ArcTest.ComponentSync.TestPane);

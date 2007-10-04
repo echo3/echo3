@@ -103,6 +103,7 @@ public class TestPane extends ContentPane {
         testLaunchButtonsColumn = new Column();
         controlsColumn.add(testLaunchButtonsColumn);
 
+        addTest("Application Rendered Components", "ArcTest");
         addTest("Button", "ButtonTest");
         addTest("Client Configuration", "ClientConfigurationTest");
         addTest("Client Exception", "ClientExceptionTest");
@@ -114,7 +115,6 @@ public class TestPane extends ContentPane {
         addTest("Delay", "DelayTest");
         addTest("Exception", "ExceptionTest");
         addTest("Focus", "FocusTest");
-        addTest("FreeClient Embed", "FreeClientEmbedTest");
         addTest("Grid", "GridTest");
         addTest("Hierarchy", "HierarchyTest");
         addTest("Image", "ImageReferenceTest");

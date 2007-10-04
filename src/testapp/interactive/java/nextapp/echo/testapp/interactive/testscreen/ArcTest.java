@@ -1,4 +1,5 @@
 package nextapp.echo.testapp.interactive.testscreen;
+
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
@@ -21,16 +22,16 @@ import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
 
-public class FreeClientEmbedTest extends SplitPane {
+public class ArcTest extends SplitPane {
 
-    private static final Service EMBED_TEST_COMPONENT_SERVICE = JavaScriptService.forResource("Test.EmbedTestComponent", 
-            "/nextapp/echo/testapp/interactive/resource/js/EmbedTestComponent.js");
+    private static final Service ARC_TEST_COMPONENT_SERVICE = JavaScriptService.forResource("Test.Arc", 
+            "/nextapp/echo/testapp/interactive/resource/js/ArcTestComponents.js");
     
     static {
-        WebContainerServlet.getServiceRegistry().add(EMBED_TEST_COMPONENT_SERVICE);
+        WebContainerServlet.getServiceRegistry().add(ARC_TEST_COMPONENT_SERVICE);
     }
     
-    public class EmbedTestComponent extends Component {
+    public class ArcTestComponent extends Component {
         
         public static final String PROPERTY_TEXT = "text";
         
@@ -43,9 +44,9 @@ public class FreeClientEmbedTest extends SplitPane {
         }
     }
     
-    public static class EmbedTestComponentPeer extends AbstractComponentSynchronizePeer {
+    public static class ArcTestComponentPeer extends AbstractComponentSynchronizePeer {
     
-        public EmbedTestComponentPeer() {
+        public ArcTestComponentPeer() {
             super();
             addRequiredComponentClass(Label.class);
         }
@@ -54,14 +55,14 @@ public class FreeClientEmbedTest extends SplitPane {
          * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType()
          */
         public String getClientComponentType() {
-            return "EmbedTestComponent";
+            return "ArcTestComponent";
         }
 
         /**
          * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getComponentClass()
          */
         public Class getComponentClass() {
-            return EmbedTestComponent.class;
+            return ArcTestComponent.class;
         }
         
         /**
@@ -70,17 +71,17 @@ public class FreeClientEmbedTest extends SplitPane {
         public void init(Context context) {
             super.init(context);
             ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
-            serverMessage.addLibrary(EMBED_TEST_COMPONENT_SERVICE.getId());
+            serverMessage.addLibrary(ARC_TEST_COMPONENT_SERVICE.getId());
         }
     }
 
-    private class EmbedTestPane extends Component {
+    private class ArcTestPane extends Component {
         
     }
     
-    public static class EmbedTestPanePeer extends AbstractComponentSynchronizePeer {
+    public static class ArcTestPanePeer extends AbstractComponentSynchronizePeer {
     
-        public EmbedTestPanePeer() {
+        public ArcTestPanePeer() {
             super();
             addRequiredComponentClass(Button.class);
             addRequiredComponentClass(Column.class);
@@ -94,14 +95,14 @@ public class FreeClientEmbedTest extends SplitPane {
          * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType()
          */
         public String getClientComponentType() {
-            return "EmbedTestPane";
+            return "ArcTestPane";
         }
 
         /**
          * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getComponentClass()
          */
         public Class getComponentClass() {
-            return EmbedTestPane.class;
+            return ArcTestPane.class;
         }
 
         /**
@@ -110,14 +111,14 @@ public class FreeClientEmbedTest extends SplitPane {
         public void init(Context context) {
             super.init(context);
             ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
-            serverMessage.addLibrary(EMBED_TEST_COMPONENT_SERVICE.getId());
+            serverMessage.addLibrary(ARC_TEST_COMPONENT_SERVICE.getId());
         }
     }
 
     private Column testColumn;
-    private EmbedTestComponent embedTestComponent;
+    private ArcTestComponent arcTestComponent;
     
-    public FreeClientEmbedTest() {
+    public ArcTest() {
         super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
         setStyleName("DefaultResizable");
 
@@ -137,14 +138,14 @@ public class FreeClientEmbedTest extends SplitPane {
         controlsColumn.addButton("Set component text: null", new ActionListener() {
         
             public void actionPerformed(ActionEvent e) {
-                embedTestComponent.setText(null);
+                arcTestComponent.setText(null);
             }
         });
 
         controlsColumn.addButton("Set component text: \"text\"", new ActionListener() {
         
             public void actionPerformed(ActionEvent e) {
-                embedTestComponent.setText("text");
+                arcTestComponent.setText("text");
             }
         });
 
@@ -155,9 +156,9 @@ public class FreeClientEmbedTest extends SplitPane {
         testColumn.setLayoutData(splitPaneLayoutData);
         add(testColumn);
         
-        embedTestComponent = new EmbedTestComponent();
-        testColumn.add(embedTestComponent);
+        arcTestComponent = new ArcTestComponent();
+        testColumn.add(arcTestComponent);
         
-        testColumn.add(new EmbedTestPane());
+        testColumn.add(new ArcTestPane());
     }
 }

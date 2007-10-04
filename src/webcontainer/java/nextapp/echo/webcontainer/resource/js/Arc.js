@@ -64,6 +64,8 @@ EchoArc.ComponentSync.prototype.renderAdd = function(update, parentElement) {
 
 /**
  * renderDispose() implementation: must be invoked by overriding method.
+ * 
+ * Disposes of the client, application, and references to DOM resources.
  */
 EchoArc.ComponentSync.prototype.renderDispose = function(update) {
     if (this.arcClient) {
@@ -79,7 +81,15 @@ EchoArc.ComponentSync.prototype.renderDispose = function(update) {
 };
 
 /**
- * renderDispose() implementation: must be invoked by overriding method.
+ * renderDisplay() implementation: must be invoked by overriding method.
+ * 
+ * This method will create a new client and application instance if one does
+ * not exist (i.e., if this method is being called for the first time after
+ * renderAdd()).
+ * 
+ * When the application is created, the component returned by createBaseComponent() 
+ * will be added to the root component of the application.  The application will
+ * be installed in th DOM at the element returned by the getDomainElement().
  */
 EchoArc.ComponentSync.prototype.renderDisplay = function() {
     if (!this.arcApplication) {
@@ -97,7 +107,12 @@ EchoArc.ComponentSync.prototype.renderDisplay = function() {
 };
 
 /**
- * renderUpdate() implementation: must be invoked by overriding method.
+ * Default implementation disposes of the existing client and application 
+ * and creates a new one.  All application state will be lost.
+ * This method should thus be overridden in the event that the application
+ * rendered component desires to perform a more efficient update.
+ * This implementation may be called by the overriding implementation if
+ * replacing-and-redrawing is desired.
  */
 EchoArc.ComponentSync.prototype.renderUpdate = function(update) {
     var domainElement = this.getDomainElement();
