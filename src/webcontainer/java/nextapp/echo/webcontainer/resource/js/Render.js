@@ -208,9 +208,15 @@ EchoRender._processDispose = function(update) {
     }
 };
 
+/**
+ * Processes all pending updates in the client's application's update manager.
+ * 
+ * @param {EchoClient} client the client
+ */
 EchoRender.processUpdates = function(client) {
     var updateManager = client.application.updateManager;
     
+    // Do nothing if no updates exist.
     if (!updateManager.hasUpdates()) {
         return;
     }
@@ -218,10 +224,13 @@ EchoRender.processUpdates = function(client) {
     // Create map to contain removed components (for peer unloading).
     EchoRender._disposedComponents = new Object();
     
+    // Retrieve updates, sorting by depth in hierarchy.  This will ensure that higher
+    // level updates have a chance to execute first, in case they null out lower-level
+    // updates if they require re-rendering their descendants.
     var updates = updateManager.getUpdates();
-    
     updates.sort(EchoRender._componentDepthArraySort);
 
+    // Load peers for any root components being updated.
     for (var i = 0; i < updates.length; ++i) {
         var peers = updates[i].parent.peer;
         if (peer == null && updates[i].parent.componentType == "Root") {
@@ -239,6 +248,7 @@ EchoRender.processUpdates = function(client) {
         EchoRender._processDispose(updates[i]);
     }
     
+    // Profiling: Mark completion of remove phase. 
     if (EchoCore.profilingTimer) {
         EchoCore.profilingTimer.mark("rem");
     }
@@ -246,15 +256,19 @@ EchoRender.processUpdates = function(client) {
     // Update Phase: Invoke renderUpdate on all updates.
     for (var i = 0; i < updates.length; ++i) {
         if (updates[i] == null) {
-            // Skip removed updates.
+            // The update has been removed, skip it.
             continue;
         }
+        
+        // Obtain component synchronization peer.
         var peer = updates[i].parent.peer;
         
+        // Perform update by invoking peer's renderUpdate() method.
         var fullRender = peer.renderUpdate(updates[i]);
+        
+        // If the update required re-rendering descendants of the updated component,
+        // null-out any pending updates to descandant components.
         if (fullRender) {
-            // If update required full-rerender of child component hierarchy, remove
-            // updates.
             for (var j = i + 1; j < updates.length; ++j) {
                 if (updates[j] != null && updates[i].parent.isAncestorOf(updates[j].parent)) {
                     updates[j] = null;
@@ -262,17 +276,17 @@ EchoRender.processUpdates = function(client) {
             }
         }
 
-        //FIXME....moved after loop, ensure this is okay (evaluate use of dispose).
+        //FIXME ....moved after loop, ensure this is okay (evaluate use of dispose).
         // Set disposed set of peer to false.
         EchoRender._setPeerDisposedState(updates[i].parent, false);
     }
     
+    // Profiling: Mark completion of update phase.
     if (EchoCore.profilingTimer) {
         EchoCore.profilingTimer.mark("up");
     }
     
     // Display Phase: Invoke renderDisplay on all updates.
-    
     for (var i = 0; i < updates.length; ++i) {
         if (updates[i] == null) {
             // Skip removed updates.
@@ -283,8 +297,9 @@ EchoRender.processUpdates = function(client) {
         EchoRender._doResize(updates[i].parent, true);
     }
 
+    // Profiling: Mark completion of display phase.
     if (EchoCore.profilingTimer) {
-        EchoCore.profilingTimer.mark("su");
+        EchoCore.profilingTimer.mark("disp");
     }
 
     //var ds = "DISPOSEARRAY:"; ///FIXME Remove this debug code.
@@ -299,8 +314,10 @@ EchoRender.processUpdates = function(client) {
     EchoRender._disposedComponents = null;
     //alert(ds); ///FIXME Remove this debug code.
     
+    // Inform UpdateManager that all updates have been completed.
     updateManager.purge();
     
+    // Focus the currently specified focused component, if possible.
     var component = client.application.getFocusedComponent();
     if (component && component.peer && component.peer.renderFocus) {
         component.peer.renderFocus();
