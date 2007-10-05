@@ -148,7 +148,7 @@ EchoArc.ChildContainerPeer.prototype.renderAdd = function(update, parentElement)
         if (!component.parent || !component.parent.peer || !component.parent.peer.client) {
             throw new Error("Invalid component: not part of registered hierarchy.");
         }
-        EchoRender.renderComponentAdd(component.parent.peer.client, null, component, this._divElement);
+        EchoRender.renderComponentAdd(null, component, this._divElement);
     }
     parentElement.appendChild(this._divElement);
 };

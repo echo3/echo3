@@ -609,7 +609,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAddChild = function(update, 
     } else {
         EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._contentDivElement, "padding");
     }
-    EchoRender.renderComponentAdd(this.client, update, child, parentElement);
+    EchoRender.renderComponentAdd(update, child, parentElement);
 };
 
 EchoRender.ComponentSync.WindowPane.prototype.renderDispose = function(update) { 

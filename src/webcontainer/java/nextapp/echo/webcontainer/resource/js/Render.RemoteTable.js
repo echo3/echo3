@@ -169,7 +169,7 @@ EchoRender.ComponentSync.RemoteTable.prototype._renderRow = function(update, row
             EchoRender.Property.Insets.renderComponentProperty(layoutData, "insets", this._defaultInsets, tdElement, "padding");
         }
 
-        EchoRender.renderComponentAdd(this.client, update, child, tdElement);
+        EchoRender.renderComponentAdd(update, child, tdElement);
         
         ++columnIndex;
         tdElement = tdElement.nextSibling;

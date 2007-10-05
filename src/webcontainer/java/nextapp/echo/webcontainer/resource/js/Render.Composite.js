@@ -13,7 +13,7 @@ EchoRender.ComponentSync.Composite.prototype.renderAdd = function(update, parent
 	    this._renderStyle(this._divElement);
 	    for (var i = 0; i < componentCount; ++i) {
 	        var child = this.component.getComponent(i);
-		    EchoRender.renderComponentAdd(this.client, update, child, this._divElement);
+		    EchoRender.renderComponentAdd(update, child, this._divElement);
 	    }
     }
     

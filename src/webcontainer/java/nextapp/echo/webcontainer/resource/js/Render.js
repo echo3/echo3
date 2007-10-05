@@ -124,8 +124,7 @@ EchoRender._doResizeImpl = function(component) {
     }
 };
 
-//FIXME perhaps change this so client is not passed in: get client from parent component.
-EchoRender.renderComponentAdd = function(client, update, component, parentElement) {
+EchoRender.renderComponentAdd = function(update, component, parentElement) {
     if (!component.parent || !component.parent.peer || !component.parent.peer.client) {
         throw new Error("Cannot find reference to the Client with which this component should be associated: "
                 + "cannot load peer.  This is due to the component's parent's peer not being associated with a Client. "
@@ -359,7 +358,7 @@ EchoRender.ComponentSync.Root.prototype.renderUpdate = function(update) {
     if (update.hasAddedChildren() || update.hasRemovedChildren()) {
         EchoWebCore.DOM.removeAllChildren(this.client.domainElement);
         for (var i = 0; i < update.parent.children.length; ++i) {
-            EchoRender.renderComponentAdd(this.client, update, update.parent.children[i], this.client.domainElement);
+            EchoRender.renderComponentAdd(update, update.parent.children[i], this.client.domainElement);
         }
         fullRender = true;
     }
