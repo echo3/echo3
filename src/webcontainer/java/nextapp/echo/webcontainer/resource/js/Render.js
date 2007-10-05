@@ -4,14 +4,24 @@
  */
 EchoRender = function() { };
 
+/**
+ * Mapping between component type names and instantiable peer classes.
+ */
 EchoRender._peers = new Object();
 
 /**
  * Map containing removed components.  Maps component ids to removed components.
- * Created and destroyed during each render. 
+ * Created and destroyed during each render.
+ * 
+ * @type Object
  */
 EchoRender._disposedComponents = null;
 
+/**
+ * Registers a component type name with an instantiable peer class.
+ * Components of the specified type name will be assigned new instasnces of the peer class
+ * when rendered for the first time.
+ */
 EchoRender.registerPeer = function(componentName, peerObject) {
     EchoRender._peers[componentName] = peerObject;
 };
@@ -20,6 +30,9 @@ EchoRender.registerPeer = function(componentName, peerObject) {
 // disposed states are not in good shape....SplitPane is being disposed when
 // parent contentPane is redrawn.
 
+/**
+ * 
+ */
 EchoRender._loadPeer = function(client, component) {
     if (component.peer) {
         return;
@@ -126,12 +139,19 @@ EchoRender.renderComponentAdd = function(client, update, component, parentElemen
  * It is not necessary to invoke this method on components that may not contain children.
  *
  * @param update the <code>ComponentUpdate</code> for which this change is being performed
- * @param component the <code>Component</code> to be disposed.
+ * @param component the <code>Component</code> to be disposed
  */
 EchoRender.renderComponentDispose = function(update, component) {
     EchoRender._renderComponentDisposeImpl(update, component);
 };
 
+/**
+ * Recursive implementation of renderComponentDispose.  Invoked
+ * renderDispose() on all child peers, sets disposed state on each.
+ * 
+ * @param update the <code>ComponentUpdate</code> for which this change is being performed
+ * @param component the <code>Component</code> to be disposed
+ */
 EchoRender._renderComponentDisposeImpl = function(update, component) {
     if (!component.peer || component.peer.disposed) {
         return;
