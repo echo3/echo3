@@ -188,13 +188,13 @@ public class ArcTest extends SplitPane {
             }
         });
         
-        controlsColumn.addButton("Add To Container", new ActionListener() {
+        controlsColumn.addButton("Add to Container", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 arcTestContainer.add(new Label("TEST"));
             }
         });
 
-        controlsColumn.addButton("Remove To Container", new ActionListener() {
+        controlsColumn.addButton("Remove from Container", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (arcTestContainer.getComponentCount() > 0) {
                     arcTestContainer.remove(arcTestContainer.getComponentCount() - 1);
