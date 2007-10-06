@@ -369,7 +369,7 @@ EchoRemoteClient.AsyncManager.prototype._stop = function() {
 
 EchoRemoteClient.ClientMessage = function(client, initialize) {
     this._client = client;
-    this._componentIdToPropertyMap = new EchoCore.Collections.Map();
+    this._componentIdToPropertyMap = new Object();
     
     this._document = EchoWebCore.DOM.createDocument("http://www.nextapp.com/products/echo/svrmsg/clientmessage.3.0", "cmsg");
     if (initialize) {
@@ -416,10 +416,10 @@ EchoRemoteClient.ClientMessage.prototype._renderCSync = function() {
     }
     
     // Render property information.
-    for (var componentId in this._componentIdToPropertyMap.associations) {
-        var propertyMap = this._componentIdToPropertyMap.associations[componentId];
-        for (var propertyName in propertyMap.associations) {
-            var propertyValue = propertyMap.associations[propertyName];
+    for (var componentId in this._componentIdToPropertyMap) {
+        var propertyMap = this._componentIdToPropertyMap[componentId];
+        for (var propertyName in propertyMap) {
+            var propertyValue = propertyMap[propertyName];
             var pElement = this._document.createElement("p");
             pElement.setAttribute("i", componentId);
             pElement.setAttribute("n", propertyName);
@@ -476,12 +476,12 @@ EchoRemoteClient.ClientMessage.prototype.setEvent = function(componentId, eventT
 };
 
 EchoRemoteClient.ClientMessage.prototype.storeProperty = function(componentId, propertyName, propertyValue) {
-    var propertyMap = this._componentIdToPropertyMap.get(componentId);
+    var propertyMap = this._componentIdToPropertyMap[componentId];
     if (!propertyMap) {
-        propertyMap = new EchoCore.Collections.Map();
-        this._componentIdToPropertyMap.put(componentId, propertyMap);
+        propertyMap = new Object();
+        this._componentIdToPropertyMap[componentId] = propertyMap;
     }
-    propertyMap.put(propertyName, propertyValue);
+    propertyMap[propertyName] = propertyValue;
 };
 
 /**
