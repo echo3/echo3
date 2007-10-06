@@ -20,9 +20,9 @@ EchoApp.Application = function() {
     /** 
      * Mapping between component ids and component instances.
      * @private 
-     * @type EchoCore.Collections.Map
+     * @type EchoCore.Arrays.LargeMap
      */
-    this._idToComponentMap = new EchoCore.Collections.Map();
+    this._idToComponentMap = new EchoCore.Arrays.LargeMap();
     
     /** 
      * ListenerList instance for application-level events.
@@ -150,7 +150,7 @@ EchoApp.Application.prototype.focusNext = function(reverse) {
  * @type EchoApp.Component 
  */
 EchoApp.Application.prototype.getComponentByRenderId = function(renderId) {
-    return this._idToComponentMap.get(renderId);
+    return this._idToComponentMap.map[renderId];
 };
 
 /**
@@ -234,10 +234,10 @@ EchoApp.Application.prototype.notifyComponentUpdate = function(parent, propertyN
  * @private
  */
 EchoApp.Application.prototype._registerComponent = function(component) {
-    if (this._idToComponentMap.get(component.renderId)) {
+    if (this._idToComponentMap.map[component.renderId]) {
         throw new Error("Component already exists with id: " + component.renderId);
     }
-    this._idToComponentMap.put(component.renderId, component);
+    this._idToComponentMap.map[component.renderId] = component;
     if (component.modalSupport && component.getProperty("modal")) {
         this._setModal(component, true);
     }

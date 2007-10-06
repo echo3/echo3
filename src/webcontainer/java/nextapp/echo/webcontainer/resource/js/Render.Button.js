@@ -527,9 +527,9 @@ EchoRender.ComponentSync.RadioButton.prototype = EchoCore.derive(EchoRender.Comp
 /**
  * Contains mappings from RadioButton render ids to EchoApp.ButtonGroup objects.
  * 
- * @type {EchoCore.Collections.Map}
+ * @type {EchoCore.Arrays.LargeMap}
  */
-EchoRender.ComponentSync.RadioButton._groups = new EchoCore.Collections.Map();
+EchoRender.ComponentSync.RadioButton._groups = new EchoCore.Arrays.LargeMap();
 
 EchoRender.ComponentSync.RadioButton.prototype._doAction = function() {
     if (this._buttonGroup) {
@@ -541,10 +541,10 @@ EchoRender.ComponentSync.RadioButton.prototype._doAction = function() {
 EchoRender.ComponentSync.RadioButton.prototype.renderAdd = function(update, parentElement) {
 	var groupId = this.component.getRenderProperty("group");
 	if (groupId) {
-		var group = EchoRender.ComponentSync.RadioButton._groups.get(groupId);
+		var group = EchoRender.ComponentSync.RadioButton._groups.map[groupId];
 		if (!group) {
 			group = new EchoApp.ButtonGroup(groupId);
-			EchoRender.ComponentSync.RadioButton._groups.put(groupId, group)
+			EchoRender.ComponentSync.RadioButton._groups.map[groupId] = group;
 		}
 		group.add(this);
 		this._buttonGroup = group;

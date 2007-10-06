@@ -407,12 +407,16 @@ EchoWebCore.Environment._init = function() {
         env.CSS_FLOAT = "styleFloat";
         
         if (env.BROWSER_MAJOR_VERSION < 7) {
+            // Internet Explorer 6 Flags.
             env.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY = true;
             env.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED = true;
             env.QUIRK_CSS_BACKGROUND_ATTACHMENT_USE_FIXED = true;
             env.QUIRK_IE_SELECT_Z_INDEX = true;
             env.NOT_SUPPORTED_CSS_MAX_HEIGHT = true;
             env.QUIRK_DELAYED_FOCUS_REQUIRED = true;
+            
+            // Enable 'garbage collection' on large associative arrays to avoid memory leak.
+            EchoCore.Arrays.LargeMap.garbageCollectEnabled = true;
         }
     } else if (env.BROWSER_MOZILLA) {
         if (env.BROWSER_FIREFOX) {
@@ -479,12 +483,12 @@ EchoWebCore.EventProcessor._nextId = 0;
 /**
  * Mapping between element ids and ListenerLists containing listeners to invoke during capturing phase.
  */
-EchoWebCore.EventProcessor._capturingListenerMap = new EchoCore.Collections.Map();
+EchoWebCore.EventProcessor._capturingListenerMap = new EchoCore.Arrays.LargeMap();
 
 /**
  * Mapping between element ids and ListenerLists containing listeners to invoke during bubbling phase.
  */
-EchoWebCore.EventProcessor._bubblingListenerMap = new EchoCore.Collections.Map();
+EchoWebCore.EventProcessor._bubblingListenerMap = new EchoCore.Arrays.LargeMap();
 
 /**
  * Registers an event handler.
@@ -512,11 +516,11 @@ EchoWebCore.EventProcessor.add = function(element, eventType, eventTarget, captu
                                   : EchoWebCore.EventProcessor._bubblingListenerMap;
         
         // Obtain ListenerList based on element id.                              
-        listenerList = listenerMap.get(element.__eventProcessorId);
+        listenerList = listenerMap.map[element.__eventProcessorId];
         if (!listenerList) {
             // Create new ListenerList if none exists.
             listenerList = new EchoCore.ListenerList();
-            listenerMap.put(element.__eventProcessorId, listenerList);
+            listenerMap.map[element.__eventProcessorId] = listenerList;
         }
         
         EchoWebCore.EventProcessor._lastElement = element;
@@ -576,7 +580,7 @@ EchoWebCore.EventProcessor._processEvent = function(e) {
     
     // Fire event to capturing listeners.
     for (var i = elementAncestry.length - 1; i >= 0; --i) {
-        listenerList = EchoWebCore.EventProcessor._capturingListenerMap.get(elementAncestry[i].__eventProcessorId);
+        listenerList = EchoWebCore.EventProcessor._capturingListenerMap.map[elementAncestry[i].__eventProcessorId];
         if (listenerList) {
             // Set registered target on event.
             e.registeredTarget = elementAncestry[i];
@@ -593,7 +597,7 @@ EchoWebCore.EventProcessor._processEvent = function(e) {
     if (propagate) {
         // Fire event to bubbling listeners.
         for (var i = 0; i < elementAncestry.length; ++i) {
-            listenerList = EchoWebCore.EventProcessor._bubblingListenerMap.get(elementAncestry[i].__eventProcessorId);
+            listenerList = EchoWebCore.EventProcessor._bubblingListenerMap.map[elementAncestry[i].__eventProcessorId];
             // Set registered target on event.
             e.registeredTarget = elementAncestry[i];
             if (listenerList) {
@@ -639,7 +643,7 @@ EchoWebCore.EventProcessor.remove = function(element, eventType, eventTarget, ca
                               : EchoWebCore.EventProcessor._bubblingListenerMap;
 
     // Obtain ListenerList based on element id.                              
-    var listenerList = listenerMap.get(element.__eventProcessorId);
+    var listenerList = listenerMap.map[element.__eventProcessorId];
     if (listenerList) {
         // Remove event handler from the ListenerList.
         listenerList.removeListener(eventType, eventTarget);
@@ -659,7 +663,7 @@ EchoWebCore.EventProcessor.removeAll = function(element) {
 };
 
 EchoWebCore.EventProcessor._unregisterAll = function(element, listenerMap) {
-    var listenerList = listenerMap.get(element.__eventProcessorId);
+    var listenerList = listenerMap.map[element.__eventProcessorId];
     if (!listenerList) {
         return;
     }

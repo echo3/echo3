@@ -43,6 +43,68 @@ EchoCore.profilingTimer = null;
 EchoCore.Arrays = function() { };
 
 /**
+ * Creates a new LargeMap.
+ * 
+ * @param associations an associative array (Object) containing the initial associations
+ * @class Associative array wrapper which periodically recreates the associative array
+ *        in order to avoid memory leakage and performance problems on certain browser
+ *        platforms, i.e., Internet Explorer 6.
+ *        Null values are not permitted as keys.  Setting a key to a null value
+ *        will result in the key being removed.
+ */
+EchoCore.Arrays.LargeMap = function() {
+ 
+    /**
+     * Number of removes since last associative array re-creation.
+     * @type Number
+     * @private
+     */
+    this._removeCount = 0;
+    
+    /**
+     * Number (integer) of removes between associative array re-creation.
+     * @type Number
+     */
+    this.garbageCollectionInterval = 250;
+    
+    /**
+     * Associative mapping.
+     */
+    this.map = new Object();
+};
+
+EchoCore.Arrays.LargeMap.garbageCollectEnabled = false;
+
+/**
+ * Performs 'garbage-collection' operations, recreating the array.
+ * This operation is necessary due to Internet Explorer memory leak
+ * issues.
+ */
+EchoCore.Arrays.LargeMap.prototype._garbageCollect = function() {
+    this._removeCount = 0;
+    var newMap = new Object();
+    for (var key in this.map) {
+        newMap[key] = this.map[key];
+    }
+    this.map = newMap;
+};
+
+/**
+ * Removes the value referenced by the specified key.
+ *
+ * @param key the key
+ */
+EchoCore.Arrays.LargeMap.prototype.remove = function(key) {
+    delete this.map[key];
+    if (EchoCore.Arrays.LargeMap.garbageCollectEnabled) {
+        ++this._removeCount;
+        if (this._removeCount >= this.garbageCollectionInterval) {
+            this._garbageCollect();
+        }
+    }
+};
+
+/**
  * Returns the index of the specified item within the array, or -1 if it 
  * is not contained in the array.  
  * 
@@ -158,125 +220,6 @@ EchoCore.Arrays.containsAll = function(array1, array2, unique) {
 	    }
     }
     return true;
-};
-
-/**
- * @class EchoCore.Collections Namespace.  Non-instantiable object.
- */
-EchoCore.Collections = function() { };
-
-/**
- * Creates a new Map.
- * 
- * @param associations an associative array (Object) containing the initial associations
- * @class Collection map implementation.
- *        Implmentation is based on an associative array.
- *        Array is periodically recreated after a significant number of
- *        element removals to eliminate side effects from memory management 
- *        flaws with Internet Explorer.
- *        Null values are not permitted as keys.  Setting a key to a null value
- *        will result in the key being removed.
- */
-EchoCore.Collections.Map = function(associations) {
- 
-    /**
-     * Number of removes since last associative array re-creation.
-     * @type Number
-     * @private
-     */
-    this._removeCount = 0;
-    
-    /**
-     * Number (integer) of removes between associative array re-creation.
-     * @type Number
-     */
-    this.garbageCollectionInterval = 250;
-    
-    /**
-     * Associative mapping.
-     */
-    this.associations = associations ? associations : new Object();
-};
-
-/**
- * Retrieves the value referenced by the spcefied key.
- *
- * @param key the key
- * @return the value, or null if no value is referenced
- */
-EchoCore.Collections.Map.prototype.get = function(key) {
-    return this.associations[key];
-};
-
-/**
- * Stores a value referenced by the specified key.
- *
- * @param key the key
- * @param value the value
- */
-EchoCore.Collections.Map.prototype.put = function(key, value) {
-    if (value === null) {
-        this.remove(key);
-        return;
-    }
-    this.associations[key] = value;
-};
-
-/**
- * Performs 'garbage-collection' operations, recreating the array.
- * This operation is necessary due to Internet Explorer memory leak
- * issues.
- */
-EchoCore.Collections.Map.prototype._garbageCollect = function() {
-    this._removeCount = 0;
-    var newAssociations = new Object();
-    for (var key in this.associations) {
-        newAssociations[key] = this.associations[key];
-    }
-    this.associations = newAssociations;
-};
-
-/**
- * Removes the value referenced by the specified key.
- *
- * @param key the key
- */
-EchoCore.Collections.Map.prototype.remove = function(key) {
-    delete this.associations[key];
-    ++this._removeCount;
-    if (this._removeCount >= this.garbageCollectionInterval) {
-        this._garbageCollect();
-    }
-};
-
-/**
- * Determines the size of the map.
- * 
- * @return the size of the map
- * @type Number
- */
-EchoCore.Collections.Map.prototype.size = function() {
-    var size = 0;
-    for (var x in this.associations) {
-        ++size;
-    }
-    return size;
-};
-
-/**
- * Returns a string representation.
- * The items will be comma-delimited,
- * in the form "key=value".
- *
- * @return a string representation
- * @type String
- */
-EchoCore.Collections.Map.prototype.toString = function() {
-    var outArray = new Array();
-    for (var x in this.associations) {
-        outArray.push(x + "=" + this.associations[x]);
-    }
-    return outArray.toString();
 };
 
 /** 
