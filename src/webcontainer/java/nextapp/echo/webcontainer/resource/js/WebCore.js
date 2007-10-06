@@ -830,7 +830,7 @@ EchoWebCore.Library.Group = function() {
  * @param libraryUrl the URL from which to retrieve the library.
  */
 EchoWebCore.Library.Group.prototype.add = function(libraryUrl) {
-    if (EchoWebCore.Library._Manager._loadedLibrarySet.contains(libraryUrl)) {
+    if (EchoCore.Arrays.indexOf(EchoWebCore.Library._Manager._loadedLibraries, libraryUrl) != -1) {
         // Library already loaded: ignore.
         return;
     }
@@ -905,7 +905,7 @@ EchoWebCore.Library._Item.prototype._responseHandler = function(e) {
 };
 
 EchoWebCore.Library._Item.prototype._install = function() {
-    EchoWebCore.Library._Manager._loadedLibrarySet.add(this._url);
+    EchoWebCore.Library._Manager._loadedLibraries.push(this._url);
     if (this._content == null) {
         throw new Error("Attempt to install library when no content has been loaded.");
     }
@@ -922,7 +922,7 @@ EchoWebCore.Library._Item.prototype._load = function() {
 
 EchoWebCore.Library._Manager = function() { };
 
-EchoWebCore.Library._Manager._loadedLibrarySet = new EchoCore.Collections.Set();
+EchoWebCore.Library._Manager._loadedLibraries = new Array();
 
 EchoWebCore.Render = function() { };
 

@@ -193,6 +193,11 @@ EchoRender._componentDepthArraySort = function(a, b) {
     return EchoRender._getComponentDepth(a.parent) - EchoRender._getComponentDepth(b.parent);
 };
 
+/**
+ * Invokes renderDispose() on all removed children and descendants found in the specified update.
+ * 
+ * @param {EchoApp.Update.ComponentUpdate} update the update
+ */
 EchoRender._processDispose = function(update) {
     var components = update.getRemovedDescendants();
     if (components) {
