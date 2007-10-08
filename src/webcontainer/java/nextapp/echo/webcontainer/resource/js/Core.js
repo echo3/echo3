@@ -50,7 +50,6 @@ EchoCore.Arrays = function() { };
 /**
  * Creates a new LargeMap.
  * 
- * @param associations an associative array (Object) containing the initial associations
  * @class Associative array wrapper which periodically recreates the associative array
  *        in order to avoid memory leakage and performance problems on certain browser
  *        platforms, i.e., Internet Explorer 6.
