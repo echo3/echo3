@@ -342,17 +342,12 @@ EchoRender.processUpdates = function(client) {
         EchoCore.profilingTimer.mark("disp");
     }
 
-    //var ds = "DISPOSEARRAY:"; ///FIXME Remove this debug code.
-    
     // Unload peers for truly removed components, destroy mapping.
     for (var componentId in EchoRender._disposedComponents) {
-        //ds += "\n"; ///FIXME Remove this debug code.
         var component = EchoRender._disposedComponents[componentId];
-        //ds += component; ///FIXME Remove this debug code.
         EchoRender._unloadPeer(component);
     }
     EchoRender._disposedComponents = null;
-    //alert(ds); ///FIXME Remove this debug code.
     
     // Inform UpdateManager that all updates have been completed.
     updateManager.purge();
