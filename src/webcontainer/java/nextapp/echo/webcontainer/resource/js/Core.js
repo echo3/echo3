@@ -1,6 +1,6 @@
 /**
- * Core namespace.  Non-instantiable object.
- * REQUIRES: Nothing.
+ * @fileoverview
+ * Provides low-level core functionality.  Non-instantiable object.  Requires nothing.
  * <p>
  * Provides core APIs for creating object-oriented and event-driven JavaScript code:
  * <ul>
@@ -40,6 +40,11 @@ EchoCore.derive = function(baseType) {
  */
 EchoCore.profilingTimer = null;
 
+/**
+ * @class 
+ * Arrays namespace.  
+ * Non-instantiable object.
+ */
 EchoCore.Arrays = function() { };
 
 /**
@@ -223,6 +228,7 @@ EchoCore.Arrays.containsAll = function(array1, array2, unique) {
 };
 
 /** 
+ * @class 
  * EchoCore.Debug Namespace.
  * Non-instantiable object.
  */

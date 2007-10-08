@@ -1,6 +1,15 @@
 /**
- * NAMESPACE: Component Rendering Peers.
- * Do not instantiate.
+ * @fileoverview
+ * Module for rendering state of application to DOM.
+ * <ul>
+ *  <li>Provides capability to process updates in Application UpdateManager,
+ *   rendering state changes to the DOM.</li>
+ *  <li>Provides base component synchronization peer implementation.</li>
+ * </ul>
+ */
+
+/**
+ * @class Application rendering namespace. Non-instantiable object.
  */
 EchoRender = function() { };
 
@@ -330,6 +339,9 @@ EchoRender.processUpdates = function(client) {
 };
 
 /**
+ * Creates a new copmonent synchronization peer.
+ * @constructor
+ * @class
  * Component synchronization peer.
  * <p>
  * <strong>Optional methods:</strong>
@@ -362,11 +374,13 @@ EchoRender.ComponentSync.prototype.renderUpdate = function(update) {
 };
 
 /**
- * Component rendering peer: Root
- * 
+ * Creates a new root component synchronization peer.
  * The root component is not managed by the server, but rather is an existing
  * element within which the Echo application is rendered.
  * This is a very special case in that there is no renderAdd() method.
+ * 
+ * @constructor
+ * @class Root component synchronization peer.
  */
 EchoRender.ComponentSync.Root = function() { };
 

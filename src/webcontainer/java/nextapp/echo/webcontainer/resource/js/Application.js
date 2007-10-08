@@ -356,6 +356,7 @@ EchoApp.Application.ComponentUpdateEvent = function(source, parent, propertyName
 EchoApp.Application.ComponentUpdateEvent.prototype = EchoCore.derive(EchoCore.Event);
 
 /**
+ * @class
  * Factory to create new instances of arbitrary components.  This object is 
  * used to instantiate new components during XML deserialization.
  * This is a namespace object, do not instantiate.

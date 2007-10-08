@@ -1,22 +1,32 @@
 /**
- * "WebCore" namespace.  DO NOT INSTANTIATE.
- * REQUIRES: "Core"
- *
- * Provides low-level web-client-related APIs:
- * - Provides cross-platform API for accessing web client features that have
- *   inconsistent implementations on various browser platforms.
- * - Provides HTTP Connection object.
- * - Provides HTML DOM manipulation capabilites.
- * - Provides DOM event mangement facility, enabling capturing/bubbling phases
- *   on all browsers, including Internet Explorer 6.
- * - Provides "virtual positioning" capability for Internet Explorer 6 to
- *   render proper top/left/right/bottom CSS positioning.
- * - Provides facilities to convert dimensions (e.g., in/cm/pc) to pixels.
- * - Provides capabilities to measure rendered size of DOM fragments.
- * - Provides capabilities to asynchronously load and install JavaScript modules.
+ * @fileoverview
+ * Provides low-level web-client-related APIs.  Features include:
+ * <ul>
+ *  <li>Provides cross-platform API for accessing web client features that have
+ *   inconsistent implementations on various browser platforms.</li>
+ *  <li>Provides HTTP Connection object (wrapper for XMLHttpRequest that allows
+ *   for object-oriented "MethodRef"-based event listeners.</li>
+ *  <li>Provides HTML DOM manipulation capabilites.</li>
+ *  <li>Provides DOM event mangement facility, enabling capturing/bubbling phases
+ *   on all browsers, including Internet Explorer 6 and allowing object-oriented
+ *   "MethodRef"-based event listeners.</li>
+ *  <li>Provides "virtual positioning" capability for Internet Explorer 6 to
+ *   render proper top/left/right/bottom CSS positioning.</li>
+ *  <li>Provides facilities to convert dimensions (e.g., in/cm/pc) to pixels.</li>
+ *  <li>Provides capabilities to measure rendered size of DOM fragments.</li>
+ *  <li> Provides capabilities to asynchronously load and install JavaScript modules.</li>
+ * </ul>
+ * Requires Core.
+ */
+
+/**
+ * Namespace for Web Core.  Non-instantiable object.
  */
 EchoWebCore = function() { };
 
+/**
+ * Initializes the web core.  This method must be executed prior to using any Web Core capabilities.
+ */
 EchoWebCore.init = function() { 
     if (EchoWebCore.initialized) {
         // Already initialized.
@@ -53,7 +63,8 @@ EchoWebCore._selectStartListener = function(e) {
 };
 
 /**
- * NAMESPACE: DOM manipulation utility methods.
+ * @class
+ * DOM manipulation utility method namespace.
  * Do not instantiate.
  */
 EchoWebCore.DOM = function() { };
