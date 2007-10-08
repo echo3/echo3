@@ -9,12 +9,14 @@
  */
 
 /**
- * @class Application rendering namespace. Non-instantiable object.
+ * @class Application rendering namespace.  Non-instantiable object.
  */
 EchoRender = function() { };
 
 /**
  * Mapping between component type names and instantiable peer classes.
+ * 
+ * @type Object
  */
 EchoRender._peers = new Object();
 
@@ -30,6 +32,9 @@ EchoRender._disposedComponents = null;
  * Registers a component type name with an instantiable peer class.
  * Components of the specified type name will be assigned new instasnces of the peer class
  * when rendered for the first time.
+ * 
+ * @param componentName the component type name
+ * @param peerObject the peer class object
  */
 EchoRender.registerPeer = function(componentName, peerObject) {
     EchoRender._peers[componentName] = peerObject;
@@ -40,7 +45,12 @@ EchoRender.registerPeer = function(componentName, peerObject) {
 // parent contentPane is redrawn.
 
 /**
+ * Creates a component synchronization peer for a component.
+ * The peer will be stored in the "peer" property of the component.
+ * The client will be stored in the "client" property of the component.
  * 
+ * @param {EchoClient} client the relevant Client
+ * @param {EchoApp.Component} component the component
  */
 EchoRender._loadPeer = function(client, component) {
     if (component.peer) {
@@ -64,12 +74,29 @@ EchoRender._loadPeer = function(client, component) {
 };
 
 // FIXME. Ensure this is properly invoked and no peers are being leaked.
+/**
+ * Destroys a component synchronization peer for a specific compoennt.
+ * The peer will be removed from the "peer" property of the component.
+ * The client will be removed from the "client" property of the component.
+ * The peer to component association will be removed.
+ * 
+ * @param {EchoApp.Component} component the component
+ */
 EchoRender._unloadPeer = function(component) {
     component.peer.client = null;
     component.peer.component = null;
     component.peer = null;
 };
 
+/**
+ * Sets the peer disposed state of a component.
+ * The peer disposed state indicates whether the renderDispose()
+ * method of the component has been executed since it was last rendered.
+ * 
+ * @param {EchoApp.Component} component the component
+ * @param {Boolean} disposed the disposed state, true indicating the component has
+ *        been disposed
+ */
 EchoRender._setPeerDisposedState = function(component, disposed) {
     if (disposed) {
         component.peer.disposed = true;
@@ -88,13 +115,12 @@ EchoRender._setPeerDisposedState = function(component, disposed) {
  * their renderDisplay() implementations invoked.
  * Note that the parent WILL NOT have its renderDisplay() method
  * invoked.
- * 
+ * <p>
  * If your component requires virtual positioning (for IE6) you should invoke
  * this method after informing the virtual positioning system to recalculate
  * the size of your component.
  * 
- * @param parent the component whose size changed
- * @type EchoApp.Component
+ * @param {EchoApp.Component} parent the component whose size changed
  */
 EchoRender.notifyResize = function(parent) {
     EchoRender._doResize(parent, false);
