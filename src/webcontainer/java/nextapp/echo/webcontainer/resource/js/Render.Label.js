@@ -5,7 +5,7 @@ EchoRender.ComponentSync.Label = function() { };
 
 EchoRender.ComponentSync.Label.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
-EchoRender.ComponentSync.Label._defaultIconTextMargin = new EchoApp.Property.Extent(5);
+EchoRender.ComponentSync.Label._defaultIconTextMargin = new EchoApp.Extent(5);
 
 EchoRender.ComponentSync.Label.prototype._createSingleItemSpanElement = function(contentNode) {
     var spanElement = document.createElement("span");

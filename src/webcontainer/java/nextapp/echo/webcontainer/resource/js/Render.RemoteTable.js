@@ -22,7 +22,7 @@ EchoRender.ComponentSync.RemoteTable.prototype.renderAdd = function(update, pare
     
     this._defaultInsets = this.component.getRenderProperty("insets");
     if (!this._defaultInsets) {
-        this._defaultInsets = new EchoApp.Property.Insets(0);
+        this._defaultInsets = new EchoApp.Insets(0);
     }
     this._defaultCellPadding = EchoRender.Property.Insets.toCssValue(this._defaultInsets);
     

@@ -172,7 +172,7 @@ EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseUp = function
     EchoWebCore.dragInProgress = false;
 
     this._removeSeparatorListeners();
-    this.component.setProperty("separatorPosition", new EchoApp.Property.Extent(this._separatorPosition));
+    this.component.setProperty("separatorPosition", new EchoApp.Extent(this._separatorPosition));
     
     // inform renderer that separatorposition is currently drawn as this._separatorPosition
     
@@ -271,7 +271,7 @@ EchoRender.ComponentSync.SplitPane.prototype._removeSeparatorListeners = functio
 
 EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parentElement) {
     this.loadRenderData();
-    var separatorColor = new EchoApp.Property.Color("red"); 
+    var separatorColor = new EchoApp.Color("red"); 
     var separatorImage = null;
     
     var childCount = this.component.getComponentCount();

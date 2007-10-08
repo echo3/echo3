@@ -52,7 +52,7 @@ EchoRender.ComponentSync.Button._createPrototypeButton = function() {
 
 EchoRender.ComponentSync.Button._prototypeButton = EchoRender.ComponentSync.Button._createPrototypeButton(); 
 
-EchoRender.ComponentSync.Button._defaultIconTextMargin = new EchoApp.Property.Extent(5);
+EchoRender.ComponentSync.Button._defaultIconTextMargin = new EchoApp.Extent(5);
 
 EchoRender.ComponentSync.Button.prototype._doAction = function() {
     this.component.doAction();
@@ -69,14 +69,14 @@ EchoRender.ComponentSync.Button.prototype._getCombinedAlignment = function() {
     }
     
     var horizontal = primary.horizontal;
-    if (horizontal == EchoApp.Property.Alignment.DEFAULT) {
+    if (horizontal == EchoApp.Alignment.DEFAULT) {
         horizontal = secondary.horizontal;
     }
     var vertical = primary.vertical;
-    if (vertical == EchoApp.Property.Alignment.DEFAULT) {
+    if (vertical == EchoApp.Alignment.DEFAULT) {
         vertical = secondary.vertical;
     }
-    return new EchoApp.Property.Alignment(horizontal, vertical);
+    return new EchoApp.Alignment(horizontal, vertical);
 };
 
 EchoRender.ComponentSync.Button.prototype.getElement = function() {

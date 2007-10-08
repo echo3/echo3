@@ -548,10 +548,10 @@ EchoRender.Property.Alignment = function() { };
 EchoRender.Property.Alignment.getRenderedHorizontal = function(alignment, component) {
     var layoutDirection = component ? component.getRenderLayoutDirection() : EchoApp.LayoutDirection.LTR;
     switch (alignment.horizontal) {
-    case EchoApp.Property.Alignment.LEADING:
-        return layoutDirection.isLeftToRight() ? EchoApp.Property.Alignment.LEFT : EchoApp.Property.Alignment.RIGHT;
-    case EchoApp.Property.Alignment.TRAILING:
-        return layoutDirection.isLeftToRight() ? EchoApp.Property.Alignment.RIGHT : EchoApp.Property.Alignment.LEFT;
+    case EchoApp.Alignment.LEADING:
+        return layoutDirection.isLeftToRight() ? EchoApp.Alignment.LEFT : EchoApp.Alignment.RIGHT;
+    case EchoApp.Alignment.TRAILING:
+        return layoutDirection.isLeftToRight() ? EchoApp.Alignment.RIGHT : EchoApp.Alignment.LEFT;
     default:
         return alignment.horizontal;
     }
@@ -570,16 +570,16 @@ EchoRender.Property.Alignment.renderComponentProperty
     
     var horizontalValue;
     switch (horizontal) {
-    case EchoApp.Property.Alignment.LEFT:   horizontalValue = "left";   break;
-    case EchoApp.Property.Alignment.CENTER: horizontalValue = "center"; break;
-    case EchoApp.Property.Alignment.RIGHT:  horizontalValue = "right";  break;
+    case EchoApp.Alignment.LEFT:   horizontalValue = "left";   break;
+    case EchoApp.Alignment.CENTER: horizontalValue = "center"; break;
+    case EchoApp.Alignment.RIGHT:  horizontalValue = "right";  break;
     default:                                horizontalValue = "";       break;
     }
     var verticalValue;
     switch (vertical) {
-    case EchoApp.Property.Alignment.TOP:    verticalValue = "top";      break;
-    case EchoApp.Property.Alignment.CENTER: verticalValue = "middle";   break;
-    case EchoApp.Property.Alignment.BOTTOM: verticalValue = "bottom";   break;
+    case EchoApp.Alignment.TOP:    verticalValue = "top";      break;
+    case EchoApp.Alignment.CENTER: verticalValue = "middle";   break;
+    case EchoApp.Alignment.BOTTOM: verticalValue = "bottom";   break;
     default:                                verticalValue = "";         break;
     }
     
@@ -695,16 +695,16 @@ EchoRender.Property.FillImage.render = function(fillImage, element, flags) {
         element.style.backgroundImage = "url(" + url + ")";
     }
     
-    if (fillImage.repeat || fillImage.repeat == EchoApp.Property.FillImage.NO_REPEAT) {
+    if (fillImage.repeat || fillImage.repeat == EchoApp.FillImage.NO_REPEAT) {
 		var repeat;
 		switch (fillImage.repeat) {
-        case EchoApp.Property.FillImage.NO_REPEAT:
+        case EchoApp.FillImage.NO_REPEAT:
             repeat = "no-repeat";
             break;
-        case EchoApp.Property.FillImage.REPEAT_HORIZONTAL:
+        case EchoApp.FillImage.REPEAT_HORIZONTAL:
             repeat = "repeat-x";
             break;
-        case EchoApp.Property.FillImage.REPEAT_VERTICAL:
+        case EchoApp.FillImage.REPEAT_VERTICAL:
             repeat = "repeat-y";
             break;
         default:
@@ -752,20 +752,20 @@ EchoRender.Property.Font.render = function(font, element) {
         element.style.fontSize = EchoRender.Property.Extent.toPixels(font.size) + "px";
     }
     if (font.style) {
-        if (font.style & EchoApp.Property.Font.BOLD) {
+        if (font.style & EchoApp.Font.BOLD) {
             element.style.fontWeight = "bold";
         }
-        if (font.style & EchoApp.Property.Font.ITALIC) {
+        if (font.style & EchoApp.Font.ITALIC) {
             element.style.fontStyle = "italic";
         }
-        if (font.style & EchoApp.Property.Font.UNDERLINE) {
+        if (font.style & EchoApp.Font.UNDERLINE) {
             element.style.textDecoration = "underline";
-        } else if (font.style & EchoApp.Property.Font.OVERLINE) {
+        } else if (font.style & EchoApp.Font.OVERLINE) {
             element.style.textDecoration = "overline";
-        } else if (font.style & EchoApp.Property.Font.LINE_THROUGH) {
+        } else if (font.style & EchoApp.Font.LINE_THROUGH) {
             element.style.textDecoration = "line-through";
         }
-    } else if (font.style == EchoApp.Property.Font.PLAIN) {
+    } else if (font.style == EchoApp.Font.PLAIN) {
         element.style.fontWeight = "";
 		element.style.fontStyle = "";
 		element.style.textDecoration = "";
@@ -874,14 +874,14 @@ EchoRender.TriCellTable.getOrientation = function(component, propertyName) {
     var orientation;
     if (position) {
         switch (position.horizontal) {
-        case EchoApp.Property.Alignment.LEADING:  orientation = EchoRender.TriCellTable.LEADING_TRAILING; break;
-        case EchoApp.Property.Alignment.TRAILING: orientation = EchoRender.TriCellTable.TRAILING_LEADING; break;
-        case EchoApp.Property.Alignment.LEFT:     orientation = EchoRender.TriCellTable.LEADING_TRAILING; break;
-        case EchoApp.Property.Alignment.RIGHT:    orientation = EchoRender.TriCellTable.TRAILING_LEADING; break;
+        case EchoApp.Alignment.LEADING:  orientation = EchoRender.TriCellTable.LEADING_TRAILING; break;
+        case EchoApp.Alignment.TRAILING: orientation = EchoRender.TriCellTable.TRAILING_LEADING; break;
+        case EchoApp.Alignment.LEFT:     orientation = EchoRender.TriCellTable.LEADING_TRAILING; break;
+        case EchoApp.Alignment.RIGHT:    orientation = EchoRender.TriCellTable.TRAILING_LEADING; break;
         default:
             switch (position.vertical) {
-            case EchoApp.Property.Alignment.TOP:    orientation = EchoRender.TriCellTable.TOP_BOTTOM;       break;
-            case EchoApp.Property.Alignment.BOTTOM: orientation = EchoRender.TriCellTable.BOTTOM_TOP;       break;
+            case EchoApp.Alignment.TOP:    orientation = EchoRender.TriCellTable.TOP_BOTTOM;       break;
+            case EchoApp.Alignment.BOTTOM: orientation = EchoRender.TriCellTable.BOTTOM_TOP;       break;
             default:                                orientation = EchoRender.TriCellTable.TRAILING_LEADING; break;
             }
         }

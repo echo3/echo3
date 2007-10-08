@@ -26,50 +26,50 @@
 
     var DEFAULT_WINDOW_IMAGE_PATH = "../image/defaultwindow/";
     var DEFAULT_WINDOW_BORDER_IMAGES = new Array(
-            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderTopLeft.png", "no-repeat"),
-            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderTop.png", "repeat-x"),
-            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderTopRight.png", "no-repeat"),
-            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderLeft.png", "repeat-y"),
-            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderRight.png", "repeat-y"),
-            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderBottomLeft.png", "no-repeat"),
-            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderBottom.png", "repeat-x"),
-            new EchoApp.Property.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderBottomRight.png", "no-repeat"));    
-    var DEFAULT_WINDOW_BORDER = new EchoApp.Property.FillImageBorder(null, "17px 23px 23px 17px", "8px 14px 14px 8px", 
+            new EchoApp.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderTopLeft.png", "no-repeat"),
+            new EchoApp.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderTop.png", "repeat-x"),
+            new EchoApp.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderTopRight.png", "no-repeat"),
+            new EchoApp.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderLeft.png", "repeat-y"),
+            new EchoApp.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderRight.png", "repeat-y"),
+            new EchoApp.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderBottomLeft.png", "no-repeat"),
+            new EchoApp.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderBottom.png", "repeat-x"),
+            new EchoApp.FillImage(DEFAULT_WINDOW_IMAGE_PATH + "BorderBottomRight.png", "no-repeat"));    
+    var DEFAULT_WINDOW_BORDER = new EchoApp.FillImageBorder(null, "17px 23px 23px 17px", "8px 14px 14px 8px", 
             DEFAULT_WINDOW_BORDER_IMAGES);
-    var DEFAULT_WINDOW_TITLE_BACKGROUND = new EchoApp.Property.FillImage(
+    var DEFAULT_WINDOW_TITLE_BACKGROUND = new EchoApp.FillImage(
             DEFAULT_WINDOW_IMAGE_PATH + "WindowPaneTitleBackground.png", "repeat", 0, "100%");
 
     var DEFAULT_WINDOW_STYLE = new EchoApp.Style();
     DEFAULT_WINDOW_STYLE.setProperty("border", DEFAULT_WINDOW_BORDER);
-    DEFAULT_WINDOW_STYLE.setProperty("titleForeground", new EchoApp.Property.Color("white"));
+    DEFAULT_WINDOW_STYLE.setProperty("titleForeground", new EchoApp.Color("white"));
     DEFAULT_WINDOW_STYLE.setProperty("titleBackgroundImage", DEFAULT_WINDOW_TITLE_BACKGROUND);
     
     var DEFAULT_BUTTON_STYLE = new EchoApp.Style();
-    DEFAULT_BUTTON_STYLE.setProperty("rolloverBackground", new EchoApp.Property.Color("#dfdfff"));
-    DEFAULT_BUTTON_STYLE.setProperty("rolloverEnabled", new EchoApp.Property.Color("#dfdfff"));
-    DEFAULT_BUTTON_STYLE.setProperty("pressedBackground", new EchoApp.Property.Color("#bfbfff"));
-    DEFAULT_BUTTON_STYLE.setProperty("pressedEnabled", new EchoApp.Property.Color("#dfdfff"));
-    DEFAULT_BUTTON_STYLE.setProperty("background", new EchoApp.Property.Color("#bfbfdf"));
-    DEFAULT_BUTTON_STYLE.setProperty("border", new EchoApp.Property.Border("2px outset #bfbfdf"));
+    DEFAULT_BUTTON_STYLE.setProperty("rolloverBackground", new EchoApp.Color("#dfdfff"));
+    DEFAULT_BUTTON_STYLE.setProperty("rolloverEnabled", new EchoApp.Color("#dfdfff"));
+    DEFAULT_BUTTON_STYLE.setProperty("pressedBackground", new EchoApp.Color("#bfbfff"));
+    DEFAULT_BUTTON_STYLE.setProperty("pressedEnabled", new EchoApp.Color("#dfdfff"));
+    DEFAULT_BUTTON_STYLE.setProperty("background", new EchoApp.Color("#bfbfdf"));
+    DEFAULT_BUTTON_STYLE.setProperty("border", new EchoApp.Border("2px outset #bfbfdf"));
 
     function testRenderInitial() {
         app = new EchoApp.Application("testArea");
     
         contentPane = new EchoApp.ContentPane();
-        contentPane.setProperty("background", new EchoApp.Property.Color("#abcdef"));
+        contentPane.setProperty("background", new EchoApp.Color("#abcdef"));
         app.rootComponent.add(contentPane);
         
         mainColumn = new EchoApp.Column();
-        mainColumn.setProperty("cellSpacing", new EchoApp.Property.Extent("5px"));
-        mainColumn.setProperty("insets", new EchoApp.Property.Insets("2px 5px"));
-        mainColumn.setProperty("background", new EchoApp.Property.Color("#239567"));
+        mainColumn.setProperty("cellSpacing", new EchoApp.Extent("5px"));
+        mainColumn.setProperty("insets", new EchoApp.Insets("2px 5px"));
+        mainColumn.setProperty("background", new EchoApp.Color("#239567"));
         
         contentPane.add(mainColumn);
         
         for (var i = 0; i < 3; ++i) {
             var label = new EchoApp.Label();
-            label.setProperty("foreground", new EchoApp.Property.Color("#abcdef"));
-            label.setProperty("background", new EchoApp.Property.Color("#2f2f3f"));
+            label.setProperty("foreground", new EchoApp.Color("#abcdef"));
+            label.setProperty("background", new EchoApp.Color("#2f2f3f"));
             label.setProperty("text", "A label with color!");
             mainColumn.add(label);
 
@@ -77,8 +77,8 @@
             mainColumn.add(column2);
 
             testButton = new EchoApp.Button();
-            testButton.setProperty("foreground", new EchoApp.Property.Color("#7f0000"));
-            testButton.setProperty("background", new EchoApp.Property.Color("#ffafaf"));
+            testButton.setProperty("foreground", new EchoApp.Color("#7f0000"));
+            testButton.setProperty("background", new EchoApp.Color("#ffafaf"));
             testButton.setProperty("text", "[button!]");
             testButton.setStyle(DEFAULT_BUTTON_STYLE);
 
@@ -94,19 +94,19 @@
             
             testButton = new EchoApp.Button();
             testButton.setProperty("text", "ButtonBefore3-1");
-            testButton.setProperty("background", new EchoApp.Property.Color("#afffaf"));
+            testButton.setProperty("background", new EchoApp.Color("#afffaf"));
             testButton.setStyle(DEFAULT_BUTTON_STYLE);
             row.add(testButton, 3);
             
             testButton = new EchoApp.Button();
             testButton.setProperty("text", "ButtonBefore3-2");
-            testButton.setProperty("background", new EchoApp.Property.Color("#afffaf"));
+            testButton.setProperty("background", new EchoApp.Color("#afffaf"));
             testButton.setStyle(DEFAULT_BUTTON_STYLE);
             row.add(testButton, 3);
             
             testButton = new EchoApp.Button();
             testButton.setProperty("text", "ButtonBefore3-3");
-            testButton.setProperty("background", new EchoApp.Property.Color("#afffaf"));
+            testButton.setProperty("background", new EchoApp.Color("#afffaf"));
             testButton.setStyle(DEFAULT_BUTTON_STYLE);
             row.add(testButton, 3);
             
@@ -164,16 +164,16 @@
     }
 
     function testColumnBackground() {
-        if (mainColumn.getProperty("background") == new EchoApp.Property.Color("#ff0000")) {
-            mainColumn.setProperty("background", new EchoApp.Property.Color("#00ff00"));
+        if (mainColumn.getProperty("background") == new EchoApp.Color("#ff0000")) {
+            mainColumn.setProperty("background", new EchoApp.Color("#00ff00"));
         } else {
-            mainColumn.setProperty("background", new EchoApp.Property.Color("#ff0000"));
+            mainColumn.setProperty("background", new EchoApp.Color("#ff0000"));
         }
     }
     
     function testColumnCellSpacing() {
         if (mainColumn.getProperty("cellSpacing") == null) {
-            mainColumn.setProperty("cellSpacing", new EchoApp.Property.Extent("5px"));
+            mainColumn.setProperty("cellSpacing", new EchoApp.Extent("5px"));
         } else {
             mainColumn.setProperty("cellSpacing", null);
         }

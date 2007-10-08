@@ -289,20 +289,20 @@ EchoSerial.PropertyTranslator.Alignment.toProperty = function(client, propertyEl
     var element = EchoWebCore.DOM.getChildElementByTagName(propertyElement, "a");
     var h, v;
     switch (element.getAttribute("h")) {
-    case "leading":  h = EchoApp.Property.Alignment.LEADING;  break;
-    case "trailing": h = EchoApp.Property.Alignment.TRAILING; break;
-    case "left":     h = EchoApp.Property.Alignment.LEFT;     break;
-    case "center":   h = EchoApp.Property.Alignment.CENTER;   break;
-    case "right":    h = EchoApp.Property.Alignment.RIGHT;    break;
-    default:         h = EchoApp.Property.Alignment.DEFAULT;
+    case "leading":  h = EchoApp.Alignment.LEADING;  break;
+    case "trailing": h = EchoApp.Alignment.TRAILING; break;
+    case "left":     h = EchoApp.Alignment.LEFT;     break;
+    case "center":   h = EchoApp.Alignment.CENTER;   break;
+    case "right":    h = EchoApp.Alignment.RIGHT;    break;
+    default:         h = EchoApp.Alignment.DEFAULT;
     }
     switch (element.getAttribute("v")) {
-    case "top":      v = EchoApp.Property.Alignment.TOP;      break;
-    case "center":   v = EchoApp.Property.Alignment.CENTER;   break;
-    case "bottom":   v = EchoApp.Property.Alignment.BOTTOM;   break;
-    default:         v = EchoApp.Property.Alignment.DEFAULT;  
+    case "top":      v = EchoApp.Alignment.TOP;      break;
+    case "center":   v = EchoApp.Alignment.CENTER;   break;
+    case "bottom":   v = EchoApp.Alignment.BOTTOM;   break;
+    default:         v = EchoApp.Alignment.DEFAULT;  
     }
-    return new EchoApp.Property.Alignment(h, v);
+    return new EchoApp.Alignment(h, v);
 };
 
 EchoSerial.addPropertyTranslator("Alignment", EchoSerial.PropertyTranslator.Alignment);
@@ -315,30 +315,30 @@ EchoSerial.PropertyTranslator.Border = function() { };
 EchoSerial.PropertyTranslator.Border.toProperty = function(client, propertyElement) {
     var value = propertyElement.getAttribute("v");
     if (value) {
-        return new EchoApp.Property.Border(value);
+        return new EchoApp.Border(value);
     } else {
         var element = EchoWebCore.DOM.getChildElementByTagName(propertyElement, "b");
         var sides = new Array();
         
         value = element.getAttribute("t");
         if (value) {
-            sides.push(new EchoApp.Property.Border.Side(value));
+            sides.push(new EchoApp.Border.Side(value));
             value = element.getAttribute("r");
             if (value) {
-                sides.push(new EchoApp.Property.Border.Side(value));
+                sides.push(new EchoApp.Border.Side(value));
                 value = element.getAttribute("b");
                 if (value) {
-                    sides.push(new EchoApp.Property.Border.Side(value));
+                    sides.push(new EchoApp.Border.Side(value));
                     value = element.getAttribute("l");
                     if (value) {
-                        sides.push(new EchoApp.Property.Border.Side(value));
+                        sides.push(new EchoApp.Border.Side(value));
                     }
                 }
             }
         } else {
             throw new Error("Invalid multi-sided border: no sides set.");
         }
-        return new EchoApp.Property.Border(sides);
+        return new EchoApp.Border(sides);
     }
 };
 
@@ -350,7 +350,7 @@ EchoSerial.addPropertyTranslator("Border", EchoSerial.PropertyTranslator.Border)
 EchoSerial.PropertyTranslator.Color = function() { };
 
 EchoSerial.PropertyTranslator.Color.toProperty = function(client, propertyElement) {
-    return new EchoApp.Property.Color(propertyElement.getAttribute("v"));
+    return new EchoApp.Color(propertyElement.getAttribute("v"));
 };
 
 EchoSerial.PropertyTranslator.Color.toXml = function(client, propertyElement, propertyValue) {
@@ -365,7 +365,7 @@ EchoSerial.addPropertyTranslator("Color", EchoSerial.PropertyTranslator.Color);
 EchoSerial.PropertyTranslator.Extent = function() { };
 
 EchoSerial.PropertyTranslator.Extent.toProperty = function(client, propertyElement) {
-    return new EchoApp.Property.Extent(propertyElement.getAttribute("v"));
+    return new EchoApp.Extent(propertyElement.getAttribute("v"));
 };
 
 EchoSerial.PropertyTranslator.Extent.toXml = function(client, propertyElement, propertyValue) {
@@ -391,14 +391,14 @@ EchoSerial.PropertyTranslator.FillImage._parseElement = function(client, fiEleme
     }
     var repeat = fiElement.getAttribute("r");
     switch (repeat) {
-    case "0": repeat = EchoApp.Property.FillImage.NO_REPEAT; break;
-    case "xy": repeat = EchoApp.Property.FillImage.REPEAT; break;
-    case "x": repeat = EchoApp.Property.FillImage.REPEAT_HORIZONTAL; break;
-    case "y": repeat = EchoApp.Property.FillImage.REPEAT_VERTICAL; break;
+    case "0": repeat = EchoApp.FillImage.NO_REPEAT; break;
+    case "xy": repeat = EchoApp.FillImage.REPEAT; break;
+    case "x": repeat = EchoApp.FillImage.REPEAT_HORIZONTAL; break;
+    case "y": repeat = EchoApp.FillImage.REPEAT_VERTICAL; break;
     }
     var x = fiElement.getAttribute("x");
     var y = fiElement.getAttribute("y");
-    return new EchoApp.Property.FillImage(url, repeat, x, y);
+    return new EchoApp.FillImage(url, repeat, x, y);
 };
 
 EchoSerial.addPropertyTranslator("FillImage", EchoSerial.PropertyTranslator.FillImage);
@@ -415,11 +415,11 @@ EchoSerial.PropertyTranslator.FillImageBorder.toProperty = function(client, prop
 
 EchoSerial.PropertyTranslator.FillImageBorder._parseElement = function(client, fibElement) {
     var contentInsets = fibElement.getAttribute("ci");
-    contentInsets = contentInsets ? new EchoApp.Property.Insets(contentInsets) : null;
+    contentInsets = contentInsets ? new EchoApp.Insets(contentInsets) : null;
     var borderInsets = fibElement.getAttribute("bi");
-    borderInsets = borderInsets ? new EchoApp.Property.Insets(borderInsets) : null;
+    borderInsets = borderInsets ? new EchoApp.Insets(borderInsets) : null;
     var borderColor = fibElement.getAttribute("bc");
-    borderColor = borderColor ? new EchoApp.Property.Color(borderColor) : null;
+    borderColor = borderColor ? new EchoApp.Color(borderColor) : null;
     var fillImages = new Array();
     
     var element = fibElement.firstChild;
@@ -437,7 +437,7 @@ EchoSerial.PropertyTranslator.FillImageBorder._parseElement = function(client, f
 	    throw new Error("Invalid FillImageBorder image count: " + fillImages.length);
     }
     
-    return new EchoApp.Property.FillImageBorder(borderColor, borderInsets, contentInsets, fillImages);
+    return new EchoApp.FillImageBorder(borderColor, borderInsets, contentInsets, fillImages);
 };
 
 EchoSerial.addPropertyTranslator("FillImageBorder", EchoSerial.PropertyTranslator.FillImageBorder);
@@ -458,16 +458,16 @@ EchoSerial.PropertyTranslator.Font.toProperty = function(client, propertyElement
         }
     }
     
-    var size = element.getAttribute("sz") ? new EchoApp.Property.Extent(element.getAttribute("sz")) : null;
+    var size = element.getAttribute("sz") ? new EchoApp.Extent(element.getAttribute("sz")) : null;
 
     var style = 0;
-    if (element.getAttribute("bo")) { style |= EchoApp.Property.Font.BOLD         };
-    if (element.getAttribute("it")) { style |= EchoApp.Property.Font.ITALIC       };
-    if (element.getAttribute("un")) { style |= EchoApp.Property.Font.UNDERLINE    };
-    if (element.getAttribute("ov")) { style |= EchoApp.Property.Font.OVERLINE     };
-    if (element.getAttribute("lt")) { style |= EchoApp.Property.Font.LINE_THROUGH };
+    if (element.getAttribute("bo")) { style |= EchoApp.Font.BOLD         };
+    if (element.getAttribute("it")) { style |= EchoApp.Font.ITALIC       };
+    if (element.getAttribute("un")) { style |= EchoApp.Font.UNDERLINE    };
+    if (element.getAttribute("ov")) { style |= EchoApp.Font.OVERLINE     };
+    if (element.getAttribute("lt")) { style |= EchoApp.Font.LINE_THROUGH };
     
-    return new EchoApp.Property.Font(typefaces, style, size);
+    return new EchoApp.Font(typefaces, style, size);
 };
 
 EchoSerial.addPropertyTranslator("Font", EchoSerial.PropertyTranslator.Font);
@@ -483,11 +483,11 @@ EchoSerial.PropertyTranslator.ImageReference.toProperty = function(client, prope
         url = client.decompressUrl(url);
     }
     var width = propertyElement.getAttribute("w");
-    width = width ? new EchoApp.Property.Extent(width) : null;
+    width = width ? new EchoApp.Extent(width) : null;
     var height = propertyElement.getAttribute("h");
-    height = height ? new EchoApp.Property.Extent(height) : null;
+    height = height ? new EchoApp.Extent(height) : null;
     
-    return new EchoApp.Property.ImageReference(url, width, height);
+    return new EchoApp.ImageReference(url, width, height);
 };
 
 EchoSerial.addPropertyTranslator("ImageReference", EchoSerial.PropertyTranslator.ImageReference);
@@ -498,7 +498,7 @@ EchoSerial.addPropertyTranslator("ImageReference", EchoSerial.PropertyTranslator
 EchoSerial.PropertyTranslator.Insets = function() { };
 
 EchoSerial.PropertyTranslator.Insets.toProperty = function(client, propertyElement) {
-    return new EchoApp.Property.Insets(propertyElement.getAttribute("v"));
+    return new EchoApp.Insets(propertyElement.getAttribute("v"));
 };
 
 EchoSerial.addPropertyTranslator("Insets", EchoSerial.PropertyTranslator.Insets);

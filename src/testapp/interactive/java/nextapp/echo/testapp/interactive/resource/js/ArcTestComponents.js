@@ -58,10 +58,10 @@ ArcTest.ComponentSync.TestContainer.prototype.createBaseComponent = function() {
     var contentPane = new EchoApp.ContentPane();
     for (var i = 0; i < this.component.children.length; ++i) {
         var windowPane = new EchoApp.WindowPane({
-            positionX: new EchoApp.Property.Extent(120 * (i % 4)),
-            positionY: new EchoApp.Property.Extent(120 * parseInt(i / 4)),
-            width: new EchoApp.Property.Extent(100),
-            height: new EchoApp.Property.Extent(100)
+            positionX: new EchoApp.Extent(120 * (i % 4)),
+            positionY: new EchoApp.Extent(120 * parseInt(i / 4)),
+            width: new EchoApp.Extent(100),
+            height: new EchoApp.Extent(100)
         });
         contentPane.add(windowPane);
         
@@ -107,23 +107,23 @@ ArcTest.ComponentSync.TestPane.prototype.createBaseComponent = function() {
     contentPane.add(windowPane);
     
     var mainColumn = new EchoApp.Column();
-    mainColumn.setProperty("cellSpacing", new EchoApp.Property.Extent("5px"));
-    mainColumn.setProperty("insets", new EchoApp.Property.Insets("10px"));
+    mainColumn.setProperty("cellSpacing", new EchoApp.Extent("5px"));
+    mainColumn.setProperty("insets", new EchoApp.Insets("10px"));
     windowPane.add(mainColumn);
     
     var controlsRow = new EchoApp.Row();
-    controlsRow.setProperty("cellSpacing", new EchoApp.Property.Extent("10px"));
+    controlsRow.setProperty("cellSpacing", new EchoApp.Extent("10px"));
     mainColumn.add(controlsRow);
     
     var addButton = new EchoApp.Button();
     addButton.setProperty("text", "Add Label");
-    addButton.setProperty("background", new EchoApp.Property.Color("#00ff00"));
+    addButton.setProperty("background", new EchoApp.Color("#00ff00"));
     addButton.addListener("action", new EchoCore.MethodRef(this, this._processAddButton));
     controlsRow.add(addButton);
 
     var removeButton = new EchoApp.Button();
     removeButton.setProperty("text", "Remove Label");
-    removeButton.setProperty("background", new EchoApp.Property.Color("#ff0000"));
+    removeButton.setProperty("background", new EchoApp.Color("#ff0000"));
     removeButton.addListener("action", new EchoCore.MethodRef(this, this._processRemoveButton));
     controlsRow.add(removeButton);
     

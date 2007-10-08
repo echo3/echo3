@@ -47,10 +47,10 @@ EchoRemoteClient.ListComponent.ListDataTranslator.toProperty = function(client, 
         var text = eElement.getAttribute("t");
         var item = new EchoRemoteClient.ListComponent.ListDataItem(text);
         if (eElement.getAttribute("f")) {
-            item.foreground = new EchoApp.Property.Color(eElement.getAttribute("f"));
+            item.foreground = new EchoApp.Color(eElement.getAttribute("f"));
         }
         if (eElement.getAttribute("b")) {
-            item.background = new EchoApp.Property.Color(eElement.getAttribute("b"));
+            item.background = new EchoApp.Color(eElement.getAttribute("b"));
         }
         if (eElement.firstChild) {
             var childElement = eElement.firstChild;

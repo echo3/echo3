@@ -62,7 +62,7 @@ EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update
     if (child.floatingPane) {
         divElement.style.zIndex = "1";
     } else {
-        var insets = this.component.getRenderProperty("insets", new EchoApp.Property.Insets(0));
+        var insets = this.component.getRenderProperty("insets", new EchoApp.Insets(0));
         var pixelInsets = EchoRender.Property.Insets.toPixels(insets);
         divElement.style.zIndex = "0";
         divElement.style.left = pixelInsets.left + "px";

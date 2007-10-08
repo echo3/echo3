@@ -6,7 +6,7 @@ EchoRender.ComponentSync.Row = function() {
   
 EchoRender.ComponentSync.Row.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
-EchoRender.ComponentSync.Row._defaultCellInsets = new EchoApp.Property.Insets(0);
+EchoRender.ComponentSync.Row._defaultCellInsets = new EchoApp.Insets(0);
 
 EchoRender.ComponentSync.Row._createRowPrototype = function() {
     var divElement = document.createElement("div");

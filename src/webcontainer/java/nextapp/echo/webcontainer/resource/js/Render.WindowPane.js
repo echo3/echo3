@@ -6,8 +6,8 @@ EchoRender.ComponentSync.WindowPane = function() {
 
 EchoRender.ComponentSync.WindowPane.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
-EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_BACKGROUND = new EchoApp.Property.Color("#abcdef");
-EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_INSETS = new EchoApp.Property.Insets("5px", "10px");
+EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_BACKGROUND = new EchoApp.Color("#abcdef");
+EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_INSETS = new EchoApp.Insets("5px", "10px");
 EchoRender.ComponentSync.WindowPane.ADJUSTMENT_OPACITY = 0.75;
 
 EchoRender.ComponentSync.WindowPane.adjustOpacity = false;
@@ -85,10 +85,10 @@ EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseUp = function(e)
 
     this._removeBorderListeners();
     
-	this.component.setProperty("positionX", new EchoApp.Property.Extent(this._windowX, "px"));
-	this.component.setProperty("positionY", new EchoApp.Property.Extent(this._windowY, "px"));
-	this.component.setProperty("width", new EchoApp.Property.Extent(this._windowWidth, "px"));
-	this.component.setProperty("height", new EchoApp.Property.Extent(this._windowHeight, "px"));
+	this.component.setProperty("positionX", new EchoApp.Extent(this._windowX, "px"));
+	this.component.setProperty("positionY", new EchoApp.Extent(this._windowY, "px"));
+	this.component.setProperty("width", new EchoApp.Extent(this._windowWidth, "px"));
+	this.component.setProperty("height", new EchoApp.Extent(this._windowHeight, "px"));
 	
 	this._userWindowX = this._windowX;
 	this._userWindowY = this._windowY;
@@ -156,8 +156,8 @@ EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseUp = function(
     this._windowPaneDivElement.style.opacity = 1;
     
     this._removeTitleBarListeners();
-	this.component.setProperty("positionX", new EchoApp.Property.Extent(this._windowX, "px"));
-	this.component.setProperty("positionY", new EchoApp.Property.Extent(this._windowY, "px"));
+	this.component.setProperty("positionX", new EchoApp.Extent(this._windowX, "px"));
+	this.component.setProperty("positionY", new EchoApp.Extent(this._windowY, "px"));
 
 	this._userWindowX = this._windowX;
 	this._userWindowY = this._windowY;

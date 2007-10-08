@@ -13,22 +13,22 @@ TestApp.prototype = EchoCore.derive(EchoApp.Application);
 TestApp.randomColor = function() {
     var colorValue = parseInt(Math.random() * 0x1000000).toString(16);
     colorValue = "#" + "000000".substring(colorValue.length) + colorValue;
-    return new EchoApp.Property.Color(colorValue);
+    return new EchoApp.Color(colorValue);
 };
 
 TestApp.TestScreen = function() {
     EchoApp.ContentPane.call(this, {
-        background: new EchoApp.Property.Color("#abcdef")
+        background: new EchoApp.Color("#abcdef")
     });
 
     this.testSelectSplitPane = new EchoApp.SplitPane({
-        separatorPosition: new EchoApp.Property.Extent("180px")
+        separatorPosition: new EchoApp.Extent("180px")
     });
     this.testSelectSplitPane.setStyleName("DefaultResizable");
     this.add(this.testSelectSplitPane);
 
     this.testSelectColumn = new EchoApp.Column({
-        insets: new EchoApp.Property.Insets("5px 10px")
+        insets: new EchoApp.Insets("5px 10px")
     });
     this.testSelectSplitPane.add(this.testSelectColumn);
     
@@ -69,7 +69,7 @@ TestApp.TestScreen.prototype._launchTest = function(e) {
 TestApp.TestPane = function() {
     EchoApp.ContentPane.call(this);
     var testControlsSplitPane = new EchoApp.SplitPane();
-    testControlsSplitPane.setProperty("separatorPosition", new EchoApp.Property.Extent("180px"));
+    testControlsSplitPane.setProperty("separatorPosition", new EchoApp.Extent("180px"));
 //        splitPane.setStyleName("DefaultResizable");
 //        splitPane.setProperty("orientation", EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING);
     this.add(testControlsSplitPane);
@@ -133,19 +133,19 @@ TestApp.Tests.Column = function() {
 TestApp.Tests.Column.prototype = EchoCore.derive(TestApp.TestPane);
 
 TestApp.Tests.Column.prototype._cellSpacing0 = function() {
-    this.column.setProperty("cellSpacing", new EchoApp.Property.Extent("0px"));
+    this.column.setProperty("cellSpacing", new EchoApp.Extent("0px"));
 };
 
 TestApp.Tests.Column.prototype._cellSpacing1 = function() {
-    this.column.setProperty("cellSpacing", new EchoApp.Property.Extent("1px"));
+    this.column.setProperty("cellSpacing", new EchoApp.Extent("1px"));
 };
 
 TestApp.Tests.Column.prototype._cellSpacing5 = function() {
-    this.column.setProperty("cellSpacing", new EchoApp.Property.Extent("5px"));
+    this.column.setProperty("cellSpacing", new EchoApp.Extent("5px"));
 };
 
 TestApp.Tests.Column.prototype._cellSpacing25 = function() {
-    this.column.setProperty("cellSpacing", new EchoApp.Property.Extent("25px"));
+    this.column.setProperty("cellSpacing", new EchoApp.Extent("25px"));
 };
 
 TestApp.Tests.Column.prototype._cellSpacingNull = function() {
@@ -228,7 +228,7 @@ TestApp.Tests.Column.prototype._setLayoutDataInsets = function() {
         return;
     }
     layoutData = new EchoApp.LayoutData();
-    layoutData.setProperty("insets", new EchoApp.Property.Insets(parseInt(Math.random() * 20)));
+    layoutData.setProperty("insets", new EchoApp.Insets(parseInt(Math.random() * 20)));
     this.column.getComponent(0).setProperty("layoutData", layoutData);
 };
 
@@ -318,8 +318,8 @@ TestApp.Tests.SplitPane.prototype._setLayoutData1 = function(e) {
     }
     var component = this.splitPane.getComponent(0);
     var layoutData = new EchoApp.LayoutData();
-    layoutData.setProperty("background", new EchoApp.Property.Color("#3fffaf"));
-    layoutData.setProperty("insets", new EchoApp.Property.Insets("5px"));
+    layoutData.setProperty("background", new EchoApp.Color("#3fffaf"));
+    layoutData.setProperty("insets", new EchoApp.Insets("5px"));
     component.setProperty("layoutData", layoutData);
 };
 
@@ -329,8 +329,8 @@ TestApp.Tests.SplitPane.prototype._setLayoutData2 = function(e) {
     }
     var component = this.splitPane.getComponent(1);
     var layoutData = new EchoApp.LayoutData();
-    layoutData.setProperty("background", new EchoApp.Property.Color("#afff3f"));
-    layoutData.setProperty("insets", new EchoApp.Property.Insets("5px"));
+    layoutData.setProperty("background", new EchoApp.Color("#afff3f"));
+    layoutData.setProperty("insets", new EchoApp.Insets("5px"));
     component.setProperty("layoutData", layoutData);
 };
 

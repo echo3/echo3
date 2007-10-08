@@ -142,7 +142,7 @@ EchoRemoteClient.prototype._executeCommands = function() {
  * @see EchoClient#getDefaultImage
  */
 EchoRemoteClient.prototype.getDefaultImage = function(imageName) {
-    return new EchoApp.Property.ImageReference(this._serverUrl + "?sid=Echo.Image&iid=" + imageName);
+    return new EchoApp.ImageReference(this._serverUrl + "?sid=Echo.Image&iid=" + imageName);
 };
 
 /**

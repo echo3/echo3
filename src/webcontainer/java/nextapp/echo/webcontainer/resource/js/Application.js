@@ -1312,6 +1312,8 @@ EchoApp.FocusManager.prototype.findPrevious = function() {
         }
     }
 };
+
+// Fundamental Property Types
     
 /**
  * Layout Data Object, describing how a child component is rendered/laid out 
@@ -1403,35 +1405,30 @@ EchoApp.LayoutDirection.LTR = new EchoApp.LayoutDirection(true);
 EchoApp.LayoutDirection.RTL = new EchoApp.LayoutDirection(false);
 
 /**
- * Namespace for properties.  Non-instantiable object.
- */
-EchoApp.Property = function() { };
-
-/**
  * Creates an alignment property.
  *
  * @class Alignment property.
  * @param {Number} horizontal the horizontal alignment setting, one of the 
  *        following values:
  *        <ul>
- *         <li>EchoApp.Property.Alignment.DEFAULT</li>
- *         <li>EchoApp.Property.Alignment.LEADING</li>
- *         <li>EchoApp.Property.Alignment.TRAILING</li>
- *         <li>EchoApp.Property.Alignment.LEFT</li>
- *         <li>EchoApp.Property.Alignment.CENTER</li>
- *         <li>EchoApp.Property.Alignment.RIGHT</li>
+ *         <li>EchoApp.Alignment.DEFAULT</li>
+ *         <li>EchoApp.Alignment.LEADING</li>
+ *         <li>EchoApp.Alignment.TRAILING</li>
+ *         <li>EchoApp.Alignment.LEFT</li>
+ *         <li>EchoApp.Alignment.CENTER</li>
+ *         <li>EchoApp.Alignment.RIGHT</li>
  *        </ul>
  * @param {Number} vertical the vertical alignment setting, one of the 
  *        following values:
  *        <ul>
- *         <li>EchoApp.Property.Alignment.DEFAULT</li>
- *         <li>EchoApp.Property.Alignment.TOP</li>
- *         <li>EchoApp.Property.Alignment.CENTER</li>
- *         <li>EchoApp.Property.Alignment.BOTTOM</li>
+ *         <li>EchoApp.Alignment.DEFAULT</li>
+ *         <li>EchoApp.Alignment.TOP</li>
+ *         <li>EchoApp.Alignment.CENTER</li>
+ *         <li>EchoApp.Alignment.BOTTOM</li>
  *        </ul>
  * @constructor
  */
-EchoApp.Property.Alignment = function(horizontal, vertical) {
+EchoApp.Alignment = function(horizontal, vertical) {
 
     /**
      * The horizontal alignment setting.
@@ -1451,14 +1448,14 @@ EchoApp.Property.Alignment = function(horizontal, vertical) {
  * @type String
  * @final
  */
-EchoApp.Property.Alignment.prototype.className = "Alignment";
+EchoApp.Alignment.prototype.className = "Alignment";
 
 /**
  * Value for horizontal/vertical setting indicating default alignment.
  * @type Number
  * @final
  */
-EchoApp.Property.Alignment.DEFAULT = 0;
+EchoApp.Alignment.DEFAULT = 0;
 
 /**
  * Value for horizontal setting indicating leading alignment
@@ -1466,7 +1463,7 @@ EchoApp.Property.Alignment.DEFAULT = 0;
  * @type Number
  * @final
  */
-EchoApp.Property.Alignment.LEADING = 1;
+EchoApp.Alignment.LEADING = 1;
 
 /**
  * Value for horizontal setting indicating trailing alignment
@@ -1474,49 +1471,49 @@ EchoApp.Property.Alignment.LEADING = 1;
  * @type Number
  * @final
  */
-EchoApp.Property.Alignment.TRAILING = 2;
+EchoApp.Alignment.TRAILING = 2;
 
 /**
  * Value for horizontal setting indicating left alignment.
  * @type Number
  * @final
  */
-EchoApp.Property.Alignment.LEFT = 3;
+EchoApp.Alignment.LEFT = 3;
 
 /**
  * Value for horizontal/vertical setting indicating centered alignment.
  * @type Number
  * @final
  */
-EchoApp.Property.Alignment.CENTER = 4;
+EchoApp.Alignment.CENTER = 4;
 
 /**
  * Value for horizontal setting indicating right alignment.
  * @type Number
  * @final
  */
-EchoApp.Property.Alignment.RIGHT = 5;
+EchoApp.Alignment.RIGHT = 5;
 
 /**
  * Value for vertical setting indicating top alignment.
  * @type Number
  * @final
  */
-EchoApp.Property.Alignment.TOP = 6;
+EchoApp.Alignment.TOP = 6;
 
 /**
  * Value for vertical setting indicating bottom alignment.
  * @type Number
  * @final
  */
-EchoApp.Property.Alignment.BOTTOM = 7;
+EchoApp.Alignment.BOTTOM = 7;
 
 /**
  * Creates a border property. 
  * @class Border property.
  * @constructor
  */
-EchoApp.Property.Border = function() {
+EchoApp.Border = function() {
     if (arguments.length == 1 && arguments[0] instanceof Array) {
         /**
          * Flag indicating whether the border has individually specified sides.
@@ -1535,7 +1532,7 @@ EchoApp.Property.Border = function() {
          * Default border size (used by components that do not support borders
          * with individually specified sides, or in the case of a border that
          * does not individually specify sides).
-         * @type EchoApp.Property.Extent
+         * @type EchoApp.Extent
          */
         this.size = this.sides[0].size;
 
@@ -1551,7 +1548,7 @@ EchoApp.Property.Border = function() {
          * Default border color (used by components that do not support borders
          * with individually specified sides, or in the case of a border that
          * does not individually specify sides).
-         * @type EchoApp.Property.Color
+         * @type EchoApp.Color
          */
         this.color = this.sides[0].color;
     } else if (arguments.length == 1 && typeof arguments[0] == "string") {
@@ -1560,9 +1557,9 @@ EchoApp.Property.Border = function() {
         if (items.length != 3) {
             throw new Error("Invalid border string: " + arguments[0]);
         }
-        this.size = new EchoApp.Property.Extent(items[0]);
+        this.size = new EchoApp.Extent(items[0]);
         this.style = items[1];
-        this.color = new EchoApp.Property.Color(items[2]);
+        this.color = new EchoApp.Color(items[2]);
     } else if (arguments.length == 3) {
         this.multisided = false;
         this.size = arguments[0];
@@ -1576,14 +1573,14 @@ EchoApp.Property.Border = function() {
  * @type String
  * @final
  */
-EchoApp.Property.Border.prototype.className = "Border";
+EchoApp.Border.prototype.className = "Border";
 
 /**
  * Creates a border side.
  * @class Border side sub-property.
  * @constructor
  */
-EchoApp.Property.Border.Side = function() {
+EchoApp.Border.Side = function() {
     if (arguments.length == 1 && typeof arguments[0] == "string") {
         var items = arguments[0].split(" ");
         if (items.length != 3) {
@@ -1592,9 +1589,9 @@ EchoApp.Property.Border.Side = function() {
         
         /** 
          * Border side size
-         * @type EchoApp.Property.Extent
+         * @type EchoApp.Extent
          */ 
-        this.size = new EchoApp.Property.Extent(items[0]);
+        this.size = new EchoApp.Extent(items[0]);
         
         /** 
          * Border side style
@@ -1604,9 +1601,9 @@ EchoApp.Property.Border.Side = function() {
 
         /** 
          * Border side color
-         * @type EchoApp.Property.Color
+         * @type EchoApp.Color
          */ 
-        this.color = new EchoApp.Property.Color(items[2]);
+        this.color = new EchoApp.Color(items[2]);
     }
 };
 
@@ -1616,7 +1613,7 @@ EchoApp.Property.Border.Side = function() {
  * @constructor
  * @param value the color hex value
  */
-EchoApp.Property.Color = function(value) {
+EchoApp.Color = function(value) {
     
     /**
      * The hexadecimal value of the color, e.g., #ab12c3.
@@ -1630,7 +1627,7 @@ EchoApp.Property.Color = function(value) {
  * @type String
  * @final
  */
-EchoApp.Property.Color.prototype.className = "Color";
+EchoApp.Color.prototype.className = "Color";
 
 /**
  * Adjusts the value of the color's RGB values by the
@@ -1642,7 +1639,7 @@ EchoApp.Property.Color.prototype.className = "Color";
  * @param b the amount to adjust the blue value of the color (-255 to 255)
  * @return a new adjusted color
  */
-EchoApp.Property.Color.prototype.adjust = function(r, g, b) {
+EchoApp.Color.prototype.adjust = function(r, g, b) {
     var colorInt = parseInt(this.value.substring(1), 16);
     var red = parseInt(colorInt / 0x10000) + r;
     if (red < 0) {
@@ -1662,7 +1659,7 @@ EchoApp.Property.Color.prototype.adjust = function(r, g, b) {
     } else if (blue > 255) {
         blue = 255;
     }
-    return new EchoApp.Property.Color("#"
+    return new EchoApp.Color("#"
             + (red < 16 ? "0" : "") + red.toString(16)
             + (green < 16 ? "0" : "") + green.toString(16)
             + (blue < 16 ? "0" : "") + blue.toString(16)); 
@@ -1674,7 +1671,7 @@ EchoApp.Property.Color.prototype.adjust = function(r, g, b) {
  * @return the red value (0-255)
  * @type Integer
  */
-EchoApp.Property.Color.prototype.getRed = function() {
+EchoApp.Color.prototype.getRed = function() {
     var colorInt = parseInt(this.value.substring(1), 16);
     return parseInt(colorInt / 0x10000);
 };
@@ -1685,7 +1682,7 @@ EchoApp.Property.Color.prototype.getRed = function() {
  * @return the green value (0-255)
  * @type Integer
  */
-EchoApp.Property.Color.prototype.getGreen = function() {
+EchoApp.Color.prototype.getGreen = function() {
     var colorInt = parseInt(this.value.substring(1), 16);
     return parseInt(colorInt / 0x100) % 0x100;
 };
@@ -1696,7 +1693,7 @@ EchoApp.Property.Color.prototype.getGreen = function() {
  * @return the blue value (0-255)
  * @type Integer
  */
-EchoApp.Property.Color.prototype.getBlue = function() {
+EchoApp.Color.prototype.getBlue = function() {
     var colorInt = parseInt(this.value.substring(1), 16);
     return colorInt % 0x100;
 };
@@ -1715,7 +1712,7 @@ EchoApp.Property.Color.prototype.getBlue = function() {
  * @class Extent property.
  * @constructor
  */
-EchoApp.Property.Extent = function() {
+EchoApp.Extent = function() {
     if (arguments.length == 2) {
         /**
          * The dimensionless value of the extent, e.g., 30.
@@ -1728,7 +1725,7 @@ EchoApp.Property.Extent = function() {
          */
         this.units = arguments[1];
     } else {
-        var parts = EchoApp.Property.Extent._PATTERN.exec(arguments[0]);
+        var parts = EchoApp.Extent._PATTERN.exec(arguments[0]);
         if (!parts) {
             throw new Error("Invalid Extent: " + arguments[0]);
         }
@@ -1741,14 +1738,14 @@ EchoApp.Property.Extent = function() {
  * Regular expression to parse string based extents, e.g., "20px".
  * Returned part 1 is the value, part 2 is the units (or blank).
  */
-EchoApp.Property.Extent._PATTERN = /^(-?\d+(?:\.\d+)?)(.+)?$/;
+EchoApp.Extent._PATTERN = /^(-?\d+(?:\.\d+)?)(.+)?$/;
 
 /**
  * Property class name.
  * @type String
  * @final
  */
-EchoApp.Property.Extent.prototype.className = "Extent";
+EchoApp.Extent.prototype.className = "Extent";
 
 /**
  * Returns a string representation.
@@ -1756,67 +1753,67 @@ EchoApp.Property.Extent.prototype.className = "Extent";
  * @return a string representation
  * @type String
  */
-EchoApp.Property.Extent.prototype.toString = function() {
+EchoApp.Extent.prototype.toString = function() {
     return this.value + this.units;
 };
 
 /**
  * Creates a FillImage property.
  * 
- * @param {EchoApp.Property.ImageReference} the image (may also be a string,
+ * @param {EchoApp.ImageReference} the image (may also be a string,
  *        at which point an ImageReference will be automatically constructed
  *        with the string as its URL).
  * @param {Number} repeat the image repeat mode, one of the following values:
  *        <ul>
- *         <li>EchoApp.Property.FillImage.NO_REPEAT</li>
- *         <li>EchoApp.Property.FillImage.REPEAT_HORIZONTAL</li>
- *         <li>EchoApp.Property.FillImage.REPEAT_VERTICAL</li>
- *         <li>EchoApp.Property.FillImage.REPEAT</li>
+ *         <li>EchoApp.FillImage.NO_REPEAT</li>
+ *         <li>EchoApp.FillImage.REPEAT_HORIZONTAL</li>
+ *         <li>EchoApp.FillImage.REPEAT_VERTICAL</li>
+ *         <li>EchoApp.FillImage.REPEAT</li>
  *        </ul>
  *         
- * @param {EchoApp.Property.Extent} the horizontal alignment/position of the image
- * @param {EchoApp.Property.Extent} the vertical alignment/position of the image
+ * @param {EchoApp.Extent} the horizontal alignment/position of the image
+ * @param {EchoApp.Extent} the vertical alignment/position of the image
  * @class FillImage property.  Describes a repeating image, typically used as a background.
  * @constructor
  */
-EchoApp.Property.FillImage = function(image, repeat, x, y) {
-    if (image instanceof EchoApp.Property.ImageReference) {
+EchoApp.FillImage = function(image, repeat, x, y) {
+    if (image instanceof EchoApp.ImageReference) {
         /**
          * The image.
-         * @type EchoApp.Property.ImageReference
+         * @type EchoApp.ImageReference
          */
         this.image = image;
     } else {
-        this.image = new EchoApp.Property.ImageReference(image);
+        this.image = new EchoApp.ImageReference(image);
     }
     /**
      * The repeat configuration, one of the following values:
      * <ul>
-     *  <li>EchoApp.Property.FillImage.NO_REPEAT</li>
-     *  <li>EchoApp.Property.FillImage.REPEAT_HORIZONTAL</li>
-     *  <li>EchoApp.Property.FillImage.REPEAT_VERTICAL</li>
-     *  <li>EchoApp.Property.FillImage.REPEAT</li>
+     *  <li>EchoApp.FillImage.NO_REPEAT</li>
+     *  <li>EchoApp.FillImage.REPEAT_HORIZONTAL</li>
+     *  <li>EchoApp.FillImage.REPEAT_VERTICAL</li>
+     *  <li>EchoApp.FillImage.REPEAT</li>
      * </ul>
      * @type Number
      */
     this.repeat = repeat;
-    if (x == null || x instanceof EchoApp.Property.Extent) {
+    if (x == null || x instanceof EchoApp.Extent) {
         /**
          * The horizontal aligment/position of the image.
-         * @type EchoApp.Property.Extent
+         * @type EchoApp.Extent
          */
         this.x = x;
     } else {
-        this.x = new EchoApp.Property.Extent(x);
+        this.x = new EchoApp.Extent(x);
     }
-    if (y == null || y instanceof EchoApp.Property.Extent) {
+    if (y == null || y instanceof EchoApp.Extent) {
         /**
          * The vertical aligment/position of the image.
-         * @type EchoApp.Property.Extent
+         * @type EchoApp.Extent
          */
         this.y = y;
     } else {
-        this.y = new EchoApp.Property.Extent(y);
+        this.y = new EchoApp.Extent(y);
     }
 };
 
@@ -1825,45 +1822,45 @@ EchoApp.Property.FillImage = function(image, repeat, x, y) {
  * @type Number
  * @final
  */
-EchoApp.Property.FillImage.NO_REPEAT = 0;
+EchoApp.FillImage.NO_REPEAT = 0;
 
 /**
  * Repeat value constant indicating the image should repeat horizontally.
  * @type Number
  * @final
  */
-EchoApp.Property.FillImage.REPEAT_HORIZONTAL = 1;
+EchoApp.FillImage.REPEAT_HORIZONTAL = 1;
 
 /**
  * Repeat value constant indicating the image should repeat vertically.
  * @type Number
  * @final
  */
-EchoApp.Property.FillImage.REPEAT_VERTICAL = 2;
+EchoApp.FillImage.REPEAT_VERTICAL = 2;
 
 /**
  * Repeat value constant indicating the image should repeat horizontally and vertically.
  * @type Number
  * @final
  */
-EchoApp.Property.FillImage.REPEAT = 3;
+EchoApp.FillImage.REPEAT = 3;
 
 /**
  * Property class name.
  * @type String
  * @final
  */
-EchoApp.Property.FillImage.prototype.className = "FillImage";
+EchoApp.FillImage.prototype.className = "FillImage";
 
 /**
  * Creates a FillImageBorder
  * 
- * @param {EchoApp.Property.Color} color the border background color (specify null to enable
+ * @param {EchoApp.Color} color the border background color (specify null to enable
  *        a transparent background, such that alpha-rendered PNGs will render properlty)
- * @param {EchoApp.Property.Insets} borderInsets describes the width and 
+ * @param {EchoApp.Insets} borderInsets describes the width and 
  *        height of the border images, i.e. the inset to which the border images
  *        extend inward from the outer edges of the box
- * @param {EchoApp.Property.Insets} contentInsets describes the inset of
+ * @param {EchoApp.Insets} contentInsets describes the inset of
  *        the content displayed within the border  (if the content inset is less
  *        than the border inset, the content will be drawn above the border)    
  * @class FillImageBorder property.  A border which is rendered using FillImages to
@@ -1871,36 +1868,36 @@ EchoApp.Property.FillImage.prototype.className = "FillImage";
  *        the border size. 
  * @constructor
  */
-EchoApp.Property.FillImageBorder = function(color, borderInsets, contentInsets, fillImages) {
-    if (color == null || color instanceof EchoApp.Property.Color) {
+EchoApp.FillImageBorder = function(color, borderInsets, contentInsets, fillImages) {
+    if (color == null || color instanceof EchoApp.Color) {
         /**
          * The border background color.
-         * @type EchoApp.Property.Color
+         * @type EchoApp.Color
          */
         this.color = color;
     } else {
-        this.color = new EchoApp.Property.Color(color);
+        this.color = new EchoApp.Color(color);
     }
-    if (borderInsets == null || borderInsets instanceof EchoApp.Property.Insets) {
+    if (borderInsets == null || borderInsets instanceof EchoApp.Insets) {
         /**
          * The border insets 
          * (effectively defines the sizes of the cells where the border FillImages are rendered).
-         * @type EchoApp.Property.Insets 
+         * @type EchoApp.Insets 
          */
         this.borderInsets = borderInsets;
     } else {
-        this.borderInsets = new EchoApp.Property.Insets(borderInsets);
+        this.borderInsets = new EchoApp.Insets(borderInsets);
     }
-    if (contentInsets == null || contentInsets instanceof EchoApp.Property.Insets) {
+    if (contentInsets == null || contentInsets instanceof EchoApp.Insets) {
         /**
          * The content insets (defines the content area inside of the border, if smaller than the
          * border insets, the content will overlap the border).
          * 
-         * @type EchoApp.Property.Insets 
+         * @type EchoApp.Insets 
          */
         this.contentInsets = contentInsets;
     } else {
-        this.contentInsets = new EchoApp.Property.Insets(contentInsets);
+        this.contentInsets = new EchoApp.Insets(contentInsets);
     }
     
     /**
@@ -1917,7 +1914,7 @@ EchoApp.Property.FillImageBorder = function(color, borderInsets, contentInsets, 
  * @type String
  * @final
  */
-EchoApp.Property.FillImageBorder.prototype.className = "FillImageBorder";
+EchoApp.FillImageBorder.prototype.className = "FillImageBorder";
 
 /**
  * Creates a Font property.
@@ -1925,18 +1922,18 @@ EchoApp.Property.FillImageBorder.prototype.className = "FillImageBorder";
  * @param typeface the typeface of the font, may be a string or an array of strings
  * @param {Number} style the style of the font, one or more of the following values ORed together:
  *        <ul>
- *         <li>EchoApp.Property.Font.PLAIN</li>
- *         <li>EchoApp.Property.Font.BOLD</li>
- *         <li>EchoApp.Property.Font.ITALIC</li>
- *         <li>EchoApp.Property.Font.UNDERLINE</li>
- *         <li>EchoApp.Property.Font.OVERLINE</li>
- *         <li>EchoApp.Property.Font.LINE_THROUGH</li>
+ *         <li>EchoApp.Font.PLAIN</li>
+ *         <li>EchoApp.Font.BOLD</li>
+ *         <li>EchoApp.Font.ITALIC</li>
+ *         <li>EchoApp.Font.UNDERLINE</li>
+ *         <li>EchoApp.Font.OVERLINE</li>
+ *         <li>EchoApp.Font.LINE_THROUGH</li>
  *        </ul>
- * @param {EchoApp.Property.Extent} size the size of the font
+ * @param {EchoApp.Extent} size the size of the font
  * @class Font property
  * @constructor
  */
-EchoApp.Property.Font = function(typeface, style, size) {
+EchoApp.Font = function(typeface, style, size) {
     
     /**
      * The typeface of the font, may be a string or an array of strings.
@@ -1946,12 +1943,12 @@ EchoApp.Property.Font = function(typeface, style, size) {
     /**
      * The style of the font, one or more of the following values ORed together:
      * <ul>
-     *  <li>EchoApp.Property.Font.PLAIN</li>
-     *  <li>EchoApp.Property.Font.BOLD</li>
-     *  <li>EchoApp.Property.Font.ITALIC</li>
-     *  <li>EchoApp.Property.Font.UNDERLINE</li>
-     *  <li>EchoApp.Property.Font.OVERLINE</li>
-     *  <li>EchoApp.Property.Font.LINE_THROUGH</li>
+     *  <li>EchoApp.Font.PLAIN</li>
+     *  <li>EchoApp.Font.BOLD</li>
+     *  <li>EchoApp.Font.ITALIC</li>
+     *  <li>EchoApp.Font.UNDERLINE</li>
+     *  <li>EchoApp.Font.OVERLINE</li>
+     *  <li>EchoApp.Font.LINE_THROUGH</li>
      * </ul>
      * @type Number
      */
@@ -1961,7 +1958,7 @@ EchoApp.Property.Font = function(typeface, style, size) {
         /**
          * The size of the font.
          * 
-         * @type EchoApp.Property.Extent
+         * @type EchoApp.Extent
          */
         this.size = new Extent(size);
     } else {
@@ -1974,53 +1971,53 @@ EchoApp.Property.Font = function(typeface, style, size) {
  * @type Number
  * @final
  */
-EchoApp.Property.Font.PLAIN = 0x0;
+EchoApp.Font.PLAIN = 0x0;
 
 /**
  * Style constant representing a bold font.
  * @type Number
  * @final
  */
-EchoApp.Property.Font.BOLD = 0x1;
+EchoApp.Font.BOLD = 0x1;
 
 /**
  * Style constant representing a italic font.
  * @type Number
  * @final
  */
-EchoApp.Property.Font.ITALIC = 0x2;
+EchoApp.Font.ITALIC = 0x2;
 
 /**
  * Style constant representing an underlined font.
  * @type Number
  * @final
  */
-EchoApp.Property.Font.UNDERLINE = 0x4;
+EchoApp.Font.UNDERLINE = 0x4;
 
 /**
  * Style constant representing an overlined font.
  * @type Number
  * @final
  */
-EchoApp.Property.Font.OVERLINE = 0x8;
+EchoApp.Font.OVERLINE = 0x8;
 
 /**
  * Style constant representing a line-through (strikethrough) font.
  * @type Number
  * @final
  */
-EchoApp.Property.Font.LINE_THROUGH = 0x10;
+EchoApp.Font.LINE_THROUGH = 0x10;
 
 /**
  * Creates a new Image Reference.
  * 
  * @param {String} url the URL from which the image may be obtained
- * @param {EchoApp.Property.Extent} width the width of the image
- * @param {EchoApp.Property.Extent} height the height of the image
+ * @param {EchoApp.Extent} width the width of the image
+ * @param {EchoApp.Extent} height the height of the image
  * @class Image Reference Property.
  * @constructor
  */
-EchoApp.Property.ImageReference = function(url, width, height) {
+EchoApp.ImageReference = function(url, width, height) {
     /**
      * The URL from which the image may be obtained.
      * @type String
@@ -2029,13 +2026,13 @@ EchoApp.Property.ImageReference = function(url, width, height) {
     
     /**
      * The width of the image.
-     * @type EchoApp.Property.Extent
+     * @type EchoApp.Extent
      */
     this.width = width;
 
     /**
      * The height of the image.
-     * @type EchoApp.Property.Extent
+     * @type EchoApp.Extent
      */
     this.height = height;
 };
@@ -2045,7 +2042,7 @@ EchoApp.Property.ImageReference = function(url, width, height) {
  * @type String
  * @final
  */
-EchoApp.Property.ImageReference.prototype.className = "ImageReference";
+EchoApp.ImageReference.prototype.className = "ImageReference";
 
 /**
  * Creates a new Insets Property.
@@ -2062,7 +2059,7 @@ EchoApp.Property.ImageReference.prototype.className = "ImageReference";
  * @class Insets property.  Describes inset margins within a box.
  * @constructor
  */
-EchoApp.Property.Insets = function() {
+EchoApp.Insets = function() {
     var values;
     if (arguments.length == 1) {
         if (typeof arguments[0] == "string") {
@@ -2077,8 +2074,8 @@ EchoApp.Property.Insets = function() {
     }
 
     for (var i = 0; i < values.length; ++i) {
-        if (!(values[i] instanceof EchoApp.Property.Extent)) {
-            values[i] = new EchoApp.Property.Extent(values[i]);
+        if (!(values[i] instanceof EchoApp.Extent)) {
+            values[i] = new EchoApp.Extent(values[i]);
         }
     }
     
@@ -2098,22 +2095,22 @@ EchoApp.Property.Insets = function() {
     case 4:
         /**
          * The top inset size.
-         * @type EchoApp.Property.Extent
+         * @type EchoApp.Extent
          */
         this.top = values[0];
         /**
          * The right inset size.
-         * @type EchoApp.Property.Extent
+         * @type EchoApp.Extent
          */
         this.right = values[1];
         /**
          * The bottom inset size.
-         * @type EchoApp.Property.Extent
+         * @type EchoApp.Extent
          */
         this.bottom = values[2];
         /**
          * The left inset size.
-         * @type EchoApp.Property.Extent
+         * @type EchoApp.Extent
          */
         this.left = values[3];
         break;
@@ -2127,7 +2124,7 @@ EchoApp.Property.Insets = function() {
  * @type String
  * @final
  */
-EchoApp.Property.Insets.prototype.className = "Insets";
+EchoApp.Insets.prototype.className = "Insets";
 
 /**
  * Returns a string representation.
@@ -2135,9 +2132,11 @@ EchoApp.Property.Insets.prototype.className = "Insets";
  * @return a string representation
  * @type String
  */
-EchoApp.Property.Insets.prototype.toString = function() {
+EchoApp.Insets.prototype.toString = function() {
     return this.top + " " + this.right + " " + this.bottom + " " + this.left;
 };
+
+// Styles and StyleSheets
 
 /**
  * @class Component Style.
@@ -2264,6 +2263,8 @@ EchoApp.StyleSheet.prototype.setStyle = function(name, componentType, style) {
     }
     typeToStyleMap[componentType] = style;
 };
+
+// Update Management
 
 /**
  * Namespace for update management.  Non-instantiable object.
@@ -2942,6 +2943,8 @@ EchoApp.Update.Manager.prototype.toString = function() {
     return s;
 };
 
+// Built-in Component Object Definitions
+
 /**
  * Button component.
  * 
@@ -3143,10 +3146,10 @@ EchoApp.SplitPane.ORIENTATION_HORIZONTAL_RIGHT_LEFT = 3;
 EchoApp.SplitPane.ORIENTATION_VERTICAL_TOP_BOTTOM = 4;
 EchoApp.SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP = 5;
 
-EchoApp.SplitPane.DEFAULT_SEPARATOR_POSITION = new EchoApp.Property.Extent("100px");
-EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED = new EchoApp.Property.Extent("0px");
-EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE = new EchoApp.Property.Extent("4px");
-EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR = new EchoApp.Property.Color("#3f3f4f");
+EchoApp.SplitPane.DEFAULT_SEPARATOR_POSITION = new EchoApp.Extent("100px");
+EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED = new EchoApp.Extent("0px");
+EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE = new EchoApp.Extent("4px");
+EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR = new EchoApp.Color("#3f3f4f");
 
 EchoApp.SplitPane.OVERFLOW_AUTO = 0;
 EchoApp.SplitPane.OVERFLOW_HIDDEN = 1;
@@ -3232,16 +3235,18 @@ EchoApp.WindowPane.prototype.doWindowClosing = function() {
     this.fireEvent(e);
 };
 
-EchoApp.WindowPane.DEFAULT_BORDER = new EchoApp.Property.FillImageBorder("#4f4faf", 
-        new EchoApp.Property.Insets("20px"), new EchoApp.Property.Insets("3px"));
-EchoApp.WindowPane.DEFAULT_BACKGROUND = new EchoApp.Property.Color("#ffffff");
-EchoApp.WindowPane.DEFAULT_FOREGROUND = new EchoApp.Property.Color("#000000");
-EchoApp.WindowPane.DEFAULT_HEIGHT = new EchoApp.Property.Extent("200px");
-EchoApp.WindowPane.DEFAULT_TITLE_HEIGHT = new EchoApp.Property.Extent("30px");
-EchoApp.WindowPane.DEFAULT_WIDTH = new EchoApp.Property.Extent("400px");
-EchoApp.WindowPane.DEFAULT_MINIMUM_WIDTH = new EchoApp.Property.Extent("100px");
-EchoApp.WindowPane.DEFAULT_MINIMUM_HEIGHT = new EchoApp.Property.Extent("100px");
-EchoApp.WindowPane.DEFAULT_CLOSE_ICON_INSETS = new EchoApp.Property.Insets("4px");
+EchoApp.WindowPane.DEFAULT_BORDER = new EchoApp.FillImageBorder("#4f4faf", 
+        new EchoApp.Insets("20px"), new EchoApp.Insets("3px"));
+EchoApp.WindowPane.DEFAULT_BACKGROUND = new EchoApp.Color("#ffffff");
+EchoApp.WindowPane.DEFAULT_FOREGROUND = new EchoApp.Color("#000000");
+EchoApp.WindowPane.DEFAULT_HEIGHT = new EchoApp.Extent("200px");
+EchoApp.WindowPane.DEFAULT_TITLE_HEIGHT = new EchoApp.Extent("30px");
+EchoApp.WindowPane.DEFAULT_WIDTH = new EchoApp.Extent("400px");
+EchoApp.WindowPane.DEFAULT_MINIMUM_WIDTH = new EchoApp.Extent("100px");
+EchoApp.WindowPane.DEFAULT_MINIMUM_HEIGHT = new EchoApp.Extent("100px");
+EchoApp.WindowPane.DEFAULT_CLOSE_ICON_INSETS = new EchoApp.Insets("4px");
+
+// Register component types.
 
 EchoApp.ComponentFactory.registerType("Button", EchoApp.Button);
 EchoApp.ComponentFactory.registerType("CheckBox", EchoApp.CheckBox);
