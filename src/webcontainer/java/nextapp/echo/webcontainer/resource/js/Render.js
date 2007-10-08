@@ -21,6 +21,7 @@ EchoRender = function() { };
  * Mapping between component type names and instantiable peer classes.
  * 
  * @type Object
+ * @private
  */
 EchoRender._peers = new Object();
 
@@ -29,6 +30,7 @@ EchoRender._peers = new Object();
  * Created and destroyed during each render.
  * 
  * @type Object
+ * @private
  */
 EchoRender._disposedComponents = null;
 
@@ -38,6 +40,7 @@ EchoRender._disposedComponents = null;
 
 /**
  * An array sorting implemention to organize an array by component depth.
+ * @private
  */
 EchoRender._componentDepthArraySort = function(a, b) {
     return EchoRender._getComponentDepth(a.parent) - EchoRender._getComponentDepth(b.parent);
@@ -51,6 +54,7 @@ EchoRender._componentDepthArraySort = function(a, b) {
  * @param the root component of the sub-hierarchy on which renderDisplay() should be invoked
  * @param includeSelf flag indicating whether renderDisplay() should be invoked on the
  *        specified component (if false, it will only be invoked on child components)
+ * @private
  */
 EchoRender._doRenderDisplay = function(component, includeSelf) {
     if (includeSelf) {
@@ -66,6 +70,7 @@ EchoRender._doRenderDisplay = function(component, includeSelf) {
  * Recursive work method for _doRenderDisplay().  
  * 
  * @param component the component on which to invoke renderDisplay()
+ * @private
  */
 EchoRender._doRenderDisplayImpl = function(component) {
     if (component.peer) {
@@ -88,6 +93,7 @@ EchoRender._doRenderDisplayImpl = function(component) {
  *
  * @param component the component whose depth is to be calculated
  * @return the depth of the component
+ * @private
  */
 EchoRender._getComponentDepth = function(component) {
     var depth = -1;
@@ -105,6 +111,7 @@ EchoRender._getComponentDepth = function(component) {
  * 
  * @param {EchoClient} client the relevant Client
  * @param {EchoApp.Component} component the component
+ * @private
  */
 EchoRender._loadPeer = function(client, component) {
     if (component.peer) {
@@ -150,6 +157,7 @@ EchoRender.notifyResize = function(parent) {
  * Invokes renderDispose() on all removed children and descendants found in the specified update.
  * 
  * @param {EchoApp.Update.ComponentUpdate} update the update
+ * @private
  */
 EchoRender._processDispose = function(update) {
     var components = update.getRemovedDescendants();
@@ -341,6 +349,7 @@ EchoRender.renderComponentDispose = function(update, component) {
  * 
  * @param update the <code>ComponentUpdate</code> for which this change is being performed
  * @param component the <code>Component</code> to be disposed
+ * @private
  */
 EchoRender._renderComponentDisposeImpl = function(update, component) {
     if (!component.peer || component.peer.disposed) {
@@ -362,6 +371,7 @@ EchoRender._renderComponentDisposeImpl = function(update, component) {
  * @param {EchoApp.Component} component the component
  * @param {Boolean} disposed the disposed state, true indicating the component has
  *        been disposed
+ * @private
  */
 EchoRender._setPeerDisposedState = function(component, disposed) {
     if (disposed) {
@@ -381,6 +391,7 @@ EchoRender._setPeerDisposedState = function(component, disposed) {
  * The peer to component association will be removed.
  * 
  * @param {EchoApp.Component} component the component
+ * @private
  */
 EchoRender._unloadPeer = function(component) {
     component.peer.client = null;
@@ -505,6 +516,7 @@ EchoRender.FloatingPaneManager.prototype.addZIndexListener = function(l) {
 
 /**
  * Notifies listeners of a z-index change.
+ * @private
  */
 EchoRender.FloatingPaneManager.prototype._fireZIndexEvent = function() {
     if (this._listeners) {
@@ -553,6 +565,10 @@ EchoRender.FloatingPaneManager.prototype.removeZIndexListener = function(l) {
     this._listeners.removeListener("zIndex", l);
 };
 
+/**
+ * @class
+ * Namespace for core property rendering utilities.
+ */
 EchoRender.Property = function() {
 };
 
@@ -618,7 +634,14 @@ EchoRender.Property.Alignment.renderComponentProperty
 
 EchoRender.Property.Border = function() { };
 
+/**
+ * @private
+ */
 EchoRender.Property.Border._SIDE_STYLE_NAMES = new Array("borderTop", "borderRight", "borderBottom", "borderLeft");
+
+/**
+ * @private
+ */
 EchoRender.Property.Border._SIDE_RENDER_STRATEGIES 
         = new Array(new Array(0, 1, 2, 3), new Array(0, 1, 2, 1), new Array(0, 1, 0, 1), new Array(0, 0, 0, 0));
 
@@ -914,7 +937,10 @@ EchoRender.TriCellTable.getOrientation = function(component, propertyName) {
     }
     return orientation;
 };
-            
+
+/**
+ * @private
+ */
 EchoRender.TriCellTable._createTablePrototype = function() {
     var tableElement = document.createElement("table");
     tableElement.style.borderCollapse = "collapse";
@@ -926,6 +952,9 @@ EchoRender.TriCellTable._createTablePrototype = function() {
     return tableElement;
 };
 
+/**
+ * @private
+ */
 EchoRender.TriCellTable._tablePrototype = EchoRender.TriCellTable._createTablePrototype();
 
 EchoRender.TriCellTable.INVERTED = 1;
@@ -1179,6 +1208,10 @@ EchoRender.TriCellTable.prototype.configure3 = function(orientation0_1, margin0_
     
 };
 
+/**
+ * @class
+ * Namespace for utility objects.
+ */
 EchoRender.Util = function() { };
 
 // FIXME abstract this somehow so it works with FreeClient too
