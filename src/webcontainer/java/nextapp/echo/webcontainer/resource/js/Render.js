@@ -435,42 +435,6 @@ EchoRender.ComponentSync.prototype.renderUpdate = function(update) {
 };
 
 /**
- * Creates a new root component synchronization peer.
- * The root component is not managed by the server, but rather is an existing
- * element within which the Echo application is rendered.
- * This is a very special case in that there is no renderAdd() method.
- * 
- * @constructor
- * @class Root component synchronization peer.
- */
-EchoRender.ComponentSync.Root = function() { };
-
-EchoRender.ComponentSync.Root.prototype = EchoCore.derive(EchoRender.ComponentSync);
-
-EchoRender.ComponentSync.Root.prototype.renderDispose = function(update) {
-};
-
-EchoRender.ComponentSync.Root.prototype.renderUpdate = function(update) {
-    var fullRender = false;
-    if (update.hasAddedChildren() || update.hasRemovedChildren()) {
-        EchoWebCore.DOM.removeAllChildren(this.client.domainElement);
-        for (var i = 0; i < update.parent.children.length; ++i) {
-            EchoRender.renderComponentAdd(update, update.parent.children[i], this.client.domainElement);
-        }
-        fullRender = true;
-    }
-    
-    if (update.hasUpdatedProperties()) {
-        var titleUpdate = update.getUpdatedProperty("title");
-        if (titleUpdate) {
-            document.title = titleUpdate.newValue;
-        }
-    }
-    
-    return fullRender;
-};
-
-/**
  * Creates a new Floating Pane Manager.
  * 
  * @class Manages floating windows, e.g., window panes in a content pane.
@@ -879,6 +843,42 @@ EchoRender.Property.Insets.toPixels = function(insets) {
 };
 
 /**
+ * Creates a new root component synchronization peer.
+ * The root component is not managed by the server, but rather is an existing
+ * element within which the Echo application is rendered.
+ * This is a very special case in that there is no renderAdd() method.
+ * 
+ * @constructor
+ * @class Root component synchronization peer.
+ */
+EchoRender.RootSync = function() { };
+
+EchoRender.RootSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
+
+EchoRender.RootSync.prototype.renderDispose = function(update) {
+};
+
+EchoRender.RootSync.prototype.renderUpdate = function(update) {
+    var fullRender = false;
+    if (update.hasAddedChildren() || update.hasRemovedChildren()) {
+        EchoWebCore.DOM.removeAllChildren(this.client.domainElement);
+        for (var i = 0; i < update.parent.children.length; ++i) {
+            EchoRender.renderComponentAdd(update, update.parent.children[i], this.client.domainElement);
+        }
+        fullRender = true;
+    }
+    
+    if (update.hasUpdatedProperties()) {
+        var titleUpdate = update.getUpdatedProperty("title");
+        if (titleUpdate) {
+            document.title = titleUpdate.newValue;
+        }
+    }
+    
+    return fullRender;
+};
+
+/**
  * Creates a new <code>TriCellTable</code>
  * 
  * @param orientation0_1 the orientation of element 0 with respect to element 1, one of 
@@ -1217,4 +1217,4 @@ EchoRender.Util = function() { };
 // FIXME abstract this somehow so it works with FreeClient too
 EchoRender.Util.TRANSPARENT_IMAGE = "?sid=Echo.TransparentImage";
 
-EchoRender.registerPeer("Root", EchoRender.ComponentSync.Root);
+EchoRender.registerPeer("Root", EchoRender.RootSync);
