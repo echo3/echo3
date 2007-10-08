@@ -4,7 +4,11 @@
  * <ul>
  *  <li>Provides capability to process updates in Application UpdateManager,
  *   rendering state changes to the DOM.</li>
- *  <li>Provides base component synchronization peer implementation.</li>
+ *  <li>Provides component synchronization peer base class.</li>
+ *  <li>Provides root component synchronization peer implementation.</li>
+ *  <li>Provides TriCellTable rendering utility (used by buttons and labels).</li>
+ *  <li>Provides rendering utilities for the core properties.</li>
+ *  <li>Provides a floating pane z-index management system.</li> 
  * </ul>
  */
 
@@ -39,8 +43,17 @@ EchoRender._componentDepthArraySort = function(a, b) {
     return EchoRender._getComponentDepth(a.parent) - EchoRender._getComponentDepth(b.parent);
 };
 
-EchoRender._doRenderDisplay = function(component, resizeSelf) {
-    if (resizeSelf) {
+/**
+ * Recursively invokes renderDisplay() method on a sub-hierarchy of the
+ * component hierarchy.  If a peer does not provide a renderDisplay() implementation,
+ * it is skipped (although its descendants will NOT be skipped).
+ * 
+ * @param the root component of the sub-hierarchy on which renderDisplay() should be invoked
+ * @param includeSelf flag indicating whether renderDisplay() should be invoked on the
+ *        specified component (if false, it will only be invoked on child components)
+ */
+EchoRender._doRenderDisplay = function(component, includeSelf) {
+    if (includeSelf) {
         EchoRender._doRenderDisplayImpl(component);
     } else {
         for (var i = 0; i < component.children.length; ++i) {
@@ -49,6 +62,11 @@ EchoRender._doRenderDisplay = function(component, resizeSelf) {
     }
 };
 
+/**
+ * Recursive work method for _doRenderDisplay().  
+ * 
+ * @param component the component on which to invoke renderDisplay()
+ */
 EchoRender._doRenderDisplayImpl = function(component) {
     if (component.peer) {
         // components that are present on the client, but are not rendered (lazy rendered as in tree), 
@@ -64,7 +82,7 @@ EchoRender._doRenderDisplayImpl = function(component) {
 };
 
 /**
- * Returns the depth of a specified component in the hierarchy.
+ * Returns the depth of a specific component in the hierarchy.
  * The root component is at depth 0, its immediate children are
  * at depth 1, their children are at depth 2, and so on.
  *
@@ -264,13 +282,21 @@ EchoRender.processUpdates = function(client) {
  * Components of the specified type name will be assigned new instasnces of the peer class
  * when rendered for the first time.
  * 
- * @param componentName the component type name
- * @param peerObject the peer class object
+ * @param {String} componentName the component type name
+ * @param {Function} peerObject the peer class object
  */
 EchoRender.registerPeer = function(componentName, peerObject) {
     EchoRender._peers[componentName] = peerObject;
 };
 
+/**
+ * Renders a new component inside of a DOM element.
+ * This method should be called by container components in order to render their children.
+ * 
+ * @param {EchoApp.Update.ComponentUpdate} update the revelant ComponentUpdate
+ * @param {EchoApp.Component} component the component to add
+ * @param {Element} parentElement the DOM element to which the rendered component should be added
+ */
 EchoRender.renderComponentAdd = function(update, component, parentElement) {
     if (!component.parent || !component.parent.peer || !component.parent.peer.client) {
         throw new Error("Cannot find reference to the Client with which this component should be associated: "
@@ -284,15 +310,20 @@ EchoRender.renderComponentAdd = function(update, component, parentElement) {
 };
 
 /**
+ * Manually invokes renderDisplay on a component (and its descendants) that was added to the
+ * hierarchy outside of processUpdates().  This method is only used in special cases,
+ * e.g., by in the case of Application Rendered Components that need to render children.
  * 
+ * @param parent the parent component of the sub-hierarchy on which renderDisplay() should
+ *        be invoked (note that renderDisplay WILL be invoked on the parent as well 
+ *        as its descendants)
  */
 EchoRender.renderComponentDisplay = function(parent) {
     EchoRender._doRenderDisplay(parent, true);
 };
 
 /**
- * Loads the peer for the specified component and invokes its renderDispose() method.
- * Recursively performs this action on all child components.
+ * Disposes of a component and its descendants.
  * This method should be invoked by any peer that will be updating a component in such
  * a fashion that it will be destroying the rendering of its children and re-rendering them.
  * It is not necessary to invoke this method on components that may not contain children.
@@ -305,7 +336,7 @@ EchoRender.renderComponentDispose = function(update, component) {
 };
 
 /**
- * Recursive implementation of renderComponentDispose.  Invoked
+ * Recursive implementation of renderComponentDispose.  Invokes
  * renderDispose() on all child peers, sets disposed state on each.
  * 
  * @param update the <code>ComponentUpdate</code> for which this change is being performed
