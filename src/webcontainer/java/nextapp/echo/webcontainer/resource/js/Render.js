@@ -28,21 +28,57 @@ EchoRender._peers = new Object();
  */
 EchoRender._disposedComponents = null;
 
-/**
- * Registers a component type name with an instantiable peer class.
- * Components of the specified type name will be assigned new instasnces of the peer class
- * when rendered for the first time.
- * 
- * @param componentName the component type name
- * @param peerObject the peer class object
- */
-EchoRender.registerPeer = function(componentName, peerObject) {
-    EchoRender._peers[componentName] = peerObject;
-};
-
 //FIXME.  Scrollbar position tracking code in SplitPane appears to suggest that
 // disposed states are not in good shape....SplitPane is being disposed when
 // parent contentPane is redrawn.
+
+/**
+ * An array sorting implemention to organize an array by component depth.
+ */
+EchoRender._componentDepthArraySort = function(a, b) {
+    return EchoRender._getComponentDepth(a.parent) - EchoRender._getComponentDepth(b.parent);
+};
+
+EchoRender._doRenderDisplay = function(component, resizeSelf) {
+    if (resizeSelf) {
+        EchoRender._doRenderDisplayImpl(component);
+    } else {
+        for (var i = 0; i < component.children.length; ++i) {
+            EchoRender._doRenderDisplayImpl(component.children[i]);
+        }
+    }
+};
+
+EchoRender._doRenderDisplayImpl = function(component) {
+    if (component.peer) {
+        // components that are present on the client, but are not rendered (lazy rendered as in tree), 
+        // have no peer installed.
+        if (component.peer.renderDisplay) {
+            component.peer.renderDisplay();
+        }
+        
+        for (var i = 0; i < component.children.length; ++i) {
+            EchoRender._doRenderDisplayImpl(component.children[i]);
+        }
+    }
+};
+
+/**
+ * Returns the depth of a specified component in the hierarchy.
+ * The root component is at depth 0, its immediate children are
+ * at depth 1, their children are at depth 2, and so on.
+ *
+ * @param component the component whose depth is to be calculated
+ * @return the depth of the component
+ */
+EchoRender._getComponentDepth = function(component) {
+    var depth = -1;
+    while (component != null) {
+        component = component.parent;
+        ++depth;
+    }
+    return depth;
+};
 
 /**
  * Creates a component synchronization peer for a component.
@@ -73,40 +109,6 @@ EchoRender._loadPeer = function(client, component) {
     component.peer.init();
 };
 
-// FIXME. Ensure this is properly invoked and no peers are being leaked.
-/**
- * Destroys a component synchronization peer for a specific compoennt.
- * The peer will be removed from the "peer" property of the component.
- * The client will be removed from the "client" property of the component.
- * The peer to component association will be removed.
- * 
- * @param {EchoApp.Component} component the component
- */
-EchoRender._unloadPeer = function(component) {
-    component.peer.client = null;
-    component.peer.component = null;
-    component.peer = null;
-};
-
-/**
- * Sets the peer disposed state of a component.
- * The peer disposed state indicates whether the renderDispose()
- * method of the component has been executed since it was last rendered.
- * 
- * @param {EchoApp.Component} component the component
- * @param {Boolean} disposed the disposed state, true indicating the component has
- *        been disposed
- */
-EchoRender._setPeerDisposedState = function(component, disposed) {
-    if (disposed) {
-        component.peer.disposed = true;
-        EchoRender._disposedComponents[component.renderId] = component;
-    } else {
-        component.peer.disposed = false;
-        delete EchoRender._disposedComponents[component.renderId];
-    }
-};
-
 /**
  * Notifies child components that the parent component has been drawn
  * or resized.  At this point the parent component is on the screen
@@ -123,109 +125,7 @@ EchoRender._setPeerDisposedState = function(component, disposed) {
  * @param {EchoApp.Component} parent the component whose size changed
  */
 EchoRender.notifyResize = function(parent) {
-    EchoRender._doResize(parent, false);
-};
-
-//FIXME this needs clean up notifyResize/renderComponentDisplay/_doResizeXXX methods needs to be re-API'd probably.
-//  ...based around the term "renderDisplay" probably.
-/**
- * 
- */
-EchoRender.renderComponentDisplay = function(parent) {
-    EchoRender._doResize(parent, false);
-};
-
-EchoRender._doResize = function(component, resizeSelf) {
-    if (resizeSelf) {
-        EchoRender._doResizeImpl(component);
-    } else {
-        for (var i = 0; i < component.children.length; ++i) {
-            EchoRender._doResizeImpl(component.children[i]);
-        }
-    }
-};
-
-EchoRender._doResizeImpl = function(component) {
-    if (component.peer) {
-        // components that are present on the client, but are not rendered (lazy rendered as in tree), 
-        // have no peer installed.
-        if (component.peer.renderDisplay) {
-            component.peer.renderDisplay();
-        }
-        
-        for (var i = 0; i < component.children.length; ++i) {
-            EchoRender._doResizeImpl(component.children[i]);
-        }
-    }
-};
-
-EchoRender.renderComponentAdd = function(update, component, parentElement) {
-    if (!component.parent || !component.parent.peer || !component.parent.peer.client) {
-        throw new Error("Cannot find reference to the Client with which this component should be associated: "
-                + "cannot load peer.  This is due to the component's parent's peer not being associated with a Client. "
-                + "Component = " + component);
-    }
-
-    EchoRender._loadPeer(component.parent.peer.client, component);
-    EchoRender._setPeerDisposedState(component, false);
-    component.peer.renderAdd(update, parentElement);
-};
-
-/**
- * Loads the peer for the specified component and invokes its renderDispose() method.
- * Recursively performs this action on all child components.
- * This method should be invoked by any peer that will be updating a component in such
- * a fashion that it will be destroying the rendering of its children and re-rendering them.
- * It is not necessary to invoke this method on components that may not contain children.
- *
- * @param update the <code>ComponentUpdate</code> for which this change is being performed
- * @param component the <code>Component</code> to be disposed
- */
-EchoRender.renderComponentDispose = function(update, component) {
-    EchoRender._renderComponentDisposeImpl(update, component);
-};
-
-/**
- * Recursive implementation of renderComponentDispose.  Invoked
- * renderDispose() on all child peers, sets disposed state on each.
- * 
- * @param update the <code>ComponentUpdate</code> for which this change is being performed
- * @param component the <code>Component</code> to be disposed
- */
-EchoRender._renderComponentDisposeImpl = function(update, component) {
-    if (!component.peer || component.peer.disposed) {
-        return;
-    }
-    EchoRender._setPeerDisposedState(component, true);
-
-    component.peer.renderDispose(update);
-    for (var i = 0; i < component.children.length; ++i) {
-        EchoRender._renderComponentDisposeImpl(update, component.children[i]);
-    }
-};
-
-/**
- * Returns the depth of a specified component in the hierarchy.
- * The root component is at depth 0, its immediate children are
- * at depth 1, their children are at depth 2, and so on.
- *
- * @param component the component whose depth is to be calculated
- * @return the depth of the component
- */
-EchoRender._getComponentDepth = function(component) {
-    var depth = -1;
-    while (component != null) {
-        component = component.parent;
-        ++depth;
-    }
-    return depth;
-};
-
-/**
- * An array sorting implemention to organize an array by component depth.
- */
-EchoRender._componentDepthArraySort = function(a, b) {
-    return EchoRender._getComponentDepth(a.parent) - EchoRender._getComponentDepth(b.parent);
+    EchoRender._doRenderDisplay(parent, false);
 };
 
 /**
@@ -334,7 +234,7 @@ EchoRender.processUpdates = function(client) {
         }
         //FIXME. this does needless work....resizing twice is quite possible.
         // if property updates are present.
-        EchoRender._doResize(updates[i].parent, true);
+        EchoRender._doRenderDisplay(updates[i].parent, true);
     }
 
     // Profiling: Mark completion of display phase.
@@ -357,6 +257,104 @@ EchoRender.processUpdates = function(client) {
     if (component && component.peer && component.peer.renderFocus) {
         component.peer.renderFocus();
     }
+};
+
+/**
+ * Registers a component type name with an instantiable peer class.
+ * Components of the specified type name will be assigned new instasnces of the peer class
+ * when rendered for the first time.
+ * 
+ * @param componentName the component type name
+ * @param peerObject the peer class object
+ */
+EchoRender.registerPeer = function(componentName, peerObject) {
+    EchoRender._peers[componentName] = peerObject;
+};
+
+EchoRender.renderComponentAdd = function(update, component, parentElement) {
+    if (!component.parent || !component.parent.peer || !component.parent.peer.client) {
+        throw new Error("Cannot find reference to the Client with which this component should be associated: "
+                + "cannot load peer.  This is due to the component's parent's peer not being associated with a Client. "
+                + "Component = " + component);
+    }
+
+    EchoRender._loadPeer(component.parent.peer.client, component);
+    EchoRender._setPeerDisposedState(component, false);
+    component.peer.renderAdd(update, parentElement);
+};
+
+/**
+ * 
+ */
+EchoRender.renderComponentDisplay = function(parent) {
+    EchoRender._doRenderDisplay(parent, true);
+};
+
+/**
+ * Loads the peer for the specified component and invokes its renderDispose() method.
+ * Recursively performs this action on all child components.
+ * This method should be invoked by any peer that will be updating a component in such
+ * a fashion that it will be destroying the rendering of its children and re-rendering them.
+ * It is not necessary to invoke this method on components that may not contain children.
+ *
+ * @param update the <code>ComponentUpdate</code> for which this change is being performed
+ * @param component the <code>Component</code> to be disposed
+ */
+EchoRender.renderComponentDispose = function(update, component) {
+    EchoRender._renderComponentDisposeImpl(update, component);
+};
+
+/**
+ * Recursive implementation of renderComponentDispose.  Invoked
+ * renderDispose() on all child peers, sets disposed state on each.
+ * 
+ * @param update the <code>ComponentUpdate</code> for which this change is being performed
+ * @param component the <code>Component</code> to be disposed
+ */
+EchoRender._renderComponentDisposeImpl = function(update, component) {
+    if (!component.peer || component.peer.disposed) {
+        return;
+    }
+    EchoRender._setPeerDisposedState(component, true);
+
+    component.peer.renderDispose(update);
+    for (var i = 0; i < component.children.length; ++i) {
+        EchoRender._renderComponentDisposeImpl(update, component.children[i]);
+    }
+};
+
+/**
+ * Sets the peer disposed state of a component.
+ * The peer disposed state indicates whether the renderDispose()
+ * method of the component has been executed since it was last rendered.
+ * 
+ * @param {EchoApp.Component} component the component
+ * @param {Boolean} disposed the disposed state, true indicating the component has
+ *        been disposed
+ */
+EchoRender._setPeerDisposedState = function(component, disposed) {
+    if (disposed) {
+        component.peer.disposed = true;
+        EchoRender._disposedComponents[component.renderId] = component;
+    } else {
+        component.peer.disposed = false;
+        delete EchoRender._disposedComponents[component.renderId];
+    }
+};
+
+// FIXME. Ensure this is properly invoked and no peers are being leaked.
+/**
+ * Destroys a component synchronization peer for a specific compoennt.
+ * The peer will be removed from the "peer" property of the component.
+ * The client will be removed from the "client" property of the component.
+ * The peer to component association will be removed.
+ * 
+ * @param {EchoApp.Component} component the component
+ */
+EchoRender._unloadPeer = function(component) {
+    component.peer.client = null;
+    component.peer.component = null;
+    component.peer = null;
 };
 
 /**
