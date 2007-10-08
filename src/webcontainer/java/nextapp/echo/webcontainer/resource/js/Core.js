@@ -489,6 +489,10 @@ EchoCore.ListenerList.prototype.removeListener = function(eventType, eventTarget
     }
 };
 
+/**
+ * Creates a string representation of the listener list.
+ * This should be used for debugging purposes only.
+ */
 EchoCore.ListenerList.prototype.toString = function() {
     var out = "";
     for (var i = 0; i < this._data.length; i += 2) {

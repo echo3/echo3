@@ -613,6 +613,7 @@ EchoWebCore.EventProcessor._processEvent = function(e) {
     }
         
     if (!propagate) {
+        //FIXME Possibly always invoke this to avoid bug #71 propagation issue.
         // Inform DOM to stop propagation of event.
         EchoWebCore.DOM.stopEventPropagation(e);
     }
