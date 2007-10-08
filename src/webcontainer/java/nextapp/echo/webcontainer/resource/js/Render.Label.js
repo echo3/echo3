@@ -51,8 +51,8 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
             // Text and icon.
             var iconTextMargin = this.component.getRenderProperty("iconTextMargin", 
                     EchoRender.ComponentSync.Label._defaultIconTextMargin);
-            var orientation = EchoRender.TriCellTable.getOrientation(this.component, "textPosition");
-            var tct = new EchoRender.TriCellTable(orientation, EchoRender.Property.Extent.toPixels(iconTextMargin));
+            var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
+            var tct = new EchoAppRender.TriCellTable(orientation, EchoRender.Property.Extent.toPixels(iconTextMargin));
             var imgElement = document.createElement("img");
             imgElement.src = icon.url;
             if (formatWhitespace) {

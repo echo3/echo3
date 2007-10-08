@@ -228,8 +228,8 @@ EchoRender.ComponentSync.Button.prototype._renderContent = function() {
             // Text and icon.
             var iconTextMargin = this.component.getRenderProperty("iconTextMargin", 
                     EchoRender.ComponentSync.Button._defaultIconTextMargin);
-            var orientation = EchoRender.TriCellTable.getOrientation(this.component, "textPosition");
-            var tct = new EchoRender.TriCellTable(orientation, 
+            var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
+            var tct = new EchoAppRender.TriCellTable(orientation, 
                     EchoRender.Property.Extent.toPixels(iconTextMargin));
             this._renderButtonText(tct.tdElements[0], text);
             this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
@@ -414,14 +414,14 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
     	    this._divElement.appendChild(this._stateElement);
     	}
     } else if (entityCount == 2) {
-        var orientation = EchoRender.TriCellTable.TRAILING_LEADING;;
+        var orientation = EchoAppRender.TriCellTable.TRAILING_LEADING;;
         var margin;
         if (this._stateElement) {
 	        margin = this.component.getRenderProperty("stateMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
         } else {
 	        margin = this.component.getRenderProperty("iconTextMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
         }
-        var tct = new EchoRender.TriCellTable(orientation, EchoRender.Property.Extent.toPixels(margin));
+        var tct = new EchoAppRender.TriCellTable(orientation, EchoRender.Property.Extent.toPixels(margin));
         if (text) {
 	        this._renderButtonText(tct.tdElements[0], text);
 	        if (icon) {
@@ -435,11 +435,11 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
         }
         this._divElement.appendChild(tct.tableElement);
     } else if (entityCount == 3) {
-        var orientation = EchoRender.TriCellTable.TRAILING_LEADING;
+        var orientation = EchoAppRender.TriCellTable.TRAILING_LEADING;
         var margin = this.component.getRenderProperty("iconTextMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
-        var stateOrientation = EchoRender.TriCellTable.TRAILING_LEADING;
+        var stateOrientation = EchoAppRender.TriCellTable.TRAILING_LEADING;
         var stateMargin = this.component.getRenderProperty("stateMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
-        var tct = new EchoRender.TriCellTable(orientation, 
+        var tct = new EchoAppRender.TriCellTable(orientation, 
         	EchoRender.Property.Extent.toPixels(margin), stateOrientation, EchoRender.Property.Extent.toPixels(stateMargin));
         this._renderButtonText(tct.tdElements[0], text);
         this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);

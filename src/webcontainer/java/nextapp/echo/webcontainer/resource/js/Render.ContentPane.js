@@ -22,7 +22,7 @@ EchoRender.ComponentSync.ContentPane.prototype._processZIndexChanged = function(
 
 EchoRender.ComponentSync.ContentPane.prototype.raise = function(child) {
     if (!this._floatingPaneManager) {
-        this._floatingPaneManager = new EchoRender.FloatingPaneManager();
+        this._floatingPaneManager = new EchoAppRender.FloatingPaneManager();
         this._floatingPaneManager.addZIndexListener(new EchoCore.MethodRef(this, this._processZIndexChanged));
     }
     this._floatingPaneManager.add(child.renderId);
