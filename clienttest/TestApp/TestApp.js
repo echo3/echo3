@@ -410,6 +410,6 @@ init = function() {
 
     var app = new TestApp();
     var client = new EchoFreeClient(app, document.getElementById("rootArea"));
-    client.init();
     client.loadStyleSheet("Default.stylesheet.xml");
+    client.init();
 };
