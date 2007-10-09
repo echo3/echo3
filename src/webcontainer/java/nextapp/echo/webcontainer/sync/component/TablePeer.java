@@ -185,7 +185,6 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     public void init(Context context) {
         super.init(context);
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
-        serverMessage.addLibrary(AbstractListComponentPeer.LIST_SELECTION_MODEL_SERVICE.getId());
         serverMessage.addLibrary(TABLE_SERVICE.getId());
     }
     

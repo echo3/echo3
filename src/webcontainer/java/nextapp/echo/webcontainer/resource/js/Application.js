@@ -1608,6 +1608,86 @@ EchoApp.Border.Side = function() {
 };
 
 /**
+ * Creates a RadioButton group.
+ * 
+ * @param id {String} the id
+ * 
+ * @class RadioButton group
+ */
+EchoApp.ButtonGroup = function(id) {
+    this._id = id;
+    this._buttonArray = new Array();
+};
+
+/**
+ * Gets the id of this button group.
+ * 
+ * @return the id.
+ * @type {String}
+ */
+EchoApp.ButtonGroup.prototype.getId = function() {
+    return this._id;
+};
+
+/**
+ * Gets the amount of buttons contained by this button group.
+ * 
+ * @return the number of buttons.
+ * @type {Number}
+ */
+EchoApp.ButtonGroup.prototype.size = function() {
+    return this._buttonArray.length;
+};
+
+/**
+ * Adds the specified button to this button group.
+ *
+ * @param button {EchoRender.ComponentSync.ToggleButton} the button
+ */
+EchoApp.ButtonGroup.prototype.add = function(button) {
+    this._buttonArray.push(button);
+};
+
+/**
+ * Deselects all buttons in this button group.
+ */
+EchoApp.ButtonGroup.prototype.deselect = function() {
+    for (var i = 0; i < this._buttonArray.length; ++i) {
+        this._buttonArray[i].setSelected(false);
+    }
+};
+
+/**
+ * Removes the specified button from this button group.
+ * 
+ * @param button {EchoRender.ComponentSync.ToggleButton} the button
+ */
+EchoApp.ButtonGroup.prototype.remove = function(button) {
+    // Find index of button in array.
+    var arrayIndex = -1;
+    for (var i = 0; i < this._buttonArray.length; ++i) {
+        if (this._buttonArray[i] == button) {
+            arrayIndex = i;
+            break;
+        }
+    }
+    
+    if (arrayIndex == -1) {
+        // Button does not exist in group.
+        throw new Error("No such button: " + button.component.renderId);
+    }
+    
+    if (this._buttonArray.length == 1) {
+        // Array will now be empty.
+        this._buttonArray = new Array();
+    } else {
+        // Buttons remain, remove button from button group.
+        this._buttonArray[arrayIndex] = this._buttonArray[this._buttonArray.length - 1];
+        this._buttonArray.length = this._buttonArray.length - 1;
+    }
+};
+
+/**
  * Creates a color property.
  * @class Color property.
  * @constructor
@@ -2134,6 +2214,91 @@ EchoApp.Insets.prototype.className = "Insets";
  */
 EchoApp.Insets.prototype.toString = function() {
     return this.top + " " + this.right + " " + this.bottom + " " + this.left;
+};
+
+/**
+ * Creates a ListSelectionModel.
+ * 
+ * @param {Number} selectionMode the selectionMode
+ * @constructor
+ *
+ * @class Minimalistic representation of ListSelectionModel.
+ */
+EchoApp.ListSelectionModel = function(selectionMode) {
+    this._selectionState = new Array();
+    this._selectionMode = selectionMode;
+};
+
+/**
+ * Value for selection mode setting indicating single selection.
+ * 
+ * @type Number
+ * @final
+ */
+EchoApp.ListSelectionModel.SINGLE_SELECTION = 0;
+
+/**
+ * Value for selection mode setting indicating multiple selection.
+ * 
+ * @type Number
+ * @final
+ */
+EchoApp.ListSelectionModel.MULTIPLE_SELECTION = 2;
+
+/**
+ * Returns the selection mode. 
+ * 
+ * @return the selection mode
+ * @type Number
+ */
+EchoApp.ListSelectionModel.prototype.getSelectionMode = function() {
+    return this._selectionMode;
+};
+
+/**
+ * Determines whether an index is selected.
+ * 
+ * @param {Number} index the index
+ * @return true if the index is selected
+ * @type Boolean
+ */
+EchoApp.ListSelectionModel.prototype.isSelectedIndex = function(index) {
+    if (this._selectionState.length <= index) {
+        return false;
+    } else {
+        return this._selectionState[index];
+    }
+};
+
+/**
+ * Sets the selection state of the given index.
+ * 
+ * @param {Number} index the index
+ * @param {Boolean} selected the new selection state
+ */
+EchoApp.ListSelectionModel.prototype.setSelectedIndex = function(index, selected) {
+    this._selectionState[index] = selected;
+};
+
+//FIXME remove this method, it belongs in serialization code.  
+//Expand the ListSelectionModel API to provide capability to do this externally.
+/**
+ * Gets a comma-delimited list containing the selected indices.
+ * 
+ * @return the list
+ * @type String
+ */
+EchoApp.ListSelectionModel.prototype.getSelectionString = function() {
+    var selection = "";
+    for (var i = 0; i < this._selectionState.length; i++) {
+        if (this._selectionState[i]) {
+            if (selection.length > 0) {
+                selection += ",";
+            }
+            selection += i;
+        }
+    }
+    return selection;
 };
 
 // Styles and StyleSheets

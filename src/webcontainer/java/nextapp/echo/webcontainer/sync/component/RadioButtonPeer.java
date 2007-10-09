@@ -34,10 +34,6 @@ import nextapp.echo.app.RadioButton;
 import nextapp.echo.app.button.ButtonGroup;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.ComponentSynchronizePeer;
-import nextapp.echo.webcontainer.ServerMessage;
-import nextapp.echo.webcontainer.Service;
-import nextapp.echo.webcontainer.WebContainerServlet;
-import nextapp.echo.webcontainer.service.JavaScriptService;
 
 /**
  * Synchronization peer for <code>RadioButton</code>s.
@@ -47,13 +43,6 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class RadioButtonPeer extends ToggleButtonPeer {
     
     private static final String PROPERTY_GROUP = "group";
-    
-    private static final Service RADIO_BUTTON_SERVICE = JavaScriptService.forResource("Echo.RadioButton", 
-            "/nextapp/echo/webcontainer/resource/js/Application.ButtonGroup.js");
-    
-    static {
-        WebContainerServlet.getServiceRegistry().add(RADIO_BUTTON_SERVICE);
-    }
     
     public RadioButtonPeer() {
         super();
@@ -65,15 +54,6 @@ public class RadioButtonPeer extends ToggleButtonPeer {
      */
     public Class getComponentClass() {
         return RadioButton.class;
-    }
-    
-    /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
-     */
-    public void init(Context context) {
-        super.init(context);
-        ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
-        serverMessage.addLibrary(RADIO_BUTTON_SERVICE.getId());
     }
     
     /**

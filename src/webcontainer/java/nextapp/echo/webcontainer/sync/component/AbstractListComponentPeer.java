@@ -167,12 +167,6 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
         }
     }
 
-    /**
-     * Service for <code>ListSelectionModel</code>.
-     */
-    public static final Service LIST_SELECTION_MODEL_SERVICE = JavaScriptService.forResource("Echo.ListSelectionModel", 
-            "/nextapp/echo/webcontainer/resource/js/Application.ListSelectionModel.js");
-    
     private static final Service LIST_COMPONENT_SERVICE = JavaScriptService.forResources("Echo.ListComponent",
             new String[] { "/nextapp/echo/webcontainer/resource/js/Render.List.js",
                            "/nextapp/echo/webcontainer/resource/js/Render.RemoteList.js" });
@@ -183,7 +177,6 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
     private static final String PROPERTY_SELECTION_MODE = "selectionMode";
     static {
         WebContainerServlet.getServiceRegistry().add(LIST_COMPONENT_SERVICE);
-        WebContainerServlet.getServiceRegistry().add(LIST_SELECTION_MODEL_SERVICE);
     }
     
     /**
@@ -273,7 +266,6 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
     public void init(Context context) {
         super.init(context);
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
-        serverMessage.addLibrary(LIST_SELECTION_MODEL_SERVICE.getId());
         serverMessage.addLibrary(LIST_COMPONENT_SERVICE.getId());
     }
     
