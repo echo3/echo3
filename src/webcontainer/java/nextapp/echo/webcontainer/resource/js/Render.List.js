@@ -5,11 +5,11 @@
 /**
  * Abstract base class for SELECT-element based list components.
  */
-EchoAppRender.SelectListComponentSync = function() { };
+EchoAppRender.ListComponentSync = function() { };
 
-EchoAppRender.SelectListComponentSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
+EchoAppRender.ListComponentSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
-EchoAppRender.SelectListComponentSync.prototype._processChange = function(e) {
+EchoAppRender.ListComponentSync.prototype._processChange = function(e) {
     if (!this.component.isActive()) {
         EchoWebCore.DOM.preventEventDefault(e);
         return;
@@ -32,7 +32,7 @@ EchoAppRender.SelectListComponentSync.prototype._processChange = function(e) {
     this.component.fireEvent(new EchoCore.Event("action", this.component));
 };
 
-EchoAppRender.SelectListComponentSync.prototype._renderMain = function(update, parentElement, size) {
+EchoAppRender.ListComponentSync.prototype._renderMain = function(update, parentElement, size) {
     this._selectElement = document.createElement("select");
     this._selectElement.size = size;
     if (this.component.getProperty("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION) {
@@ -78,12 +78,12 @@ EchoAppRender.SelectListComponentSync.prototype._renderMain = function(update, p
     parentElement.appendChild(this._selectElement);
 };
 
-EchoAppRender.SelectListComponentSync.prototype.renderDispose = function(update) { 
+EchoAppRender.ListComponentSync.prototype.renderDispose = function(update) { 
     EchoWebCore.EventProcessor.removeAll(this._selectElement);
     this._selectElement = null;
 };
 
-EchoAppRender.SelectListComponentSync.prototype.renderUpdate = function(update) {
+EchoAppRender.ListComponentSync.prototype.renderUpdate = function(update) {
     var element = this._selectElement;
     var containerElement = element.parentNode;
     this.renderDispose(update);
@@ -97,7 +97,7 @@ EchoAppRender.SelectListComponentSync.prototype.renderUpdate = function(update) 
  */
 EchoAppRender.ListBoxSync = function() { };
 
-EchoAppRender.ListBoxSync.prototype = EchoCore.derive(EchoAppRender.SelectListComponentSync);
+EchoAppRender.ListBoxSync.prototype = EchoCore.derive(EchoAppRender.ListComponentSync);
 
 EchoAppRender.ListBoxSync.prototype.renderAdd = function(update, parentElement) {
     this._renderMain(update, parentElement, 6);
@@ -108,7 +108,7 @@ EchoAppRender.ListBoxSync.prototype.renderAdd = function(update, parentElement) 
  */
 EchoAppRender.SelectFieldSync = function() { };
 
-EchoAppRender.SelectFieldSync.prototype = EchoCore.derive(EchoAppRender.SelectListComponentSync);
+EchoAppRender.SelectFieldSync.prototype = EchoCore.derive(EchoAppRender.ListComponentSync);
 
 EchoAppRender.SelectFieldSync.prototype.renderAdd = function(update, parentElement) {
     this._renderMain(update, parentElement, 0);
