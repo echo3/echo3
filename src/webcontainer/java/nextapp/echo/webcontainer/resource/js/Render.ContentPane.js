@@ -35,9 +35,9 @@ EchoAppRender.ContentPaneSync.prototype.renderAdd = function(update, parentEleme
     this._divElement.style.height = "100%";
     this._divElement.style.overflow = "hidden";
     this._divElement.style.zIndex = "0";
-    EchoRender.Property.Font.renderDefault(this.component, this._divElement);
-    EchoRender.Property.Color.renderFB(this.component, this._divElement);
-    EchoRender.Property.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._divElement); 
+    EchoAppRender.Font.renderDefault(this.component, this._divElement);
+    EchoAppRender.Color.renderFB(this.component, this._divElement);
+    EchoAppRender.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._divElement); 
 
     this._childIdToElementMap = new Object();
     
@@ -63,7 +63,7 @@ EchoAppRender.ContentPaneSync.prototype._renderAddChild = function(update, child
         divElement.style.zIndex = "1";
     } else {
         var insets = this.component.getRenderProperty("insets", new EchoApp.Insets(0));
-        var pixelInsets = EchoRender.Property.Insets.toPixels(insets);
+        var pixelInsets = EchoAppRender.Insets.toPixels(insets);
         divElement.style.zIndex = "0";
         divElement.style.left = pixelInsets.left + "px";
         divElement.style.top = pixelInsets.top + "px";

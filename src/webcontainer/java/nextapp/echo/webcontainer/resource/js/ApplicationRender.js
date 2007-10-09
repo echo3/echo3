@@ -1,12 +1,320 @@
 /**
  * @fileoverview
  * <ul> 
+ *  <li>Provides core property renderers.</li>
+ *  <li>Provides property rendering utilities.</li>
  *  <li>Provides TriCellTable rendering utility (used by buttons and labels).</li>
  *  <li>Provides a floating pane z-index management system.</li> 
  * </ul>
  */
 
 EchoAppRender = function() { };
+
+EchoAppRender.getEffectProperty = function(component, defaultPropertyName, effectPropertyName, effectState) {
+    var property;
+    if (effectState) {
+        property = component.getRenderProperty(effectPropertyName);
+    }
+    if (!property) {
+        property = component.getRenderProperty(defaultPropertyName);
+    }
+    return property;
+};
+
+EchoAppRender.Alignment = function() { };
+
+EchoAppRender.Alignment.getRenderedHorizontal = function(alignment, component) {
+    var layoutDirection = component ? component.getRenderLayoutDirection() : EchoApp.LayoutDirection.LTR;
+    switch (alignment.horizontal) {
+    case EchoApp.Alignment.LEADING:
+        return layoutDirection.isLeftToRight() ? EchoApp.Alignment.LEFT : EchoApp.Alignment.RIGHT;
+    case EchoApp.Alignment.TRAILING:
+        return layoutDirection.isLeftToRight() ? EchoApp.Alignment.RIGHT : EchoApp.Alignment.LEFT;
+    default:
+        return alignment.horizontal;
+    }
+};
+
+EchoAppRender.Alignment.renderComponentProperty 
+        = function(component, componentProperty, defaultValue, element, renderToElement, referenceComponent) {
+    referenceComponent = referenceComponent ? referenceComponent : component;
+    var alignment = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+            : component.getProperty(componentProperty);
+    if (!alignment) {
+        alignment = defaultValue;
+    }
+    var horizontal = alignment ? EchoAppRender.Alignment.getRenderedHorizontal(alignment, referenceComponent) : null;
+    var vertical = alignment ? alignment.vertical : null;
+    
+    var horizontalValue;
+    switch (horizontal) {
+    case EchoApp.Alignment.LEFT:   horizontalValue = "left";   break;
+    case EchoApp.Alignment.CENTER: horizontalValue = "center"; break;
+    case EchoApp.Alignment.RIGHT:  horizontalValue = "right";  break;
+    default:                       horizontalValue = "";       break;
+    }
+    var verticalValue;
+    switch (vertical) {
+    case EchoApp.Alignment.TOP:    verticalValue = "top";      break;
+    case EchoApp.Alignment.CENTER: verticalValue = "middle";   break;
+    case EchoApp.Alignment.BOTTOM: verticalValue = "bottom";   break;
+    default:                       verticalValue = "";         break;
+    }
+    
+    if (renderToElement) {
+        element.align = horizontalValue;
+        element.vAlign = verticalValue;
+    } else {
+        element.style.textAlign = horizontalValue;
+        element.style.verticalAlign = verticalValue;
+    }
+};
+
+EchoAppRender.Border = function() { };
+
+/**
+ * @private
+ */
+EchoAppRender.Border._SIDE_STYLE_NAMES = new Array("borderTop", "borderRight", "borderBottom", "borderLeft");
+
+/**
+ * @private
+ */
+EchoAppRender.Border._SIDE_RENDER_STRATEGIES 
+        = new Array(new Array(0, 1, 2, 3), new Array(0, 1, 2, 1), new Array(0, 1, 0, 1), new Array(0, 0, 0, 0));
+
+EchoAppRender.Border.render = function(border, element) {
+    if (!border) {
+        return;
+    }
+    if (border.multisided) {
+        var renderStrategy = EchoAppRender.Border._SIDE_RENDER_STRATEGIES[4 - border.sides.length];
+        for (var i = 0; i < 4; ++i) {
+            EchoAppRender.Border.renderSide(border.sides[renderStrategy[i]], element, 
+                    EchoAppRender.Border._SIDE_STYLE_NAMES[i]);
+        }
+    } else {
+        var color = border.color ? border.color.value : null;
+        element.style.border = EchoAppRender.Extent.toPixels(border.size) + "px " + border.style + " " 
+                + (color ? color : "");
+    }
+};
+
+EchoAppRender.Border.renderClear = function(border, element) {
+    if (border) {
+        EchoAppRender.Border.render(border, element);
+    } else {
+        element.style.border = "";
+    }
+};
+
+EchoAppRender.Border.renderComponentProperty = function(component, componentProperty, defaultValue, element) { 
+    var border = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+            : component.getProperty(componentProperty);
+    EchoAppRender.Border.render(border ? border : defaultValue, element);
+};
+
+EchoAppRender.Border.renderSide = function(borderSide, element, styleName) {
+    var color = borderSide.color ? borderSide.color.value : null;
+    element.style[styleName] = EchoAppRender.Extent.toPixels(borderSide.size) + "px " + borderSide.style + " " 
+            + (color ? color : "");
+};
+
+EchoAppRender.Color = function() { };
+
+EchoAppRender.Color.render = function(color, element, styleProperty) {
+    if (color) {
+        element.style[styleProperty] = color.value;
+    }
+};
+
+EchoAppRender.Color.renderClear = function(color, element, styleProperty) {
+    element.style[styleProperty] = color ? color.value : "";
+};
+
+EchoAppRender.Color.renderComponentProperty = function(component, componentProperty, defaultValue, element, styleProperty) { 
+    var color = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+            : component.getProperty(componentProperty);
+    EchoAppRender.Color.render(color ? color : defaultValue, element, styleProperty);
+};
+
+EchoAppRender.Color.renderFB = function(component, element) { 
+    var color;
+    if (color = component.getRenderProperty("foreground")) {
+        element.style.color = color.value;
+    }
+    if (color = component.getRenderProperty("background")) {
+        element.style.backgroundColor = color.value;
+    }
+};
+
+EchoAppRender.Extent = function() { };
+
+EchoAppRender.Extent.toPixels = function(extent, horizontal) {
+    if (extent == null) {
+        return 0;
+    } else {
+        return EchoWebCore.Render.extentToPixels(extent.value, extent.units, horizontal);
+    }
+};
+
+EchoAppRender.FillImage = function() { };
+
+EchoAppRender.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER = 0x1;
+
+EchoAppRender.FillImage.render = function(fillImage, element, flags) {
+    if (!fillImage) {
+        // No image specified, do nothing.
+        return;
+    }
+    
+    var url = fillImage.image ? fillImage.image.url : "";
+    
+    if (EchoWebCore.Environment.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED &&
+            flags && (flags & EchoAppRender.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER)) {
+        // IE6 PNG workaround required.
+        element.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" 
+            + url + "', sizingMethod='scale')";
+    } else {
+        // IE6 PNG workaround not required.
+        element.style.backgroundImage = "url(" + url + ")";
+    }
+    
+    if (fillImage.repeat || fillImage.repeat == EchoApp.FillImage.NO_REPEAT) {
+        var repeat;
+        switch (fillImage.repeat) {
+        case EchoApp.FillImage.NO_REPEAT:
+            repeat = "no-repeat";
+            break;
+        case EchoApp.FillImage.REPEAT_HORIZONTAL:
+            repeat = "repeat-x";
+            break;
+        case EchoApp.FillImage.REPEAT_VERTICAL:
+            repeat = "repeat-y";
+            break;
+        default:
+            repeat = "repeat";
+        }
+        element.style.backgroundRepeat = repeat;
+    }
+    
+    if (fillImage.x || fillImage.y) {
+        element.style.backgroundPosition = (fillImage.x ? fillImage.x : "0px") + " " + (fillImage.y ? fillImage.y : "0px");
+    }
+};
+
+EchoAppRender.FillImage.renderClear = function(fillImage, element, flags) {
+    if (fillImage) {
+        EchoAppRender.FillImage.render(fillImage, element, flags);
+    } else {
+        element.style.backgroundImage = "";
+        element.style.backgroundPosition = "";
+        element.style.backgroundRepeat = "";
+    }
+};
+
+EchoAppRender.FillImage.renderComponentProperty = function(component, componentProperty, defaultValue,
+        element, flags) {
+    var fillImage = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+            : component.getProperty(componentProperty);
+    EchoAppRender.FillImage.render(fillImage ? fillImage : defaultValue, element, flags);
+};
+
+EchoAppRender.Font = function() { };
+
+EchoAppRender.Font.render = function(font, element) {
+    if (!font) {
+        return;
+    }
+    if (font.typeface) {
+        if (font.typeface instanceof Array) {
+            element.style.fontFamily = font.typeface.join(",");
+        } else {
+            element.style.fontFamily = font.typeface;
+        }
+    }
+    if (font.size) {
+        element.style.fontSize = EchoAppRender.Extent.toPixels(font.size) + "px";
+    }
+    if (font.style) {
+        if (font.style & EchoApp.Font.BOLD) {
+            element.style.fontWeight = "bold";
+        }
+        if (font.style & EchoApp.Font.ITALIC) {
+            element.style.fontStyle = "italic";
+        }
+        if (font.style & EchoApp.Font.UNDERLINE) {
+            element.style.textDecoration = "underline";
+        } else if (font.style & EchoApp.Font.OVERLINE) {
+            element.style.textDecoration = "overline";
+        } else if (font.style & EchoApp.Font.LINE_THROUGH) {
+            element.style.textDecoration = "line-through";
+        }
+    } else if (font.style == EchoApp.Font.PLAIN) {
+        element.style.fontWeight = "";
+        element.style.fontStyle = "";
+        element.style.textDecoration = "";
+    }
+};
+
+EchoAppRender.Font.renderClear = function(font, element) {
+    if (font) {
+        EchoAppRender.Font.render(font, element);
+    } else {
+        element.style.fontFamily = "";
+        element.style.fontSize = "";
+        element.style.fontWeight = "";
+        element.style.fontStyle = "";
+        element.style.textDecoration = "";
+    }
+};
+
+EchoAppRender.Font.renderComponentProperty = function(component, componentProperty, defaultValue, 
+        element) {
+    var font = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+            : component.getProperty(componentProperty);
+    EchoAppRender.Font.render(font ? font : defaultValue, element);
+};
+
+EchoAppRender.Font.renderDefault = function(component, element, defaultValue) {
+    EchoAppRender.Font.renderComponentProperty(component, "font", defaultValue, element);
+};
+
+EchoAppRender.Insets = function() { };
+
+EchoAppRender.Insets.renderComponentProperty = function(component, componentProperty, defaultValue, 
+        element, styleProperty) { 
+    var insets = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+            : component.getProperty(componentProperty);
+    EchoAppRender.Insets.renderPixel(insets ? insets : defaultValue, element, styleProperty);
+};
+
+EchoAppRender.Insets.renderPixel = function(insets, element, styleAttribute) {
+    if (insets) {
+        var pixelInsets = EchoAppRender.Insets.toPixels(insets);
+        element.style[styleAttribute] = pixelInsets.top + "px " + pixelInsets.right + "px "
+                + pixelInsets.bottom + "px " + pixelInsets.left + "px";
+    }
+};
+
+EchoAppRender.Insets.toCssValue = function(insets) {
+    if (insets) {
+        var pixelInsets = EchoAppRender.Insets.toPixels(insets);
+        return pixelInsets.top + "px " + pixelInsets.right + "px "
+                + pixelInsets.bottom + "px " + pixelInsets.left + "px";
+    } else {
+        return "";
+    }
+};
+
+EchoAppRender.Insets.toPixels = function(insets) {
+    var pixelInsets = new Object();
+    pixelInsets.top = EchoWebCore.Render.extentToPixels(insets.top.value, insets.top.units, false);
+    pixelInsets.right = EchoWebCore.Render.extentToPixels(insets.right.value, insets.right.units, true);
+    pixelInsets.bottom = EchoWebCore.Render.extentToPixels(insets.bottom.value, insets.bottom.units, false);
+    pixelInsets.left = EchoWebCore.Render.extentToPixels(insets.left.value, insets.left.units, true);
+    return pixelInsets;
+};
 
 /**
  * Creates a new Floating Pane Manager.

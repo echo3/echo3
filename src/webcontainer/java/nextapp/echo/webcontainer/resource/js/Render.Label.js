@@ -52,7 +52,7 @@ EchoAppRender.LabelSync.prototype.renderAdd = function(update, parentElement) {
             var iconTextMargin = this.component.getRenderProperty("iconTextMargin", 
                     EchoAppRender.LabelSync._defaultIconTextMargin);
             var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
-            var tct = new EchoAppRender.TriCellTable(orientation, EchoRender.Property.Extent.toPixels(iconTextMargin));
+            var tct = new EchoAppRender.TriCellTable(orientation, EchoAppRender.Extent.toPixels(iconTextMargin));
             var imgElement = document.createElement("img");
             imgElement.src = icon.url;
             if (formatWhitespace) {
@@ -65,8 +65,8 @@ EchoAppRender.LabelSync.prototype.renderAdd = function(update, parentElement) {
             }
             tct.tdElements[1].appendChild(imgElement);
             this._labelNode = tct.tableElement;
-            EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, this._labelNode);
-            EchoRender.Property.Color.renderFB(this.component, this._labelNode);
+            EchoAppRender.Font.renderComponentProperty(this.component, "font", null, this._labelNode);
+            EchoAppRender.Color.renderFB(this.component, this._labelNode);
         } else {
 	        var font = this.component.getRenderProperty("font");
             if (!font && lineWrap && !foreground && !background && !formatWhitespace) {
@@ -81,15 +81,15 @@ EchoAppRender.LabelSync.prototype.renderAdd = function(update, parentElement) {
                 if (!lineWrap) {
                     this._labelNode.style.whiteSpace = "nowrap";
                 }
-                EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, this._labelNode);
-                EchoRender.Property.Color.renderFB(this.component, this._labelNode);
+                EchoAppRender.Font.renderComponentProperty(this.component, "font", null, this._labelNode);
+                EchoAppRender.Color.renderFB(this.component, this._labelNode);
             }
         }
     } else if (icon) {
         var imgElement = document.createElement("img");
         imgElement.src = icon.url;
         this._labelNode = this._createSingleItemSpanElement(imgElement);
-        EchoRender.Property.Color.renderFB(this.component, this._labelNode); // should be BG only.
+        EchoAppRender.Color.renderFB(this.component, this._labelNode); // should be BG only.
     } else {
         // Neither icon nor text, render blank.
         this._labelNode = null;

@@ -39,23 +39,23 @@ EchoAppRender.SelectListComponentSync.prototype._renderMain = function(update, p
         this._selectElement.multiple = "multiple";
     }
     
-    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._selectElement);
-    EchoRender.Property.Color.renderFB(this.component, this._selectElement);
-    EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, this._selectElement);
-    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._selectElement, "padding");
+    EchoAppRender.Border.render(this.component.getRenderProperty("border"), this._selectElement);
+    EchoAppRender.Color.renderFB(this.component, this._selectElement);
+    EchoAppRender.Font.renderComponentProperty(this.component, "font", null, this._selectElement);
+    EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._selectElement, "padding");
 
     if (this.component.items) {
         for (var i = 0; i < this.component.items.length; ++i) {
             var optionElement = document.createElement("option");
             optionElement.appendChild(document.createTextNode(this.component.items[i].toString()));
             if (this.component.items[i].foreground) {
-                EchoRender.Property.Color.render(this.component.items[i].foreground, optionElement, "color");
+                EchoAppRender.Color.render(this.component.items[i].foreground, optionElement, "color");
             }
             if (this.component.items[i].background) {
-                EchoRender.Property.Color.render(this.component.items[i].background, optionElement, "backgroundColor");
+                EchoAppRender.Color.render(this.component.items[i].background, optionElement, "backgroundColor");
             }
             if (this.component.items[i].font) {
-                EchoRender.Property.Font.render(this.component.items[i].font, optionElement);
+                EchoAppRender.Font.render(this.component.items[i].font, optionElement);
             }
             this._selectElement.appendChild(optionElement);
         }

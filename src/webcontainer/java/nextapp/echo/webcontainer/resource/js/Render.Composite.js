@@ -21,8 +21,8 @@ EchoAppRender.CompositeSync.prototype.renderAdd = function(update, parentElement
 };
 
 EchoAppRender.CompositeSync.prototype._renderStyle = function(element) {
-    EchoRender.Property.Color.renderFB(this.component, element);
-    EchoRender.Property.Font.renderDefault(this.component, element);
+    EchoAppRender.Color.renderFB(this.component, element);
+    EchoAppRender.Font.renderDefault(this.component, element);
 };
 
 EchoAppRender.CompositeSync.prototype.renderDispose = function(update) { 
@@ -47,8 +47,8 @@ EchoRender.ComponentSync.Panel.prototype = EchoCore.derive(EchoAppRender.Composi
 
 EchoRender.ComponentSync.Panel.prototype._renderStyle = function(element) {
 	EchoAppRender.CompositeSync.prototype._renderStyle.call(this, element);
-    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), element);
-    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, element, "padding");
+    EchoAppRender.Border.render(this.component.getRenderProperty("border"), element);
+    EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, element, "padding");
 };
 
 EchoRender.registerPeer("Composite", EchoAppRender.CompositeSync);

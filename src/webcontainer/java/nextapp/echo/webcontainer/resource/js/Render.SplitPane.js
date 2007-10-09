@@ -118,11 +118,11 @@ EchoAppRender.SplitPaneSync.prototype.loadRenderData = function() {
      * temporarily adjusted it.
      * @type Integer
      */
-    this._userSeparatorPosition = this._separatorPosition = EchoRender.Property.Extent.toPixels(
+    this._userSeparatorPosition = this._separatorPosition = EchoAppRender.Extent.toPixels(
             this.component.getRenderProperty("separatorPosition",
             EchoApp.SplitPane.DEFAULT_SEPARATOR_POSITION), this._orientationVertical);
     
-    this._separatorSize = EchoRender.Property.Extent.toPixels(this.component.getRenderProperty(
+    this._separatorSize = EchoAppRender.Extent.toPixels(this.component.getRenderProperty(
             this._orientationVertical ? "separatorHeight" : "separatorWidth",
             this._resizable ? EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
             : EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED), this._orientationVertical);
@@ -192,7 +192,7 @@ EchoAppRender.SplitPaneSync.prototype._getInsetsSizeAdjustment = function(layout
     if (!layoutData || !layoutData.getProperty("insets")) {
         return 0;
     }
-    var layoutDataInsets = EchoRender.Property.Insets.toPixels(layoutData.getProperty("insets"));
+    var layoutDataInsets = EchoAppRender.Insets.toPixels(layoutData.getProperty("insets"));
     var adjustment;
     if (this._orientationVertical) {
         adjustment = layoutDataInsets.top + layoutDataInsets.bottom;
@@ -289,13 +289,13 @@ EchoAppRender.SplitPaneSync.prototype.renderAdd = function(update, parentElement
     this._splitPaneDivElement.style.left = "0px"
     this._splitPaneDivElement.style.right = "0px"
     
-    EchoRender.Property.Color.renderFB(this.component, this._splitPaneDivElement);
-    EchoRender.Property.Font.renderDefault(this.component, this._splitPaneDivElement);
+    EchoAppRender.Color.renderFB(this.component, this._splitPaneDivElement);
+    EchoAppRender.Font.renderDefault(this.component, this._splitPaneDivElement);
     
     if (this._separatorSize > 0) {
         this._separatorDivElement = document.createElement("div");
         this._separatorDivElement.style.position = "absolute";
-        EchoRender.Property.Color.renderComponentProperty(this.component, "separatorColor",
+        EchoAppRender.Color.renderComponentProperty(this.component, "separatorColor",
                 EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR, this._separatorDivElement, "backgroundColor");
         this._separatorDivElement.style.fontSize = "1px";
         this._separatorDivElement.style.lineHeight = "0";
@@ -312,7 +312,7 @@ EchoAppRender.SplitPaneSync.prototype.renderAdd = function(update, parentElement
             }
             this._separatorDivElement.style.width = "100%";
             this._separatorDivElement.style.height = this._separatorSize + "px";
-            EchoRender.Property.FillImage.renderComponentProperty(this.component, "separatorVerticalImage", null, 
+            EchoAppRender.FillImage.renderComponentProperty(this.component, "separatorVerticalImage", null, 
                     this._separatorDivElement, 0);
         } else {
             if (this._orientationTopLeft) {
@@ -324,7 +324,7 @@ EchoAppRender.SplitPaneSync.prototype.renderAdd = function(update, parentElement
             }
             this._separatorDivElement.style.height = "100%";
             this._separatorDivElement.style.width = this._separatorSize + "px";
-            EchoRender.Property.FillImage.renderComponentProperty(this.component, "separatorHorizontalImage", null, 
+            EchoAppRender.FillImage.renderComponentProperty(this.component, "separatorHorizontalImage", null, 
                     this._separatorDivElement, 0);
         }
         if (this._resizable && resizeCursor) {
@@ -363,12 +363,12 @@ EchoAppRender.SplitPaneSync.prototype._renderAddChild = function(update, child, 
     
     var layoutData = child.getRenderProperty("layoutData");
     if (layoutData) {
-        EchoRender.Property.Alignment.renderComponentProperty(layoutData, "alignment", null, paneDivElement, false,
+        EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, paneDivElement, false,
                 this.component);
-        EchoRender.Property.Color.renderComponentProperty(layoutData, "background", null, paneDivElement, "backgroundColor");
-        EchoRender.Property.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, paneDivElement);
+        EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, paneDivElement, "backgroundColor");
+        EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, paneDivElement);
         if (!child.pane) {
-	        EchoRender.Property.Insets.renderComponentProperty(layoutData, "insets", null, paneDivElement, "padding");
+	        EchoAppRender.Insets.renderComponentProperty(layoutData, "insets", null, paneDivElement, "padding");
         }
         switch (layoutData.getProperty("overflow")) {
         case EchoApp.SplitPane.OVERFLOW_HIDDEN:

@@ -173,24 +173,24 @@ EchoAppRender.ButtonSync.prototype.renderAdd = function(update, parentElement) {
     
     this._divElement = EchoAppRender.ButtonSync._prototypeButton.cloneNode(false); 
 
-    EchoRender.Property.Color.render(
-            EchoRender.Property.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
+    EchoAppRender.Color.render(
+            EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
             this._divElement, "color");
-    EchoRender.Property.Color.render(
-            EchoRender.Property.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
+    EchoAppRender.Color.render(
+            EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
             this._divElement, "backgroundColor");
-    EchoRender.Property.Border.render(
-            EchoRender.Property.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
+    EchoAppRender.Border.render(
+            EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
             this._divElement);
-    EchoRender.Property.Font.render(
-            EchoRender.Property.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
+    EchoAppRender.Font.render(
+            EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
             this._divElement);
-    EchoRender.Property.FillImage.render(
-            EchoRender.Property.getEffectProperty(this.component, "backgroundImage", "disabledBackgroundImage", !this._enabled),
+    EchoAppRender.FillImage.render(
+            EchoAppRender.getEffectProperty(this.component, "backgroundImage", "disabledBackgroundImage", !this._enabled),
             this._divElement);
     
-    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
-    EchoRender.Property.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
+    EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
+    EchoAppRender.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
     
     var toolTipText = this.component.getRenderProperty("toolTipText");
     if (toolTipText) {
@@ -222,7 +222,7 @@ EchoAppRender.ButtonSync.prototype.renderAdd = function(update, parentElement) {
 
 EchoAppRender.ButtonSync.prototype._renderContent = function() {
     var text = this.component.getRenderProperty("text");
-    var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "disabledIcon", !this._enabled);
+    var icon = EchoAppRender.getEffectProperty(this.component, "icon", "disabledIcon", !this._enabled);
     if (text) {
         if (icon) {
             // Text and icon.
@@ -230,7 +230,7 @@ EchoAppRender.ButtonSync.prototype._renderContent = function() {
                     EchoAppRender.ButtonSync._defaultIconTextMargin);
             var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
             var tct = new EchoAppRender.TriCellTable(orientation, 
-                    EchoRender.Property.Extent.toPixels(iconTextMargin));
+                    EchoAppRender.Extent.toPixels(iconTextMargin));
             this._renderButtonText(tct.tdElements[0], text);
             this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
             this._divElement.appendChild(tct.tableElement);
@@ -291,25 +291,25 @@ EchoAppRender.ButtonSync.prototype._setFocusState = function(focusState) {
         var background = this.component.getRenderProperty("background");
         if (background != null) {
             var newBackground = focusState ? background.adjust(0x20, 0x20, 0x20) : background;
-            EchoRender.Property.Color.render(newBackground, this._divElement, "backgroundColor");
+            EchoAppRender.Color.render(newBackground, this._divElement, "backgroundColor");
         }
         return;
     } else {
-        var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "focusedForeground", focusState);
-        var background = EchoRender.Property.getEffectProperty(this.component, "background", "focusedBackground", focusState);
-        var backgroundImage = EchoRender.Property.getEffectProperty(
+        var foreground = EchoAppRender.getEffectProperty(this.component, "foreground", "focusedForeground", focusState);
+        var background = EchoAppRender.getEffectProperty(this.component, "background", "focusedBackground", focusState);
+        var backgroundImage = EchoAppRender.getEffectProperty(
                 this.component, "backgroundImage", "focusedBackgroundImage", focusState);
-        var font = EchoRender.Property.getEffectProperty(this.component, "font", "focusedFont", focusState);
-        var border = EchoRender.Property.getEffectProperty(this.component, "border", "focusedBorder", focusState);
+        var font = EchoAppRender.getEffectProperty(this.component, "font", "focusedFont", focusState);
+        var border = EchoAppRender.getEffectProperty(this.component, "border", "focusedBorder", focusState);
         
-        EchoRender.Property.Color.renderClear(foreground, this._divElement, "color");
-        EchoRender.Property.Color.renderClear(background, this._divElement, "backgroundColor");
-        EchoRender.Property.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
-        EchoRender.Property.Font.renderClear(font, this._divElement);
-        EchoRender.Property.Border.renderClear(border, this._divElement);
+        EchoAppRender.Color.renderClear(foreground, this._divElement, "color");
+        EchoAppRender.Color.renderClear(background, this._divElement, "backgroundColor");
+        EchoAppRender.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
+        EchoAppRender.Font.renderClear(font, this._divElement);
+        EchoAppRender.Border.renderClear(border, this._divElement);
     
         if (this._iconElement) {
-            var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "focusedIcon", focusState);
+            var icon = EchoAppRender.getEffectProperty(this.component, "icon", "focusedIcon", focusState);
             if (icon && icon.url != this._iconElement.src) {
                 this._iconElement.src = icon.url;
             }
@@ -318,21 +318,21 @@ EchoAppRender.ButtonSync.prototype._setFocusState = function(focusState) {
 };
 
 EchoAppRender.ButtonSync.prototype._setPressedState = function(pressedState) {
-    var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "pressedForeground", pressedState);
-    var background = EchoRender.Property.getEffectProperty(this.component, "background", "pressedBackground", pressedState);
-    var backgroundImage = EchoRender.Property.getEffectProperty(
+    var foreground = EchoAppRender.getEffectProperty(this.component, "foreground", "pressedForeground", pressedState);
+    var background = EchoAppRender.getEffectProperty(this.component, "background", "pressedBackground", pressedState);
+    var backgroundImage = EchoAppRender.getEffectProperty(
             this.component, "backgroundImage", "pressedBackgroundImage", pressedState);
-    var font = EchoRender.Property.getEffectProperty(this.component, "font", "pressedFont", pressedState);
-    var border = EchoRender.Property.getEffectProperty(this.component, "border", "pressedBorder", pressedState);
+    var font = EchoAppRender.getEffectProperty(this.component, "font", "pressedFont", pressedState);
+    var border = EchoAppRender.getEffectProperty(this.component, "border", "pressedBorder", pressedState);
     
-    EchoRender.Property.Color.renderClear(foreground, this._divElement, "color");
-    EchoRender.Property.Color.renderClear(background, this._divElement, "backgroundColor");
-    EchoRender.Property.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
-    EchoRender.Property.Font.renderClear(font, this._divElement);
-	EchoRender.Property.Border.renderClear(border, this._divElement);
+    EchoAppRender.Color.renderClear(foreground, this._divElement, "color");
+    EchoAppRender.Color.renderClear(background, this._divElement, "backgroundColor");
+    EchoAppRender.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
+    EchoAppRender.Font.renderClear(font, this._divElement);
+	EchoAppRender.Border.renderClear(border, this._divElement);
 	
     if (this._iconElement) {
-    	var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "pressedIcon", pressedState);
+    	var icon = EchoAppRender.getEffectProperty(this.component, "icon", "pressedIcon", pressedState);
     	if (icon && icon.url != this._iconElement.src) {
 		    this._iconElement.src = icon.url;
     	}
@@ -340,21 +340,21 @@ EchoAppRender.ButtonSync.prototype._setPressedState = function(pressedState) {
 };
 
 EchoAppRender.ButtonSync.prototype._setRolloverState = function(rolloverState) {
-    var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "rolloverForeground", rolloverState);
-    var background = EchoRender.Property.getEffectProperty(this.component, "background", "rolloverBackground", rolloverState);
-    var backgroundImage = EchoRender.Property.getEffectProperty(
+    var foreground = EchoAppRender.getEffectProperty(this.component, "foreground", "rolloverForeground", rolloverState);
+    var background = EchoAppRender.getEffectProperty(this.component, "background", "rolloverBackground", rolloverState);
+    var backgroundImage = EchoAppRender.getEffectProperty(
             this.component, "backgroundImage", "rolloverBackgroundImage", rolloverState);
-    var font = EchoRender.Property.getEffectProperty(this.component, "font", "rolloverFont", rolloverState);
-    var border = EchoRender.Property.getEffectProperty(this.component, "border", "rolloverBorder", rolloverState);
+    var font = EchoAppRender.getEffectProperty(this.component, "font", "rolloverFont", rolloverState);
+    var border = EchoAppRender.getEffectProperty(this.component, "border", "rolloverBorder", rolloverState);
     
-    EchoRender.Property.Color.renderClear(foreground, this._divElement, "color");
-    EchoRender.Property.Color.renderClear(background, this._divElement, "backgroundColor");
-    EchoRender.Property.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
-    EchoRender.Property.Font.renderClear(font, this._divElement);
-	EchoRender.Property.Border.renderClear(border, this._divElement);
+    EchoAppRender.Color.renderClear(foreground, this._divElement, "color");
+    EchoAppRender.Color.renderClear(background, this._divElement, "backgroundColor");
+    EchoAppRender.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
+    EchoAppRender.Font.renderClear(font, this._divElement);
+	EchoAppRender.Border.renderClear(border, this._divElement);
 
     if (this._iconElement) {
-    	var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "rolloverIcon", rolloverState);
+    	var icon = EchoAppRender.getEffectProperty(this.component, "icon", "rolloverIcon", rolloverState);
     	if (icon && icon.url != this._iconElement.src) {
 		    this._iconElement.src = icon.url;
     	}
@@ -390,11 +390,11 @@ EchoAppRender.ToggleButtonSync.prototype.renderAdd = function(update, parentElem
 EchoAppRender.ToggleButtonSync.prototype._getStateIcon = function() {
 	var icon;
 	if (this._selected) {
-		icon = EchoRender.Property.getEffectProperty(this.component, "selectedStateIcon", "disabledSelectedStateIcon", 
+		icon = EchoAppRender.getEffectProperty(this.component, "selectedStateIcon", "disabledSelectedStateIcon", 
                 !this._enabled);
 	}
 	if (!icon) {
-		icon = EchoRender.Property.getEffectProperty(this.component, "stateIcon", "disabledStateIcon", !this._enabled);
+		icon = EchoAppRender.getEffectProperty(this.component, "stateIcon", "disabledStateIcon", !this._enabled);
 	}
 	return icon;
 };
@@ -421,7 +421,7 @@ EchoAppRender.ToggleButtonSync.prototype._renderContent = function() {
         } else {
 	        margin = this.component.getRenderProperty("iconTextMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
         }
-        var tct = new EchoAppRender.TriCellTable(orientation, EchoRender.Property.Extent.toPixels(margin));
+        var tct = new EchoAppRender.TriCellTable(orientation, EchoAppRender.Extent.toPixels(margin));
         if (text) {
 	        this._renderButtonText(tct.tdElements[0], text);
 	        if (icon) {
@@ -440,7 +440,7 @@ EchoAppRender.ToggleButtonSync.prototype._renderContent = function() {
         var stateOrientation = EchoAppRender.TriCellTable.TRAILING_LEADING;
         var stateMargin = this.component.getRenderProperty("stateMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
         var tct = new EchoAppRender.TriCellTable(orientation, 
-        	EchoRender.Property.Extent.toPixels(margin), stateOrientation, EchoRender.Property.Extent.toPixels(stateMargin));
+        	EchoAppRender.Extent.toPixels(margin), stateOrientation, EchoAppRender.Extent.toPixels(stateMargin));
         this._renderButtonText(tct.tdElements[0], text);
         this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
         tct.tdElements[2].appendChild(this._stateElement);

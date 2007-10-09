@@ -50,16 +50,16 @@ EchoAppRender.RowSync.prototype.processKeyDown = function(e) {
 EchoAppRender.RowSync.prototype.renderAdd = function(update, parentElement) {
     this._divElement = EchoAppRender.RowSync._rowPrototype.cloneNode(true);
     
-    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._divElement);
-    EchoRender.Property.Color.renderFB(this.component, this._divElement);
-    EchoRender.Property.Font.renderDefault(this.component, this._divElement);
-    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
-    EchoRender.Property.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
+    EchoAppRender.Border.render(this.component.getRenderProperty("border"), this._divElement);
+    EchoAppRender.Color.renderFB(this.component, this._divElement);
+    EchoAppRender.Font.renderDefault(this.component, this._divElement);
+    EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
+    EchoAppRender.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
     
     //                div              table      tbody      tr
     this._trElement = this._divElement.firstChild.firstChild.firstChild;
 
-    this._cellSpacing = EchoRender.Property.Extent.toPixels(this.component.getRenderProperty("cellSpacing"), false);
+    this._cellSpacing = EchoAppRender.Extent.toPixels(this.component.getRenderProperty("cellSpacing"), false);
     if (this._cellSpacing) {
         this._spacingPrototype = document.createElement("td");
         this._spacingPrototype.style.width = this._cellSpacing + "px";
@@ -87,22 +87,22 @@ EchoAppRender.RowSync.prototype._renderAddChild = function(update, child, index)
     var insets;
     if (layoutData) {
     	insets = layoutData.getProperty("insets");
-        EchoRender.Property.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
-        EchoRender.Property.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
-		EchoRender.Property.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
+        EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
+        EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
+		EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
 	    var width = layoutData.getProperty("width");
 	    if (width) {
 	        if (width.units == "%") {
 		    	tdElement.style.width = width.toString();
 	        } else {
-		    	tdElement.style.width = EchoRender.Property.Extent.toPixels(width, true) + "px";
+		    	tdElement.style.width = EchoAppRender.Extent.toPixels(width, true) + "px";
 	        }
 	    }
     }
     if (!insets) {
     	insets = EchoAppRender.RowSync._defaultCellInsets;
     }
-    EchoRender.Property.Insets.renderPixel(insets, tdElement, "padding");
+    EchoAppRender.Insets.renderPixel(insets, tdElement, "padding");
     
     if (index != null) {
     	var currentChildCount;

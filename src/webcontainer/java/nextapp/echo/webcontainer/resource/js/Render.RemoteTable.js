@@ -24,7 +24,7 @@ EchoAppRender.RemoteTableSync.prototype.renderAdd = function(update, parentEleme
     if (!this._defaultInsets) {
         this._defaultInsets = new EchoApp.Insets(0);
     }
-    this._defaultCellPadding = EchoRender.Property.Insets.toCssValue(this._defaultInsets);
+    this._defaultCellPadding = EchoAppRender.Insets.toCssValue(this._defaultInsets);
     
     this._headerVisible = this.component.getProperty("headerVisible");
 
@@ -44,13 +44,13 @@ EchoAppRender.RemoteTableSync.prototype.renderAdd = function(update, parentEleme
     if (this._selectionEnabled) {
         this._tableElement.style.cursor = "pointer";
     }
-    EchoRender.Property.Color.renderFB(this.component, this._tableElement);
-    EchoRender.Property.Font.renderDefault(this.component, this._tableElement);
+    EchoAppRender.Color.renderFB(this.component, this._tableElement);
+    EchoAppRender.Font.renderDefault(this.component, this._tableElement);
     var border = this.component.getRenderProperty("border");
     if (border) {
-        EchoRender.Property.Border.render(border, this._tableElement);
+        EchoAppRender.Border.render(border, this._tableElement);
         if (border.size && !EchoWebCore.Environment.QUIRK_CSS_BORDER_COLLAPSE_INSIDE) {
-            this._tableElement.style.margin = (EchoRender.Property.Extent.toPixels(border.size, false) / 2) + "px";
+            this._tableElement.style.margin = (EchoAppRender.Extent.toPixels(border.size, false) / 2) + "px";
         }
     }
     if (width) {
@@ -63,7 +63,7 @@ EchoAppRender.RemoteTableSync.prototype.renderAdd = function(update, parentEleme
         // If any column widths are set, render colgroup.
         var columnPixelAdjustment;
         if (EchoWebCore.Environment.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING) {
-            var pixelInsets = EchoRender.Property.Insets.toPixels(this._defaultInsets);
+            var pixelInsets = EchoAppRender.Insets.toPixels(this._defaultInsets);
             columnPixelAdjustment = pixelInsets.left + pixelInsets.right;
         }
         
@@ -128,10 +128,10 @@ EchoAppRender.RemoteTableSync.prototype._renderRowStyle = function(rowIndex) {
             // FIXME
             //EchoCssUtil.restoreOriginalStyle(cell);
             //EchoCssUtil.applyTemporaryStyle(cell, this.selectionStyle);
-            EchoRender.Property.Font.renderComponentProperty(this.component, "selectionFont", null, tdElement);
-            EchoRender.Property.Color.renderComponentProperty(this.component, "selectionForeground", null, tdElement, "color");
-            EchoRender.Property.Color.renderComponentProperty(this.component, "selectionBackground", null, tdElement, "background");
-            EchoRender.Property.FillImage.renderComponentProperty(this.component, "selectionBackgroundImage", null, tdElement);
+            EchoAppRender.Font.renderComponentProperty(this.component, "selectionFont", null, tdElement);
+            EchoAppRender.Color.renderComponentProperty(this.component, "selectionForeground", null, tdElement, "color");
+            EchoAppRender.Color.renderComponentProperty(this.component, "selectionBackground", null, tdElement, "background");
+            EchoAppRender.FillImage.renderComponentProperty(this.component, "selectionBackgroundImage", null, tdElement);
         } else {
             // FIXME
             //EchoCssUtil.restoreOriginalStyle(cell);
@@ -163,10 +163,10 @@ EchoAppRender.RemoteTableSync.prototype._renderRow = function(update, rowIndex, 
         var layoutData = child.getRenderProperty("layoutData");
         
         if (layoutData) {
-            EchoRender.Property.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
-            EchoRender.Property.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
-            EchoRender.Property.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
-            EchoRender.Property.Insets.renderComponentProperty(layoutData, "insets", this._defaultInsets, tdElement, "padding");
+            EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
+            EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
+            EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
+            EchoAppRender.Insets.renderComponentProperty(layoutData, "insets", this._defaultInsets, tdElement, "padding");
         }
 
         EchoRender.renderComponentAdd(update, child, tdElement);
@@ -181,7 +181,7 @@ EchoAppRender.RemoteTableSync.prototype._createRowPrototype = function() {
     var trElement = document.createElement("tr");
 
     var tdPrototype = document.createElement("td");
-    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), tdPrototype);
+    EchoAppRender.Border.render(this.component.getRenderProperty("border"), tdPrototype);
     tdPrototype.style.overflow = "hidden";
     tdPrototype.style.padding = this._defaultCellPadding;
 
@@ -390,10 +390,10 @@ EchoAppRender.RemoteTableSync.prototype._processRolloverEnter = function(e) {
         var cell = trElement.cells[i];
         // FIXME
         //EchoCssUtil.applyTemporaryStyle(cell, this.rolloverStyle);
-        EchoRender.Property.Font.renderComponentProperty(this.component, "rolloverFont", null, cell);
-        EchoRender.Property.Color.renderComponentProperty(this.component, "rolloverForeground", null, cell, "color");
-        EchoRender.Property.Color.renderComponentProperty(this.component, "rolloverBackground", null, cell, "background");
-        EchoRender.Property.FillImage.renderComponentProperty(this.component, "rolloverBackgroundImage", null, cell); 
+        EchoAppRender.Font.renderComponentProperty(this.component, "rolloverFont", null, cell);
+        EchoAppRender.Color.renderComponentProperty(this.component, "rolloverForeground", null, cell, "color");
+        EchoAppRender.Color.renderComponentProperty(this.component, "rolloverBackground", null, cell, "background");
+        EchoAppRender.FillImage.renderComponentProperty(this.component, "rolloverBackgroundImage", null, cell); 
     }
 };
 

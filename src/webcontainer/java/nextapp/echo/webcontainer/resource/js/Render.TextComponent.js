@@ -8,11 +8,11 @@ EchoAppRender.TextComponentSync.prototype = EchoCore.derive(EchoRender.Component
 EchoAppRender.TextComponentSync._supportedPartialProperties = new Array("text");
 
 EchoAppRender.TextComponentSync.prototype._renderStyle = function() {
-    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._textComponentElement);
-    EchoRender.Property.Color.renderFB(this.component, this._textComponentElement);
-    EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, this._textComponentElement);
-    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._textComponentElement, "padding");
-    EchoRender.Property.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._textComponentElement);
+    EchoAppRender.Border.render(this.component.getRenderProperty("border"), this._textComponentElement);
+    EchoAppRender.Color.renderFB(this.component, this._textComponentElement);
+    EchoAppRender.Font.renderComponentProperty(this.component, "font", null, this._textComponentElement);
+    EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._textComponentElement, "padding");
+    EchoAppRender.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._textComponentElement);
     var width = this.component.getRenderProperty("width");
     if (width) {
     	this._textComponentElement.style.width = width.toString();

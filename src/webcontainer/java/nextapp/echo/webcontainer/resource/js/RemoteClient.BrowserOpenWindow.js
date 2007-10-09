@@ -20,14 +20,14 @@ EchoRemoteClient.CommandExec.BrowserOpenWindow.execute = function(client, comman
         if (commandData.width.units == "%") {
             features.push("width=" + screen.width * commandData.width.value / 100);
         } else {
-            features.push("width=" + EchoRender.Property.Extent.toPixels(commandData.width, true));
+            features.push("width=" + EchoAppRender.Extent.toPixels(commandData.width, true));
         }
     }
     if (commandData.height) {
         if (commandData.height.units == "%") {
             features.push("height=" + screen.height * commandData.height.value / 100);
         } else {
-            features.push("height=" + EchoRender.Property.Extent.toPixels(commandData.height, false));
+            features.push("height=" + EchoAppRender.Extent.toPixels(commandData.height, false));
         }
     }
     var replace = commandData.flags & EchoRemoteClient.CommandExec.BrowserOpenWindow.FLAG_REPLACE;

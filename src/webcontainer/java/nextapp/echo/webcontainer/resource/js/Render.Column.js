@@ -29,12 +29,12 @@ EchoAppRender.ColumnSync.prototype.renderAdd = function(update, parentElement) {
     this._divElement.style.outlineStyle = "none";
     this._divElement.tabIndex = "-1";
 
-    EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._divElement);
-    EchoRender.Property.Color.renderFB(this.component, this._divElement);
-    EchoRender.Property.Font.renderDefault(this.component, this._divElement);
-    EchoRender.Property.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
+    EchoAppRender.Border.render(this.component.getRenderProperty("border"), this._divElement);
+    EchoAppRender.Color.renderFB(this.component, this._divElement);
+    EchoAppRender.Font.renderDefault(this.component, this._divElement);
+    EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
 
-    this._cellSpacing = EchoRender.Property.Extent.toPixels(this.component.getRenderProperty("cellSpacing"), false);
+    this._cellSpacing = EchoAppRender.Extent.toPixels(this.component.getRenderProperty("cellSpacing"), false);
     if (this._cellSpacing) {
         this._spacingPrototype = document.createElement("div");
         this._spacingPrototype.style.height = this._cellSpacing + "px";
@@ -62,13 +62,13 @@ EchoAppRender.ColumnSync.prototype._renderAddChild = function(update, child, ind
 
     var layoutData = child.getRenderProperty("layoutData");
     if (layoutData) {
-        EchoRender.Property.Color.renderComponentProperty(layoutData, "background", null, divElement, "backgroundColor");
-        EchoRender.Property.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, divElement);
-        EchoRender.Property.Insets.renderComponentProperty(layoutData, "insets", null, divElement, "padding");
-		EchoRender.Property.Alignment.renderComponentProperty(layoutData, "alignment", null, divElement, true, this.component);
+        EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, divElement, "backgroundColor");
+        EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, divElement);
+        EchoAppRender.Insets.renderComponentProperty(layoutData, "insets", null, divElement, "padding");
+		EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, divElement, true, this.component);
 	    var height = layoutData.getProperty("height");
 	    if (height) {
-	    	divElement.style.height = EchoRender.Property.Extent.toPixels(height, false) + "px";
+	    	divElement.style.height = EchoAppRender.Extent.toPixels(height, false) + "px";
 	    }
     }
     
