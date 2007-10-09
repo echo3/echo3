@@ -1,23 +1,23 @@
 /**
  * Component rendering peer: WindowPane
  */
-EchoRender.ComponentSync.WindowPane = function() {
+EchoAppRender.WindowPaneSync = function() {
 };
 
-EchoRender.ComponentSync.WindowPane.prototype = EchoCore.derive(EchoRender.ComponentSync);
+EchoAppRender.WindowPaneSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
-EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_BACKGROUND = new EchoApp.Color("#abcdef");
-EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_INSETS = new EchoApp.Insets("5px", "10px");
-EchoRender.ComponentSync.WindowPane.ADJUSTMENT_OPACITY = 0.75;
+EchoAppRender.WindowPaneSync.DEFAULT_TITLE_BACKGROUND = new EchoApp.Color("#abcdef");
+EchoAppRender.WindowPaneSync.DEFAULT_TITLE_INSETS = new EchoApp.Insets("5px", "10px");
+EchoAppRender.WindowPaneSync.ADJUSTMENT_OPACITY = 0.75;
 
-EchoRender.ComponentSync.WindowPane.adjustOpacity = false;
+EchoAppRender.WindowPaneSync.adjustOpacity = false;
 
-EchoRender.ComponentSync.WindowPane.prototype._loadContainerSize = function() {
+EchoAppRender.WindowPaneSync.prototype._loadContainerSize = function() {
     //FIXME. the "parentnode.parentnode" business needs to go.
     this._containerSize = new EchoWebCore.Render.Measure(this._windowPaneDivElement.parentNode.parentNode);
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseDown = function(e) {
+EchoAppRender.WindowPaneSync.prototype.processBorderMouseDown = function(e) {
     if (!this.component.isActive()) {
         return;
     }
@@ -51,12 +51,12 @@ EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseDown = function(
     EchoWebCore.EventProcessor.add(bodyElement, "mouseup", new EchoCore.MethodRef(this, this.processBorderMouseUp), true);
 
     // Reduce opacity.   
-    if (EchoRender.ComponentSync.WindowPane.adjustOpacity) {
-        this._windowPaneDivElement.style.opacity = EchoRender.ComponentSync.WindowPane.ADJUSTMENT_OPACITY;
+    if (EchoAppRender.WindowPaneSync.adjustOpacity) {
+        this._windowPaneDivElement.style.opacity = EchoAppRender.WindowPaneSync.ADJUSTMENT_OPACITY;
     }
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseMove = function(e) {
+EchoAppRender.WindowPaneSync.prototype.processBorderMouseMove = function(e) {
     var x, y, width, height;
     
     if (this._resizeX == -1) {
@@ -75,7 +75,7 @@ EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseMove = function(
     this.setPosition(x, y, width, height);
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseUp = function(e) {
+EchoAppRender.WindowPaneSync.prototype.processBorderMouseUp = function(e) {
     EchoWebCore.DOM.preventEventDefault(e);
     
     EchoWebCore.dragInProgress = false;
@@ -99,7 +99,7 @@ EchoRender.ComponentSync.WindowPane.prototype.processBorderMouseUp = function(e)
     EchoRender.notifyResize(this.component);
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.processKeyDown = function(e) { 
+EchoAppRender.WindowPaneSync.prototype.processKeyDown = function(e) { 
     switch (e.keyCode) {
     case 27:
         this.component.doWindowClosing();
@@ -108,14 +108,14 @@ EchoRender.ComponentSync.WindowPane.prototype.processKeyDown = function(e) {
     return true;
 };
 
-EchoRender.ComponentSync.WindowPane.prototype._processCloseClick = function(e) { 
+EchoAppRender.WindowPaneSync.prototype._processCloseClick = function(e) { 
     if (!this.component.isActive()) {
         return;
     }
     this.component.doWindowClosing();
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseDown = function(e) {
+EchoAppRender.WindowPaneSync.prototype.processTitleBarMouseDown = function(e) {
     if (!this.component.isActive()) {
         return;
     }
@@ -134,8 +134,8 @@ EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseDown = functio
     this._dragOriginY = e.clientY;
 
     // Reduce opacity.   
-    if (EchoRender.ComponentSync.WindowPane.adjustOpacity) {
-        this._windowPaneDivElement.style.opacity = EchoRender.ComponentSync.WindowPane.ADJUSTMENT_OPACITY;
+    if (EchoAppRender.WindowPaneSync.adjustOpacity) {
+        this._windowPaneDivElement.style.opacity = EchoAppRender.WindowPaneSync.ADJUSTMENT_OPACITY;
     }
     
     var bodyElement = document.getElementsByTagName("body")[0];
@@ -143,13 +143,13 @@ EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseDown = functio
     EchoWebCore.EventProcessor.add(bodyElement, "mouseup", new EchoCore.MethodRef(this, this.processTitleBarMouseUp), true);
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseMove = function(e) {
+EchoAppRender.WindowPaneSync.prototype.processTitleBarMouseMove = function(e) {
     var x = this._dragInitX + e.clientX - this._dragOriginX;
     var y = this._dragInitY + e.clientY - this._dragOriginY;
     this.setPosition(x, y);
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseUp = function(e) {
+EchoAppRender.WindowPaneSync.prototype.processTitleBarMouseUp = function(e) {
     EchoWebCore.dragInProgress = false;
 
     // Set opaque.
@@ -163,7 +163,7 @@ EchoRender.ComponentSync.WindowPane.prototype.processTitleBarMouseUp = function(
 	this._userWindowY = this._windowY;
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.setPosition = function(x, y, width, height) {
+EchoAppRender.WindowPaneSync.prototype.setPosition = function(x, y, width, height) {
     if (width != null) {
         if (width < this._minimumWidth) {
             if (x != null) {
@@ -207,7 +207,7 @@ EchoRender.ComponentSync.WindowPane.prototype.setPosition = function(x, y, width
     this.redraw();
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.redraw = function() {
+EchoAppRender.WindowPaneSync.prototype.redraw = function() {
     var borderSideWidth = this._windowWidth - this._borderInsets.left - this._borderInsets.right;
     var borderSideHeight = this._windowHeight - this._borderInsets.top - this._borderInsets.bottom;
 
@@ -226,13 +226,13 @@ EchoRender.ComponentSync.WindowPane.prototype.redraw = function() {
     EchoWebCore.VirtualPosition.redraw(this._contentDivElement);
 };
 
-EchoRender.ComponentSync.WindowPane.prototype._removeBorderListeners = function() {
+EchoAppRender.WindowPaneSync.prototype._removeBorderListeners = function() {
     var bodyElement = document.getElementsByTagName("body")[0];
     EchoWebCore.EventProcessor.remove(bodyElement, "mousemove", new EchoCore.MethodRef(this, this.processBorderMouseMove), true);
     EchoWebCore.EventProcessor.remove(bodyElement, "mouseup", new EchoCore.MethodRef(this, this.processBorderMouseUp), true);
 };
 
-EchoRender.ComponentSync.WindowPane.prototype._removeTitleBarListeners = function() {
+EchoAppRender.WindowPaneSync.prototype._removeTitleBarListeners = function() {
     var bodyElement = document.getElementsByTagName("body")[0];
     EchoWebCore.EventProcessor.remove(bodyElement, "mousemove",
             new EchoCore.MethodRef(this, this.processTitleBarMouseMove), true);
@@ -240,7 +240,7 @@ EchoRender.ComponentSync.WindowPane.prototype._removeTitleBarListeners = functio
             new EchoCore.MethodRef(this, this.processTitleBarMouseUp), true);
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, parentElement) {
+EchoAppRender.WindowPaneSync.prototype.renderAdd = function(update, parentElement) {
     var positionX = this.component.getRenderProperty("positionX");
     var positionY = this.component.getRenderProperty("positionY");
     this._userWindowX = this._windowX = positionX == null ? null : EchoRender.Property.Extent.toPixels(positionX, true); 
@@ -489,7 +489,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
         titleTextDivElement.style.whiteSpace = "nowrap";
         EchoRender.Property.Font.renderComponentProperty(this.component, "titleFont", null, titleTextDivElement);
         EchoRender.Property.Insets.renderComponentProperty(this.component, "titleInsets", 
-                EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_INSETS, titleTextDivElement, "padding");
+                EchoAppRender.WindowPaneSync.DEFAULT_TITLE_INSETS, titleTextDivElement, "padding");
         titleTextDivElement.appendChild(document.createTextNode(title));
         this._titleBarDivElement.appendChild(titleTextDivElement);
     }
@@ -528,7 +528,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     }
 
     if (!titleBackground && !titleBackgroundImage) {
-        this._titleBarDivElement.style.backgroundColor = EchoRender.ComponentSync.WindowPane.DEFAULT_TITLE_BACKGROUND.value;
+        this._titleBarDivElement.style.backgroundColor = EchoAppRender.WindowPaneSync.DEFAULT_TITLE_BACKGROUND.value;
     }
     
     // Close Button
@@ -603,7 +603,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAdd = function(update, paren
     }
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.renderAddChild = function(update, child, parentElement) {
+EchoAppRender.WindowPaneSync.prototype.renderAddChild = function(update, child, parentElement) {
     if (child.pane) {
         this._contentDivElement.style.padding = "0";
     } else {
@@ -612,7 +612,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderAddChild = function(update, 
     EchoRender.renderComponentAdd(update, child, parentElement);
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.renderDispose = function(update) { 
+EchoAppRender.WindowPaneSync.prototype.renderDispose = function(update) { 
     for (var i = 0; i < this._borderDivElements.length; ++i) {
         EchoWebCore.EventProcessor.removeAll(this._borderDivElements[i]);
         this._borderDivElements[i] = null;
@@ -632,7 +632,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderDispose = function(update) {
     this._windowPaneDivElement = null;
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.renderDisplay = function() {
+EchoAppRender.WindowPaneSync.prototype.renderDisplay = function() {
     this._loadContainerSize();
     
     // Center window if user x/y coordinates are not specified.
@@ -647,7 +647,7 @@ EchoRender.ComponentSync.WindowPane.prototype.renderDisplay = function() {
     EchoWebCore.VirtualPosition.redraw(this._contentDivElement);
 };
 
-EchoRender.ComponentSync.WindowPane.prototype.renderUpdate = function(update) {
+EchoAppRender.WindowPaneSync.prototype.renderUpdate = function(update) {
     var element = this._windowPaneDivElement;
     var containerElement = element.parentNode;
     EchoRender.renderComponentDispose(update, update.parent);
@@ -656,4 +656,4 @@ EchoRender.ComponentSync.WindowPane.prototype.renderUpdate = function(update) {
     return true;
 };
 
-EchoRender.registerPeer("WindowPane", EchoRender.ComponentSync.WindowPane);
+EchoRender.registerPeer("WindowPane", EchoAppRender.WindowPaneSync);

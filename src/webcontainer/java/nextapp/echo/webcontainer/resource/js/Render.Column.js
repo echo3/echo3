@@ -1,12 +1,12 @@
 /**
  * Component rendering peer: Column
  */
-EchoRender.ComponentSync.Column = function() {
+EchoAppRender.ColumnSync = function() {
 };
   
-EchoRender.ComponentSync.Column.prototype = EchoCore.derive(EchoRender.ComponentSync);
+EchoAppRender.ColumnSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
-EchoRender.ComponentSync.Column.prototype.processKeyDown = function(e) { 
+EchoAppRender.ColumnSync.prototype.processKeyDown = function(e) { 
     switch (e.keyCode) {
     case 38:
         if (this.component.application.focusManager.focusNextChild(this.component, true)) {
@@ -24,7 +24,7 @@ EchoRender.ComponentSync.Column.prototype.processKeyDown = function(e) {
     return true;
 };
 
-EchoRender.ComponentSync.Column.prototype.renderAdd = function(update, parentElement) {
+EchoAppRender.ColumnSync.prototype.renderAdd = function(update, parentElement) {
     this._divElement = document.createElement("div");
     this._divElement.style.outlineStyle = "none";
     this._divElement.tabIndex = "-1";
@@ -55,7 +55,7 @@ EchoRender.ComponentSync.Column.prototype.renderAdd = function(update, parentEle
     parentElement.appendChild(this._divElement);
 };
 
-EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, child, index) {
+EchoAppRender.ColumnSync.prototype._renderAddChild = function(update, child, index) {
     var divElement = document.createElement("div");
     this._childIdToElementMap[child.renderId] = divElement;
     EchoRender.renderComponentAdd(update, child, divElement);
@@ -108,7 +108,7 @@ EchoRender.ComponentSync.Column.prototype._renderAddChild = function(update, chi
     }
 };
 
-EchoRender.ComponentSync.Column.prototype._renderRemoveChild = function(update, child) {
+EchoAppRender.ColumnSync.prototype._renderRemoveChild = function(update, child) {
     var childElement = this._childIdToElementMap[child.renderId];
 
     if (this._cellSpacing) {
@@ -125,14 +125,14 @@ EchoRender.ComponentSync.Column.prototype._renderRemoveChild = function(update, 
     delete this._childIdToElementMap[child.renderId];
 };
 
-EchoRender.ComponentSync.Column.prototype.renderDispose = function(update) { 
+EchoAppRender.ColumnSync.prototype.renderDispose = function(update) { 
     EchoWebCore.EventProcessor.remove(this._divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
     this._divElement = null;
     this._childIdToElementMap = null;
     this._spacingPrototype = null;
 };
 
-EchoRender.ComponentSync.Column.prototype.renderUpdate = function(update) {
+EchoAppRender.ColumnSync.prototype.renderUpdate = function(update) {
     var fullRender = false;
     if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()) {
         // Full render
@@ -164,4 +164,4 @@ EchoRender.ComponentSync.Column.prototype.renderUpdate = function(update) {
     return fullRender;
 };
 
-EchoRender.registerPeer("Column", EchoRender.ComponentSync.Column);
+EchoRender.registerPeer("Column", EchoAppRender.ColumnSync);

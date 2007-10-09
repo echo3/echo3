@@ -3,18 +3,18 @@
 /**
  * Component rendering peer: RemoteTable
  */
-EchoRender.ComponentSync.RemoteTable = function() {
+EchoAppRender.RemoteTableSync = function() {
     this.selectionModel = null;
     this.lastSelectedIndex = null;
 };
 
-EchoRender.ComponentSync.RemoteTable.prototype = EchoCore.derive(EchoRender.ComponentSync);
+EchoAppRender.RemoteTableSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
-EchoRender.ComponentSync.RemoteTable._HEADER_ROW = -1;
+EchoAppRender.RemoteTableSync._HEADER_ROW = -1;
 
-EchoRender.ComponentSync.RemoteTable._supportedPartialProperties = new Array("selection");
+EchoAppRender.RemoteTableSync._supportedPartialProperties = new Array("selection");
 
-EchoRender.ComponentSync.RemoteTable.prototype.renderAdd = function(update, parentElement) {
+EchoAppRender.RemoteTableSync.prototype.renderAdd = function(update, parentElement) {
     this._columnCount = this.component.getRenderProperty("columnCount");
     this._rowCount = this.component.getRenderProperty("rowCount");
     this._selectionEnabled = this.component.getRenderProperty("selectionEnabled");
@@ -96,7 +96,7 @@ EchoRender.ComponentSync.RemoteTable.prototype.renderAdd = function(update, pare
     var trPrototype = this._createRowPrototype();
     
     if (this._headerVisible) {
-        this._tbodyElement.appendChild(this._renderRow(update, EchoRender.ComponentSync.RemoteTable._HEADER_ROW, trPrototype));
+        this._tbodyElement.appendChild(this._renderRow(update, EchoAppRender.RemoteTableSync._HEADER_ROW, trPrototype));
     }
     for (var rowIndex = 0; rowIndex < this._rowCount; rowIndex++) {
         this._tbodyElement.appendChild(this._renderRow(update, rowIndex, trPrototype));
@@ -114,7 +114,7 @@ EchoRender.ComponentSync.RemoteTable.prototype.renderAdd = function(update, pare
  *
  * @param rowIndex {Number} the index of the row
  */
-EchoRender.ComponentSync.RemoteTable.prototype._renderRowStyle = function(rowIndex) {
+EchoAppRender.RemoteTableSync.prototype._renderRowStyle = function(rowIndex) {
     var tableRowIndex = rowIndex + (this._headerVisible ? 1 : 0);
     if (tableRowIndex >= this._tbodyElement.childNodes.length) {
         return;
@@ -152,7 +152,7 @@ EchoRender.ComponentSync.RemoteTable.prototype._renderRowStyle = function(rowInd
  *        styles applied (This is created by _renderRowStyle().  Providing this attribute is optional,
  *        and is specified for performance reasons.  If omitted one is created automatically.)
  */
-EchoRender.ComponentSync.RemoteTable.prototype._renderRow = function(update, rowIndex, trPrototype) {
+EchoAppRender.RemoteTableSync.prototype._renderRow = function(update, rowIndex, trPrototype) {
     var trElement = trPrototype ? trPrototype.cloneNode(true) : this._createRowPrototype();
     
     var tdElement = trElement.firstChild;
@@ -177,7 +177,7 @@ EchoRender.ComponentSync.RemoteTable.prototype._renderRow = function(update, row
     return trElement;
 };
 
-EchoRender.ComponentSync.RemoteTable.prototype._createRowPrototype = function() {
+EchoAppRender.RemoteTableSync.prototype._createRowPrototype = function() {
     var trElement = document.createElement("tr");
 
     var tdPrototype = document.createElement("td");
@@ -192,7 +192,7 @@ EchoRender.ComponentSync.RemoteTable.prototype._createRowPrototype = function() 
     return trElement;
 };
 
-EchoRender.ComponentSync.RemoteTable.prototype.renderDisplay = function() {
+EchoAppRender.RemoteTableSync.prototype.renderDisplay = function() {
     if (this._renderPercentWidthByMeasure) {
         this._tableElement.style.width = "";
         var percentWidth = (this._tableElement.parentNode.offsetWidth * this._renderPercentWidthByMeasure) / 100;
@@ -200,9 +200,9 @@ EchoRender.ComponentSync.RemoteTable.prototype.renderDisplay = function() {
     }
 };
 
-EchoRender.ComponentSync.RemoteTable.prototype.renderUpdate = function(update) {
+EchoAppRender.RemoteTableSync.prototype.renderUpdate = function(update) {
 	if (!update.hasUpdatedLayoutDataChildren() && !update.getAddedChildren() && !update.getRemovedChildren()) {
-		if (EchoCore.Arrays.containsAll(EchoRender.ComponentSync.RemoteTable._supportedPartialProperties, update.getUpdatedPropertyNames(), true)) {
+		if (EchoCore.Arrays.containsAll(EchoAppRender.RemoteTableSync._supportedPartialProperties, update.getUpdatedPropertyNames(), true)) {
 		    // partial update
 			var selectionUpdate = update.getUpdatedProperty("selection");
 			if (selectionUpdate) {
@@ -220,7 +220,7 @@ EchoRender.ComponentSync.RemoteTable.prototype.renderUpdate = function(update) {
     return true;
 };
 
-EchoRender.ComponentSync.RemoteTable.prototype.renderDispose = function(update) {
+EchoAppRender.RemoteTableSync.prototype.renderDispose = function(update) {
     if (this._rolloverEnabled || this._selectionEnabled) {
         var trElement = this._tbodyElement.firstChild;
         if (this._headerVisible) {
@@ -235,7 +235,7 @@ EchoRender.ComponentSync.RemoteTable.prototype.renderDispose = function(update) 
     this._tbodyElement = null;
 };
 
-EchoRender.ComponentSync.RemoteTable.prototype._getRowIndex = function(element) {
+EchoAppRender.RemoteTableSync.prototype._getRowIndex = function(element) {
     var testElement = this._tbodyElement.firstChild;
     var index = this._headerVisible ? -1 : 0;
     while (testElement) {
@@ -254,7 +254,7 @@ EchoRender.ComponentSync.RemoteTable.prototype._getRowIndex = function(element) 
  * @param {String} value the value of the selection property
  * @param {Boolean} clearPrevious if the previous selection state should be overwritten
  */
-EchoRender.ComponentSync.RemoteTable.prototype._setSelectedFromProperty = function(value, clearPrevious) {
+EchoAppRender.RemoteTableSync.prototype._setSelectedFromProperty = function(value, clearPrevious) {
 	if (value == this.selectionModel.getSelectionString()) {
 		return;
 	}
@@ -276,7 +276,7 @@ EchoRender.ComponentSync.RemoteTable.prototype._setSelectedFromProperty = functi
  * @param {Number} rowIndex the index of the row
  * @param {Boolean} newValue the new selection state
  */
-EchoRender.ComponentSync.RemoteTable.prototype._setSelected = function(rowIndex, newValue) {
+EchoAppRender.RemoteTableSync.prototype._setSelected = function(rowIndex, newValue) {
     this.selectionModel.setSelectedIndex(rowIndex, newValue);
     this._renderRowStyle(rowIndex);
 };
@@ -284,7 +284,7 @@ EchoRender.ComponentSync.RemoteTable.prototype._setSelected = function(rowIndex,
 /**
  * Deselects all selected rows.
  */
-EchoRender.ComponentSync.RemoteTable.prototype._clearSelected = function() {
+EchoAppRender.RemoteTableSync.prototype._clearSelected = function() {
     for (var i = 0; i < this._rowCount; ++i) {
         if (this.selectionModel.isSelectedIndex(i)) {
             this._setSelected(i, false);
@@ -297,7 +297,7 @@ EchoRender.ComponentSync.RemoteTable.prototype._clearSelected = function() {
 /**
  * Adds event listeners.
  */
-EchoRender.ComponentSync.RemoteTable.prototype._addEventListeners = function() {
+EchoAppRender.RemoteTableSync.prototype._addEventListeners = function() {
     /*
     if (!this.component.getRenderProperty("enabled")) {
     	return;
@@ -330,12 +330,12 @@ EchoRender.ComponentSync.RemoteTable.prototype._addEventListeners = function() {
     }    
 };
 
-EchoRender.ComponentSync.RemoteTable.prototype._doAction = function() {
+EchoAppRender.RemoteTableSync.prototype._doAction = function() {
     //FIXME fire from component.
     this.component.fireEvent(new EchoCore.Event("action", this.component));
 };
 
-EchoRender.ComponentSync.RemoteTable.prototype._processClick = function(e) {
+EchoAppRender.RemoteTableSync.prototype._processClick = function(e) {
     if (!this.component.isActive()) {
         return;
     }
@@ -376,7 +376,7 @@ EchoRender.ComponentSync.RemoteTable.prototype._processClick = function(e) {
     this._doAction();
 };
 
-EchoRender.ComponentSync.RemoteTable.prototype._processRolloverEnter = function(e) {
+EchoAppRender.RemoteTableSync.prototype._processRolloverEnter = function(e) {
     if (!this.component.isActive()) {
         return;
     }
@@ -397,7 +397,7 @@ EchoRender.ComponentSync.RemoteTable.prototype._processRolloverEnter = function(
     }
 };
 
-EchoRender.ComponentSync.RemoteTable.prototype._processRolloverExit = function(e) {
+EchoAppRender.RemoteTableSync.prototype._processRolloverExit = function(e) {
     if (!this.component.isActive()) {
         return;
     }
@@ -410,4 +410,4 @@ EchoRender.ComponentSync.RemoteTable.prototype._processRolloverExit = function(e
     this._renderRowStyle(rowIndex);
 };
 
-EchoRender.registerPeer("RemoteTable", EchoRender.ComponentSync.RemoteTable);
+EchoRender.registerPeer("RemoteTable", EchoAppRender.RemoteTableSync);

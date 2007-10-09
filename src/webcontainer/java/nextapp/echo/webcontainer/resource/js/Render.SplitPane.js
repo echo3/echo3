@@ -4,7 +4,7 @@
  * @class
  * @base EchoRender.ComponentSync
  */
-EchoRender.ComponentSync.SplitPane = function() {
+EchoAppRender.SplitPaneSync = function() {
 
     /**
      * Array containing two PaneConfiguration instances, representing the state of each child pane.
@@ -13,18 +13,18 @@ EchoRender.ComponentSync.SplitPane = function() {
     this._childPanes = new Array(2);
 };
 
-EchoRender.ComponentSync.SplitPane.prototype = EchoCore.derive(EchoRender.ComponentSync);
+EchoAppRender.SplitPaneSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 /**
  * Creates a new PaneConfiguration instance
  * 
  * @class Describes the configuration of a child pane of the SplitPane,
  *        including the child component and scroll bar positions.
- * @param {EchoRender.ComponentSync.SplitPane} splitPanePeer the relevant componentPeer
+ * @param {EchoAppRender.SplitPaneSync} splitPanePeer the relevant componentPeer
  * @param {EchoApp.Component} component the child component
  * @constructor
  */
-EchoRender.ComponentSync.SplitPane.ChildPane = function(splitPanePeer, component) {
+EchoAppRender.SplitPaneSync.ChildPane = function(splitPanePeer, component) {
     this.component = component;
     this.layoutData = component.getRenderProperty("layoutData");
     if (this.layoutData) {
@@ -40,17 +40,17 @@ EchoRender.ComponentSync.SplitPane.ChildPane = function(splitPanePeer, component
     }
 };
 
-EchoRender.ComponentSync.SplitPane.ChildPane.prototype.loadScrollPositions = function(paneDivElement) {
+EchoAppRender.SplitPaneSync.ChildPane.prototype.loadScrollPositions = function(paneDivElement) {
     paneDivElement.scrollLeft = this.scrollLeft;
     paneDivElement.scrollTop = this.scrollTop;
 };
 
-EchoRender.ComponentSync.SplitPane.ChildPane.prototype.storeScrollPositions = function(paneDivElement) {
+EchoAppRender.SplitPaneSync.ChildPane.prototype.storeScrollPositions = function(paneDivElement) {
     this.scrollLeft = paneDivElement.scrollLeft;
     this.scrollTop = paneDivElement.scrollTop;
 };
 
-EchoRender.ComponentSync.SplitPane.prototype.renderDispose = function(update) {
+EchoAppRender.SplitPaneSync.prototype.renderDispose = function(update) {
     if (this._firstPaneDivElement) {
         if (this._childPanes[0]) {
             this._childPanes[0].storeScrollPositions(this._firstPaneDivElement);
@@ -73,7 +73,7 @@ EchoRender.ComponentSync.SplitPane.prototype.renderDispose = function(update) {
     this._splitPaneDivElement = null;
 };
 
-EchoRender.ComponentSync.SplitPane.prototype.loadRenderData = function() {
+EchoAppRender.SplitPaneSync.prototype.loadRenderData = function() {
     var orientation = this.component.getRenderProperty("orientation", 
             EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING);
     // FIXME: RTL is hardcoded to false.
@@ -128,7 +128,7 @@ EchoRender.ComponentSync.SplitPane.prototype.loadRenderData = function() {
             : EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED), this._orientationVertical);
 };
 
-EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseDown = function(e) {
+EchoAppRender.SplitPaneSync.prototype._processSeparatorMouseDown = function(e) {
     EchoWebCore.DOM.preventEventDefault(e);
     
     EchoWebCore.dragInProgress = true;
@@ -147,7 +147,7 @@ EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseDown = functi
             new EchoCore.MethodRef(this, this._processSeparatorMouseUp), true);
 };
 
-EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseMove = function(e) {
+EchoAppRender.SplitPaneSync.prototype._processSeparatorMouseMove = function(e) {
 //FIXME. Refactor for size.
     var position;
     if (this._orientationVertical) {
@@ -166,7 +166,7 @@ EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseMove = functi
     this._setSeparatorPosition(position);
 };
 
-EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseUp = function(e) {
+EchoAppRender.SplitPaneSync.prototype._processSeparatorMouseUp = function(e) {
     EchoWebCore.DOM.preventEventDefault(e);
     
     EchoWebCore.dragInProgress = false;
@@ -188,7 +188,7 @@ EchoRender.ComponentSync.SplitPane.prototype._processSeparatorMouseUp = function
     EchoRender.notifyResize(this.component);
 };
 
-EchoRender.ComponentSync.SplitPane.prototype._getInsetsSizeAdjustment = function(layoutData) {
+EchoAppRender.SplitPaneSync.prototype._getInsetsSizeAdjustment = function(layoutData) {
     if (!layoutData || !layoutData.getProperty("insets")) {
         return 0;
     }
@@ -205,7 +205,7 @@ EchoRender.ComponentSync.SplitPane.prototype._getInsetsSizeAdjustment = function
     return adjustment;
 };
 
-EchoRender.ComponentSync.SplitPane.prototype._getRenderedChildIndex = function(child) {
+EchoAppRender.SplitPaneSync.prototype._getRenderedChildIndex = function(child) {
     if (this._childPanes[0] && this._childPanes[0].component == child) {
         return 0;
     } else if (this._childPanes[1] && this._childPanes[1].component == child) {
@@ -215,7 +215,7 @@ EchoRender.ComponentSync.SplitPane.prototype._getRenderedChildIndex = function(c
     }
 };
 
-EchoRender.ComponentSync.SplitPane.prototype._hasRelocatedChildren = function(update) {
+EchoAppRender.SplitPaneSync.prototype._hasRelocatedChildren = function(update) {
     var oldChild0 = this._childPanes[0] ? this._childPanes[0].component : null; 
     var oldChild1 = this._childPanes[1] ? this._childPanes[1].component : null; 
     var childCount = this.component.getComponentCount();
@@ -225,7 +225,7 @@ EchoRender.ComponentSync.SplitPane.prototype._hasRelocatedChildren = function(up
             || (oldChild1 != null && oldChild1 == newChild0);
 };
 
-EchoRender.ComponentSync.SplitPane.prototype._redraw = function() {
+EchoAppRender.SplitPaneSync.prototype._redraw = function() {
     var insetsAdjustment = 0;
     if (this.component.getComponentCount() > 0) {
         var layoutData = this.component.getComponent(0).getRenderProperty("layoutData");
@@ -255,13 +255,13 @@ EchoRender.ComponentSync.SplitPane.prototype._redraw = function() {
     }
 };
 
-EchoRender.ComponentSync.SplitPane.prototype._redrawItem = function(element, styleProperty, newValue) {
+EchoAppRender.SplitPaneSync.prototype._redrawItem = function(element, styleProperty, newValue) {
     if (element) {
         element.style[styleProperty] = newValue;
     }
 };
 
-EchoRender.ComponentSync.SplitPane.prototype._removeSeparatorListeners = function() {
+EchoAppRender.SplitPaneSync.prototype._removeSeparatorListeners = function() {
     var bodyElement = document.getElementsByTagName("body")[0];
     EchoWebCore.EventProcessor.remove(bodyElement, "mousemove", 
             new EchoCore.MethodRef(this, this._processSeparatorMouseMove), true);
@@ -269,7 +269,7 @@ EchoRender.ComponentSync.SplitPane.prototype._removeSeparatorListeners = functio
             new EchoCore.MethodRef(this, this._processSeparatorMouseUp), true);
 };
 
-EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parentElement) {
+EchoAppRender.SplitPaneSync.prototype.renderAdd = function(update, parentElement) {
     this.loadRenderData();
     var separatorColor = new EchoApp.Color("red"); 
     var separatorImage = null;
@@ -348,7 +348,7 @@ EchoRender.ComponentSync.SplitPane.prototype.renderAdd = function(update, parent
     }
 };
 
-EchoRender.ComponentSync.SplitPane.prototype._renderAddChild = function(update, child, index) {
+EchoAppRender.SplitPaneSync.prototype._renderAddChild = function(update, child, index) {
     var childIndex = this.component.indexOf(child);
     var paneDivElement = document.createElement("div");
     
@@ -432,11 +432,11 @@ EchoRender.ComponentSync.SplitPane.prototype._renderAddChild = function(update, 
     if (this._childPanes[index] && this._childPanes[index].component == child) {
         this._childPanes[index].loadScrollPositions(paneDivElement);
     } else {
-        this._childPanes[index] = new EchoRender.ComponentSync.SplitPane.ChildPane(this, child);
+        this._childPanes[index] = new EchoAppRender.SplitPaneSync.ChildPane(this, child);
     }
 };
 
-EchoRender.ComponentSync.SplitPane.prototype._renderRemoveChild = function(update, child) {
+EchoAppRender.SplitPaneSync.prototype._renderRemoveChild = function(update, child) {
     var index = this._getRenderedChildIndex(child);
     this._childPanes[index] = null;
     switch (index) {
@@ -451,7 +451,7 @@ EchoRender.ComponentSync.SplitPane.prototype._renderRemoveChild = function(updat
     }
 };
 
-EchoRender.ComponentSync.SplitPane.prototype.renderDisplay = function() {
+EchoAppRender.SplitPaneSync.prototype.renderDisplay = function() {
     EchoWebCore.VirtualPosition.redraw(this._splitPaneDivElement);
     if (this.component.getRenderProperty("resizable")) {
         this._setSeparatorPosition(this._userSeparatorPosition);
@@ -464,7 +464,7 @@ EchoRender.ComponentSync.SplitPane.prototype.renderDisplay = function() {
     }
 };
 
-EchoRender.ComponentSync.SplitPane.prototype.renderUpdate = function(update) {
+EchoAppRender.SplitPaneSync.prototype.renderUpdate = function(update) {
     var fullRender = false;
     if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()
             || this._hasRelocatedChildren()) {
@@ -497,7 +497,7 @@ EchoRender.ComponentSync.SplitPane.prototype.renderUpdate = function(update) {
     return fullRender;
 };
 
-EchoRender.ComponentSync.SplitPane.prototype._setSeparatorPosition = function(newValue) {
+EchoAppRender.SplitPaneSync.prototype._setSeparatorPosition = function(newValue) {
     var oldValue = this._separatorPosition;
 
     if (this._childPanes[1]) {
@@ -528,4 +528,4 @@ EchoRender.ComponentSync.SplitPane.prototype._setSeparatorPosition = function(ne
     return oldValue != newValue;
 };
 
-EchoRender.registerPeer("SplitPane", EchoRender.ComponentSync.SplitPane);
+EchoRender.registerPeer("SplitPane", EchoAppRender.SplitPaneSync);

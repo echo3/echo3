@@ -1,13 +1,13 @@
 /**
  * Component rendering peer: Label
  */
-EchoRender.ComponentSync.Label = function() { };
+EchoAppRender.LabelSync = function() { };
 
-EchoRender.ComponentSync.Label.prototype = EchoCore.derive(EchoRender.ComponentSync);
+EchoAppRender.LabelSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
-EchoRender.ComponentSync.Label._defaultIconTextMargin = new EchoApp.Extent(5);
+EchoAppRender.LabelSync._defaultIconTextMargin = new EchoApp.Extent(5);
 
-EchoRender.ComponentSync.Label.prototype._createSingleItemSpanElement = function(contentNode) {
+EchoAppRender.LabelSync.prototype._createSingleItemSpanElement = function(contentNode) {
     var spanElement = document.createElement("span");
     spanElement.appendChild(contentNode);
     return spanElement;
@@ -19,7 +19,7 @@ EchoRender.ComponentSync.Label.prototype._createSingleItemSpanElement = function
  * @param text {String} the text to format
  * @param parentElement the element to append the text to
  */
-EchoRender.ComponentSync.Label.prototype._formatWhitespace = function(text, parentElement) {
+EchoAppRender.LabelSync.prototype._formatWhitespace = function(text, parentElement) {
 	// switch between spaces and non-breaking spaces to preserve line wrapping
 	text = text.replace(/\t/g, " \u00a0 \u00a0");
 	text = text.replace(/ {2}/g, " \u00a0");
@@ -35,7 +35,7 @@ EchoRender.ComponentSync.Label.prototype._formatWhitespace = function(text, pare
 	}
 };
 
-EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElement) {
+EchoAppRender.LabelSync.prototype.renderAdd = function(update, parentElement) {
     this._containerElement = parentElement;
     var icon = this.component.getRenderProperty("icon");
     var text = this.component.getRenderProperty("text");
@@ -50,7 +50,7 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
         if (icon) {
             // Text and icon.
             var iconTextMargin = this.component.getRenderProperty("iconTextMargin", 
-                    EchoRender.ComponentSync.Label._defaultIconTextMargin);
+                    EchoAppRender.LabelSync._defaultIconTextMargin);
             var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
             var tct = new EchoAppRender.TriCellTable(orientation, EchoRender.Property.Extent.toPixels(iconTextMargin));
             var imgElement = document.createElement("img");
@@ -100,12 +100,12 @@ EchoRender.ComponentSync.Label.prototype.renderAdd = function(update, parentElem
     }
 };
 
-EchoRender.ComponentSync.Label.prototype.renderDispose = function(update) {
+EchoAppRender.LabelSync.prototype.renderDispose = function(update) {
     this._containerElement = null;
     this._labelNode = null;
 };
 
-EchoRender.ComponentSync.Label.prototype.renderUpdate = function(update) {
+EchoAppRender.LabelSync.prototype.renderUpdate = function(update) {
     if (this._labelNode) {
         this._labelNode.parentNode.removeChild(this._labelNode);
     }
@@ -114,4 +114,4 @@ EchoRender.ComponentSync.Label.prototype.renderUpdate = function(update) {
     return false; // Child elements not supported: safe to return false.
 };
 
-EchoRender.registerPeer("Label", EchoRender.ComponentSync.Label);
+EchoRender.registerPeer("Label", EchoAppRender.LabelSync);

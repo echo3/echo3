@@ -481,14 +481,14 @@ EchoRender.Property.Alignment.renderComponentProperty
     case EchoApp.Alignment.LEFT:   horizontalValue = "left";   break;
     case EchoApp.Alignment.CENTER: horizontalValue = "center"; break;
     case EchoApp.Alignment.RIGHT:  horizontalValue = "right";  break;
-    default:                                horizontalValue = "";       break;
+    default:                       horizontalValue = "";       break;
     }
     var verticalValue;
     switch (vertical) {
     case EchoApp.Alignment.TOP:    verticalValue = "top";      break;
     case EchoApp.Alignment.CENTER: verticalValue = "middle";   break;
     case EchoApp.Alignment.BOTTOM: verticalValue = "bottom";   break;
-    default:                                verticalValue = "";         break;
+    default:                       verticalValue = "";         break;
     }
     
     if (renderToElement) {

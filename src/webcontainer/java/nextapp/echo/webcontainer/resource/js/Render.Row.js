@@ -1,14 +1,14 @@
 /**
  * Component rendering peer: Row
  */
-EchoRender.ComponentSync.Row = function() {
+EchoAppRender.RowSync = function() {
 };
   
-EchoRender.ComponentSync.Row.prototype = EchoCore.derive(EchoRender.ComponentSync);
+EchoAppRender.RowSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
-EchoRender.ComponentSync.Row._defaultCellInsets = new EchoApp.Insets(0);
+EchoAppRender.RowSync._defaultCellInsets = new EchoApp.Insets(0);
 
-EchoRender.ComponentSync.Row._createRowPrototype = function() {
+EchoAppRender.RowSync._createRowPrototype = function() {
     var divElement = document.createElement("div");
     divElement.style.outlineStyle = "none";
     divElement.style.overflow = "hidden";
@@ -27,9 +27,9 @@ EchoRender.ComponentSync.Row._createRowPrototype = function() {
     return divElement;
 };
 
-EchoRender.ComponentSync.Row._rowPrototype = EchoRender.ComponentSync.Row._createRowPrototype();
+EchoAppRender.RowSync._rowPrototype = EchoAppRender.RowSync._createRowPrototype();
 
-EchoRender.ComponentSync.Row.prototype.processKeyDown = function(e) { 
+EchoAppRender.RowSync.prototype.processKeyDown = function(e) { 
     switch (e.keyCode) {
     case 37:
         if (this.component.application.focusManager.focusNextChild(this.component, true)) {
@@ -47,8 +47,8 @@ EchoRender.ComponentSync.Row.prototype.processKeyDown = function(e) {
     return true;
 };
 
-EchoRender.ComponentSync.Row.prototype.renderAdd = function(update, parentElement) {
-    this._divElement = EchoRender.ComponentSync.Row._rowPrototype.cloneNode(true);
+EchoAppRender.RowSync.prototype.renderAdd = function(update, parentElement) {
+    this._divElement = EchoAppRender.RowSync._rowPrototype.cloneNode(true);
     
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._divElement);
     EchoRender.Property.Color.renderFB(this.component, this._divElement);
@@ -78,7 +78,7 @@ EchoRender.ComponentSync.Row.prototype.renderAdd = function(update, parentElemen
     parentElement.appendChild(this._divElement);
 };
 
-EchoRender.ComponentSync.Row.prototype._renderAddChild = function(update, child, index) {
+EchoAppRender.RowSync.prototype._renderAddChild = function(update, child, index) {
     var tdElement = document.createElement("td");
     this._childIdToElementMap[child.renderId] = tdElement;
     EchoRender.renderComponentAdd(update, child, tdElement);
@@ -100,7 +100,7 @@ EchoRender.ComponentSync.Row.prototype._renderAddChild = function(update, child,
 	    }
     }
     if (!insets) {
-    	insets = EchoRender.ComponentSync.Row._defaultCellInsets;
+    	insets = EchoAppRender.RowSync._defaultCellInsets;
     }
     EchoRender.Property.Insets.renderPixel(insets, tdElement, "padding");
     
@@ -140,7 +140,7 @@ EchoRender.ComponentSync.Row.prototype._renderAddChild = function(update, child,
     }
 };
 
-EchoRender.ComponentSync.Row.prototype._renderRemoveChild = function(update, child) {
+EchoAppRender.RowSync.prototype._renderRemoveChild = function(update, child) {
     var childElement = this._childIdToElementMap[child.renderId];
     
     if (this._cellSpacing) {
@@ -157,7 +157,7 @@ EchoRender.ComponentSync.Row.prototype._renderRemoveChild = function(update, chi
     delete this._childIdToElementMap[child.renderId];
 };
 
-EchoRender.ComponentSync.Row.prototype.renderDispose = function(update) { 
+EchoAppRender.RowSync.prototype.renderDispose = function(update) { 
     EchoWebCore.EventProcessor.remove(this._divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
     this._divElement = null;
     this._trElement = null;
@@ -165,7 +165,7 @@ EchoRender.ComponentSync.Row.prototype.renderDispose = function(update) {
     this._spacingPrototype = null;
 };
 
-EchoRender.ComponentSync.Row.prototype.renderUpdate = function(update) {
+EchoAppRender.RowSync.prototype.renderUpdate = function(update) {
     var fullRender = false;
     if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()) {
         // Full render
@@ -198,4 +198,4 @@ EchoRender.ComponentSync.Row.prototype.renderUpdate = function(update) {
     return fullRender;
 };
 
-EchoRender.registerPeer("Row", EchoRender.ComponentSync.Row);
+EchoRender.registerPeer("Row", EchoAppRender.RowSync);

@@ -175,7 +175,7 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
     
     private static final Service LIST_COMPONENT_SERVICE = JavaScriptService.forResources("Echo.ListComponent",
             new String[] { "/nextapp/echo/webcontainer/resource/js/Render.List.js",
-                           "/nextapp/echo/webcontainer/resource/js/RemoteClient.List.js" });
+                           "/nextapp/echo/webcontainer/resource/js/Render.RemoteList.js" });
 
     private static final String PROPERTY_DATA = "data";
 

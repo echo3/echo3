@@ -1,13 +1,13 @@
 /**
  * Component rendering peer: ContentPane
  */
-EchoRender.ComponentSync.ContentPane = function() {
+EchoAppRender.ContentPaneSync = function() {
     this._floatingPaneManager = null;
 };
 
-EchoRender.ComponentSync.ContentPane.prototype = EchoCore.derive(EchoRender.ComponentSync);
+EchoAppRender.ContentPaneSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
-EchoRender.ComponentSync.ContentPane.prototype._processZIndexChanged = function(e) {
+EchoAppRender.ContentPaneSync.prototype._processZIndexChanged = function(e) {
     for (var i = 0; i < this.component.children.length; ++i) {
         if (!this.component.children[i].floatingPane) {
             continue;
@@ -20,7 +20,7 @@ EchoRender.ComponentSync.ContentPane.prototype._processZIndexChanged = function(
     }
 };
 
-EchoRender.ComponentSync.ContentPane.prototype.raise = function(child) {
+EchoAppRender.ContentPaneSync.prototype.raise = function(child) {
     if (!this._floatingPaneManager) {
         this._floatingPaneManager = new EchoAppRender.FloatingPaneManager();
         this._floatingPaneManager.addZIndexListener(new EchoCore.MethodRef(this, this._processZIndexChanged));
@@ -28,7 +28,7 @@ EchoRender.ComponentSync.ContentPane.prototype.raise = function(child) {
     this._floatingPaneManager.add(child.renderId);
 };
 
-EchoRender.ComponentSync.ContentPane.prototype.renderAdd = function(update, parentElement) {
+EchoAppRender.ContentPaneSync.prototype.renderAdd = function(update, parentElement) {
     this._divElement = document.createElement("div");
     this._divElement.style.position = "absolute";
     this._divElement.style.width = "100%";
@@ -55,7 +55,7 @@ EchoRender.ComponentSync.ContentPane.prototype.renderAdd = function(update, pare
     parentElement.appendChild(this._divElement);
 };
 
-EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update, child) {
+EchoAppRender.ContentPaneSync.prototype._renderAddChild = function(update, child) {
     var divElement = document.createElement("div");
     this._childIdToElementMap[child.renderId] = divElement;
     divElement.style.position = "absolute";
@@ -79,12 +79,12 @@ EchoRender.ComponentSync.ContentPane.prototype._renderAddChild = function(update
     }
 };
 
-EchoRender.ComponentSync.ContentPane.prototype.renderDispose = function(update) { 
+EchoAppRender.ContentPaneSync.prototype.renderDispose = function(update) { 
     this._childIdToElementMap = null;
     this._divElement = null;
 };
 
-EchoRender.ComponentSync.ContentPane.prototype._renderRemoveChild = function(update, child) {
+EchoAppRender.ContentPaneSync.prototype._renderRemoveChild = function(update, child) {
     if (child.floatingPane && this._floatingPaneManager) {
         this._floatingPaneManager.remove(child.renderId);
     }
@@ -94,7 +94,7 @@ EchoRender.ComponentSync.ContentPane.prototype._renderRemoveChild = function(upd
     delete this._childIdToElementMap[child.renderId];
 };
 
-EchoRender.ComponentSync.ContentPane.prototype.renderDisplay = function() {
+EchoAppRender.ContentPaneSync.prototype.renderDisplay = function() {
     var child = this._divElement.firstChild;
     while (child) {
         EchoWebCore.VirtualPosition.redraw(child);
@@ -122,7 +122,7 @@ EchoRender.ComponentSync.ContentPane.prototype.renderDisplay = function() {
     }
 };
 
-EchoRender.ComponentSync.ContentPane.prototype.renderUpdate = function(update) {
+EchoAppRender.ContentPaneSync.prototype.renderUpdate = function(update) {
     var fullRender = false;
     if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()) {
         // Full render
@@ -155,4 +155,4 @@ EchoRender.ComponentSync.ContentPane.prototype.renderUpdate = function(update) {
     return fullRender;
 };
 
-EchoRender.registerPeer("ContentPane", EchoRender.ComponentSync.ContentPane);
+EchoRender.registerPeer("ContentPane", EchoAppRender.ContentPaneSync);

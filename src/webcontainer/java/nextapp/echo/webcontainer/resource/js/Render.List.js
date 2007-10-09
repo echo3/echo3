@@ -5,11 +5,11 @@
 /**
  * Abstract base class for SELECT-element based list components.
  */
-EchoRender.ComponentSync.SelectListComponent = function() { };
+EchoAppRender.SelectListComponentSync = function() { };
 
-EchoRender.ComponentSync.SelectListComponent.prototype = EchoCore.derive(EchoRender.ComponentSync);
+EchoAppRender.SelectListComponentSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
-EchoRender.ComponentSync.SelectListComponent.prototype._processChange = function(e) {
+EchoAppRender.SelectListComponentSync.prototype._processChange = function(e) {
     if (!this.component.isActive()) {
         EchoWebCore.DOM.preventEventDefault(e);
         return;
@@ -32,7 +32,7 @@ EchoRender.ComponentSync.SelectListComponent.prototype._processChange = function
     this.component.fireEvent(new EchoCore.Event("action", this.component));
 };
 
-EchoRender.ComponentSync.SelectListComponent.prototype._renderMain = function(update, parentElement, size) {
+EchoAppRender.SelectListComponentSync.prototype._renderMain = function(update, parentElement, size) {
     this._selectElement = document.createElement("select");
     this._selectElement.size = size;
     if (this.component.getProperty("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION) {
@@ -78,12 +78,12 @@ EchoRender.ComponentSync.SelectListComponent.prototype._renderMain = function(up
     parentElement.appendChild(this._selectElement);
 };
 
-EchoRender.ComponentSync.SelectListComponent.prototype.renderDispose = function(update) { 
+EchoAppRender.SelectListComponentSync.prototype.renderDispose = function(update) { 
     EchoWebCore.EventProcessor.removeAll(this._selectElement);
     this._selectElement = null;
 };
 
-EchoRender.ComponentSync.SelectListComponent.prototype.renderUpdate = function(update) {
+EchoAppRender.SelectListComponentSync.prototype.renderUpdate = function(update) {
     var element = this._selectElement;
     var containerElement = element.parentNode;
     this.renderDispose(update);
@@ -95,24 +95,24 @@ EchoRender.ComponentSync.SelectListComponent.prototype.renderUpdate = function(u
 /**
  * Component rendering peer: ListBox
  */
-EchoRender.ComponentSync.ListBox = function() { };
+EchoAppRender.ListBoxSync = function() { };
 
-EchoRender.ComponentSync.ListBox.prototype = EchoCore.derive(EchoRender.ComponentSync.SelectListComponent);
+EchoAppRender.ListBoxSync.prototype = EchoCore.derive(EchoAppRender.SelectListComponentSync);
 
-EchoRender.ComponentSync.ListBox.prototype.renderAdd = function(update, parentElement) {
+EchoAppRender.ListBoxSync.prototype.renderAdd = function(update, parentElement) {
     this._renderMain(update, parentElement, 6);
 };
 
 /**
  * Component rendering peer: SelectField
  */
-EchoRender.ComponentSync.SelectField = function() { };
+EchoAppRender.SelectFieldSync = function() { };
 
-EchoRender.ComponentSync.SelectField.prototype = EchoCore.derive(EchoRender.ComponentSync.SelectListComponent);
+EchoAppRender.SelectFieldSync.prototype = EchoCore.derive(EchoAppRender.SelectListComponentSync);
 
-EchoRender.ComponentSync.SelectField.prototype.renderAdd = function(update, parentElement) {
+EchoAppRender.SelectFieldSync.prototype.renderAdd = function(update, parentElement) {
     this._renderMain(update, parentElement, 0);
 };
 
-EchoRender.registerPeer("ListBox", EchoRender.ComponentSync.ListBox);
-EchoRender.registerPeer("SelectField", EchoRender.ComponentSync.SelectField);
+EchoRender.registerPeer("ListBox", EchoAppRender.ListBoxSync);
+EchoRender.registerPeer("SelectField", EchoAppRender.SelectFieldSync);

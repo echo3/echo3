@@ -1,13 +1,13 @@
 /**
  * Component rendering peer: TextComponent
  */
-EchoRender.ComponentSync.TextComponent = function() { };
+EchoAppRender.TextComponentSync = function() { };
 
-EchoRender.ComponentSync.TextComponent.prototype = EchoCore.derive(EchoRender.ComponentSync);
+EchoAppRender.TextComponentSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
-EchoRender.ComponentSync.TextComponent._supportedPartialProperties = new Array("text");
+EchoAppRender.TextComponentSync._supportedPartialProperties = new Array("text");
 
-EchoRender.ComponentSync.TextComponent.prototype._renderStyle = function() {
+EchoAppRender.TextComponentSync.prototype._renderStyle = function() {
     EchoRender.Property.Border.render(this.component.getRenderProperty("border"), this._textComponentElement);
     EchoRender.Property.Color.renderFB(this.component, this._textComponentElement);
     EchoRender.Property.Font.renderComponentProperty(this.component, "font", null, this._textComponentElement);
@@ -27,18 +27,18 @@ EchoRender.ComponentSync.TextComponent.prototype._renderStyle = function() {
     }
 };
 
-EchoRender.ComponentSync.TextComponent.prototype._addEventHandlers = function() {
+EchoAppRender.TextComponentSync.prototype._addEventHandlers = function() {
     EchoWebCore.EventProcessor.add(this._textComponentElement, "click", new EchoCore.MethodRef(this, this._processClick), false);
     EchoWebCore.EventProcessor.add(this._textComponentElement, "blur", new EchoCore.MethodRef(this, this._processBlur), false);
     EchoWebCore.EventProcessor.add(this._textComponentElement, "keyup", new EchoCore.MethodRef(this, this._processKeyUp), false);
 };
 
-EchoRender.ComponentSync.TextComponent.prototype.renderDispose = function(update) {
+EchoAppRender.TextComponentSync.prototype.renderDispose = function(update) {
     EchoWebCore.EventProcessor.removeAll(this._textComponentElement);
     this._textComponentElement = null;
 };
 
-EchoRender.ComponentSync.TextComponent.prototype._processBlur = function(e) {
+EchoAppRender.TextComponentSync.prototype._processBlur = function(e) {
     if (!this.component.isActive()) {
         return;
     }
@@ -46,14 +46,14 @@ EchoRender.ComponentSync.TextComponent.prototype._processBlur = function(e) {
     this.component.setProperty("text", e.registeredTarget.value);
 };
 
-EchoRender.ComponentSync.TextComponent.prototype._processClick = function(e) {
+EchoAppRender.TextComponentSync.prototype._processClick = function(e) {
     if (!this.component.isActive()) {
         return;
     }
     this.component.application.setFocusedComponent(this.component);
 };
 
-EchoRender.ComponentSync.TextComponent.prototype._processKeyUp = function(e) {
+EchoAppRender.TextComponentSync.prototype._processKeyUp = function(e) {
     if (!this.component.isActive()) {
 		EchoWebCore.DOM.preventEventDefault(e);
         return true;
@@ -73,12 +73,12 @@ EchoRender.ComponentSync.TextComponent.prototype._processKeyUp = function(e) {
     return true;
 };
 
-EchoRender.ComponentSync.TextComponent.prototype.renderFocus = function() {
+EchoAppRender.TextComponentSync.prototype.renderFocus = function() {
     EchoWebCore.DOM.focusElement(this._textComponentElement);
 };
 
-EchoRender.ComponentSync.TextComponent.prototype.renderUpdate = function(update) {
-    var fullRender =  !EchoCore.Arrays.containsAll(EchoRender.ComponentSync.TextComponent._supportedPartialProperties, 
+EchoAppRender.TextComponentSync.prototype.renderUpdate = function(update) {
+    var fullRender =  !EchoCore.Arrays.containsAll(EchoAppRender.TextComponentSync._supportedPartialProperties, 
                 update.getUpdatedPropertyNames(), true);
 
     if (fullRender) {
@@ -99,7 +99,7 @@ EchoRender.ComponentSync.TextComponent.prototype.renderUpdate = function(update)
     return false; // Child elements not supported: safe to return false.
 };
 
-EchoRender.ComponentSync.TextComponent.prototype._sanitizeInput = function() {
+EchoAppRender.TextComponentSync.prototype._sanitizeInput = function() {
     var maximumLength = this.component.getRenderProperty("maximumLength", -1);
     if (maximumLength >= 0) {
         if (this._textComponentElement.value && this._textComponentElement.value.length > maximumLength) {
@@ -111,11 +111,11 @@ EchoRender.ComponentSync.TextComponent.prototype._sanitizeInput = function() {
 /**
  * Component rendering peer: TextArea
  */
-EchoRender.ComponentSync.TextArea = function() { };
+EchoAppRender.TextAreaSync = function() { };
 
-EchoRender.ComponentSync.TextArea.prototype = EchoCore.derive(EchoRender.ComponentSync.TextComponent);
+EchoAppRender.TextAreaSync.prototype = EchoCore.derive(EchoAppRender.TextComponentSync);
 
-EchoRender.ComponentSync.TextArea.prototype.renderAdd = function(update, parentElement) {
+EchoAppRender.TextAreaSync.prototype.renderAdd = function(update, parentElement) {
     this._textComponentElement = document.createElement("textarea");
     this._renderStyle(this._textComponentElement);
     this._textComponentElement.style.overflow = "auto";
@@ -131,13 +131,13 @@ EchoRender.ComponentSync.TextArea.prototype.renderAdd = function(update, parentE
 /**
  * Component rendering peer: TextField
  */
-EchoRender.ComponentSync.TextField = function() {
+EchoAppRender.TextFieldSync = function() {
 	this._type = "text";
 };
 
-EchoRender.ComponentSync.TextField.prototype = EchoCore.derive(EchoRender.ComponentSync.TextComponent);
+EchoAppRender.TextFieldSync.prototype = EchoCore.derive(EchoAppRender.TextComponentSync);
 
-EchoRender.ComponentSync.TextField.prototype.renderAdd = function(update, parentElement) {
+EchoAppRender.TextFieldSync.prototype.renderAdd = function(update, parentElement) {
     this._textComponentElement = document.createElement("input");
     this._textComponentElement.setAttribute("type", this._type);
     var maximumLength = this.component.getRenderProperty("maximumLength", -1);
@@ -152,19 +152,19 @@ EchoRender.ComponentSync.TextField.prototype.renderAdd = function(update, parent
     parentElement.appendChild(this._textComponentElement);
 };
 
-EchoRender.ComponentSync.TextField.prototype._sanitizeInput = function() {
+EchoAppRender.TextFieldSync.prototype._sanitizeInput = function() {
 	// allow all input
 };
 
 /**
  * Component rendering peer: PasswordField
  */
-EchoRender.ComponentSync.PasswordField = function() {
+EchoAppRender.PasswordFieldSync = function() {
 	this._type = "password";
 };
 
-EchoRender.ComponentSync.PasswordField.prototype = EchoCore.derive(EchoRender.ComponentSync.TextField);
+EchoAppRender.PasswordFieldSync.prototype = EchoCore.derive(EchoAppRender.TextFieldSync);
 
-EchoRender.registerPeer("TextArea", EchoRender.ComponentSync.TextArea);
-EchoRender.registerPeer("TextField", EchoRender.ComponentSync.TextField);
-EchoRender.registerPeer("PasswordField", EchoRender.ComponentSync.PasswordField);
+EchoRender.registerPeer("TextArea", EchoAppRender.TextAreaSync);
+EchoRender.registerPeer("TextField", EchoAppRender.TextFieldSync);
+EchoRender.registerPeer("PasswordField", EchoAppRender.PasswordFieldSync);

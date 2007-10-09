@@ -2975,8 +2975,8 @@ EchoApp.Button.prototype.doAction = function() {
  * @class ToggleButton component.
  * @base EchoApp.Button
  */
-EchoApp.ToggleButton = function(renderId) {
-    EchoApp.Component.call(this, renderId);
+EchoApp.ToggleButton = function(properties) {
+    EchoApp.Component.call(this, properties);
     this.componentType = "ToggleButton";
 };
 
@@ -2989,8 +2989,8 @@ EchoApp.ToggleButton.prototype = EchoCore.derive(EchoApp.Button);
  * @class CheckBox component.
  * @base EchoApp.ToggleButton
  */
-EchoApp.CheckBox = function(renderId) {
-    EchoApp.Component.call(this,  renderId);
+EchoApp.CheckBox = function(properties) {
+    EchoApp.Component.call(this,  properties);
     this.componentType = "CheckBox";
 };
 
@@ -3003,8 +3003,8 @@ EchoApp.CheckBox.prototype = EchoCore.derive(EchoApp.ToggleButton);
  * @class RadioButton component.
  * @base EchoApp.ToggleButton
  */
-EchoApp.RadioButton = function(renderId) {
-    EchoApp.Component.call(this, renderId);
+EchoApp.RadioButton = function(properties) {
+    EchoApp.Component.call(this, properties);
     this.componentType = "RadioButton";
 };
 

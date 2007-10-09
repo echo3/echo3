@@ -1,12 +1,12 @@
 /**
  * Component rendering peer: Grid
  */
-EchoRender.ComponentSync.Grid = function() {
+EchoAppRender.GridSync = function() {
 };
   
-EchoRender.ComponentSync.Grid.prototype = EchoCore.derive(EchoRender.ComponentSync);
+EchoAppRender.GridSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
-EchoRender.ComponentSync.Grid._createPrototypeTable = function() {
+EchoAppRender.GridSync._createPrototypeTable = function() {
     var tableElement = document.createElement("table");
     tableElement.style.outlineStyle = "none";
     tableElement.tabIndex = "-1";
@@ -21,10 +21,10 @@ EchoRender.ComponentSync.Grid._createPrototypeTable = function() {
     return tableElement;
 };
 
-EchoRender.ComponentSync.Grid._prototypeTable = EchoRender.ComponentSync.Grid._createPrototypeTable();
+EchoAppRender.GridSync._prototypeTable = EchoAppRender.GridSync._createPrototypeTable();
 
-EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentElement) {
-    var gridProcessor = new EchoRender.ComponentSync.Grid.Processor(this.component);
+EchoAppRender.GridSync.prototype.renderAdd = function(update, parentElement) {
+    var gridProcessor = new EchoAppRender.GridSync.Processor(this.component);
     
     var columnCount = gridProcessor.getColumnCount();
     var rowCount = gridProcessor.getRowCount();
@@ -32,7 +32,7 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     var defaultInsets = this.component.getRenderProperty("insets", "0");
     var defaultBorder = this.component.getRenderProperty("border", "");
 
-    this._tableElement = EchoRender.ComponentSync.Grid._prototypeTable.cloneNode(true);
+    this._tableElement = EchoAppRender.GridSync._prototypeTable.cloneNode(true);
     
     EchoRender.Property.Color.renderFB(this.component, this._tableElement);
     EchoRender.Property.Border.render(defaultBorder, this._tableElement);
@@ -145,11 +145,11 @@ EchoRender.ComponentSync.Grid.prototype.renderAdd = function(update, parentEleme
     parentElement.appendChild(this._tableElement);
 };
 
-EchoRender.ComponentSync.Grid.prototype.renderDispose = function(update) {
+EchoAppRender.GridSync.prototype.renderDispose = function(update) {
     this._tableElement = null;
 };
 
-EchoRender.ComponentSync.Grid.prototype.renderDisplay = function() {
+EchoAppRender.GridSync.prototype.renderDisplay = function() {
     if (this._renderPercentWidthByMeasure) {
         this._tableElement.style.width = "";
         var percentWidth = (this._tableElement.parentNode.offsetWidth * this._renderPercentWidthByMeasure) / 100;
@@ -157,7 +157,7 @@ EchoRender.ComponentSync.Grid.prototype.renderDisplay = function() {
     }
 };
 
-EchoRender.ComponentSync.Grid.prototype.renderUpdate = function(update) {
+EchoAppRender.GridSync.prototype.renderUpdate = function(update) {
     var element = this._tableElement;
     var containerElement = element.parentNode;
     EchoRender.renderComponentDispose(update, update.parent);
@@ -166,7 +166,7 @@ EchoRender.ComponentSync.Grid.prototype.renderUpdate = function(update) {
     return true;
 };
 
-EchoRender.ComponentSync.Grid.Processor = function(grid) {
+EchoAppRender.GridSync.Processor = function(grid) {
     this.grid = grid;
     this.cellArrays = new Array();
     this.horizontalOrientation = true;
@@ -188,7 +188,7 @@ EchoRender.ComponentSync.Grid.Processor = function(grid) {
     this.reduceX();
 };
 
-EchoRender.ComponentSync.Grid.Processor.prototype.calculateExtents = function() {
+EchoAppRender.GridSync.Processor.prototype.calculateExtents = function() {
     var xProperty = this.horizontalOrientation ? "columnWidth" : "rowHeight";
     var yProperty = this.horizontalOrientation ? "rowHeight" : "columnWidth";
     
@@ -203,7 +203,7 @@ EchoRender.ComponentSync.Grid.Processor.prototype.calculateExtents = function() 
     }
 };
 
-EchoRender.ComponentSync.Grid.Processor.prototype.createCells = function() {
+EchoAppRender.GridSync.Processor.prototype.createCells = function() {
     var childCount = this.grid.getComponentCount();
     if (childCount == 0) {
         // Abort if Grid is empty.
@@ -217,9 +217,9 @@ EchoRender.ComponentSync.Grid.Processor.prototype.createCells = function() {
         if (layoutData) {
             var xSpan = layoutData.getProperty(this.horizontalOrientation ? "columnSpan" : "rowSpan"); 
             var ySpan = layoutData.getProperty(this.horizontalOrientation ? "rowSpan" : "columnSpan"); 
-            cells.push(new EchoRender.ComponentSync.Grid.Processor.Cell(child, i, xSpan ? xSpan : 1, ySpan ? ySpan : 1));
+            cells.push(new EchoAppRender.GridSync.Processor.Cell(child, i, xSpan ? xSpan : 1, ySpan ? ySpan : 1));
         } else {
-            cells.push(new EchoRender.ComponentSync.Grid.Processor.Cell(child, i, 1, 1));
+            cells.push(new EchoAppRender.GridSync.Processor.Cell(child, i, 1, 1));
         }
     }
     return cells;
@@ -233,7 +233,7 @@ EchoRender.ComponentSync.Grid.Processor.prototype.createCells = function() {
  * @return the array of cells.
  * @type {Array}
  */
-EchoRender.ComponentSync.Grid.Processor.prototype._getCellArray = function(y) {
+EchoAppRender.GridSync.Processor.prototype._getCellArray = function(y) {
     while (y >= this.cellArrays.length) {
         this.cellArrays.push(new Array(this.gridXSize));
     }
@@ -246,7 +246,7 @@ EchoRender.ComponentSync.Grid.Processor.prototype._getCellArray = function(y) {
  * @return the number of rendered columns
  * @type Integer
  */
-EchoRender.ComponentSync.Grid.Processor.prototype.getColumnCount = function() {
+EchoAppRender.GridSync.Processor.prototype.getColumnCount = function() {
     return this.horizontalOrientation ? this.gridXSize : this.gridYSize;
 };
 
@@ -257,9 +257,9 @@ EchoRender.ComponentSync.Grid.Processor.prototype.getColumnCount = function() {
  * @param {Integer} column the column index
  * @param {Integer} row the row index
  * @return the cell
- * @type EchoRender.ComponentSync.Grid.Processor.Cell
+ * @type EchoAppRender.GridSync.Processor.Cell
  */
-EchoRender.ComponentSync.Grid.Processor.prototype.getCell = function(column, row) {
+EchoAppRender.GridSync.Processor.prototype.getCell = function(column, row) {
     if (this.horizontalOrientation) {
         return this.cellArrays[row][column];
     } else {
@@ -273,7 +273,7 @@ EchoRender.ComponentSync.Grid.Processor.prototype.getCell = function(column, row
  * @return the number of rendered rows
  * @type Integer
  */
-EchoRender.ComponentSync.Grid.Processor.prototype.getRowCount = function() {
+EchoAppRender.GridSync.Processor.prototype.getRowCount = function() {
     return this.horizontalOrientation ? this.gridYSize : this.gridXSize;
 };
 
@@ -281,7 +281,7 @@ EchoRender.ComponentSync.Grid.Processor.prototype.getRowCount = function() {
  * Remove duplicates from the x-axis where all cells simply
  * "span over" a given x-axis coordinate. 
  */
-EchoRender.ComponentSync.Grid.Processor.prototype.reduceX = function() {
+EchoAppRender.GridSync.Processor.prototype.reduceX = function() {
     // Determine duplicate cell sets on x-axis.
     var xRemoves = new Array();
     var x = 1;
@@ -334,7 +334,7 @@ EchoRender.ComponentSync.Grid.Processor.prototype.reduceX = function() {
  * Remove duplicates from the y-axis where all cells simply
  * "span over" a given y-axis coordinate. 
  */
-EchoRender.ComponentSync.Grid.Processor.prototype.reduceY = function() {
+EchoAppRender.GridSync.Processor.prototype.reduceY = function() {
     var yRemoves = new Array();
     var y = 1;
     
@@ -395,7 +395,7 @@ EchoRender.ComponentSync.Grid.Processor.prototype.reduceY = function() {
     }
 };
 
-EchoRender.ComponentSync.Grid.Processor.prototype.renderCellMatrix = function(cells) {
+EchoAppRender.GridSync.Processor.prototype.renderCellMatrix = function(cells) {
     this.gridXSize = parseInt(this.grid.getRenderProperty("size", 2));
     var x = 0, y = 0;
     var yCells = this._getCellArray(y);
@@ -459,11 +459,11 @@ EchoRender.ComponentSync.Grid.Processor.prototype.renderCellMatrix = function(ce
     this.gridYSize = this.cellArrays.length;
 };
 
-EchoRender.ComponentSync.Grid.Processor.Cell = function(component, index, xSpan, ySpan) {
+EchoAppRender.GridSync.Processor.Cell = function(component, index, xSpan, ySpan) {
     this.component = component;
     this.index = index;
     this.xSpan = xSpan;
     this.ySpan = ySpan;
 };
 
-EchoRender.registerPeer("Grid", EchoRender.ComponentSync.Grid);
+EchoRender.registerPeer("Grid", EchoAppRender.GridSync);

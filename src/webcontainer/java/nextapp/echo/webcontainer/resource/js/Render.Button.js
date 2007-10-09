@@ -4,10 +4,10 @@
 /**
  * Component rendering peer: Button
  */
-EchoRender.ComponentSync.Button = function() {
+EchoAppRender.ButtonSync = function() {
 };
 
-EchoRender.ComponentSync.Button.prototype = EchoCore.derive(EchoRender.ComponentSync);
+EchoAppRender.ButtonSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 /**
  * Registers listners on the button.  This method is invoked lazily, i.e., the first time the button
@@ -15,7 +15,7 @@ EchoRender.ComponentSync.Button.prototype = EchoCore.derive(EchoRender.Component
  * This strategy is used for performance reasons due to the fact that many buttons may be present 
  * on the screen, and each button has many event listeners.
  */
-EchoRender.ComponentSync.Button.prototype._addEventListeners = function() {
+EchoAppRender.ButtonSync.prototype._addEventListeners = function() {
     // Remove initialization listeners.
     EchoWebCore.EventProcessor.remove(this._divElement, "focus", new EchoCore.MethodRef(this, this._processInitFocus), false);
     EchoWebCore.EventProcessor.remove(this._divElement, "mouseover", 
@@ -42,7 +42,7 @@ EchoRender.ComponentSync.Button.prototype._addEventListeners = function() {
     EchoWebCore.EventProcessor.addSelectionDenialListener(this._divElement);
 };
 
-EchoRender.ComponentSync.Button._createPrototypeButton = function() {
+EchoAppRender.ButtonSync._createPrototypeButton = function() {
     var divElement = document.createElement("div");
     divElement.tabIndex = "0";
     divElement.style.outlineStyle = "none";
@@ -50,15 +50,15 @@ EchoRender.ComponentSync.Button._createPrototypeButton = function() {
     return divElement;
 };
 
-EchoRender.ComponentSync.Button._prototypeButton = EchoRender.ComponentSync.Button._createPrototypeButton(); 
+EchoAppRender.ButtonSync._prototypeButton = EchoAppRender.ButtonSync._createPrototypeButton(); 
 
-EchoRender.ComponentSync.Button._defaultIconTextMargin = new EchoApp.Extent(5);
+EchoAppRender.ButtonSync._defaultIconTextMargin = new EchoApp.Extent(5);
 
-EchoRender.ComponentSync.Button.prototype._doAction = function() {
+EchoAppRender.ButtonSync.prototype._doAction = function() {
     this.component.doAction();
 };
 
-EchoRender.ComponentSync.Button.prototype._getCombinedAlignment = function() {
+EchoAppRender.ButtonSync.prototype._getCombinedAlignment = function() {
     var primary = this.component.getRenderProperty("alignment");
     var secondary = this.component.getRenderProperty("textAlignment");
     
@@ -79,18 +79,18 @@ EchoRender.ComponentSync.Button.prototype._getCombinedAlignment = function() {
     return new EchoApp.Alignment(horizontal, vertical);
 };
 
-EchoRender.ComponentSync.Button.prototype.getElement = function() {
+EchoAppRender.ButtonSync.prototype.getElement = function() {
     return this._divElement;
 };
 
-EchoRender.ComponentSync.Button.prototype._processBlur = function(e) {
+EchoAppRender.ButtonSync.prototype._processBlur = function(e) {
     if (!this.component.isActive()) {
         return;
     }
     this._setFocusState(false);
 };
 
-EchoRender.ComponentSync.Button.prototype._processClick = function(e) {
+EchoAppRender.ButtonSync.prototype._processClick = function(e) {
     if (!this.component.isActive()) {
         return;
     }
@@ -98,7 +98,7 @@ EchoRender.ComponentSync.Button.prototype._processClick = function(e) {
     this._doAction();
 };
 
-EchoRender.ComponentSync.Button.prototype._processFocus = function(e) {
+EchoAppRender.ButtonSync.prototype._processFocus = function(e) {
     if (!this.component.isActive()) {
         return;
     }
@@ -109,7 +109,7 @@ EchoRender.ComponentSync.Button.prototype._processFocus = function(e) {
  * Initial focus listener.  This listener is invoked the FIRST TIME the button is focused.
  * It invokes the addListeners() method to lazily add the full listener set to the button.
  */
-EchoRender.ComponentSync.Button.prototype._processInitFocus = function(e) {
+EchoAppRender.ButtonSync.prototype._processInitFocus = function(e) {
     this._addEventListeners();
     this._processFocus(e);
 };
@@ -118,14 +118,14 @@ EchoRender.ComponentSync.Button.prototype._processInitFocus = function(e) {
  * Initial mouse over listener.  This listener is invoked the FIRST TIME the button is moused over.
  * It invokes the addListeners() method to lazily add the full listener set to the button.
  */
-EchoRender.ComponentSync.Button.prototype._processInitMouseOver = function(e) {
+EchoAppRender.ButtonSync.prototype._processInitMouseOver = function(e) {
     this._addEventListeners();
     if (this.component.getRenderProperty("rolloverEnabled")) {
         this._processRolloverEnter(e);
     }
 };
 
-EchoRender.ComponentSync.Button.prototype._processKeyPress = function(e) {
+EchoAppRender.ButtonSync.prototype._processKeyPress = function(e) {
     if (!this.component.isActive()) {
         return true;
     }
@@ -137,7 +137,7 @@ EchoRender.ComponentSync.Button.prototype._processKeyPress = function(e) {
     }
 };
 
-EchoRender.ComponentSync.Button.prototype._processPress = function(e) {
+EchoAppRender.ButtonSync.prototype._processPress = function(e) {
     if (!this.component.isActive()) {
         return;
     }
@@ -145,14 +145,14 @@ EchoRender.ComponentSync.Button.prototype._processPress = function(e) {
     this._setPressedState(true);
 };
 
-EchoRender.ComponentSync.Button.prototype._processRelease = function(e) {
+EchoAppRender.ButtonSync.prototype._processRelease = function(e) {
     if (!this.component.isActive()) {
         return;
     }
     this._setPressedState(false);
 };
 
-EchoRender.ComponentSync.Button.prototype._processRolloverEnter = function(e) {
+EchoAppRender.ButtonSync.prototype._processRolloverEnter = function(e) {
     if (!this.component.isActive() || EchoWebCore.dragInProgress) {
         return;
     }
@@ -160,7 +160,7 @@ EchoRender.ComponentSync.Button.prototype._processRolloverEnter = function(e) {
     this._setRolloverState(true);
 };
 
-EchoRender.ComponentSync.Button.prototype._processRolloverExit = function(e) {
+EchoAppRender.ButtonSync.prototype._processRolloverExit = function(e) {
     if (!this.component.isActive()) {
         return;
     }
@@ -168,10 +168,10 @@ EchoRender.ComponentSync.Button.prototype._processRolloverExit = function(e) {
     this._setRolloverState(false);
 };
 
-EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentElement) {
+EchoAppRender.ButtonSync.prototype.renderAdd = function(update, parentElement) {
     this._enabled = this.component.isRenderEnabled();
     
-    this._divElement = EchoRender.ComponentSync.Button._prototypeButton.cloneNode(false); 
+    this._divElement = EchoAppRender.ButtonSync._prototypeButton.cloneNode(false); 
 
     EchoRender.Property.Color.render(
             EchoRender.Property.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
@@ -220,14 +220,14 @@ EchoRender.ComponentSync.Button.prototype.renderAdd = function(update, parentEle
     parentElement.appendChild(this._divElement);
 };
 
-EchoRender.ComponentSync.Button.prototype._renderContent = function() {
+EchoAppRender.ButtonSync.prototype._renderContent = function() {
     var text = this.component.getRenderProperty("text");
     var icon = EchoRender.Property.getEffectProperty(this.component, "icon", "disabledIcon", !this._enabled);
     if (text) {
         if (icon) {
             // Text and icon.
             var iconTextMargin = this.component.getRenderProperty("iconTextMargin", 
-                    EchoRender.ComponentSync.Button._defaultIconTextMargin);
+                    EchoAppRender.ButtonSync._defaultIconTextMargin);
             var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
             var tct = new EchoAppRender.TriCellTable(orientation, 
                     EchoRender.Property.Extent.toPixels(iconTextMargin));
@@ -244,14 +244,14 @@ EchoRender.ComponentSync.Button.prototype._renderContent = function() {
     }
 };
 
-EchoRender.ComponentSync.Button.prototype._renderButtonText = function(element, text) {
+EchoAppRender.ButtonSync.prototype._renderButtonText = function(element, text) {
 	element.appendChild(document.createTextNode(text));
 	if (!this.component.getRenderProperty("lineWrap", true)) {
 		element.style.whiteSpace = "nowrap";
 	}
 };
 
-EchoRender.ComponentSync.Button.prototype._renderButtonIcon = function(element, icon) {
+EchoAppRender.ButtonSync.prototype._renderButtonIcon = function(element, icon) {
     var imgElement = document.createElement("img");
     imgElement.src = icon.url ? icon.url : icon;
     imgElement.alt = "";
@@ -265,18 +265,18 @@ EchoRender.ComponentSync.Button.prototype._renderButtonIcon = function(element, 
 	return imgElement;
 };
 
-EchoRender.ComponentSync.Button.prototype.renderDispose = function(update) {
+EchoAppRender.ButtonSync.prototype.renderDispose = function(update) {
     this.client.application.removeFocusListener(new EchoCore.MethodRef(this, this._processRolloverExit));
     EchoWebCore.EventProcessor.removeAll(this._divElement);
     this._iconElement = null;
 };
 
-EchoRender.ComponentSync.Button.prototype.renderFocus = function() {
+EchoAppRender.ButtonSync.prototype.renderFocus = function() {
     EchoWebCore.DOM.focusElement(this._divElement);
     this._setFocusState(true);
 };
 
-EchoRender.ComponentSync.Button.prototype.renderUpdate = function(update) {
+EchoAppRender.ButtonSync.prototype.renderUpdate = function(update) {
     var element = this._divElement;
     var containerElement = element.parentNode;
     this.renderDispose(update);
@@ -285,7 +285,7 @@ EchoRender.ComponentSync.Button.prototype.renderUpdate = function(update) {
     return false; // Child elements not supported: safe to return false.
 };
 
-EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) {
+EchoAppRender.ButtonSync.prototype._setFocusState = function(focusState) {
     if (!this.component.getRenderProperty("focusedEnabled")) {
         // Render default focus aesthetic.
         var background = this.component.getRenderProperty("background");
@@ -317,7 +317,7 @@ EchoRender.ComponentSync.Button.prototype._setFocusState = function(focusState) 
     }
 };
 
-EchoRender.ComponentSync.Button.prototype._setPressedState = function(pressedState) {
+EchoAppRender.ButtonSync.prototype._setPressedState = function(pressedState) {
     var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "pressedForeground", pressedState);
     var background = EchoRender.Property.getEffectProperty(this.component, "background", "pressedBackground", pressedState);
     var backgroundImage = EchoRender.Property.getEffectProperty(
@@ -339,7 +339,7 @@ EchoRender.ComponentSync.Button.prototype._setPressedState = function(pressedSta
     }
 };
 
-EchoRender.ComponentSync.Button.prototype._setRolloverState = function(rolloverState) {
+EchoAppRender.ButtonSync.prototype._setRolloverState = function(rolloverState) {
     var foreground = EchoRender.Property.getEffectProperty(this.component, "foreground", "rolloverForeground", rolloverState);
     var background = EchoRender.Property.getEffectProperty(this.component, "background", "rolloverBackground", rolloverState);
     var backgroundImage = EchoRender.Property.getEffectProperty(
@@ -361,33 +361,33 @@ EchoRender.ComponentSync.Button.prototype._setRolloverState = function(rolloverS
     }
 };
 
-EchoRender.registerPeer("Button", EchoRender.ComponentSync.Button);
+EchoRender.registerPeer("Button", EchoAppRender.ButtonSync);
 
 /**
  * Component rendering peer: ToggleButton
  */
-EchoRender.ComponentSync.ToggleButton = function() {
+EchoAppRender.ToggleButtonSync = function() {
 	this._selected = false;
 	this._stateElement = null;
 };
 
-EchoRender.ComponentSync.ToggleButton.prototype = EchoCore.derive(EchoRender.ComponentSync.Button);
+EchoAppRender.ToggleButtonSync.prototype = EchoCore.derive(EchoAppRender.ButtonSync);
 
-EchoRender.ComponentSync.ToggleButton.prototype._createStateElement = function() {
+EchoAppRender.ToggleButtonSync.prototype._createStateElement = function() {
 };
 
-EchoRender.ComponentSync.ToggleButton.prototype._doAction = function() {
+EchoAppRender.ToggleButtonSync.prototype._doAction = function() {
     this.setSelected(!this._selected);
-    EchoRender.ComponentSync.Button.prototype._doAction.call(this);
+    EchoAppRender.ButtonSync.prototype._doAction.call(this);
 };
 
-EchoRender.ComponentSync.ToggleButton.prototype.renderAdd = function(update, parentElement) {
+EchoAppRender.ToggleButtonSync.prototype.renderAdd = function(update, parentElement) {
 	this._selected = this.component.getRenderProperty("selected");
 	
-	EchoRender.ComponentSync.Button.prototype.renderAdd.call(this, update, parentElement);
+	EchoAppRender.ButtonSync.prototype.renderAdd.call(this, update, parentElement);
 };
 
-EchoRender.ComponentSync.ToggleButton.prototype._getStateIcon = function() {
+EchoAppRender.ToggleButtonSync.prototype._getStateIcon = function() {
 	var icon;
 	if (this._selected) {
 		icon = EchoRender.Property.getEffectProperty(this.component, "selectedStateIcon", "disabledSelectedStateIcon", 
@@ -399,7 +399,7 @@ EchoRender.ComponentSync.ToggleButton.prototype._getStateIcon = function() {
 	return icon;
 };
 
-EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
+EchoAppRender.ToggleButtonSync.prototype._renderContent = function() {
     var text = this.component.getRenderProperty("text");
     var icon = this.component.getRenderProperty("icon");
     this._stateElement = this._createStateElement();
@@ -417,9 +417,9 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
         var orientation = EchoAppRender.TriCellTable.TRAILING_LEADING;;
         var margin;
         if (this._stateElement) {
-	        margin = this.component.getRenderProperty("stateMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
+	        margin = this.component.getRenderProperty("stateMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
         } else {
-	        margin = this.component.getRenderProperty("iconTextMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
+	        margin = this.component.getRenderProperty("iconTextMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
         }
         var tct = new EchoAppRender.TriCellTable(orientation, EchoRender.Property.Extent.toPixels(margin));
         if (text) {
@@ -436,9 +436,9 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
         this._divElement.appendChild(tct.tableElement);
     } else if (entityCount == 3) {
         var orientation = EchoAppRender.TriCellTable.TRAILING_LEADING;
-        var margin = this.component.getRenderProperty("iconTextMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
+        var margin = this.component.getRenderProperty("iconTextMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
         var stateOrientation = EchoAppRender.TriCellTable.TRAILING_LEADING;
-        var stateMargin = this.component.getRenderProperty("stateMargin", EchoRender.ComponentSync.Button._defaultIconTextMargin);
+        var stateMargin = this.component.getRenderProperty("stateMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
         var tct = new EchoAppRender.TriCellTable(orientation, 
         	EchoRender.Property.Extent.toPixels(margin), stateOrientation, EchoRender.Property.Extent.toPixels(stateMargin));
         this._renderButtonText(tct.tdElements[0], text);
@@ -448,8 +448,8 @@ EchoRender.ComponentSync.ToggleButton.prototype._renderContent = function() {
     }
 };
 
-EchoRender.ComponentSync.ToggleButton.prototype.renderDispose = function(update) {
-	EchoRender.ComponentSync.Button.prototype.renderDispose.call(this, update);
+EchoAppRender.ToggleButtonSync.prototype.renderDispose = function(update) {
+	EchoAppRender.ButtonSync.prototype.renderDispose.call(this, update);
 	if (this._stateElement) {
 	    EchoWebCore.EventProcessor.removeAll(this._stateElement);
 	    this._stateElement = null;
@@ -461,7 +461,7 @@ EchoRender.ComponentSync.ToggleButton.prototype.renderDispose = function(update)
  * 
  * @param newState {Boolean} the new selection state
  */
-EchoRender.ComponentSync.ToggleButton.prototype.setSelected = function(newState) {
+EchoAppRender.ToggleButtonSync.prototype.setSelected = function(newState) {
 	if (this._selected == newState) {
 		return;
 	}
@@ -471,20 +471,20 @@ EchoRender.ComponentSync.ToggleButton.prototype.setSelected = function(newState)
 	this._updateStateElement();
 };
 
-EchoRender.ComponentSync.ToggleButton.prototype._updateStateElement = function() {
+EchoAppRender.ToggleButtonSync.prototype._updateStateElement = function() {
 };
 
-EchoRender.registerPeer("ToggleButton", EchoRender.ComponentSync.ToggleButton);
+EchoRender.registerPeer("ToggleButton", EchoAppRender.ToggleButtonSync);
 
 /**
  * Component rendering peer: CheckBox
  */
-EchoRender.ComponentSync.CheckBox = function() {
+EchoAppRender.CheckBoxSync = function() {
 };
 
-EchoRender.ComponentSync.CheckBox.prototype = EchoCore.derive(EchoRender.ComponentSync.ToggleButton);
+EchoAppRender.CheckBoxSync.prototype = EchoCore.derive(EchoAppRender.ToggleButtonSync);
 
-EchoRender.ComponentSync.CheckBox.prototype._createStateElement = function() {
+EchoAppRender.CheckBoxSync.prototype._createStateElement = function() {
     var stateIcon = this._getStateIcon();
     var stateElement;
     if (stateIcon) {
@@ -499,11 +499,11 @@ EchoRender.ComponentSync.CheckBox.prototype._createStateElement = function() {
     return stateElement;
 };
 
-EchoRender.ComponentSync.CheckBox.prototype._processStateChange = function(e) {
+EchoAppRender.CheckBoxSync.prototype._processStateChange = function(e) {
     this._updateStateElement();
 };
     
-EchoRender.ComponentSync.CheckBox.prototype._updateStateElement = function() {
+EchoAppRender.CheckBoxSync.prototype._updateStateElement = function() {
     var stateIcon = this._getStateIcon();
     if (stateIcon) {
         this._stateElement.src = stateIcon.url;
@@ -512,47 +512,47 @@ EchoRender.ComponentSync.CheckBox.prototype._updateStateElement = function() {
     }
 };
 
-EchoRender.registerPeer("CheckBox", EchoRender.ComponentSync.CheckBox);
+EchoRender.registerPeer("CheckBox", EchoAppRender.CheckBoxSync);
 /**
  * Component rendering peer: RadioButton
  */
-EchoRender.ComponentSync.RadioButton = function() {
+EchoAppRender.RadioButtonSync = function() {
 	this._buttonGroup = null;
 };
 
-EchoRender.ComponentSync.RadioButton._nextNameId = 0;
+EchoAppRender.RadioButtonSync._nextNameId = 0;
 
-EchoRender.ComponentSync.RadioButton.prototype = EchoCore.derive(EchoRender.ComponentSync.ToggleButton);
+EchoAppRender.RadioButtonSync.prototype = EchoCore.derive(EchoAppRender.ToggleButtonSync);
 
 /**
  * Contains mappings from RadioButton render ids to EchoApp.ButtonGroup objects.
  * 
  * @type {EchoCore.Arrays.LargeMap}
  */
-EchoRender.ComponentSync.RadioButton._groups = new EchoCore.Arrays.LargeMap();
+EchoAppRender.RadioButtonSync._groups = new EchoCore.Arrays.LargeMap();
 
-EchoRender.ComponentSync.RadioButton.prototype._doAction = function() {
+EchoAppRender.RadioButtonSync.prototype._doAction = function() {
     if (this._buttonGroup) {
         this._buttonGroup.deselect();
     }
-    EchoRender.ComponentSync.ToggleButton.prototype._doAction.call(this);
+    EchoAppRender.ToggleButtonSync.prototype._doAction.call(this);
 };
 
-EchoRender.ComponentSync.RadioButton.prototype.renderAdd = function(update, parentElement) {
+EchoAppRender.RadioButtonSync.prototype.renderAdd = function(update, parentElement) {
 	var groupId = this.component.getRenderProperty("group");
 	if (groupId) {
-		var group = EchoRender.ComponentSync.RadioButton._groups.map[groupId];
+		var group = EchoAppRender.RadioButtonSync._groups.map[groupId];
 		if (!group) {
 			group = new EchoApp.ButtonGroup(groupId);
-			EchoRender.ComponentSync.RadioButton._groups.map[groupId] = group;
+			EchoAppRender.RadioButtonSync._groups.map[groupId] = group;
 		}
 		group.add(this);
 		this._buttonGroup = group;
 	}
-	EchoRender.ComponentSync.ToggleButton.prototype.renderAdd.call(this, update, parentElement);
+	EchoAppRender.ToggleButtonSync.prototype.renderAdd.call(this, update, parentElement);
 };
 
-EchoRender.ComponentSync.RadioButton.prototype._createStateElement = function() {
+EchoAppRender.RadioButtonSync.prototype._createStateElement = function() {
     var stateIcon = this._getStateIcon();
     var stateElement;
     if (stateIcon) {
@@ -561,29 +561,29 @@ EchoRender.ComponentSync.RadioButton.prototype._createStateElement = function() 
     } else {
         stateElement = document.createElement("input");
         stateElement.type = "radio";
-        stateElement.name = "__echo_" + EchoRender.ComponentSync.RadioButton._nextNameId++;
+        stateElement.name = "__echo_" + EchoAppRender.RadioButtonSync._nextNameId++;
         stateElement.defaultChecked = this._selected ? true : false;
         EchoWebCore.EventProcessor.add(stateElement, "change", new EchoCore.MethodRef(this, this._processStateChange), false);
     }
     return stateElement;
 };
 
-EchoRender.ComponentSync.RadioButton.prototype._processStateChange = function(e) {
+EchoAppRender.RadioButtonSync.prototype._processStateChange = function(e) {
     this._updateStateElement();
 };
 
-EchoRender.ComponentSync.RadioButton.prototype.renderDispose = function(update) {
-	EchoRender.ComponentSync.ToggleButton.prototype.renderDispose.call(this, update);
+EchoAppRender.RadioButtonSync.prototype.renderDispose = function(update) {
+	EchoAppRender.ToggleButtonSync.prototype.renderDispose.call(this, update);
 	if (this._buttonGroup) {
 		this._buttonGroup.remove(this);
 		if (this._buttonGroup.size() == 0) {
-			EchoRender.ComponentSync.RadioButton._groups.remove(this._buttonGroup.getId());
+			EchoAppRender.RadioButtonSync._groups.remove(this._buttonGroup.getId());
 		}
 		this._buttonGroup = null;
 	}
 };
 
-EchoRender.ComponentSync.RadioButton.prototype._updateStateElement = function() {
+EchoAppRender.RadioButtonSync.prototype._updateStateElement = function() {
     var stateIcon = this._getStateIcon();
     if (stateIcon) {
         this._stateElement.src = stateIcon.url;
@@ -592,5 +592,5 @@ EchoRender.ComponentSync.RadioButton.prototype._updateStateElement = function() 
     }
 };
 
-EchoRender.registerPeer("RadioButton", EchoRender.ComponentSync.RadioButton);
+EchoRender.registerPeer("RadioButton", EchoAppRender.RadioButtonSync);
 
