@@ -1,51 +1,98 @@
-EchoAppRender.RemoteListComponentSync = function() { };
-
-EchoAppRender.RemoteListComponentSync.updateListData = function(listData) {
-    this.items = listData.items;
-};
-
-EchoAppRender.RemoteListComponentSync.ListBox = function(properties) { 
+/**
+ * Creates a new RemoteListBox.
+ * @param properties initial property values
+ * @class Remote List Box implementation.
+ */
+EchoAppRender.RemoteListBox = function(properties) { 
     EchoApp.ListBox.call(this, properties);
     this.componentType = "RemoteListBox";
 };
 
-EchoAppRender.RemoteListComponentSync.ListBox.prototype = EchoCore.derive(EchoApp.ListBox);
+EchoAppRender.RemoteListBox.prototype = EchoCore.derive(EchoApp.ListBox);
 
-EchoAppRender.RemoteListComponentSync.ListBox.prototype.updateListData = EchoAppRender.RemoteListComponentSync.updateListData;
+EchoAppRender.RemoteListBox.prototype.updateListData = function(listData) {
+    this.items = listData.items;
+};
 
-EchoAppRender.RemoteListComponentSync.SelectField = function(properties) {
+EchoAppRender.RemoteListBox.prototype.updateListSelection = function(selectionString) {
+    this.setProperty("selection", selectionString ? selectionString.split(",") : null);
+};
+
+/**
+ * Creates a new RemoteListBox synchronization peer instance.
+ * @class Remote List Box synchronization peer implementation.
+ */
+EchoAppRender.RemoteListBoxSync = function() {
+    EchoAppRender.ListBoxSync.call(this);
+};
+
+EchoAppRender.RemoteListBoxSync.prototype = EchoCore.derive(EchoAppRender.ListBoxSync);
+
+EchoAppRender.RemoteListBoxSync.getPropertyType = function(propertyName) {
+    return "RemoteListSelection";
+};
+
+/**
+ * Creates a new RemoteSelectField.
+ * @param properties initial property values
+ * @class Remote Select Field implementation.
+ */
+EchoAppRender.RemoteSelectField = function(properties) {
     EchoApp.SelectField.call(this, properties);
     this.componentType = "RemoteSelectField";
 };
 
-EchoAppRender.RemoteListComponentSync.SelectField.prototype = EchoCore.derive(EchoApp.SelectField);
+EchoAppRender.RemoteSelectField.prototype = EchoCore.derive(EchoApp.SelectField);
 
-EchoAppRender.RemoteListComponentSync.SelectField.prototype.updateListData = EchoAppRender.RemoteListComponentSync.updateListData;
+EchoAppRender.RemoteSelectField.prototype.updateListData = function(listData) {
+    this.items = listData.items;
+};
 
-EchoAppRender.RemoteListComponentSync.ListData = function(items) { 
+EchoAppRender.RemoteSelectField.prototype.updateListSelection = function(selectionString) {
+    this.setProperty("selection", selectionString ? selectionString.split(",") : null);
+};
+
+/**
+ * Creates a new RemoteSelectField synchronization peer instance.
+ * @class Remote Select Field synchronization peer implementation.
+ */
+EchoAppRender.RemoteSelectFieldSync = function() {
+    EchoAppRender.SelectFieldSync.call(this);
+};
+
+EchoAppRender.RemoteSelectFieldSync.prototype = EchoCore.derive(EchoAppRender.SelectFieldSync);
+
+EchoAppRender.RemoteSelectFieldSync.getPropertyType = function(propertyName) {
+    return "RemoteListSelection";
+};
+
+EchoAppRender.RemoteListData = function(items) { 
     this.items = items;
 };
 
-EchoAppRender.RemoteListComponentSync.ListData.prototype.toString = function() {
+EchoAppRender.RemoteListData.prototype.toString = function() {
     return this.items.toString();
 };
 
-EchoAppRender.RemoteListComponentSync.ListDataItem = function(text) { 
+EchoAppRender.RemoteListDataItem = function(text) { 
     this.text = text;
 };
 
-EchoAppRender.RemoteListComponentSync.ListDataItem.prototype.toString = function() {
+EchoAppRender.RemoteListDataItem.prototype.toString = function() {
     return this.text;
 };
 
-EchoAppRender.RemoteListComponentSync.ListDataTranslator = function() { };
+/**
+ * Property Translator for List Data (rendered model elements).
+ */
+EchoAppRender.RemoteListDataTranslator = function() { };
 
-EchoAppRender.RemoteListComponentSync.ListDataTranslator.toProperty = function(client, propertyElement) {
+EchoAppRender.RemoteListDataTranslator.toProperty = function(client, propertyElement) {
     var items = new Array();
     var eElement = propertyElement.firstChild;
     while (eElement.nextSibling) {
         var text = eElement.getAttribute("t");
-        var item = new EchoAppRender.RemoteListComponentSync.ListDataItem(text);
+        var item = new EchoAppRender.RemoteListDataItem(text);
         if (eElement.getAttribute("f")) {
             item.foreground = new EchoApp.Color(eElement.getAttribute("f"));
         }
@@ -65,13 +112,27 @@ EchoAppRender.RemoteListComponentSync.ListDataTranslator.toProperty = function(c
         items.push(item);
         eElement = eElement.nextSibling;
     }
-    return new EchoAppRender.RemoteListComponentSync.ListData(items);
+    return new EchoAppRender.RemoteListData(items);
 };
 
-EchoSerial.addPropertyTranslator("RemoteListData", EchoAppRender.RemoteListComponentSync.ListDataTranslator);
+/**
+ * Property Translator for List Selection State.
+ */
+EchoAppRender.RemoteListSelectionTranslator = function() { };
 
-EchoApp.ComponentFactory.registerType("RemoteListBox", EchoAppRender.RemoteListComponentSync.ListBox);
-EchoApp.ComponentFactory.registerType("RemoteSelectField", EchoAppRender.RemoteListComponentSync.SelectField);
+EchoAppRender.RemoteListSelectionTranslator.toProperty = function(client, propertyElement) {
+    return propertyElement.getAttribute("v").split(",");
+};
 
-EchoRender.registerPeer("RemoteListBox", EchoAppRender.ListBoxSync);
-EchoRender.registerPeer("RemoteSelectField", EchoAppRender.SelectFieldSync);
+EchoAppRender.RemoteListSelectionTranslator.toXml = function(client, propertyElement, propertyValue) {
+    propertyElement.setAttribute("v", propertyValue ? propertyValue.join(",") : ""); 
+};
+
+EchoSerial.addPropertyTranslator("RemoteListData", EchoAppRender.RemoteListDataTranslator);
+EchoSerial.addPropertyTranslator("RemoteListSelection", EchoAppRender.RemoteListSelectionTranslator);
+
+EchoApp.ComponentFactory.registerType("RemoteListBox", EchoAppRender.RemoteListBox);
+EchoApp.ComponentFactory.registerType("RemoteSelectField", EchoAppRender.RemoteSelectField);
+
+EchoRender.registerPeer("RemoteListBox", EchoAppRender.RemoteListBoxSync);
+EchoRender.registerPeer("RemoteSelectField", EchoAppRender.RemoteSelectFieldSync);

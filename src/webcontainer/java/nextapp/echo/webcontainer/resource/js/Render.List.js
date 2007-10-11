@@ -27,7 +27,9 @@ EchoAppRender.ListComponentSync.prototype._processChange = function(e) {
             selection.push(selectElement.selectedIndex);
         }
     }
-    this.component.setProperty("selection", selection.join(","));
+
+    this.component.setProperty("selection", selection);
+    
     //FIXME fire from component
     this.component.fireEvent(new EchoCore.Event("action", this.component));
 };
@@ -62,13 +64,11 @@ EchoAppRender.ListComponentSync.prototype._renderMain = function(update, parentE
     }
     
     // Set selection.
-    var selectionString = this.component.getProperty("selection");
-    if (selectionString) {
-        var selectionArray = selectionString.split(",");
-        for (var i = 0; i < selectionArray.length; ++i) {
-            var index = selectionArray[i];
-            if (index >= 0 && index < this._selectElement.childNodes.length) {
-                this._selectElement.childNodes[index].selected = "selected";
+    var selection = this.component.getProperty("selection");
+    if (selection) {
+        for (var i = 0; i < selection.length; ++i) {
+            if (selection[i] >= 0 && selection[i] < this._selectElement.options.length) {
+                this._selectElement.options[selection[i]].selected = "selected";
             }
         }
     }

@@ -191,7 +191,7 @@ EchoRemoteClient.prototype.init = function(initialResponseDocument) {
 EchoRemoteClient.prototype._processClientEvent = function(e) {
     if (!this._clientMessage) {
         if (new Date().getTime() - this._syncInitTime > 2000) {
-            //FIXME. Central error handling for these.
+            //FIXME Central error handling for these.
             alert("Waiting on server response.  Press the browser reload or refresh button if server fails to respond.");
         }
         return;
@@ -208,9 +208,10 @@ EchoRemoteClient.prototype._processClientEvent = function(e) {
  */
 EchoRemoteClient.prototype._processClientUpdate = function(e) {
     if (!this._clientMessage) {
-        //FIXME. need to work on scenarios where clientmessage is null, for both this and events too.
+        //FIXME need to work on scenarios where clientmessage is null, for both this and events too.
         return;
     }
+    
     this._clientMessage.storeProperty(e.parent.renderId, e.propertyName, e.newValue);
 };
 
@@ -255,8 +256,8 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
     
     var responseDocument = e.source.getResponseXml();
     if (!e.valid || !responseDocument || !responseDocument.documentElement) {
-        //FIXME. Central error handling for things like this.
-        //FIXME. Shut down further client input with secondary "you're beating a dead horse" error message. 
+        //FIXME Central error handling for things like this.
+        //FIXME Shut down further client input with secondary "you're beating a dead horse" error message. 
         var msg = "An invalid response was received from the server";
         if (e.exception) {
         	msg += ": " + e.exception;
@@ -335,8 +336,8 @@ EchoRemoteClient.AsyncManager.prototype._pollServerForUpdates = function() {
 EchoRemoteClient.AsyncManager.prototype._processPollResponse = function(e) {
     var responseDocument = e.source.getResponseXml();
     if (!e.valid || !responseDocument || !responseDocument.documentElement) {
-        //FIXME. Central error handling for things like this.
-        //FIXME. Shut down further client input with secondary "you're beating a dead horse" error message. 
+        //FIXME Central error handling for things like this.
+        //FIXME Shut down further client input with secondary "you're beating a dead horse" error message. 
         var msg = "An invalid response was received from the server";
         if (e.exception) {
             msg += ": " + e.exception;
@@ -418,12 +419,23 @@ EchoRemoteClient.ClientMessage.prototype._renderCSync = function() {
     // Render property information.
     for (var componentId in this._componentIdToPropertyMap) {
         var propertyMap = this._componentIdToPropertyMap[componentId];
+        var component = this._client.application.getComponentByRenderId(componentId);
+        var peerClass = EchoRender.getPeerClass(component);
         for (var propertyName in propertyMap) {
             var propertyValue = propertyMap[propertyName];
             var pElement = this._document.createElement("p");
             pElement.setAttribute("i", componentId);
             pElement.setAttribute("n", propertyName);
-            EchoSerial.storeProperty(this._client, pElement, propertyValue);
+            var propertyType = peerClass.getPropertyType ? peerClass.getPropertyType(propertyName) : null;
+            if (propertyType) {
+                var propertyTranslator = EchoSerial.getPropertyTranslator(propertyType);
+                if (!propertyTranslator) {
+                    throw new Error("No property translator available for custom property type: " + propertyType);
+                }
+                propertyTranslator.toXml(this._client, pElement, propertyValue);
+            } else {
+                EchoSerial.storeProperty(this._client, pElement, propertyValue);
+            }
             cSyncElement.appendChild(pElement);
         }
     }

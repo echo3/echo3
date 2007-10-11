@@ -172,7 +172,6 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
                            "/nextapp/echo/webcontainer/resource/js/Render.RemoteList.js" });
 
     private static final String PROPERTY_DATA = "data";
-
     private static final String PROPERTY_SELECTION = "selection";
     private static final String PROPERTY_SELECTION_MODE = "selectionMode";
     static {
@@ -234,6 +233,8 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
     public String getOutputPropertyMethodName(Context context, Component component, String propertyName) {
         if (PROPERTY_DATA.equals(propertyName)) {
             return "updateListData";
+        } else if (PROPERTY_SELECTION.equals(propertyName)) {
+            return "updateListSelection";
         }
         return super.getOutputPropertyMethodName(context, component, propertyName);
     }

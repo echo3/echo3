@@ -102,6 +102,10 @@ EchoRender._getComponentDepth = function(component) {
     return depth;
 };
 
+EchoRender.getPeerClass = function(component) {
+    return EchoRender._peers[component.componentType];
+}
+
 /**
  * Creates a component synchronization peer for a component.
  * The peer will be stored in the "peer" property of the component.
