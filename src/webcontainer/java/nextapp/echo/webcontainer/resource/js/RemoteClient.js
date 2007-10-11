@@ -212,7 +212,13 @@ EchoRemoteClient.prototype._processClientUpdate = function(e) {
         return;
     }
     
-    this._clientMessage.storeProperty(e.parent.renderId, e.propertyName, e.newValue);
+    var stored = false;
+    if (e.parent.peer.storeProperty) {
+        stored = e.parent.peer.storeProperty(this._clientMessage, e.propertyName);
+    }
+    if (!stored) {
+        this._clientMessage.storeProperty(e.parent.renderId, e.propertyName, e.newValue);
+    }
 };
 
 /**

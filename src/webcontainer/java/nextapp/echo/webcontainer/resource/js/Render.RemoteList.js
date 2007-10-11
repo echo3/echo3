@@ -10,12 +10,21 @@ EchoAppRender.RemoteListBox = function(properties) {
 
 EchoAppRender.RemoteListBox.prototype = EchoCore.derive(EchoApp.ListBox);
 
-EchoAppRender.RemoteListBox.prototype.updateListData = function(listData) {
-    this.items = listData.items;
+EchoAppRender.RemoteListBox.prototype.getSelectionString = function() {
+    var selection = this.getProperty("selection");
+    if (selection) {
+        return selection.join(",");
+    } else {
+        return null;
+    }
 };
 
-EchoAppRender.RemoteListBox.prototype.updateListSelection = function(selectionString) {
+EchoAppRender.RemoteListBox.prototype.setSelectionString = function(selectionString) {
     this.setProperty("selection", selectionString ? selectionString.split(",") : null);
+};
+
+EchoAppRender.RemoteListBox.prototype.updateListData = function(listData) {
+    this.items = listData.items;
 };
 
 /**
@@ -28,8 +37,13 @@ EchoAppRender.RemoteListBoxSync = function() {
 
 EchoAppRender.RemoteListBoxSync.prototype = EchoCore.derive(EchoAppRender.ListBoxSync);
 
-EchoAppRender.RemoteListBoxSync.getPropertyType = function(propertyName) {
-    return "RemoteListSelection";
+EchoAppRender.RemoteListBoxSync.prototype.storeProperty = function(clientMessage, propertyName) {
+    if (propertyName == "selection") {
+        clientMessage.storeProperty(this.component.renderId, propertyName, this.component.getSelectionString());
+        return true;
+    } else {
+        return false;
+    }
 };
 
 /**
@@ -44,12 +58,21 @@ EchoAppRender.RemoteSelectField = function(properties) {
 
 EchoAppRender.RemoteSelectField.prototype = EchoCore.derive(EchoApp.SelectField);
 
-EchoAppRender.RemoteSelectField.prototype.updateListData = function(listData) {
-    this.items = listData.items;
+EchoAppRender.RemoteSelectField.prototype.getSelectionString = function() {
+    var selection = this.getProperty("selection");
+    if (selection) {
+        return selection.join(",");
+    } else {
+        return null;
+    }
 };
 
-EchoAppRender.RemoteSelectField.prototype.updateListSelection = function(selectionString) {
+EchoAppRender.RemoteSelectField.prototype.setSelectionString = function(selectionString) {
     this.setProperty("selection", selectionString ? selectionString.split(",") : null);
+};
+
+EchoAppRender.RemoteSelectField.prototype.updateListData = function(listData) {
+    this.items = listData.items;
 };
 
 /**
@@ -62,8 +85,13 @@ EchoAppRender.RemoteSelectFieldSync = function() {
 
 EchoAppRender.RemoteSelectFieldSync.prototype = EchoCore.derive(EchoAppRender.SelectFieldSync);
 
-EchoAppRender.RemoteSelectFieldSync.getPropertyType = function(propertyName) {
-    return "RemoteListSelection";
+EchoAppRender.RemoteSelectFieldSync.prototype.storeProperty = function(clientMessage, propertyName) {
+    if (propertyName == "selection") {
+        clientMessage.storeProperty(this.component.renderId, propertyName, this.component.getSelectionString());
+        return true;
+    } else {
+        return false;
+    }
 };
 
 EchoAppRender.RemoteListData = function(items) { 
@@ -113,19 +141,6 @@ EchoAppRender.RemoteListDataTranslator.toProperty = function(client, propertyEle
         eElement = eElement.nextSibling;
     }
     return new EchoAppRender.RemoteListData(items);
-};
-
-/**
- * Property Translator for List Selection State.
- */
-EchoAppRender.RemoteListSelectionTranslator = function() { };
-
-EchoAppRender.RemoteListSelectionTranslator.toProperty = function(client, propertyElement) {
-    return propertyElement.getAttribute("v").split(",");
-};
-
-EchoAppRender.RemoteListSelectionTranslator.toXml = function(client, propertyElement, propertyValue) {
-    propertyElement.setAttribute("v", propertyValue ? propertyValue.join(",") : ""); 
 };
 
 EchoSerial.addPropertyTranslator("RemoteListData", EchoAppRender.RemoteListDataTranslator);

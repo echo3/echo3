@@ -182,7 +182,8 @@ EchoSerial.storeProperty = function(client, propertyElement, propertyValue) {
     EchoCore.Debug.consoleWrite("Storing property:" + propertyValue);
     if (typeof (propertyValue) == "object") {
         if (!propertyValue.className) {
-            throw new Error("propertyValue does not provide className property, cannot determine translator.");
+            throw new Error("propertyValue \"" + propertyValue 
+                    + "\" does not provide className property, cannot determine translator.");
         }
         var translator = EchoSerial._propertyTranslatorMap[propertyValue.className];
         if (!translator || !translator.toXml) {

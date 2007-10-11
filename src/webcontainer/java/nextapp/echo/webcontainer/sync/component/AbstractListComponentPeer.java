@@ -234,7 +234,7 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
         if (PROPERTY_DATA.equals(propertyName)) {
             return "updateListData";
         } else if (PROPERTY_SELECTION.equals(propertyName)) {
-            return "updateListSelection";
+            return "setSelectionString";
         }
         return super.getOutputPropertyMethodName(context, component, propertyName);
     }
