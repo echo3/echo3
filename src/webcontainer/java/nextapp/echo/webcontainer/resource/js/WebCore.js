@@ -815,7 +815,7 @@ EchoWebCore.HttpConnection.prototype.removeResponseListener = function(l) {
     this._listenerList.removeListener("response", l);
 };
 
-// FIXME. Current "valid" flag for 2XX responses is probably a horrible idea.
+// FIXME Current "valid" flag for 2XX responses is probably a horrible idea.
 EchoWebCore.HttpConnection.ResponseEvent = function(source, valid) {
     EchoCore.Event.call(this, "response", source);
     this.valid = valid;

@@ -7,32 +7,49 @@
 
 /**
  * Creates a new RemoteClient instance.
- * @class A client which provides a remote view of an Echo application being executed on the server.
- *        This client exchanges data with the remote server in the form of XML messages containing
- *        serialized components and events.
  * @constructor
  * @param serverUrl the URL of the server
  * @param domainElementId the id of the DOM element which this client should use as its
  *        root element (this element must define a horizontal and vertical space, e.g.,
  *        it must define an absolute area or percentage of the screen)
+ * 
+ * @class 
+ * A client which provides a remote view of an Echo application being executed on the server.
+ * This client exchanges data with the remote server in the form of XML messages containing
+ * serialized components and events.
+ *        
+ * Component synchronization peers that will be working exclusively with a RemoteClient may 
+ * implement an optional <code>storeProperty(clientMessage, property)</code> method to 
+ * provide custom property XML serialization.  This should be avoided if possible, but may
+ * be necessary for serializing certain information such as the state of a model.
  */
 EchoRemoteClient = function(serverUrl) {
     EchoClient.call(this);
     
+    /**
+     * The base server url.
+     * @type String
+     * @private
+     */
     this._serverUrl = serverUrl;
 
     /**
      * MethodRef to _processClientUpdate() method.
+     * @type EchoCore.MethodRef
+     * @private
      */
     this._processClientUpdateRef = new EchoCore.MethodRef(this, this._processClientUpdate);
 
     /**
      * MethodRef to _processClientEvent() method.
+     * @type EchoCore.MethodRef
+     * @private
      */
     this._processClientEventRef = new EchoCore.MethodRef(this, this._processClientEvent);
     
     /**
-     * Mapping between shorthand URL codes and replacement values.
+     * Associative array mapping between shorthand URL codes and replacement values.
+     * @private
      */
     this._urlMappings = new Object();
     this._urlMappings["I"] = this._serverUrl + "?sid=Echo.Image&iid=";
@@ -42,20 +59,51 @@ EchoRemoteClient = function(serverUrl) {
     /**
      * Queue of commands to be executed.  Each command occupies two
      * indices, first index is the command peer, second is the command data.
-     * 
      * @type Array
+     * @private
      */
     this._commandQueue = null;
     
+    /**
+     * Outgoing client message.
+     * @type EchoRemoteClient.ClientMessage
+     * @private
+     */
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
 
+    /**
+     * AsyncManager instance which will invoke server-pushed operations.
+     * @type EchoRemoteClient.AsyncManager
+     * @private
+     */
     this._asyncManager = new EchoRemoteClient.AsyncManager(this);
     
+    /**
+     * Wait indicator.
+     * @type EchoRemoteClient.WaitIndicator
+     * @private
+     */
     this._waitIndicator = new EchoRemoteClient.DefaultWaitIndicator();
     
+    /**
+     * Network delay before raising wait indicator, in milleseconds.
+     * @type Integer
+     * @private
+     */
     this._preWaitIndicatorDelay = 500;
+    
+    /**
+     * Runnable that will trigger initialization of wait indicator.
+     * @type EchoCore.Scheduler.Runnable
+     * @private
+     */
     this._waitIndicatorRunnable = new EchoCore.Scheduler.Runnable(new EchoCore.MethodRef(this, this._waitIndicatorActivate), 
             this._preWaitIndicatorDelay, false);
+    
+    /**
+     * Flag indicating whether the remote client has been initialized.
+     */
+    this._initialized = false;
 };
 
 EchoRemoteClient.prototype = EchoCore.derive(EchoClient);
@@ -118,6 +166,7 @@ EchoRemoteClient.prototype.decompressUrl = function(url) {
  * 
  * @param commandPeer the command peer to execute
  * @param commandData an object containing the command data sent from the server
+ * @private
  */
 EchoRemoteClient.prototype._enqueueCommand = function(commandPeer, commandData) {
     if (this._commandQueue == null) {
@@ -128,6 +177,7 @@ EchoRemoteClient.prototype._enqueueCommand = function(commandPeer, commandData) 
 
 /**
  * Executes all enqued commands; empties the queue.
+ * @private
  */
 EchoRemoteClient.prototype._executeCommands = function() {
     if (this._commandQueue) {
@@ -167,19 +217,40 @@ EchoRemoteClient.prototype.getServiceUrl = function(serviceId) {
     return this._serverUrl + "?sid=" + serviceId;
 };
 
+/**
+ * Initializes the remote client.  This method will perform the following operations:
+ * <ul>
+ *  <li>Find the domain element in which the application should exist by parsing the
+ *   initial server message XML document.</li>
+ *  <li>Create a new EchoApp.Application instance,</li>
+ *  <li>Register a component update listener on that application instance such that
+ *   a user's input will be stored in the outgoing ClientMessage.</li>
+ *  <li>Invoke EchoClient.configure() to initialize the client.</li>
+ * </ul>  
+ * 
+ * @param {Document} initialResponseDocument the initial ServerMessage XML document 
+ *        received from the server (this document contains some necessary start-up information
+ *        such as the id of the root element)
+ */
 EchoRemoteClient.prototype.init = function(initialResponseDocument) {
+    // Find domain element.
     var domainElementId = initialResponseDocument.documentElement.getAttribute("root");
     var domainElement = document.getElementById(domainElementId);
     if (!domainElement) {
         throw new Error("Cannot find domain element: " + domainElementId);
     }
     
+    // Create an application instance.
     var application = new EchoApp.Application();
+    
+    // Register an update listener to receive notification of user actions such that they
+    // may be remarked in the outgoing ClientMessage.
     application.addComponentUpdateListener(this._processClientUpdateRef);
     
+    // Perform general purpose client configuration.
     this.configure(application, domainElement);
     
-    this._storeUpdates = false;
+    // Mark the client as initialized.
     this._initialized = true;
 };
 
@@ -224,7 +295,7 @@ EchoRemoteClient.prototype._processClientUpdate = function(e) {
 /**
  * ServerMessage completion listener.
  * 
- * @param e the server message completion event
+ * @param {EchoCore.Event} e the server message completion event
  */
 EchoRemoteClient.prototype._processSyncComplete = function(e) {
     if (EchoCore.profilingTimer) {
@@ -255,7 +326,7 @@ EchoRemoteClient.prototype._processSyncComplete = function(e) {
 /**
  * Process a response to a client-server synchronization.
  * 
- * @param e the HttpConnection response event
+ * @param {EchoWebCore.HttpConnection.ResponseEvent} e the HttpConnection response event
  */
 EchoRemoteClient.prototype._processSyncResponse = function(e) {
     EchoCore.Scheduler.remove(this._waitIndicatorRunnable);
@@ -301,6 +372,12 @@ EchoRemoteClient.prototype.removeComponentListener = function(component, eventTy
     component.removeListener(eventType, this._processClientEventRef);
 };
 
+/**
+ * Sets the wait indicator that will be displayed when a client-server action takes longer than
+ * a specified period of time.
+ * 
+ * @param {EchoRemoteClient.WaitIndicator} waitIndicator the new wait indicator 
+ */
 EchoRemoteClient.prototype.setWaitIndicator = function(waitIndicator) {
     if (this._waitIndicator) {
         this._waitIndicator.deactivate();
@@ -323,22 +400,41 @@ EchoRemoteClient.prototype.sync = function() {
     conn.connect();
 };
 
+/**
+ * Activates the wait indicator.
+ * @private
+ */
 EchoRemoteClient.prototype._waitIndicatorActivate = function() {
     this._waitIndicatorActive = true;
     this._waitIndicator.activate();
 };
 
+/**
+ * Manages server-pushed updates to the client. 
+ */
 EchoRemoteClient.AsyncManager = function(client) {
     this._client = client;
     this._runnable = new EchoCore.Scheduler.Runnable(new EchoCore.MethodRef(this, this._pollServerForUpdates), 1000, false);
 };
 
+/**
+ * Creates and invokes a new HttpConnection to the server to poll the server and determine whether
+ * it has any updates that need to be pushed to the client.
+ */
 EchoRemoteClient.AsyncManager.prototype._pollServerForUpdates = function() {
     var conn = new EchoWebCore.HttpConnection(this._client.getServiceUrl("Echo.AsyncMonitor"), "GET");
     conn.addResponseListener(new EchoCore.MethodRef(this, this._processPollResponse));
     conn.connect();
 };
 
+/**
+ * Response processor for server polling request.
+ * In the event a server action is required, this method will submit the client message to the 
+ * server immediately.  The server will push any updates into the reciprocated server message.
+ * If no action is required, the next polling interval will be scheduled.
+ * 
+ * @param {EchoWebCore.HttpConnection.ResponseEvent} e the poll response event 
+ */
 EchoRemoteClient.AsyncManager.prototype._processPollResponse = function(e) {
     var responseDocument = e.source.getResponseXml();
     if (!e.valid || !responseDocument || !responseDocument.documentElement) {
@@ -362,14 +458,25 @@ EchoRemoteClient.AsyncManager.prototype._processPollResponse = function(e) {
     }
 };
 
+/**
+ * Sets the interval at which the server should be polled.
+ * 
+ * @param interval the new polling interval, in milleseconds
+ */
 EchoRemoteClient.AsyncManager.prototype._setInterval = function(interval) {
     this._runnable.timeInterval = interval;
 };
 
+/**
+ * Starts server polling for asynchronous tasks.
+ */
 EchoRemoteClient.AsyncManager.prototype._start = function() {
     EchoCore.Scheduler.add(this._runnable);
 };
 
+/**
+ * Stops server polling for asynchronous tasks.
+ */
 EchoRemoteClient.AsyncManager.prototype._stop = function() {
     EchoCore.Scheduler.remove(this._runnable);
 };

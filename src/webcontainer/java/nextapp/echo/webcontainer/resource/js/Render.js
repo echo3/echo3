@@ -405,7 +405,7 @@ EchoRender._unloadPeer = function(component) {
  * Creates a new copmonent synchronization peer.
  * @constructor
  * @class
- * Component synchronization peer.
+ * Component synchronization peer. 
  * <p>
  * <strong>Optional methods:</strong>
  * <ul>
