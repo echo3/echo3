@@ -129,6 +129,10 @@ EchoAppRender.SplitPaneSync.prototype.loadRenderData = function() {
 };
 
 EchoAppRender.SplitPaneSync.prototype._processSeparatorMouseDown = function(e) {
+    if (!this.client.verifyInput(this.component)) {
+        return;
+    }
+
     EchoWebCore.DOM.preventEventDefault(e);
     
     EchoWebCore.dragInProgress = true;

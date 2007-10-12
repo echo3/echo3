@@ -419,6 +419,18 @@ EchoRemoteClient.prototype.sync = function() {
 };
 
 /**
+ * @see EchoClient#verifyInput
+ */
+EchoRemoteClient.prototype.verifyInput = function(component) {
+    if (false) {
+        //FIXME implement
+        return false;
+    } else {
+        return EchoClient.prototype.verifyInput.call(this, component);
+    }
+};
+    
+/**
  * Activates the wait indicator.
  * @private
  */
