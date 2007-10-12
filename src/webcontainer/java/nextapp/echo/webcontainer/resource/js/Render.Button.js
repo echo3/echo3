@@ -84,14 +84,14 @@ EchoAppRender.ButtonSync.prototype.getElement = function() {
 };
 
 EchoAppRender.ButtonSync.prototype._processBlur = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return;
     }
     this._setFocusState(false);
 };
 
 EchoAppRender.ButtonSync.prototype._processClick = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return;
     }
     this.component.application.setFocusedComponent(this.component);
@@ -99,7 +99,7 @@ EchoAppRender.ButtonSync.prototype._processClick = function(e) {
 };
 
 EchoAppRender.ButtonSync.prototype._processFocus = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return;
     }
     this._setFocusState(true);
@@ -126,7 +126,7 @@ EchoAppRender.ButtonSync.prototype._processInitMouseOver = function(e) {
 };
 
 EchoAppRender.ButtonSync.prototype._processKeyPress = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return true;
     }
     if (e.keyCode == 13) { // FIXME This will fail in IE (I think)
@@ -138,7 +138,7 @@ EchoAppRender.ButtonSync.prototype._processKeyPress = function(e) {
 };
 
 EchoAppRender.ButtonSync.prototype._processPress = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return;
     }
     EchoWebCore.DOM.preventEventDefault(e);
@@ -146,14 +146,14 @@ EchoAppRender.ButtonSync.prototype._processPress = function(e) {
 };
 
 EchoAppRender.ButtonSync.prototype._processRelease = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return;
     }
     this._setPressedState(false);
 };
 
 EchoAppRender.ButtonSync.prototype._processRolloverEnter = function(e) {
-    if (!this.component.isActive() || EchoWebCore.dragInProgress) {
+    if (!this.client.verifyInput(this.component) || EchoWebCore.dragInProgress) {
         return;
     }
     this.component.application.addFocusListener(new EchoCore.MethodRef(this, this._processRolloverExit));
@@ -161,7 +161,7 @@ EchoAppRender.ButtonSync.prototype._processRolloverEnter = function(e) {
 };
 
 EchoAppRender.ButtonSync.prototype._processRolloverExit = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return;
     }
     this.component.application.removeFocusListener(new EchoCore.MethodRef(this, this._processRolloverExit));

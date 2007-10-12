@@ -10,7 +10,7 @@ EchoAppRender.ListComponentSync = function() { };
 EchoAppRender.ListComponentSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
 
 EchoAppRender.ListComponentSync.prototype._processChange = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         EchoWebCore.DOM.preventEventDefault(e);
         return;
     }

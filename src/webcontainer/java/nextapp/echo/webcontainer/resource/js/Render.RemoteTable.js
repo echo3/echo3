@@ -336,7 +336,7 @@ EchoAppRender.RemoteTableSync.prototype._doAction = function() {
 };
 
 EchoAppRender.RemoteTableSync.prototype._processClick = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return;
     }
     var trElement = e.registeredTarget;
@@ -377,7 +377,7 @@ EchoAppRender.RemoteTableSync.prototype._processClick = function(e) {
 };
 
 EchoAppRender.RemoteTableSync.prototype._processRolloverEnter = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return;
     }
     var trElement = e.registeredTarget;
@@ -398,7 +398,7 @@ EchoAppRender.RemoteTableSync.prototype._processRolloverEnter = function(e) {
 };
 
 EchoAppRender.RemoteTableSync.prototype._processRolloverExit = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return;
     }
     var trElement = e.registeredTarget;

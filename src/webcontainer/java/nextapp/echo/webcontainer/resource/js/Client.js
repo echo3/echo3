@@ -188,6 +188,23 @@ EchoClient.prototype._processKeyUp = function(e) {
 };
 
 /**
+ * Determines if the specified component and containing application is ready to receive input.
+ * This method should be overridden by client implementations as needed, returning the value
+ * from this implementation if the client has no other reason to disallow input.
+ * 
+ * @param component optional parameter indicating the component to query (if omitted, only the
+ *        applications readiness state will be investigated)
+ * @return true if the application/component are ready to receive inputs
+ */
+EchoClient.prototype.verifyInput = function(component) {
+    if (component) {
+        return component.isActive();
+    } else {
+        return this.application.isActive();
+    }
+};
+
+/**
  * Instance listener to respond to resizing of browser window.
  * 
  * @param e the DOM resize event

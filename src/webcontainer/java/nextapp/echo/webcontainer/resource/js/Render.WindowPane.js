@@ -18,7 +18,7 @@ EchoAppRender.WindowPaneSync.prototype._loadContainerSize = function() {
 };
 
 EchoAppRender.WindowPaneSync.prototype.processBorderMouseDown = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return;
     }
 
@@ -109,14 +109,14 @@ EchoAppRender.WindowPaneSync.prototype.processKeyDown = function(e) {
 };
 
 EchoAppRender.WindowPaneSync.prototype._processCloseClick = function(e) { 
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return;
     }
     this.component.doWindowClosing();
 };
 
 EchoAppRender.WindowPaneSync.prototype.processTitleBarMouseDown = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return;
     }
 

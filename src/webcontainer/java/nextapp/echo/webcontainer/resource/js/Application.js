@@ -73,15 +73,6 @@ EchoApp.Application = function() {
      * @type EchoApp.FocusManager
      */
     this.focusManager = new EchoApp.FocusManager(this);
-    
-    /**
-     * The active state of the application, a value of true indicating the
-     * application is ready to receive input.
-     * 
-     * @private
-     * @type Boolean
-     */
-    this._active = true;
 };
 
 /**
@@ -203,7 +194,7 @@ EchoApp.Application.prototype.getStyleSheet = function() {
  * @type Boolean
  */
 EchoApp.Application.prototype.isActive = function() {
-    return this._active;
+    return true;
 };
 
 /**
@@ -260,15 +251,6 @@ EchoApp.Application.prototype.removeComponentUpdateListener = function(l) {
  */
 EchoApp.Application.prototype.removeFocusListener = function(l) {
     this._listenerList.removeListener("focus", l);
-};
-
-/**
- * Sets the active state of the application.
- * 
- * @param {Boolean} newValue the new active state of the application
- */
-EchoApp.Application.prototype.setActive = function(newValue) {
-    this._active = newValue;
 };
 
 /**

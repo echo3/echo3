@@ -39,7 +39,7 @@ EchoAppRender.TextComponentSync.prototype.renderDispose = function(update) {
 };
 
 EchoAppRender.TextComponentSync.prototype._processBlur = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return;
     }
     this._sanitizeInput();
@@ -47,14 +47,14 @@ EchoAppRender.TextComponentSync.prototype._processBlur = function(e) {
 };
 
 EchoAppRender.TextComponentSync.prototype._processClick = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
         return;
     }
     this.component.application.setFocusedComponent(this.component);
 };
 
 EchoAppRender.TextComponentSync.prototype._processKeyUp = function(e) {
-    if (!this.component.isActive()) {
+    if (!this.client.verifyInput(this.component)) {
 		EchoWebCore.DOM.preventEventDefault(e);
         return true;
     }
