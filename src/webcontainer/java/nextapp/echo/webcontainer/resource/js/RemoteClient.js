@@ -129,6 +129,7 @@ EchoRemoteClient.libraryServerUrl = null;
 EchoRemoteClient.prototype.addComponentListener = function(component, eventType) {
     component.addListener(eventType, this._processClientEventRef);
 };
+
 /**
  * Decompresses a shorthand URL into a valid full-length URL.
  * A shorthand URL is expressed as "!A!xxxx" where
@@ -272,7 +273,7 @@ EchoRemoteClient.prototype._processClientEvent = function(e) {
 };
 
 /**
- * Processes an update to a component (storing the updated state in the outgoing
+ * Processes a user update to a component (storing the updated state in the outgoing
  * client message).
  * 
  * @param e the property update event from the component
@@ -298,11 +299,15 @@ EchoRemoteClient.prototype._processClientUpdate = function(e) {
  * @param {EchoCore.Event} e the server message completion event
  */
 EchoRemoteClient.prototype._processSyncComplete = function(e) {
+    // Mark time of serialization completion with profiling timer.
     if (EchoCore.profilingTimer) {
-        EchoCore.profilingTimer.mark("ser"); // Serialization
+        EchoCore.profilingTimer.mark("ser");
     }
     
+    // Create new client message.
     this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
+    
+    // Register component update listener 
     this.application.addComponentUpdateListener(this._processClientUpdateRef);
 	EchoRender.processUpdates(this);
     
@@ -329,9 +334,13 @@ EchoRemoteClient.prototype._processSyncComplete = function(e) {
  * @param {EchoWebCore.HttpConnection.ResponseEvent} e the HttpConnection response event
  */
 EchoRemoteClient.prototype._processSyncResponse = function(e) {
+    // Remove wait indicator from scheduling (if wait indicator has not been presented yet, it will not be).
     EchoCore.Scheduler.remove(this._waitIndicatorRunnable);
     
+    // Retrieve response document.
     var responseDocument = e.source.getResponseXml();
+    
+    // Verify that response document exists and is valid.
     if (!e.valid || !responseDocument || !responseDocument.documentElement) {
         //FIXME Central error handling for things like this.
         //FIXME Shut down further client input with secondary "you're beating a dead horse" error message. 
@@ -346,19 +355,28 @@ EchoRemoteClient.prototype._processSyncResponse = function(e) {
         return;
     }
     
+    // If this is the first ServerMessage received, initialize the client
+    // This step will create the application, determine where in the DOM the application should be
+    // rendered, and so forth.
     if (!this._initialized) {
         this.init(responseDocument);
     }
     
-    // Profiling Timer (Uncomment to enable).
+    // Profiling Timer (Uncomment to enable, comment to disable).
     EchoCore.profilingTimer = new EchoCore.Debug.Timer();
-
+    
+    // Remove component update listener from application.  This listener is listening
+    // for user input.  
     this.application.removeComponentUpdateListener(this._processClientUpdateRef);
     
+    // Create new ServerMessage object with response document.
     var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
     
+    // Add completion listener to invoke _processSyncComplete when message has been fully processed.
+    // (Some elements of the server message are processed asynchronously). 
     serverMessage.addCompletionListener(new EchoCore.MethodRef(this, this._processSyncComplete));
     
+    // Start server message processing.
     serverMessage.process();
 };
 
