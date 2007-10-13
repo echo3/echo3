@@ -234,17 +234,17 @@ EchoCore.Arrays.containsAll = function(array1, array2, unique) {
 EchoCore.Debug = function() { };
 
 /**
- * Flag indicating whether console output should be displayed as alerts.
- * Enabling is generally not recommended.
- * @type Boolean
- */
-EchoCore.Debug.alert = false;
-
-/**
  * The DOM element to which console output should be written.
  * @type HTMLElement
  */
 EchoCore.Debug.consoleElement = null;
+
+/**
+* Flag indicating whether console output should be displayed as alerts.
+* Enabling is generally not recommended.
+* @type Boolean
+*/
+EchoCore.Debug.useAlertDialog = false;
 
 /**
  * Writes a message to the debug console.
@@ -260,7 +260,7 @@ EchoCore.Debug.consoleWrite = function(text) {
         } else {
             EchoCore.Debug.consoleElement.insertBefore(entryElement, EchoCore.Debug.consoleElement.firstChild);
         }
-    } else if (EchoCore.Debug.alert) {
+    } else if (EchoCore.Debug.useAlertDialog) {
         alert("DEBUG:" + text);
     }
 };
