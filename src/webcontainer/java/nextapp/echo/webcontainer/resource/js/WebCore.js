@@ -35,7 +35,7 @@ EchoWebCore.init = function() {
     }
 
     EchoWebCore.Environment._init();
-    EchoWebCore.Render.calculateExtentSizes();
+    EchoWebCore.Render._calculateExtentSizes();
     if (EchoWebCore.Environment.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY) {
         // Enable virtual positioning.
         EchoWebCore.VirtualPosition._init();
@@ -1049,6 +1049,10 @@ EchoWebCore.Library._Manager = function() { };
 
 EchoWebCore.Library._Manager._loadedLibraries = new Array();
 
+/**
+ * @class
+ * Namespace for rendering and measuring related 
+ */
 EchoWebCore.Render = function() { };
 
 EchoWebCore.Render._horizontalInchSize = 96;
@@ -1089,8 +1093,10 @@ EchoWebCore.Render.extentToPixels = function(value, units, horizontal) {
 /**
  * Updates internal measures used in converting length units 
  * (e.g., in, mm, ex, and em) to pixels.
+ * Automatically invoked when WebCore module is initialized.
+ * @private
  */
-EchoWebCore.Render.calculateExtentSizes = function() {
+EchoWebCore.Render._calculateExtentSizes = function() {
     var containerElement = document.getElementsByTagName("body")[0];
 
     var inchDiv4 = document.createElement("div");
@@ -1118,6 +1124,13 @@ EchoWebCore.Render.calculateExtentSizes = function() {
     containerElement.removeChild(exDiv24);
 };
 
+//FIXME Rename EchoWebCore.Render to EchoWebCore.Mesaure
+//FIXME Measuring code needs to be simplified/combined/documented.
+
+/**
+ * @constructor
+ * @class
+ */
 EchoWebCore.Render.Measure = function(element) {
     var testElement = element;
     while (testElement && testElement != document) {
@@ -1157,10 +1170,20 @@ EchoWebCore.Render.Measure = function(element) {
     }
 };
 
+/**
+ * toString() implementation for debug purposes.
+ * 
+ * @return a string representation of the object
+ * @type String
+ */
 EchoWebCore.Render.Measure.prototype.toString = function() {
     return this.width + "x" + this.height;
 };
 
+/**
+ * @constructor
+ * @class
+ */
 EchoWebCore.Render.Measure.Bounds = function(element) {
 	var cumOffset = EchoWebCore.Render.Measure.Bounds._getCumulativeOffset(element);
     var scrollOffset = EchoWebCore.Render.Measure.Bounds._getScrollOffset(element);
@@ -1192,16 +1215,25 @@ EchoWebCore.Render.Measure.Bounds._getCumulativeOffset = function(element) {
     return {left: valueL, top: valueT};
 };
 
+/**
+ * toString() implementation for debug purposes.
+ * 
+ * @return a string representation of the object
+ * @type String
+ */
 EchoWebCore.Render.Measure.Bounds.prototype.toString = function() {
     return this.width + "x" + this.height + "@" + this.left + "," + this.top;
 };
 
 /**
+ * @class
  * Static object/namespace which provides cross-platform CSS positioning 
- * capabilities.  Internet Explorer 6 is ordinarily handicapped by its lack
+ * capabilities. Do not instantiate.
+ * <p>
+ * Internet Explorer 6 is ordinarily handicapped by its lack
  * of support for setting 'left' and 'right' or 'top' and 'bottom' positions
  * simultaneously on a single document element.
- * 
+ * <p> 
  * To use virtual positioning, simply set the left/right/top/bottom
  * coordinates of an element and invoke redraw().  The redraw() method
  * must be invoked whenever the size of the element should be redrawn,
