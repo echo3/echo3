@@ -102,26 +102,6 @@ EchoWebCore.DOM.addEventListener = function(eventSource, eventType, eventListene
 };
 
 /**
- * Adds a rule to the document stylesheet.
- * This method does not function in Safari/KHTML.
- * 
- * @param {String} selectorText the selector
- * @param {String} style the style information
- */
-EchoWebCore.DOM.addRule = function(selectorText, style) {
-    //FIXME. add code to init() to ensure document.styleSheets[0] exists.
-    // Probably remove the printed version from initial HTML service as well.
-    var ss = document.styleSheets[0];
-    if (ss.insertRule) {
-        // W3C DOM Browsers.
-        ss.insertRule(selectorText + " {" + style + "}", ss.cssRules.length);
-    } else if (ss.addRule) {
-        // IE6.
-        ss.addRule(selectorText, style);
-    }
-};
-
-/**
  * Creates a new XML DOM.
  *
  * @param {String} namespaceUri the unique URI of the namespace of the root element in 
@@ -333,35 +313,6 @@ EchoWebCore.DOM._removeNodeRecursive = function(node) {
         childNode = nextChildNode;
     }
     node.parentNode.removeChild(node);
-};
-
-/**
- * Removes a rule from the document stylesheet.
- * This method does not function in Safari/KHTML.
- * 
- * @param {String} selectorText the selector
- */
-EchoWebCore.DOM.removeRule = function(selectorText) {
-    selectorText = selectorText.toLowerCase();
-    var ss = document.styleSheets[0];
-    
-    // Retrieve rules object for W3C DOM : IE6.
-    var rules = ss.cssRules ? ss.cssRules : ss.rules;
-    
-    for (var i = 0; i < rules.length; ++i) {
-        if (rules[i].type == 1 && rules[i].selectorText.toLowerCase() == selectorText) {
-            if (ss.deleteRule) {
-                // Delete rule: W3C DOM.
-                ss.deleteRule(i);
-                break;
-            } else if (ss.removeRule) {
-                // Delete rule: IE6.
-                //FIXME untested.
-                ss.removeRule(i);
-                break;
-            }
-        }
-    }
 };
 
 /**
