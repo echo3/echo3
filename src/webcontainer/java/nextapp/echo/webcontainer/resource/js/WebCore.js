@@ -4,7 +4,7 @@
  * <ul>
  *  <li>Provides cross-platform API for accessing web client features that have
  *   inconsistent implementations on various browser platforms.</li>
- *  <li>Provides HTTP Connection object (wrapper for XMLHttpRequest that allows
+ *  <li>Provides HTTP Connection object (wrapper for XMLHttpRequest) that allows
  *   for object-oriented "MethodRef"-based event listeners.</li>
  *  <li>Provides HTML DOM manipulation capabilites.</li>
  *  <li>Provides DOM event mangement facility, enabling capturing/bubbling phases
@@ -354,8 +354,17 @@ EchoWebCore.DOM.isAncestorOf = function(ancestorNode, descendantNode) {
     return false;
 };
 
+/**
+ * @class
+ * Provides information about the web browser environment.
+ * Non-instantiable class.
+ */
 EchoWebCore.Environment = function() { };
 
+/**
+ * Performs initial analysis of environment.
+ * Automatically invoked when WebCore module is initialized.
+ */
 EchoWebCore.Environment._init = function() {
     var env = EchoWebCore.Environment;
     var ua = navigator.userAgent.toLowerCase();
@@ -436,8 +445,6 @@ EchoWebCore.Environment._init = function() {
 };
 
 /**
- * @private
- * 
  * Parses version information from user agent string. The text argument specifies
  * the string that prefixes the version info in the ua string (ie 'version/' for Safari for example).
  * <p>
@@ -445,7 +452,8 @@ EchoWebCore.Environment._init = function() {
  * is retrieved by getting the int between the first dot and the first non-numeric character that appears
  * after the dot, or the end of the ua string (whichever comes first).
  * If the ua string does not supply a minor version, the minor version is assumed to be 0.
- * 
+ *
+ * @private
  * @param ua the lower cased user agent string
  * @param searchString the text that prefixes the version info (version info must be the first appearance of 
  *          this text in the ua string)
@@ -497,26 +505,29 @@ EchoWebCore.EventProcessor = function() { };
 
 /**
  * The next element identifier.
+ * @type Integer
  */
 EchoWebCore.EventProcessor._nextId = 0;
 
 /**
  * Mapping between element ids and ListenerLists containing listeners to invoke during capturing phase.
+ * @type EchoCore.Arrays.LargeMap
  */
 EchoWebCore.EventProcessor._capturingListenerMap = new EchoCore.Arrays.LargeMap();
 
 /**
  * Mapping between element ids and ListenerLists containing listeners to invoke during bubbling phase.
+ * @type EchoCore.Arrays.LargeMap
  */
 EchoWebCore.EventProcessor._bubblingListenerMap = new EchoCore.Arrays.LargeMap();
 
 /**
  * Registers an event handler.
  *
- * @param element the DOM element on which to add the event handler
- * @param eventType the DOM event type
+ * @param {Element} element the DOM element on which to add the event handler
+ * @param {String} eventType the DOM event type
  * @param eventTarget the method or MethodRef to invoke when the event is fired
- * @param capture true to fire the event during the capturing phase, false to fire the event during
+ * @param {Boolean} capture true to fire the event during the capturing phase, false to fire the event during
  *        the bubbling phase
  */
 EchoWebCore.EventProcessor.add = function(element, eventType, eventTarget, capture) {
@@ -562,7 +573,7 @@ EchoWebCore.EventProcessor.add = function(element, eventType, eventTarget, captu
  * The removeSelectionDenialListener() method should be invoked
  * when the element is to be disposed.
  * 
- * @param element the element on which to forbid text selection
+ * @param {Element} element the element on which to forbid text selection
  * @see EchoWebCore.EventProcessor#removeSelectionDenialListener
  */
 EchoWebCore.EventProcessor.addSelectionDenialListener = function(element) {
@@ -572,6 +583,11 @@ EchoWebCore.EventProcessor.addSelectionDenialListener = function(element) {
     }
 };
 
+/**
+ * Listener method which is invoked when ANY event registered with the event processor occurs.
+ * 
+ * @param {Event} e 
+ */
 EchoWebCore.EventProcessor._processEvent = function(e) {
     e = e ? e : window.event;
     if (!e.target && e.srcElement) {
@@ -640,10 +656,10 @@ EchoWebCore.EventProcessor._processEvent = function(e) {
 /**
  * Unregisters an event handler.
  *
- * @param element the DOM element on which to add the event handler
- * @param eventType the DOM event type
+ * @param {Element} element the DOM element on which to add the event handler
+ * @param {String} eventType the DOM event type
  * @param eventTarget the method of MethodRef to invoke when the event is fired
- * @param capture true to fire the event during the capturing phase, false to fire the event during
+ * @param {Boolean} capture true to fire the event during the capturing phase, false to fire the event during
  *        the bubbling phase
  */
 EchoWebCore.EventProcessor.remove = function(element, eventType, eventTarget, capture) {
@@ -673,12 +689,42 @@ EchoWebCore.EventProcessor.remove = function(element, eventType, eventTarget, ca
     }
 };
 
+/**
+ * Unregister all event handlers from a specific element.
+ * Use of this operation is recommended when disposing of components, it is
+ * more efficient than removing listenerse individually and guarantees proper clean-up.
+ * 
+ * @param {Element} the element
+ */
 EchoWebCore.EventProcessor.removeAll = function(element) {
     if (!element.__eventProcessorId) {
         return;
     }
-    EchoWebCore.EventProcessor._unregisterAll(element, EchoWebCore.EventProcessor._capturingListenerMap);
-    EchoWebCore.EventProcessor._unregisterAll(element, EchoWebCore.EventProcessor._bubblingListenerMap);
+    EchoWebCore.EventProcessor._removeAllImpl(element, EchoWebCore.EventProcessor._capturingListenerMap);
+    EchoWebCore.EventProcessor._removeAllImpl(element, EchoWebCore.EventProcessor._bubblingListenerMap);
+};
+
+/**
+ * Implementation method for removeAll().
+ * Removes all capturing or bubbling listeners from a specific element
+ * 
+ * @param {Element} the element
+ * @param {EchoCore.Arrays.LargeMap} the map from which the listeners should be removed, either
+ *        EchoWebCore.EventProcessor._capturingListenerMap or EchoWebCore.EventProcessor._bubblingListenerMap
+ * @private
+ */
+EchoWebCore.EventProcessor._removeAllImpl = function(element, listenerMap) {
+    var listenerList = listenerMap.map[element.__eventProcessorId];
+    if (!listenerList) {
+        return;
+    }
+
+    var types = listenerList.getListenerTypes();
+    for (var i = 0; i < types.length; ++i) {
+        EchoWebCore.DOM.removeEventListener(element, types[i], EchoWebCore.EventProcessor._processEvent, false); 
+    }
+    
+    listenerMap.remove(element.__eventProcessorId);
 };
 
 /**
@@ -704,20 +750,13 @@ EchoWebCore.EventProcessor._selectionDenialHandler = function(e) {
     EchoWebCore.DOM.preventEventDefault(e);
 };
 
-EchoWebCore.EventProcessor._unregisterAll = function(element, listenerMap) {
-    var listenerList = listenerMap.map[element.__eventProcessorId];
-    if (!listenerList) {
-        return;
-    }
-
-	var types = listenerList.getListenerTypes();
-	for (var i = 0; i < types.length; ++i) {
-		EchoWebCore.DOM.removeEventListener(element, types[i], EchoWebCore.EventProcessor._processEvent, false); 
-	}
-	
-    listenerMap.remove(element.__eventProcessorId);
-};
-
+/**
+ * toString() implementation for debugging purposes.
+ * Displays contents of capturing and bubbling listener maps.
+ * 
+ * @return string represenation of listener maps
+ * @type String
+ */
 EchoWebCore.EventProcessor.toString = function() {
     return "Capturing: " + EchoWebCore.EventProcessor._capturingListenerMap + "\n"
             + "Bubbling: " + EchoWebCore.EventProcessor._bubblingListenerMap;
@@ -728,10 +767,16 @@ EchoWebCore.EventProcessor.toString = function() {
  * This method simply configures the connection, the connection
  * will not be opened until <code>connect()</code> is invoked.
  *
- * @param url the target URL
- * @param method the connection method, i.e., GET or POST
+ * @param {String} url the target URL
+ * @param {String} method the connection method, i.e., GET or POST
  * @param messageObject the message to send (may be a String or XML DOM)
- * @param contentType the request content-type
+ * @param {String} contentType the request content-type
+ * @constructor
+ * 
+ * @class
+ * An HTTP connection to the hosting server.  This method provides a cross
+ * platform wrapper for XMLHttpRequest and additionally allows method
+ * reference-based listener registration.  
  */
 EchoWebCore.HttpConnection = function(url, method, messageObject, contentType) {
     this._url = url;
@@ -742,12 +787,18 @@ EchoWebCore.HttpConnection = function(url, method, messageObject, contentType) {
     this._listenerList = new EchoCore.ListenerList();
 };
 
+/**
+ * Adds a response listener to be notified when a response is received from the connection.
+ * 
+ * @param l the listener to add (may be a Function or EchoCore.MethodRef)
+ */
 EchoWebCore.HttpConnection.prototype.addResponseListener = function(l) {
     this._listenerList.addListener("response", l);
 };
 
 /**
  * Executes the HTTP connection.
+ * This method will return before the HTTP connection has received a response.
  */
 EchoWebCore.HttpConnection.prototype.connect = function() {
     var usingActiveXObject = false;
@@ -785,6 +836,10 @@ EchoWebCore.HttpConnection.prototype.connect = function() {
     this._xmlHttpRequest.send(this._messageObject ? this._messageObject : null);
 };
 
+/**
+ * Disposes of the connection.  This method must be invoked when the connection 
+ * will no longer be used/processed.
+ */
 EchoWebCore.HttpConnection.prototype.dispose = function() {
     this._listenerList = null;
     this._messageObject = null;
@@ -792,6 +847,11 @@ EchoWebCore.HttpConnection.prototype.dispose = function() {
     this._disposed = true;
 };
 
+/**
+ * Returns the response status code of the HTTP connection, if available.
+ * 
+ * @return {Integer} the response status code
+ */
 EchoWebCore.HttpConnection.prototype.getStatus = function() {
     return this._xmlHttpRequest ? this._xmlHttpRequest.status : null;
 };
@@ -841,16 +901,35 @@ EchoWebCore.HttpConnection.prototype._processReadyStateChange = function() {
     }
 };
 
+/**
+ * Adds a response listener to be notified when a response is received from the connection.
+ * 
+ * @param l the listener to add (may be a Function or EchoCore.MethodRef)
+ */
 EchoWebCore.HttpConnection.prototype.removeResponseListener = function(l) {
     this._listenerList.removeListener("response", l);
 };
 
 // FIXME Current "valid" flag for 2XX responses is probably a horrible idea.
+/**
+ * Creates a new response event
+ * @param source {EchoWebCore.HttpConnection} the connection which fired the event
+ * @param valid {Boolean} a flag indicating a valid 2XX response was received
+ * 
+ * @constructor
+ * @class
+ * An event which indicates a response has been received to a connection
+ */
 EchoWebCore.HttpConnection.ResponseEvent = function(source, valid) {
     EchoCore.Event.call(this, "response", source);
     this.valid = valid;
 };
 
+/**
+ * @class
+ * Utilities for dynamically loading additional script libraries.
+ * Non-instantiable class. 
+ */
 EchoWebCore.Library = function() { };
 
 /**
