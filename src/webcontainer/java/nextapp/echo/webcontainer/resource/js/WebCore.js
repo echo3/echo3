@@ -20,6 +20,7 @@
  */
 
 /**
+ * @class
  * Namespace for Web Core.  Non-instantiable object.
  */
 EchoWebCore = function() { };
@@ -50,10 +51,20 @@ EchoWebCore.init = function() {
     EchoWebCore.initialized = true;
 };
 
+/**
+ * Flag indicating that a drag-and-drop operation is in process.
+ * Setting this flag will prevent text selections within the browser.
+ * It must be un-set when the drag operation completes.
+ * 
+ * @type Boolean
+ */
 EchoWebCore.dragInProgress = false;
 
 /**
  * Internet Explorer-specific event listener to deny selection.
+ * 
+ * @param {Event} e the selection event
+ * @private
  */
 EchoWebCore._selectStartListener = function(e) {
     e = e ? e : window.event;
@@ -71,14 +82,14 @@ EchoWebCore.DOM = function() { };
 
 /**
  * Adds an event listener to an object, using the client's supported event 
- * model.
+ * model.  This method does NOT support method references. 
  *
- * @param eventSource the event source
- * @param eventType the type of event (the 'on' prefix should NOT be included
+ * @param {Element} eventSource the event source
+ * @param {String} eventType the type of event (the 'on' prefix should NOT be included
  *        in the event type, i.e., for mouse rollover events, "mouseover" would
  *        be specified instead of "onmouseover")
- * @param eventListener the event listener to be invoked when the event occurs
- * @param useCapture a flag indicating whether the event listener should capture
+ * @param {Function} eventListener the event listener to be invoked when the event occurs
+ * @param {Boolean} useCapture a flag indicating whether the event listener should capture
  *        events in the final phase of propagation (only supported by 
  *        DOM Level 2 event model, not available on Internet Explorer)
  */
@@ -94,8 +105,8 @@ EchoWebCore.DOM.addEventListener = function(eventSource, eventType, eventListene
  * Adds a rule to the document stylesheet.
  * This method does not function in Safari/KHTML.
  * 
- * @param selectorText the selector
- * @param style the style information
+ * @param {String} selectorText the selector
+ * @param {String} style the style information
  */
 EchoWebCore.DOM.addRule = function(selectorText, style) {
     //FIXME. add code to init() to ensure document.styleSheets[0] exists.
@@ -113,11 +124,12 @@ EchoWebCore.DOM.addRule = function(selectorText, style) {
 /**
  * Creates a new XML DOM.
  *
- * @param namespaceUri the unique URI of the namespace of the root element in 
+ * @param {String} namespaceUri the unique URI of the namespace of the root element in 
  *        the created document (not supported for
  *        Internet Explorer 6 clients, null may be specified for all clients)
- * @param qualifiedName the name of the root element of the new document (this
+ * @param {String} qualifiedName the name of the root element of the new document (this
  *        element will be created automatically)
+ * @type Document
  * @return the created DOM
  */
 EchoWebCore.DOM.createDocument = function(namespaceUri, qualifiedName) {
@@ -141,8 +153,11 @@ EchoWebCore.DOM.createDocument = function(namespaceUri, qualifiedName) {
 
 /**
  * Focuses the given DOM element.
+ * The focus operation may be placed in the scheduler if the browser requires the focus
+ * operation to be performed outside of current JavaScript context (i.e., in the case
+ * where the element to be focused was just rendered in this context).
  * 
- * @param element the DOM element to focus
+ * @param {Element} the DOM element to focus
  */
 EchoWebCore.DOM.focusElement = function(element) {
     if (EchoWebCore.Environment.QUIRK_DELAYED_FOCUS_REQUIRED) {
@@ -152,12 +167,27 @@ EchoWebCore.DOM.focusElement = function(element) {
     }
 };
 
+/**
+ * Focus element implementation.
+ * 
+ * @param {Element} the DOM element to focus
+ * @private
+ */
 EchoWebCore.DOM._focusElementImpl = function(element) {
     if (element.focus) {
         element.focus();
     }
 };
 
+/**
+ * Returns the first immediate child element of parentElement with the specified tag name.
+ * 
+ * @param {Element} parentElement the parent element
+ * @param tagName the tag name
+ * @return the first child element of parentElement with the specified tag name,
+ *         or null if no elements match
+ * @type Element
+ */
 EchoWebCore.DOM.getChildElementByTagName = function(parentElement, tagName) {
     var element = parentElement.firstChild;
     while (element) {
@@ -169,6 +199,14 @@ EchoWebCore.DOM.getChildElementByTagName = function(parentElement, tagName) {
     return null;
 };
 
+/**
+ * Returns an array containing all immediate child element of parentElement with the specified tag name.
+ * 
+ * @param {Element} parentElement the parent element
+ * @param tagName the tag name
+ * @return the child elements
+ * @type Array
+ */
 EchoWebCore.DOM.getChildElementsByTagName = function(parentElement, tagName) {
     var elements = new Array();
     var element = parentElement.firstChild;
@@ -188,8 +226,9 @@ EchoWebCore.DOM.getChildElementsByTagName = function(parentElement, tagName) {
  * On clients which support only the Internet Explorer event model,
  * the <code>srcElement</code> property of the event is returned.
  *
- * @param e the event
+ * @param {Event} e the event
  * @return the target
+ * @type Element
  */
 EchoWebCore.DOM.getEventTarget = function(e) {
     return e.target ? e.target : e.srcElement;
@@ -202,8 +241,9 @@ EchoWebCore.DOM.getEventTarget = function(e) {
  * On clients which support only the Internet Explorer event model,
  * the <code>toElement</code> property of the event is returned.
  *
- * @param e the event
+ * @param {Event} e the event
  * @return the target
+ * @type Element
  */
 EchoWebCore.DOM.getEventRelatedTarget = function(e) {
     return e.relatedTarget ? e.relatedTarget : e.toElement;
@@ -217,7 +257,7 @@ EchoWebCore.DOM.getEventRelatedTarget = function(e) {
  * On clients which support only the Internet Explorer event model,
  * the 'returnValue' property of the event is set to false.
  *
- * @param e the event
+ * @param {Event} e the event
  */
 EchoWebCore.DOM.preventEventDefault = function(e) {
     if (e.preventDefault) {
@@ -230,7 +270,7 @@ EchoWebCore.DOM.preventEventDefault = function(e) {
 /**
  * Removes all child nodes from the specified DOM node.
  *
- * @param node the parent node whose children should be deleted
+ * @param {Node} node the parent node whose children should be deleted
  */
 EchoWebCore.DOM.removeAllChildren = function(node) {
     while (node.firstChild) {
@@ -240,14 +280,14 @@ EchoWebCore.DOM.removeAllChildren = function(node) {
 
 /**
  * Removes an event listener from an object, using the client's supported event 
- * model.
+ * model.  This method does NOT support method references.
  *
- * @param eventSource the event source
- * @param eventType the type of event (the 'on' prefix should NOT be included
+ * @param {Element} eventSource the event source
+ * @param {String} eventType the type of event (the 'on' prefix should NOT be included
  *        in the event type, i.e., for mouse rollover events, "mouseover" would
  *        be specified instead of "onmouseover")
- * @param eventListener the event listener to be invoked when the event occurs
- * @param useCapture a flag indicating whether the event listener should capture
+ * @param {Function} eventListener the event listener to be invoked when the event occurs
+ * @param {Boolean}useCapture a flag indicating whether the event listener should capture
  *        events in the final phase of propagation (only supported by 
  *        DOM Level 2 event model, not available on Internet Explorer)
  */
@@ -263,7 +303,7 @@ EchoWebCore.DOM.removeEventListener = function(eventSource, eventType, eventList
  * Removes the specified DOM node from the DOM tree. This method employs a workaround for the
  * <code>QUIRK_PERFORMANCE_LARGE_DOM_REMOVE</code> quirk.
  *
- * @param node the node which should be deleted
+ * @param {Node} node the node which should be deleted
  */
 EchoWebCore.DOM.removeNode = function(node) {
     var parentNode = node.parentNode;
@@ -283,7 +323,7 @@ EchoWebCore.DOM.removeNode = function(node) {
  * of the given node are removed individually. This alleviates slow performance when removing large
  * DOM trees.
  *
- * @param node the node which should be deleted
+ * @param {Node} node the node which should be deleted
 */
 EchoWebCore.DOM._removeNodeRecursive = function(node) {
     var childNode = node.firstChild;
@@ -299,7 +339,7 @@ EchoWebCore.DOM._removeNodeRecursive = function(node) {
  * Removes a rule from the document stylesheet.
  * This method does not function in Safari/KHTML.
  * 
- * @param selectorText the selector
+ * @param {String} selectorText the selector
  */
 EchoWebCore.DOM.removeRule = function(selectorText) {
     selectorText = selectorText.toLowerCase();
@@ -332,7 +372,7 @@ EchoWebCore.DOM.removeRule = function(selectorText) {
  * On clients which support only the Internet Explorer event model,
  * the 'cancelBubble' property of the event is set to true.
  *
- * @param e the event
+ * @param {Event} e the event
  */
 EchoWebCore.DOM.stopEventPropagation = function(e) {
     if (e.stopPropagation) {
@@ -346,10 +386,11 @@ EchoWebCore.DOM.stopEventPropagation = function(e) {
  * Determines if <code>ancestorNode</code> is or is an ancestor of
  * <code>descendantNode</code>.
  *
- * @param ancestorNode the potential ancestor node
- * @param descendantNode the potential descendant node
+ * @param {Node} ancestorNode the potential ancestor node
+ * @param {Npde} descendantNode the potential descendant node
  * @return true if <code>ancestorNode</code> is or is an ancestor of
  *         <code>descendantNode</code>
+ * @type Boolean
  */
 EchoWebCore.DOM.isAncestorOf = function(ancestorNode, descendantNode) {
     var testNode = descendantNode;
@@ -484,6 +525,23 @@ EchoWebCore.Environment._parseVersionInfo = function(ua, searchString) {
     }
 };
 
+/**
+ * @class
+ * EventProcessor namespace.  Non-instantiable object.
+ * The static methods in this object provide a standard framework for handling
+ * DOM events across incompatible browser platforms.
+ * <p>
+ * <b>Object-oriented events:</b>  
+ * This implementation provides the capability to register EchoCore.MethodRef-based
+ * listeners, allowing event processing methods of specific object instances to 
+ * be invoked (i.e., preserving the 'this' pointer).
+ * <p>
+ * <b>Capturing/Bubbling Listeners:</b>
+ * This implementation additionally allows for the registration of capturing and bubbling event 
+ * listeners that work even on Internet Explorer platforms, where they are not natively supported.
+ * This implementation relies on the fact that all event listeners will be registered
+ * through it.
+ */
 EchoWebCore.EventProcessor = function() { };
 
 /**
@@ -547,22 +605,20 @@ EchoWebCore.EventProcessor.add = function(element, eventType, eventTarget, captu
     EchoWebCore.DOM.addEventListener(element, eventType, EchoWebCore.EventProcessor._processEvent, false);
 };
 
+/**
+ * Adds a listener to an element that will prevent text 
+ * selection / highlighting as a result of mouse clicks.
+ * The removeSelectionDenialListener() method should be invoked
+ * when the element is to be disposed.
+ * 
+ * @param element the element on which to forbid text selection
+ * @see EchoWebCore.EventProcessor#removeSelectionDenialListener
+ */
 EchoWebCore.EventProcessor.addSelectionDenialListener = function(element) {
     EchoWebCore.EventProcessor.add(element, "mousedown", EchoWebCore.EventProcessor._selectionDenialHandler, false);
     if (EchoWebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
         EchoWebCore.EventProcessor.add(element, "selectstart", EchoWebCore.EventProcessor._selectionDenialHandler, false);
     }
-};
-
-EchoWebCore.EventProcessor.removeSelectionDenialListener = function(element) {
-    EchoWebCore.EventProcessor.remove(element, "mousedown", EchoWebCore.EventProcessor._selectionDenialHandler, false);
-    if (EchoWebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
-        EchoWebCore.EventProcessor.remove(element, "selectstart", EchoWebCore.EventProcessor._selectionDenialHandler, false);
-    }
-};
-
-EchoWebCore.EventProcessor._selectionDenialHandler = function(e) {
-    EchoWebCore.DOM.preventEventDefault(e);
 };
 
 EchoWebCore.EventProcessor._processEvent = function(e) {
@@ -672,6 +728,29 @@ EchoWebCore.EventProcessor.removeAll = function(element) {
     }
     EchoWebCore.EventProcessor._unregisterAll(element, EchoWebCore.EventProcessor._capturingListenerMap);
     EchoWebCore.EventProcessor._unregisterAll(element, EchoWebCore.EventProcessor._bubblingListenerMap);
+};
+
+/**
+ * Removes a selection denial listener.
+ * 
+ * @param element the element from which to remove the selection denial listener
+ * @see EchoWebCore.EventProcessor#addSelectionDenialListener
+ */
+EchoWebCore.EventProcessor.removeSelectionDenialListener = function(element) {
+    EchoWebCore.EventProcessor.remove(element, "mousedown", EchoWebCore.EventProcessor._selectionDenialHandler, false);
+    if (EchoWebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
+        EchoWebCore.EventProcessor.remove(element, "selectstart", EchoWebCore.EventProcessor._selectionDenialHandler, false);
+    }
+};
+
+/**
+ * Selection denial listener implementation.
+ * 
+ * @param {Event} the selection/click event
+ * @private
+ */
+EchoWebCore.EventProcessor._selectionDenialHandler = function(e) {
+    EchoWebCore.DOM.preventEventDefault(e);
 };
 
 EchoWebCore.EventProcessor._unregisterAll = function(element, listenerMap) {
