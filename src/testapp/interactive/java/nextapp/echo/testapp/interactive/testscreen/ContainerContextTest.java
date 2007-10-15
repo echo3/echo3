@@ -129,7 +129,7 @@ public class ContainerContextTest extends Column {
                 }
                 labelValue = out.toString();
             } else {
-                labelValue = value.toString();
+                labelValue = value == null ? null : value.toString();
             }
             
             Label label = new Label(labelValue);
