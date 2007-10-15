@@ -35,7 +35,7 @@ EchoWebCore.init = function() {
     }
 
     EchoWebCore.Environment._init();
-    EchoWebCore.Render._calculateExtentSizes();
+    EchoWebCore.Measure._calculateExtentSizes();
     if (EchoWebCore.Environment.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY) {
         // Enable virtual positioning.
         EchoWebCore.VirtualPosition._init();
@@ -1053,40 +1053,40 @@ EchoWebCore.Library._Manager._loadedLibraries = new Array();
  * @class
  * Namespace for rendering and measuring related 
  */
-EchoWebCore.Render = function() { };
+EchoWebCore.Measure = function() { };
 
-EchoWebCore.Render._horizontalInchSize = 96;
-EchoWebCore.Render._verticalInchSize = 96;
-EchoWebCore.Render._horizontalExSize = 7;
-EchoWebCore.Render._verticalExSize = 7;
-EchoWebCore.Render._horizontalEmSize = 13.3333;
-EchoWebCore.Render._verticalEmSize = 13.3333;
+EchoWebCore.Measure._horizontalInchSize = 96;
+EchoWebCore.Measure._verticalInchSize = 96;
+EchoWebCore.Measure._horizontalExSize = 7;
+EchoWebCore.Measure._verticalExSize = 7;
+EchoWebCore.Measure._horizontalEmSize = 13.3333;
+EchoWebCore.Measure._verticalEmSize = 13.3333;
 
 /**
  * Converts any non-relative extent value to pixels.
  */
-EchoWebCore.Render.extentToPixels = function(value, units, horizontal) {
+EchoWebCore.Measure.extentToPixels = function(value, units, horizontal) {
     if (!units || units == "px") {
         return value;
     }
-    var dpi = horizontal ? EchoWebCore.Render._horizontalInchSize : EchoWebCore.Render._verticalInchSize;
+    var dpi = horizontal ? EchoWebCore.Measure._horizontalInchSize : EchoWebCore.Measure._verticalInchSize;
     switch (units) {
     case "%":
         return 0;
     case "in":
-        return value * (horizontal ? EchoWebCore.Render._horizontalInchSize : EchoWebCore.Render._verticalInchSize);
+        return value * (horizontal ? EchoWebCore.Measure._horizontalInchSize : EchoWebCore.Measure._verticalInchSize);
     case "cm":
-        return value * (horizontal ? EchoWebCore.Render._horizontalInchSize : EchoWebCore.Render._verticalInchSize) / 2.54;
+        return value * (horizontal ? EchoWebCore.Measure._horizontalInchSize : EchoWebCore.Measure._verticalInchSize) / 2.54;
     case "mm":
-        return value * (horizontal ? EchoWebCore.Render._horizontalInchSize : EchoWebCore.Render._verticalInchSize) / 25.4;
+        return value * (horizontal ? EchoWebCore.Measure._horizontalInchSize : EchoWebCore.Measure._verticalInchSize) / 25.4;
     case "pt":
-        return value * (horizontal ? EchoWebCore.Render._horizontalInchSize : EchoWebCore.Render._verticalInchSize) / 72;
+        return value * (horizontal ? EchoWebCore.Measure._horizontalInchSize : EchoWebCore.Measure._verticalInchSize) / 72;
     case "pc":
-        return value * (horizontal ? EchoWebCore.Render._horizontalInchSize : EchoWebCore.Render._verticalInchSize) / 6;
+        return value * (horizontal ? EchoWebCore.Measure._horizontalInchSize : EchoWebCore.Measure._verticalInchSize) / 6;
     case "em":
-        return value * (horizontal ? EchoWebCore.Render._horizontalEmSize : EchoWebCore.Render._verticalEmSize);
+        return value * (horizontal ? EchoWebCore.Measure._horizontalEmSize : EchoWebCore.Measure._verticalEmSize);
     case "ex":
-        return value * (horizontal ? EchoWebCore.Render._horizontalExSize : EchoWebCore.Render._verticalExSize);
+        return value * (horizontal ? EchoWebCore.Measure._horizontalExSize : EchoWebCore.Measure._verticalExSize);
     }
 };
 
@@ -1096,121 +1096,104 @@ EchoWebCore.Render.extentToPixels = function(value, units, horizontal) {
  * Automatically invoked when WebCore module is initialized.
  * @private
  */
-EchoWebCore.Render._calculateExtentSizes = function() {
+EchoWebCore.Measure._calculateExtentSizes = function() {
     var containerElement = document.getElementsByTagName("body")[0];
 
     var inchDiv4 = document.createElement("div");
     inchDiv4.style.width = "4in";
     inchDiv4.style.height = "4in";
     containerElement.appendChild(inchDiv4);
-    EchoWebCore.Render._horizontalInchSize = inchDiv4.offsetWidth / 4;
-    EchoWebCore.Render._verticalInchSize = inchDiv4.offsetHeight / 4;
+    EchoWebCore.Measure._horizontalInchSize = inchDiv4.offsetWidth / 4;
+    EchoWebCore.Measure._verticalInchSize = inchDiv4.offsetHeight / 4;
     containerElement.removeChild(inchDiv4);
     
     var emDiv24 = document.createElement("div");
     emDiv24.style.width = "24em";
     emDiv24.style.height = "24em";
     containerElement.appendChild(emDiv24);
-    EchoWebCore.Render._horizontalEmSize = emDiv24.offsetWidth / 24;
-    EchoWebCore.Render._verticalEmSize = emDiv24.offsetHeight / 24;
+    EchoWebCore.Measure._horizontalEmSize = emDiv24.offsetWidth / 24;
+    EchoWebCore.Measure._verticalEmSize = emDiv24.offsetHeight / 24;
     containerElement.removeChild(emDiv24);
     
     var exDiv24 = document.createElement("div");
     exDiv24.style.width = "24ex";
     exDiv24.style.height = "24ex";
     containerElement.appendChild(exDiv24);
-    EchoWebCore.Render._horizontalExSize = exDiv24.offsetWidth / 24;
-    EchoWebCore.Render._verticalExSize = exDiv24.offsetHeight / 24;
+    EchoWebCore.Measure._horizontalExSize = exDiv24.offsetWidth / 24;
+    EchoWebCore.Measure._verticalExSize = exDiv24.offsetHeight / 24;
     containerElement.removeChild(exDiv24);
 };
 
-//FIXME Rename EchoWebCore.Render to EchoWebCore.Mesaure
-//FIXME Measuring code needs to be simplified/combined/documented.
-
-/**
- * @constructor
- * @class
- */
-EchoWebCore.Render.Measure = function(element) {
+EchoWebCore.Measure.Bounds = function(element) {
     var testElement = element;
     while (testElement && testElement != document) {
         testElement = testElement.parentNode;
     }
     var rendered = testElement == document;
-
-    if (!EchoWebCore.Render._measureContainerDivElement) {
-        EchoWebCore.Render._measureContainerDivElement = document.createElement("div");
-        EchoWebCore.Render._measureContainerDivElement.style.position = "absolute";
-        EchoWebCore.Render._measureContainerDivElement.style.top = "-1700px";
-        EchoWebCore.Render._measureContainerDivElement.style.left = "-1300px";
-        EchoWebCore.Render._measureContainerDivElement.style.width = "1600px";
-        EchoWebCore.Render._measureContainerDivElement.style.height = "1200px";
-        document.getElementsByTagName("body")[0].appendChild(EchoWebCore.Render._measureContainerDivElement);
+    
+    // Create off-screen div element for evaluating sizes if necessary.
+    if (!EchoWebCore.Measure.Bounds._offscreenDiv) {
+        EchoWebCore.Measure.Bounds._offscreenDiv = document.createElement("div");
+        EchoWebCore.Measure.Bounds._offscreenDiv.style.cssText 
+                = "position: absolute; top: -1700px; left: -1300px; width: 1600px; height: 1200px;";
+        document.body.appendChild(EchoWebCore.Measure.Bounds._offscreenDiv);
     }
-    
+
     var parentNode, nextSibling;
-    
     if (!rendered) {
-    	parentNode = element.parentNode;
-    	nextSibling = element.nextSibling;
+        // Element must be added to off-screen element for measuring.
+        
+        // Store parent node and next sibling such that element may be replaced into proper position
+        // once off-screen measurement has been completed.
+        parentNode = element.parentNode;
+        nextSibling = element.nextSibling;
+
+        // Remove element from parent.
         if (parentNode) {
             parentNode.removeChild(element);
         }
-        EchoWebCore.Render._measureContainerDivElement.appendChild(element);
+        
+        // Append element to measuring container DIV.
+        EchoWebCore.Measure.Bounds._offscreenDiv.appendChild(element);
     }
     
+    // Store  width and height of element.
     this.width = element.offsetWidth;
     this.height = element.offsetHeight;
     
     if (!rendered) {
-        EchoWebCore.Render._measureContainerDivElement.removeChild(element);
+        // Replace off-screen measured element in previous location.
+        EchoWebCore.Measure.Bounds._offscreenDiv.removeChild(element);
         if (parentNode) {
             parentNode.insertBefore(element, nextSibling);
         }
     }
-};
-
-/**
- * toString() implementation for debug purposes.
- * 
- * @return a string representation of the object
- * @type String
- */
-EchoWebCore.Render.Measure.prototype.toString = function() {
-    return this.width + "x" + this.height;
-};
-
-/**
- * @constructor
- * @class
- */
-EchoWebCore.Render.Measure.Bounds = function(element) {
-	var cumOffset = EchoWebCore.Render.Measure.Bounds._getCumulativeOffset(element);
-    var scrollOffset = EchoWebCore.Render.Measure.Bounds._getScrollOffset(element);
-	var measure = new EchoWebCore.Render.Measure(element);
     
-    this.top = cumOffset.top - scrollOffset.top;
-    this.left = cumOffset.left - scrollOffset.left;
-    this.width = measure.width;
-    this.height = measure.height;
+    // Determine top and left positions of element if rendered on-screen.
+    if (rendered) {
+        var cumulativeOffset = EchoWebCore.Measure.Bounds._getCumulativeOffset(element);
+        var scrollOffset = EchoWebCore.Measure.Bounds._getScrollOffset(element);
+        this.top = cumulativeOffset.top - scrollOffset.top;
+        this.left = cumulativeOffset.left - scrollOffset.left;
+    }
 };
 
-EchoWebCore.Render.Measure.Bounds._getScrollOffset = function(element) {
+EchoWebCore.Measure.Bounds._getScrollOffset = function(element) {
     var valueT = 0, valueL = 0;
     do {
-      valueT += element.scrollTop  || 0;
-      valueL += element.scrollLeft || 0; 
-      element = element.parentNode;
+        valueT += element.scrollTop  || 0;
+        valueL += element.scrollLeft || 0; 
+        element = element.parentNode;
     } while (element);
     return {left: valueL, top: valueT};
 };
 
-EchoWebCore.Render.Measure.Bounds._getCumulativeOffset = function(element) {
+EchoWebCore.Measure.Bounds._getCumulativeOffset = function(element) {
     var valueT = 0, valueL = 0;
     do {
-      valueT += element.offsetTop  || 0;
-      valueL += element.offsetLeft || 0;
-      element = element.offsetParent;
+        valueT += element.offsetTop  || 0;
+        valueL += element.offsetLeft || 0;
+        element = element.offsetParent;
     } while (element);
     return {left: valueL, top: valueT};
 };
@@ -1221,8 +1204,8 @@ EchoWebCore.Render.Measure.Bounds._getCumulativeOffset = function(element) {
  * @return a string representation of the object
  * @type String
  */
-EchoWebCore.Render.Measure.Bounds.prototype.toString = function() {
-    return this.width + "x" + this.height + "@" + this.left + "," + this.top;
+EchoWebCore.Measure.Bounds.prototype.toString = function() {
+    return (this.left != null ? (this.left + "," + this.top + " : ") : "") + "[" + this.width + "x" + this.height + "]";
 };
 
 /**

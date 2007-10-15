@@ -14,7 +14,7 @@ EchoAppRender.WindowPaneSync.adjustOpacity = false;
 
 EchoAppRender.WindowPaneSync.prototype._loadContainerSize = function() {
     //FIXME. the "parentnode.parentnode" business needs to go.
-    this._containerSize = new EchoWebCore.Render.Measure(this._windowPaneDivElement.parentNode.parentNode);
+    this._containerSize = new EchoWebCore.Measure.Bounds(this._windowPaneDivElement.parentNode.parentNode);
 };
 
 EchoAppRender.WindowPaneSync.prototype.processBorderMouseDown = function(e) {
@@ -498,7 +498,7 @@ EchoAppRender.WindowPaneSync.prototype.renderAdd = function(update, parentElemen
     if (titleBarHeight) {
         this._titleBarHeight = EchoAppRender.Extent.toPixels(titleBarHeight);
     } else {
-        var titleMeasure = new EchoWebCore.Render.Measure(this._titleBarDivElement);
+        var titleMeasure = new EchoWebCore.Measure.Bounds(this._titleBarDivElement);
         if (titleMeasure.height) {
             this._titleBarHeight = titleMeasure.height;
         } else {

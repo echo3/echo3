@@ -70,7 +70,7 @@ EchoAppRender.GridSync.prototype.renderAdd = function(update, parentElement) {
             if (width.units == "%") {
                 colElement.width = width.toString();
             } else {
-                colElement.width = EchoWebCore.Render.extentToPixels(width.value, width.units, true);
+                colElement.width = EchoWebCore.Measure.extentToPixels(width.value, width.units, true);
             }
         }
         colGroupElement.appendChild(colElement);

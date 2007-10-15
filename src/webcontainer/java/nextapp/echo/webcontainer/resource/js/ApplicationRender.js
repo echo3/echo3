@@ -154,7 +154,7 @@ EchoAppRender.Extent.toPixels = function(extent, horizontal) {
     if (extent == null) {
         return 0;
     } else {
-        return EchoWebCore.Render.extentToPixels(extent.value, extent.units, horizontal);
+        return EchoWebCore.Measure.extentToPixels(extent.value, extent.units, horizontal);
     }
 };
 
@@ -309,10 +309,10 @@ EchoAppRender.Insets.toCssValue = function(insets) {
 
 EchoAppRender.Insets.toPixels = function(insets) {
     var pixelInsets = new Object();
-    pixelInsets.top = EchoWebCore.Render.extentToPixels(insets.top.value, insets.top.units, false);
-    pixelInsets.right = EchoWebCore.Render.extentToPixels(insets.right.value, insets.right.units, true);
-    pixelInsets.bottom = EchoWebCore.Render.extentToPixels(insets.bottom.value, insets.bottom.units, false);
-    pixelInsets.left = EchoWebCore.Render.extentToPixels(insets.left.value, insets.left.units, true);
+    pixelInsets.top = EchoWebCore.Measure.extentToPixels(insets.top.value, insets.top.units, false);
+    pixelInsets.right = EchoWebCore.Measure.extentToPixels(insets.right.value, insets.right.units, true);
+    pixelInsets.bottom = EchoWebCore.Measure.extentToPixels(insets.bottom.value, insets.bottom.units, false);
+    pixelInsets.left = EchoWebCore.Measure.extentToPixels(insets.left.value, insets.left.units, true);
     return pixelInsets;
 };
 

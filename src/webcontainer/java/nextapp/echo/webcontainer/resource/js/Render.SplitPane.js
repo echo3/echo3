@@ -30,10 +30,10 @@ EchoAppRender.SplitPaneSync.ChildPane = function(splitPanePeer, component) {
     if (this.layoutData) {
         var extent;
         extent = this.layoutData.getProperty("minimumSize");
-        this.minimumSize = extent ? EchoWebCore.Render.extentToPixels(extent.value, extent.units, 
+        this.minimumSize = extent ? EchoWebCore.Measure.extentToPixels(extent.value, extent.units, 
                 !splitPanePeer._orientationVertical) : 0;
         extent = this.layoutData.getProperty("maximumSize");
-        this.maximumSize = extent ? EchoWebCore.Render.extentToPixels(extent.value, extent.units, 
+        this.maximumSize = extent ? EchoWebCore.Measure.extentToPixels(extent.value, extent.units, 
                 !splitPanePeer._orientationVertical) : null;
     } else {
         this.minimumSize = 100;

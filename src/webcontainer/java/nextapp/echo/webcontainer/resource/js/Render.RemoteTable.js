@@ -76,7 +76,7 @@ EchoAppRender.RemoteTableSync.prototype.renderAdd = function(update, parentEleme
                 if (width.units == "%") {
                     colElement.width = width.value + (renderRelative ? "*" : "%");
                 } else {
-                    var columnPixels = EchoWebCore.Render.extentToPixels(width.value, width.units, true);
+                    var columnPixels = EchoWebCore.Measure.extentToPixels(width.value, width.units, true);
                     if (columnPixelAdjustment) {
                         colElement.width = columnPixels - columnPixelAdjustment;
                     } else {
