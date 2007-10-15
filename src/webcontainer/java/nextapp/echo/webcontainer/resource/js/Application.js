@@ -476,6 +476,16 @@ EchoApp.Component = function(properties) {
             case "style": this._style = properties.style; break;
             case "styleName": this._styleName = properties.styleName; break;
             case "renderId": this._renderId = properties.renderId; break;
+            case "children":
+                for (var i = 0; i < properties.children.length; ++i) {
+                    this.add(properties.children[i]);
+                }
+                break;
+            case "events":
+                for (var eventType in properties.events) {
+                    this.addListener(eventType, properties.events[eventType]);
+                }
+                break;
             default:
                 if (localStyleProperties == null) {
                     localStyleProperties = new Object();
@@ -514,7 +524,7 @@ EchoApp.Component.prototype.add = function(component, index) {
     if (!(component instanceof EchoApp.Component)) {
         throw new Error("Cannot add child: specified component object is not derived from EchoApp.Component.");
     }
-    if (!this.componentType) {
+    if (!component.componentType) {
         throw new Error("Cannot add child: specified component object does not have a componentType property. "
                 + "Perhaps the EchoApp.Component() super-constructor was not invoked." + this.toString() + "::::" 
                 + component.toString());

@@ -18,38 +18,40 @@ TestApp.randomColor = function() {
 
 TestApp.TestScreen = function() {
     EchoApp.ContentPane.call(this, {
-        background: new EchoApp.Color("#abcdef")
+        background: new EchoApp.Color("#abcdef"),
+        children: [
+            this.testSelectSplitPane = new EchoApp.SplitPane({
+                styleName: "DefaultResizable",
+                separatorPosition: new EchoApp.Extent("180px"),
+                children: [
+                    this.testSelectColumn = new EchoApp.Column({
+                        insets: new EchoApp.Insets("5px 10px")
+                    }),
+                    new EchoApp.Column({
+                        insets: new EchoApp.Insets("5px 10px"),
+                        children: [
+                            new EchoApp.Label({
+                                styleName: "Default",
+                                text: "Welcome to the Experimental Echo Client Test Application!"
+                            })
+                        ]
+                    })
+                ]
+            })
+        ]
     });
-
-    this.testSelectSplitPane = new EchoApp.SplitPane({
-        separatorPosition: new EchoApp.Extent("180px")
-    });
-    this.testSelectSplitPane.setStyleName("DefaultResizable");
-    this.add(this.testSelectSplitPane);
-
-    this.testSelectColumn = new EchoApp.Column({
-        insets: new EchoApp.Insets("5px 10px")
-    });
-    this.testSelectSplitPane.add(this.testSelectColumn);
-    
-    var testColumn2 = new EchoApp.Column();
-    var label = new EchoApp.Label({
-        text: "Welcome to the Experimental Echo Client Test Application!"
-    });
-    label.setStyleName("Default");
-    testColumn2.add(label);
-    this.testSelectSplitPane.add(testColumn2);
 };
 
 TestApp.TestScreen.prototype = EchoCore.derive(EchoApp.ContentPane);
 
 TestApp.TestScreen.prototype.addTest = function(testName) {
-    var button = new EchoApp.Button({
-        text: testName
-    });
-    button.setStyleName("Default");
-    button.addListener("action", new EchoCore.MethodRef(this, this._launchTest));
-    this.testSelectColumn.add(button);
+    this.testSelectColumn.add(new EchoApp.Button({
+        styleName: "Default",
+        text: testName,
+        events: {
+            action: new EchoCore.MethodRef(this, this._launchTest)
+        }
+    }));
 };
 
 TestApp.TestScreen.prototype._launchTest = function(e) {
