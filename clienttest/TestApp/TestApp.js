@@ -55,7 +55,7 @@ TestApp.TestScreen.prototype.addTest = function(testName) {
 };
 
 TestApp.TestScreen.prototype._launchTest = function(e) {
-    while (this.testSelectSplitPane.getComponentCount() > 1) {
+    while (this.testSelectSplitPane.children.length > 1) {
         this.testSelectSplitPane.remove(1);
     }
     var testName = e.source.getProperty("text");
@@ -69,18 +69,21 @@ TestApp.TestScreen.prototype._launchTest = function(e) {
 };
 
 TestApp.TestPane = function() {
-    EchoApp.ContentPane.call(this);
-    var testControlsSplitPane = new EchoApp.SplitPane();
-    testControlsSplitPane.setProperty("separatorPosition", new EchoApp.Extent("180px"));
-//        splitPane.setStyleName("DefaultResizable");
-//        splitPane.setProperty("orientation", EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING);
-    this.add(testControlsSplitPane);
-    
-    this.controlsColumn = new EchoApp.Column();
-    testControlsSplitPane.add(this.controlsColumn);
-    
-    this.content = new EchoApp.ContentPane();
-    testControlsSplitPane.add(this.content);
+    EchoApp.ContentPane.call(this, {
+        children: [
+            new EchoApp.SplitPane({
+                styleName: "DefaultResizable",
+                orientation: EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING,
+                separatorPosition: new EchoApp.Extent(180),
+                children: [
+                    this.controlsColumn = new EchoApp.Column({
+                        insets: new EchoApp.Insets(5, 10)
+                    }),
+                    this.content = new EchoApp.ContentPane()
+                ]
+            })
+        ]
+    });
 };
 
 this.component = null;
@@ -88,13 +91,15 @@ this.component = null;
 TestApp.TestPane.prototype = EchoCore.derive(EchoApp.ContentPane);
 
 TestApp.TestPane.prototype.addTestButton = function(text, action) {
-    var button = new EchoApp.Button();
-    button.setProperty("text", text);
-    button.setStyleName("Default");
-    if (action) {
-        button.addListener("action", action);
-    }
-    this.controlsColumn.add(button);
+    this.controlsColumn.add(
+        new EchoApp.Button({
+            styleName: "Default",
+            text: text,
+            events: {
+                action: action 
+            }
+        })
+    );
 };
 
 TestApp.Tests = function() { };
@@ -102,16 +107,18 @@ TestApp.Tests = function() { };
 TestApp.Tests.Column = function() {
     TestApp.TestPane.call(this);
 
-    this.column = new EchoApp.Column();
     this.childCount = 0;
-    var component;
-    
-    component = new EchoApp.Label();
-    component.setProperty("text", "Content One");
-    this.column.add(component);
-    component = new EchoApp.Label();
-    component.setProperty("text", "Content Two");
-    this.column.add(component);
+
+    this.column = new EchoApp.Column({
+        children: [
+            new EchoApp.Label({
+                text: "Content One"
+            }),
+            new EchoApp.Label({
+                text: "Content Two"
+            })
+        ]
+    });
     this.content.add(this.column);
 
     this.addTestButton("CellSpacing=0", new EchoCore.MethodRef(this, this._cellSpacing0));
@@ -135,19 +142,19 @@ TestApp.Tests.Column = function() {
 TestApp.Tests.Column.prototype = EchoCore.derive(TestApp.TestPane);
 
 TestApp.Tests.Column.prototype._cellSpacing0 = function() {
-    this.column.setProperty("cellSpacing", new EchoApp.Extent("0px"));
+    this.column.setProperty("cellSpacing", new EchoApp.Extent(0));
 };
 
 TestApp.Tests.Column.prototype._cellSpacing1 = function() {
-    this.column.setProperty("cellSpacing", new EchoApp.Extent("1px"));
+    this.column.setProperty("cellSpacing", new EchoApp.Extent(1));
 };
 
 TestApp.Tests.Column.prototype._cellSpacing5 = function() {
-    this.column.setProperty("cellSpacing", new EchoApp.Extent("5px"));
+    this.column.setProperty("cellSpacing", new EchoApp.Extent(5));
 };
 
 TestApp.Tests.Column.prototype._cellSpacing25 = function() {
-    this.column.setProperty("cellSpacing", new EchoApp.Extent("25px"));
+    this.column.setProperty("cellSpacing", new EchoApp.Extent(25));
 };
 
 TestApp.Tests.Column.prototype._cellSpacingNull = function() {
@@ -155,100 +162,91 @@ TestApp.Tests.Column.prototype._cellSpacingNull = function() {
 };
 
 TestApp.Tests.Column.prototype._addChild0 = function() {
-    var label = new EchoApp.Label();
-    label.setProperty("text", "[" + ++this.childCount + "] added at 0");
-    this.column.add(label, 0);
+    this.column.add(new EchoApp.Label({ text: "[" + ++this.childCount + "] added at 0" }), 0);
 };
 
 TestApp.Tests.Column.prototype._addChild1 = function() {
-    if (this.column.getComponentCount() < 1) {
+    if (this.column.children.length < 1) {
         return;
     }
-    var label = new EchoApp.Label();
-    label.setProperty("text", "[" + ++this.childCount + "] added at 1");
-    this.column.add(label, 1);
+    this.column.add(new EchoApp.Label({ text: "[" + ++this.childCount + "] added at 1" }), 1);
 };
 
 TestApp.Tests.Column.prototype._addChild2 = function() {
-    if (this.column.getComponentCount() < 2) {
+    if (this.column.children.length < 2) {
         return;
     }
-    var label = new EchoApp.Label();
-    label.setProperty("text", "[" + ++this.childCount + "] added at 2");
-    this.column.add(label, 2);
+    this.column.add(new EchoApp.Label({ text: "[" + ++this.childCount + "] added at 2" }), 2);
 };
 
 TestApp.Tests.Column.prototype._addChildEnd = function() {
-    var label = new EchoApp.Label();
-    label.setProperty("text", "[" + ++this.childCount + "] added at end");
-    this.column.add(label);
+    this.column.add(new EchoApp.Label({ text: "[" + ++this.childCount + "] added at end" }));
 };
 
 TestApp.Tests.Column.prototype._removeChild0 = function() {
-    if (this.column.getComponentCount() > 0) {
+    if (this.column.children.length > 0) {
         this.column.remove(0);
     }
 };
 
 TestApp.Tests.Column.prototype._removeChild1 = function() {
-    if (this.column.getComponentCount() > 1) {
+    if (this.column.children.length > 1) {
         this.column.remove(1);
     }
 };
 
 TestApp.Tests.Column.prototype._removeChild2 = function() {
-    if (this.column.getComponentCount() > 2) {
+    if (this.column.children.length > 2) {
         this.column.remove(2);
     }
 };
 
 TestApp.Tests.Column.prototype._removeChildEnd = function() {
-    if (this.column.getComponentCount() > 0) {
-        this.column.remove(this.column.getComponentCount() - 1);
+    if (this.column.children.length > 0) {
+        this.column.remove(this.column.children.length - 1);
     }
 };
 
 TestApp.Tests.Column.prototype._setChildBackground = function() {
-    var color = TestApp.randomColor();
-    var length = this.column.getComponentCount();
+    var length = this.column.children.length;
     for (var i = 0; i < length; ++i) {
-        this.column.getComponent(i).setProperty("background", color);
+        this.column.children[i].setProperty("background", TestApp.randomColor());
     }
 };
 
 TestApp.Tests.Column.prototype._setLayoutDataBackground = function() {
-    if (this.column.getComponentCount() == 0) {
+    if (this.column.children.length == 0) {
         return;
     }
     layoutData = new EchoApp.LayoutData();
     layoutData.setProperty("background", TestApp.randomColor());
-    this.column.getComponent(0).setProperty("layoutData", layoutData);
+    this.column.children[0].setProperty("layoutData", layoutData);
 };
 
 TestApp.Tests.Column.prototype._setLayoutDataInsets = function() {
-    if (this.column.getComponentCount() == 0) {
+    if (this.column.children.length == 0) {
         return;
     }
     layoutData = new EchoApp.LayoutData();
     layoutData.setProperty("insets", new EchoApp.Insets(parseInt(Math.random() * 20)));
-    this.column.getComponent(0).setProperty("layoutData", layoutData);
+    this.column.children[0].setProperty("layoutData", layoutData);
 };
 
 
 TestApp.Tests.SplitPane = function() {
     TestApp.TestPane.call(this);
 
-    this.splitPane = new EchoApp.SplitPane();
-    this.splitPane.setProperty("resizable", true);
-    var component;
-    
-    component = new EchoApp.Label();
-    component.setProperty("text", "Content One");
-    this.splitPane.add(component);
-    component = new EchoApp.Label();
-    component.setProperty("text", "Content Two");
-    this.splitPane.add(component);
-    this.content.add(this.splitPane);
+    this.content.add(this.splitPane = new EchoApp.SplitPane({
+        resizable: true,
+        children: [
+            new EchoApp.Label({
+                text: "Content One"
+            }),
+            new EchoApp.Label({
+                text: "Content Two"
+            })
+        ]
+    }));
 
     this.addTestButton("Orientation: L/R", new EchoCore.MethodRef(this, this._setOrientationLR));
     this.addTestButton("Orientation: R/L", new EchoCore.MethodRef(this, this._setOrientationRL));
@@ -267,73 +265,65 @@ TestApp.Tests.SplitPane = function() {
 TestApp.Tests.SplitPane.prototype = EchoCore.derive(TestApp.TestPane);
 
 TestApp.Tests.SplitPane.prototype._addComponent = function(e) {
-    if (this.splitPane.getComponentCount() >= 2) {
+    if (this.splitPane.children.length >= 2) {
         return;
     }
-    var component = new EchoApp.Label();
-    component.setProperty("text", "Content X");
-    this.splitPane.add(component);
+    this.splitPane.add(new EchoApp.Label({ text: "Content Added" }));
 };
 
 TestApp.Tests.SplitPane.prototype._insertComponent = function(e) {
-    if (this.splitPane.getComponentCount() >= 2) {
+    if (this.splitPane.children.length >= 2) {
         return;
     }
-    var component = new EchoApp.Label();
-    component.setProperty("text", "Content X");
-    this.splitPane.add(component, 0);
+    this.splitPane.add(new EchoApp.Label({ text: "Content Inserted" }), 0);
 };
 
 TestApp.Tests.SplitPane.prototype._removeFirstComponent = function(e) {
-    if (this.splitPane.getComponentCount() < 1) {
+    if (this.splitPane.children.length < 1) {
         return;
     }
     this.splitPane.remove(0);
 };
 
 TestApp.Tests.SplitPane.prototype._removeLastComponent = function(e) {
-    if (this.splitPane.getComponentCount() < 1) {
+    if (this.splitPane.children.length < 1) {
         return;
     }
-    this.splitPane.remove(this.splitPane.getComponentCount() - 1);
+    this.splitPane.remove(this.splitPane.children.length - 1);
 };
 
 TestApp.Tests.SplitPane.prototype._clearLayoutData1 = function(e) {
-    if (this.splitPane.getComponentCount() < 1) {
+    if (this.splitPane.children.length < 1) {
         return;
     }
-    var component = this.splitPane.getComponent(0);
-    component.setProperty("layoutData", null);
+    this.splitPane.children[0].setProperty("layoutData", null);
 };
 
 TestApp.Tests.SplitPane.prototype._clearLayoutData2 = function(e) {
-    if (this.splitPane.getComponentCount() < 2) {
+    if (this.splitPane.children.length < 2) {
         return;
     }
-    var component = this.splitPane.getComponent(1);
-    component.setProperty("layoutData", null);
+    this.splitPane.children[1].setProperty("layoutData", null);
 };
 
 TestApp.Tests.SplitPane.prototype._setLayoutData1 = function(e) {
-    if (this.splitPane.getComponentCount() < 1) {
+    if (this.splitPane.children.length < 1) {
         return;
     }
-    var component = this.splitPane.getComponent(0);
-    var layoutData = new EchoApp.LayoutData();
-    layoutData.setProperty("background", new EchoApp.Color("#3fffaf"));
-    layoutData.setProperty("insets", new EchoApp.Insets("5px"));
-    component.setProperty("layoutData", layoutData);
+    this.splitPane.children[0].setProperty("layoutData", new EchoApp.LayoutData({
+        background: new EchoApp.Color("#3fffaf"),
+        insets: new EchoApp.Insets(5)
+    }));
 };
 
 TestApp.Tests.SplitPane.prototype._setLayoutData2 = function(e) {
-    if (this.splitPane.getComponentCount() < 2) {
+    if (this.splitPane.children.length < 2) {
         return;
     }
-    var component = this.splitPane.getComponent(1);
-    var layoutData = new EchoApp.LayoutData();
-    layoutData.setProperty("background", new EchoApp.Color("#afff3f"));
-    layoutData.setProperty("insets", new EchoApp.Insets("5px"));
-    component.setProperty("layoutData", layoutData);
+    this.splitPane.children[1].setProperty("layoutData", new EchoApp.LayoutData({
+        background: new EchoApp.Color("#afff3f"),
+        insets: new EchoApp.Insets(5)
+    }));
 };
 
 TestApp.Tests.SplitPane.prototype._setOrientationLR = function(e) {
@@ -355,10 +345,11 @@ TestApp.Tests.SplitPane.prototype._setOrientationBT = function(e) {
 TestApp.Tests.TextComponent = function() {
     TestApp.TestPane.call(this);
 
-    var column = new EchoApp.Column();
-    this.content.add(column);
-    this.textField = new EchoApp.TextField();
-    column.add(this.textField);
+    this.content.add(new EchoApp.Column({
+        children: [
+            this.textField = new EchoApp.TextField()
+        ]
+    }));
 
     this.addTestButton("Set Text", new EchoCore.MethodRef(this, this._setText));
     this.addTestButton("Set Text Empty", new EchoCore.MethodRef(this, this._setTextEmpty));
@@ -381,15 +372,15 @@ TestApp.Tests.TextComponent.prototype._setTextNull = function() {
 
 TestApp.Tests.WindowPane = function() {
     TestApp.TestPane.call(this);
+
+    this.add(this.windowPane = new EchoApp.WindowPane({
+        styleName: "Default",
+        title: "This is a Window"
+    }));
+
     this.addTestButton("Set Title", new EchoCore.MethodRef(this, this._setTitle));
     this.addTestButton("Set Title Empty", new EchoCore.MethodRef(this, this._setTitleEmpty));
     this.addTestButton("Set Title Null", new EchoCore.MethodRef(this, this._setTitleNull));
-
-    this.windowPane = new EchoApp.WindowPane();
-    this.windowPane.setStyleName("Default");
-    this.windowPane.setProperty("title", "This is a Window");
-    this.add(this.windowPane);
-
 };
 
 TestApp.Tests.WindowPane.prototype = EchoCore.derive(TestApp.TestPane);

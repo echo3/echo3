@@ -429,7 +429,7 @@ EchoApp.Component = function(properties) {
     
     /**
      * Array of child components.
-     * This value is read-only.
+     * This value is read-only.  Modifying this array will result in undefined behavior.
      * @type Array
      */
     this.children = new Array();
