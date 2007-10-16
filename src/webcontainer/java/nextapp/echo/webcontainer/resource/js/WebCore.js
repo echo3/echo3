@@ -932,12 +932,16 @@ EchoWebCore.HttpConnection.ResponseEvent = function(source, valid) {
  */
 EchoWebCore.Library = function() { };
 
-EchoWebCore.Library._loadedLibraries = new Array();
+/**
+ * Set of loaded libraries (keys are library urls, value is true when library has been loaded).
+ * @private
+ */
+EchoWebCore.Library._loadedLibraries = new Object();
 
 /**
- * A representation of a group of libraries to be loaded/installed at the same time.
+ * A representation of a group of libraries to be loaded at the same time.
  * Libraries will be retrieved asynchronously, and then installed once ALL the libraries have
- * been loaded.  Installation will be done in the order in which the add() method was
+ * been retrieved.  Installation will be done in the order in which the add() method was
  * invoked to add libraries to the group (without regard for the order in which the 
  * HTTP server returns the library code).
  *
@@ -952,16 +956,16 @@ EchoWebCore.Library.Group = function() {
 
 /**
  * Adds a library to the library group.
- * Libraries which have previously been loaded will not 
+ * Libraries which have previously been loaded will not be loaded again.
  *
  * @param libraryUrl the URL from which to retrieve the library.
  */
 EchoWebCore.Library.Group.prototype.add = function(libraryUrl) {
-    if (EchoCore.Arrays.indexOf(EchoWebCore.Library._loadedLibraries, libraryUrl) != -1) {
+    if (EchoWebCore.Library._loadedLibraries[libraryUrl]) {
         // Library already loaded: ignore.
         return;
     }
-
+    
     var libraryItem = new EchoWebCore.Library._Item(this, libraryUrl);
     this._libraries.push(libraryItem);
 };
@@ -969,17 +973,41 @@ EchoWebCore.Library.Group.prototype.add = function(libraryUrl) {
 /**
  * Adds a listener to be notified when all libraries in the group have been loaded.
  *
- * @param l the listener to add
+ * @param l the listener to add (may be a Function or EchoCore.MethodRef)
  */
 EchoWebCore.Library.Group.prototype.addLoadListener = function(l) {
     this._listenerList.addListener("load", l);
 };
 
+/**
+ * Notifies listeners of completed library loading.
+ * 
+ * @private
+ */
 EchoWebCore.Library.Group.prototype._fireLoadEvent = function() {
 	var e = new EchoCore.Event("load", this);
 	this._listenerList.fireEvent(e);
 };
 
+/**
+ * Determines if this library group contains any new (not previously loaded)
+ * libraries.
+ * 
+ * @return true if any new libraries exist
+ * @type Boolean
+ */
+EchoWebCore.Library.Group.prototype.hasNewLibraries = function() {
+    return this._libraries.length > 0;
+};
+
+/**
+ * Installs all libraries in the group.
+ * This method is invoked once all libraries have been successfully
+ * retrieved.  It will invoke any registered load listeners
+ * once the libraries have been installed.
+ * 
+ * @private
+ */
 EchoWebCore.Library.Group.prototype._install = function() {
 	for (var i = 0; i < this._libraries.length; ++i) {
 	    try {
@@ -991,48 +1019,79 @@ EchoWebCore.Library.Group.prototype._install = function() {
 	this._fireLoadEvent();
 };
 
-EchoWebCore.Library.Group.prototype.hasNewLibraries = function() {
-    return this._libraries.length > 0;
-};
-
-EchoWebCore.Library.Group.prototype._notifyLoad = function(libraryItem) {
+/**
+ * Event listener invoked when a single library has been successfully retrieved.
+ * When all libraries have been retrieved, this method will invoke _install().
+ * @private
+ */
+EchoWebCore.Library.Group.prototype._notifyRetrieved = function() {
     ++this._loadedCount;
     if (this._loadedCount == this._totalCount) {
         this._install();
     }
 };
 
+/**
+ * Initializes library loading.  When this method is invoked
+ * the libraries will be asynchronously loaded.  This method
+ * will return before the libraries have been loaded.
+ * Once this method has been invoked, add() may no longer
+ * be invoked.
+ */
 EchoWebCore.Library.Group.prototype.load = function() {
     this._totalCount = this._libraries.length;
     for (var i = 0; i < this._libraries.length; ++i) {
-        this._libraries[i]._load();
+        this._libraries[i]._retrieve();
     }
 };
 
 /**
  * Removes a listener from being notified when all libraries in the group have been loaded.
  *
- * @param l the listener to remove
+ * @param l the listener to remove (may be a Function or EchoCore.MethodRef)
  */
 EchoWebCore.Library.Group.prototype.removeLoadListener = function(l) {
     this._listenerList.removeListener("load", l);
 };
 
+/**
+ * Creates a new library item.
+ * 
+ * @param {EchoWebCore.Library.Group} group the library group in which the item is contained
+ * @param {String} url the URL from which the library may be retrieved
+ * @constructor
+ * 
+ * @class
+ * Representation of a single library to be loaded within a group
+ * 
+ * @private 
+ */
 EchoWebCore.Library._Item = function(group, url) {
     this._url = url;
     this._group = group;
 };
 
-EchoWebCore.Library._Item.prototype._responseHandler = function(e) {
+/**
+ * Event listener for response from the HttpConnection used to retrive the library.
+ * 
+ * @param {EchoWebCore.HttpConnection.ResponseEvent} e the event
+ * @private
+ */
+EchoWebCore.Library._Item.prototype._retrieveListener = function(e) {
     if (!e.valid) {
         throw new Error("Invalid HTTP response from library request: " + e.source.getStatus());
     }
     this._content = e.source.getResponseText();
-    this._group._notifyLoad(this);
+    this._group._notifyRetrieved();
 };
 
+/**
+ * Installs the library.
+ * The library must have been loaded before invoking this method.
+ * @private
+ */
 EchoWebCore.Library._Item.prototype._install = function() {
-    EchoWebCore.Library._loadedLibraries.push(this._url);
+    EchoWebCore.Library._loadedLibraries[this._url] = true;
     if (this._content == null) {
         throw new Error("Attempt to install library when no content has been loaded.");
     }
@@ -1041,9 +1100,14 @@ EchoWebCore.Library._Item.prototype._install = function() {
     eval(this._content);
 };
 
-EchoWebCore.Library._Item.prototype._load = function() {
+/**
+ * Asynchronously retrieves the library.
+ * This method will invoke the retrieve listener when the library has been completed,
+ * it will return before the library has been retrieved.
+ */
+EchoWebCore.Library._Item.prototype._retrieve = function() {
 	var conn = new EchoWebCore.HttpConnection(this._url, "GET");
-	conn.addResponseListener(new EchoCore.MethodRef(this, this._responseHandler));
+	conn.addResponseListener(new EchoCore.MethodRef(this, this._retrieveListener));
 	conn.connect();
 };
 
