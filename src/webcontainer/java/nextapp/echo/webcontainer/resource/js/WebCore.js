@@ -397,7 +397,7 @@ EchoWebCore.Environment._init = function() {
     } else if (env.BROWSER_KONQUEROR) {
         env._parseVersionInf(ua, "konqueror/");
     }
-    
+
     //FIXME Quirk flags not refined yet, some quirk flags from Echo 2.0/1 will/may be deprecated/removed.
     
     // Set IE Quirk Flags
@@ -932,6 +932,8 @@ EchoWebCore.HttpConnection.ResponseEvent = function(source, valid) {
  */
 EchoWebCore.Library = function() { };
 
+EchoWebCore.Library._loadedLibraries = new Array();
+
 /**
  * A representation of a group of libraries to be loaded/installed at the same time.
  * Libraries will be retrieved asynchronously, and then installed once ALL the libraries have
@@ -955,7 +957,7 @@ EchoWebCore.Library.Group = function() {
  * @param libraryUrl the URL from which to retrieve the library.
  */
 EchoWebCore.Library.Group.prototype.add = function(libraryUrl) {
-    if (EchoCore.Arrays.indexOf(EchoWebCore.Library._Manager._loadedLibraries, libraryUrl) != -1) {
+    if (EchoCore.Arrays.indexOf(EchoWebCore.Library._loadedLibraries, libraryUrl) != -1) {
         // Library already loaded: ignore.
         return;
     }
@@ -1030,7 +1032,7 @@ EchoWebCore.Library._Item.prototype._responseHandler = function(e) {
 };
 
 EchoWebCore.Library._Item.prototype._install = function() {
-    EchoWebCore.Library._Manager._loadedLibraries.push(this._url);
+    EchoWebCore.Library._loadedLibraries.push(this._url);
     if (this._content == null) {
         throw new Error("Attempt to install library when no content has been loaded.");
     }
@@ -1045,48 +1047,53 @@ EchoWebCore.Library._Item.prototype._load = function() {
 	conn.connect();
 };
 
-EchoWebCore.Library._Manager = function() { };
-
-EchoWebCore.Library._Manager._loadedLibraries = new Array();
-
 /**
  * @class
- * Namespace for rendering and measuring related 
+ * Namespace for measuring-related operations.
+ * Do not instantiate.  
  */
 EchoWebCore.Measure = function() { };
 
-EchoWebCore.Measure._horizontalInchSize = 96;
-EchoWebCore.Measure._verticalInchSize = 96;
-EchoWebCore.Measure._horizontalExSize = 7;
-EchoWebCore.Measure._verticalExSize = 7;
-EchoWebCore.Measure._horizontalEmSize = 13.3333;
-EchoWebCore.Measure._verticalEmSize = 13.3333;
+/** Size of one inch in horizontal pixels. */
+EchoWebCore.Measure._hInch = 96;
+
+/** Size of one inch in vertical pixels. */
+EchoWebCore.Measure._vInch = 96;
+
+/** Size of one 'ex' in horizontal pixels. */
+EchoWebCore.Measure._hEx = 7;
+
+/** Size of one 'ex' in vertical pixels. */
+EchoWebCore.Measure._vEx = 7;
+
+/** Size of one 'em' in horizontal pixels. */
+EchoWebCore.Measure._hEm = 13.3333;
+
+/** Size of one 'em' in vertical pixels. */
+EchoWebCore.Measure._vEm = 13.3333;
 
 /**
  * Converts any non-relative extent value to pixels.
+ * 
+ * @param {Number} value the value to convert
+ * @param {String} the units, one of the following values: in, cm, mm, pt, pc, em, ex
+ * @return the pixel value (may have a fractional part)
+ * @type Number
  */
 EchoWebCore.Measure.extentToPixels = function(value, units, horizontal) {
     if (!units || units == "px") {
         return value;
     }
-    var dpi = horizontal ? EchoWebCore.Measure._horizontalInchSize : EchoWebCore.Measure._verticalInchSize;
+    var dpi = horizontal ? EchoWebCore.Measure._hInch : EchoWebCore.Measure._vInch;
     switch (units) {
-    case "%":
-        return 0;
-    case "in":
-        return value * (horizontal ? EchoWebCore.Measure._horizontalInchSize : EchoWebCore.Measure._verticalInchSize);
-    case "cm":
-        return value * (horizontal ? EchoWebCore.Measure._horizontalInchSize : EchoWebCore.Measure._verticalInchSize) / 2.54;
-    case "mm":
-        return value * (horizontal ? EchoWebCore.Measure._horizontalInchSize : EchoWebCore.Measure._verticalInchSize) / 25.4;
-    case "pt":
-        return value * (horizontal ? EchoWebCore.Measure._horizontalInchSize : EchoWebCore.Measure._verticalInchSize) / 72;
-    case "pc":
-        return value * (horizontal ? EchoWebCore.Measure._horizontalInchSize : EchoWebCore.Measure._verticalInchSize) / 6;
-    case "em":
-        return value * (horizontal ? EchoWebCore.Measure._horizontalEmSize : EchoWebCore.Measure._verticalEmSize);
-    case "ex":
-        return value * (horizontal ? EchoWebCore.Measure._horizontalExSize : EchoWebCore.Measure._verticalExSize);
+    case "%":  return 0;
+    case "in": return value * (horizontal ? EchoWebCore.Measure._hInch : EchoWebCore.Measure._vInch);
+    case "cm": return value * (horizontal ? EchoWebCore.Measure._hInch : EchoWebCore.Measure._vInch) / 2.54;
+    case "mm": return value * (horizontal ? EchoWebCore.Measure._hInch : EchoWebCore.Measure._vInch) / 25.4;
+    case "pt": return value * (horizontal ? EchoWebCore.Measure._hInch : EchoWebCore.Measure._vInch) / 72;
+    case "pc": return value * (horizontal ? EchoWebCore.Measure._hInch : EchoWebCore.Measure._vInch) / 6;
+    case "em": return value * (horizontal ? EchoWebCore.Measure._hEm   : EchoWebCore.Measure._vEm);
+    case "ex": return value * (horizontal ? EchoWebCore.Measure._hEx   : EchoWebCore.Measure._vEx);
     }
 };
 
@@ -1103,27 +1110,39 @@ EchoWebCore.Measure._calculateExtentSizes = function() {
     inchDiv4.style.width = "4in";
     inchDiv4.style.height = "4in";
     containerElement.appendChild(inchDiv4);
-    EchoWebCore.Measure._horizontalInchSize = inchDiv4.offsetWidth / 4;
-    EchoWebCore.Measure._verticalInchSize = inchDiv4.offsetHeight / 4;
+    EchoWebCore.Measure._hInch = inchDiv4.offsetWidth / 4;
+    EchoWebCore.Measure._vInch = inchDiv4.offsetHeight / 4;
     containerElement.removeChild(inchDiv4);
     
     var emDiv24 = document.createElement("div");
     emDiv24.style.width = "24em";
     emDiv24.style.height = "24em";
     containerElement.appendChild(emDiv24);
-    EchoWebCore.Measure._horizontalEmSize = emDiv24.offsetWidth / 24;
-    EchoWebCore.Measure._verticalEmSize = emDiv24.offsetHeight / 24;
+    EchoWebCore.Measure._hEm = emDiv24.offsetWidth / 24;
+    EchoWebCore.Measure._vEm = emDiv24.offsetHeight / 24;
     containerElement.removeChild(emDiv24);
     
     var exDiv24 = document.createElement("div");
     exDiv24.style.width = "24ex";
     exDiv24.style.height = "24ex";
     containerElement.appendChild(exDiv24);
-    EchoWebCore.Measure._horizontalExSize = exDiv24.offsetWidth / 24;
-    EchoWebCore.Measure._verticalExSize = exDiv24.offsetHeight / 24;
+    EchoWebCore.Measure._hEx = exDiv24.offsetWidth / 24;
+    EchoWebCore.Measure._vEx = exDiv24.offsetHeight / 24;
     containerElement.removeChild(exDiv24);
 };
 
+/**
+ * Creates a new Bounds object to calculate the size and/or position of an element.
+ * 
+ * @param element the element to measure.
+ * @constructor
+ * 
+ * @class
+ * Measures the boundaries of an element,i.e., its left and top position and/or
+ * width and height.  If the element is not attached to the rendered DOM hierarchy,
+ * the element will be temporarily removed from its hierarchy and placed in an
+ * off-screen buffer for measuring.
+ */
 EchoWebCore.Measure.Bounds = function(element) {
     var testElement = element;
     while (testElement && testElement != document) {
@@ -1158,7 +1177,17 @@ EchoWebCore.Measure.Bounds = function(element) {
     }
     
     // Store  width and height of element.
+
+    /**
+     * The width of the element, in pixels.
+     * @type Integer
+     */
     this.width = element.offsetWidth;
+
+    /**
+     * The height of the element, in pixels.
+     * @type Integer
+     */
     this.height = element.offsetHeight;
     
     if (!rendered) {
@@ -1173,11 +1202,30 @@ EchoWebCore.Measure.Bounds = function(element) {
     if (rendered) {
         var cumulativeOffset = EchoWebCore.Measure.Bounds._getCumulativeOffset(element);
         var scrollOffset = EchoWebCore.Measure.Bounds._getScrollOffset(element);
+
+        /**
+         * The top coordinate of the element, in pixels relative to the upper-left corner of the interior of the window.
+         * @type Integer
+         */
         this.top = cumulativeOffset.top - scrollOffset.top;
+
+        /**
+         * The left coordinate of the element, in pixels relative to the upper-left corner of the interior of the window.
+         * @type Integer
+         */
         this.left = cumulativeOffset.left - scrollOffset.left;
     }
 };
 
+/**
+ * Measures the scrollbar offset of an element, including any
+ * scroll-bar related offsets of its ancestors.
+ * 
+ * @param element the elemnt to measure
+ * @return the offset data, with 'left' and 'top' properties specifying the offset amounts
+ * @type Object
+ * @private
+ */
 EchoWebCore.Measure.Bounds._getScrollOffset = function(element) {
     var valueT = 0, valueL = 0;
     do {
@@ -1185,9 +1233,17 @@ EchoWebCore.Measure.Bounds._getScrollOffset = function(element) {
         valueL += element.scrollLeft || 0; 
         element = element.parentNode;
     } while (element);
-    return {left: valueL, top: valueT};
+    return { left: valueL, top: valueT };
 };
 
+/**
+ * Measures the cumulative offset of an element.
+ * 
+ * @param element the elemnt to measure
+ * @return the offset data, with 'left' and 'top' properties specifying the offset amounts
+ * @type Object
+ * @private
+ */
 EchoWebCore.Measure.Bounds._getCumulativeOffset = function(element) {
     var valueT = 0, valueL = 0;
     do {
@@ -1195,7 +1251,7 @@ EchoWebCore.Measure.Bounds._getCumulativeOffset = function(element) {
         valueL += element.offsetLeft || 0;
         element = element.offsetParent;
     } while (element);
-    return {left: valueL, top: valueT};
+    return { left: valueL, top: valueT };
 };
 
 /**

@@ -9,7 +9,6 @@
 *     appropriately.</li>
  *  <li>Provides event/listener management framework.  Event listeners may be 
  *    "Method Reference" objects, thus allowing specific class instances to process events.</li>
- *  <li>Provides basic List/Set/Map collections framework.</li>
  *  <li>Does not provide any web-specific functionality.</li>
  *  <li>Provides string tokenization capability.</li>
  * </ul>
