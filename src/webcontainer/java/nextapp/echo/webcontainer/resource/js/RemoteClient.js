@@ -9,9 +9,6 @@
  * Creates a new RemoteClient instance.
  * @constructor
  * @param serverUrl the URL of the server
- * @param domainElementId the id of the DOM element which this client should use as its
- *        root element (this element must define a horizontal and vertical space, e.g.,
- *        it must define an absolute area or percentage of the screen)
  * 
  * @class 
  * A client which provides a remote view of an Echo application being executed on the server.
@@ -24,6 +21,8 @@
  * be necessary for serializing certain information such as the state of a model.
  */
 EchoRemoteClient = function(serverUrl) {
+    EchoWebCore.init();
+
     EchoClient.call(this);
     
     /**
@@ -52,9 +51,11 @@ EchoRemoteClient = function(serverUrl) {
      * @private
      */
     this._urlMappings = new Object();
-    this._urlMappings["I"] = this._serverUrl + "?sid=Echo.Image&iid=";
     
-    EchoWebCore.init();
+    /**
+     * Image URL mapping constant.
+     */
+    this._urlMappings.I = this._serverUrl + "?sid=Echo.Image&iid=";
     
     /**
      * Queue of commands to be executed.  Each command occupies two
