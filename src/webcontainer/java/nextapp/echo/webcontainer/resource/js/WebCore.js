@@ -1250,12 +1250,11 @@ EchoWebCore.Measure = {
      * @private
      */
     _getCumulativeOffset: function(element) {
-        return { left: 0, top: 0 };
         var valueT = 0, valueL = 0;
         do {
             valueT += element.offsetTop  || 0;
             valueL += element.offsetLeft || 0;
-            element = element.offsetParent;
+            element = element.parentNode;
         } while (element);
         return { left: valueL, top: valueT };
     },
@@ -1274,7 +1273,6 @@ EchoWebCore.Measure = {
          * 
          * @param element the element to measure.
          * @constructor
-         * 
          */    
         initialize: function(element) {
             var testElement = element;
