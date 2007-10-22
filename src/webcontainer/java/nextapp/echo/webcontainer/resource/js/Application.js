@@ -5,337 +5,347 @@
  */
 
 /**
- * @class Namespace for application framework.  Non-instantiable object.
+ * @class Namespace for application framework.
  */
-EchoApp = function() { };
+EchoApp = { };
 
 /**
- * Creates a new application instance.  
- * @class Representation of a single application instance.
- *        Derived objects must invoke construtor with root component id.
- * @constructor
+ * @class 
+ * Representation of a single application instance.
+ * Derived objects must invoke construtor with root component id.
  */
-EchoApp.Application = function() {
+EchoApp.Application = EchoCore.extend({
 
-    /** 
-     * Mapping between component ids and component instances.
-     * @private 
-     * @type EchoCore.Arrays.LargeMap
+    /**
+     * Creates a new application instance.  
+     * @constructor
      */
-    this._idToComponentMap = new EchoCore.Arrays.LargeMap();
+    initialize: function() {
+        
+        /** 
+         * Mapping between component ids and component instances.
+         * @private 
+         * @type EchoCore.Arrays.LargeMap
+         */
+        this._idToComponentMap = new EchoCore.Arrays.LargeMap();
+        
+        /** 
+         * ListenerList instance for application-level events.
+         * @private 
+         * @type EchoCore.ListenerList 
+         */
+        this._listenerList = new EchoCore.ListenerList();
     
-    /** 
-     * ListenerList instance for application-level events.
-     * @private 
-     * @type EchoCore.ListenerList 
-     */
-    this._listenerList = new EchoCore.ListenerList();
+        /** 
+         * Root component instance.
+         * This value is read-only.
+         * @type EchoApp.Component 
+         */
+        this.rootComponent = new EchoApp.Component();
+        this.rootComponent.componentType = "Root";
+        this.rootComponent.register(this);
+        
+        /** 
+         * Array of modal components.
+         * This value is read-only.
+         * @type Array 
+         */
+        this._modalComponents = [];
+        
+        /** 
+         * Displayed style sheet.
+         * 
+         * @private 
+         * @type EchoApp.StyleSheet
+         */
+        this._styleSheet = null;
+        
+        /** 
+         * Currently focused component.
+         * @private
+         * @type EchoApp.Component
+         */
+        this._focusedComponent = null;
+        
+        /** 
+         * UpdateManager instance monitoring changes to the application for redraws. 
+         * @type EchoApp.Update.Manager
+         */
+        this.updateManager = new EchoApp.Update.Manager(this);
+        
+        /**
+         * FocusManager instance handling application focus behavior.
+         * @type EchoApp.FocusManager
+         */
+        this.focusManager = new EchoApp.FocusManager(this);
+    },
 
-    /** 
-     * Root component instance.
-     * This value is read-only.
-     * @type EchoApp.Component 
-     */
-    this.rootComponent = new EchoApp.Component();
-    this.rootComponent.componentType = "Root";
-    this.rootComponent.register(this);
-    
-    /** 
-     * Array of modal components.
-     * This value is read-only.
-     * @type Array 
-     */
-    this._modalComponents = new Array();
-    
-    /** 
-     * Displayed style sheet.
+    /**
+     * Adds a ComponentUpdateListener.
      * 
-     * @private 
-     * @type EchoApp.StyleSheet
+     * @param l the listener to add (may be of type Function or EchoCore.MethodRef)
      */
-    this._styleSheet = null;
-    
-    /** 
-     * Currently focused component.
-     * @private
-     * @type EchoApp.Component
-     */
-    this._focusedComponent = null;
-    
-    /** 
-     * UpdateManager instance monitoring changes to the application for redraws. 
-     * @type EchoApp.Update.Manager
-     */
-    this.updateManager = new EchoApp.Update.Manager(this);
+    addComponentUpdateListener: function(l) {
+        this._listenerList.addListener("componentUpdate", l);
+    },
     
     /**
-     * FocusManager instance handling application focus behavior.
-     * @type EchoApp.FocusManager
+     * Adds a FocusListener.  Focus listeners will be invoked when the focused
+     * component in the application changes.
+     * 
+     * @param l the listener to add (may be of type Function or EchoCore.MethodRef)
      */
-    this.focusManager = new EchoApp.FocusManager(this);
-};
+    addFocusListener: function(l) {
+        this._listenerList.addListener("focus", l);
+    },
+    
+    /**
+     * Disposes of the application.
+     * Once invoked, the application will no longer function and cannot be used again.
+     * This method will free any resources allocated by the application.
+     */ 
+    dispose: function() {
+        this.updateManager.dispose();
+    },
+    
+    _findCurrentModalComponent: function(searchComponent) {
+        for (var i = searchComponent.children.length - 1; i >= 0; --i) {
+            var foundComponent = this._findCurrentModalComponent(searchComponent.children[i]);
+            if (foundComponent) {
+                return foundComponent;
+            }
+        }
+        
+        if (searchComponent.modalSupport && searchComponent.getProperty("modal")) {
+            return searchComponent;
+        }
+        
+        return null;
+    },
 
-/**
- * Adds a ComponentUpdateListener.
- * 
- * @param l the listener to add (may be of type Function or EchoCore.MethodRef)
- */
-EchoApp.Application.prototype.addComponentUpdateListener = function(l) {
-    this._listenerList.addListener("componentUpdate", l);
-};
-
-/**
- * Adds a FocusListener.  Focus listeners will be invoked when the focused
- * component in the application changes.
- * 
- * @param l the listener to add (may be of type Function or EchoCore.MethodRef)
- */
-EchoApp.Application.prototype.addFocusListener = function(l) {
-    this._listenerList.addListener("focus", l);
-};
-
-/**
- * Disposes of the application.
- * Once invoked, the application will no longer function and cannot be used again.
- * This method will free any resources allocated by the application.
- */ 
-EchoApp.Application.prototype.dispose = function() {
-    this.updateManager.dispose();
-};
-
-EchoApp.Application.prototype._findCurrentModalComponent = function(searchComponent) {
-    for (var i = searchComponent.children.length - 1; i >= 0; --i) {
-        var foundComponent = this._findCurrentModalComponent(searchComponent.children[i]);
-        if (foundComponent) {
-            return foundComponent;
+    /**
+     * Focuses the previous/next component based on the currently focused component.
+     * 
+     * @param {Boolean} reverse false to focus the next component, true to focus the
+     *        previous component
+     */
+    focusNext: function(reverse) {
+        focusedComponent = reverse ? this.focusManager.findPrevious() : this.focusManager.findNext();
+        if (focusedComponent == null) {
+            //FIXME Focus first or last component
+        } else {
+            this.setFocusedComponent(focusedComponent);
+        }
+    },
+    
+    /**
+     * Retrieves the registered component with the specified render id.
+     * 
+     * @param {String} renderId the render id
+     * @return the component
+     * @type EchoApp.Component 
+     */
+    getComponentByRenderId: function(renderId) {
+        return this._idToComponentMap.map[renderId];
+    },
+    
+    /**
+     * Returns the focused component.
+     * 
+     * @return the focused component
+     * @type {EchoApp.Component}
+     */
+    getFocusedComponent: function() {
+        return this._focusedComponent;
+    },
+    
+    /**
+     * Returns the default layout direction of the application.
+     *
+     * @return the default layout direction
+     * @type EchoApp.LayoutDirection 
+     */
+    getLayoutDirection: function() {
+        // FIXME ensure layout direction gets set upon application instantiation
+        return this._layoutDirection ? this._layoutDirection : EchoApp.LayoutDirection.LTR;
+    },
+        
+    getModalContextRoot: function() {
+        if (this._modalComponents.length == 0) {
+            return null;
+        } else if (this._modalComponents.length == 1) {
+            return this._modalComponents[0];
+        }
+        
+        return this._findCurrentModalComponent(this.rootComponent);
+    },
+    
+    /**
+     * Returns the application style sheet.
+     * 
+     * @return the application style sheet
+     * @type EchoApp.StyleSheet
+     */
+    getStyleSheet: function() {
+        return this._styleSheet;
+    },
+    
+    /**
+     * Returns the active state of the application.
+     * 
+     * @return the active state of the application, a value of 
+     *         true indicating the application is ready for user
+     *         input, a value of false indicating otherwise
+     * @type Boolean
+     */
+    isActive: function() {
+        return true;
+    },
+    
+    /**
+     * Notifies the application of an update to a component.
+     * 
+     * @param {EchoApp.Component} parent the parent component
+     * @param {String} propertyName the updated property
+     * @param oldValue the previous property value
+     * @param newValue the new property value
+     */
+    notifyComponentUpdate: function(parent, propertyName, oldValue, newValue) {
+        if (parent.modalSupport && propertyName == "modal") {
+            this._setModal(parent, newValue);
+        }
+        if (this._listenerList.hasListeners("componentUpdate")) {
+            this._listenerList.fireEvent(new EchoApp.Application.ComponentUpdateEvent(
+                    this, parent, propertyName, oldValue, newValue));
+        }
+        this.updateManager._processComponentUpdate(parent, propertyName, oldValue, newValue);
+    },
+    
+    /**
+     * Registers a component with the application.
+     * Invoked when a component is added to a hierarchy of 
+     * components that is registered with the application.
+     * 
+     * @param {EchoApp.Component} component the component to register
+     * @private
+     */
+    _registerComponent: function(component) {
+        if (this._idToComponentMap.map[component.renderId]) {
+            throw new Error("Component already exists with id: " + component.renderId);
+        }
+        this._idToComponentMap.map[component.renderId] = component;
+        if (component.modalSupport && component.getProperty("modal")) {
+            this._setModal(component, true);
+        }
+    },
+    
+    /**
+     * Removes a ComponentUpdateListener.
+     * 
+     * @param l the listener to add (may be of type Function or EchoCore.MethodRef)
+     */
+    removeComponentUpdateListener: function(l) {
+        this._listenerList.removeListener("componentUpdate", l);
+    },
+    
+    /**
+     * Removes a FocusListener.  Focus listeners will be invoked when the focused
+     * component in the application changes.
+     * 
+     * @param l the listener to remove (may be of type Function or EchoCore.MethodRef)
+     */
+    removeFocusListener: function(l) {
+        this._listenerList.removeListener("focus", l);
+    },
+    
+    /**
+     * Sets the focused component
+     * 
+     * @param {EchoApp.Component} newValue the new focused component
+     */
+    setFocusedComponent: function(newValue) {
+        // If required, find focusable parent containing 'newValue'.
+        while (newValue != null && !newValue.focusable) {
+            newValue = newValue.parent;
+        }
+        
+        this._focusedComponent = newValue;
+        this._listenerList.fireEvent(new EchoCore.Event("focus", this));
+    },
+    
+    /**
+     * Sets the application default layout direction.
+     * 
+     * @param {EchoApp.LayoutDirection} newValue the new layout direction
+     */
+    setLayoutDirection: function(newValue) {
+        this._layoutDirection = newValue;
+    },
+    
+    /**
+     * Informs the application of the modal state of a specific component.
+     * When modal components are unregistered, this method must be executed
+     * in order to avoid a memory leak.
+     */
+    _setModal: function(component, modal) {
+        EchoCore.Arrays.remove(this._modalComponents, component);
+        if (modal) {
+            this._modalComponents.push(component);
+        }
+    },
+    
+    /**
+     * Sets the application style sheet.
+     * 
+     * @param {EchoApp.StyleSheet} newValue the new style sheet
+     */
+    setStyleSheet: function(newValue) {
+        var oldValue = this._styleSheet;
+        this._styleSheet = newValue;
+    // FIXME updatemanager can't handle this yet.    
+    //    this.notifyComponentUpdate(null, "styleSheet", oldValue, newValue);
+    },
+    
+    /**
+     * Unregisters a component from the application.
+     * This method is invoked when a component is removed from a hierarchy of 
+     * components registered with the application.
+     * 
+     * @param {EchoApp.Component} component the component to remove
+     * @private
+     */
+    _unregisterComponent: function(component) {
+        this._idToComponentMap.remove(component.renderId);
+        if (component.modalSupport) {
+            this._setModal(component, false);
         }
     }
-    
-    if (searchComponent.modalSupport && searchComponent.getProperty("modal")) {
-        return searchComponent;
-    }
-    
-    return null;
-};
+});
 
 /**
- * Focuses the previous/next component based on the currently focused component.
- * 
- * @param {Boolean} reverse false to focus the next component, true to focus the
- *        previous component
- */
-EchoApp.Application.prototype.focusNext = function(reverse) {
-    focusedComponent = reverse ? this.focusManager.findPrevious() : this.focusManager.findNext();
-    if (focusedComponent == null) {
-        //FIXME Focus first or last component
-    } else {
-        this.setFocusedComponent(focusedComponent);
-    }
-};
-
-/**
- * Retrieves the registered component with the specified render id.
- * 
- * @param {String} renderId the render id
- * @return the component
- * @type EchoApp.Component 
- */
-EchoApp.Application.prototype.getComponentByRenderId = function(renderId) {
-    return this._idToComponentMap.map[renderId];
-};
-
-/**
- * Returns the focused component.
- * 
- * @return the focused component
- * @type {EchoApp.Component}
- */
-EchoApp.Application.prototype.getFocusedComponent = function() {
-    return this._focusedComponent;
-};
-
-/**
- * Returns the default layout direction of the application.
- *
- * @return the default layout direction
- * @type EchoApp.LayoutDirection 
- */
-EchoApp.Application.prototype.getLayoutDirection = function() {
-	// FIXME ensure layout direction gets set upon application instantiation
-    return this._layoutDirection ? this._layoutDirection : EchoApp.LayoutDirection.LTR;
-};
-    
-EchoApp.Application.prototype.getModalContextRoot = function() {
-    if (this._modalComponents.length == 0) {
-        return null;
-    } else if (this._modalComponents.length == 1) {
-        return this._modalComponents[0];
-    }
-    
-    return this._findCurrentModalComponent(this.rootComponent);
-};
-
-/**
- * Returns the application style sheet.
- * 
- * @return the application style sheet
- * @type EchoApp.StyleSheet
- */
-EchoApp.Application.prototype.getStyleSheet = function() {
-    return this._styleSheet;
-};
-
-/**
- * Returns the active state of the application.
- * 
- * @return the active state of the application, a value of 
- *         true indicating the application is ready for user
- *         input, a value of false indicating otherwise
- * @type Boolean
- */
-EchoApp.Application.prototype.isActive = function() {
-    return true;
-};
-
-/**
- * Notifies the application of an update to a component.
- * 
- * @param {EchoApp.Component} parent the parent component
- * @param {String} propertyName the updated property
- * @param oldValue the previous property value
- * @param newValue the new property value
- */
-EchoApp.Application.prototype.notifyComponentUpdate = function(parent, propertyName, oldValue, newValue) {
-    if (parent.modalSupport && propertyName == "modal") {
-        this._setModal(parent, newValue);
-    }
-    if (this._listenerList.hasListeners("componentUpdate")) {
-	    this._listenerList.fireEvent(new EchoApp.Application.ComponentUpdateEvent(
-                this, parent, propertyName, oldValue, newValue));
-    }
-    this.updateManager._processComponentUpdate(parent, propertyName, oldValue, newValue);
-};
-
-/**
- * Registers a component with the application.
- * Invoked when a component is added to a hierarchy of 
- * components that is registered with the application.
- * 
- * @param {EchoApp.Component} component the component to register
- * @private
- */
-EchoApp.Application.prototype._registerComponent = function(component) {
-    if (this._idToComponentMap.map[component.renderId]) {
-        throw new Error("Component already exists with id: " + component.renderId);
-    }
-    this._idToComponentMap.map[component.renderId] = component;
-    if (component.modalSupport && component.getProperty("modal")) {
-        this._setModal(component, true);
-    }
-};
-
-/**
- * Removes a ComponentUpdateListener.
- * 
- * @param l the listener to add (may be of type Function or EchoCore.MethodRef)
- */
-EchoApp.Application.prototype.removeComponentUpdateListener = function(l) {
-    this._listenerList.removeListener("componentUpdate", l);
-};
-
-/**
- * Removes a FocusListener.  Focus listeners will be invoked when the focused
- * component in the application changes.
- * 
- * @param l the listener to remove (may be of type Function or EchoCore.MethodRef)
- */
-EchoApp.Application.prototype.removeFocusListener = function(l) {
-    this._listenerList.removeListener("focus", l);
-};
-
-/**
- * Sets the focused component
- * 
- * @param {EchoApp.Component} newValue the new focused component
- */
-EchoApp.Application.prototype.setFocusedComponent = function(newValue) {
-    // If required, find focusable parent containing 'newValue'.
-    while (newValue != null && !newValue.focusable) {
-        newValue = newValue.parent;
-    }
-    
-    this._focusedComponent = newValue;
-    this._listenerList.fireEvent(new EchoCore.Event("focus", this));
-};
-
-/**
- * Sets the application default layout direction.
- * 
- * @param {EchoApp.LayoutDirection} newValue the new layout direction
- */
-EchoApp.Application.prototype.setLayoutDirection = function(newValue) {
-    this._layoutDirection = newValue;
-};
-
-/**
- * Informs the application of the modal state of a specific component.
- * When modal components are unregistered, this method must be executed
- * in order to avoid a memory leak.
- */
-EchoApp.Application.prototype._setModal = function(component, modal) {
-    EchoCore.Arrays.remove(this._modalComponents, component);
-    if (modal) {
-        this._modalComponents.push(component);
-    }
-};
-
-/**
- * Sets the application style sheet.
- * 
- * @param {EchoApp.StyleSheet} newValue the new style sheet
- */
-EchoApp.Application.prototype.setStyleSheet = function(newValue) {
-    var oldValue = this._styleSheet;
-    this._styleSheet = newValue;
-// FIXME updatemanager can't handle this yet.    
-//    this.notifyComponentUpdate(null, "styleSheet", oldValue, newValue);
-};
-
-/**
- * Unregisters a component from the application.
- * This method is invoked when a component is removed from a hierarchy of 
- * components registered with the application.
- * 
- * @param {EchoApp.Component} component the component to remove
- * @private
- */
-EchoApp.Application.prototype._unregisterComponent = function(component) {
-    this._idToComponentMap.remove(component.renderId);
-    if (component.modalSupport) {
-        this._setModal(component, false);
-    }
-};
-
-/**
+ * @class
  * Event object describing an update to a component.
- * 
- * @constructor
- * @base EchoCore.Event
- * @param source the generator of the event
- * @param {EchoApp.Component} parent the updated component
- * @param {String} propertyName the updated propery
- * @param oldValue the previous value of the property
- * @param newValue the new value of the property
  */
-EchoApp.Application.ComponentUpdateEvent = function(source, parent, propertyName, oldValue, newValue) {
-    EchoCore.Event.call(this, "componentUpdate", source);
-    this.parent = parent;
-    this.propertyName = propertyName;
-    this.oldValue = oldValue;
-    this.newValue = newValue;
-};
+EchoApp.Application.ComponentUpdateEvent = EchoCore.extend(EchoCore.Event, {
 
-EchoApp.Application.ComponentUpdateEvent.prototype = EchoCore.derive(EchoCore.Event);
+    /**
+     * Creates an Event object describing an update to a component.
+     * 
+     * @constructor
+     * @param source the generator of the event
+     * @param {EchoApp.Component} parent the updated component
+     * @param {String} propertyName the updated propery
+     * @param oldValue the previous value of the property
+     * @param newValue the new value of the property
+     */
+    initialize: function(source, parent, propertyName, oldValue, newValue) {
+        EchoCore.Event.prototype.initialize.call(this, "componentUpdate", source);
+        this.parent = parent;
+        this.propertyName = propertyName;
+        this.oldValue = oldValue;
+        this.newValue = newValue;
+    }
+});
 
 /**
  * @class
@@ -343,1044 +353,1057 @@ EchoApp.Application.ComponentUpdateEvent.prototype = EchoCore.derive(EchoCore.Ev
  * used to instantiate new components during XML deserialization.
  * This is a namespace object, do not instantiate.
  */
-EchoApp.ComponentFactory = function() { };
-
-/**
- * Mapping between type names and object constructors.
- * 
- * @type Object
- * @private
- */
-EchoApp.ComponentFactory._typeToConstructorMap = new Object();
-
-/**
- * Creates a new instance of an arbitrary component.
- * 
- * @param {String} typeName the type name of the component
- * @param {String} renderId the component render id
- * @return a newly instantiated component
- * @type EchoApp.Component
- */
-EchoApp.ComponentFactory.newInstance = function(typeName, renderId) {
-    var typeConstructor = EchoApp.ComponentFactory._typeToConstructorMap[typeName];
-    if (typeConstructor == null) {
-        var component = new EchoApp.Component();
-        component.renderId = renderId;
-        component.componentType = typeName;
-        return component;
-    } else {
-        var component = new typeConstructor();
-        component.renderId = renderId;
-        return component;
+EchoApp.ComponentFactory = {
+    
+    /**
+     * Mapping between type names and object constructors.
+     * 
+     * @type Object
+     * @private
+     */
+    _typeToConstructorMap: {},
+    
+    /**
+     * Creates a new instance of an arbitrary component.
+     * 
+     * @constructor
+     * @param {String} typeName the type name of the component
+     * @param {String} renderId the component render id
+     * @return a newly instantiated component
+     * @type EchoApp.Component
+     */
+    newInstance: function(typeName, renderId) {
+        var typeConstructor = this._typeToConstructorMap[typeName];
+        if (typeConstructor == null) {
+            var component = new EchoApp.Component();
+            component.renderId = renderId;
+            component.componentType = typeName;
+            return component;
+        } else {
+            var component = new typeConstructor();
+            component.renderId = renderId;
+            return component;
+        }
+    },
+    
+    /**
+     * Registers a type name to a specific constructor.
+     * 
+     * @param typeName the type name
+     * @param typeConstructor the constructor
+     */
+    registerType: function(typeName, typeConstructor) {
+        this._typeToConstructorMap[typeName] = typeConstructor;
     }
 };
 
 /**
- * Registers a type name to a specific constructor.
- * 
- * @param {String} typeName the type name
- * @param {Function} typeConstructor the component object to instantiate
- *        (must extend EchoApp.Component)
- */
-EchoApp.ComponentFactory.registerType = function(typeName, typeConstructor) {
-    EchoApp.ComponentFactory._typeToConstructorMap[typeName] = typeConstructor;
-};
-
-/**
- * Creates a new Component.
- *  
- * @param {String} renderId the render id
- * @param {Object} associative mapping of initial property values (may be null)
- *        By default, all properties will be placed into the local style, except for the following:
- *        <ul>
- *         <li><code>styleName</code> specifies the component stylesheet style name</li>
- *         <li><code>style</code> specifies the referenced component style</li>
- *         <li><code>renderId</code> specifies the render id</li>
- *        </ul>
- * @constructor
- * 
- * @class Base class for components.
+ * @class 
+ * Base class for components.
  * Derived classes should always take renderId as the first parameter and pass it to the super-constructor.
  * A component MUST have its componentType property set before it is used in a hierarchy.  Failing to do so
  * will throw an exception and/or result in indeterminate behavior.
  */
-EchoApp.Component = function(properties) {
+EchoApp.Component = EchoCore.extend({
+    
+    global: {
+
+        /**
+         * The next automatically assigned client render id.
+         * @private
+         * @type Number
+         */
+        _nextRenderId: 0
+    },
 
     /**
-     * The type name of the component.
-     * This value is read-only.
-     * @type String
+     * Component type.  This must be set by implementors in order for peer discovery to work properly.
      */
-    this.componentType = null;
-    
-    /**
-     * The render id.
-     * This value should be treated as read-only and immutable.
-     * @type String
-     */
-    this.renderId = null;
-    
-    /**
-     * The parent component.
-     * This value is read-only.
-     * @type EchoApp.Component
-     */
-    this.parent = null;
-    
-    /**
-     * Array of child components.
-     * This value is read-only.  Modifying this array will result in undefined behavior.
-     * @type Array
-     */
-    this.children = new Array();
-    
-    /**
-     * The registered application.
-     * This value is read-only.
-     * @type EchoApp.Application
-     */
-    this.application = null;
-    
-    /**
-     * Listener list.  Lazily created.
-     * @private
-     * @type EchoCore.ListenerList
-     */
-    this._listenerList = null;
-    
-    /**
-     * Referenced external style
-     * @private
-     * @type EchoApp.Style
-     */
-    this._style = null;
-    
-    /**
-     * Assigned style name from application-level style sheet.
-     * @private
-     * @type String
-     */
-    this._styleName = null;
+    componentType: null,
 
     /**
-     * Enabled state of the component (default true).
-     * @private
-     * @type Boolean
+     * Creates a new Component.
+     *  
+     * @param {String} renderId the render id
+     * @param {Object} associative mapping of initial property values (may be null)
+     *        By default, all properties will be placed into the local style, except for the following:
+     *        <ul>
+     *         <li><code>styleName</code> specifies the component stylesheet style name</li>
+     *         <li><code>style</code> specifies the referenced component style</li>
+     *         <li><code>renderId</code> specifies the render id</li>
+     *        </ul>
+     * @constructor
      */
-    this._enabled = true;
-    
-    var localStyleProperties = null;
-    if (properties) {
-        for (var name in properties) {
-            switch (name) {
-            case "style": this._style = properties.style; break;
-            case "styleName": this._styleName = properties.styleName; break;
-            case "renderId": this._renderId = properties.renderId; break;
-            case "children":
-                for (var i = 0; i < properties.children.length; ++i) {
-                    this.add(properties.children[i]);
-                }
-                break;
-            case "events":
-                for (var eventType in properties.events) {
-                    this.addListener(eventType, properties.events[eventType]);
-                }
-                break;
-            default:
-                if (localStyleProperties == null) {
-                    localStyleProperties = new Object();
-                }
-                localStyleProperties[name] = properties[name];
-                break;
-            }
-        }
-    }
-    
-    /**
-     * Internal style used to store properties set directly on component.
-     * @private
-     * @type EchoApp.Style
-     */
-    this._localStyle = new EchoApp.Style(localStyleProperties);
-};
-
-EchoApp.Component.NOTIFY_CHILDREN = 1;
-
-/**
- * The next automatically assigned client render id.
- * @private
- * @type Number
- */
-EchoApp.Component._nextRenderId = 0;
-
-/**
- * Adds a component as a child.
- * 
- * @param {EchoApp.Component} component the component to add
- * @param {Number} index the (integer) index at which to add it (optional, omission
- *        will cause component to be appended to end)
- */
-EchoApp.Component.prototype.add = function(component, index) {
-    if (!(component instanceof EchoApp.Component)) {
-        throw new Error("Cannot add child: specified component object is not derived from EchoApp.Component.");
-    }
-    if (!component.componentType) {
-        throw new Error("Cannot add child: specified component object does not have a componentType property. "
-                + "Perhaps the EchoApp.Component() super-constructor was not invoked." + this.toString() + "::::" 
-                + component.toString());
-    }
-
-	if (component.parent) {
-		component.parent.remove(component);
-	}
-    
-    component.parent = this;
+    initialize: function(properties) {
         
-    if (index == null || index == this.children.length) {
-        this.children.push(component);
-    } else {
-        this.children.splice(index, 0, component);
-    }
-    
-    if (this.application) {
-        component.register(this.application);
-        this.application.notifyComponentUpdate(this, "children", null, component);
-    }
-};
-
-/**
- * Adds an arbitrary event listener.
- * 
- * @param {String} eventType the event type name
- * @param eventTarget the method to invoke when the event occurs 
- *        (the event will be passed as the single argument)
- *        (argument may be of type Function or EchoCore.MethodRef)
- */
-EchoApp.Component.prototype.addListener = function(eventType, eventTarget) {
-    if (this._listenerList == null) {
-        this._listenerList = new EchoCore.ListenerList();
-    }
-    this._listenerList.addListener(eventType, eventTarget);
-    if (this.application) {
-        this.application.notifyComponentUpdate(this, "listeners", null, eventType);
-    }
-};
-
-/**
- * Provides notification of an arbitrary event.
- * Listeners will be notified based on the event's type property.
- * 
- * @param {EchoCore.Event} event the event to fire
- */
-EchoApp.Component.prototype.fireEvent = function(event) {
-    if (this._listenerList == null) {
-        return;
-    }
-    this._listenerList.fireEvent(event);
-};
-
-/**
- * Retrieves the child component at the specified index.
- * 
- * @param {Number} index the (integer) index
- * @return the child component
- * @type EchoApp.Component
- */
-EchoApp.Component.prototype.getComponent = function(index) {
-    return this.children[index];
-};
-
-/**
- * Returns the number of child components
- * 
- * @return the number of child components
- * @type Number
- */
-EchoApp.Component.prototype.getComponentCount = function() {
-    return this.children.length;
-};
-
-/**
- * Returns the child component at the specified index
- * after sorting the children in the order which they 
- * should be focused.  The default implementation simply
- * returns the same value as getComponent().
- * Implementations should override this method when
- * the natural order to focus child components is
- * different than their normal ordering (e.g., when
- * the component at index 1 is positioned above the 
- * component at index 0).
- * 
- * @param index the index of the child (in focus order)
- * @return the child component
- */
-EchoApp.Component.prototype.getFocusComponent = function(index) {
-    return this.children[index];
-}
-
-/**
- * Returns an arbitrary indexed property value.
- * 
- * @param {String} name the name of the property
- * @param {Number} index the index to return
- * @return the property value
- */
-EchoApp.Component.prototype.getIndexedProperty = function(name, index) {
-    return this._localStyle.getIndexedProperty(name, index);
-};
-
-/**
- * Returns the component layout direction.
- * 
- * @return the component layout direction
- * @type {EchoApp.LayoutDirection}
- */
-EchoApp.Component.prototype.getLayoutDirection = function() {
-    return this._layoutDirection;
-};
-
-/**
- * Retrieves local style property map associations.
- * This method should only be used by a deserialized for
- * the purpose of rapidly loading properties into a new
- * component.
- * 
- * @return the internal style property map associations
- *         (an associative array).
- */
-EchoApp.Component.prototype.getLocalStyleData = function() {
-    return this._localStyle._properties;
-};
-
-/**
- * Returns an arbitrary property value.
- * 
- * @param {String} name the name of the property
- * @return the property value
- */
-EchoApp.Component.prototype.getProperty = function(name) {
-    return this._localStyle.getProperty(name);
-};
-
-/**
- * Returns the value of an indexed property that should be rendered,
- * based on the value set on this component, in the component's
- * specified style, and/or in the application's stylesheet.
- * 
- * @param {String} name the name of the property
- * @param {Number} index the (integer) index of the property
- * @param defaultValue the default value to return if no value is 
- *        specified in an internal property, style, or stylesheet
- */
-EchoApp.Component.prototype.getRenderIndexedProperty = function(name, index, defaultValue) {
-    var value = this.getIndexedProperty(name, index);
-    if (value == null) {
-        if (this._style != null) {
-            value = this._style.getIndexedProperty(name, index);
-        }
-        if (value == null && this._styleName && this.application && this.application._styleSheet) {
-            var style = this.application._styleSheet.getRenderStyle(this._styleName, 
-                    this._styleType ? this._styleType : this.componentType);
-            if (style) {
-                value = style.getIndexedProperty(name, index);
-            }
-        }
-    }
-    return value == null ? defaultValue : value;
-};
-
-/**
- * Returns the layout direction with which the component should be
- * rendered, based on analyzing the component's layout direction,
- * its parent's, and/or the application's.
- * 
- * @return the rendering layout direction
- * @type EchoApp.LayoutDirection
- */
-EchoApp.Component.prototype.getRenderLayoutDirection = function() {
-    var component = this;
-    while (component) {
-        if (component._layoutDirection) {
-            return component._layoutDirection;
-        }
-        component = component.parent;
-    }
-    if (this.application) {
-        return this.application.getLayoutDirection();
-    }
-    return null;
-};
-
-/**
- * Returns the value of a property that should be rendered,
- * based on the value set on this component, in the component's
- * specified style, and/or in the application's stylesheet.
- * 
- * @param {String} name the name of the property
- * @param defaultValue the default value to return if no value is 
- *        specified in an internal property, style, or stylesheet
- * @return the property value
- */
-EchoApp.Component.prototype.getRenderProperty = function(name, defaultValue) {
-    var value = this.getProperty(name);
-    if (value == null) {
-        if (this._style != null) {
-            value = this._style.getProperty(name);
-        }
-        if (value == null && this._styleName && this.application && this.application._styleSheet) {
-            var style = this.application._styleSheet.getRenderStyle(this._styleName, 
-                    this._styleType ? this._styleType : this.componentType);
-            if (style) {
-                value = style.getProperty(name);
-            }
-        }
-    }
-    return value == null ? defaultValue : value;
-};
-
-/**
- * Returns the style assigned to this component, if any.
- * 
- * @return the assigned style
- * @type EchoApp.Style
- */
-EchoApp.Component.prototype.getStyle = function() {
-    return this._style;
-};
-
-/**
- * Returns the name of the style (from the application's style sheet) 
- * assigned to this component.
- * 
- * @return the style name
- * @type String
- */
-EchoApp.Component.prototype.getStyleName = function() {
-    return this._styleName;
-};
-
-/** 
- * Returns the type name of the style (from the application's style sheet)
- * assigned to this component.
- * This value may differ from the component type in the event
- * the component is a derivative of the type specified in the style sheet
- * 
- * @return the style type
- * @type String
- */
-EchoApp.Component.prototype.getStyleType = function() {
-    return this._styleType;
-};
-
-/**
- * Returns the index of a child component, or -1 if the component
- * is not a child.
- * 
- * @param {EchoApp.Component} component the component
- * @return the index
- * @type Number
- */
-EchoApp.Component.prototype.indexOf = function(component) {
-    for (var i = 0; i < this.children.length; ++i) {
-        if (this.children[i] == component) {
-            return i;
-        }
-    }
-    return -1;
-};
-
-/**
- * Determines if the component is active, that is, within the current modal context
- * and ready to receive input.
- * 
- * @return the active state
- * @type Boolean
- */
-EchoApp.Component.prototype.isActive = function() {
-    // Verify the component and its ancestors are all enabled.
-    if (!this.isRenderEnabled()) {
-        return false;
-    }
-    
-    // Verify component is registered to an application, and that the application is active.
-    if (!this.application || !this.application.isActive()) {
-        return false;
-    }
-    
-    // Verify component is in modal context.
-    var modalContextRoot = this.application.getModalContextRoot();
-    if (modalContextRoot != null && !modalContextRoot.isAncestorOf(this)) {
-        return false;
-    }
-    
-    return true;
-};
-
-/**
- * Determines if this component is or is an ancestor of another component.
- * 
- * @param {EchoApp.Component} c the component to test
- * @return true if an ancestor relationship exists
- * @type Boolean
- */
-EchoApp.Component.prototype.isAncestorOf = function(c) {
-    while (c != null && c != this) {
-        c = c.parent;
-    }
-    return c == this;
-};
-
-/**
- * Determines the enabled state of this component.
- * Use isRenderEnabled() to determine whether a component
- * should be RENDERED as enabled.
- * 
- * @return the enabled state of this specific component
- */
-EchoApp.Component.prototype.isEnabled = function() {
-    return this._enabled;
-};
-
-/**
- * Determines whether this <code>Component</code> should be rendered with
- * an enabled state.
- * Disabled <code>Component</code>s are not eligible to receive user input.
- * 
- * @return true if the component should be rendered enabled.
- * @type Boolean
- */
-EchoApp.Component.prototype.isRenderEnabled = function() {
-    var component = this;
-    while (component != null) {
-        if (!component._enabled) {
-            return false;
-        }
-        component = component.parent;
-    }
-    return true;
-};
-
-/**
- * Registers / unregisters a component that has been 
- * added/removed to/from a registered hierarchy
- * (a hierarchy that is registered to an application).
- * 
- * @param {EchoApp.Application} application the application 
- *        (null to unregister the component)
- */
-EchoApp.Component.prototype.register = function(application) {
-	// Sanity check.
-	if (application && this.application) {
-		throw new Error("Attempt to re-register or change registered application of component.");
-	}
-
-	if (!application) { // unregistering
-	    
-	    // Change application focus in the event the focused component is being removed.
-	    if (this.application._focusedComponent == this) {
-	        this.application.setFocusedComponent(this.parent);
-	    }
-	    
-		if (this.children != null) {
-			// Recursively unregister children.
-		    for (var i = 0; i < this.children.length; ++i) {
-		         this.children[i].register(false); // Recursively unregister children.
-			}
-		}
-		
-        // Notify application.
-		this.application._unregisterComponent(this);
-	}
-
-    // Link/unlink with application.
-    this.application = application;
-
-	if (application) { // registering
-	    
-	    if (this.renderId == null) {
-            this.renderId = "cl_" + ++EchoApp.Component._nextRenderId;
-        }
-
-        // Notify application.
-        this.application._registerComponent(this);
+        /**
+         * The render id.
+         * This value should be treated as read-only and immutable.
+         * @type String
+         */
+        this.renderId = null;
         
-		if (this.children != null) {
-			// Recursively register children.
-		    for (var i = 0; i < this.children.length; ++i) {
-		         this.children[i].register(application); // Recursively unregister children.
-			}
-		}
-	}
-};
-
-/**
- * Removes a child component.
- * 
- * @param componentOrIndex 
- *        the index of the component to remove, or the component to remove
- *        (values may be of type EchoApp.Component or Number)
- */
-EchoApp.Component.prototype.remove = function(componentOrIndex) {
-    var component;
-    var index;
-    if (typeof componentOrIndex == "number") {
-        index = componentOrIndex;
-        component = this.children[index];
-        if (!component) {
-            throw new Error("Index out of bounds: " + index);
+        /**
+         * The parent component.
+         * This value is read-only.
+         * @type EchoApp.Component
+         */
+        this.parent = null;
+        
+        /**
+         * Array of child components.
+         * This value is read-only.  Modifying this array will result in undefined behavior.
+         * @type Array
+         */
+        this.children = [];
+        
+        /**
+         * The registered application.
+         * This value is read-only.
+         * @type EchoApp.Application
+         */
+        this.application = null;
+        
+        /**
+         * Listener list.  Lazily created.
+         * @private
+         * @type EchoCore.ListenerList
+         */
+        this._listenerList = null;
+        
+        /**
+         * Referenced external style
+         * @private
+         * @type EchoApp.Style
+         */
+        this._style = null;
+        
+        /**
+         * Assigned style name from application-level style sheet.
+         * @private
+         * @type String
+         */
+        this._styleName = null;
+    
+        /**
+         * Enabled state of the component (default true).
+         * @private
+         * @type Boolean
+         */
+        this._enabled = true;
+        
+        var localStyleProperties = null;
+        if (properties) {
+            for (var name in properties) {
+                switch (name) {
+                case "style": this._style = properties.style; break;
+                case "styleName": this._styleName = properties.styleName; break;
+                case "renderId": this._renderId = properties.renderId; break;
+                case "children":
+                    for (var i = 0; i < properties.children.length; ++i) {
+                        this.add(properties.children[i]);
+                    }
+                    break;
+                case "events":
+                    for (var eventType in properties.events) {
+                        this.addListener(eventType, properties.events[eventType]);
+                    }
+                    break;
+                default:
+                    if (localStyleProperties == null) {
+                        localStyleProperties = { };
+                    }
+                    localStyleProperties[name] = properties[name];
+                    break;
+                }
+            }
         }
-    } else {
-        component = componentOrIndex;
-        index = this.indexOf(component);
-        if (index == -1) {
-            // Component is not a child: do nothing.
+        
+        /**
+         * Internal style used to store properties set directly on component.
+         * @private
+         * @type EchoApp.Style
+         */
+        this._localStyle = new EchoApp.Style(localStyleProperties);
+    },
+
+    /**
+     * Adds a component as a child.
+     * 
+     * @param {EchoApp.Component} component the component to add
+     * @param {Number} index the (integer) index at which to add it (optional, omission
+     *        will cause component to be appended to end)
+     */
+    add: function(component, index) {
+        if (!(component instanceof EchoApp.Component)) {
+            throw new Error("Cannot add child: specified component object is not derived from EchoApp.Component.");
+        }
+        if (!component.componentType) {
+            throw new Error("Cannot add child: specified component object does not have a componentType property. "
+                    + "Parent: " + this + ", Child: " + component);
+        }
+    
+        if (component.parent) {
+            component.parent.remove(component);
+        }
+        
+        component.parent = this;
+            
+        if (index == null || index == this.children.length) {
+            this.children.push(component);
+        } else {
+            this.children.splice(index, 0, component);
+        }
+        
+        if (this.application) {
+            component.register(this.application);
+            this.application.notifyComponentUpdate(this, "children", null, component);
+        }
+    },
+    
+    /**
+     * Adds an arbitrary event listener.
+     * 
+     * @param {String} eventType the event type name
+     * @param eventTarget the method to invoke when the event occurs 
+     *        (the event will be passed as the single argument)
+     *        (argument may be of type Function or EchoCore.MethodRef)
+     */
+    addListener: function(eventType, eventTarget) {
+        if (this._listenerList == null) {
+            this._listenerList = new EchoCore.ListenerList();
+        }
+        this._listenerList.addListener(eventType, eventTarget);
+        if (this.application) {
+            this.application.notifyComponentUpdate(this, "listeners", null, eventType);
+        }
+    },
+    
+    /**
+     * Provides notification of an arbitrary event.
+     * Listeners will be notified based on the event's type property.
+     * 
+     * @param {EchoCore.Event} event the event to fire
+     */
+    fireEvent: function(event) {
+        if (this._listenerList == null) {
             return;
         }
-    }
+        this._listenerList.fireEvent(event);
+    },
     
-    if (this.application) {
-        component.register(null);
-    }
+    /**
+     * Retrieves the child component at the specified index.
+     * 
+     * @param {Number} index the (integer) index
+     * @return the child component
+     * @type EchoApp.Component
+     */
+    getComponent: function(index) {
+        return this.children[index];
+    },
     
-    this.children.splice(index, 1);
-    component.parent = null;
+    /**
+     * Returns the number of child components
+     * 
+     * @return the number of child components
+     * @type Number
+     */
+    getComponentCount: function() {
+        return this.children.length;
+    },
     
-    if (this.application) {
-        this.application.notifyComponentUpdate(this, "children", component, null);
-    }
-};
-
-/**
- * Removes all child components.
- */
-EchoApp.Component.prototype.removeAll = function() {
-    while (this.children.length > 0) {
-        this.remove(this.children.length - 1);
-    }
-};
-
-/**
- * Removes an arbitrary event listener.
- * 
- * @param {String} eventType the event type name
- * @param eventTarget the method to invoke when the event occurs 
- *        (the event will be passed as the single argument)
- *        (values may be of type Function or EchoCore.MethodRef)
- */
-EchoApp.Component.prototype.removeListener = function(eventType, eventTarget) {
-    if (this._listenerList == null) {
-        return;
-    }
-    this._listenerList.removeListener(eventType, eventTarget);
-    if (this.application) {
-        this.application.notifyComponentUpdate(this, "listeners", eventType, null);
-    }
-};
-
-/**
- * Sets the enabled state of the component.
- * 
- * @param newValue the new enabled state
- */
-EchoApp.Component.prototype.setEnabled = function(newValue) {
-    var oldValue = this._enabled;
-    this._enabled = newValue;
-    if (this.application) {
-        this.application.notifyComponentUpdate(this, "enabled", oldValue, newValue);
-    }
-};
-
-/** 
- * Sets the value of an indexed property in the internal style.
- * 
- * @param {String} name the name of the property
- * @param {Number} index the index of the property
- * @param newValue the new value of the property
- */
-EchoApp.Component.prototype.setIndexedProperty = function(name, index, newValue) {
-    var oldValue = this._localStyle.getIndexedProperty(name, index);
-    this._localStyle.setIndexedProperty(name, index, newValue);
-    if (this.application) {
-        this.application.notifyComponentUpdate(this, name, oldValue, newValue);
-    }
-};
-
-/**
- * Sets a component-specific layout direction.
- * 
- * @param {EchoApp.LayoutDirection} newValue the new layout direction
- */
-EchoApp.Component.prototype.setLayoutDirection = function(newValue) {
-    this._layoutDirection = newValue;
-};
-
-/** 
- * Sets the value of a property in the internal style.
- * 
- * @param {String} name the name of the property
- * @param value the new value of the property
- */
-EchoApp.Component.prototype.setProperty = function(name, newValue) {
-    var oldValue = this._localStyle.getProperty(name);
-    this._localStyle.setProperty(name, newValue);
-    if (this._listenerList && this._listenerList.hasListeners("property")) {
-        var e = new EchoCore.Event("property", this);
-        e.propertyName = name;
-        e.oldValue = oldValue;
-        e.newValue = newValue;
-        this._listenerList.fireEvent(e);
-    }
-    if (this.application) {
-        this.application.notifyComponentUpdate(this, name, oldValue, newValue);
-    }
-};
-
-/**
- * Sets the style of the component.
- * 
- * @param {EchoApp.Style} newValue the new style
- */
-EchoApp.Component.prototype.setStyle = function(newValue) {
-    var oldValue = this._style;
-    this._style = newValue;
-    if (this.application) {
-        this.application.notifyComponentUpdate(this, "style", oldValue, newValue);
-    }
-};
-
-/**
- * Sets the name of the style (from the application's style sheet) 
- * assigned to this component.
- * 
- * @param {String} newValue the style name
- */
-EchoApp.Component.prototype.setStyleName = function(newValue) {
-    var oldValue = this._styleName;
-    this._styleName = newValue;
-    if (this.application) {
-        this.application.notifyComponentUpdate(this, "styleName", oldValue, newValue);
-    }
-};
-
-/** 
- * Sets the type name of the style (from the application's style sheet)
- * assigned to this component.
- * This value may differ from the component type in the event
- * the component is a derivative of the type specified in the style sheet
- * 
- * @param {String} newValue the style type
- */
-EchoApp.Component.prototype.setStyleType = function(newValue) {
-    var oldValue = this._styleType;
-    this._styleType = newValue;
-    if (this.application) {
-        this.application.notifyComponentUpdate(this, "styleType", oldValue, newValue);
-    }
-};
-
-/**
- * Returns a string representation of the component (default implementation).
- * 
- * @param {Boolean} longFormat an optional flag specifying whether all information about
- *        the component should be displayed (e.g., property values)
- * @return a string representation of the component
- * @type String
- */
-EchoApp.Component.prototype.toString = function(longFormat) {
-    var out = this.renderId + "/" + this.componentType;
-    if (longFormat) {
-		out += "\n";
-		var componentCount = this.getComponentCount();
-        out += this.renderId + "/properties:" + this._localStyle + "\n";
-		for (var i = 0; i < componentCount; ++i) {
-			var component = this.getComponent(i);
-			out += this.renderId + "/child:" + component.renderId + "\n";
-			out += component.toString(true);
-		}
-    }
-    return out;
-};
-
-/**
- * Focus management handler for a specific application instance.
- * One FocusManager is created for each application.
- */
-EchoApp.FocusManager = function(application) { 
-    this._application = application;
-};
-
-/**
- * Focuses next (or previous) child of a parent component.
- * If the next immediate child is not focusable, its descendants will
- * be investigated and the first focusable descendant will be focused. 
- */
-EchoApp.FocusManager.prototype.focusNextChild = function(parentComponent, reverse) {
-    var childComponent = this._application.getFocusedComponent();
+    /**
+     * Returns the child component at the specified index
+     * after sorting the children in the order which they 
+     * should be focused.  The default implementation simply
+     * returns the same value as getComponent().
+     * Implementations should override this method when
+     * the natural order to focus child components is
+     * different than their normal ordering (e.g., when
+     * the component at index 1 is positioned above the 
+     * component at index 0).
+     * 
+     * @param index the index of the child (in focus order)
+     * @return the child component
+     */
+    getFocusComponent: function(index) {
+        return this.children[index];
+    },
     
-    // Determine which child of the parentComponent is focused, or which child has
-    // a focused descendant.
-    while (childComponent.parent != parentComponent && childComponent.parent != null) {
-        childComponent = childComponent.parent;
-    }
-    if (childComponent.parent == null) {
-        return false;
-    }
-    var index = parentComponent.indexOf(childComponent);
-
-    if (reverse) {
-        while (index > 0) {
-            --index;
-            childComponent = parentComponent.getComponent(index);
-            if (childComponent.focusable && childComponent.isActive()) {
-                this._application.setFocusedComponent(childComponent);
-                return true;
+    /**
+     * Returns an arbitrary indexed property value.
+     * 
+     * @param {String} name the name of the property
+     * @param {Number} index the index to return
+     * @return the property value
+     */
+    getIndexedProperty: function(name, index) {
+        return this._localStyle.getIndexedProperty(name, index);
+    },
+    
+    /**
+     * Returns the component layout direction.
+     * 
+     * @return the component layout direction
+     * @type {EchoApp.LayoutDirection}
+     */
+    getLayoutDirection: function() {
+        return this._layoutDirection;
+    },
+    
+    /**
+     * Retrieves local style property map associations.
+     * This method should only be used by a deserialized for
+     * the purpose of rapidly loading properties into a new
+     * component.
+     * 
+     * @return the internal style property map associations
+     *         (an associative array).
+     */
+    getLocalStyleData: function() {
+        return this._localStyle._properties;
+    },
+    
+    /**
+     * Returns an arbitrary property value.
+     * 
+     * @param {String} name the name of the property
+     * @return the property value
+     */
+    getProperty: function(name) {
+        return this._localStyle.getProperty(name);
+    },
+    
+    /**
+     * Returns the value of an indexed property that should be rendered,
+     * based on the value set on this component, in the component's
+     * specified style, and/or in the application's stylesheet.
+     * 
+     * @param {String} name the name of the property
+     * @param {Number} index the (integer) index of the property
+     * @param defaultValue the default value to return if no value is 
+     *        specified in an internal property, style, or stylesheet
+     */
+    getRenderIndexedProperty: function(name, index, defaultValue) {
+        var value = this.getIndexedProperty(name, index);
+        if (value == null) {
+            if (this._style != null) {
+                value = this._style.getIndexedProperty(name, index);
             }
-        }
-        return false;
-    } else {
-        var count = parentComponent.getComponentCount();
-        while (index < count - 1) {
-            ++index;
-            childComponent = parentComponent.getComponent(index);
-            if (childComponent.focusable && childComponent.isActive()) {
-                this._application.setFocusedComponent(childComponent);
-                return true;
-            }
-        }
-        return false;
-    }
-};
-
-/**
- * Searches the component hierarchy for the next component that should
- * be focused (based on the currently focused component).
- * Container components are queried to determine the order in which their
- * children should naturally be focused (certain components, e.g., SplitPanes,
- * will have a child focus order that may be different from the order of their 
- * children).
- * This search is depth first.
- * 
- * @return the Component which should be focused
- * @type EchoApp.Component
- */
-EchoApp.FocusManager.prototype.findNext = function() {
-    /** The component that is currently being analyzed */
-    var component = this._application.getFocusedComponent();
-    if (component == null) {
-        component = this._application.rootComponent;
-    }
-    
-    /** The component which is currently focused by the application. */
-    var originComponent = component;
-    
-    /** An associative array containing the ids of all previously visited components. */
-    var visitedComponents = new Object();
-    
-    /** The value of 'component' on the previous iteration. */
-    var lastComponent = null;
-    
-    while (true) {
-        /** The candidate next component to be focused */
-        var nextComponent = null;
-        
-        if (component.getComponentCount() > 0) {
-            if (lastComponent && lastComponent.parent == component) {
-                // Previously moved up: do not move down.
-            } else {
-                // Attempt to move down.
-                nextComponent = component.getComponent(0);
-
-                if (visitedComponents[nextComponent.renderId]) {
-                    // Already visited children, cancel the move.
-                    nextComponent = null;
+            if (value == null && this._styleName && this.application && this.application._styleSheet) {
+                var style = this.application._styleSheet.getRenderStyle(this._styleName, 
+                        this._styleType ? this._styleType : this.componentType);
+                if (style) {
+                    value = style.getIndexedProperty(name, index);
                 }
             }
         }
-        
-        if (nextComponent == null) {
-            // Attempt to move right.
-
-            // Verify component is not root.
-            if (component.parent) {
-                // Get next sibling.
-                var componentIndex = component.parent.indexOf(component);
-                if (componentIndex < component.parent.getComponentCount() - 1) {
-                    nextComponent = component.parent.getComponent(componentIndex + 1);
+        return value == null ? defaultValue : value;
+    },
+    
+    /**
+     * Returns the layout direction with which the component should be
+     * rendered, based on analyzing the component's layout direction,
+     * its parent's, and/or the application's.
+     * 
+     * @return the rendering layout direction
+     * @type EchoApp.LayoutDirection
+     */
+    getRenderLayoutDirection: function() {
+        var component = this;
+        while (component) {
+            if (component._layoutDirection) {
+                return component._layoutDirection;
+            }
+            component = component.parent;
+        }
+        if (this.application) {
+            return this.application.getLayoutDirection();
+        }
+        return null;
+    },
+    
+    /**
+     * Returns the value of a property that should be rendered,
+     * based on the value set on this component, in the component's
+     * specified style, and/or in the application's stylesheet.
+     * 
+     * @param {String} name the name of the property
+     * @param defaultValue the default value to return if no value is 
+     *        specified in an internal property, style, or stylesheet
+     * @return the property value
+     */
+    getRenderProperty: function(name, defaultValue) {
+        var value = this.getProperty(name);
+        if (value == null) {
+            if (this._style != null) {
+                value = this._style.getProperty(name);
+            }
+            if (value == null && this._styleName && this.application && this.application._styleSheet) {
+                var style = this.application._styleSheet.getRenderStyle(this._styleName, 
+                        this._styleType ? this._styleType : this.componentType);
+                if (style) {
+                    value = style.getProperty(name);
                 }
             }
         }
-        
-        if (nextComponent == null) {
-            // Attempt to move up.
-            nextComponent = component.parent;
+        return value == null ? defaultValue : value;
+    },
+    
+    /**
+     * Returns the style assigned to this component, if any.
+     * 
+     * @return the assigned style
+     * @type EchoApp.Style
+     */
+    getStyle: function() {
+        return this._style;
+    },
+    
+    /**
+     * Returns the name of the style (from the application's style sheet) 
+     * assigned to this component.
+     * 
+     * @return the style name
+     * @type String
+     */
+    getStyleName: function() {
+        return this._styleName;
+    },
+    
+    /** 
+     * Returns the type name of the style (from the application's style sheet)
+     * assigned to this component.
+     * This value may differ from the component type in the event
+     * the component is a derivative of the type specified in the style sheet
+     * 
+     * @return the style type
+     * @type String
+     */
+    getStyleType: function() {
+        return this._styleType;
+    },
+    
+    /**
+     * Returns the index of a child component, or -1 if the component
+     * is not a child.
+     * 
+     * @param {EchoApp.Component} component the component
+     * @return the index
+     * @type Number
+     */
+    indexOf: function(component) {
+        for (var i = 0; i < this.children.length; ++i) {
+            if (this.children[i] == component) {
+                return i;
+            }
+        }
+        return -1;
+    },
+    
+    /**
+     * Determines if the component is active, that is, within the current modal context
+     * and ready to receive input.
+     * 
+     * @return the active state
+     * @type Boolean
+     */
+    isActive: function() {
+        // Verify the component and its ancestors are all enabled.
+        if (!this.isRenderEnabled()) {
+            return false;
         }
         
-        if (nextComponent == null) {
-            return null;
+        // Verify component is registered to an application, and that the application is active.
+        if (!this.application || !this.application.isActive()) {
+            return false;
         }
         
-        lastComponent = component;
-        component = nextComponent;
-        visitedComponents[component.renderId] = true;
-        
-        if (component != originComponent && component.isActive() && component.focusable) {
-            return component;
+        // Verify component is in modal context.
+        var modalContextRoot = this.application.getModalContextRoot();
+        if (modalContextRoot != null && !modalContextRoot.isAncestorOf(this)) {
+            return false;
         }
-    }
-};
-
-/**
- * Searches the component hierarchy for the previous component that should
- * be focused (based on the currently focused component).
- * Container components are queried to determine the order in which their
- * children should naturally be focused (certain components, e.g., SplitPanes,
- * will have a child focus order that may be different from the order of their 
- * children).
- * This search is depth first.
- * 
- * @return the Component which should be focused
- * @type EchoApp.Component
- */
-EchoApp.FocusManager.prototype.findPrevious = function() {
-    /** The component that is currently being analyzed */
-    var component = this._application.getFocusedComponent();
-    if (component == null) {
-        component = this._application.rootComponent;
-    }
-    
-    /** The component which is currently focused by the application. */
-    var originComponent = component;
-    
-    /** An associative array containing the ids of all previously visited components. */
-    var visitedComponents = new Object();
-    
-    /** The value of 'component' on the previous iteration. */
-    var lastComponent = null;
-    
-    while (true) {
-        /** The candidate next component to be focused */
-        var nextComponent = null;
         
-        if (component == originComponent || (lastComponent && lastComponent.parent == component)) {
-            // On origin component (OR) Previously moved up: do not move down.
+        return true;
+    },
+    
+    /**
+     * Determines if this component is or is an ancestor of another component.
+     * 
+     * @param {EchoApp.Component} c the component to test
+     * @return true if an ancestor relationship exists
+     * @type Boolean
+     */
+    isAncestorOf: function(c) {
+        while (c != null && c != this) {
+            c = c.parent;
+        }
+        return c == this;
+    },
+    
+    /**
+     * Determines the enabled state of this component.
+     * Use isRenderEnabled() to determine whether a component
+     * should be RENDERED as enabled.
+     * 
+     * @return the enabled state of this specific component
+     */
+    isEnabled: function() {
+        return this._enabled;
+    },
+    
+    /**
+     * Determines whether this <code>Component</code> should be rendered with
+     * an enabled state.
+     * Disabled <code>Component</code>s are not eligible to receive user input.
+     * 
+     * @return true if the component should be rendered enabled.
+     * @type Boolean
+     */
+    isRenderEnabled: function() {
+        var component = this;
+        while (component != null) {
+            if (!component._enabled) {
+                return false;
+            }
+            component = component.parent;
+        }
+        return true;
+    },
+    
+    /**
+     * Registers / unregisters a component that has been 
+     * added/removed to/from a registered hierarchy
+     * (a hierarchy that is registered to an application).
+     * 
+     * @param {EchoApp.Application} application the application 
+     *        (null to unregister the component)
+     */
+    register: function(application) {
+        // Sanity check.
+        if (application && this.application) {
+            throw new Error("Attempt to re-register or change registered application of component.");
+        }
+    
+        if (!application) { // unregistering
+            
+            // Change application focus in the event the focused component is being removed.
+            if (this.application._focusedComponent == this) {
+                this.application.setFocusedComponent(this.parent);
+            }
+            
+            if (this.children != null) {
+                // Recursively unregister children.
+                for (var i = 0; i < this.children.length; ++i) {
+                     this.children[i].register(false); // Recursively unregister children.
+                }
+            }
+            
+            // Notify application.
+            this.application._unregisterComponent(this);
+        }
+    
+        // Link/unlink with application.
+        this.application = application;
+    
+        if (application) { // registering
+            
+            if (this.renderId == null) {
+                this.renderId = "cl_" + ++EchoApp.Component._nextRenderId;
+            }
+    
+            // Notify application.
+            this.application._registerComponent(this);
+            
+            if (this.children != null) {
+                // Recursively register children.
+                for (var i = 0; i < this.children.length; ++i) {
+                     this.children[i].register(application); // Recursively unregister children.
+                }
+            }
+        }
+    },
+    
+    /**
+     * Removes a child component.
+     * 
+     * @param componentOrIndex 
+     *        the index of the component to remove, or the component to remove
+     *        (values may be of type EchoApp.Component or Number)
+     */
+    remove: function(componentOrIndex) {
+        var component;
+        var index;
+        if (typeof componentOrIndex == "number") {
+            index = componentOrIndex;
+            component = this.children[index];
+            if (!component) {
+                throw new Error("Index out of bounds: " + index);
+            }
         } else {
-            var componentCount = component.getComponentCount();
-            if (componentCount > 0) {
-                // Attempt to move down.
-                nextComponent = component.getComponent(componentCount - 1);
-                if (visitedComponents[nextComponent.renderId]) {
-                    // Already visited children, cancel the move.
-                    nextComponent = null;
-                }
+            component = componentOrIndex;
+            index = this.indexOf(component);
+            if (index == -1) {
+                // Component is not a child: do nothing.
+                return;
             }
         }
         
-        if (nextComponent == null) {
-            // Attempt to move left.
-            if (component.parent) {
-                // Get previous sibling.
-                var componentIndex = component.parent.indexOf(component);
-                if (componentIndex > 0) {
-                    nextComponent = component.parent.getComponent(componentIndex - 1);
-                }
-            }
+        if (this.application) {
+            component.register(null);
         }
         
-        if (nextComponent == null) {
-            // Move up.
-            nextComponent = component.parent;
-        }
+        this.children.splice(index, 1);
+        component.parent = null;
         
-        if (nextComponent == null) {
-            return null;
+        if (this.application) {
+            this.application.notifyComponentUpdate(this, "children", component, null);
         }
-
-        lastComponent = component;
-        component = nextComponent;
-        visitedComponents[component.renderId] = true;
-        
-        if (component != originComponent && component.isActive() && component.focusable) {
-            return component;
-        }
-    }
-};
-
-// Fundamental Property Types
+    },
     
-/**
- * Layout Data Object, describing how a child component is rendered/laid out 
- * within its parent container.
- * 
- * @param properties an associative array containing the initial properties of the layout data
- * @constructor
- */
-EchoApp.LayoutData = function(properties) {
-    this._localStyle = new EchoApp.Style(properties);
-};
+    /**
+     * Removes all child components.
+     */
+    removeAll: function() {
+        while (this.children.length > 0) {
+            this.remove(this.children.length - 1);
+        }
+    },
+    
+    /**
+     * Removes an arbitrary event listener.
+     * 
+     * @param {String} eventType the event type name
+     * @param eventTarget the method to invoke when the event occurs 
+     *        (the event will be passed as the single argument)
+     *        (values may be of type Function or EchoCore.MethodRef)
+     */
+    removeListener: function(eventType, eventTarget) {
+        if (this._listenerList == null) {
+            return;
+        }
+        this._listenerList.removeListener(eventType, eventTarget);
+        if (this.application) {
+            this.application.notifyComponentUpdate(this, "listeners", eventType, null);
+        }
+    },
+    
+    /**
+     * Sets the enabled state of the component.
+     * 
+     * @param newValue the new enabled state
+     */
+    setEnabled: function(newValue) {
+        var oldValue = this._enabled;
+        this._enabled = newValue;
+        if (this.application) {
+            this.application.notifyComponentUpdate(this, "enabled", oldValue, newValue);
+        }
+    },
+    
+    /** 
+     * Sets the value of an indexed property in the internal style.
+     * 
+     * @param {String} name the name of the property
+     * @param {Number} index the index of the property
+     * @param newValue the new value of the property
+     */
+    setIndexedProperty: function(name, index, newValue) {
+        var oldValue = this._localStyle.getIndexedProperty(name, index);
+        this._localStyle.setIndexedProperty(name, index, newValue);
+        if (this.application) {
+            this.application.notifyComponentUpdate(this, name, oldValue, newValue);
+        }
+    },
+    
+    /**
+     * Sets a component-specific layout direction.
+     * 
+     * @param {EchoApp.LayoutDirection} newValue the new layout direction
+     */
+    setLayoutDirection: function(newValue) {
+        this._layoutDirection = newValue;
+    },
+    
+    /** 
+     * Sets the value of a property in the internal style.
+     * 
+     * @param {String} name the name of the property
+     * @param value the new value of the property
+     */
+    setProperty: function(name, newValue) {
+        var oldValue = this._localStyle.getProperty(name);
+        this._localStyle.setProperty(name, newValue);
+        if (this._listenerList && this._listenerList.hasListeners("property")) {
+            var e = new EchoCore.Event("property", this);
+            e.propertyName = name;
+            e.oldValue = oldValue;
+            e.newValue = newValue;
+            this._listenerList.fireEvent(e);
+        }
+        if (this.application) {
+            this.application.notifyComponentUpdate(this, name, oldValue, newValue);
+        }
+    },
+    
+    /**
+     * Sets the style of the component.
+     * 
+     * @param {EchoApp.Style} newValue the new style
+     */
+    setStyle: function(newValue) {
+        var oldValue = this._style;
+        this._style = newValue;
+        if (this.application) {
+            this.application.notifyComponentUpdate(this, "style", oldValue, newValue);
+        }
+    },
+    
+    /**
+     * Sets the name of the style (from the application's style sheet) 
+     * assigned to this component.
+     * 
+     * @param {String} newValue the style name
+     */
+    setStyleName: function(newValue) {
+        var oldValue = this._styleName;
+        this._styleName = newValue;
+        if (this.application) {
+            this.application.notifyComponentUpdate(this, "styleName", oldValue, newValue);
+        }
+    },
+    
+    /** 
+     * Sets the type name of the style (from the application's style sheet)
+     * assigned to this component.
+     * This value may differ from the component type in the event
+     * the component is a derivative of the type specified in the style sheet
+     * 
+     * @param {String} newValue the style type
+     */
+    setStyleType: function(newValue) {
+        var oldValue = this._styleType;
+        this._styleType = newValue;
+        if (this.application) {
+            this.application.notifyComponentUpdate(this, "styleType", oldValue, newValue);
+        }
+    },
+    
+    /**
+     * Returns a string representation of the component (default implementation).
+     * 
+     * @param {Boolean} longFormat an optional flag specifying whether all information about
+     *        the component should be displayed (e.g., property values)
+     * @return a string representation of the component
+     * @type String
+     */
+    $toString: function(longFormat) {
+        var out = this.renderId + "/" + this.componentType;
+        if (longFormat) {
+            out += "\n";
+            var componentCount = this.getComponentCount();
+            out += this.renderId + "/properties:" + this._localStyle + "\n";
+            for (var i = 0; i < componentCount; ++i) {
+                var component = this.getComponent(i);
+                out += this.renderId + "/child:" + component.renderId + "\n";
+                out += component.toString(true);
+            }
+        }
+        return out;
+    }
+});
 
-/**
- * Retrieves an indexed property value.
- * 
- * @param {String} name the name of the property
- * @param {Number} the (integer) property index
- */
-EchoApp.LayoutData.prototype.getIndexedProperty = function(name, index) {
-    return this._localStyle.getIndexedProperty(name, index);
-};
-
-/**
- * Retrieves a property value.
- * 
- * @param {String} name the name of the property
- * @return the property value
- */
-EchoApp.LayoutData.prototype.getProperty = function(name) {
-    return this._localStyle.getProperty(name);
-};
-
-/**
- * Sets an indexed property value.
- * 
- * @param {String} name the name of the property
- * @param {Number} the (integer) property index
- * @param newValue the new property value
- */
-EchoApp.LayoutData.prototype.setIndexedProperty = function(name, index, newValue) {
-    this._localStyle.setIndexedProperty(name, index, newValue);
-};
-
-/**
- * Sets a property value.
- * 
- * @param {String} name the name of the property
- * @param value the new property value
- */
-EchoApp.LayoutData.prototype.setProperty = function(name, newValue) {
-    this._localStyle.setProperty(name, newValue);
-};
-
-/**
- * LayoutDirection property.  Do not instantiate, use LTR/RTL constants.
- * @constructor
- */
-EchoApp.LayoutDirection = function() {
+EchoApp.FocusManager = EchoCore.extend({
 
     /**
-     * Flag indicating whether layout direction is left-to-right.
-     * @type Boolean 
+     * Focus management handler for a specific application instance.
+     * One FocusManager is created for each application.
      */
-    this._ltr = arguments[0];
-};
+    initialize: function(application) { 
+        this._application = application;
+    },
+    
+    /**
+     * Focuses next (or previous) child of a parent component.
+     * If the next immediate child is not focusable, its descendants will
+     * be investigated and the first focusable descendant will be focused. 
+     */
+    focusNextChild: function(parentComponent, reverse) {
+        var childComponent = this._application.getFocusedComponent();
+        
+        // Determine which child of the parentComponent is focused, or which child has
+        // a focused descendant.
+        while (childComponent.parent != parentComponent && childComponent.parent != null) {
+            childComponent = childComponent.parent;
+        }
+        if (childComponent.parent == null) {
+            return false;
+        }
+        var index = parentComponent.indexOf(childComponent);
+    
+        if (reverse) {
+            while (index > 0) {
+                --index;
+                childComponent = parentComponent.getComponent(index);
+                if (childComponent.focusable && childComponent.isActive()) {
+                    this._application.setFocusedComponent(childComponent);
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            var count = parentComponent.getComponentCount();
+            while (index < count - 1) {
+                ++index;
+                childComponent = parentComponent.getComponent(index);
+                if (childComponent.focusable && childComponent.isActive()) {
+                    this._application.setFocusedComponent(childComponent);
+                    return true;
+                }
+            }
+            return false;
+        }
+    },
+    
+    /**
+     * Searches the component hierarchy for the next component that should
+     * be focused (based on the currently focused component).
+     * Container components are queried to determine the order in which their
+     * children should naturally be focused (certain components, e.g., SplitPanes,
+     * will have a child focus order that may be different from the order of their 
+     * children).
+     * This search is depth first.
+     * 
+     * @return the Component which should be focused
+     * @type EchoApp.Component
+     */
+    findNext: function() {
+        /** The component that is currently being analyzed */
+        var component = this._application.getFocusedComponent();
+        if (component == null) {
+            component = this._application.rootComponent;
+        }
+        
+        /** The component which is currently focused by the application. */
+        var originComponent = component;
+        
+        /** An associative array containing the ids of all previously visited components. */
+        var visitedComponents = { };
+        
+        /** The value of 'component' on the previous iteration. */
+        var lastComponent = null;
+        
+        while (true) {
+            /** The candidate next component to be focused */
+            var nextComponent = null;
+            
+            if (component.getComponentCount() > 0) {
+                if (lastComponent && lastComponent.parent == component) {
+                    // Previously moved up: do not move down.
+                } else {
+                    // Attempt to move down.
+                    nextComponent = component.getComponent(0);
+    
+                    if (visitedComponents[nextComponent.renderId]) {
+                        // Already visited children, cancel the move.
+                        nextComponent = null;
+                    }
+                }
+            }
+            
+            if (nextComponent == null) {
+                // Attempt to move right.
+    
+                // Verify component is not root.
+                if (component.parent) {
+                    // Get next sibling.
+                    var componentIndex = component.parent.indexOf(component);
+                    if (componentIndex < component.parent.getComponentCount() - 1) {
+                        nextComponent = component.parent.getComponent(componentIndex + 1);
+                    }
+                }
+            }
+            
+            if (nextComponent == null) {
+                // Attempt to move up.
+                nextComponent = component.parent;
+            }
+            
+            if (nextComponent == null) {
+                return null;
+            }
+            
+            lastComponent = component;
+            component = nextComponent;
+            visitedComponents[component.renderId] = true;
+            
+            if (component != originComponent && component.isActive() && component.focusable) {
+                return component;
+            }
+        }
+    },
+    
+    /**
+     * Searches the component hierarchy for the previous component that should
+     * be focused (based on the currently focused component).
+     * Container components are queried to determine the order in which their
+     * children should naturally be focused (certain components, e.g., SplitPanes,
+     * will have a child focus order that may be different from the order of their 
+     * children).
+     * This search is depth first.
+     * 
+     * @return the Component which should be focused
+     * @type EchoApp.Component
+     */
+    findPrevious: function() {
+        /** The component that is currently being analyzed */
+        var component = this._application.getFocusedComponent();
+        if (component == null) {
+            component = this._application.rootComponent;
+        }
+        
+        /** The component which is currently focused by the application. */
+        var originComponent = component;
+        
+        /** An associative array containing the ids of all previously visited components. */
+        var visitedComponents = { };
+        
+        /** The value of 'component' on the previous iteration. */
+        var lastComponent = null;
+        
+        while (true) {
+            /** The candidate next component to be focused */
+            var nextComponent = null;
+            
+            if (component == originComponent || (lastComponent && lastComponent.parent == component)) {
+                // On origin component (OR) Previously moved up: do not move down.
+            } else {
+                var componentCount = component.getComponentCount();
+                if (componentCount > 0) {
+                    // Attempt to move down.
+                    nextComponent = component.getComponent(componentCount - 1);
+                    if (visitedComponents[nextComponent.renderId]) {
+                        // Already visited children, cancel the move.
+                        nextComponent = null;
+                    }
+                }
+            }
+            
+            if (nextComponent == null) {
+                // Attempt to move left.
+                if (component.parent) {
+                    // Get previous sibling.
+                    var componentIndex = component.parent.indexOf(component);
+                    if (componentIndex > 0) {
+                        nextComponent = component.parent.getComponent(componentIndex - 1);
+                    }
+                }
+            }
+            
+            if (nextComponent == null) {
+                // Move up.
+                nextComponent = component.parent;
+            }
+            
+            if (nextComponent == null) {
+                return null;
+            }
+    
+            lastComponent = component;
+            component = nextComponent;
+            visitedComponents[component.renderId] = true;
+            
+            if (component != originComponent && component.isActive() && component.focusable) {
+                return component;
+            }
+        }
+    }
+});
 
-/**
- * Determines if the layout direction is left-to-right.
- * 
- * @return true if the layout direction is left-to-right
- * @type Boolean
- */
-EchoApp.LayoutDirection.prototype.isLeftToRight = function() {
-    return this._ltr;
-};
+// Fundamental Property Types
+
+EchoApp.LayoutData = EchoCore.extend({
+    
+    /**
+     * Layout Data Object, describing how a child component is rendered/laid out 
+     * within its parent container.
+     * 
+     * @param properties an associative array containing the initial properties of the layout data
+     * @constructor
+     */
+    initialize: function(properties) {
+        this._localStyle = new EchoApp.Style(properties);
+    },
+    
+    /**
+     * Retrieves an indexed property value.
+     * 
+     * @param {String} name the name of the property
+     * @param {Number} the (integer) property index
+     */
+    getIndexedProperty: function(name, index) {
+        return this._localStyle.getIndexedProperty(name, index);
+    },
+    
+    /**
+     * Retrieves a property value.
+     * 
+     * @param {String} name the name of the property
+     * @return the property value
+     */
+    getProperty: function(name) {
+        return this._localStyle.getProperty(name);
+    },
+    
+    /**
+     * Sets an indexed property value.
+     * 
+     * @param {String} name the name of the property
+     * @param {Number} the (integer) property index
+     * @param newValue the new property value
+     */
+    setIndexedProperty: function(name, index, newValue) {
+        this._localStyle.setIndexedProperty(name, index, newValue);
+    },
+    
+    /**
+     * Sets a property value.
+     * 
+     * @param {String} name the name of the property
+     * @param value the new property value
+     */
+    setProperty: function(name, newValue) {
+        this._localStyle.setProperty(name, newValue);
+    }
+});
+
+EchoApp.LayoutDirection = EchoCore.extend({
+    
+    /**
+     * LayoutDirection property.  Do not instantiate, use LTR/RTL constants.
+     * @constructor
+     */
+    initialize: function() {
+    
+        /**
+         * Flag indicating whether layout direction is left-to-right.
+         * @type Boolean 
+         */
+        this._ltr = arguments[0];
+    },
+
+    /**
+     * Determines if the layout direction is left-to-right.
+     * 
+     * @return true if the layout direction is left-to-right
+     * @type Boolean
+     */
+    isLeftToRight: function() {
+        return this._ltr;
+    }
+});
 
 /**
  * Global instance representing a left-to-right layout direction.
@@ -1396,1030 +1419,1135 @@ EchoApp.LayoutDirection.LTR = new EchoApp.LayoutDirection(true);
  */
 EchoApp.LayoutDirection.RTL = new EchoApp.LayoutDirection(false);
 
-/**
- * Creates an alignment property.
- *
- * @class Alignment property.
- * @param {Number} horizontal the horizontal alignment setting, one of the 
- *        following values:
- *        <ul>
- *         <li>EchoApp.Alignment.DEFAULT</li>
- *         <li>EchoApp.Alignment.LEADING</li>
- *         <li>EchoApp.Alignment.TRAILING</li>
- *         <li>EchoApp.Alignment.LEFT</li>
- *         <li>EchoApp.Alignment.CENTER</li>
- *         <li>EchoApp.Alignment.RIGHT</li>
- *        </ul>
- * @param {Number} vertical the vertical alignment setting, one of the 
- *        following values:
- *        <ul>
- *         <li>EchoApp.Alignment.DEFAULT</li>
- *         <li>EchoApp.Alignment.TOP</li>
- *         <li>EchoApp.Alignment.CENTER</li>
- *         <li>EchoApp.Alignment.BOTTOM</li>
- *        </ul>
- * @constructor
- */
-EchoApp.Alignment = function(horizontal, vertical) {
-
-    /**
-     * The horizontal alignment setting.
-     * @type {Number}
-     */
-    this.horizontal = horizontal ? horizontal : 0;
-
-    /**
-     * The vertical alignment setting.
-     * @type {Number}
-     */
-    this.vertical = vertical ? vertical : 0;
-};
-
-/**
- * Property class name.
- * @type String
- * @final
- */
-EchoApp.Alignment.prototype.className = "Alignment";
-
-/**
- * Value for horizontal/vertical setting indicating default alignment.
- * @type Number
- * @final
- */
-EchoApp.Alignment.DEFAULT = 0;
-
-/**
- * Value for horizontal setting indicating leading alignment
- * (actual value will be left or right, depending on layout direction).
- * @type Number
- * @final
- */
-EchoApp.Alignment.LEADING = 1;
-
-/**
- * Value for horizontal setting indicating trailing alignment
- * (actual value will be left or right, depending on layout direction).
- * @type Number
- * @final
- */
-EchoApp.Alignment.TRAILING = 2;
-
-/**
- * Value for horizontal setting indicating left alignment.
- * @type Number
- * @final
- */
-EchoApp.Alignment.LEFT = 3;
-
-/**
- * Value for horizontal/vertical setting indicating centered alignment.
- * @type Number
- * @final
- */
-EchoApp.Alignment.CENTER = 4;
-
-/**
- * Value for horizontal setting indicating right alignment.
- * @type Number
- * @final
- */
-EchoApp.Alignment.RIGHT = 5;
-
-/**
- * Value for vertical setting indicating top alignment.
- * @type Number
- * @final
- */
-EchoApp.Alignment.TOP = 6;
-
-/**
- * Value for vertical setting indicating bottom alignment.
- * @type Number
- * @final
- */
-EchoApp.Alignment.BOTTOM = 7;
-
-/**
- * Creates a border property. 
- * @class Border property.
- * @constructor
- */
-EchoApp.Border = function() {
-    if (arguments.length == 1 && arguments[0] instanceof Array) {
+EchoApp.Alignment = EchoCore.extend({
+    
+    global: {
+    
         /**
-         * Flag indicating whether the border has individually specified sides.
-         * @type Boolean
-         */
-        this.multisided = true;
-        
-        /**
-         * Array of Border.Side objects, specifying top, right, bottom, and left
-         * sides in that order.
-         * @type Array
-         */
-        this.sides = arguments[0];
-        
-        /**
-         * Default border size (used by components that do not support borders
-         * with individually specified sides, or in the case of a border that
-         * does not individually specify sides).
-         * @type EchoApp.Extent
-         */
-        this.size = this.sides[0].size;
-
-        /**
-         * Default border style (used by components that do not support borders
-         * with individually specified sides, or in the case of a border that
-         * does not individually specify sides).
+         * Value for horizontal/vertical setting indicating default alignment.
          * @type Number
+         * @final
          */
-        this.style = this.sides[0].style;
-
+        DEFAULT: 0,
+        
         /**
-         * Default border color (used by components that do not support borders
-         * with individually specified sides, or in the case of a border that
-         * does not individually specify sides).
-         * @type EchoApp.Color
-         */
-        this.color = this.sides[0].color;
-    } else if (arguments.length == 1 && typeof arguments[0] == "string") {
-        this.multisided = false;
-        var items = arguments[0].split(" ");
-        if (items.length != 3) {
-            throw new Error("Invalid border string: " + arguments[0]);
-        }
-        this.size = new EchoApp.Extent(items[0]);
-        this.style = items[1];
-        this.color = new EchoApp.Color(items[2]);
-    } else if (arguments.length == 3) {
-        this.multisided = false;
-        this.size = arguments[0];
-        this.style = arguments[1];
-        this.color = arguments[2];
-    }
-};
-
-/**
- * Property class name.
- * @type String
- * @final
- */
-EchoApp.Border.prototype.className = "Border";
-
-/**
- * Creates a border side.
- * @class Border side sub-property.
- * @constructor
- */
-EchoApp.Border.Side = function() {
-    if (arguments.length == 1 && typeof arguments[0] == "string") {
-        var items = arguments[0].split(" ");
-        if (items.length != 3) {
-            throw new Error("Invalid border string: " + arguments[0]);
-        }
-        
-        /** 
-         * Border side size
-         * @type EchoApp.Extent
-         */ 
-        this.size = new EchoApp.Extent(items[0]);
-        
-        /** 
-         * Border side style
+         * Value for horizontal setting indicating leading alignment
+         * (actual value will be left or right, depending on layout direction).
          * @type Number
-         */ 
-        this.style = items[1];
+         * @final
+         */
+        LEADING: 1,
+        
+        /**
+         * Value for horizontal setting indicating trailing alignment
+         * (actual value will be left or right, depending on layout direction).
+         * @type Number
+         * @final
+         */
+        TRAILING: 2,
+        
+        /**
+         * Value for horizontal setting indicating left alignment.
+         * @type Number
+         * @final
+         */
+        LEFT: 3,
+        
+        /**
+         * Value for horizontal/vertical setting indicating centered alignment.
+         * @type Number
+         * @final
+         */
+        CENTER: 4,
+        
+        /**
+         * Value for horizontal setting indicating right alignment.
+         * @type Number
+         * @final
+         */
+        RIGHT: 5,
+        
+        /**
+         * Value for vertical setting indicating top alignment.
+         * @type Number
+         * @final
+         */
+        TOP: 6,
+        
+        /**
+         * Value for vertical setting indicating bottom alignment.
+         * @type Number
+         * @final
+         */
+        BOTTOM: 7
+    },
 
-        /** 
-         * Border side color
-         * @type EchoApp.Color
-         */ 
-        this.color = new EchoApp.Color(items[2]);
-    }
-};
-
-/**
- * Creates a RadioButton group.
- * 
- * @param id {String} the id
- * 
- * @class RadioButton group
- */
-EchoApp.ButtonGroup = function(id) {
-    this._id = id;
-    this._buttonArray = new Array();
-};
-
-/**
- * Gets the id of this button group.
- * 
- * @return the id.
- * @type {String}
- */
-EchoApp.ButtonGroup.prototype.getId = function() {
-    return this._id;
-};
-
-/**
- * Gets the amount of buttons contained by this button group.
- * 
- * @return the number of buttons.
- * @type {Number}
- */
-EchoApp.ButtonGroup.prototype.size = function() {
-    return this._buttonArray.length;
-};
-
-/**
- * Adds the specified button to this button group.
- *
- * @param button {EchoRender.ComponentSync.ToggleButton} the button
- */
-EchoApp.ButtonGroup.prototype.add = function(button) {
-    this._buttonArray.push(button);
-};
-
-/**
- * Deselects all buttons in this button group.
- */
-EchoApp.ButtonGroup.prototype.deselect = function() {
-    for (var i = 0; i < this._buttonArray.length; ++i) {
-        this._buttonArray[i].setSelected(false);
-    }
-};
-
-/**
- * Removes the specified button from this button group.
- * 
- * @param button {EchoRender.ComponentSync.ToggleButton} the button
- */
-EchoApp.ButtonGroup.prototype.remove = function(button) {
-    // Find index of button in array.
-    var arrayIndex = -1;
-    for (var i = 0; i < this._buttonArray.length; ++i) {
-        if (this._buttonArray[i] == button) {
-            arrayIndex = i;
-            break;
-        }
-    }
+    /**
+     * Creates an alignment property.
+     *
+     * @class Alignment property.
+     * @param {Number} horizontal the horizontal alignment setting, one of the 
+     *        following values:
+     *        <ul>
+     *         <li>EchoApp.Alignment.DEFAULT</li>
+     *         <li>EchoApp.Alignment.LEADING</li>
+     *         <li>EchoApp.Alignment.TRAILING</li>
+     *         <li>EchoApp.Alignment.LEFT</li>
+     *         <li>EchoApp.Alignment.CENTER</li>
+     *         <li>EchoApp.Alignment.RIGHT</li>
+     *        </ul>
+     * @param {Number} vertical the vertical alignment setting, one of the 
+     *        following values:
+     *        <ul>
+     *         <li>EchoApp.Alignment.DEFAULT</li>
+     *         <li>EchoApp.Alignment.TOP</li>
+     *         <li>EchoApp.Alignment.CENTER</li>
+     *         <li>EchoApp.Alignment.BOTTOM</li>
+     *        </ul>
+     * @constructor
+     */
+    initialize: function(horizontal, vertical) {
     
-    if (arrayIndex == -1) {
-        // Button does not exist in group.
-        throw new Error("No such button: " + button.component.renderId);
-    }
+        /**
+         * The horizontal alignment setting.
+         * @type {Number}
+         */
+        this.horizontal = horizontal ? horizontal : 0;
     
-    if (this._buttonArray.length == 1) {
-        // Array will now be empty.
-        this._buttonArray = new Array();
-    } else {
-        // Buttons remain, remove button from button group.
-        this._buttonArray[arrayIndex] = this._buttonArray[this._buttonArray.length - 1];
-        this._buttonArray.length = this._buttonArray.length - 1;
-    }
-};
-
-/**
- * Creates a color property.
- * @class Color property.
- * @constructor
- * @param value the color hex value
- */
-EchoApp.Color = function(value) {
+        /**
+         * The vertical alignment setting.
+         * @type {Number}
+         */
+        this.vertical = vertical ? vertical : 0;
+    },
     
     /**
-     * The hexadecimal value of the color, e.g., #ab12c3.
+     * Property class name.
      * @type String
+     * @final
      */
-    this.value = value;
-};
+    className: "Alignment"
+});
 
 /**
- * Property class name.
- * @type String
- * @final
+ * @class Border property.
  */
-EchoApp.Color.prototype.className = "Color";
+EchoApp.Border = EchoCore.extend({
 
-/**
- * Adjusts the value of the color's RGB values by the
- * specified amounts, returning a new Color.
- * The original color is unchanged.
- * 
- * @param r the amount to adjust the red value of the color (-255 to 255)
- * @param g the amount to adjust the green value of the color (-255 to 255)
- * @param b the amount to adjust the blue value of the color (-255 to 255)
- * @return a new adjusted color
- */
-EchoApp.Color.prototype.adjust = function(r, g, b) {
-    var colorInt = parseInt(this.value.substring(1), 16);
-    var red = parseInt(colorInt / 0x10000) + r;
-    if (red < 0) {
-        red = 0;
-    } else if (red > 255) {
-        red = 255;
-    }
-    var green = parseInt(colorInt / 0x100) % 0x100 + g;
-    if (green < 0) {
-        green = 0;
-    } else if (green > 255) {
-        green = 255;
-    }
-    var blue = colorInt % 0x100 + b;
-    if (blue < 0) {
-        blue = 0;
-    } else if (blue > 255) {
-        blue = 255;
-    }
-    return new EchoApp.Color("#"
-            + (red < 16 ? "0" : "") + red.toString(16)
-            + (green < 16 ? "0" : "") + green.toString(16)
-            + (blue < 16 ? "0" : "") + blue.toString(16)); 
-};
-
-/**
- * Returns the red value of the color.
- * 
- * @return the red value (0-255)
- * @type Integer
- */
-EchoApp.Color.prototype.getRed = function() {
-    var colorInt = parseInt(this.value.substring(1), 16);
-    return parseInt(colorInt / 0x10000);
-};
-
-/**
- * Returns the green value of the color.
- * 
- * @return the green value (0-255)
- * @type Integer
- */
-EchoApp.Color.prototype.getGreen = function() {
-    var colorInt = parseInt(this.value.substring(1), 16);
-    return parseInt(colorInt / 0x100) % 0x100;
-};
-
-/**
- * Returns the blue value of the color.
- * 
- * @return the blue value (0-255)
- * @type Integer
- */
-EchoApp.Color.prototype.getBlue = function() {
-    var colorInt = parseInt(this.value.substring(1), 16);
-    return colorInt % 0x100;
-};
-
-/**
- * Creates a new Extent property.  
- * This method takes multiple configurations of arguments.
- * <p>
- * Configuration 1: Extent (string)
- * extentString the value of the extent as a string 
- * <p>
- * Configuration 2: Extent(value, units)
- * value the numeric value portion of the extent 
- * units the units of the extent, e.g. "%" or "px"
- * 
- * @class Extent property.
- * @constructor
- */
-EchoApp.Extent = function() {
-    if (arguments.length == 2) {
+    /**
+     * Creates a border property. 
+     * @constructor
+     */
+    global: {
+    
         /**
-         * The dimensionless value of the extent, e.g., 30.
-         * @type Number 
+         * @class Border side sub-property.
          */
-        this.value = arguments[0];
+        Side: EchoCore.extend({
+            
+            /**
+             * Creates a border side.
+             * @constructor
+             */
+            initialize: function() {
+                if (arguments.length == 1 && typeof arguments[0] == "string") {
+                    var items = arguments[0].split(" ");
+                    if (items.length != 3) {
+                        throw new Error("Invalid border string: " + arguments[0]);
+                    }
+                    
+                    /** 
+                     * Border side size
+                     * @type EchoApp.Extent
+                     */ 
+                    this.size = new EchoApp.Extent(items[0]);
+                    
+                    /** 
+                     * Border side style
+                     * @type Number
+                     */ 
+                    this.style = items[1];
+            
+                    /** 
+                     * Border side color
+                     * @type EchoApp.Color
+                     */ 
+                    this.color = new EchoApp.Color(items[2]);
+                }
+            }
+        })
+    },
+
+    /**
+     * Property class name.
+     * @type String
+     * @final
+     */
+    className: "Border",
+    
+    initialize: function() {
+        if (arguments.length == 1 && arguments[0] instanceof Array) {
+            /**
+             * Flag indicating whether the border has individually specified sides.
+             * @type Boolean
+             */
+            this.multisided = true;
+            
+            /**
+             * Array of Border.Side objects, specifying top, right, bottom, and left
+             * sides in that order.
+             * @type Array
+             */
+            this.sides = arguments[0];
+            
+            /**
+             * Default border size (used by components that do not support borders
+             * with individually specified sides, or in the case of a border that
+             * does not individually specify sides).
+             * @type EchoApp.Extent
+             */
+            this.size = this.sides[0].size;
+    
+            /**
+             * Default border style (used by components that do not support borders
+             * with individually specified sides, or in the case of a border that
+             * does not individually specify sides).
+             * @type Number
+             */
+            this.style = this.sides[0].style;
+    
+            /**
+             * Default border color (used by components that do not support borders
+             * with individually specified sides, or in the case of a border that
+             * does not individually specify sides).
+             * @type EchoApp.Color
+             */
+            this.color = this.sides[0].color;
+        } else if (arguments.length == 1 && typeof arguments[0] == "string") {
+            this.multisided = false;
+            var items = arguments[0].split(" ");
+            if (items.length != 3) {
+                throw new Error("Invalid border string: " + arguments[0]);
+            }
+            this.size = new EchoApp.Extent(items[0]);
+            this.style = items[1];
+            this.color = new EchoApp.Color(items[2]);
+        } else if (arguments.length == 3) {
+            this.multisided = false;
+            this.size = arguments[0];
+            this.style = arguments[1];
+            this.color = arguments[2];
+        }
+    }
+});
+
+/**
+ * @class 
+ * A representation of a group of RadioButtons, where only one may be selected at a time.
+ */
+EchoApp.ButtonGroup = EchoCore.extend({
+
+    /**
+     * Creates a RadioButton group.
+     * 
+     * @param id {String} the id
+     */
+    initialize: function(id) {
+        this._id = id;
+        this._buttonArray = [];
+    },
+    
+    /**
+     * Gets the id of this button group.
+     * 
+     * @return the id.
+     * @type {String}
+     */
+    getId: function() {
+        return this._id;
+    },
+    
+    /**
+     * Adds the specified button to this button group.
+     *
+     * @param button {EchoRender.ComponentSync.ToggleButton} the button
+     */
+    add: function(button) {
+        this._buttonArray.push(button);
+    },
+    
+    /**
+     * Deselects all buttons in this button group.
+     */
+    deselect: function() {
+        for (var i = 0; i < this._buttonArray.length; ++i) {
+            this._buttonArray[i].setSelected(false);
+        }
+    },
+    
+    /**
+     * Removes the specified button from this button group.
+     * 
+     * @param button {EchoRender.ComponentSync.ToggleButton} the button
+     */
+    remove: function(button) {
+        // Find index of button in array.
+        var arrayIndex = -1;
+        for (var i = 0; i < this._buttonArray.length; ++i) {
+            if (this._buttonArray[i] == button) {
+                arrayIndex = i;
+                break;
+            }
+        }
+        
+        if (arrayIndex == -1) {
+            // Button does not exist in group.
+            throw new Error("No such button: " + button.component.renderId);
+        }
+        
+        if (this._buttonArray.length == 1) {
+            // Array will now be empty.
+            this._buttonArray = [];
+        } else {
+            // Buttons remain, remove button from button group.
+            this._buttonArray[arrayIndex] = this._buttonArray[this._buttonArray.length - 1];
+            this._buttonArray.length = this._buttonArray.length - 1;
+        }
+    },
+
+    /**
+     * Gets the amount of buttons contained by this button group.
+     * 
+     * @return the number of buttons.
+     * @type {Number}
+     */
+    size: function() {
+        return this._buttonArray.length;
+    }
+});
+
+/**
+ * @class Color property.
+ */
+EchoApp.Color = EchoCore.extend({
+    
+    /**
+     * Property class name.
+     * @type String
+     * @final
+     */
+    className: "Color",
+    
+    /**
+     * Creates a color property.
+     * @constructor
+     * @param value the color hex value
+     */
+    initialize: function(value) {
         /**
-         * The dimension of the extent, e.g., "px", "%", or "in"/
+         * The hexadecimal value of the color, e.g., #ab12c3.
          * @type String
          */
-        this.units = arguments[1];
-    } else {
-        var parts = EchoApp.Extent._PATTERN.exec(arguments[0]);
-        if (!parts) {
-            throw new Error("Invalid Extent: " + arguments[0]);
+        this.value = value;
+    },
+    
+    /**
+     * Adjusts the value of the color's RGB values by the
+     * specified amounts, returning a new Color.
+     * The original color is unchanged.
+     * 
+     * @param r the amount to adjust the red value of the color (-255 to 255)
+     * @param g the amount to adjust the green value of the color (-255 to 255)
+     * @param b the amount to adjust the blue value of the color (-255 to 255)
+     * @return a new adjusted color
+     */
+    adjust: function(r, g, b) {
+        var colorInt = parseInt(this.value.substring(1), 16);
+        var red = parseInt(colorInt / 0x10000) + r;
+        if (red < 0) {
+            red = 0;
+        } else if (red > 255) {
+            red = 255;
         }
-        this.value = parseFloat(parts[1]);
-        this.units = parts[2] ? parts[2] : "px";
-    }
-};
-
-/**
- * Regular expression to parse string based extents, e.g., "20px".
- * Returned part 1 is the value, part 2 is the units (or blank).
- */
-EchoApp.Extent._PATTERN = /^(-?\d+(?:\.\d+)?)(.+)?$/;
-
-/**
- * Property class name.
- * @type String
- * @final
- */
-EchoApp.Extent.prototype.className = "Extent";
-
-/**
- * Returns a string representation.
- * 
- * @return a string representation
- * @type String
- */
-EchoApp.Extent.prototype.toString = function() {
-    return this.value + this.units;
-};
-
-/**
- * Creates a FillImage property.
- * 
- * @param {EchoApp.ImageReference} the image (may also be a string,
- *        at which point an ImageReference will be automatically constructed
- *        with the string as its URL).
- * @param {Number} repeat the image repeat mode, one of the following values:
- *        <ul>
- *         <li>EchoApp.FillImage.NO_REPEAT</li>
- *         <li>EchoApp.FillImage.REPEAT_HORIZONTAL</li>
- *         <li>EchoApp.FillImage.REPEAT_VERTICAL</li>
- *         <li>EchoApp.FillImage.REPEAT</li>
- *        </ul>
- *         
- * @param {EchoApp.Extent} the horizontal alignment/position of the image
- * @param {EchoApp.Extent} the vertical alignment/position of the image
- * @class FillImage property.  Describes a repeating image, typically used as a background.
- * @constructor
- */
-EchoApp.FillImage = function(image, repeat, x, y) {
-    if (image instanceof EchoApp.ImageReference) {
-        /**
-         * The image.
-         * @type EchoApp.ImageReference
-         */
-        this.image = image;
-    } else {
-        this.image = new EchoApp.ImageReference(image);
-    }
-    /**
-     * The repeat configuration, one of the following values:
-     * <ul>
-     *  <li>EchoApp.FillImage.NO_REPEAT</li>
-     *  <li>EchoApp.FillImage.REPEAT_HORIZONTAL</li>
-     *  <li>EchoApp.FillImage.REPEAT_VERTICAL</li>
-     *  <li>EchoApp.FillImage.REPEAT</li>
-     * </ul>
-     * @type Number
-     */
-    this.repeat = repeat;
-    if (x == null || x instanceof EchoApp.Extent) {
-        /**
-         * The horizontal aligment/position of the image.
-         * @type EchoApp.Extent
-         */
-        this.x = x;
-    } else {
-        this.x = new EchoApp.Extent(x);
-    }
-    if (y == null || y instanceof EchoApp.Extent) {
-        /**
-         * The vertical aligment/position of the image.
-         * @type EchoApp.Extent
-         */
-        this.y = y;
-    } else {
-        this.y = new EchoApp.Extent(y);
-    }
-};
-
-/**
- * Repeat value constant indicating the image should not repeat.
- * @type Number
- * @final
- */
-EchoApp.FillImage.NO_REPEAT = 0;
-
-/**
- * Repeat value constant indicating the image should repeat horizontally.
- * @type Number
- * @final
- */
-EchoApp.FillImage.REPEAT_HORIZONTAL = 1;
-
-/**
- * Repeat value constant indicating the image should repeat vertically.
- * @type Number
- * @final
- */
-EchoApp.FillImage.REPEAT_VERTICAL = 2;
-
-/**
- * Repeat value constant indicating the image should repeat horizontally and vertically.
- * @type Number
- * @final
- */
-EchoApp.FillImage.REPEAT = 3;
-
-/**
- * Property class name.
- * @type String
- * @final
- */
-EchoApp.FillImage.prototype.className = "FillImage";
-
-/**
- * Creates a FillImageBorder
- * 
- * @param {EchoApp.Color} color the border background color (specify null to enable
- *        a transparent background, such that alpha-rendered PNGs will render properlty)
- * @param {EchoApp.Insets} borderInsets describes the width and 
- *        height of the border images, i.e. the inset to which the border images
- *        extend inward from the outer edges of the box
- * @param {EchoApp.Insets} contentInsets describes the inset of
- *        the content displayed within the border  (if the content inset is less
- *        than the border inset, the content will be drawn above the border)    
- * @class FillImageBorder property.  A border which is rendered using FillImages to
- *        represent each side and each corner, and with configurable Insets to define 
- *        the border size. 
- * @constructor
- */
-EchoApp.FillImageBorder = function(color, borderInsets, contentInsets, fillImages) {
-    if (color == null || color instanceof EchoApp.Color) {
-        /**
-         * The border background color.
-         * @type EchoApp.Color
-         */
-        this.color = color;
-    } else {
-        this.color = new EchoApp.Color(color);
-    }
-    if (borderInsets == null || borderInsets instanceof EchoApp.Insets) {
-        /**
-         * The border insets 
-         * (effectively defines the sizes of the cells where the border FillImages are rendered).
-         * @type EchoApp.Insets 
-         */
-        this.borderInsets = borderInsets;
-    } else {
-        this.borderInsets = new EchoApp.Insets(borderInsets);
-    }
-    if (contentInsets == null || contentInsets instanceof EchoApp.Insets) {
-        /**
-         * The content insets (defines the content area inside of the border, if smaller than the
-         * border insets, the content will overlap the border).
-         * 
-         * @type EchoApp.Insets 
-         */
-        this.contentInsets = contentInsets;
-    } else {
-        this.contentInsets = new EchoApp.Insets(contentInsets);
-    }
+        var green = parseInt(colorInt / 0x100) % 0x100 + g;
+        if (green < 0) {
+            green = 0;
+        } else if (green > 255) {
+            green = 255;
+        }
+        var blue = colorInt % 0x100 + b;
+        if (blue < 0) {
+            blue = 0;
+        } else if (blue > 255) {
+            blue = 255;
+        }
+        return new EchoApp.Color("#"
+                + (red < 16 ? "0" : "") + red.toString(16)
+                + (green < 16 ? "0" : "") + green.toString(16)
+                + (blue < 16 ? "0" : "") + blue.toString(16)); 
+    },
     
     /**
-     * An array containing eight fill images, specifying the images used for the
-     * top-left, top, top-right, left, right, bottom-left, bottom, and bottom-right
-     * images in that order.
-     * @type Array
+     * Returns the red value of the color.
+     * 
+     * @return the red value (0-255)
+     * @type Integer
      */
-    this.fillImages = fillImages ? fillImages : new Array(8);
-};
-
-/**
- * Property class name.
- * @type String
- * @final
- */
-EchoApp.FillImageBorder.prototype.className = "FillImageBorder";
-
-/**
- * Creates a Font property.
- * 
- * @param typeface the typeface of the font, may be a string or an array of strings
- * @param {Number} style the style of the font, one or more of the following values ORed together:
- *        <ul>
- *         <li>EchoApp.Font.PLAIN</li>
- *         <li>EchoApp.Font.BOLD</li>
- *         <li>EchoApp.Font.ITALIC</li>
- *         <li>EchoApp.Font.UNDERLINE</li>
- *         <li>EchoApp.Font.OVERLINE</li>
- *         <li>EchoApp.Font.LINE_THROUGH</li>
- *        </ul>
- * @param {EchoApp.Extent} size the size of the font
- * @class Font property
- * @constructor
- */
-EchoApp.Font = function(typeface, style, size) {
+    getRed: function() {
+        var colorInt = parseInt(this.value.substring(1), 16);
+        return parseInt(colorInt / 0x10000);
+    },
     
     /**
-     * The typeface of the font, may be a string or an array of strings.
+     * Returns the green value of the color.
+     * 
+     * @return the green value (0-255)
+     * @type Integer
      */
-    this.typeface = typeface;
+    getGreen: function() {
+        var colorInt = parseInt(this.value.substring(1), 16);
+        return parseInt(colorInt / 0x100) % 0x100;
+    },
     
     /**
-     * The style of the font, one or more of the following values ORed together:
-     * <ul>
-     *  <li>EchoApp.Font.PLAIN</li>
-     *  <li>EchoApp.Font.BOLD</li>
-     *  <li>EchoApp.Font.ITALIC</li>
-     *  <li>EchoApp.Font.UNDERLINE</li>
-     *  <li>EchoApp.Font.OVERLINE</li>
-     *  <li>EchoApp.Font.LINE_THROUGH</li>
-     * </ul>
-     * @type Number
+     * Returns the blue value of the color.
+     * 
+     * @return the blue value (0-255)
+     * @type Integer
      */
-    this.style = style;
-    
-    if (typeof size == "number") {
-        /**
-         * The size of the font.
-         * 
-         * @type EchoApp.Extent
-         */
-        this.size = new Extent(size);
-    } else {
-        this.size = size;
+    getBlue: function() {
+        var colorInt = parseInt(this.value.substring(1), 16);
+        return colorInt % 0x100;
     }
-};
+});
 
 /**
- * Style constant representing a plain font.
- * @type Number
- * @final
+ * @class Extent property.
  */
-EchoApp.Font.PLAIN = 0x0;
+EchoApp.Extent = EchoCore.extend({
 
-/**
- * Style constant representing a bold font.
- * @type Number
- * @final
- */
-EchoApp.Font.BOLD = 0x1;
-
-/**
- * Style constant representing a italic font.
- * @type Number
- * @final
- */
-EchoApp.Font.ITALIC = 0x2;
-
-/**
- * Style constant representing an underlined font.
- * @type Number
- * @final
- */
-EchoApp.Font.UNDERLINE = 0x4;
-
-/**
- * Style constant representing an overlined font.
- * @type Number
- * @final
- */
-EchoApp.Font.OVERLINE = 0x8;
-
-/**
- * Style constant representing a line-through (strikethrough) font.
- * @type Number
- * @final
- */
-EchoApp.Font.LINE_THROUGH = 0x10;
-
-/**
- * Creates a new Image Reference.
- * 
- * @param {String} url the URL from which the image may be obtained
- * @param {EchoApp.Extent} width the width of the image
- * @param {EchoApp.Extent} height the height of the image
- * @class Image Reference Property.
- * @constructor
- */
-EchoApp.ImageReference = function(url, width, height) {
+    global: {
+        
+        /**
+         * Regular expression to parse string based extents, e.g., "20px".
+         * Returned part 1 is the value, part 2 is the units (or blank).
+         */
+        _PATTERN: /^(-?\d+(?:\.\d+)?)(.+)?$/
+    },
+    
     /**
-     * The URL from which the image may be obtained.
+     * Property class name.
+     * @type String
+     * @final
+     */
+    className: "Extent",
+
+    /**
+     * Creates a new Extent property.  
+     * This method takes multiple configurations of arguments.
+     * <p>
+     * Configuration 1: Extent (string)
+     * extentString the value of the extent as a string 
+     * <p>
+     * Configuration 2: Extent(value, units)
+     * value the numeric value portion of the extent 
+     * units the units of the extent, e.g. "%" or "px"
+     * 
+     * @constructor
+     */
+    initialize: function() {
+        if (arguments.length == 2) {
+            /**
+             * The dimensionless value of the extent, e.g., 30.
+             * @type Number 
+             */
+            this.value = arguments[0];
+            /**
+             * The dimension of the extent, e.g., "px", "%", or "in"/
+             * @type String
+             */
+            this.units = arguments[1];
+        } else {
+            var parts = EchoApp.Extent._PATTERN.exec(arguments[0]);
+            if (!parts) {
+                throw new Error("Invalid Extent: " + arguments[0]);
+            }
+            this.value = parseFloat(parts[1]);
+            this.units = parts[2] ? parts[2] : "px";
+        }
+    },
+    
+    /**
+     * Returns a string representation.
+     * 
+     * @return a string representation
      * @type String
      */
-    this.url = url;
+    $toString: function() {
+        return this.value + this.units;
+    }
+});
+
+/**
+ * @class FillImage property.  Describes a repeating image, typically used as a background.
+ */
+EchoApp.FillImage = EchoCore.extend({
+
+    global: {
+    
+        /**
+         * Repeat value constant indicating the image should not repeat.
+         * @type Number
+         * @final
+         */
+        NO_REPEAT: 0,
+        
+        /**
+         * Repeat value constant indicating the image should repeat horizontally.
+         * @type Number
+         * @final
+         */
+        REPEAT_HORIZONTAL: 1,
+        
+        /**
+         * Repeat value constant indicating the image should repeat vertically.
+         * @type Number
+         * @final
+         */
+        REPEAT_VERTICAL: 2,
+        
+        /**
+         * Repeat value constant indicating the image should repeat horizontally and vertically.
+         * @type Number
+         * @final
+         */
+        REPEAT:3 
+    },
+
+    /**
+     * Property class name.
+     * @type String
+     * @final
+     */
+    className: "FillImage",
+
+    /**
+     * Creates a FillImage property.
+     * 
+     * @param {EchoApp.ImageReference} the image (may also be a string,
+     *        at which point an ImageReference will be automatically constructed
+     *        with the string as its URL).
+     * @param {Number} repeat the image repeat mode, one of the following values:
+     *        <ul>
+     *         <li>EchoApp.FillImage.NO_REPEAT</li>
+     *         <li>EchoApp.FillImage.REPEAT_HORIZONTAL</li>
+     *         <li>EchoApp.FillImage.REPEAT_VERTICAL</li>
+     *         <li>EchoApp.FillImage.REPEAT</li>
+     *        </ul>
+     *         
+     * @param {EchoApp.Extent} the horizontal alignment/position of the image
+     * @param {EchoApp.Extent} the vertical alignment/position of the image
+     * @constructor
+     */
+    initialize: function(image, repeat, x, y) {
+        if (image instanceof EchoApp.ImageReference) {
+            /**
+             * The image.
+             * @type EchoApp.ImageReference
+             */
+            this.image = image;
+        } else {
+            this.image = new EchoApp.ImageReference(image);
+        }
+        /**
+         * The repeat configuration, one of the following values:
+         * <ul>
+         *  <li>EchoApp.FillImage.NO_REPEAT</li>
+         *  <li>EchoApp.FillImage.REPEAT_HORIZONTAL</li>
+         *  <li>EchoApp.FillImage.REPEAT_VERTICAL</li>
+         *  <li>EchoApp.FillImage.REPEAT</li>
+         * </ul>
+         * @type Number
+         */
+        this.repeat = repeat;
+        if (x == null || x instanceof EchoApp.Extent) {
+            /**
+             * The horizontal aligment/position of the image.
+             * @type EchoApp.Extent
+             */
+            this.x = x;
+        } else {
+            this.x = new EchoApp.Extent(x);
+        }
+        if (y == null || y instanceof EchoApp.Extent) {
+            /**
+             * The vertical aligment/position of the image.
+             * @type EchoApp.Extent
+             */
+            this.y = y;
+        } else {
+            this.y = new EchoApp.Extent(y);
+        }
+    }
+});
+
+/**
+ * @class
+ * FillImageBorder property.  A border which is rendered using FillImages to
+ * represent each side and each corner, and with configurable Insets to define 
+ * the border size. 
+ */
+EchoApp.FillImageBorder = EchoCore.extend({
     
     /**
-     * The width of the image.
-     * @type EchoApp.Extent
+     * Property class name.
+     * @type String
+     * @final
      */
-    this.width = width;
+    className: "FillImageBorder",
 
     /**
-     * The height of the image.
-     * @type EchoApp.Extent
+     * Creates a FillImageBorder
+     * 
+     * @param {EchoApp.Color} color the border background color (specify null to enable
+     *        a transparent background, such that alpha-rendered PNGs will render properlty)
+     * @param {EchoApp.Insets} borderInsets describes the width and 
+     *        height of the border images, i.e. the inset to which the border images
+     *        extend inward from the outer edges of the box
+     * @param {EchoApp.Insets} contentInsets describes the inset of
+     *        the content displayed within the border  (if the content inset is less
+     *        than the border inset, the content will be drawn above the border)    
+     * @constructor
      */
-    this.height = height;
-};
+    initialize: function(color, borderInsets, contentInsets, fillImages) {
+        if (color == null || color instanceof EchoApp.Color) {
+            /**
+             * The border background color.
+             * @type EchoApp.Color
+             */
+            this.color = color;
+        } else {
+            this.color = new EchoApp.Color(color);
+        }
+        if (borderInsets == null || borderInsets instanceof EchoApp.Insets) {
+            /**
+             * The border insets 
+             * (effectively defines the sizes of the cells where the border FillImages are rendered).
+             * @type EchoApp.Insets 
+             */
+            this.borderInsets = borderInsets;
+        } else {
+            this.borderInsets = new EchoApp.Insets(borderInsets);
+        }
+        if (contentInsets == null || contentInsets instanceof EchoApp.Insets) {
+            /**
+             * The content insets (defines the content area inside of the border, if smaller than the
+             * border insets, the content will overlap the border).
+             * 
+             * @type EchoApp.Insets 
+             */
+            this.contentInsets = contentInsets;
+        } else {
+            this.contentInsets = new EchoApp.Insets(contentInsets);
+        }
+        
+        /**
+         * An array containing eight fill images, specifying the images used for the
+         * top-left, top, top-right, left, right, bottom-left, bottom, and bottom-right
+         * images in that order.
+         * @type Array
+         */
+        this.fillImages = fillImages ? fillImages : new Array(8);
+    }
+});
 
 /**
- * Property class name.
- * @type String
- * @final
+ * @class Font property
  */
-EchoApp.ImageReference.prototype.className = "ImageReference";
+EchoApp.Font = EchoCore.extend({
+
+    global: {
+    
+        /**
+         * Style constant representing a plain font.
+         * @type Number
+         * @final
+         */
+        PLAIN: 0x0,
+        
+        /**
+         * Style constant representing a bold font.
+         * @type Number
+         * @final
+         */
+        BOLD: 0x1,
+        
+        /**
+         * Style constant representing a italic font.
+         * @type Number
+         * @final
+         */
+        ITALIC: 0x2,
+        
+        /**
+         * Style constant representing an underlined font.
+         * @type Number
+         * @final
+         */
+        UNDERLINE: 0x4,
+        
+        /**
+         * Style constant representing an overlined font.
+         * @type Number
+         * @final
+         */
+        OVERLINE: 0x8,
+        
+        /**
+         * Style constant representing a line-through (strikethrough) font.
+         * @type Number
+         * @final
+         */
+        LINE_THROUGH: 0x10
+    },
+    
+    /**
+     * Property class name.
+     * @type String
+     * @final
+     */
+    className: "Font",
+
+    /**
+     * Creates a Font property.
+     * 
+     * @param typeface the typeface of the font, may be a string or an array of strings
+     * @param {Number} style the style of the font, one or more of the following values ORed together:
+     *        <ul>
+     *         <li>EchoApp.Font.PLAIN</li>
+     *         <li>EchoApp.Font.BOLD</li>
+     *         <li>EchoApp.Font.ITALIC</li>
+     *         <li>EchoApp.Font.UNDERLINE</li>
+     *         <li>EchoApp.Font.OVERLINE</li>
+     *         <li>EchoApp.Font.LINE_THROUGH</li>
+     *        </ul>
+     * @param {EchoApp.Extent} size the size of the font
+     * @constructor
+     */
+    initialize: function(typeface, style, size) {
+        
+        /**
+         * The typeface of the font, may be a string or an array of strings.
+         */
+        this.typeface = typeface;
+        
+        /**
+         * The style of the font, one or more of the following values ORed together:
+         * <ul>
+         *  <li>EchoApp.Font.PLAIN</li>
+         *  <li>EchoApp.Font.BOLD</li>
+         *  <li>EchoApp.Font.ITALIC</li>
+         *  <li>EchoApp.Font.UNDERLINE</li>
+         *  <li>EchoApp.Font.OVERLINE</li>
+         *  <li>EchoApp.Font.LINE_THROUGH</li>
+         * </ul>
+         * @type Number
+         */
+        this.style = style;
+        
+        if (typeof size == "number") {
+            /**
+             * The size of the font.
+             * 
+             * @type EchoApp.Extent
+             */
+            this.size = new Extent(size);
+        } else {
+            this.size = size;
+        }
+    }
+});
 
 /**
- * Creates a new Insets Property.
- * 
- * This method takes multiple parameter configurations:
- * <ul>
- *  <li>A string may be passed providing extent values for 1-4 sides of the inset,
- *   in the following order: top, right, bottom, left.  Any values not specified will
- *   be derived from the value representing the opposite side inset.</li>
- *  <li>Additionally, 1-4 values may be provided in the form of Extents or String,
- *   representing each side of the Insets.</li>
- * </ul> 
- * 
+ * @class Image Reference Property.
+ */
+EchoApp.ImageReference = EchoCore.extend({
+    
+    /**
+     * Property class name.
+     * @type String
+     * @final
+     */
+    className: "ImageReference",
+
+    /**
+     * Creates a new Image Reference.
+     * 
+     * @param {String} url the URL from which the image may be obtained
+     * @param {EchoApp.Extent} width the width of the image
+     * @param {EchoApp.Extent} height the height of the image
+     * @constructor
+     */
+    initialize: function(url, width, height) {
+        /**
+         * The URL from which the image may be obtained.
+         * @type String
+         */
+        this.url = url;
+        
+        /**
+         * The width of the image.
+         * @type EchoApp.Extent
+         */
+        this.width = width;
+    
+        /**
+         * The height of the image.
+         * @type EchoApp.Extent
+         */
+        this.height = height;
+    }
+});
+
+/**
  * @class Insets property.  Describes inset margins within a box.
- * @constructor
  */
-EchoApp.Insets = function() {
-    var values;
-    if (arguments.length == 1) {
-        if (typeof arguments[0] == "string") {
-            values = arguments[0].split(" ");
-        } else if (arguments[0] instanceof Array) {
-            values = arguments[0];
+EchoApp.Insets = EchoCore.extend({
+    
+    /**
+     * Property class name.
+     * @type String
+     * @final
+     */
+    className: "Insets",
+ 
+    /**
+     * Creates a new Insets Property.
+     * 
+     * This method takes multiple parameter configurations:
+     * <ul>
+     *  <li>A string may be passed providing extent values for 1-4 sides of the inset,
+     *   in the following order: top, right, bottom, left.  Any values not specified will
+     *   be derived from the value representing the opposite side inset.</li>
+     *  <li>Additionally, 1-4 values may be provided in the form of Extents or String,
+     *   representing each side of the Insets.</li>
+     * </ul> 
+     * 
+     * @constructor
+     */
+    initialize: function() {
+        var values;
+        if (arguments.length == 1) {
+            if (typeof arguments[0] == "string") {
+                values = arguments[0].split(" ");
+            } else if (arguments[0] instanceof Array) {
+                values = arguments[0];
+            } else {
+                values = arguments;
+            }
         } else {
             values = arguments;
         }
-    } else {
-        values = arguments;
-    }
-
-    for (var i = 0; i < values.length; ++i) {
-        if (!(values[i] instanceof EchoApp.Extent)) {
-            values[i] = new EchoApp.Extent(values[i]);
-        }
-    }
     
-    switch (values.length) {
-    case 1:
-        this.top = this.left = this.right = this.bottom = values[0];
-        break;
-    case 2:
-        this.top = this.bottom = values[0];
-        this.right = this.left = values[1];
-        break;
-    case 3:
-        this.top = values[0];
-        this.right = this.left = values[1];
-        this.bottom = values[2];
-        break;
-    case 4:
-        /**
-         * The top inset size.
-         * @type EchoApp.Extent
-         */
-        this.top = values[0];
-        /**
-         * The right inset size.
-         * @type EchoApp.Extent
-         */
-        this.right = values[1];
-        /**
-         * The bottom inset size.
-         * @type EchoApp.Extent
-         */
-        this.bottom = values[2];
-        /**
-         * The left inset size.
-         * @type EchoApp.Extent
-         */
-        this.left = values[3];
-        break;
-    default:
-        throw new Error("Invalid Insets construction parameters: " + values);
+        for (var i = 0; i < values.length; ++i) {
+            if (!(values[i] instanceof EchoApp.Extent)) {
+                values[i] = new EchoApp.Extent(values[i]);
+            }
+        }
+        
+        switch (values.length) {
+        case 1:
+            this.top = this.left = this.right = this.bottom = values[0];
+            break;
+        case 2:
+            this.top = this.bottom = values[0];
+            this.right = this.left = values[1];
+            break;
+        case 3:
+            this.top = values[0];
+            this.right = this.left = values[1];
+            this.bottom = values[2];
+            break;
+        case 4:
+            /**
+             * The top inset size.
+             * @type EchoApp.Extent
+             */
+            this.top = values[0];
+            /**
+             * The right inset size.
+             * @type EchoApp.Extent
+             */
+            this.right = values[1];
+            /**
+             * The bottom inset size.
+             * @type EchoApp.Extent
+             */
+            this.bottom = values[2];
+            /**
+             * The left inset size.
+             * @type EchoApp.Extent
+             */
+            this.left = values[3];
+            break;
+        default:
+            throw new Error("Invalid Insets construction parameters: " + values);
+        }
+    },
+    
+    /**
+     * Returns a string representation.
+     * 
+     * @return a string representation
+     * @type String
+     */
+    $toString: function() {
+        return this.top + " " + this.right + " " + this.bottom + " " + this.left;
     }
-};
+});
 
 /**
- * Property class name.
- * @type String
- * @final
- */
-EchoApp.Insets.prototype.className = "Insets";
-
-/**
- * Returns a string representation.
- * 
- * @return a string representation
- * @type String
- */
-EchoApp.Insets.prototype.toString = function() {
-    return this.top + " " + this.right + " " + this.bottom + " " + this.left;
-};
-
-/**
- * Creates a ListSelectionModel.
- * 
- * @param {Number} selectionMode the selectionMode
- * @constructor
- *
  * @class Minimalistic representation of ListSelectionModel.
  */
-EchoApp.ListSelectionModel = function(selectionMode) {
-    this._selectionState = new Array();
-    this._selectionMode = selectionMode;
-};
+ 
+EchoApp.ListSelectionModel = EchoCore.extend({
 
-/**
- * Value for selection mode setting indicating single selection.
- * 
- * @type Number
- * @final
- */
-EchoApp.ListSelectionModel.SINGLE_SELECTION = 0;
+    global: {
+    
+        /**
+         * Value for selection mode setting indicating single selection.
+         * 
+         * @type Number
+         * @final
+         */
+        SINGLE_SELECTION: 0,
+        
+        /**
+         * Value for selection mode setting indicating multiple selection.
+         * 
+         * @type Number
+         * @final
+         */
+        MULTIPLE_SELECTION: 2
+    },
+    
+    /**
+     * Property class name.
+     * @type String
+     * @final
+     */
+    className: "ListSelectionModel",
 
-/**
- * Value for selection mode setting indicating multiple selection.
- * 
- * @type Number
- * @final
- */
-EchoApp.ListSelectionModel.MULTIPLE_SELECTION = 2;
-
-/**
- * Returns the selection mode. 
- * 
- * @return the selection mode
- * @type Number
- */
-EchoApp.ListSelectionModel.prototype.getSelectionMode = function() {
-    return this._selectionMode;
-};
-
-/**
- * Determines whether an index is selected.
- * 
- * @param {Number} index the index
- * @return true if the index is selected
- * @type Boolean
- */
-EchoApp.ListSelectionModel.prototype.isSelectedIndex = function(index) {
-    if (this._selectionState.length <= index) {
-        return false;
-    } else {
-        return this._selectionState[index];
-    }
-};
-
-/**
- * Sets the selection state of the given index.
- * 
- * @param {Number} index the index
- * @param {Boolean} selected the new selection state
- */
-EchoApp.ListSelectionModel.prototype.setSelectedIndex = function(index, selected) {
-    this._selectionState[index] = selected;
-};
-
-//FIXME remove this method, it belongs in serialization code.  
-//Expand the ListSelectionModel API to provide capability to do this externally.
-/**
- * Gets a comma-delimited list containing the selected indices.
- * 
- * @return the list
- * @type String
- */
-EchoApp.ListSelectionModel.prototype.getSelectionString = function() {
-    var selection = "";
-    for (var i = 0; i < this._selectionState.length; i++) {
-        if (this._selectionState[i]) {
-            if (selection.length > 0) {
-                selection += ",";
-            }
-            selection += i;
+    /**
+     * Creates a ListSelectionModel.
+     * 
+     * @param {Number} selectionMode the selectionMode
+     * @constructor
+     *
+     */
+    intialize: function(selectionMode) {
+        this._selectionState = [];
+        this._selectionMode = selectionMode;
+    },
+    
+    /**
+     * Returns the selection mode. 
+     * 
+     * @return the selection mode
+     * @type Number
+     */
+    getSelectionMode: function() {
+        return this._selectionMode;
+    },
+    
+    /**
+     * Determines whether an index is selected.
+     * 
+     * @param {Number} index the index
+     * @return true if the index is selected
+     * @type Boolean
+     */
+    isSelectedIndex: function(index) {
+        if (this._selectionState.length <= index) {
+            return false;
+        } else {
+            return this._selectionState[index];
         }
+    },
+    
+    /**
+     * Sets the selection state of the given index.
+     * 
+     * @param {Number} index the index
+     * @param {Boolean} selected the new selection state
+     */
+    setSelectedIndex: function(index, selected) {
+        this._selectionState[index] = selected;
+    },
+    
+    //FIXME remove this method, it belongs in serialization code.  
+    //Expand the ListSelectionModel API to provide capability to do this externally.
+    /**
+     * Gets a comma-delimited list containing the selected indices.
+     * 
+     * @return the list
+     * @type String
+     */
+    getSelectionString: function() {
+        var selection = "";
+        for (var i = 0; i < this._selectionState.length; i++) {
+            if (this._selectionState[i]) {
+                if (selection.length > 0) {
+                    selection += ",";
+                }
+                selection += i;
+            }
+        }
+        return selection;
     }
-    return selection;
-};
+});
 
 // Styles and StyleSheets
 
 /**
  * @class Component Style.
- * @param properties (optional) the initial property mapping as an associative array
- * @constructor
  */
-EchoApp.Style = function(properties) {
-    this._properties = properties ? properties : new Object();
-};
+EchoApp.Style = EchoCore.extend({ 
 
-/**
- * Returns the value of an indexed property.
- * 
- * @param {String} name the name of the property
- * @param {Number} the (integer) index of the property
- * @return the property value  
- */
-EchoApp.Style.prototype.getIndexedProperty = function(name, index) {
-    var indexValues = this._properties[name];
-    if (!indexValues) {
-        return null;
+    /**
+     * Creates a new Component Syle.
+     *
+     * @param properties (optional) the initial property mapping as an associative array
+     * @constructor
+     */
+    initialize: function(properties) {
+        this._properties = properties ? properties : { };
+    },
+    
+    /**
+     * Returns the value of an indexed property.
+     * 
+     * @param {String} name the name of the property
+     * @param {Number} the (integer) index of the property
+     * @return the property value  
+     */
+    getIndexedProperty: function(name, index) {
+        var indexValues = this._properties[name];
+        if (!indexValues) {
+            return null;
+        }
+        return indexValues[index];
+    },
+    
+    /**
+     * Returns the value of a property.
+     * 
+     * @param {String} name the name of the property
+     * @return the property value  
+     */
+    getProperty: function(name) {
+        return this._properties[name];
+    },
+    
+    /**
+     * Sets the value of an indexed property.
+     * 
+     * @param {String} name the name of the property
+     * @param {Number} the (integer) index of the property
+     * @param value the new value of the property 
+     */
+    setIndexedProperty: function(name, index, value) {
+        var indexValues = this._properties[name];
+        if (!indexValues) {
+            indexValues = [];
+            this._properties[name] = indexValues;
+        }
+        indexValues[index] = value;
+    },
+    
+    /**
+     * Sets the value of a property.
+     * 
+     * @param {String} name the name of the property
+     * @param value the new value of the property 
+     */
+    setProperty: function(name, newValue) {
+        this._properties[name] = newValue;
+    },
+    
+    /**
+     * Returns a string representation.
+     * 
+     * @return a string representation
+     * @type String
+     */
+    $toString: function() {
+        var outArray = [];
+        for (var x in this._properties) {
+            outArray.push(x + "=" + this._properties[x]);
+        }
+        return outArray.toString();
     }
-    return indexValues[index];
-};
+});
 
 /**
- * Returns the value of a property.
- * 
- * @param {String} name the name of the property
- * @return the property value  
- */
-EchoApp.Style.prototype.getProperty = function(name) {
-    return this._properties[name];
-};
-
-/**
- * Sets the value of an indexed property.
- * 
- * @param {String} name the name of the property
- * @param {Number} the (integer) index of the property
- * @param value the new value of the property 
- */
-EchoApp.Style.prototype.setIndexedProperty = function(name, index, value) {
-    var indexValues = this._properties[name];
-    if (!indexValues) {
-        indexValues = new Array();
-        this._properties[name] = indexValues;
-    }
-    indexValues[index] = value;
-};
-
-/**
- * Sets the value of a property.
- * 
- * @param {String} name the name of the property
- * @param value the new value of the property 
- */
-EchoApp.Style.prototype.setProperty = function(name, newValue) {
-    this._properties[name] = newValue;
-};
-
-/**
- * Returns a string representation.
- * 
- * @return a string representation
- * @type String
- */
-EchoApp.Style.prototype.toString = function() {
-    var outArray = new Array();
-    for (var x in this._properties) {
-        outArray.push(x + "=" + this._properties[x]);
-    }
-    return outArray.toString();
-};
-
-/**
+ * @class
  * An application style sheet.
  */
-EchoApp.StyleSheet = function() {
-    this._nameToStyleMap = new Object();
-};
+EchoApp.StyleSheet = EchoCore.extend({
 
-/**
- * Returns the style that should be used for a component.
- * 
- *  @param {String} name the component's style name
- *  @param {String} componentType the type of the component
- *  @return the style
- *  @type EchoApp.Style
- */
-EchoApp.StyleSheet.prototype.getRenderStyle = function(name, componentType) {
-    //FIXME. Does not query super component types.
-    return this.getStyle(name, componentType);
-};
-
-/**
- * Retrieves a specific style from the style sheet.
- * 
- * @param {String} name the style name
- * @param {String} componentType the component type
- * @return the style
- * @type EchoApp.Style
- */
-EchoApp.StyleSheet.prototype.getStyle = function(name, componentType) {
-    var typeToStyleMap = this._nameToStyleMap[name];
-    if (typeToStyleMap == null) {
-        return null;
+    /**
+     * Creates a new style sheet.
+     */
+    initialize: function() {
+        this._nameToStyleMap = { };
+    },
+    
+    /**
+     * Returns the style that should be used for a component.
+     * 
+     *  @param {String} name the component's style name
+     *  @param {String} componentType the type of the component
+     *  @return the style
+     *  @type EchoApp.Style
+     */
+    getRenderStyle: function(name, componentType) {
+        //FIXME. Does not query super component types.
+        return this.getStyle(name, componentType);
+    },
+    
+    /**
+     * Retrieves a specific style from the style sheet.
+     * 
+     * @param {String} name the style name
+     * @param {String} componentType the component type
+     * @return the style
+     * @type EchoApp.Style
+     */
+    getStyle: function(name, componentType) {
+        var typeToStyleMap = this._nameToStyleMap[name];
+        if (typeToStyleMap == null) {
+            return null;
+        }
+        return typeToStyleMap[componentType];
+    },
+    
+    /**
+     * Stores a style in the style sheet.
+     * 
+     * @param {String} name the style name
+     * @param {String} componentType the component type
+     * @param {EchoApp.Style} the style
+     */
+    setStyle: function(name, componentType, style) {
+        var typeToStyleMap = this._nameToStyleMap[name];
+        if (typeToStyleMap == null) {
+            typeToStyleMap = { };
+            this._nameToStyleMap[name] = typeToStyleMap;
+        }
+        typeToStyleMap[componentType] = style;
     }
-    return typeToStyleMap[componentType];
-};
-
-/**
- * Stores a style in the style sheet.
- * 
- * @param {String} name the style name
- * @param {String} componentType the component type
- * @param {EchoApp.Style} the style
- */
-EchoApp.StyleSheet.prototype.setStyle = function(name, componentType, style) {
-    var typeToStyleMap = this._nameToStyleMap[name];
-    if (typeToStyleMap == null) {
-        typeToStyleMap = new Object();
-        this._nameToStyleMap[name] = typeToStyleMap;
-    }
-    typeToStyleMap[componentType] = style;
-};
+});
 
 // Update Management
 
@@ -2428,995 +2556,1120 @@ EchoApp.StyleSheet.prototype.setStyle = function(name, componentType, style) {
  * Provides capabilities for storing property changes made to applications and components
  * such that display redraws may be performed efficiently. 
  */
-EchoApp.Update = function() { };
+EchoApp.Update = { };
 
 /**
- * Creates a new ComponentUpdate.
- * 
- * @constructor
- * @param parent the updated component
  * @class Representation of an update to a single existing component 
  *        which is currently rendered on the screen.
  */
-EchoApp.Update.ComponentUpdate = function(manager, parent) {
+EchoApp.Update.ComponentUpdate = EchoCore.extend({
 
-    /**
-     * The <code>Manager</code> to which this update belongs.
-     * @type Array
-     */
-    this._manager = manager;
+    global: {
     
-    /**
-     * The parent component represented in this <code>ServerComponentUpdate</code>.
-     * @type EchoApp.Component
-     */
-    this.parent = parent;
-
-    /**
-     * The set of child Component ids added to the <code>parent</code>.
-     * @type Array
-     */
-    this._addedChildIds = null;
-    
-    /**
-     * A mapping between property names of the parent component and 
-     * <code>PropertyUpdate</code>s.
-     * @type Object
-     */
-    this._propertyUpdates = null;
-    
-    /**
-     * The set of child Component ids removed from the <code>parent</code>.
-     * @type Array
-     */
-    this._removedChildIds = null;
-    
-    /**
-     * The set of descendant Component ids which are implicitly removed 
-     * as they were children of removed children.
-     * @type Array
-     */
-    this._removedDescendantIds = null;
-
-    /**
-     * The set of child Component ids whose <code>LayoutData</code> 
-     * was updated. 
-     * @type Array
-     */
-    this._updatedLayoutDataChildIds = null;
-};
-
-/**
- * Records the addition of a child to the parent component.
- * 
- * @param {EchoApp.Component} child the added child
- * @private
- */
-EchoApp.Update.ComponentUpdate.prototype._addChild = function(child) {
-    if (!this._addedChildIds) {
-        this._addedChildIds = new Array();
-    }
-    this._addedChildIds.push(child.renderId);
-    this._manager._idMap[child.renderId] = child;
-};
-
-/**
- * Appends removed children and descendants from another update to this
- * update as removed descendants.
- * This method is invoked when a component is removed that is an ancestor
- * of a component that has an update in the update manager.
- * 
- * @private
- * @param {EchoApp.Update.CompoenntUpdate} update the update from which to pull 
- *        removed components/descendants
- */
-EchoApp.Update.ComponentUpdate.prototype._appendRemovedDescendants = function(update) {
-    // Append removed descendants.
-    if (update._removedDescendantIds != null) {
-        if (this._removedDescendantIds == null) {
-            this._removedDescendantIds = new Array();
+        /**
+         * Data object representing the old and new states of a changed property.
+         *
+         * @param oldValue the old value of the property
+         * @param newValue the new value of the property
+         */
+        PropertyUpdate: function(oldValue, newValue) {
+            this.oldValue = oldValue;
+            this.newValue = newValue;
         }
-        for (var x in update._removedDescendantIds) {
-            this._removedDescendantIds.push(x);
+    },
+
+    /**
+     * Creates a new ComponentUpdate.
+     * 
+     * @constructor
+     * @param parent the updated component
+     */
+    initialize: function(manager, parent) {
+    
+        /**
+         * The <code>Manager</code> to which this update belongs.
+         * @type Array
+         */
+        this._manager = manager;
+        
+        /**
+         * The parent component represented in this <code>ServerComponentUpdate</code>.
+         * @type EchoApp.Component
+         */
+        this.parent = parent;
+    
+        /**
+         * The set of child Component ids added to the <code>parent</code>.
+         * @type Array
+         */
+        this._addedChildIds = null;
+        
+        /**
+         * A mapping between property names of the parent component and 
+         * <code>PropertyUpdate</code>s.
+         * @type Object
+         */
+        this._propertyUpdates = null;
+        
+        /**
+         * The set of child Component ids removed from the <code>parent</code>.
+         * @type Array
+         */
+        this._removedChildIds = null;
+        
+        /**
+         * The set of descendant Component ids which are implicitly removed 
+         * as they were children of removed children.
+         * @type Array
+         */
+        this._removedDescendantIds = null;
+    
+        /**
+         * The set of child Component ids whose <code>LayoutData</code> 
+         * was updated. 
+         * @type Array
+         */
+        this._updatedLayoutDataChildIds = null;
+    },
+    
+    /**
+     * Records the addition of a child to the parent component.
+     * 
+     * @param {EchoApp.Component} child the added child
+     * @private
+     */
+    _addChild: function(child) {
+        if (!this._addedChildIds) {
+            this._addedChildIds = [];
         }
-    }
+        this._addedChildIds.push(child.renderId);
+        this._manager._idMap[child.renderId] = child;
+    },
     
-    // Append removed children.
-    if (update._removedChildIds != null) {
-        if (this._removedDescendantIds == null) {
-            this._removedDescendantIds = new Array();
+    /**
+     * Appends removed children and descendants from another update to this
+     * update as removed descendants.
+     * This method is invoked when a component is removed that is an ancestor
+     * of a component that has an update in the update manager.
+     * 
+     * @private
+     * @param {EchoApp.Update.CompoenntUpdate} update the update from which to pull 
+     *        removed components/descendants
+     */
+    _appendRemovedDescendants: function(update) {
+        // Append removed descendants.
+        if (update._removedDescendantIds != null) {
+            if (this._removedDescendantIds == null) {
+                this._removedDescendantIds = [];
+            }
+            for (var x in update._removedDescendantIds) {
+                this._removedDescendantIds.push(x);
+            }
         }
-        for (var x in update._removedChildIds) {
-            this._removedDescendantIds.push(x);
+        
+        // Append removed children.
+        if (update._removedChildIds != null) {
+            if (this._removedDescendantIds == null) {
+                this._removedDescendantIds = [];
+            }
+            for (var x in update._removedChildIds) {
+                this._removedDescendantIds.push(x);
+            }
         }
-    }
+        
+        if (this._removedDescendantIds != null) {
+    	    EchoCore.Arrays.removeDuplicates(this._removedDescendantIds);
+        }
+    },
     
-    if (this._removedDescendantIds != null) {
-	    EchoCore.Arrays.removeDuplicates(this._removedDescendantIds);
-    }
-};
-
-/**
- * Returns an array containing the children added in this update,
- * or null if none were added.
- * 
- * @return the added children
- * @type Array
- */
-EchoApp.Update.ComponentUpdate.prototype.getAddedChildren = function() {
-    if (!this._addedChildIds) {
-        return null;
-    }
-    var components = new Array(this._addedChildIds.length);
-    for (var i = 0; i < this._addedChildIds.length; ++i) {
-        components[i] = this._manager._idMap[this._addedChildIds[i]];
-    }
-    return components;
-};
-
-/**
- * Returns an array containing the children removed in this update,
- * or null if none were removed.
- * 
- * @return the removed children
- * @type Array
- */
-EchoApp.Update.ComponentUpdate.prototype.getRemovedChildren = function() {
-    if (!this._removedChildIds) {
-        return null;
-    }
-    var components = new Array(this._removedChildIds.length);
-    for (var i = 0; i < this._removedChildIds.length; ++i) {
-        components[i] = this._manager._idMap[this._removedChildIds[i]];
-    }
-    return components;
-};
-
-/**
- * Returns an array containing the descendants of any children removed in
- * this update, or null if none were removed.  The removed children
- * themselves are not returned by this method.
- * 
- * @return the removed descendants
- * @type Array
- */
-EchoApp.Update.ComponentUpdate.prototype.getRemovedDescendants = function() {
-    if (!this._removedDescendantIds) {
-        return null;
-    }
-    var components = new Array(this._removedDescendantIds.length);
-    for (var i = 0; i < this._removedDescendantIds.length; ++i) {
-        components[i] = this._manager._idMap[this._removedDescendantIds[i]];
-    }
-    return components;
-};
-
-/**
- * Returns an array containing the children of this component whose
- * LayoutDatas have changed in this update, or null if no such
- * changes were made.
- * 
- * @return the updated layout data children
- * @type Array
- */
-EchoApp.Update.ComponentUpdate.prototype.getUpdatedLayoutDataChildren = function() {
-    if (!this._updatedLayoutDataChildIds) {
-        return null;
-    }
-    var components = new Array(this._updatedLayoutDataChildIds.length);
-    for (var i = 0; i < this._updatedLayoutDataChildIds.length; ++i) {
-        components[i] = this._manager._idMap[this._updatedLayoutDataChildIds[i]];
-    }
-    return components;
-};
-
-/**
- * Determines if any children were added during this update.
- * 
- * @return true if any children were added
- * @type Boolean
- */
-EchoApp.Update.ComponentUpdate.prototype.hasAddedChildren = function() {
-    return this._addedChildIds != null;
-};
-
-/**
- * Determines if any children were removed during this update.
- * 
- * @return true if any children were removed
- * @type Boolean
- */
-EchoApp.Update.ComponentUpdate.prototype.hasRemovedChildren = function() {
-    return this._removedChildIds != null;
-};
-
-/**
- * Determines if any children had their LayoutData changed during this update.
- * 
- * @return true if any children had their LayoutData changed
- * @type Boolean
- */
-EchoApp.Update.ComponentUpdate.prototype.hasUpdatedLayoutDataChildren = function() {
-    return this._updatedLayoutDataChildIds != null;
-};
-
-/**
- * Determines if this update has any changed properties.
- * 
- * @return true if properties are being updated
- * @type Boolean
- */
-EchoApp.Update.ComponentUpdate.prototype.hasUpdatedProperties = function() {
-    return this._propertyUpdates != null;
-};
-
-/**
- * Returns a <code>PropertyUpdate</code> describing an update to the
- * property with the given <code>name</code>.
- * 
- * @param name the name of the property being updated
- * @return the <code>PropertyUpdate</code>, or null if none exists
- */
-EchoApp.Update.ComponentUpdate.prototype.getUpdatedProperty = function(name) {
-    if (this._propertyUpdates == null) {
-    	return null;
-    }
-    return this._propertyUpdates[name];
-};
-
-/**
- * Returns the names of all properties being updated in this update.
- * 
- * @return the names of all updated properties, if no properties are updated an
- * 		empty array is returned
- * @type Array
- */
-EchoApp.Update.ComponentUpdate.prototype.getUpdatedPropertyNames = function() {
-    if (this._propertyUpdates == null) {
-    	return new Array();
-    }
-    var updatedPropertyNames = new Array();
-    for (var i in this._propertyUpdates) {
-    	updatedPropertyNames.push(i);
-    }
-    return updatedPropertyNames;
-};
-
-/**
- * Records the removal of a child from the parent component.
- * 
- * @param {EchoApp.Component} child the removed child
- * @private
- */
-EchoApp.Update.ComponentUpdate.prototype._removeChild = function(child) {
-    this._manager._idMap[child.renderId] = child;
-
-    if (this._addedChildIds) {
-        // Remove child from add list if found.
-        EchoCore.Arrays.remove(this._addedChildIds, child.renderId);
-    }
+    /**
+     * Returns an array containing the children added in this update,
+     * or null if none were added.
+     * 
+     * @return the added children
+     * @type Array
+     */
+    getAddedChildren: function() {
+        if (!this._addedChildIds) {
+            return null;
+        }
+        var components = new Array(this._addedChildIds.length);
+        for (var i = 0; i < this._addedChildIds.length; ++i) {
+            components[i] = this._manager._idMap[this._addedChildIds[i]];
+        }
+        return components;
+    },
     
-    if (this._updatedLayoutDataChildIds) {
-        // Remove child from updated layout data list if found.
-        EchoCore.Arrays.remove(this._updatedLayoutDataChildIds, child.renderId);
-    }
-
-    if (!this._removedChildIds) {
-        this._removedChildIds = new Array();
-    }
+    /**
+     * Returns an array containing the children removed in this update,
+     * or null if none were removed.
+     * 
+     * @return the removed children
+     * @type Array
+     */
+    getRemovedChildren: function() {
+        if (!this._removedChildIds) {
+            return null;
+        }
+        var components = new Array(this._removedChildIds.length);
+        for (var i = 0; i < this._removedChildIds.length; ++i) {
+            components[i] = this._manager._idMap[this._removedChildIds[i]];
+        }
+        return components;
+    },
     
-    this._removedChildIds.push(child.renderId);
-
-    for (var i = 0; i < child.children.length; ++i) {
-        this._removeDescendant(child.children[i]);
+    /**
+     * Returns an array containing the descendants of any children removed in
+     * this update, or null if none were removed.  The removed children
+     * themselves are not returned by this method.
+     * 
+     * @return the removed descendants
+     * @type Array
+     */
+    getRemovedDescendants: function() {
+        if (!this._removedDescendantIds) {
+            return null;
+        }
+        var components = new Array(this._removedDescendantIds.length);
+        for (var i = 0; i < this._removedDescendantIds.length; ++i) {
+            components[i] = this._manager._idMap[this._removedDescendantIds[i]];
+        }
+        return components;
+    },
+    
+    /**
+     * Returns an array containing the children of this component whose
+     * LayoutDatas have changed in this update, or null if no such
+     * changes were made.
+     * 
+     * @return the updated layout data children
+     * @type Array
+     */
+    getUpdatedLayoutDataChildren: function() {
+        if (!this._updatedLayoutDataChildIds) {
+            return null;
+        }
+        var components = new Array(this._updatedLayoutDataChildIds.length);
+        for (var i = 0; i < this._updatedLayoutDataChildIds.length; ++i) {
+            components[i] = this._manager._idMap[this._updatedLayoutDataChildIds[i]];
+        }
+        return components;
+    },
+    
+    /**
+     * Determines if any children were added during this update.
+     * 
+     * @return true if any children were added
+     * @type Boolean
+     */
+    hasAddedChildren: function() {
+        return this._addedChildIds != null;
+    },
+    
+    /**
+     * Determines if any children were removed during this update.
+     * 
+     * @return true if any children were removed
+     * @type Boolean
+     */
+    hasRemovedChildren: function() {
+        return this._removedChildIds != null;
+    },
+    
+    /**
+     * Determines if any children had their LayoutData changed during this update.
+     * 
+     * @return true if any children had their LayoutData changed
+     * @type Boolean
+     */
+    hasUpdatedLayoutDataChildren: function() {
+        return this._updatedLayoutDataChildIds != null;
+    },
+    
+    /**
+     * Determines if this update has any changed properties.
+     * 
+     * @return true if properties are being updated
+     * @type Boolean
+     */
+    hasUpdatedProperties: function() {
+        return this._propertyUpdates != null;
+    },
+    
+    /**
+     * Returns a <code>PropertyUpdate</code> describing an update to the
+     * property with the given <code>name</code>.
+     * 
+     * @param name the name of the property being updated
+     * @return the <code>PropertyUpdate</code>, or null if none exists
+     */
+    getUpdatedProperty: function(name) {
+        if (this._propertyUpdates == null) {
+        	return null;
+        }
+        return this._propertyUpdates[name];
+    },
+    
+    /**
+     * Returns the names of all properties being updated in this update.
+     * 
+     * @return the names of all updated properties, if no properties are updated an
+     * 		empty array is returned
+     * @type Array
+     */
+    getUpdatedPropertyNames: function() {
+        if (this._propertyUpdates == null) {
+        	return [];
+        }
+        var updatedPropertyNames = [];
+        for (var i in this._propertyUpdates) {
+        	updatedPropertyNames.push(i);
+        }
+        return updatedPropertyNames;
+    },
+    
+    /**
+     * Records the removal of a child from the parent component.
+     * 
+     * @param {EchoApp.Component} child the removed child
+     * @private
+     */
+    _removeChild: function(child) {
+        this._manager._idMap[child.renderId] = child;
+    
+        if (this._addedChildIds) {
+            // Remove child from add list if found.
+            EchoCore.Arrays.remove(this._addedChildIds, child.renderId);
+        }
+        
+        if (this._updatedLayoutDataChildIds) {
+            // Remove child from updated layout data list if found.
+            EchoCore.Arrays.remove(this._updatedLayoutDataChildIds, child.renderId);
+        }
+    
+        if (!this._removedChildIds) {
+            this._removedChildIds = [];
+        }
+        
+        this._removedChildIds.push(child.renderId);
+    
+        for (var i = 0; i < child.children.length; ++i) {
+            this._removeDescendant(child.children[i]);
+        }
+    },
+    
+    /**
+     * Records the removal of a descendant of the parent component.
+     * All children of a removed compoennt are recorded as removed
+     * descendants when the child is removed.
+     * This method will recursively invoke itself on children of
+     * the specified descendant.
+     * 
+     * @private
+     * @param {EchoApp.Component} descendant the removed descendant 
+     */
+    _removeDescendant: function(descendant) {
+        this._manager._idMap[descendant.renderId] = descendant;
+        if (!this._removedDescendantIds) {
+            this._removedDescendantIds = [];
+        }
+        this._removedDescendantIds.push(descendant.renderId);
+        for (var i = 0; i < descendant.children.length; ++i) {
+            this._removeDescendant(descendant.children[i]);
+        }
+    },
+    
+    /**
+     * Returns a string representation.
+     * 
+     * @return a string representation
+     * @type String
+     */
+    $toString: function() {
+        var s = "ComponentUpdate\n";
+        s += "- Parent: " + this.parent + "\n";
+        s += "- Adds: " + this._addedChildIds + "\n";
+        s += "- Removes: " + this._removedChildIds + "\n";
+        s += "- DescendantRemoves: " + this._removedDescendantIds + "\n";
+        s += "- Properties: " + this._propertyUpdates + "\n";
+        s += "- LayoutDatas: " + this._updatedLayoutDataChildIds + "\n";
+        return s;
+    },
+    
+    /**
+     * Records the update of the LayoutData of a child component.
+     * 
+     * @param the child component whose layout data was updated
+     * @private
+     */
+    _updateLayoutData: function(child) {
+        this._manager._idMap[child.renderId] = child;
+    	if (this._updatedLayoutDataChildIds == null) {
+    		this._updatedLayoutDataChildIds = [];
+    	}
+    	this._updatedLayoutDataChildIds.push(child.renderId);
+    },
+    
+    /**
+     * Records the update of a property of the parent component.
+     * 
+     * @param propertyName the name of the property
+     * @param oldValue the previous value of the property
+     * @param newValue the new value of the property
+     * @private
+     */
+   _updateProperty: function(propertyName, oldValue, newValue) {
+        if (this._propertyUpdates == null) {
+            this._propertyUpdates = { };
+        }
+    	var propertyUpdate = new EchoApp.Update.ComponentUpdate.PropertyUpdate(oldValue, newValue);
+    	this._propertyUpdates[propertyName] = propertyUpdate;
     }
-};
+});
 
 /**
- * Records the removal of a descendant of the parent component.
- * All children of a removed compoennt are recorded as removed
- * descendants when the child is removed.
- * This method will recursively invoke itself on children of
- * the specified descendant.
- * 
- * @private
- * @param {EchoApp.Component} descendant the removed descendant 
- */
-EchoApp.Update.ComponentUpdate.prototype._removeDescendant = function(descendant) {
-    this._manager._idMap[descendant.renderId] = descendant;
-    if (!this._removedDescendantIds) {
-        this._removedDescendantIds = new Array();
-    }
-    this._removedDescendantIds.push(descendant.renderId);
-    for (var i = 0; i < descendant.children.length; ++i) {
-        this._removeDescendant(descendant.children[i]);
-    }
-};
-
-/**
- * Returns a string representation.
- * 
- * @return a string representation
- * @type String
- */
-EchoApp.Update.ComponentUpdate.prototype.toString = function() {
-    var s = "ComponentUpdate\n";
-    s += "- Parent: " + this.parent + "\n";
-    s += "- Adds: " + this._addedChildIds + "\n";
-    s += "- Removes: " + this._removedChildIds + "\n";
-    s += "- DescendantRemoves: " + this._removedDescendantIds + "\n";
-    s += "- Properties: " + this._propertyUpdates + "\n";
-    s += "- LayoutDatas: " + this._updatedLayoutDataChildIds + "\n";
-    return s;
-};
-
-/**
- * Records the update of the LayoutData of a child component.
- * 
- * @param the child component whose layout data was updated
- * @private
- */
-EchoApp.Update.ComponentUpdate.prototype._updateLayoutData = function(child) {
-    this._manager._idMap[child.renderId] = child;
-	if (this._updatedLayoutDataChildIds == null) {
-		this._updatedLayoutDataChildIds = new Array();
-	}
-	this._updatedLayoutDataChildIds.push(child.renderId);
-};
-
-/**
- * Records the update of a property of the parent component.
- * 
- * @param propertyName the name of the property
- * @param oldValue the previous value of the property
- * @param newValue the new value of the property
- * @private
- */
-EchoApp.Update.ComponentUpdate.prototype._updateProperty = function(propertyName, oldValue, newValue) {
-    if (this._propertyUpdates == null) {
-        this._propertyUpdates = new Object();
-    }
-	var propertyUpdate = new EchoApp.Update.ComponentUpdate.PropertyUpdate(oldValue, newValue);
-	this._propertyUpdates[propertyName] = propertyUpdate;
-};
-
-/**
- * Data object representing the old and new states of a changed property.
- *
- * @param oldValue the old value of the property
- * @param newValue the new value of the property
- */
-EchoApp.Update.ComponentUpdate.PropertyUpdate = function(oldValue, newValue) {
-    this.oldValue = oldValue;
-    this.newValue = newValue;
-};
-
-/**
- * Creates a new Update Manager.
- *
- * @constructor
  * @class Monitors and records updates made to the application between repaints.
  *        Provides API to determine changes to component hierarchy since last update
  *        in order to efficiently repaint the screen.
- * @param {EchoApp.Application} application the supported application
  */
-EchoApp.Update.Manager = function(application) {
+EchoApp.Update.Manager = EchoCore.extend({
+    /**
+     * Creates a new Update Manager.
+     *
+     * @constructor
+     * @param {EchoApp.Application} application the supported application
+     */
+    initialize: function(application) {
+        
+        /**
+         * Associative mapping between component ids and EchoApp.Update.ComponentUpdate
+         * instances.
+         * @type Object
+         */
+        this._componentUpdateMap = { };
+    
+        /**
+         * Flag indicating whether a full refresh or incremental update will be performed.
+         * @type Boolean
+         */
+        this.fullRefreshRequired = false;
+        
+        this.application = application;
+    
+        /**
+         * Flag indicating whether any updates are pending.
+         * @type Boolean
+         */
+        this._hasUpdates = true;
+        
+        this._listenerList = new EchoCore.ListenerList();
+        
+        /**
+         * Associative mapping between component ids and component instances for all
+         * updates held in this manager object.
+         */
+        this._idMap = { };
+    
+        /** 
+         * The id of the last parent component whose child was analyzed by
+         * _isAncestorBeingAdded() that resulted in that method returning false.
+         * This id is stored for performance optimization purposes.
+         * @type String
+         */
+        this._lastAncestorTestParentId = null;
+    },
     
     /**
-     * Associative mapping between component ids and EchoApp.Update.ComponentUpdate
-     * instances.
-     * @type Object
+     * Adds a listener to receive notification of update events.
+     * 
+     * @param l the listener to add (may be a function or EchoCore.MethodRef)
      */
-    this._componentUpdateMap = new Object();
-
-    /**
-     * Flag indicating whether a full refresh or incremental update will be performed.
-     * @type Boolean
-     */
-    this.fullRefreshRequired = false;
-    
-    this.application = application;
-
-    /**
-     * Flag indicating whether any updates are pending.
-     * @type Boolean
-     */
-    this._hasUpdates = true;
-    
-    this._listenerList = new EchoCore.ListenerList();
+    addUpdateListener: function(l) {
+        this._listenerList.addListener("update", l);
+    },
     
     /**
-     * Associative mapping between component ids and component instances for all
-     * updates held in this manager object.
+     * Creates a new ComponentUpdate object (or returns an existing one) for a
+     * specific parent component.
+     * 
+     * @private
+     * @param {EchoApp.Component} parent the parent Component
+     * @return a ComponentUpdate instance for that Component
+     * @type EchoApp.Update.ComponentUpdate 
      */
-    this._idMap = new Object();
-
-    /** 
-     * The id of the last parent component whose child was analyzed by
-     * _isAncestorBeingAdded() that resulted in that method returning false.
-     * This id is stored for performance optimization purposes.
-     * @type String
-     */
-    this._lastAncestorTestParentId = null;
-
-
-};
-
-/**
- * Adds a listener to receive notification of update events.
- * 
- * @param l the listener to add (may be a function or EchoCore.MethodRef)
- */
-EchoApp.Update.Manager.prototype.addUpdateListener = function(l) {
-    this._listenerList.addListener("update", l);
-};
-
-/**
- * Creates a new ComponentUpdate object (or returns an existing one) for a
- * specific parent component.
- * 
- * @private
- * @param {EchoApp.Component} parent the parent Component
- * @return a ComponentUpdate instance for that Component
- * @type EchoApp.Update.ComponentUpdate 
- */
-EchoApp.Update.Manager.prototype._createComponentUpdate = function(parent) {
-    this._hasUpdates = true;
-    var update = this._componentUpdateMap[parent.renderId];
-    if (!update) {
-        update = new EchoApp.Update.ComponentUpdate(this, parent);
-        this._componentUpdateMap[parent.renderId] = update;
-    }
-    return update;
-};
-
-/**
- * Permanently disposes of the Update Manager, freeing any resources.
- */
-EchoApp.Update.Manager.prototype.dispose = function() {
-    this.application = null;
-};
-
-/**
- * Notifies update listeners of an event.
- * 
- * @private
- */
-EchoApp.Update.Manager.prototype._fireUpdate = function() {
-    if (!this._listenerList.isEmpty()) {
-        var e = new EchoCore.Event("update", this);
-        this._listenerList.fireEvent(e);
-    }
-};
-
-/**
- * Returns the current pending updates.  Returns null in the event that that no pending updates exist.
- * 
- * @return an array containing all component updates (as EchoApp.Update.ComponentUpdates)
- * @type Array
- */
-EchoApp.Update.Manager.prototype.getUpdates = function() {
-    var updates = new Array();
-    for (var key in this._componentUpdateMap) {
-        updates.push(this._componentUpdateMap[key]);
-    }
-    return updates;
-};
-
-/**
- * Determines if any updates exist in the Update Manager.
- * 
- * @return true if any updates are present
- * @type Boolean
- */
-EchoApp.Update.Manager.prototype.hasUpdates = function() {
-    return this._hasUpdates;
-};
-
-/**
- * Determines if an ancestor of the specified component is being added.
- * 
- * @private
- * @param {EchoApp.Component} component the component to evaluate
- * @return true if the component or an ancestor of the component is being added
- * @type Boolean
- */
-EchoApp.Update.Manager.prototype._isAncestorBeingAdded = function(component) {
-    var child = component;
-    var parent = component.parent;
-    
-    var originalParentId = parent ? parent.renderId : null;
-    if (originalParentId && this._lastAncestorTestParentId == originalParentId) {
-        return false;
-    }
-    
-    while (parent) {
+    _createComponentUpdate: function(parent) {
+        this._hasUpdates = true;
         var update = this._componentUpdateMap[parent.renderId];
-        if (update && update._addedChildIds) {
-            for (var i = 0; i < update._addedChildIds.length; ++i) {
-                if (update._addedChildIds[i] == child.renderId) {
-                    return true;
+        if (!update) {
+            update = new EchoApp.Update.ComponentUpdate(this, parent);
+            this._componentUpdateMap[parent.renderId] = update;
+        }
+        return update;
+    },
+    
+    /**
+     * Permanently disposes of the Update Manager, freeing any resources.
+     */
+    dispose: function() {
+        this.application = null;
+    },
+    
+    /**
+     * Notifies update listeners of an event.
+     * 
+     * @private
+     */
+    _fireUpdate: function() {
+        if (!this._listenerList.isEmpty()) {
+            var e = new EchoCore.Event("update", this);
+            this._listenerList.fireEvent(e);
+        }
+    },
+    
+    /**
+     * Returns the current pending updates.  Returns null in the event that that no pending updates exist.
+     * 
+     * @return an array containing all component updates (as EchoApp.Update.ComponentUpdates)
+     * @type Array
+     */
+    getUpdates: function() {
+        var updates = [];
+        for (var key in this._componentUpdateMap) {
+            updates.push(this._componentUpdateMap[key]);
+        }
+        return updates;
+    },
+    
+    /**
+     * Determines if any updates exist in the Update Manager.
+     * 
+     * @return true if any updates are present
+     * @type Boolean
+     */
+    hasUpdates: function() {
+        return this._hasUpdates;
+    },
+    
+    /**
+     * Determines if an ancestor of the specified component is being added.
+     * 
+     * @private
+     * @param {EchoApp.Component} component the component to evaluate
+     * @return true if the component or an ancestor of the component is being added
+     * @type Boolean
+     */
+    _isAncestorBeingAdded: function(component) {
+        var child = component;
+        var parent = component.parent;
+        
+        var originalParentId = parent ? parent.renderId : null;
+        if (originalParentId && this._lastAncestorTestParentId == originalParentId) {
+            return false;
+        }
+        
+        while (parent) {
+            var update = this._componentUpdateMap[parent.renderId];
+            if (update && update._addedChildIds) {
+                for (var i = 0; i < update._addedChildIds.length; ++i) {
+                    if (update._addedChildIds[i] == child.renderId) {
+                        return true;
+                    }
                 }
             }
+            child = parent;
+            parent = parent.parent;
         }
-        child = parent;
-        parent = parent.parent;
-    }
+        
+        this._lastAncestorTestParentId = originalParentId;
+        return false;
+    },
     
-    this._lastAncestorTestParentId = originalParentId;
-    return false;
-};
-
-/**
- * Processes a child addition to a component.
- * 
- * @private
- * @param {EchoApp.Component} parent the parent component
- * @param {EchoApp.Component} child the added child component
- */
-EchoApp.Update.Manager.prototype._processComponentAdd = function(parent, child) {
-    if (this.fullRefreshRequired) {
-        return;
-    }
-    if (this._isAncestorBeingAdded(child)) {
-        return;
-    };
-    var update = this._createComponentUpdate(parent);
-    update._addChild(child);
-};
-
-/**
- * Process a layout data update to a child component.
- * 
- * @private
- * @param {EchoApp.Component} updatedComponent the updated component
- */
-EchoApp.Update.Manager.prototype._processComponentLayoutDataUpdate = function(updatedComponent) {
-    if (this.fullRefreshRequired) {
-        return;
-    }
-    var parent = updatedComponent.parent;
-    if (parent == null || this._isAncestorBeingAdded(parent)) {
-        return;
-    }
-    var update = this._createComponentUpdate(parent);
-    update._updateLayoutData(updatedComponent);
-};
-
-/**
- * Processes a child removal from a component.
- * 
- * @private
- * @param {EchoApp.Component} parent the parent component
- * @param {EchoApp.Component} child the removed child component
- */
-EchoApp.Update.Manager.prototype._processComponentRemove = function(parent, child) {
-    if (this.fullRefreshRequired) {
-        return;
-    }
-    if (this._isAncestorBeingAdded(parent)) {
-        return;
-    }
-    var update = this._createComponentUpdate(parent);
-    update._removeChild(child);
+    /**
+     * Processes a child addition to a component.
+     * 
+     * @private
+     * @param {EchoApp.Component} parent the parent component
+     * @param {EchoApp.Component} child the added child component
+     */
+    _processComponentAdd: function(parent, child) {
+        if (this.fullRefreshRequired) {
+            return;
+        }
+        if (this._isAncestorBeingAdded(child)) {
+            return;
+        };
+        var update = this._createComponentUpdate(parent);
+        update._addChild(child);
+    },
     
-    var disposedIds = null;
+    /**
+     * Process a layout data update to a child component.
+     * 
+     * @private
+     * @param {EchoApp.Component} updatedComponent the updated component
+     */
+    _processComponentLayoutDataUpdate: function(updatedComponent) {
+        if (this.fullRefreshRequired) {
+            return;
+        }
+        var parent = updatedComponent.parent;
+        if (parent == null || this._isAncestorBeingAdded(parent)) {
+            return;
+        }
+        var update = this._createComponentUpdate(parent);
+        update._updateLayoutData(updatedComponent);
+    },
     
-    // Search updated components for descendants of removed component.
-    // Any found descendants will be removed and added to this update's
-    // list of removed components.
-    for (var testParentId in this._componentUpdateMap) {
-         var testUpdate = this._componentUpdateMap[testParentId];
-         if (child.isAncestorOf(testUpdate.parent)) {
-             update._appendRemovedDescendants(testUpdate);
-             if (disposedIds == null) {
-                 disposedIds = new Array();
+    /**
+     * Processes a child removal from a component.
+     * 
+     * @private
+     * @param {EchoApp.Component} parent the parent component
+     * @param {EchoApp.Component} child the removed child component
+     */
+    _processComponentRemove: function(parent, child) {
+        if (this.fullRefreshRequired) {
+            return;
+        }
+        if (this._isAncestorBeingAdded(parent)) {
+            return;
+        }
+        var update = this._createComponentUpdate(parent);
+        update._removeChild(child);
+        
+        var disposedIds = null;
+        
+        // Search updated components for descendants of removed component.
+        // Any found descendants will be removed and added to this update's
+        // list of removed components.
+        for (var testParentId in this._componentUpdateMap) {
+             var testUpdate = this._componentUpdateMap[testParentId];
+             if (child.isAncestorOf(testUpdate.parent)) {
+                 update._appendRemovedDescendants(testUpdate);
+                 if (disposedIds == null) {
+                     disposedIds = [];
+                 }
+                 disposedIds.push(testParentId);
              }
-             disposedIds.push(testParentId);
-         }
-    }
+        }
+        
+        if (disposedIds != null) {
+            for (var i = 0; i < disposedIds.length; ++i) {
+                delete this._componentUpdateMap[disposedIds[i]];
+            }
+        }
+    },
     
-    if (disposedIds != null) {
-        for (var i = 0; i < disposedIds.length; ++i) {
-            delete this._componentUpdateMap[disposedIds[i]];
-        }
-    }
-};
-
-/**
- * Processes a property update to a component.
- * 
- * @private
- * @component {EchoApp.Component} the updated component
- * @propertyName {String} the updated property name
- * @oldValue the previous value of the property
- * @newValue the new value of the property
- */
-EchoApp.Update.Manager.prototype._processComponentPropertyUpdate = function(component, propertyName, oldValue, newValue) {
-	if (this.fullRefreshRequired) {
-		return;
-	}
-	if (this._isAncestorBeingAdded(component)) {
-		return;
-	}
-	var update = this._createComponentUpdate(component);
-	update._updateProperty(propertyName, oldValue, newValue);
-};
-
-/**
- * Processes component updates received from the application instance.
- */
-EchoApp.Update.Manager.prototype._processComponentUpdate = function(parent, propertyName, oldValue, newValue) {
-    if (propertyName == "children") {
-        if (newValue == null) {
-            this._processComponentRemove(parent, oldValue);
+    /**
+     * Processes a property update to a component.
+     * 
+     * @private
+     * @component {EchoApp.Component} the updated component
+     * @propertyName {String} the updated property name
+     * @oldValue the previous value of the property
+     * @newValue the new value of the property
+     */
+    _processComponentPropertyUpdate: function(component, propertyName, oldValue, newValue) {
+    	if (this.fullRefreshRequired) {
+    		return;
+    	}
+    	if (this._isAncestorBeingAdded(component)) {
+    		return;
+    	}
+    	var update = this._createComponentUpdate(component);
+    	update._updateProperty(propertyName, oldValue, newValue);
+    },
+    
+    /**
+     * Processes component updates received from the application instance.
+     */
+    _processComponentUpdate: function(parent, propertyName, oldValue, newValue) {
+        if (propertyName == "children") {
+            if (newValue == null) {
+                this._processComponentRemove(parent, oldValue);
+            } else {
+                this._processComponentAdd(parent, newValue);
+            }
+        } else if (propertyName == "layoutData") {
+            this._processComponentLayoutDataUpdate(parent, oldValue, newValue);
         } else {
-            this._processComponentAdd(parent, newValue);
+            this._processComponentPropertyUpdate(parent, propertyName, oldValue, newValue);
         }
-    } else if (propertyName == "layoutData") {
-        this._processComponentLayoutDataUpdate(parent, oldValue, newValue);
-    } else {
-        this._processComponentPropertyUpdate(parent, propertyName, oldValue, newValue);
+        this._fireUpdate();
+    },
+    
+    /**
+     * Purges all updates from the manager.
+     * Invoked after the client has repainted the screen.
+     */
+    purge: function() {
+        this.fullRefreshRequired = false;
+        this._componentUpdateMap = { };
+        this._idMap = { };
+        this._hasUpdates = false;
+        this._lastAncestorTestParentId = null;
+    },
+    
+    /**
+     * Removes a listener from receiving notification of update events.
+     * 
+     * @param l the listener to remove (may be a function or EchoCore.MethodRef)
+     */
+    removeUpdateListener: function(l) {
+        this._listenerList.removeListener("update", l);
+    },
+    
+    /**
+     * Returns a string representation.
+     * 
+     * @return a string representation
+     * @type String
+     */
+    $toString: function() {
+        var s = "[ UpdateManager ]\n";
+        if (this.fullRefreshRequired) {
+            s += "fullRefresh";
+        } else {
+    		for (var key in this._componentUpdateMap) {
+    			s += this._componentUpdateMap[key];
+    		}
+        }
+        return s;
     }
-    this._fireUpdate();
-};
-
-/**
- * Purges all updates from the manager.
- * Invoked after the client has repainted the screen.
- */
-EchoApp.Update.Manager.prototype.purge = function() {
-    this.fullRefreshRequired = false;
-    this._componentUpdateMap = new Object();
-    this._idMap = new Object();
-    this._hasUpdates = false;
-    this._lastAncestorTestParentId = null;
-};
-
-/**
- * Removes a listener from receiving notification of update events.
- * 
- * @param l the listener to remove (may be a function or EchoCore.MethodRef)
- */
-EchoApp.Update.Manager.prototype.removeUpdateListener = function(l) {
-    this._listenerList.removeListener("update", l);
-};
-
-/**
- * Returns a string representation.
- * 
- * @return a string representation
- * @type String
- */
-EchoApp.Update.Manager.prototype.toString = function() {
-    var s = "[ UpdateManager ]\n";
-    if (this.fullRefreshRequired) {
-        s += "fullRefresh";
-    } else {
-		for (var key in this._componentUpdateMap) {
-			s += this._componentUpdateMap[key];
-		}
-    }
-    return s;
-};
+});
 
 // Built-in Component Object Definitions
 
 /**
- * Button component.
- * 
- * @constructor
  * @class Button component.
- * @base EchoApp.Component
- */
-EchoApp.Button = function(properties) {
-    EchoApp.Component.call(this, properties);
-    this.componentType = "Button";
-    this.focusable = true;
-};
+ */ 
+EchoApp.Button = EchoCore.extend(EchoApp.Component, {
 
-EchoApp.Button.prototype = EchoCore.derive(EchoApp.Component);
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("Button", this);
+    },
+
+    componentType: "Button",
+    focusable: true,
+    
+    /**
+     * Creates a new Button component.
+     * 
+     * @constructor
+     * @base EchoApp.Component
+     */
+    initialize: function(properties) {
+        EchoApp.Component.prototype.initialize.call(this, properties);
+    },
+
+    /**
+     * Programatically performs a button action.
+     */
+    doAction: function() {
+        var e = new EchoCore.Event("action", this, this.getProperty("actionCommand"));
+        this.fireEvent(e);
+    }
+});
 
 /**
- * Programatically performs a button action.
- */
-EchoApp.Button.prototype.doAction = function() {
-    var e = new EchoCore.Event("action", this, this.getProperty("actionCommand"));
-    this.fireEvent(e);
-};
-
-/**
- * ToggleButton component.
- * 
- * @constructor
  * @class ToggleButton component.
- * @base EchoApp.Button
  */
-EchoApp.ToggleButton = function(properties) {
-    EchoApp.Component.call(this, properties);
-    this.componentType = "ToggleButton";
-};
+EchoApp.ToggleButton = EchoCore.extend(EchoApp.Button, {
 
-EchoApp.ToggleButton.prototype = EchoCore.derive(EchoApp.Button);
+    componentType: "ToggleButton",
+
+    /**
+     * Creates a new ToggleButton.
+     * 
+     * @constructor
+     * @base EchoApp.Button
+     */
+    initialize: function(properties) {
+        EchoApp.Button.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
- * CheckBox component.
- * 
- * @constructor
  * @class CheckBox component.
- * @base EchoApp.ToggleButton
  */
-EchoApp.CheckBox = function(properties) {
-    EchoApp.Component.call(this,  properties);
-    this.componentType = "CheckBox";
-};
+EchoApp.CheckBox = EchoCore.extend(EchoApp.ToggleButton, {
 
-EchoApp.CheckBox.prototype = EchoCore.derive(EchoApp.ToggleButton);
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("CheckBox", this);
+    },
+
+    componentType: "CheckBox",
+
+    /**
+     * Creates a new CheckBox.
+     * 
+     * @constructor
+     * @base EchoApp.ToggleButton
+     */
+    initialize: function(properties) {
+        EchoApp.ToggleButton.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
- * RadioButton component.
- * 
- * @constructor
  * @class RadioButton component.
- * @base EchoApp.ToggleButton
  */
-EchoApp.RadioButton = function(properties) {
-    EchoApp.Component.call(this, properties);
-    this.componentType = "RadioButton";
-};
+EchoApp.RadioButton = EchoCore.extend(EchoApp.ToggleButton, {
 
-EchoApp.RadioButton.prototype = EchoCore.derive(EchoApp.ToggleButton);
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("RadioButton", this);
+    },
 
+    componentType: "RadioButton",
+
+    /**
+     * Creates a new RadioButton.
+     * 
+     * @constructor
+     * @base EchoApp.ToggleButton
+     */
+    initialize: function(properties) {
+        EchoApp.ToggleButton.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
- * Creates a new Column.
- * 
- * @constructor
  * @class Column component.
- * @base EchoApp.Component
  */
-EchoApp.Column = function(properties) {
-    EchoApp.Component.call(this, properties);
-    this.componentType = "Column";
-};
+EchoApp.Column = EchoCore.extend(EchoApp.Component, {
 
-EchoApp.Column.prototype = EchoCore.derive(EchoApp.Component);
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("Column", this);
+    },
+
+    componentType: "Column",
+
+    /**
+     * Creates a new Column.
+     * 
+     * @constructor
+     * @base EchoApp.Component
+     */
+    initialize: function(properties) {
+        EchoApp.Component.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
- * Creates a new ContentPane.
- * 
- * @constructor
  * @class ContentPane component.
- * @base EchoApp.Component
  */
-EchoApp.ContentPane = function(properties) {
-    this.pane = true;
-    EchoApp.Component.call(this, properties);
-    this.componentType = "ContentPane";
-};
+EchoApp.ContentPane = EchoCore.extend(EchoApp.Component, {
 
-EchoApp.ContentPane.prototype = EchoCore.derive(EchoApp.Component);
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("ContentPane", this);
+    },
+
+    componentType: "ContentPane",
+    pane: true,
+
+    /**
+     * Creates a new ContentPane.
+     * 
+     * @constructor
+     * @base EchoApp.Component
+     */
+    initialize: function(properties) {
+        EchoApp.Component.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
- * Creates a new Grid.
- * 
- * @constructor
  * @class Grid component.
- * @base EchoApp.Component
  */
-EchoApp.Grid = function(properties) {
-    EchoApp.Component.call(this, properties);
-    this.componentType = "Grid";
-};
+EchoApp.Grid = EchoCore.extend(EchoApp.Component, {
 
-EchoApp.Grid.prototype = EchoCore.derive(EchoApp.Component);
+    global: {
+        SPAN_FILL: -1
+    },
 
-EchoApp.Grid.SPAN_FILL = -1;
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("Grid", this);
+    },
+
+    componentType: "Grid",
+
+    /**
+     * Creates a new Grid.
+     * 
+     * @constructor
+     * @base EchoApp.Component
+     */
+    initialize: function(properties) {
+        EchoApp.Component.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
- * Creates a new Label.
- * 
- * @constructor
  * @class Label component.
- * @base EchoApp.Component
  */
-EchoApp.Label = function(properties) {
-    EchoApp.Component.call(this, properties);
-    this.componentType = "Label";
-};
+EchoApp.Label = EchoCore.extend(EchoApp.Component, {
 
-EchoApp.Label.prototype = EchoCore.derive(EchoApp.Component);
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("Label", this);
+    },
+
+    componentType: "Label",
+
+    /**
+     * Creates a new Label.
+     * 
+     * @constructor
+     * @base EchoApp.Component
+     */
+    initialize: function(properties) {
+        EchoApp.Component.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
- * Creates a new ListBox.
- * 
- * @constructor
  * @class ListBox component.
- * @base EchoApp.Component
  */
-EchoApp.ListBox = function(properties) {
-    EchoApp.Component.call(this, properties);
-    this.componentType = "ListBox";
-    this.focusable = true;
-};
+EchoApp.ListBox = EchoCore.extend(EchoApp.Component, {
 
-EchoApp.ListBox.prototype = EchoCore.derive(EchoApp.Component);
+    global: {
+
+        /**
+         * Constant for "selectionMode" property indicating single selection.
+         */
+        SINGLE_SELECTION: 0,
+        
+        /**
+         * Constant for "selectionMode" property indicating multiple selection.
+         */
+        MULTIPLE_SELECTION: 2
+    },
+
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("ListBox", this);
+    },
+
+    componentType: "ListBox",
+    focusable: true,
+
+    /**
+     * Creates a new ListBox.
+     * 
+     * @constructor
+     * @base EchoApp.Component
+     */
+    initialize: function(properties) {
+        EchoApp.Component.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
- * Constant for "selectionMode" property indicating single selection.
- */
-EchoApp.ListBox.SINGLE_SELECTION = 0;
-
-/**
- * Constant for "selectionMode" property indicating multiple selection.
- */
-EchoApp.ListBox.MULTIPLE_SELECTION = 2;
-
-/**
- * Creates a new Row.
- * 
- * @constructor
  * @class Row component.
- * @base EchoApp.Component
  */
-EchoApp.Row = function(properties) {
-    EchoApp.Component.call(this, properties);
-    this.componentType = "Row";
-};
+EchoApp.Row = EchoCore.extend(EchoApp.Component, {
 
-EchoApp.Row.prototype = EchoCore.derive(EchoApp.Component);
+    componentType: "Row",
+
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("Row", this);
+    },
+
+    /**
+     * Creates a new Row.
+     * 
+     * @constructor
+     * @base EchoApp.Component
+     */
+    initialize: function(properties) {
+        EchoApp.Component.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
- * Creates a new SelectField.
- * 
- * @constructor
  * @class SelectField component.
- * @base EchoApp.Component
  */
-EchoApp.SelectField = function(properties) {
-    EchoApp.Component.call(this, properties);
-    this.componentType = "SelectField";
-    this.focusable = true;
-};
+EchoApp.SelectField = EchoCore.extend(EchoApp.Component, {
 
-EchoApp.SelectField.prototype = EchoCore.derive(EchoApp.Component);
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("SelectField", this);
+    },
+
+    componentType: "SelectField",
+    focusable: true,
+
+    /**
+     * Creates a new SelectField.
+     * 
+     * @constructor
+     * @base EchoApp.Component
+     */
+    initialize: function(properties) {
+        EchoApp.Component.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
- * Creates a new SplitPane.
- * 
- * @constructor
  * @class SplitPane component.
- * @base EchoApp.Component
  */
-EchoApp.SplitPane = function(properties) {
-    EchoApp.Component.call(this, properties);
-    this.pane = true;
-    this.componentType = "SplitPane";
-};
+EchoApp.SplitPane = EchoCore.extend(EchoApp.Component, {
 
-EchoApp.SplitPane.prototype = EchoCore.derive(EchoApp.Component);
+    global: {
+        ORIENTATION_HORIZONTAL_LEADING_TRAILING: 0,
+        ORIENTATION_HORIZONTAL_TRAILING_LEADING: 1,
+        ORIENTATION_HORIZONTAL_LEFT_RIGHT: 2,
+        ORIENTATION_HORIZONTAL_RIGHT_LEFT: 3,
+        ORIENTATION_VERTICAL_TOP_BOTTOM: 4,
+        ORIENTATION_VERTICAL_BOTTOM_TOP: 5,
+        
+        DEFAULT_SEPARATOR_POSITION: new EchoApp.Extent("100px"),
+        DEFAULT_SEPARATOR_SIZE_FIXED: new EchoApp.Extent("0px"),
+        DEFAULT_SEPARATOR_SIZE_RESIZABLE: new EchoApp.Extent("4px"),
+        DEFAULT_SEPARATOR_COLOR: new EchoApp.Color("#3f3f4f"),
+        
+        OVERFLOW_AUTO: 0,
+        OVERFLOW_HIDDEN: 1,
+        OVERFLOW_SCROLL: 2
+    },
 
-EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING = 0;
-EchoApp.SplitPane.ORIENTATION_HORIZONTAL_TRAILING_LEADING = 1;
-EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEFT_RIGHT = 2;
-EchoApp.SplitPane.ORIENTATION_HORIZONTAL_RIGHT_LEFT = 3;
-EchoApp.SplitPane.ORIENTATION_VERTICAL_TOP_BOTTOM = 4;
-EchoApp.SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP = 5;
+    componentType: "SplitPane",
+    pane: true,
 
-EchoApp.SplitPane.DEFAULT_SEPARATOR_POSITION = new EchoApp.Extent("100px");
-EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED = new EchoApp.Extent("0px");
-EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE = new EchoApp.Extent("4px");
-EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR = new EchoApp.Color("#3f3f4f");
-
-EchoApp.SplitPane.OVERFLOW_AUTO = 0;
-EchoApp.SplitPane.OVERFLOW_HIDDEN = 1;
-EchoApp.SplitPane.OVERFLOW_SCROLL = 2;
+    /**
+     * Creates a new SplitPane.
+     * 
+     * @constructor
+     * @base EchoApp.Component
+     */
+    initialize: function(properties) {
+        EchoApp.Component.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
  * Abstract base class for text components.
- * 
- * @private
- * @constructor
- * @class TextComponent component.
- * @base EchoApp.Component
  */
-EchoApp.TextComponent = function(properties) {
-    EchoApp.Component.call(this, properties);
-    this.focusable = true;
-};
+EchoApp.TextComponent = EchoCore.extend(EchoApp.Component, {
 
-EchoApp.TextComponent.prototype = EchoCore.derive(EchoApp.Component);
+    componentType: "TextComponent",
+    focusable: true,
+
+    /**
+     * @private
+     * @constructor
+     * @class TextComponent component.
+     * @base EchoApp.Component
+     */ 
+    initialize: function(properties) {
+        EchoApp.Component.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
- * Creates a new TextArea.
- * 
- * @constructor
  * @class TextArea component.
- * @base EchoApp.TextComponent
  */
-EchoApp.TextArea = function(properties) {
-    EchoApp.TextComponent.call(this, properties);
-    this.componentType = "TextArea";
-};
+EchoApp.TextArea = EchoCore.extend(EchoApp.TextComponent, {
 
-EchoApp.TextArea.prototype = EchoCore.derive(EchoApp.TextComponent);
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("TextArea", this);
+    },
+
+    componentType: "TextArea",
+
+    /**
+     * Creates a new TextArea.
+     * 
+     * @constructor
+     * @base EchoApp.Component
+     */
+    initialize: function(properties) {
+        EchoApp.TextComponent.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
- * Creates a new TextField.
- * 
- * @constructor
  * @class TextField component.
- * @base EchoApp.TextComponent
  */
-EchoApp.TextField = function(properties) {
-    EchoApp.TextComponent.call(this, properties);
-    this.componentType = "TextField";
-};
+EchoApp.TextField = EchoCore.extend(EchoApp.TextComponent, {
 
-EchoApp.TextField.prototype = EchoCore.derive(EchoApp.TextComponent);
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("TextField", this);
+    },
+
+    componentType: "TextField",
+
+    /**
+     * Creates a new TextField.
+     * 
+     * @constructor
+     * @base EchoApp.Component
+     */
+    initialize: function(properties) {
+        EchoApp.TextComponent.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
- * Creates a new PasswordField.
- * 
- * @constructor
  * @class PasswordField component.
- * @base EchoApp.TextField
  */
-EchoApp.PasswordField = function(properties) {
-    EchoApp.TextField.call(this, properties);
-    this.componentType = "PasswordField";
-};
+EchoApp.PasswordField = EchoCore.extend(EchoApp.TextField, {
 
-EchoApp.PasswordField.prototype = EchoCore.derive(EchoApp.TextField);
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("PasswordField", this);
+    },
+
+    componentType: "PasswordField",
+
+    /**
+     * Creates a new PasswordField.
+     * 
+     * @constructor
+     * @base EchoApp.Component
+     */
+    initialize: function(properties) {
+        EchoApp.TextField.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
- * Creates a new WindowPane.
- * 
- * @constructor
  * @class WindowPane component.
- * @base EchoApp.Component
  */
-EchoApp.WindowPane = function(properties) {
-    this.modalSupport = this.floatingPane = this.pane = true;
-    EchoApp.Component.call(this, properties);
-    this.componentType = "WindowPane";
-};
+EchoApp.WindowPane = EchoCore.extend(EchoApp.Component, {
 
-EchoApp.WindowPane.prototype = EchoCore.derive(EchoApp.Component);
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("WindowPane", this);
+    },
 
-/**
- * Programmatically perform a window closing operation.
- */
-EchoApp.WindowPane.prototype.doWindowClosing = function() {
-    var e = new EchoCore.Event("close", this);
-    this.fireEvent(e);
-};
+    global: {
+        DEFAULT_BORDER: new EchoApp.FillImageBorder("#4f4faf", new EchoApp.Insets("20px"), new EchoApp.Insets("3px")),
+        DEFAULT_BACKGROUND: new EchoApp.Color("#ffffff"),
+        DEFAULT_FOREGROUND: new EchoApp.Color("#000000"),
+        DEFAULT_CLOSE_ICON_INSETS: new EchoApp.Insets("4px"),
+        DEFAULT_HEIGHT: new EchoApp.Extent("200px"),
+        DEFAULT_MINIMUM_WIDTH: new EchoApp.Extent("100px"),
+        DEFAULT_MINIMUM_HEIGHT: new EchoApp.Extent("100px"),
+        DEFAULT_TITLE_HEIGHT: new EchoApp.Extent("30px"),
+        DEFAULT_WIDTH: new EchoApp.Extent("400px")
+    },
 
-EchoApp.WindowPane.DEFAULT_BORDER = new EchoApp.FillImageBorder("#4f4faf", 
-        new EchoApp.Insets("20px"), new EchoApp.Insets("3px"));
-EchoApp.WindowPane.DEFAULT_BACKGROUND = new EchoApp.Color("#ffffff");
-EchoApp.WindowPane.DEFAULT_FOREGROUND = new EchoApp.Color("#000000");
-EchoApp.WindowPane.DEFAULT_HEIGHT = new EchoApp.Extent("200px");
-EchoApp.WindowPane.DEFAULT_TITLE_HEIGHT = new EchoApp.Extent("30px");
-EchoApp.WindowPane.DEFAULT_WIDTH = new EchoApp.Extent("400px");
-EchoApp.WindowPane.DEFAULT_MINIMUM_WIDTH = new EchoApp.Extent("100px");
-EchoApp.WindowPane.DEFAULT_MINIMUM_HEIGHT = new EchoApp.Extent("100px");
-EchoApp.WindowPane.DEFAULT_CLOSE_ICON_INSETS = new EchoApp.Insets("4px");
+    componentType: "WindowPane",
+    modalSupport: true,
+    floatingPane: true,
+    pane: true,
 
-// Register component types.
-
-EchoApp.ComponentFactory.registerType("Button", EchoApp.Button);
-EchoApp.ComponentFactory.registerType("CheckBox", EchoApp.CheckBox);
-EchoApp.ComponentFactory.registerType("Column", EchoApp.Column);
-EchoApp.ComponentFactory.registerType("ContentPane", EchoApp.ContentPane);
-EchoApp.ComponentFactory.registerType("Label", EchoApp.Label);
-EchoApp.ComponentFactory.registerType("ListBox", EchoApp.ListBox);
-EchoApp.ComponentFactory.registerType("PasswordField", EchoApp.PasswordField);
-EchoApp.ComponentFactory.registerType("RadioButton", EchoApp.RadioButton);
-EchoApp.ComponentFactory.registerType("Row", EchoApp.Row);
-EchoApp.ComponentFactory.registerType("SelectField", EchoApp.SelectField);
-EchoApp.ComponentFactory.registerType("SplitPane", EchoApp.SplitPane);
-EchoApp.ComponentFactory.registerType("TextArea", EchoApp.TextArea);
-EchoApp.ComponentFactory.registerType("TextField", EchoApp.TextField);
-EchoApp.ComponentFactory.registerType("ToggleButton", EchoApp.ToggleButton);
-EchoApp.ComponentFactory.registerType("WindowPane", EchoApp.WindowPane);
+    /**
+     * Creates a new WindowPane.
+     * 
+     * @constructor
+     * @base EchoApp.Component
+     */
+    initialize: function(properties) {
+        EchoApp.Component.prototype.initialize.call(this, properties);
+    },
+    
+    /**
+     * Programmatically perform a window closing operation.
+     */
+    doWindowClosing: function() {
+        var e = new EchoCore.Event("close", this);
+        this.fireEvent(e);
+    }
+});

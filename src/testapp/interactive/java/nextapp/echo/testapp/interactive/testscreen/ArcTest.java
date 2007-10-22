@@ -151,8 +151,6 @@ public class ArcTest extends SplitPane {
         }
     }
     
-    
-    
     private Column testColumn;
     private ArcTestComponent arcTestComponent;
     private ArcTestContainer arcTestContainer;

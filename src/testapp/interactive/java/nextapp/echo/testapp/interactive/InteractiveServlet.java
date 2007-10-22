@@ -42,7 +42,7 @@ public class InteractiveServlet extends WebContainerServlet {
     /**
      * Enable/disable this flag to test custom wait indicator.
      */
-    private static final boolean USE_CUSTOM_WAIT_INDICATOR = false;
+    private static final boolean USE_CUSTOM_WAIT_INDICATOR = true;
 
     private static final Service CUSTOM_WAIT_INDICATOR = JavaScriptService.forResource("CustomWaitIndicator", 
             "/nextapp/echo/testapp/interactive/resource/js/CustomWaitIndicator.js");

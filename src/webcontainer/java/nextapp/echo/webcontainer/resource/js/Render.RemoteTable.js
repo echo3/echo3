@@ -3,411 +3,417 @@
 /**
  * Component rendering peer: RemoteTable
  */
-EchoAppRender.RemoteTableSync = function() {
-    this.selectionModel = null;
-    this.lastSelectedIndex = null;
-};
-
-EchoAppRender.RemoteTableSync.prototype = EchoCore.derive(EchoRender.ComponentSync);
-
-EchoAppRender.RemoteTableSync._HEADER_ROW = -1;
-
-EchoAppRender.RemoteTableSync._supportedPartialProperties = new Array("selection");
-
-EchoAppRender.RemoteTableSync.prototype.renderAdd = function(update, parentElement) {
-    this._columnCount = this.component.getRenderProperty("columnCount");
-    this._rowCount = this.component.getRenderProperty("rowCount");
-    this._selectionEnabled = this.component.getRenderProperty("selectionEnabled");
-    this._rolloverEnabled = this.component.getRenderProperty("rolloverEnabled");
+EchoAppRender.RemoteTableSync = EchoCore.extend(EchoRender.ComponentSync, {
     
-    this._defaultInsets = this.component.getRenderProperty("insets");
-    if (!this._defaultInsets) {
-        this._defaultInsets = new EchoApp.Insets(0);
-    }
-    this._defaultCellPadding = EchoAppRender.Insets.toCssValue(this._defaultInsets);
+    global: {
     
-    this._headerVisible = this.component.getProperty("headerVisible");
-
-    if (this._selectionEnabled) {
-        this.selectionModel = new EchoApp.ListSelectionModel(parseInt(this.component.getProperty("selectionMode")));
-    }
+        _HEADER_ROW: -1,
+        
+        _supportedPartialProperties: ["selection"]
+    },
     
-    this._tableElement = document.createElement("table");
+    globalInitialize: function() {
+        EchoRender.registerPeer("RemoteTable", this);
+    },
     
-    var width = this.component.getRenderProperty("width");
-    if (width && EchoWebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.units == "%") {
-        this._renderPercentWidthByMeasure = width.value;
-        width = null;
-    }
-
-    this._tableElement.style.borderCollapse = "collapse";
-    if (this._selectionEnabled) {
-        this._tableElement.style.cursor = "pointer";
-    }
-    EchoAppRender.Color.renderFB(this.component, this._tableElement);
-    EchoAppRender.Font.renderDefault(this.component, this._tableElement);
-    var border = this.component.getRenderProperty("border");
-    if (border) {
-        EchoAppRender.Border.render(border, this._tableElement);
-        if (border.size && !EchoWebCore.Environment.QUIRK_CSS_BORDER_COLLAPSE_INSIDE) {
-            this._tableElement.style.margin = (EchoAppRender.Extent.toPixels(border.size, false) / 2) + "px";
+    initialize: function() {
+        this.selectionModel = null;
+        this.lastSelectedIndex = null;
+    },
+    
+    renderAdd: function(update, parentElement) {
+        this._columnCount = this.component.getRenderProperty("columnCount");
+        this._rowCount = this.component.getRenderProperty("rowCount");
+        this._selectionEnabled = this.component.getRenderProperty("selectionEnabled");
+        this._rolloverEnabled = this.component.getRenderProperty("rolloverEnabled");
+        
+        this._defaultInsets = this.component.getRenderProperty("insets");
+        if (!this._defaultInsets) {
+            this._defaultInsets = new EchoApp.Insets(0);
         }
-    }
-    if (width) {
-        this._tableElement.style.width = width;
-    }
+        this._defaultCellPadding = EchoAppRender.Insets.toCssValue(this._defaultInsets);
+        
+        this._headerVisible = this.component.getProperty("headerVisible");
     
-    this._tbodyElement = document.createElement("tbody");
-    
-    if (this.component.getRenderProperty("columnWidth")) {
-        // If any column widths are set, render colgroup.
-        var columnPixelAdjustment;
-        if (EchoWebCore.Environment.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING) {
-            var pixelInsets = EchoAppRender.Insets.toPixels(this._defaultInsets);
-            columnPixelAdjustment = pixelInsets.left + pixelInsets.right;
+        if (this._selectionEnabled) {
+            this.selectionModel = new EchoApp.ListSelectionModel(parseInt(this.component.getProperty("selectionMode")));
         }
         
-        var colGroupElement = document.createElement("colgroup");
-        var renderRelative = !EchoWebCore.Environment.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS;
-        for (var i = 0; i < this._columnCount; ++i) {
-            var colElement = document.createElement("col");
-            var width = this.component.getRenderIndexedProperty("columnWidth", i); 
-            if (width != null) {
-                if (width.units == "%") {
-                    colElement.width = width.value + (renderRelative ? "*" : "%");
-                } else {
-                    var columnPixels = EchoWebCore.Measure.extentToPixels(width.value, width.units, true);
-                    if (columnPixelAdjustment) {
-                        colElement.width = columnPixels - columnPixelAdjustment;
+        this._tableElement = document.createElement("table");
+        
+        var width = this.component.getRenderProperty("width");
+        if (width && EchoWebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.units == "%") {
+            this._renderPercentWidthByMeasure = width.value;
+            width = null;
+        }
+    
+        this._tableElement.style.borderCollapse = "collapse";
+        if (this._selectionEnabled) {
+            this._tableElement.style.cursor = "pointer";
+        }
+        EchoAppRender.Color.renderFB(this.component, this._tableElement);
+        EchoAppRender.Font.renderDefault(this.component, this._tableElement);
+        var border = this.component.getRenderProperty("border");
+        if (border) {
+            EchoAppRender.Border.render(border, this._tableElement);
+            if (border.size && !EchoWebCore.Environment.QUIRK_CSS_BORDER_COLLAPSE_INSIDE) {
+                this._tableElement.style.margin = (EchoAppRender.Extent.toPixels(border.size, false) / 2) + "px";
+            }
+        }
+        if (width) {
+            this._tableElement.style.width = width;
+        }
+        
+        this._tbodyElement = document.createElement("tbody");
+        
+        if (this.component.getRenderProperty("columnWidth")) {
+            // If any column widths are set, render colgroup.
+            var columnPixelAdjustment;
+            if (EchoWebCore.Environment.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING) {
+                var pixelInsets = EchoAppRender.Insets.toPixels(this._defaultInsets);
+                columnPixelAdjustment = pixelInsets.left + pixelInsets.right;
+            }
+            
+            var colGroupElement = document.createElement("colgroup");
+            var renderRelative = !EchoWebCore.Environment.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS;
+            for (var i = 0; i < this._columnCount; ++i) {
+                var colElement = document.createElement("col");
+                var width = this.component.getRenderIndexedProperty("columnWidth", i); 
+                if (width != null) {
+                    if (width.units == "%") {
+                        colElement.width = width.value + (renderRelative ? "*" : "%");
                     } else {
-                        colElement.width = columnPixels;
+                        var columnPixels = EchoWebCore.Measure.extentToPixels(width.value, width.units, true);
+                        if (columnPixelAdjustment) {
+                            colElement.width = columnPixels - columnPixelAdjustment;
+                        } else {
+                            colElement.width = columnPixels;
+                        }
                     }
                 }
+                colGroupElement.appendChild(colElement);
             }
-            colGroupElement.appendChild(colElement);
+            this._tableElement.appendChild(colGroupElement);
         }
-        this._tableElement.appendChild(colGroupElement);
-    }
-    
-    this._tableElement.appendChild(this._tbodyElement);
-    
-    parentElement.appendChild(this._tableElement);
-    
-    var trPrototype = this._createRowPrototype();
-    
-    if (this._headerVisible) {
-        this._tbodyElement.appendChild(this._renderRow(update, EchoAppRender.RemoteTableSync._HEADER_ROW, trPrototype));
-    }
-    for (var rowIndex = 0; rowIndex < this._rowCount; rowIndex++) {
-        this._tbodyElement.appendChild(this._renderRow(update, rowIndex, trPrototype));
-    }
-    
-    if (this._selectionEnabled) {
-        this._setSelectedFromProperty(this.component.getProperty("selection"), false);
-    }
-    
-    this._addEventListeners();
-};
-
-/**
- * Renders an appropriate style for a row (i.e. selected or deselected).
- *
- * @param rowIndex {Number} the index of the row
- */
-EchoAppRender.RemoteTableSync.prototype._renderRowStyle = function(rowIndex) {
-    var tableRowIndex = rowIndex + (this._headerVisible ? 1 : 0);
-    if (tableRowIndex >= this._tbodyElement.childNodes.length) {
-        return;
-    }
-    var selected = this._selectionEnabled && this.selectionModel.isSelectedIndex(rowIndex);
-    var trElement = this._tbodyElement.childNodes[tableRowIndex];
-    
-    var tdElement = trElement.firstChild;
-    while (tdElement) {
-        if (selected) {
-            // FIXME
-            //EchoCssUtil.restoreOriginalStyle(cell);
-            //EchoCssUtil.applyTemporaryStyle(cell, this.selectionStyle);
-            EchoAppRender.Font.renderComponentProperty(this.component, "selectionFont", null, tdElement);
-            EchoAppRender.Color.renderComponentProperty(this.component, "selectionForeground", null, tdElement, "color");
-            EchoAppRender.Color.renderComponentProperty(this.component, "selectionBackground", null, tdElement, "background");
-            EchoAppRender.FillImage.renderComponentProperty(this.component, "selectionBackgroundImage", null, tdElement);
-        } else {
-            // FIXME
-            //EchoCssUtil.restoreOriginalStyle(cell);
-            tdElement.style.color = "";
-            tdElement.style.backgroundColor = "";
-            tdElement.style.backgroundImage = "";
-        }
-        tdElement = tdElement.nextSibling;
-    }
-};
-
-/**
- * Renders a single row.
- *
- * @param update the update
- * @param rowIndex {Number} the index of the row
- * @param trPrototype {Element} a TR element containing the appropriate number of TD elements with default
- *        styles applied (This is created by _renderRowStyle().  Providing this attribute is optional,
- *        and is specified for performance reasons.  If omitted one is created automatically.)
- */
-EchoAppRender.RemoteTableSync.prototype._renderRow = function(update, rowIndex, trPrototype) {
-    var trElement = trPrototype ? trPrototype.cloneNode(true) : this._createRowPrototype();
-    
-    var tdElement = trElement.firstChild;
-    var columnIndex = 0;
-    
-    while (columnIndex < this._columnCount) {
-        var child = this.component.getComponent((rowIndex + (this._headerVisible ? 1 : 0)) * this._columnCount + columnIndex);
-        var layoutData = child.getRenderProperty("layoutData");
         
-        if (layoutData) {
-            EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
-            EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
-            EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
-            EchoAppRender.Insets.renderComponentProperty(layoutData, "insets", this._defaultInsets, tdElement, "padding");
-        }
-
-        EchoRender.renderComponentAdd(update, child, tdElement);
+        this._tableElement.appendChild(this._tbodyElement);
         
-        ++columnIndex;
-        tdElement = tdElement.nextSibling;
-    }
-    return trElement;
-};
-
-EchoAppRender.RemoteTableSync.prototype._createRowPrototype = function() {
-    var trElement = document.createElement("tr");
-
-    var tdPrototype = document.createElement("td");
-    EchoAppRender.Border.render(this.component.getRenderProperty("border"), tdPrototype);
-    tdPrototype.style.overflow = "hidden";
-    tdPrototype.style.padding = this._defaultCellPadding;
-
-    for (var columnIndex = 0; columnIndex < this._columnCount; columnIndex++) {
-        var tdElement = tdPrototype.cloneNode(false);
-        trElement.appendChild(tdElement);
-    }
-    return trElement;
-};
-
-EchoAppRender.RemoteTableSync.prototype.renderDisplay = function() {
-    if (this._renderPercentWidthByMeasure) {
-        this._tableElement.style.width = "";
-        var percentWidth = (this._tableElement.parentNode.offsetWidth * this._renderPercentWidthByMeasure) / 100;
-        this._tableElement.style.width = percentWidth + "px";
-    }
-};
-
-EchoAppRender.RemoteTableSync.prototype.renderUpdate = function(update) {
-	if (!update.hasUpdatedLayoutDataChildren() && !update.getAddedChildren() && !update.getRemovedChildren()) {
-		if (EchoCore.Arrays.containsAll(EchoAppRender.RemoteTableSync._supportedPartialProperties, update.getUpdatedPropertyNames(), true)) {
-		    // partial update
-			var selectionUpdate = update.getUpdatedProperty("selection");
-			if (selectionUpdate) {
-				this._setSelectedFromProperty(selectionUpdate.newValue, true);
-			}
-		    return false;
-		}
-	}
-    // full update
-    var element = this._tableElement;
-    var containerElement = element.parentNode;
-    EchoRender.renderComponentDispose(update, update.parent);
-    containerElement.removeChild(element);
-    this.renderAdd(update, containerElement);
-    return true;
-};
-
-EchoAppRender.RemoteTableSync.prototype.renderDispose = function(update) {
-    if (this._rolloverEnabled || this._selectionEnabled) {
-        var trElement = this._tbodyElement.firstChild;
+        parentElement.appendChild(this._tableElement);
+        
+        var trPrototype = this._createRowPrototype();
+        
         if (this._headerVisible) {
-            trElement = trElement.nextSibling;
+            this._tbodyElement.appendChild(this._renderRow(update, EchoAppRender.RemoteTableSync._HEADER_ROW, trPrototype));
         }
-        while (trElement) {
-            EchoWebCore.EventProcessor.removeAll(trElement);
-            trElement = trElement.nextSibling;
+        for (var rowIndex = 0; rowIndex < this._rowCount; rowIndex++) {
+            this._tbodyElement.appendChild(this._renderRow(update, rowIndex, trPrototype));
         }
-    }
-    this._tableElement = null;
-    this._tbodyElement = null;
-};
-
-EchoAppRender.RemoteTableSync.prototype._getRowIndex = function(element) {
-    var testElement = this._tbodyElement.firstChild;
-    var index = this._headerVisible ? -1 : 0;
-    while (testElement) {
-        if (testElement == element) {
-            return index;
+        
+        if (this._selectionEnabled) {
+            this._setSelectedFromProperty(this.component.getProperty("selection"), false);
         }
-        testElement = testElement.nextSibling;
-        ++index;
-    }
-    return -1;
-};
-
-/**
- * Sets the selection state based on the given selection property value.
- *
- * @param {String} value the value of the selection property
- * @param {Boolean} clearPrevious if the previous selection state should be overwritten
- */
-EchoAppRender.RemoteTableSync.prototype._setSelectedFromProperty = function(value, clearPrevious) {
-	if (value == this.selectionModel.getSelectionString()) {
-		return;
-	}
-	if (clearPrevious) {
-		this._clearSelected();
-	}
-    var selectedIndices = value.split(",");
-    for (var i = 0; i < selectedIndices.length; i++) {
-        if (selectedIndices[i] == "") {
-            continue;
-        }
-        this._setSelected(parseInt(selectedIndices[i]), true);
-    }
-};
-
-/**
- * Sets the selection state of a table row.
- *
- * @param {Number} rowIndex the index of the row
- * @param {Boolean} newValue the new selection state
- */
-EchoAppRender.RemoteTableSync.prototype._setSelected = function(rowIndex, newValue) {
-    this.selectionModel.setSelectedIndex(rowIndex, newValue);
-    this._renderRowStyle(rowIndex);
-};
-
-/**
- * Deselects all selected rows.
- */
-EchoAppRender.RemoteTableSync.prototype._clearSelected = function() {
-    for (var i = 0; i < this._rowCount; ++i) {
-        if (this.selectionModel.isSelectedIndex(i)) {
-            this._setSelected(i, false);
-        }
-    }
-};
-
-// action & event handling
-
-/**
- * Adds event listeners.
- */
-EchoAppRender.RemoteTableSync.prototype._addEventListeners = function() {
-    /*
-    if (!this.component.getRenderProperty("enabled")) {
-    	return;
-    }
-    */
+        
+        this._addEventListeners();
+    },
     
-    if (this._selectionEnabled || this._rolloverEnabled) {
-        if (this._rowCount == 0) {
+    /**
+     * Renders an appropriate style for a row (i.e. selected or deselected).
+     *
+     * @param rowIndex {Number} the index of the row
+     */
+    _renderRowStyle: function(rowIndex) {
+        var tableRowIndex = rowIndex + (this._headerVisible ? 1 : 0);
+        if (tableRowIndex >= this._tbodyElement.childNodes.length) {
             return;
         }
-        var mouseEnterLeaveSupport = EchoWebCore.Environment.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
-        var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
-        var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
-        var rowOffset = (this._headerVisible ? 1 : 0);
-        var rolloverEnterRef = new EchoCore.MethodRef(this, this._processRolloverEnter);
-        var rolloverExitRef = new EchoCore.MethodRef(this, this._processRolloverExit);
-        var clickRef = new EchoCore.MethodRef(this, this._processClick);
+        var selected = this._selectionEnabled && this.selectionModel.isSelectedIndex(rowIndex);
+        var trElement = this._tbodyElement.childNodes[tableRowIndex];
         
-        for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
-            var trElement = this._tableElement.rows[rowIndex + rowOffset];
-            if (this._rolloverEnabled) {
-                EchoWebCore.EventProcessor.add(trElement, enterEvent, rolloverEnterRef, false);
-                EchoWebCore.EventProcessor.add(trElement, exitEvent, rolloverExitRef, false);
+        var tdElement = trElement.firstChild;
+        while (tdElement) {
+            if (selected) {
+                // FIXME
+                //EchoCssUtil.restoreOriginalStyle(cell);
+                //EchoCssUtil.applyTemporaryStyle(cell, this.selectionStyle);
+                EchoAppRender.Font.renderComponentProperty(this.component, "selectionFont", null, tdElement);
+                EchoAppRender.Color.renderComponentProperty(this.component, "selectionForeground", null, tdElement, "color");
+                EchoAppRender.Color.renderComponentProperty(this.component, "selectionBackground", null, tdElement, "background");
+                EchoAppRender.FillImage.renderComponentProperty(this.component, "selectionBackgroundImage", null, tdElement);
+            } else {
+                // FIXME
+                //EchoCssUtil.restoreOriginalStyle(cell);
+                tdElement.style.color = "";
+                tdElement.style.backgroundColor = "";
+                tdElement.style.backgroundImage = "";
             }
-            if (this._selectionEnabled) {
-                EchoWebCore.EventProcessor.add(trElement, "click", clickRef, false);
-                EchoWebCore.EventProcessor.addSelectionDenialListener(trElement);
+            tdElement = tdElement.nextSibling;
+        }
+    },
+    
+    /**
+     * Renders a single row.
+     *
+     * @param update the update
+     * @param rowIndex {Number} the index of the row
+     * @param trPrototype {Element} a TR element containing the appropriate number of TD elements with default
+     *        styles applied (This is created by _renderRowStyle().  Providing this attribute is optional,
+     *        and is specified for performance reasons.  If omitted one is created automatically.)
+     */
+    _renderRow: function(update, rowIndex, trPrototype) {
+        var trElement = trPrototype ? trPrototype.cloneNode(true) : this._createRowPrototype();
+        
+        var tdElement = trElement.firstChild;
+        var columnIndex = 0;
+        
+        while (columnIndex < this._columnCount) {
+            var child = this.component.getComponent((rowIndex + (this._headerVisible ? 1 : 0)) * this._columnCount + columnIndex);
+            var layoutData = child.getRenderProperty("layoutData");
+            
+            if (layoutData) {
+                EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
+                EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
+                EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
+                EchoAppRender.Insets.renderComponentProperty(layoutData, "insets", this._defaultInsets, tdElement, "padding");
+            }
+    
+            EchoRender.renderComponentAdd(update, child, tdElement);
+            
+            ++columnIndex;
+            tdElement = tdElement.nextSibling;
+        }
+        return trElement;
+    },
+    
+    _createRowPrototype: function() {
+        var trElement = document.createElement("tr");
+    
+        var tdPrototype = document.createElement("td");
+        EchoAppRender.Border.render(this.component.getRenderProperty("border"), tdPrototype);
+        tdPrototype.style.overflow = "hidden";
+        tdPrototype.style.padding = this._defaultCellPadding;
+    
+        for (var columnIndex = 0; columnIndex < this._columnCount; columnIndex++) {
+            var tdElement = tdPrototype.cloneNode(false);
+            trElement.appendChild(tdElement);
+        }
+        return trElement;
+    },
+    
+    renderDisplay: function() {
+        if (this._renderPercentWidthByMeasure) {
+            this._tableElement.style.width = "";
+            var percentWidth = (this._tableElement.parentNode.offsetWidth * this._renderPercentWidthByMeasure) / 100;
+            this._tableElement.style.width = percentWidth + "px";
+        }
+    },
+    
+    renderUpdate: function(update) {
+    	if (!update.hasUpdatedLayoutDataChildren() && !update.getAddedChildren() && !update.getRemovedChildren()) {
+    		if (EchoCore.Arrays.containsAll(EchoAppRender.RemoteTableSync._supportedPartialProperties, update.getUpdatedPropertyNames(), true)) {
+    		    // partial update
+    			var selectionUpdate = update.getUpdatedProperty("selection");
+    			if (selectionUpdate) {
+    				this._setSelectedFromProperty(selectionUpdate.newValue, true);
+    			}
+    		    return false;
+    		}
+    	}
+        // full update
+        var element = this._tableElement;
+        var containerElement = element.parentNode;
+        EchoRender.renderComponentDispose(update, update.parent);
+        containerElement.removeChild(element);
+        this.renderAdd(update, containerElement);
+        return true;
+    },
+    
+    renderDispose: function(update) {
+        if (this._rolloverEnabled || this._selectionEnabled) {
+            var trElement = this._tbodyElement.firstChild;
+            if (this._headerVisible) {
+                trElement = trElement.nextSibling;
+            }
+            while (trElement) {
+                EchoWebCore.EventProcessor.removeAll(trElement);
+                trElement = trElement.nextSibling;
             }
         }
-    }    
-};
-
-EchoAppRender.RemoteTableSync.prototype._doAction = function() {
-    //FIXME fire from component.
-    this.component.fireEvent(new EchoCore.Event("action", this.component));
-};
-
-EchoAppRender.RemoteTableSync.prototype._processClick = function(e) {
-    if (!this.client.verifyInput(this.component)) {
-        return;
-    }
-    var trElement = e.registeredTarget;
-    var rowIndex = this._getRowIndex(trElement);
-    if (rowIndex == -1) {
-        return;
-    }
+        this._tableElement = null;
+        this._tbodyElement = null;
+    },
     
-    EchoWebCore.DOM.preventEventDefault(e);
-
-    if (this.selectionModel.getSelectionMode() == EchoApp.ListSelectionModel.SINGLE_SELECTION 
-            || !(e.shiftKey || e.ctrlKey || e.metaKey || e.altKey)) {
-        this._clearSelected();
-    }
-
-    if (!this.selectionModel.getSelectionMode() == EchoApp.ListSelectionModel.SINGLE_SELECTION 
-            && e.shiftKey && this.lastSelectedIndex != -1) {
-        var startIndex;
-        var endIndex;
-        if (this.lastSelectedIndex < rowIndex) {
-            startIndex = this.lastSelectedIndex;
-            endIndex = rowIndex;
+    _getRowIndex: function(element) {
+        var testElement = this._tbodyElement.firstChild;
+        var index = this._headerVisible ? -1 : 0;
+        while (testElement) {
+            if (testElement == element) {
+                return index;
+            }
+            testElement = testElement.nextSibling;
+            ++index;
+        }
+        return -1;
+    },
+    
+    /**
+     * Sets the selection state based on the given selection property value.
+     *
+     * @param {String} value the value of the selection property
+     * @param {Boolean} clearPrevious if the previous selection state should be overwritten
+     */
+    _setSelectedFromProperty: function(value, clearPrevious) {
+    	if (value == this.selectionModel.getSelectionString()) {
+    		return;
+    	}
+    	if (clearPrevious) {
+    		this._clearSelected();
+    	}
+        var selectedIndices = value.split(",");
+        for (var i = 0; i < selectedIndices.length; i++) {
+            if (selectedIndices[i] == "") {
+                continue;
+            }
+            this._setSelected(parseInt(selectedIndices[i]), true);
+        }
+    },
+    
+    /**
+     * Sets the selection state of a table row.
+     *
+     * @param {Number} rowIndex the index of the row
+     * @param {Boolean} newValue the new selection state
+     */
+    _setSelected: function(rowIndex, newValue) {
+        this.selectionModel.setSelectedIndex(rowIndex, newValue);
+        this._renderRowStyle(rowIndex);
+    },
+    
+    /**
+     * Deselects all selected rows.
+     */
+    _clearSelected: function() {
+        for (var i = 0; i < this._rowCount; ++i) {
+            if (this.selectionModel.isSelectedIndex(i)) {
+                this._setSelected(i, false);
+            }
+        }
+    },
+    
+    // action & event handling
+    
+    /**
+     * Adds event listeners.
+     */
+    _addEventListeners: function() {
+        /*
+        if (!this.component.getRenderProperty("enabled")) {
+        	return;
+        }
+        */
+        
+        if (this._selectionEnabled || this._rolloverEnabled) {
+            if (this._rowCount == 0) {
+                return;
+            }
+            var mouseEnterLeaveSupport = EchoWebCore.Environment.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
+            var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
+            var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
+            var rowOffset = (this._headerVisible ? 1 : 0);
+            var rolloverEnterRef = new EchoCore.MethodRef(this, this._processRolloverEnter);
+            var rolloverExitRef = new EchoCore.MethodRef(this, this._processRolloverExit);
+            var clickRef = new EchoCore.MethodRef(this, this._processClick);
+            
+            for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
+                var trElement = this._tableElement.rows[rowIndex + rowOffset];
+                if (this._rolloverEnabled) {
+                    EchoWebCore.EventProcessor.add(trElement, enterEvent, rolloverEnterRef, false);
+                    EchoWebCore.EventProcessor.add(trElement, exitEvent, rolloverExitRef, false);
+                }
+                if (this._selectionEnabled) {
+                    EchoWebCore.EventProcessor.add(trElement, "click", clickRef, false);
+                    EchoWebCore.EventProcessor.addSelectionDenialListener(trElement);
+                }
+            }
+        }    
+    },
+    
+    _doAction: function() {
+        //FIXME fire from component.
+        this.component.fireEvent(new EchoCore.Event("action", this.component));
+    },
+    
+    _processClick: function(e) {
+        if (!this.client.verifyInput(this.component)) {
+            return;
+        }
+        var trElement = e.registeredTarget;
+        var rowIndex = this._getRowIndex(trElement);
+        if (rowIndex == -1) {
+            return;
+        }
+        
+        EchoWebCore.DOM.preventEventDefault(e);
+    
+        if (this.selectionModel.getSelectionMode() == EchoApp.ListSelectionModel.SINGLE_SELECTION 
+                || !(e.shiftKey || e.ctrlKey || e.metaKey || e.altKey)) {
+            this._clearSelected();
+        }
+    
+        if (!this.selectionModel.getSelectionMode() == EchoApp.ListSelectionModel.SINGLE_SELECTION 
+                && e.shiftKey && this.lastSelectedIndex != -1) {
+            var startIndex;
+            var endIndex;
+            if (this.lastSelectedIndex < rowIndex) {
+                startIndex = this.lastSelectedIndex;
+                endIndex = rowIndex;
+            } else {
+                startIndex = rowIndex;
+                endIndex = this.lastSelectedIndex;
+            }
+            for (var i = startIndex; i <= endIndex; ++i) {
+                this._setSelected(i, true);
+            }
         } else {
-            startIndex = rowIndex;
-            endIndex = this.lastSelectedIndex;
+            this.lastSelectedIndex = rowIndex;
+            this._setSelected(rowIndex, !this.selectionModel.isSelectedIndex(rowIndex));
         }
-        for (var i = startIndex; i <= endIndex; ++i) {
-            this._setSelected(i, true);
+        
+        this.component.setProperty("selection", this.selectionModel.getSelectionString());
+        
+        this._doAction();
+    },
+    
+    _processRolloverEnter: function(e) {
+        if (!this.client.verifyInput(this.component)) {
+            return;
         }
-    } else {
-        this.lastSelectedIndex = rowIndex;
-        this._setSelected(rowIndex, !this.selectionModel.isSelectedIndex(rowIndex));
-    }
+        var trElement = e.registeredTarget;
+        var rowIndex = this._getRowIndex(trElement);
+        if (rowIndex == -1) {
+            return;
+        }
+        
+        for (var i = 0; i < trElement.cells.length; ++i) {
+            var cell = trElement.cells[i];
+            // FIXME
+            //EchoCssUtil.applyTemporaryStyle(cell, this.rolloverStyle);
+            EchoAppRender.Font.renderComponentProperty(this.component, "rolloverFont", null, cell);
+            EchoAppRender.Color.renderComponentProperty(this.component, "rolloverForeground", null, cell, "color");
+            EchoAppRender.Color.renderComponentProperty(this.component, "rolloverBackground", null, cell, "background");
+            EchoAppRender.FillImage.renderComponentProperty(this.component, "rolloverBackgroundImage", null, cell); 
+        }
+    },
     
-    this.component.setProperty("selection", this.selectionModel.getSelectionString());
+    _processRolloverExit: function(e) {
+        if (!this.client.verifyInput(this.component)) {
+            return;
+        }
+        var trElement = e.registeredTarget;
+        var rowIndex = this._getRowIndex(trElement);
+        if (rowIndex == -1) {
+            return;
+        }
     
-    this._doAction();
-};
-
-EchoAppRender.RemoteTableSync.prototype._processRolloverEnter = function(e) {
-    if (!this.client.verifyInput(this.component)) {
-        return;
+        this._renderRowStyle(rowIndex);
     }
-    var trElement = e.registeredTarget;
-    var rowIndex = this._getRowIndex(trElement);
-    if (rowIndex == -1) {
-        return;
-    }
-    
-    for (var i = 0; i < trElement.cells.length; ++i) {
-        var cell = trElement.cells[i];
-        // FIXME
-        //EchoCssUtil.applyTemporaryStyle(cell, this.rolloverStyle);
-        EchoAppRender.Font.renderComponentProperty(this.component, "rolloverFont", null, cell);
-        EchoAppRender.Color.renderComponentProperty(this.component, "rolloverForeground", null, cell, "color");
-        EchoAppRender.Color.renderComponentProperty(this.component, "rolloverBackground", null, cell, "background");
-        EchoAppRender.FillImage.renderComponentProperty(this.component, "rolloverBackgroundImage", null, cell); 
-    }
-};
-
-EchoAppRender.RemoteTableSync.prototype._processRolloverExit = function(e) {
-    if (!this.client.verifyInput(this.component)) {
-        return;
-    }
-    var trElement = e.registeredTarget;
-    var rowIndex = this._getRowIndex(trElement);
-    if (rowIndex == -1) {
-        return;
-    }
-
-    this._renderRowStyle(rowIndex);
-};
-
-EchoRender.registerPeer("RemoteTable", EchoAppRender.RemoteTableSync);
+});
