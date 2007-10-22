@@ -1,21 +1,4 @@
-/**
- * @class Remote List Box implementation.
- */
-EchoAppRender.RemoteListBox = EchoCore.extend(EchoApp.ListBox, {
-
-    globalInitialize: function() {
-        EchoApp.ComponentFactory.registerType("RemoteListBox", this);
-    },
-
-    componentType: "RemoteListBox",
-
-    /**
-     * Creates a new RemoteListBox.
-     * @param properties initial property values
-     */
-    initialize: function(properties) { 
-        EchoApp.ListBox.prototype.initialize.call(this, properties);
-    },
+EchoAppRender._ListComponentMixins = {
     
     getSelectionString: function() {
         var selection = this.getProperty("selection");
@@ -33,6 +16,40 @@ EchoAppRender.RemoteListBox = EchoCore.extend(EchoApp.ListBox, {
     updateListData: function(listData) {
         this.items = listData.items;
     }
+};
+
+EchoAppRender._ListComponentSyncMixins = {
+
+    storeProperty: function(clientMessage, propertyName) {
+        if (propertyName == "selection") {
+            clientMessage.storeProperty(this.component.renderId, propertyName, this.component.getSelectionString());
+            return true;
+        } else {
+            return false;
+        }
+    }
+};
+
+/**
+ * @class Remote List Box implementation.
+ */
+EchoAppRender.RemoteListBox = EchoCore.extend(EchoApp.ListBox, {
+
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("RemoteListBox", this);
+    },
+
+    componentType: "RemoteListBox",
+    
+    include: [ EchoAppRender._ListComponentMixins ],
+
+    /**
+     * Creates a new RemoteListBox.
+     * @param properties initial property values
+     */
+    initialize: function(properties) { 
+        EchoApp.ListBox.prototype.initialize.call(this, properties);
+    }
 });
 
 /**
@@ -43,21 +60,14 @@ EchoAppRender.RemoteListBoxSync = EchoCore.extend(EchoAppRender.ListBoxSync, {
     globalInitialize: function() {
         EchoRender.registerPeer("RemoteListBox", this);
     },
+    
+    include: [ EchoAppRender._ListComponentSyncMixins ],
 
     /**
      * Creates a new RemoteListBox synchronization peer instance.
      */
     initialize: function() {
         EchoAppRender.ListBoxSync.prototype.initialize.call(this);
-    },
-    
-    storeProperty: function(clientMessage, propertyName) {
-        if (propertyName == "selection") {
-            clientMessage.storeProperty(this.component.renderId, propertyName, this.component.getSelectionString());
-            return true;
-        } else {
-            return false;
-        }
     }
 });
 
@@ -74,27 +84,12 @@ EchoAppRender.RemoteSelectField = EchoCore.extend(EchoApp.SelectField, {
 
     componentType: "RemoteSelectField",
 
+    include: [ EchoAppRender._ListComponentMixins ],
+
     initialize: function(properties) {
         EchoApp.SelectField.prototype.initialize.call(this, properties);
         this.componentType = "RemoteSelectField";
     },
-    
-    getSelectionString: function() {
-        var selection = this.getProperty("selection");
-        if (selection) {
-            return selection.join(",");
-        } else {
-            return null;
-        }
-    },
-    
-    setSelectionString: function(selectionString) {
-        this.setProperty("selection", selectionString ? selectionString.split(",") : null);
-    },
-    
-    updateListData: function(listData) {
-         this.items = listData.items;
-    }
 });
 
 /**
@@ -107,17 +102,10 @@ EchoAppRender.RemoteSelectFieldSync = EchoCore.extend(EchoAppRender.SelectFieldS
         EchoRender.registerPeer("RemoteSelectField", this);;
     },
 
+    include: [ EchoAppRender._ListComponentSyncMixins ],
+
     initialize: function() {
         EchoAppRender.SelectFieldSync.prototype.initialize.call(this);
-    },
-    
-    storeProperty: function(clientMessage, propertyName) {
-        if (propertyName == "selection") {
-            clientMessage.storeProperty(this.component.renderId, propertyName, this.component.getSelectionString());
-            return true;
-        } else {
-            return false;
-        }
     }
 });
     

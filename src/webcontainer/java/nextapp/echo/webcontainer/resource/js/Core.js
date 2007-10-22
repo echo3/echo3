@@ -74,12 +74,33 @@ EchoCore = {
             delete definition.globalInitialize;
         }
         
+        // Add Mixins.
+        if (definition && definition.include) {
+            var mixins = definition.include.reverse();
+            EchoCore.mixin(objectFunction, mixins);
+            
+            // Clean up:
+            delete definition.include;
+        }
+        
         // Process instance properties and methods.
         if (definition) {
             EchoCore.inherit(objectFunction.prototype, definition);
         }
         
         return objectFunction;
+    },
+    
+    mixin: function(destination, mixins) {
+        for (var i = 0; i < mixins.length; ++i) {
+            for (var mixinProperty in mixins[i]) {
+                if (destination.prototype[mixinProperty]) {
+                    // Ignore mixin properties that already exist.
+                    continue;
+                }
+                destination.prototype[mixinProperty] = mixins[i][mixinProperty];
+            }
+        }
     },
     
     inherit: function(destination, source) {
