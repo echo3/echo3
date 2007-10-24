@@ -89,7 +89,7 @@ EchoAppRender.RemoteSelectField = EchoCore.extend(EchoApp.SelectField, {
     initialize: function(properties) {
         EchoApp.SelectField.prototype.initialize.call(this, properties);
         this.componentType = "RemoteSelectField";
-    },
+    }
 });
 
 /**
