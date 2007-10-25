@@ -6,7 +6,7 @@
  * <ul>
  *  <li>Provides "Method Reference" object to describe reference to a member function
  *    of a specific object instance (enabling invocation with "this pointer" set 
-*     appropriately.</li>
+ *    appropriately.</li>
  *  <li>Provides event/listener management framework.  Event listeners may be 
  *    "Method Reference" objects, thus allowing specific class instances to process events.</li>
  *  <li>Does not provide any web-specific functionality.</li>
@@ -55,6 +55,9 @@ EchoCore = {
             
             // Clear "extending" flag.
             delete EchoCore.extending;
+            
+            // Assign constructor correctly.
+            objectFunction.prototype.constructor = objectFunction;
         }
         
         // Process global (static) properties and methods defined in the 'global' object.
@@ -110,25 +113,6 @@ EchoCore = {
              var destinationName = sourceName.charAt(0) == "$" ? sourceName.substring(1) : sourceName;
              destination[destinationName] = source[sourceName];
         }
-    },
-    
-    /**
-     * @deprecated
-     * Creates a derived prototype instance.
-     * This method invokes the constructor of 'baseType' and subsequently removes
-     * and variables created by the constructor which are not present in the base 
-     * type prototype.
-     * 
-     * @param baseType the base type from which the new prototype should be derived
-     */
-    derive: function(baseType) {
-        var derivedPrototype = new baseType();
-        for (var x in derivedPrototype) {
-            if (baseType.prototype[x] == undefined) {
-                delete derivedPrototype[x];
-            }
-        }
-        return derivedPrototype;
     }
 };
 
