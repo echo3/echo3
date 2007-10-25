@@ -1,174 +1,196 @@
-ArcTest = function() { };
+ArcTest = { };
 
 /**
  * TestComponent component.
  */
-ArcTest.TestComponent = function(renderId) {
-    EchoApp.Component.call(this, renderId);
-    this.componentType = "ArcTestComponent";
-};
+ArcTest.TestComponent = EchoCore.extend(EchoApp.Component, {
 
-ArcTest.TestComponent.prototype = EchoCore.derive(EchoApp.Component);
+    componentType: "ArcTestComponent",
+    
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("ArcTestComponent", this);
+    },
+
+    initialize: function(properties) {
+        EchoApp.Component.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
  * TestContainer component.
  */
-ArcTest.TestContainer = function(renderId) {
-    EchoApp.Component.call(this, renderId);
-    this.componentType = "ArcTestContainer";
-};
+ArcTest.TestContainer = EchoCore.extend(EchoApp.Component, {
 
-ArcTest.TestContainer.prototype = EchoCore.derive(EchoApp.Component);
+    componentType: "ArcTestContainer",
+
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("ArcTestContainer", this);
+    },
+
+    initialize: function(properties) {
+        EchoApp.Component.prototype.initialize.call(this, properties);
+    }
+});
 
 /**
  * TestPane component.
  */
-ArcTest.TestPane = function(renderId) {
-    EchoApp.Component.call(this, renderId);
-    this.componentType = "ArcTestPane";
-};
+ArcTest.TestPane = EchoCore.extend(EchoApp.Component, {
 
-ArcTest.TestPane.prototype = EchoCore.derive(EchoApp.Component);
+    componentType: "ArcTestPane",
 
-ArcTest.ComponentSync = function() { };
+    globalInitialize: function() {
+        EchoApp.ComponentFactory.registerType("ArcTestPane", this);
+    },
+
+    initialize: function(properties) {
+        EchoApp.Component.prototype.initialize.call(this, properties);
+    }
+});
+
+ArcTest.ComponentSync = { };
 
 /**
  * Component rendering peer: TestComponent
  */
-ArcTest.ComponentSync.TestComponent = function() {
-};
+ArcTest.ComponentSync.TestComponent = EchoCore.extend(EchoArc.ComponentSync, {
 
-ArcTest.ComponentSync.TestComponent.prototype = EchoCore.derive(EchoArc.ComponentSync);
+    globalInitialize: function() {
+        EchoRender.registerPeer("ArcTestComponent", this);
+    },
 
-ArcTest.ComponentSync.TestComponent.prototype.createBaseComponent = function() {
-    var label = new EchoApp.Label();
-    label.setProperty("text", "This is a freeclient label: " + this.component.getRenderProperty("text"));
-    return label;
-};
+    initialize: function() { },
+
+    createBaseComponent: function() {
+        var label = new EchoApp.Label();
+        label.setProperty("text", "This is a freeclient label: " + this.component.getRenderProperty("text"));
+        return label;
+    }
+});
 
 /**
  * Component rendering peer: TestContainer
  */
-ArcTest.ComponentSync.TestContainer = function() {
-};
+ArcTest.ComponentSync.TestContainer = EchoCore.extend(EchoArc.ComponentSync, {
 
-ArcTest.ComponentSync.TestContainer.prototype = EchoCore.derive(EchoArc.ComponentSync);
+    globalInitialize: function() {
+        EchoRender.registerPeer("ArcTestContainer", this);
+    },
 
-ArcTest.ComponentSync.TestContainer.prototype.createBaseComponent = function() {
-    var contentPane = new EchoApp.ContentPane();
-    for (var i = 0; i < this.component.children.length; ++i) {
-        var windowPane = new EchoApp.WindowPane({
-            positionX: new EchoApp.Extent(120 * (i % 4)),
-            positionY: new EchoApp.Extent(120 * parseInt(i / 4)),
-            width: new EchoApp.Extent(100),
-            height: new EchoApp.Extent(100)
-        });
-        contentPane.add(windowPane);
-        
-        var childContainer = new EchoArc.ChildContainer({
-            component: this.component.children[i]
-        });
-        windowPane.add(childContainer);
+    initialize: function() { },
+    
+    createBaseComponent: function() {
+        var contentPane = new EchoApp.ContentPane();
+        for (var i = 0; i < this.component.children.length; ++i) {
+            var windowPane = new EchoApp.WindowPane({
+                positionX: new EchoApp.Extent(120 * (i % 4)),
+                positionY: new EchoApp.Extent(120 * parseInt(i / 4)),
+                width: new EchoApp.Extent(100),
+                height: new EchoApp.Extent(100)
+            });
+            contentPane.add(windowPane);
+            
+            var childContainer = new EchoArc.ChildContainer({
+                component: this.component.children[i]
+            });
+            windowPane.add(childContainer);
+        }
+        return contentPane;
+    },
+    
+    getDomainElement: function() {
+        return this._divElement;
+    },
+    
+    renderAdd: function(update, parentElement) {
+        EchoArc.ComponentSync.prototype.renderAdd.call(this, update, parentElement);
+        this._divElement = document.createElement("div");
+        this._divElement.style.cssText 
+                = "position:relative; width:100%; height:450px; background-color: #3f3f6f; border: 1px #3f3f6f outset";
+        parentElement.appendChild(this._divElement);
+    },
+    
+    renderDispose: function(update) {
+        EchoArc.ComponentSync.prototype.renderDispose.call(this, update);
+        this._divElement = null;
     }
-    return contentPane;
-};
-
-ArcTest.ComponentSync.TestContainer.prototype.getDomainElement = function() {
-    return this._divElement;
-};
-
-ArcTest.ComponentSync.TestContainer.prototype.renderAdd = function(update, parentElement) {
-    EchoArc.ComponentSync.prototype.renderAdd.call(this, update, parentElement);
-    this._divElement = document.createElement("div");
-    this._divElement.style.cssText 
-            = "position:relative; width:100%; height:450px; background-color: #3f3f6f; border: 1px #3f3f6f outset";
-    parentElement.appendChild(this._divElement);
-};
-
-ArcTest.ComponentSync.TestContainer.prototype.renderDispose = function(update) {
-    EchoArc.ComponentSync.prototype.renderDispose.call(this, update);
-    this._divElement = null;
-};
+});
 
 /**
  * Component rendering peer: TestPane
  */
-ArcTest.ComponentSync.TestPane = function() {
-    this._addedLabelCount = 0;
-};
+ArcTest.ComponentSync.TestPane = EchoCore.extend(EchoArc.ComponentSync, {
 
-ArcTest.ComponentSync.TestPane.prototype = EchoCore.derive(EchoArc.ComponentSync);
+    globalInitialize: function() {
+        EchoRender.registerPeer("ArcTestPane", this);
+    },
 
-ArcTest.ComponentSync.TestPane.prototype.createBaseComponent = function() {
-    var contentPane = new EchoApp.ContentPane();
+    initialize: function() {
+        this._addedLabelCount = 0;
+    },
+
+    createBaseComponent: function() {
+        var contentPane = new EchoApp.ContentPane();
+        
+        var windowPane = new EchoApp.WindowPane();
+        windowPane.setProperty("title", "A FreeClient WindowPane");
+        contentPane.add(windowPane);
+        
+        var mainColumn = new EchoApp.Column();
+        mainColumn.setProperty("cellSpacing", new EchoApp.Extent("5px"));
+        mainColumn.setProperty("insets", new EchoApp.Insets("10px"));
+        windowPane.add(mainColumn);
+        
+        var controlsRow = new EchoApp.Row();
+        controlsRow.setProperty("cellSpacing", new EchoApp.Extent("10px"));
+        mainColumn.add(controlsRow);
+        
+        var addButton = new EchoApp.Button();
+        addButton.setProperty("text", "Add Label");
+        addButton.setProperty("background", new EchoApp.Color("#00ff00"));
+        addButton.addListener("action", new EchoCore.MethodRef(this, this._processAddButton));
+        controlsRow.add(addButton);
     
-    var windowPane = new EchoApp.WindowPane();
-    windowPane.setProperty("title", "A FreeClient WindowPane");
-    contentPane.add(windowPane);
+        var removeButton = new EchoApp.Button();
+        removeButton.setProperty("text", "Remove Label");
+        removeButton.setProperty("background", new EchoApp.Color("#ff0000"));
+        removeButton.addListener("action", new EchoCore.MethodRef(this, this._processRemoveButton));
+        controlsRow.add(removeButton);
+        
+        this._testColumn = new EchoApp.Column();
+        mainColumn.add(this._testColumn);
     
-    var mainColumn = new EchoApp.Column();
-    mainColumn.setProperty("cellSpacing", new EchoApp.Extent("5px"));
-    mainColumn.setProperty("insets", new EchoApp.Insets("10px"));
-    windowPane.add(mainColumn);
+        return contentPane;
+    },
     
-    var controlsRow = new EchoApp.Row();
-    controlsRow.setProperty("cellSpacing", new EchoApp.Extent("10px"));
-    mainColumn.add(controlsRow);
+    getDomainElement:  function() {
+        return this._divElement;
+    },
     
-    var addButton = new EchoApp.Button();
-    addButton.setProperty("text", "Add Label");
-    addButton.setProperty("background", new EchoApp.Color("#00ff00"));
-    addButton.addListener("action", new EchoCore.MethodRef(this, this._processAddButton));
-    controlsRow.add(addButton);
-
-    var removeButton = new EchoApp.Button();
-    removeButton.setProperty("text", "Remove Label");
-    removeButton.setProperty("background", new EchoApp.Color("#ff0000"));
-    removeButton.addListener("action", new EchoCore.MethodRef(this, this._processRemoveButton));
-    controlsRow.add(removeButton);
+    _processAddButton: function(e) {
+        var label = new EchoApp.Label();
+        label.setProperty("text", "Added Label " + ++this._addedLabelCount);
+        this._testColumn.add(label);
+    },
     
-    this._testColumn = new EchoApp.Column();
-    mainColumn.add(this._testColumn);
-
-    return contentPane;
-};
-
-ArcTest.ComponentSync.TestPane.prototype.getDomainElement = function() {
-    return this._divElement;
-};
-
-ArcTest.ComponentSync.TestPane.prototype._processAddButton = function(e) {
-    var label = new EchoApp.Label();
-    label.setProperty("text", "Added Label " + ++this._addedLabelCount);
-    this._testColumn.add(label);
-};
-
-ArcTest.ComponentSync.TestPane.prototype._processRemoveButton = function(e) {
-    var count = this._testColumn.getComponentCount();
-    if (count > 0) {
-        this._testColumn.remove(count - 1);
+    _processRemoveButton: function(e) {
+        var count = this._testColumn.getComponentCount();
+        if (count > 0) {
+            this._testColumn.remove(count - 1);
+        }
+    },
+    
+    renderAdd: function(update, parentElement) {
+        EchoArc.ComponentSync.prototype.renderAdd.call(this, update, parentElement);
+        this._divElement = document.createElement("div");
+        this._divElement.style.cssText 
+                = "position:relative; width:100%; height:450px; background-color: #3f3f6f; border: 1px #3f3f6f outset";
+        parentElement.appendChild(this._divElement);
+    },
+    
+    renderDispose: function(update) {
+        EchoArc.ComponentSync.prototype.renderDispose.call(this, update);
+        this._testColumn = null;
+        this._divElement = null;
     }
-};
-
-ArcTest.ComponentSync.TestPane.prototype.renderAdd = function(update, parentElement) {
-    EchoArc.ComponentSync.prototype.renderAdd.call(this, update, parentElement);
-    this._divElement = document.createElement("div");
-    this._divElement.style.cssText 
-            = "position:relative; width:100%; height:450px; background-color: #3f3f6f; border: 1px #3f3f6f outset";
-    parentElement.appendChild(this._divElement);
-};
-
-ArcTest.ComponentSync.TestPane.prototype.renderDispose = function(update) {
-    EchoArc.ComponentSync.prototype.renderDispose.call(this, update);
-    this._testColumn = null;
-    this._divElement = null;
-};
-
-EchoApp.ComponentFactory.registerType("ArcTestComponent", ArcTest.TestComponent);
-EchoRender.registerPeer("ArcTestComponent", ArcTest.ComponentSync.TestComponent);
-
-EchoApp.ComponentFactory.registerType("ArcTestContainer", ArcTest.TestContainer);
-EchoRender.registerPeer("ArcTestContainer", ArcTest.ComponentSync.TestContainer);
-
-EchoApp.ComponentFactory.registerType("ArcTestPane", ArcTest.TestPane);
-EchoRender.registerPeer("ArcTestPane", ArcTest.ComponentSync.TestPane);
+});

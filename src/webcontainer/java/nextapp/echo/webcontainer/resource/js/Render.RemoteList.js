@@ -167,4 +167,3 @@ EchoAppRender.RemoteListDataTranslator = {
 };
     
 EchoSerial.addPropertyTranslator("RemoteListData", EchoAppRender.RemoteListDataTranslator);
-    
