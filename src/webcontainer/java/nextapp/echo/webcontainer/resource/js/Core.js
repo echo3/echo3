@@ -36,12 +36,23 @@ EchoCore = {
         var definition = arguments.length == 1 ? arguments[0] : arguments[1];
         
         // Create new object function which will invoke 'initialize' pseudo-constructor method of object.
-        var objectFunction = function() {
-            if (!EchoCore.extending) {
-                // Only invoke initialize() (constructor replacement method)
-                // when EchoCore.extending flag is not set.  EchoCore.extending flag
-                // will be set temporarily any time an object prototype is being created.
-                this.initialize.apply(this, arguments);
+        var objectFunction;
+        
+        if (definition && definition.virtual) {
+            objectFunction = function() {
+                if (!EchoCore.extending) {
+                    throw new Error("Cannot instantiate abstract class.");
+                }
+            }
+        } else {
+            objectFunction = function() {
+    
+                if (!EchoCore.extending) {
+                    // Only invoke initialize() (constructor replacement method)
+                    // when EchoCore.extending flag is not set.  EchoCore.extending flag
+                    // will be set temporarily any time an object prototype is being created.
+                    this.initialize.apply(this, arguments);
+                }
             }
         }
         
@@ -58,6 +69,9 @@ EchoCore = {
             
             // Assign constructor correctly.
             objectFunction.prototype.constructor = objectFunction;
+            
+            // Store base class.
+            objectFunction.base = base;
         }
         
         // Process global (static) properties and methods defined in the 'global' object.
@@ -86,9 +100,24 @@ EchoCore = {
             delete definition.include;
         }
         
+        // Add Abstract Methods.
+        if (definition && definition.virtual) {
+            // Note that 'objectFunction.virtual' now evaluates as true,
+            // indicating the object is abstract.
+            objectFunction.virtual = definition.virtual;
+
+            // Clean up:
+            delete definition.virtual;
+        }
+        
         // Process instance properties and methods.
         if (definition) {
             EchoCore.inherit(objectFunction.prototype, definition);
+        }
+        
+        // If class is concrete, verify all abstract methods are provided.
+        if (!objectFunction.virtual) {
+            this._verifyVirtualImpl(objectFunction);
         }
         
         return objectFunction;
@@ -113,8 +142,132 @@ EchoCore = {
              var destinationName = sourceName.charAt(0) == "$" ? sourceName.substring(1) : sourceName;
              destination[destinationName] = source[sourceName];
         }
+    },
+    
+    _verifyVirtualImpl: function(objectFunction, constructor) {
+        if (!constructor) {
+            if (objectFunction.base) {
+                constructor = objectFunction.base;
+            } else {
+                return;
+            }
+        }
+
+        if (constructor.virtual && constructor.virtual instanceof Object) {
+            for (var name in constructor.virtual) {
+                if (!objectFunction.prototype[name]) {
+                    throw new Error("Cannot build concrete implementation due to missing abstract method: " + name); 
+                }
+            }
+        }
+        
+        if (constructor.base && constructor.base.virtual) {
+            EchoCore._verifyVirtualImpl(objectFunction, constructor.base);
+        }
     }
 };
+
+/** 
+ * @class 
+ * Namespace for debugging related utilities.
+ */
+EchoCore.Debug = { 
+
+    /**
+     * The DOM element to which console output should be written.
+     * @type HTMLElement
+     */
+    consoleElement: null,
+    
+    /**
+    * Flag indicating whether console output should be displayed as alerts.
+    * Enabling is generally not recommended.
+    * @type Boolean
+    */
+    useAlertDialog: false,
+    
+    /**
+     * Writes a message to the debug console.
+     * 
+     * @param {String} text the message
+     */
+    consoleWrite: function(text) {
+        if (EchoCore.Debug.consoleElement) {
+            var entryElement = document.createElement("div");
+            entryElement.appendChild(document.createTextNode(text));
+            if (EchoCore.Debug.consoleElement.childNodes.length == 0) {
+                EchoCore.Debug.consoleElement.appendChild(entryElement);
+            } else {
+                EchoCore.Debug.consoleElement.insertBefore(entryElement, EchoCore.Debug.consoleElement.firstChild);
+            }
+        } else if (EchoCore.Debug.useAlertDialog) {
+            alert("DEBUG:" + text);
+        }
+    },
+    
+    /**
+     * Creates a string representation of the state of an object's instance variables.
+     *
+     * @param object the object to convert to a string
+     * @return the string
+     * @type String
+     */
+    toString: function(object) {
+        var s = "";
+        for (var x in object) {
+            if (typeof object[x] != "function") { 
+                s += x + ":" + object[x] + "\n";
+            }
+        }
+        return s;
+    }
+};
+
+/**
+ * @class Provides a tool for measuring performance of the Echo3 client engine.
+ */
+EchoCore.Debug.Timer = EchoCore.extend({
+    
+    /**
+     * Creates a new debug timer.
+     * 
+     * @constructor
+     */
+    initialize: function() {
+        this._times = new Array();
+        this._labels = new Array();
+        this._times.push(new Date().getTime());
+        this._labels.push("Start");
+    },
+    
+    /**
+     * Marks the time required to complete a task.  This method should be invoked
+     * when a task is completed with the 'label' specifying a description of the task.
+     * 
+     * @param {String} label a description of the completed task.
+     */
+    mark: function(label) {
+        this._times.push(new Date().getTime());
+        this._labels.push(label);
+    },
+    
+    /**
+     * Returns a String representation of the timer results, showing how long
+     * each task required to complete (and included a total time).
+     * 
+     * @return the timer results
+     * @type String
+     */
+    $toString: function() {
+        var out = "";
+        for (var i = 1; i < this._times.length; ++i) {
+            var time = this._times[i] - this._times[i - 1];
+            out += this._labels[i] + ":" + time + " ";
+        }
+        out += "TOT:" + (this._times[this._times.length - 1] - this._times[0]) + "ms";
+        return out;
+    }
+});
 
 /**
  * @class 
@@ -307,108 +460,6 @@ EchoCore.Arrays.LargeMap = EchoCore.extend({
                 this._garbageCollect();
             }
         }
-    }
-});
-
-/** 
- * @class 
- * Namespace for debugging related utilities.
- */
-EchoCore.Debug = { 
-
-    /**
-     * The DOM element to which console output should be written.
-     * @type HTMLElement
-     */
-    consoleElement: null,
-    
-    /**
-    * Flag indicating whether console output should be displayed as alerts.
-    * Enabling is generally not recommended.
-    * @type Boolean
-    */
-    useAlertDialog: false,
-    
-    /**
-     * Writes a message to the debug console.
-     * 
-     * @param {String} text the message
-     */
-    consoleWrite: function(text) {
-        if (EchoCore.Debug.consoleElement) {
-            var entryElement = document.createElement("div");
-            entryElement.appendChild(document.createTextNode(text));
-            if (EchoCore.Debug.consoleElement.childNodes.length == 0) {
-                EchoCore.Debug.consoleElement.appendChild(entryElement);
-            } else {
-                EchoCore.Debug.consoleElement.insertBefore(entryElement, EchoCore.Debug.consoleElement.firstChild);
-            }
-        } else if (EchoCore.Debug.useAlertDialog) {
-            alert("DEBUG:" + text);
-        }
-    },
-    
-    /**
-     * Creates a string representation of the state of an object's instance variables.
-     *
-     * @param object the object to convert to a string
-     * @return the string
-     * @type String
-     */
-    toString: function(object) {
-        var s = "";
-        for (var x in object) {
-            if (typeof object[x] != "function") { 
-                s += x + ":" + object[x] + "\n";
-            }
-        }
-        return s;
-    }
-};
-
-/**
- * @class Provides a tool for measuring performance of the Echo3 client engine.
- */
-EchoCore.Debug.Timer = EchoCore.extend({
-    
-    /**
-     * Creates a new debug timer.
-     * 
-     * @constructor
-     */
-    initialize: function() {
-        this._times = new Array();
-        this._labels = new Array();
-        this._times.push(new Date().getTime());
-        this._labels.push("Start");
-    },
-    
-    /**
-     * Marks the time required to complete a task.  This method should be invoked
-     * when a task is completed with the 'label' specifying a description of the task.
-     * 
-     * @param {String} label a description of the completed task.
-     */
-    mark: function(label) {
-        this._times.push(new Date().getTime());
-        this._labels.push(label);
-    },
-    
-    /**
-     * Returns a String representation of the timer results, showing how long
-     * each task required to complete (and included a total time).
-     * 
-     * @return the timer results
-     * @type String
-     */
-    $toString: function() {
-        var out = "";
-        for (var i = 1; i < this._times.length; ++i) {
-            var time = this._times[i] - this._times[i - 1];
-            out += this._labels[i] + ":" + time + " ";
-        }
-        out += "TOT:" + (this._times[this._times.length - 1] - this._times[0]) + "ms";
-        return out;
     }
 });
 

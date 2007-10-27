@@ -7,6 +7,8 @@
  */
 EchoAppRender.ListComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
 
+    virtual: true,
+
     _processChange: function(e) {
         if (!this.client.verifyInput(this.component)) {
             EchoWebCore.DOM.preventEventDefault(e);

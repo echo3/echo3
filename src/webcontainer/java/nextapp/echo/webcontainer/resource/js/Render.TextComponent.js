@@ -3,6 +3,8 @@
  */
 EchoAppRender.TextComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
     
+    virtual: true,
+    
     global: {
         _supportedPartialProperties: ["text"]
     },

@@ -426,19 +426,21 @@ EchoRender.ComponentSync = EchoCore.extend({
     
     },
     
-    renderAdd: function(update, parentElement) {
-        throw new Error("Operation \"renderAdd\" not supported (Component: " + this.component + ").");
-    },
-    
-    renderDispose: function(update) {
-        throw new Error("Operation \"renderDispose\" not supported (Component: " + this.component + ").");
-    },
-    
-    /**
-     * @return true if this invocation has re-rendered all child components, false otherwise
-     */
-    renderUpdate: function(update) {
-        throw new Error("Operation \"renderUpdate\" not supported (Component: " + this.component + ").");
+    virtual: {
+        renderAdd: function(update, parentElement) {
+            throw new Error("Operation \"renderAdd\" not supported (Component: " + this.component + ").");
+        },
+        
+        renderDispose: function(update) {
+            throw new Error("Operation \"renderDispose\" not supported (Component: " + this.component + ").");
+        },
+        
+        /**
+         * @return true if this invocation has re-rendered all child components, false otherwise
+         */
+        renderUpdate: function(update) {
+            throw new Error("Operation \"renderUpdate\" not supported (Component: " + this.component + ").");
+        }
     }
 });
 
@@ -453,6 +455,10 @@ EchoRender.ComponentSync = EchoCore.extend({
  */
 EchoRender.RootSync = EchoCore.extend(EchoRender.ComponentSync, { 
 
+    renderAdd: function(update, parentElement) {
+        throw new Error("Unsupported operation: renderAdd().");
+    },
+    
     renderDispose: function(update) { },
     
     renderUpdate: function(update) {
