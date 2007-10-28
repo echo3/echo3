@@ -773,7 +773,7 @@ EchoWebCore.EventProcessor = {
  */
 EchoWebCore.HttpConnection = EchoCore.extend({
 
-    global: {
+    $static: {
     
         /**
          * @class
@@ -789,9 +789,9 @@ EchoWebCore.HttpConnection = EchoCore.extend({
              * 
              * @constructor
              */
-            initialize: function(source, valid) {
+            $construct: function(source, valid) {
                 //FIXME h4x0r3d up!
-                EchoCore.Event.prototype.initialize.call(this, "response", source);
+                EchoCore.Event.prototype.$construct.call(this, "response", source);
                 this.valid = valid;
             }
         })
@@ -808,7 +808,7 @@ EchoWebCore.HttpConnection = EchoCore.extend({
      * @param {String} contentType the request content-type
      * @constructor
      */
-    initialize: function(url, method, messageObject, contentType) {
+    $construct: function(url, method, messageObject, contentType) {
         this._url = url;
         this._contentType = contentType;
         this._method = method;
@@ -968,7 +968,7 @@ EchoWebCore.Library = {
          * Creates a new library group.
          * @constructor 
          */
-        initialize: function() {
+        $construct: function() {
             this._listenerList = new EchoCore.ListenerList();
             this._libraries = [];
             this._loadedCount = 0;
@@ -1091,7 +1091,7 @@ EchoWebCore.Library = {
          * @param {String} url the URL from which the library may be retrieved
          * @constructor
          */
-        initialize: function(group, url) {
+        $construct: function(group, url) {
             this._url = url;
             this._group = group;
         },
@@ -1274,7 +1274,7 @@ EchoWebCore.Measure = {
          * @param element the element to measure.
          * @constructor
          */    
-        initialize: function(element) {
+        $construct: function(element) {
             var testElement = element;
             while (testElement && testElement != document) {
                 testElement = testElement.parentNode;

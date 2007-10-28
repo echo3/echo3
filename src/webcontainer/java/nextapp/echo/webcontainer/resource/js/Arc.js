@@ -30,7 +30,7 @@ EchoArc.Client = EchoCore.extend(EchoFreeClient, {
  */
 EchoArc.ComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
 
-    initialize: function() { },
+    $construct: function() { },
 
     /**
      * Creates the base component of that will be added to the root
@@ -129,7 +129,7 @@ EchoArc.ComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
  */
 EchoArc.ChildContainer = EchoCore.extend(EchoApp.Component, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("ArcChildContainer", this);
     },
 
@@ -141,11 +141,11 @@ EchoArc.ChildContainer = EchoCore.extend(EchoApp.Component, {
  */
 EchoArc.ChildContainerPeer = EchoCore.extend(EchoRender.ComponentSync, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("ArcChildContainer", this);
     },
 
-    initialize: function() {
+    $construct: function() {
     },
 
     renderAdd: function(update, parentElement) {

@@ -3,7 +3,7 @@
  */
 EchoAppRender.GridSync = EchoCore.extend(EchoRender.ComponentSync, {
 
-    global: {
+    $static: {
 
         _createPrototypeTable: function() {
             var tableElement = document.createElement("table");
@@ -22,10 +22,10 @@ EchoAppRender.GridSync = EchoCore.extend(EchoRender.ComponentSync, {
         
         Processor: EchoCore.extend({
         
-            global: {
+            $static: {
             
                 Cell: EchoCore.extend({
-                    initialize: function(component, index, xSpan, ySpan) {
+                    $construct: function(component, index, xSpan, ySpan) {
                         this.component = component;
                         this.index = index;
                         this.xSpan = xSpan;
@@ -34,7 +34,7 @@ EchoAppRender.GridSync = EchoCore.extend(EchoRender.ComponentSync, {
                 })
             },
         
-            initialize: function(grid) {
+            $construct: function(grid) {
                 this.grid = grid;
                 this.cellArrays = [];
                 this.horizontalOrientation = true;
@@ -329,7 +329,7 @@ EchoAppRender.GridSync = EchoCore.extend(EchoRender.ComponentSync, {
         })
     },
     
-    globalInitialize: function() {
+    $staticConstruct: function() {
         this._prototypeTable = this._createPrototypeTable();
         EchoRender.registerPeer("Grid", this);
     },

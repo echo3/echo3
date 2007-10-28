@@ -3,7 +3,7 @@
  */
 EchoClient = EchoCore.extend({ 
     
-    global: {
+    $static: {
 
         /**
          * Global array containing all active client instances in the current browser window.
@@ -23,7 +23,7 @@ EchoClient = EchoCore.extend({
         }
     },
     
-    globalInitialize: function() {
+    $staticConstruct: function() {
         // Register resize listener on containing window one time.
         EchoWebCore.DOM.addEventListener(window, "resize", this._globalWindowResizeListener, false);
     },
@@ -53,7 +53,7 @@ EchoClient = EchoCore.extend({
      */
     _tabDown: 0,
 
-    initialize: function() { },
+    $construct: function() { },
     
     /**
      * Configures/Deconfigures the client.  This method must be invoked

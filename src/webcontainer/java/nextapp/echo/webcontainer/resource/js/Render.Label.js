@@ -3,12 +3,12 @@
  */
 EchoAppRender.LabelSync = EchoCore.extend(EchoRender.ComponentSync, { 
 
-    global: {
+    $static: {
     
        _defaultIconTextMargin: new EchoApp.Extent(5)
     },
     
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("Label", this);
     },
 

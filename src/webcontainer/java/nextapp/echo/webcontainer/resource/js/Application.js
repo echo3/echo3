@@ -20,7 +20,7 @@ EchoApp.Application = EchoCore.extend({
      * Creates a new application instance.  
      * @constructor
      */
-    initialize: function() {
+    $construct: function() {
         
         /** 
          * Mapping between component ids and component instances.
@@ -338,8 +338,8 @@ EchoApp.Application.ComponentUpdateEvent = EchoCore.extend(EchoCore.Event, {
      * @param oldValue the previous value of the property
      * @param newValue the new value of the property
      */
-    initialize: function(source, parent, propertyName, oldValue, newValue) {
-        EchoCore.Event.prototype.initialize.call(this, "componentUpdate", source);
+    $construct: function(source, parent, propertyName, oldValue, newValue) {
+        EchoCore.Event.prototype.$construct.call(this, "componentUpdate", source);
         this.parent = parent;
         this.propertyName = propertyName;
         this.oldValue = oldValue;
@@ -406,7 +406,7 @@ EchoApp.ComponentFactory = {
  */
 EchoApp.Component = EchoCore.extend({
     
-    global: {
+    $static: {
 
         /**
          * The next automatically assigned client render id.
@@ -434,7 +434,7 @@ EchoApp.Component = EchoCore.extend({
      *        </ul>
      * @constructor
      */
-    initialize: function(properties) {
+    $construct: function(properties) {
         
         /**
          * The render id.
@@ -1121,7 +1121,7 @@ EchoApp.FocusManager = EchoCore.extend({
      * Focus management handler for a specific application instance.
      * One FocusManager is created for each application.
      */
-    initialize: function(application) { 
+    $construct: function(application) { 
         this._application = application;
     },
     
@@ -1333,7 +1333,7 @@ EchoApp.LayoutData = EchoCore.extend({
      * @param properties an associative array containing the initial properties of the layout data
      * @constructor
      */
-    initialize: function(properties) {
+    $construct: function(properties) {
         this._localStyle = new EchoApp.Style(properties);
     },
     
@@ -1385,7 +1385,7 @@ EchoApp.LayoutDirection = EchoCore.extend({
      * LayoutDirection property.  Do not instantiate, use LTR/RTL constants.
      * @constructor
      */
-    initialize: function() {
+    $construct: function() {
     
         /**
          * Flag indicating whether layout direction is left-to-right.
@@ -1421,7 +1421,7 @@ EchoApp.LayoutDirection.RTL = new EchoApp.LayoutDirection(false);
 
 EchoApp.Alignment = EchoCore.extend({
     
-    global: {
+    $static: {
     
         /**
          * Value for horizontal/vertical setting indicating default alignment.
@@ -1506,7 +1506,7 @@ EchoApp.Alignment = EchoCore.extend({
      *        </ul>
      * @constructor
      */
-    initialize: function(horizontal, vertical) {
+    $construct: function(horizontal, vertical) {
     
         /**
          * The horizontal alignment setting.
@@ -1538,7 +1538,7 @@ EchoApp.Border = EchoCore.extend({
      * Creates a border property. 
      * @constructor
      */
-    global: {
+    $static: {
     
         /**
          * @class Border side sub-property.
@@ -1549,7 +1549,7 @@ EchoApp.Border = EchoCore.extend({
              * Creates a border side.
              * @constructor
              */
-            initialize: function() {
+            $construct: function() {
                 if (arguments.length == 1 && typeof arguments[0] == "string") {
                     var items = arguments[0].split(" ");
                     if (items.length != 3) {
@@ -1585,7 +1585,7 @@ EchoApp.Border = EchoCore.extend({
      */
     className: "Border",
     
-    initialize: function() {
+    $construct: function() {
         if (arguments.length == 1 && arguments[0] instanceof Array) {
             /**
              * Flag indicating whether the border has individually specified sides.
@@ -1652,7 +1652,7 @@ EchoApp.ButtonGroup = EchoCore.extend({
      * 
      * @param id {String} the id
      */
-    initialize: function(id) {
+    $construct: function(id) {
         this._id = id;
         this._buttonArray = [];
     },
@@ -1743,7 +1743,7 @@ EchoApp.Color = EchoCore.extend({
      * @constructor
      * @param value the color hex value
      */
-    initialize: function(value) {
+    $construct: function(value) {
         /**
          * The hexadecimal value of the color, e.g., #ab12c3.
          * @type String
@@ -1826,7 +1826,7 @@ EchoApp.Color = EchoCore.extend({
  */
 EchoApp.Extent = EchoCore.extend({
 
-    global: {
+    $static: {
         
         /**
          * Regular expression to parse string based extents, e.g., "20px".
@@ -1855,7 +1855,7 @@ EchoApp.Extent = EchoCore.extend({
      * 
      * @constructor
      */
-    initialize: function() {
+    $construct: function() {
         if (arguments.length == 2) {
             /**
              * The dimensionless value of the extent, e.g., 30.
@@ -1893,7 +1893,7 @@ EchoApp.Extent = EchoCore.extend({
  */
 EchoApp.FillImage = EchoCore.extend({
 
-    global: {
+    $static: {
     
         /**
          * Repeat value constant indicating the image should not repeat.
@@ -1949,7 +1949,7 @@ EchoApp.FillImage = EchoCore.extend({
      * @param {EchoApp.Extent} the vertical alignment/position of the image
      * @constructor
      */
-    initialize: function(image, repeat, x, y) {
+    $construct: function(image, repeat, x, y) {
         if (image instanceof EchoApp.ImageReference) {
             /**
              * The image.
@@ -2019,7 +2019,7 @@ EchoApp.FillImageBorder = EchoCore.extend({
      *        than the border inset, the content will be drawn above the border)    
      * @constructor
      */
-    initialize: function(color, borderInsets, contentInsets, fillImages) {
+    $construct: function(color, borderInsets, contentInsets, fillImages) {
         if (color == null || color instanceof EchoApp.Color) {
             /**
              * The border background color.
@@ -2066,7 +2066,7 @@ EchoApp.FillImageBorder = EchoCore.extend({
  */
 EchoApp.Font = EchoCore.extend({
 
-    global: {
+    $static: {
     
         /**
          * Style constant representing a plain font.
@@ -2134,7 +2134,7 @@ EchoApp.Font = EchoCore.extend({
      * @param {EchoApp.Extent} size the size of the font
      * @constructor
      */
-    initialize: function(typeface, style, size) {
+    $construct: function(typeface, style, size) {
         
         /**
          * The typeface of the font, may be a string or an array of strings.
@@ -2188,7 +2188,7 @@ EchoApp.ImageReference = EchoCore.extend({
      * @param {EchoApp.Extent} height the height of the image
      * @constructor
      */
-    initialize: function(url, width, height) {
+    $construct: function(url, width, height) {
         /**
          * The URL from which the image may be obtained.
          * @type String
@@ -2235,7 +2235,7 @@ EchoApp.Insets = EchoCore.extend({
      * 
      * @constructor
      */
-    initialize: function() {
+    $construct: function() {
         var values;
         if (arguments.length == 1) {
             if (typeof arguments[0] == "string") {
@@ -2312,7 +2312,7 @@ EchoApp.Insets = EchoCore.extend({
  
 EchoApp.ListSelectionModel = EchoCore.extend({
 
-    global: {
+    $static: {
     
         /**
          * Value for selection mode setting indicating single selection.
@@ -2420,7 +2420,7 @@ EchoApp.Style = EchoCore.extend({
      * @param properties (optional) the initial property mapping as an associative array
      * @constructor
      */
-    initialize: function(properties) {
+    $construct: function(properties) {
         this._properties = properties ? properties : { };
     },
     
@@ -2499,7 +2499,7 @@ EchoApp.StyleSheet = EchoCore.extend({
     /**
      * Creates a new style sheet.
      */
-    initialize: function() {
+    $construct: function() {
         this._nameToStyleMap = { };
     },
     
@@ -2564,7 +2564,7 @@ EchoApp.Update = { };
  */
 EchoApp.Update.ComponentUpdate = EchoCore.extend({
 
-    global: {
+    $static: {
     
         /**
          * Data object representing the old and new states of a changed property.
@@ -2584,7 +2584,7 @@ EchoApp.Update.ComponentUpdate = EchoCore.extend({
      * @constructor
      * @param parent the updated component
      */
-    initialize: function(manager, parent) {
+    $construct: function(manager, parent) {
     
         /**
          * The <code>Manager</code> to which this update belongs.
@@ -2939,7 +2939,7 @@ EchoApp.Update.Manager = EchoCore.extend({
      * @constructor
      * @param {EchoApp.Application} application the supported application
      */
-    initialize: function(application) {
+    $construct: function(application) {
         
         /**
          * Associative mapping between component ids and EchoApp.Update.ComponentUpdate
@@ -3246,7 +3246,7 @@ EchoApp.Update.Manager = EchoCore.extend({
  */ 
 EchoApp.Button = EchoCore.extend(EchoApp.Component, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("Button", this);
     },
 
@@ -3268,7 +3268,7 @@ EchoApp.Button = EchoCore.extend(EchoApp.Component, {
  */
 EchoApp.ToggleButton = EchoCore.extend(EchoApp.Button, {
 
-    virtual: true,
+    $abstract: true,
     componentType: "ToggleButton"
 });
 
@@ -3278,7 +3278,7 @@ EchoApp.ToggleButton = EchoCore.extend(EchoApp.Button, {
  */
 EchoApp.CheckBox = EchoCore.extend(EchoApp.ToggleButton, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("CheckBox", this);
     },
 
@@ -3291,7 +3291,7 @@ EchoApp.CheckBox = EchoCore.extend(EchoApp.ToggleButton, {
  */
 EchoApp.RadioButton = EchoCore.extend(EchoApp.ToggleButton, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("RadioButton", this);
     },
 
@@ -3304,7 +3304,7 @@ EchoApp.RadioButton = EchoCore.extend(EchoApp.ToggleButton, {
  */
 EchoApp.Column = EchoCore.extend(EchoApp.Component, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("Column", this);
     },
 
@@ -3317,7 +3317,7 @@ EchoApp.Column = EchoCore.extend(EchoApp.Component, {
  */
 EchoApp.ContentPane = EchoCore.extend(EchoApp.Component, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("ContentPane", this);
     },
 
@@ -3331,11 +3331,11 @@ EchoApp.ContentPane = EchoCore.extend(EchoApp.Component, {
  */
 EchoApp.Grid = EchoCore.extend(EchoApp.Component, {
 
-    global: {
+    $static: {
         SPAN_FILL: -1
     },
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("Grid", this);
     },
 
@@ -3348,7 +3348,7 @@ EchoApp.Grid = EchoCore.extend(EchoApp.Component, {
  */
 EchoApp.Label = EchoCore.extend(EchoApp.Component, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("Label", this);
     },
 
@@ -3361,7 +3361,7 @@ EchoApp.Label = EchoCore.extend(EchoApp.Component, {
  */
 EchoApp.ListBox = EchoCore.extend(EchoApp.Component, {
 
-    global: {
+    $static: {
 
         /**
          * Constant for "selectionMode" property indicating single selection.
@@ -3374,7 +3374,7 @@ EchoApp.ListBox = EchoCore.extend(EchoApp.Component, {
         MULTIPLE_SELECTION: 2
     },
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("ListBox", this);
     },
 
@@ -3388,7 +3388,7 @@ EchoApp.ListBox = EchoCore.extend(EchoApp.Component, {
  */
 EchoApp.Row = EchoCore.extend(EchoApp.Component, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("Row", this);
     },
 
@@ -3401,7 +3401,7 @@ EchoApp.Row = EchoCore.extend(EchoApp.Component, {
  */
 EchoApp.SelectField = EchoCore.extend(EchoApp.Component, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("SelectField", this);
     },
 
@@ -3415,7 +3415,7 @@ EchoApp.SelectField = EchoCore.extend(EchoApp.Component, {
  */
 EchoApp.SplitPane = EchoCore.extend(EchoApp.Component, {
 
-    global: {
+    $static: {
         ORIENTATION_HORIZONTAL_LEADING_TRAILING: 0,
         ORIENTATION_HORIZONTAL_TRAILING_LEADING: 1,
         ORIENTATION_HORIZONTAL_LEFT_RIGHT: 2,
@@ -3443,7 +3443,7 @@ EchoApp.SplitPane = EchoCore.extend(EchoApp.Component, {
  */
 EchoApp.TextComponent = EchoCore.extend(EchoApp.Component, {
 
-    virtual: true,
+    $abstract: true,
     componentType: "TextComponent",
     focusable: true
 });
@@ -3454,7 +3454,7 @@ EchoApp.TextComponent = EchoCore.extend(EchoApp.Component, {
  */
 EchoApp.TextArea = EchoCore.extend(EchoApp.TextComponent, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("TextArea", this);
     },
 
@@ -3467,7 +3467,7 @@ EchoApp.TextArea = EchoCore.extend(EchoApp.TextComponent, {
  */
 EchoApp.TextField = EchoCore.extend(EchoApp.TextComponent, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("TextField", this);
     },
 
@@ -3480,7 +3480,7 @@ EchoApp.TextField = EchoCore.extend(EchoApp.TextComponent, {
  */
 EchoApp.PasswordField = EchoCore.extend(EchoApp.TextField, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("PasswordField", this);
     },
 
@@ -3493,11 +3493,11 @@ EchoApp.PasswordField = EchoCore.extend(EchoApp.TextField, {
  */
 EchoApp.WindowPane = EchoCore.extend(EchoApp.Component, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("WindowPane", this);
     },
 
-    global: {
+    $static: {
         DEFAULT_BORDER: new EchoApp.FillImageBorder("#4f4faf", new EchoApp.Insets("20px"), new EchoApp.Insets("3px")),
         DEFAULT_BACKGROUND: new EchoApp.Color("#ffffff"),
         DEFAULT_FOREGROUND: new EchoApp.Color("#000000"),

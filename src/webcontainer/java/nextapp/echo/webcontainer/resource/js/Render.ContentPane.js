@@ -2,11 +2,11 @@
  * Component rendering peer: ContentPane
  */
 EchoAppRender.ContentPaneSync = EchoCore.extend(EchoRender.ComponentSync, {
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("ContentPane", this);
     },
 
-    initialize: function() {
+    $construct: function() {
         this._floatingPaneManager = null;
     },
     

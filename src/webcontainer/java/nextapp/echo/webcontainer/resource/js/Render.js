@@ -420,13 +420,13 @@ EchoRender.ComponentSync = EchoCore.extend({
      * Creates a new copmonent synchronization peer.
      * @constructor
      */
-    initialize: function() { },
+    $construct: function() { },
         
     init: function() {
     
     },
     
-    virtual: {
+    $abstract: {
         renderAdd: function(update, parentElement) {
             throw new Error("Operation \"renderAdd\" not supported (Component: " + this.component + ").");
         },

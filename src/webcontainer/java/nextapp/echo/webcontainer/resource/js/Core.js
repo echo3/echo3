@@ -35,37 +35,37 @@ EchoCore = {
         var base = arguments.length == 1 ? null : arguments[0];
         var definition = arguments.length == 1 ? arguments[0] : arguments[1];
         
-        // Create new object function which will invoke 'initialize' pseudo-constructor method of object.
+        // Create new object function which will invoke '$construct' pseudo-constructor method of object.
         var objectFunction;
         
-        if (definition && definition.virtual) {
+        if (definition && definition.$abstract) {
             objectFunction = function() {
-                if (!EchoCore.extending) {
+                if (!EchoCore._extending) {
                     throw new Error("Cannot instantiate abstract class.");
                 }
             }
         } else {
             objectFunction = function() {
     
-                if (!EchoCore.extending) {
-                    // Only invoke initialize() (constructor replacement method)
-                    // when EchoCore.extending flag is not set.  EchoCore.extending flag
+                if (!EchoCore._extending) {
+                    // Only invoke $construct() (constructor replacement method)
+                    // when EchoCore._extending flag is not set.  EchoCore._extending flag
                     // will be set temporarily any time an object prototype is being created.
-                    this.initialize.apply(this, arguments);
+                    this.$construct.apply(this, arguments);
                 }
             }
         }
         
         // Create object prototype.
         if (typeof(base) == "function") {
-            // Set "extending" flag so initialize() method will not be invoked.
-            EchoCore.extending = true;
+            // Set "extending" flag so $construct() method will not be invoked.
+            EchoCore._extending = true;
             
             // Create prototype instance.
             objectFunction.prototype = new base();
             
             // Clear "extending" flag.
-            delete EchoCore.extending;
+            delete EchoCore._extending;
             
             // Assign constructor correctly.
             objectFunction.prototype.constructor = objectFunction;
@@ -74,40 +74,54 @@ EchoCore = {
             objectFunction.base = base;
         }
         
-        // Process global (static) properties and methods defined in the 'global' object.
-        if (definition && definition.global) {
-            EchoCore.inherit(objectFunction, definition.global);
+        // Process static properties and methods defined in the '$static' object.
+        if (definition && definition.$static) {
+            EchoCore.inherit(objectFunction, definition.$static);
 
             // Clean up:
-            delete definition.global;
+            delete definition.$static;
         }
         
-        // Invoke global (static) initializers.
-        if (definition && definition.globalInitialize) {
-            // Invoke globalInitialize() function with this pointer set to class.
-            definition.globalInitialize.call(objectFunction);
+        // Invoke static constructors.
+        if (definition && definition.$staticConstruct) {
+            // Invoke $staticConstruct() function with this pointer set to class.
+            definition.$staticConstruct.call(objectFunction);
 
             // Clean up:
-            delete definition.globalInitialize;
+            delete definition.$staticConstruct;
         }
         
         // Add Mixins.
-        if (definition && definition.include) {
-            var mixins = definition.include.reverse();
+        if (definition && definition.$include) {
+            var mixins = definition.$include.reverse();
             EchoCore.mixin(objectFunction, mixins);
             
             // Clean up:
-            delete definition.include;
+            delete definition.$include;
         }
         
         // Add Abstract Methods.
-        if (definition && definition.virtual) {
-            // Note that 'objectFunction.virtual' now evaluates as true,
+        if (definition && definition.$abstract) {
+            // Note that 'objectFunction.$abstract' now evaluates as true,
             // indicating the object is abstract.
-            objectFunction.virtual = definition.virtual;
+            objectFunction.$abstract = definition.$abstract;
 
             // Clean up:
-            delete definition.virtual;
+            delete definition.$abstract;
+        }
+        
+        // Add toString method (toString method should be defined as $toString to avoid
+        // it being removed by the MSIE scripting engine.
+        if (definition && definition.$toString) {
+            objectFunction.prototype.toString = definition.$toString;
+            delete definition.$toString;
+        }
+
+        // Add valueOf method (valueOf method should be defined as $valueOf to avoid
+        // it being removed by the MSIE scripting engine.
+        if (definition && definition.$valueOf) {
+            objectFunction.prototype.valueOf = definition.$valueOf;
+            delete definition.$valueOf;
         }
         
         // Process instance properties and methods.
@@ -116,8 +130,8 @@ EchoCore = {
         }
         
         // If class is concrete, verify all abstract methods are provided.
-        if (!objectFunction.virtual) {
-            this._verifyVirtualImpl(objectFunction);
+        if (!objectFunction.$abstract) {
+            this._verifyAbstractImpl(objectFunction);
         }
         
         return objectFunction;
@@ -136,15 +150,12 @@ EchoCore = {
     },
     
     inherit: function(destination, source) {
-        for (var sourceName in source) {
-             // Drop leading dollar sign on object names.  The leading dollar sign may be used
-             // to mask object names to avoid toString()/valueOf/other conflicts with IE object decalarations. 
-             var destinationName = sourceName.charAt(0) == "$" ? sourceName.substring(1) : sourceName;
-             destination[destinationName] = source[sourceName];
+        for (var name in source) {
+             destination[name] = source[name];
         }
     },
     
-    _verifyVirtualImpl: function(objectFunction, constructor) {
+    _verifyAbstractImpl: function(objectFunction, constructor) {
         if (!constructor) {
             if (objectFunction.base) {
                 constructor = objectFunction.base;
@@ -153,16 +164,16 @@ EchoCore = {
             }
         }
 
-        if (constructor.virtual && constructor.virtual instanceof Object) {
-            for (var name in constructor.virtual) {
+        if (constructor.$abstract && constructor.$abstract instanceof Object) {
+            for (var name in constructor.$abstract) {
                 if (!objectFunction.prototype[name]) {
                     throw new Error("Cannot build concrete implementation due to missing abstract method: " + name); 
                 }
             }
         }
         
-        if (constructor.base && constructor.base.virtual) {
-            EchoCore._verifyVirtualImpl(objectFunction, constructor.base);
+        if (constructor.base && constructor.base.$abstract) {
+            EchoCore._verifyAbstractImpl(objectFunction, constructor.base);
         }
     }
 };
@@ -233,7 +244,7 @@ EchoCore.Debug.Timer = EchoCore.extend({
      * 
      * @constructor
      */
-    initialize: function() {
+    $construct: function() {
         this._times = [];
         this._labels = [];
         this._times.push(new Date().getTime());
@@ -404,7 +415,7 @@ EchoCore.Arrays = {
  */
 EchoCore.Arrays.LargeMap = EchoCore.extend({
     
-    global: {
+    $static: {
     
         garbageCollectEnabled: false
     },
@@ -412,7 +423,7 @@ EchoCore.Arrays.LargeMap = EchoCore.extend({
     /**
      * Creates a new LargeMap.
      */
-    initialize: function() {
+    $construct: function() {
         
         /**
          * Number of removes since last associative array re-creation.
@@ -476,7 +487,7 @@ EchoCore.Event = EchoCore.extend({
      * @param source the source of the event
      * @param data the optional data of the event
      */
-    initialize: function(type, source, data) {
+    $construct: function(type, source, data) {
         
         /**
          * The source of the event.
@@ -507,7 +518,7 @@ EchoCore.ListenerList = EchoCore.extend({
      * 
      * @constructor
      */
-    initialize: function() {
+    $construct: function() {
         
         /**
          * Array containing event types and event listeners.  
@@ -682,7 +693,7 @@ EchoCore.MethodRef = EchoCore.extend({
      * @param instance the object instance on which the method should be invoked
      * @param {Function} method the method to invoke
      */
-    initialize: function(instance, method) {
+    $construct: function(instance, method) {
         this.instance = instance;
         this.method = method;
         if (arguments.length > 2) {
@@ -734,7 +745,7 @@ EchoCore.ResourceBundle = EchoCore.extend({
      * 
      * @param map initial mappings
      */
-    initialize: function(map) {
+    $construct: function(map) {
         this.map = map ? map : {};
         this.parent = null;
     },
@@ -897,7 +908,7 @@ EchoCore.Scheduler.Runnable = EchoCore.extend({
      * @param {Boolean} repeat a flag indicating whether the task should be repeated
      * @param methodRef a method or EchoCore.MethodRef instance to invoke, may be null/undefined
      */
-    initialize: function(methodRef, timeInterval, repeat) {
+    $construct: function(methodRef, timeInterval, repeat) {
         if (!timeInterval && repeat) {
             throw new Error("Cannot create repeating runnable without time delay:" + methodRef);
         }

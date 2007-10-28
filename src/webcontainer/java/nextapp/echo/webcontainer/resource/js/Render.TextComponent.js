@@ -3,9 +3,9 @@
  */
 EchoAppRender.TextComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
     
-    virtual: true,
+    $abstract: true,
     
-    global: {
+    $static: {
         _supportedPartialProperties: ["text"]
     },
     
@@ -116,7 +116,7 @@ EchoAppRender.TextComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
  */
 EchoAppRender.TextAreaSync = EchoCore.extend(EchoAppRender.TextComponentSync, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("TextArea", this);
     },
 
@@ -139,11 +139,11 @@ EchoAppRender.TextAreaSync = EchoCore.extend(EchoAppRender.TextComponentSync, {
  */
 EchoAppRender.TextFieldSync = EchoCore.extend(EchoAppRender.TextComponentSync, {
     
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("TextField", this);
     },
 
-    initialize: function() {
+    $construct: function() {
         this._type = "text";
     },
 
@@ -172,11 +172,11 @@ EchoAppRender.TextFieldSync = EchoCore.extend(EchoAppRender.TextComponentSync, {
  */
 EchoAppRender.PasswordFieldSync = EchoCore.extend(EchoAppRender.TextFieldSync, {
     
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("PasswordField", this);
     },
 
-    initialize: function() {
+    $construct: function() {
         this._type = "password";
     }
 });

@@ -6,7 +6,7 @@
  */
 EchoAppRender.ButtonSync = EchoCore.extend(EchoRender.ComponentSync, {
 
-    global: {
+    $static: {
         _createPrototypeButton: function() {
             var divElement = document.createElement("div");
             divElement.tabIndex = "0";
@@ -18,12 +18,12 @@ EchoAppRender.ButtonSync = EchoCore.extend(EchoRender.ComponentSync, {
         _defaultIconTextMargin: new EchoApp.Extent(5)
     },
     
-    globalInitialize: function() {
+    $staticConstruct: function() {
         this._prototypeButton = this._createPrototypeButton();
         EchoRender.registerPeer("Button", this);
     },
     
-    initialize: function() { },
+    $construct: function() { },
     
     /**
      * Registers listners on the button.  This method is invoked lazily, i.e., the first time the button
@@ -371,11 +371,11 @@ EchoAppRender.ButtonSync = EchoCore.extend(EchoRender.ComponentSync, {
  */
 EchoAppRender.ToggleButtonSync = EchoCore.extend(EchoAppRender.ButtonSync, {
     
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("ToggleButton", this);
     },
     
-    initialize: function() {
+    $construct: function() {
         this._selected = false;
         this._stateElement = null;
     },
@@ -486,7 +486,7 @@ EchoAppRender.ToggleButtonSync = EchoCore.extend(EchoAppRender.ButtonSync, {
  */
 EchoAppRender.CheckBoxSync = EchoCore.extend(EchoAppRender.ToggleButtonSync, {
     
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("CheckBox", this);
     },
     
@@ -524,7 +524,7 @@ EchoAppRender.CheckBoxSync = EchoCore.extend(EchoAppRender.ToggleButtonSync, {
  */
 EchoAppRender.RadioButtonSync = EchoCore.extend(EchoAppRender.ToggleButtonSync, {
 
-    global: {
+    $static: {
     
         _nextNameId: 0,
         
@@ -536,11 +536,11 @@ EchoAppRender.RadioButtonSync = EchoCore.extend(EchoAppRender.ToggleButtonSync, 
         _groups: new EchoCore.Arrays.LargeMap()
     },
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("RadioButton", this);;
     },
 
-    initialize: function() {
+    $construct: function() {
         this._buttonGroup = null;
     },
 

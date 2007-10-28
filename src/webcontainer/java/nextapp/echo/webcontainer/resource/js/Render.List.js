@@ -7,7 +7,7 @@
  */
 EchoAppRender.ListComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
 
-    virtual: true,
+    $abstract: true,
 
     _processChange: function(e) {
         if (!this.client.verifyInput(this.component)) {
@@ -98,11 +98,11 @@ EchoAppRender.ListComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
  */
 EchoAppRender.ListBoxSync = EchoCore.extend(EchoAppRender.ListComponentSync, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("ListBox", this);
     },
     
-    initialize: function() {
+    $construct: function() {
     },
 
     renderAdd: function(update, parentElement) {
@@ -116,11 +116,11 @@ EchoAppRender.ListBoxSync = EchoCore.extend(EchoAppRender.ListComponentSync, {
  */
 EchoAppRender.SelectFieldSync = EchoCore.extend(EchoAppRender.ListComponentSync, { 
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("SelectField", this);
     },
     
-    initialize: function() {
+    $construct: function() {
     },
     
     renderAdd: function(update, parentElement) {

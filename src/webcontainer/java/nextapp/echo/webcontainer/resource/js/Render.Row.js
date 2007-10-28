@@ -3,7 +3,7 @@
  */
 EchoAppRender.RowSync = EchoCore.extend(EchoRender.ComponentSync, {
     
-    global: {
+    $static: {
     
         _defaultCellInsets: new EchoApp.Insets(0),
         
@@ -27,7 +27,7 @@ EchoAppRender.RowSync = EchoCore.extend(EchoRender.ComponentSync, {
         }
     },
     
-    globalInitialize: function() {
+    $staticConstruct: function() {
         this._rowPrototype = this._createRowPrototype();
         EchoRender.registerPeer("Row", this);
     },

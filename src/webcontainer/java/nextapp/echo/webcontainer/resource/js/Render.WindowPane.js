@@ -3,7 +3,7 @@
  */
 EchoAppRender.WindowPaneSync = EchoCore.extend(EchoRender.ComponentSync, {
 
-    global: {
+    $static: {
         DEFAULT_TITLE_BACKGROUND: new EchoApp.Color("#abcdef"),
         DEFAULT_TITLE_INSETS: new EchoApp.Insets("5px", "10px"),
         ADJUSTMENT_OPACITY: 0.75,
@@ -11,7 +11,7 @@ EchoAppRender.WindowPaneSync = EchoCore.extend(EchoRender.ComponentSync, {
         adjustOpacity: false
     },
     
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("WindowPane", this);
     },
 

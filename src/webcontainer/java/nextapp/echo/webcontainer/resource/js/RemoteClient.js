@@ -18,7 +18,7 @@
  */
 EchoRemoteClient = EchoCore.extend(EchoClient, {
     
-    global: {
+    $static: {
         
         /**
          * Base URL from which libraries should be retrieved.
@@ -35,10 +35,10 @@ EchoRemoteClient = EchoCore.extend(EchoClient, {
      * @constructor
      * @param serverUrl the URL of the server
      */
-    initialize: function(serverUrl) {
+    $construct: function(serverUrl) {
         EchoWebCore.init();
     
-        EchoClient.prototype.initialize.call(this);
+        EchoClient.prototype.$construct.call(this);
         
         /**
          * The base server url.
@@ -450,7 +450,7 @@ EchoRemoteClient = EchoCore.extend(EchoClient, {
  */
 EchoRemoteClient.AsyncManager = EchoCore.extend({
 
-    initialize: function(client) {
+    $construct: function(client) {
         this._client = client;
         this._runnable = new EchoCore.Scheduler.Runnable(new EchoCore.MethodRef(this, this._pollServerForUpdates), 1000, false);
     },
@@ -522,7 +522,7 @@ EchoRemoteClient.AsyncManager = EchoCore.extend({
 
 EchoRemoteClient.ClientMessage = EchoCore.extend({
 
-    global: {
+    $static: {
     
         /**
          * @class Utility class for constructing the client properties directive.
@@ -534,7 +534,7 @@ EchoRemoteClient.ClientMessage = EchoCore.extend({
              * Creates a new ClientProperties directive object.
              * @param clientMessage the client message object
              */
-            initialize: function(clientMessage) {
+            $construct: function(clientMessage) {
                 this._element = clientMessage._document.createElement("dir");
                 this._element.setAttribute("proc", "ClientProperties");
                 clientMessage._document.documentElement.appendChild(this._element);
@@ -554,7 +554,7 @@ EchoRemoteClient.ClientMessage = EchoCore.extend({
         })
     },
 
-    initialize: function(client, initialize) {
+    $construct: function(client, initialize) {
         this._client = client;
         this._componentIdToPropertyMap = {};
         
@@ -693,7 +693,7 @@ EchoRemoteClient.CommandExec = { };
  */
 EchoRemoteClient.CommandExecProcessor = EchoCore.extend({
 
-    global: {
+    $static: {
     
         _typeToPeerMap: {},
         
@@ -708,7 +708,7 @@ EchoRemoteClient.CommandExecProcessor = EchoCore.extend({
         }
     },
 
-    initialize: function(client) { 
+    $construct: function(client) { 
         this._client = client;
     },
     
@@ -740,7 +740,7 @@ EchoRemoteClient.CommandExecProcessor = EchoCore.extend({
  */
 EchoRemoteClient.ComponentFocusProcessor = EchoCore.extend({
 
-    initialize: function(client) { 
+    $construct: function(client) { 
         this._client = client;
     },
     
@@ -769,7 +769,7 @@ EchoRemoteClient.ComponentFocusProcessor = EchoCore.extend({
  */
 EchoRemoteClient.ComponentSyncRemoveProcessor = EchoCore.extend({
 
-    initialize: function(client) { 
+    $construct: function(client) { 
         this._client = client;
     },
     
@@ -838,14 +838,14 @@ EchoRemoteClient.ComponentSyncRemoveProcessor = EchoCore.extend({
  */
 EchoRemoteClient.ComponentSyncUpdateProcessor = EchoCore.extend({
 
-    global: {
+    $static: {
         
         _numericReverseSort: function(a, b) {
             return b - a;
         }
     },
 
-    initialize: function(client) { 
+    $construct: function(client) { 
         this._client = client;
         this._referenceMap = {};
     },
@@ -958,7 +958,7 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = EchoCore.extend({
 
 EchoRemoteClient.ServerMessage = EchoCore.extend({
 
-    global: {
+    $static: {
     
         _processorClasses: { },
         
@@ -967,7 +967,7 @@ EchoRemoteClient.ServerMessage = EchoCore.extend({
         }
     },
 
-    initialize: function(client, xmlDocument) { 
+    $construct: function(client, xmlDocument) { 
         this.client = client;
         this.document = xmlDocument;
         this._listenerList = new EchoCore.ListenerList();
@@ -1045,7 +1045,7 @@ EchoRemoteClient.ServerMessage = EchoCore.extend({
  */
 EchoRemoteClient.WaitIndicator = EchoCore.extend({
 
-    initialize: function() { },
+    $construct: function() { },
 
     /**
      * Wait indicator activation method.  Invoked when the wait indicator should be activated.
@@ -1063,7 +1063,7 @@ EchoRemoteClient.WaitIndicator = EchoCore.extend({
  */
 EchoRemoteClient.DefaultWaitIndicator = EchoCore.extend(EchoRemoteClient.WaitIndicator, {
 
-    initialize: function() {
+    $construct: function() {
         this._divElement = document.createElement("div");
         this._divElement.style.cssText = "display: none; z-index: 32767; position: absolute; top: 30px; right: 30px; width: 200px;"
                  + " padding: 20px; border: 1px outset #abcdef; background-color: #abcdef; color: #000000; text-align: center;";

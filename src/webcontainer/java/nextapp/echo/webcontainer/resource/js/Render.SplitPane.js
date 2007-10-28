@@ -6,7 +6,7 @@
  */
 EchoAppRender.SplitPaneSync = EchoCore.extend(EchoRender.ComponentSync, {
 
-    global: {
+    $static: {
 
         /**    
          * @class Describes the configuration of a child pane of the SplitPane,
@@ -21,7 +21,7 @@ EchoAppRender.SplitPaneSync = EchoCore.extend(EchoRender.ComponentSync, {
              * @param {EchoApp.Component} component the child component
              * @constructor
              */
-            initialize: function(splitPanePeer, component) {
+            $construct: function(splitPanePeer, component) {
                 this.component = component;
                 this.layoutData = component.getRenderProperty("layoutData");
                 if (this.layoutData) {
@@ -49,11 +49,11 @@ EchoAppRender.SplitPaneSync = EchoCore.extend(EchoRender.ComponentSync, {
         })
     },
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("SplitPane", this);
     },
 
-    initialize: function() {
+    $construct: function() {
         /**
          * Array containing two PaneConfiguration instances, representing the state of each child pane.
          * @type Array

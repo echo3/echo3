@@ -19,8 +19,8 @@ EchoFreeClient = EchoCore.extend(EchoClient, {
      * @param {EchoApp.Application} application the application the client operate on.
      * @param {Element} domainElement the HTML 
      */
-    initialize: function(application, domainElement) {
-        EchoClient.prototype.initialize.call(this);
+    $construct: function(application, domainElement) {
+        EchoClient.prototype.$construct.call(this);
         this.configure(application, domainElement);
     },
 
@@ -91,9 +91,9 @@ EchoFreeClient.AutoUpdate = EchoCore.extend(EchoCore.Scheduler.Runnable, {
      * 
      * @param client the supported client
      */
-    initialize: function(client) {
+    $construct: function(client) {
         this.client = client;
-        EchoCore.Scheduler.Runnable.prototype.initialize.call(this, null, 10, true);
+        EchoCore.Scheduler.Runnable.prototype.$construct.call(this, null, 10, true);
     },
     
     /**

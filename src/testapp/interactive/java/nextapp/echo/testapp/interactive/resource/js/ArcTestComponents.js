@@ -7,7 +7,7 @@ ArcTest.TestComponent = EchoCore.extend(EchoApp.Component, {
 
     componentType: "ArcTestComponent",
     
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("ArcTestComponent", this);
     }
 });
@@ -19,7 +19,7 @@ ArcTest.TestContainer = EchoCore.extend(EchoApp.Component, {
 
     componentType: "ArcTestContainer",
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("ArcTestContainer", this);
     }
 });
@@ -31,7 +31,7 @@ ArcTest.TestPane = EchoCore.extend(EchoApp.Component, {
 
     componentType: "ArcTestPane",
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("ArcTestPane", this);
     }
 });
@@ -43,11 +43,11 @@ ArcTest.ComponentSync = { };
  */
 ArcTest.ComponentSync.TestComponent = EchoCore.extend(EchoArc.ComponentSync, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("ArcTestComponent", this);
     },
 
-    initialize: function() { },
+    $construct: function() { },
 
     createBaseComponent: function() {
         var label = new EchoApp.Label();
@@ -61,11 +61,11 @@ ArcTest.ComponentSync.TestComponent = EchoCore.extend(EchoArc.ComponentSync, {
  */
 ArcTest.ComponentSync.TestContainer = EchoCore.extend(EchoArc.ComponentSync, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("ArcTestContainer", this);
     },
 
-    initialize: function() { },
+    $construct: function() { },
     
     createBaseComponent: function() {
         var contentPane = new EchoApp.ContentPane();
@@ -109,11 +109,11 @@ ArcTest.ComponentSync.TestContainer = EchoCore.extend(EchoArc.ComponentSync, {
  */
 ArcTest.ComponentSync.TestPane = EchoCore.extend(EchoArc.ComponentSync, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("ArcTestPane", this);
     },
 
-    initialize: function() {
+    $construct: function() {
         this._addedLabelCount = 0;
     },
 

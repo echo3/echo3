@@ -5,18 +5,18 @@
  */
 EchoAppRender.RemoteTableSync = EchoCore.extend(EchoRender.ComponentSync, {
     
-    global: {
+    $static: {
     
         _HEADER_ROW: -1,
         
         _supportedPartialProperties: ["selection"]
     },
     
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("RemoteTable", this);
     },
     
-    initialize: function() {
+    $construct: function() {
         this.selectionModel = null;
         this.lastSelectedIndex = null;
     },

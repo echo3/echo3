@@ -3,7 +3,7 @@
  */
 EchoAppRender.CompositeSync = EchoCore.extend(EchoRender.ComponentSync, {
 
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("Composite", this);
     },
 
@@ -42,7 +42,7 @@ EchoAppRender.CompositeSync = EchoCore.extend(EchoRender.ComponentSync, {
 });
 
 EchoRender.ComponentSync.Panel = EchoCore.extend(EchoAppRender.CompositeSync, {
-    globalInitialize: function() {
+    $staticConstruct: function() {
         EchoRender.registerPeer("Panel", this);
     },
 

@@ -331,7 +331,7 @@ EchoAppRender.FloatingPaneManager = EchoCore.extend({
     /**
      * Creates a new Floating Pane Manager.
      */
-    initialize: function() {
+    $construct: function() {
         this._floatingPanes = null;
         this._listeners = null;
     },
@@ -420,7 +420,7 @@ EchoAppRender.FloatingPaneManager = EchoCore.extend({
 
 EchoAppRender.TriCellTable = EchoCore.extend({
 
-    global: {
+    $static: {
         
         INVERTED: 1,
         VERTICAL: 2,
@@ -468,7 +468,7 @@ EchoAppRender.TriCellTable = EchoCore.extend({
         }
     },
     
-    globalInitialize: function() {
+    $staticConstruct: function() {
         this._tablePrototype = this._createTablePrototype(); 
     },
 
@@ -498,7 +498,7 @@ EchoAppRender.TriCellTable = EchoCore.extend({
      *        The margin size between the combination
      *        of elements 0 and 1 and element 2.
      */
-    initialize: function(orientation0_1, margin0_1, orientation01_2, margin01_2) {
+    $construct: function(orientation0_1, margin0_1, orientation01_2, margin01_2) {
         this.tableElement = EchoAppRender.TriCellTable._tablePrototype.cloneNode(true);
         this.tbodyElement = this.tableElement.firstChild;
         
