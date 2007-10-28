@@ -44,7 +44,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             return;
         }
-        this._sanitizeInput();
+        this.sanitizeInput();
         this.component.setProperty("text", e.registeredTarget.value);
     },
     
@@ -60,7 +60,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     		WebCore.DOM.preventEventDefault(e);
             return true;
         }
-        this._sanitizeInput();
+        this.sanitizeInput();
         
         // Store last updated text in local value, to ensure that we do not attempt to
         // reset it to this value in renderUpdate() and miss any characters that were
@@ -101,7 +101,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
         return false; // Child elements not supported: safe to return false.
     },
     
-    _sanitizeInput: function() {
+    sanitizeInput: function() {
         var maximumLength = this.component.getRenderProperty("maximumLength", -1);
         if (maximumLength >= 0) {
             if (this._textComponentElement.value && this._textComponentElement.value.length > maximumLength) {
@@ -162,7 +162,7 @@ EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
         parentElement.appendChild(this._textComponentElement);
     },
 
-    _sanitizeInput: function() {
+    sanitizeInput: function() {
         // allow all input
     }
 });

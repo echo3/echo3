@@ -12,7 +12,7 @@ EchoAppRender.CompositeSync = Core.extend(EchoRender.ComponentSync, {
         
         var componentCount = this.component.getComponentCount();
         if (componentCount > 0) {
-            this._renderStyle(this._divElement);
+            this.renderStyle(this._divElement);
             for (var i = 0; i < componentCount; ++i) {
                 var child = this.component.getComponent(i);
                 EchoRender.renderComponentAdd(update, child, this._divElement);
@@ -22,7 +22,7 @@ EchoAppRender.CompositeSync = Core.extend(EchoRender.ComponentSync, {
         parentElement.appendChild(this._divElement);
     },
     
-    _renderStyle: function(element) {
+    renderStyle: function(element) {
         EchoAppRender.Color.renderFB(this.component, element);
         EchoAppRender.Font.renderDefault(this.component, element);
     },
@@ -46,8 +46,8 @@ EchoRender.ComponentSync.Panel = Core.extend(EchoAppRender.CompositeSync, {
         EchoRender.registerPeer("Panel", this);
     },
 
-    _renderStyle: function(element) {
-        EchoAppRender.CompositeSync.prototype._renderStyle.call(this, element);
+    renderStyle: function(element) {
+        EchoAppRender.CompositeSync.prototype.renderStyle.call(this, element);
         EchoAppRender.Border.render(this.component.getRenderProperty("border"), element);
         EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, element, "padding");
     }

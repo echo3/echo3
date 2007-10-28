@@ -151,7 +151,12 @@ Core = {
     
     inherit: function(destination, source) {
         for (var name in source) {
-             destination[name] = source[name];
+            // Verify that inherited item does not exist in destination if it begins with
+            // an underscore ("_"), which is used to indicate an internal variable name.
+            if (name.charAt(0) == "_" && destination[name]) {
+                throw new Error("Interval variable \"" + name + "\" already exists in destination object.");
+            }
+            destination[name] = source[name];
         }
     },
     

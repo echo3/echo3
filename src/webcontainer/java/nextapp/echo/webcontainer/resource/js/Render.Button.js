@@ -58,7 +58,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         WebCore.EventProcessor.addSelectionDenialListener(this._divElement);
     },
     
-    _doAction: function() {
+    doAction: function() {
         this.component.doAction();
     },
     
@@ -99,7 +99,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
             return;
         }
         this.component.application.setFocusedComponent(this.component);
-        this._doAction();
+        this.doAction();
     },
     
     _processFocus: function(e) {
@@ -134,7 +134,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
             return true;
         }
         if (e.keyCode == 13) { // FIXME This will fail in IE (I think)
-            this._doAction();
+            this.doAction();
             return false;
         } else {
             return true;
@@ -210,7 +210,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
             this._divElement.style.overflow = "hidden";
         }
         
-        this._renderContent();
+        this.renderContent();
         
         if (this._enabled) {
             // Add event listeners for focus and mouseover.  When invoked, these listeners will register the full gamut
@@ -224,7 +224,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         parentElement.appendChild(this._divElement);
     },
     
-    _renderContent: function() {
+    renderContent: function() {
         var text = this.component.getRenderProperty("text");
         var icon = EchoAppRender.getEffectProperty(this.component, "icon", "disabledIcon", !this._enabled);
         if (text) {
@@ -380,11 +380,11 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
         this._stateElement = null;
     },
     
-    _createStateElement: function() { },
+    createStateElement: function() { },
     
-    _doAction: function() {
+    doAction: function() {
         this.setSelected(!this._selected);
-        EchoAppRender.ButtonSync.prototype._doAction.call(this);
+        EchoAppRender.ButtonSync.prototype.doAction.call(this);
     },
     
     renderAdd: function(update, parentElement) {
@@ -393,7 +393,7 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
         EchoAppRender.ButtonSync.prototype.renderAdd.call(this, update, parentElement);
     },
     
-    _getStateIcon: function() {
+    getStateIcon: function() {
         var icon;
         if (this._selected) {
             icon = EchoAppRender.getEffectProperty(this.component, "selectedStateIcon", "disabledSelectedStateIcon", 
@@ -405,10 +405,10 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
         return icon;
     },
     
-    _renderContent: function() {
+    renderContent: function() {
         var text = this.component.getRenderProperty("text");
         var icon = this.component.getRenderProperty("icon");
-        this._stateElement = this._createStateElement();
+        this._stateElement = this.createStateElement();
         
         var entityCount = (text ? 1 : 0) + (icon ? 1 : 0) + (this._stateElement ? 1 : 0);
         if (entityCount == 1) {
@@ -474,10 +474,10 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
         this._selected = newState;
         this.component.setProperty("selected", newState);
         
-        this._updateStateElement();
+        this.updateStateElement();
     },
     
-    _updateStateElement: function() {
+    updateStateElement: function() {
     }
 });
 
@@ -490,8 +490,8 @@ EchoAppRender.CheckBoxSync = Core.extend(EchoAppRender.ToggleButtonSync, {
         EchoRender.registerPeer("CheckBox", this);
     },
     
-    _createStateElement: function() {
-        var stateIcon = this._getStateIcon();
+    createStateElement: function() {
+        var stateIcon = this.getStateIcon();
         var stateElement;
         if (stateIcon) {
             stateElement = document.createElement("img");
@@ -506,11 +506,11 @@ EchoAppRender.CheckBoxSync = Core.extend(EchoAppRender.ToggleButtonSync, {
     },
     
     _processStateChange: function(e) {
-        this._updateStateElement();
+        this.updateStateElement();
     },
         
-    _updateStateElement: function() {
-        var stateIcon = this._getStateIcon();
+    updateStateElement: function() {
+        var stateIcon = this.getStateIcon();
         if (stateIcon) {
             this._stateElement.src = stateIcon.url;
         } else {
@@ -544,11 +544,11 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
         this._buttonGroup = null;
     },
 
-    _doAction: function() {
+    doAction: function() {
         if (this._buttonGroup) {
             this._buttonGroup.deselect();
         }
-        EchoAppRender.ToggleButtonSync.prototype._doAction.call(this);
+        EchoAppRender.ToggleButtonSync.prototype.doAction.call(this);
     },
     
     renderAdd: function(update, parentElement) {
@@ -565,8 +565,8 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
         EchoAppRender.ToggleButtonSync.prototype.renderAdd.call(this, update, parentElement);
     },
     
-    _createStateElement: function() {
-        var stateIcon = this._getStateIcon();
+    createStateElement: function() {
+        var stateIcon = this.getStateIcon();
         var stateElement;
         if (stateIcon) {
             stateElement = document.createElement("img");
@@ -582,7 +582,7 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
     },
     
     _processStateChange: function(e) {
-        this._updateStateElement();
+        this.updateStateElement();
     },
     
     renderDispose: function(update) {
@@ -596,8 +596,8 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
         }
     },
     
-    _updateStateElement: function() {
-        var stateIcon = this._getStateIcon();
+    updateStateElement: function() {
+        var stateIcon = this.getStateIcon();
         if (stateIcon) {
             this._stateElement.src = stateIcon.url;
         } else {
