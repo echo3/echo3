@@ -25,7 +25,7 @@ EchoClient = Core.extend({
     
     $staticConstruct: function() {
         // Register resize listener on containing window one time.
-        EchoWebCore.DOM.addEventListener(window, "resize", this._globalWindowResizeListener, false);
+        WebCore.DOM.addEventListener(window, "resize", this._globalWindowResizeListener, false);
     },
     
     /**
@@ -69,11 +69,11 @@ EchoClient = Core.extend({
     configure: function(application, domainElement) {
         if (this.application) {
             Core.Arrays.remove(EchoClient._activeClients, this);
-            EchoWebCore.EventProcessor.remove(this.domainElement, "keydown", 
+            WebCore.EventProcessor.remove(this.domainElement, "keydown", 
                     new Core.MethodRef(this, this._processKeyDown), false);
-            EchoWebCore.EventProcessor.remove(this.domainElement, "keypress", 
+            WebCore.EventProcessor.remove(this.domainElement, "keypress", 
                     new Core.MethodRef(this, this._processKeyPress), false);
-            EchoWebCore.EventProcessor.remove(this.domainElement, "keyup", 
+            WebCore.EventProcessor.remove(this.domainElement, "keyup", 
                     new Core.MethodRef(this, this._processKeyUp), false);
             this.application.removeFocusListener(new Core.MethodRef(this, this._processApplicationFocus));
         }
@@ -83,11 +83,11 @@ EchoClient = Core.extend({
     
         if (this.application) {
             this.application.addFocusListener(new Core.MethodRef(this, this._processApplicationFocus));
-            EchoWebCore.EventProcessor.add(this.domainElement, "keydown", 
+            WebCore.EventProcessor.add(this.domainElement, "keydown", 
                     new Core.MethodRef(this, this._processKeyDown), false);
-            EchoWebCore.EventProcessor.add(this.domainElement, "keyup", 
+            WebCore.EventProcessor.add(this.domainElement, "keyup", 
                     new Core.MethodRef(this, this._processKeyUp), false);
-            EchoWebCore.EventProcessor.add(this.domainElement, "keypress", 
+            WebCore.EventProcessor.add(this.domainElement, "keypress", 
                     new Core.MethodRef(this, this._processKeyPress), false);
             EchoClient._activeClients.push(this);
         }
@@ -160,7 +160,7 @@ EchoClient = Core.extend({
                 this.application.focusNext(e.shiftKey);
             }
             this._tabDown++;
-            EchoWebCore.DOM.preventEventDefault(e);
+            WebCore.DOM.preventEventDefault(e);
             return false; // Stop propagation.
         }
         return true; // Allow propagation.
@@ -179,7 +179,7 @@ EchoClient = Core.extend({
                 this.application.focusNext(e.shiftKey);
             }
             this._tabDown++;
-            EchoWebCore.DOM.preventEventDefault(e);
+            WebCore.DOM.preventEventDefault(e);
             return false; // Stop propagation.
         }
         return true; // Allow propagation.

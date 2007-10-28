@@ -17,7 +17,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
 
     _loadContainerSize: function() {
         //FIXME. the "parentnode.parentnode" business needs to go.
-        this._containerSize = new EchoWebCore.Measure.Bounds(this._windowPaneDivElement.parentNode.parentNode);
+        this._containerSize = new WebCore.Measure.Bounds(this._windowPaneDivElement.parentNode.parentNode);
     },
     
     processBorderMouseDown: function(e) {
@@ -26,8 +26,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
     
         // Prevent selections.
-        EchoWebCore.dragInProgress = true;
-        EchoWebCore.DOM.preventEventDefault(e);
+        WebCore.dragInProgress = true;
+        WebCore.DOM.preventEventDefault(e);
     
         this._loadContainerSize();
         this._dragInitX = this._windowX;
@@ -50,8 +50,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         var bodyElement = document.getElementsByTagName("body")[0];
     
-        EchoWebCore.EventProcessor.add(bodyElement, "mousemove", new Core.MethodRef(this, this.processBorderMouseMove), true);
-        EchoWebCore.EventProcessor.add(bodyElement, "mouseup", new Core.MethodRef(this, this.processBorderMouseUp), true);
+        WebCore.EventProcessor.add(bodyElement, "mousemove", new Core.MethodRef(this, this.processBorderMouseMove), true);
+        WebCore.EventProcessor.add(bodyElement, "mouseup", new Core.MethodRef(this, this.processBorderMouseUp), true);
     
         // Reduce opacity.   
         if (EchoAppRender.WindowPaneSync.adjustOpacity) {
@@ -79,9 +79,9 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     processBorderMouseUp: function(e) {
-        EchoWebCore.DOM.preventEventDefault(e);
+        WebCore.DOM.preventEventDefault(e);
         
-        EchoWebCore.dragInProgress = false;
+        WebCore.dragInProgress = false;
     
         // Set opaque.
         this._windowPaneDivElement.style.opacity = 1;
@@ -98,7 +98,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     	this._userWindowWidth = this._windowWidth;
     	this._userWindowHeight = this._windowHeight;
         
-        EchoWebCore.VirtualPosition.redraw(this._contentDivElement);
+        WebCore.VirtualPosition.redraw(this._contentDivElement);
         EchoRender.notifyResize(this.component);
     },
     
@@ -128,8 +128,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this.component.parent.peer.raise(this.component);
         
         // Prevent selections.
-        EchoWebCore.dragInProgress = true;
-        EchoWebCore.DOM.preventEventDefault(e);
+        WebCore.dragInProgress = true;
+        WebCore.DOM.preventEventDefault(e);
     
         this._loadContainerSize();
         this._dragInitX = this._windowX;
@@ -143,8 +143,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
         
         var bodyElement = document.getElementsByTagName("body")[0];
-        EchoWebCore.EventProcessor.add(bodyElement, "mousemove", new Core.MethodRef(this, this.processTitleBarMouseMove), true);
-        EchoWebCore.EventProcessor.add(bodyElement, "mouseup", new Core.MethodRef(this, this.processTitleBarMouseUp), true);
+        WebCore.EventProcessor.add(bodyElement, "mousemove", new Core.MethodRef(this, this.processTitleBarMouseMove), true);
+        WebCore.EventProcessor.add(bodyElement, "mouseup", new Core.MethodRef(this, this.processTitleBarMouseUp), true);
     },
     
     processTitleBarMouseMove: function(e) {
@@ -154,7 +154,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     processTitleBarMouseUp: function(e) {
-        EchoWebCore.dragInProgress = false;
+        WebCore.dragInProgress = false;
     
         // Set opaque.
         this._windowPaneDivElement.style.opacity = 1;
@@ -227,20 +227,20 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._borderDivElements[3].style.height = borderSideHeight + "px";
         this._borderDivElements[4].style.height = borderSideHeight + "px";   
         
-        EchoWebCore.VirtualPosition.redraw(this._contentDivElement);
+        WebCore.VirtualPosition.redraw(this._contentDivElement);
     },
     
     _removeBorderListeners: function() {
         var bodyElement = document.getElementsByTagName("body")[0];
-        EchoWebCore.EventProcessor.remove(bodyElement, "mousemove", new Core.MethodRef(this, this.processBorderMouseMove), true);
-        EchoWebCore.EventProcessor.remove(bodyElement, "mouseup", new Core.MethodRef(this, this.processBorderMouseUp), true);
+        WebCore.EventProcessor.remove(bodyElement, "mousemove", new Core.MethodRef(this, this.processBorderMouseMove), true);
+        WebCore.EventProcessor.remove(bodyElement, "mouseup", new Core.MethodRef(this, this.processBorderMouseUp), true);
     },
     
     _removeTitleBarListeners: function() {
         var bodyElement = document.getElementsByTagName("body")[0];
-        EchoWebCore.EventProcessor.remove(bodyElement, "mousemove",
+        WebCore.EventProcessor.remove(bodyElement, "mousemove",
                 new Core.MethodRef(this, this.processTitleBarMouseMove), true);
-        EchoWebCore.EventProcessor.remove(bodyElement, "mouseup", 
+        WebCore.EventProcessor.remove(bodyElement, "mouseup", 
                 new Core.MethodRef(this, this.processTitleBarMouseUp), true);
     },
     
@@ -475,7 +475,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         var icon = this.component.getRenderProperty("icon");
         if (icon) {
             var titleIconDivElement = document.createElement("div");
-            titleIconDivElement.style[EchoWebCore.Environment.CSS_FLOAT] = "left";
+            titleIconDivElement.style[WebCore.Environment.CSS_FLOAT] = "left";
             EchoAppRender.Insets.renderComponentProperty(this.component, "iconInsets", null, titleIconDivElement, "padding");
             this._titleBarDivElement.appendChild(titleIconDivElement);
             
@@ -488,7 +488,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (title) {
             var titleTextDivElement = document.createElement("div");
             if (icon) {
-                titleTextDivElement.style[EchoWebCore.Environment.CSS_FLOAT] = "left";
+                titleTextDivElement.style[WebCore.Environment.CSS_FLOAT] = "left";
             }
             titleTextDivElement.style.whiteSpace = "nowrap";
             EchoAppRender.Font.renderComponentProperty(this.component, "titleFont", null, titleTextDivElement);
@@ -502,7 +502,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (titleBarHeight) {
             this._titleBarHeight = EchoAppRender.Extent.toPixels(titleBarHeight);
         } else {
-            var titleMeasure = new EchoWebCore.Measure.Bounds(this._titleBarDivElement);
+            var titleMeasure = new WebCore.Measure.Bounds(this._titleBarDivElement);
             if (titleMeasure.height) {
                 this._titleBarHeight = titleMeasure.height;
             } else {
@@ -590,18 +590,18 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         // Register event listeners.
         
         if (closable) {
-    	    EchoWebCore.EventProcessor.add(this._windowPaneDivElement, "keydown", 
+    	    WebCore.EventProcessor.add(this._windowPaneDivElement, "keydown", 
     	            new Core.MethodRef(this, this.processKeyDown), false);
-    	    EchoWebCore.EventProcessor.add(this._closeDivElement, "click", 
+    	    WebCore.EventProcessor.add(this._closeDivElement, "click", 
     	            new Core.MethodRef(this, this._processCloseClick), false);
         }
         if (movable) {
-    	    EchoWebCore.EventProcessor.add(this._titleBarDivElement, "mousedown", 
+    	    WebCore.EventProcessor.add(this._titleBarDivElement, "mousedown", 
     	            new Core.MethodRef(this, this.processTitleBarMouseDown), true);
         }
         if (resizable) {
     	    for (var i = 0; i < this._borderDivElements.length; ++i) {
-    	        EchoWebCore.EventProcessor.add(this._borderDivElements[i], "mousedown", 
+    	        WebCore.EventProcessor.add(this._borderDivElements[i], "mousedown", 
     	                new Core.MethodRef(this, this.processBorderMouseDown), true);
     	    }
         }
@@ -618,21 +618,21 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
     renderDispose: function(update) { 
         for (var i = 0; i < this._borderDivElements.length; ++i) {
-            EchoWebCore.EventProcessor.removeAll(this._borderDivElements[i]);
+            WebCore.EventProcessor.removeAll(this._borderDivElements[i]);
             this._borderDivElements[i] = null;
         }
     
-        EchoWebCore.EventProcessor.removeAll(this._titleBarDivElement);
+        WebCore.EventProcessor.removeAll(this._titleBarDivElement);
         this._titleBarDivElement = null;
         
         if (this._closeDivElement) {
-            EchoWebCore.EventProcessor.removeAll(this._closeDivElement);
+            WebCore.EventProcessor.removeAll(this._closeDivElement);
             this._closeDivElement = null;
         }
         
         this._contentDivElement = null;
     
-        EchoWebCore.EventProcessor.removeAll(this._windowPaneDivElement);
+        WebCore.EventProcessor.removeAll(this._windowPaneDivElement);
         this._windowPaneDivElement = null;
     },
     
@@ -648,7 +648,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
             
         this.setPosition(this._userWindowX, this._userWindowY, this._userWindowWidth, this._userWindowHeight);
-        EchoWebCore.VirtualPosition.redraw(this._contentDivElement);
+        WebCore.VirtualPosition.redraw(this._contentDivElement);
     },
     
     renderUpdate: function(update) {

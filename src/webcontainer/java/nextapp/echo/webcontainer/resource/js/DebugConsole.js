@@ -9,7 +9,7 @@ EchoDebugConsole = {
         if (EchoDebugConsole._installed) {
             return;
         }
-        EchoWebCore.DOM.addEventListener(document, "keydown", EchoDebugConsole._keyListener, false);
+        WebCore.DOM.addEventListener(document, "keydown", EchoDebugConsole._keyListener, false);
         Core.Debug.consoleWrite = EchoDebugConsole._consoleWrite;
         EchoDebugConsole._installed = true;
     },
@@ -68,14 +68,14 @@ EchoDebugConsole = {
         clearButtonElement.style.cursor = "pointer";
         clearButtonElement.appendChild(document.createTextNode("[clear]"));
         titleBarElement.appendChild(clearButtonElement);
-        EchoWebCore.DOM.addEventListener(clearButtonElement, "click", EchoDebugConsole._clearListener, false);
+        WebCore.DOM.addEventListener(clearButtonElement, "click", EchoDebugConsole._clearListener, false);
         
         var closeButtonElement = document.createElement("span");
         closeButtonElement.style.padding = "0px 0px 0px 20px";
         closeButtonElement.style.cursor = "pointer";
         closeButtonElement.appendChild(document.createTextNode("[close]"));
         titleBarElement.appendChild(closeButtonElement);
-        EchoWebCore.DOM.addEventListener(closeButtonElement, "click", EchoDebugConsole._closeListener, false);
+        WebCore.DOM.addEventListener(closeButtonElement, "click", EchoDebugConsole._closeListener, false);
     
         EchoDebugConsole._contentElement = document.createElement("div");
         EchoDebugConsole._contentElement.style.fontFamily = "monospace";

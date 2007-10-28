@@ -464,7 +464,7 @@ EchoRender.RootSync = Core.extend(EchoRender.ComponentSync, {
     renderUpdate: function(update) {
         var fullRender = false;
         if (update.hasAddedChildren() || update.hasRemovedChildren()) {
-            EchoWebCore.DOM.removeAllChildren(this.client.domainElement);
+            WebCore.DOM.removeAllChildren(this.client.domainElement);
             for (var i = 0; i < update.parent.children.length; ++i) {
                 EchoRender.renderComponentAdd(update, update.parent.children[i], this.client.domainElement);
             }

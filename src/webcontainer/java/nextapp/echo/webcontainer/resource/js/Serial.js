@@ -293,7 +293,7 @@ EchoSerial.addPropertyTranslator("map", EchoSerial.PropertyTranslator.Map);
 EchoSerial.PropertyTranslator.Alignment = {
 
     toProperty: function(client, propertyElement) {
-        var element = EchoWebCore.DOM.getChildElementByTagName(propertyElement, "a");
+        var element = WebCore.DOM.getChildElementByTagName(propertyElement, "a");
         var h, v;
         switch (element.getAttribute("h")) {
         case "leading":  h = EchoApp.Alignment.LEADING;  break;
@@ -325,7 +325,7 @@ EchoSerial.PropertyTranslator.Border = {
         if (value) {
             return new EchoApp.Border(value);
         } else {
-            var element = EchoWebCore.DOM.getChildElementByTagName(propertyElement, "b");
+            var element = WebCore.DOM.getChildElementByTagName(propertyElement, "b");
             var sides = [];
             
             value = element.getAttribute("t");
@@ -391,7 +391,7 @@ EchoSerial.addPropertyTranslator("Extent", EchoSerial.PropertyTranslator.Extent)
 EchoSerial.PropertyTranslator.FillImage = {
 
     toProperty: function(client, propertyElement) {
-        var element = EchoWebCore.DOM.getChildElementByTagName(propertyElement, "fi");
+        var element = WebCore.DOM.getChildElementByTagName(propertyElement, "fi");
         return this._parseElement(client, element);
     },
     
@@ -421,7 +421,7 @@ EchoSerial.addPropertyTranslator("FillImage", EchoSerial.PropertyTranslator.Fill
 EchoSerial.PropertyTranslator.FillImageBorder = {
 
     toProperty: function(client, propertyElement) {
-        var element = EchoWebCore.DOM.getChildElementByTagName(propertyElement, "fib");
+        var element = WebCore.DOM.getChildElementByTagName(propertyElement, "fib");
         return EchoSerial.PropertyTranslator.FillImageBorder._parseElement(client, element);
     },
     
@@ -461,8 +461,8 @@ EchoSerial.addPropertyTranslator("FillImageBorder", EchoSerial.PropertyTranslato
 EchoSerial.PropertyTranslator.Font = {
 
     toProperty: function(client, propertyElement) {
-        var element = EchoWebCore.DOM.getChildElementByTagName(propertyElement, "f");
-        var tfElements = EchoWebCore.DOM.getChildElementsByTagName(element, "tf");
+        var element = WebCore.DOM.getChildElementByTagName(propertyElement, "f");
+        var tfElements = WebCore.DOM.getChildElementsByTagName(element, "tf");
         var typefaces = null;
         if (tfElements.length > 0) {
             typefaces = new Array(tfElements.length);

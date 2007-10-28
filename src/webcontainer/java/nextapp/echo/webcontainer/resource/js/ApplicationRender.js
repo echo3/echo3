@@ -154,7 +154,7 @@ EchoAppRender.Extent = {
         if (extent == null) {
             return 0;
         } else {
-            return EchoWebCore.Measure.extentToPixels(extent.value, extent.units, horizontal);
+            return WebCore.Measure.extentToPixels(extent.value, extent.units, horizontal);
         }
     }
 };
@@ -171,7 +171,7 @@ EchoAppRender.FillImage = {
         
         var url = fillImage.image ? fillImage.image.url : "";
         
-        if (EchoWebCore.Environment.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED &&
+        if (WebCore.Environment.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED &&
                 flags && (flags & this.FLAG_ENABLE_IE_PNG_ALPHA_FILTER)) {
             // IE6 PNG workaround required.
             element.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" 
@@ -312,10 +312,10 @@ EchoAppRender.Insets = {
     
     toPixels: function(insets) {
         return {
-            top: EchoWebCore.Measure.extentToPixels(insets.top.value, insets.top.units, false),
-            right: EchoWebCore.Measure.extentToPixels(insets.right.value, insets.right.units, true),
-            bottom: EchoWebCore.Measure.extentToPixels(insets.bottom.value, insets.bottom.units, false),
-            left: EchoWebCore.Measure.extentToPixels(insets.left.value, insets.left.units, true)
+            top: WebCore.Measure.extentToPixels(insets.top.value, insets.top.units, false),
+            right: WebCore.Measure.extentToPixels(insets.right.value, insets.right.units, true),
+            bottom: WebCore.Measure.extentToPixels(insets.bottom.value, insets.bottom.units, false),
+            left: WebCore.Measure.extentToPixels(insets.left.value, insets.left.units, true)
         };
     }
 };

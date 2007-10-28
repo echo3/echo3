@@ -11,7 +11,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
 
     _processChange: function(e) {
         if (!this.client.verifyInput(this.component)) {
-            EchoWebCore.DOM.preventEventDefault(e);
+            WebCore.DOM.preventEventDefault(e);
             return;
         }
         var selectElement = e.registeredTarget;
@@ -73,13 +73,13 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             }
         }
         
-        EchoWebCore.EventProcessor.add(this._selectElement, "change", new Core.MethodRef(this, this._processChange), false);
+        WebCore.EventProcessor.add(this._selectElement, "change", new Core.MethodRef(this, this._processChange), false);
         
         parentElement.appendChild(this._selectElement);
     },
     
     renderDispose: function(update) { 
-        EchoWebCore.EventProcessor.removeAll(this._selectElement);
+        WebCore.EventProcessor.removeAll(this._selectElement);
         this._selectElement = null;
     },
     

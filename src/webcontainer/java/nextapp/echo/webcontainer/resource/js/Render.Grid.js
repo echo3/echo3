@@ -351,7 +351,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._tableElement, "padding");
     
         var width = this.component.getRenderProperty("width");
-        if (width && EchoWebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.units == "%") {
+        if (width && WebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.units == "%") {
             this._renderPercentWidthByMeasure = width.value;
             width = null;
         }
@@ -381,7 +381,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                 if (width.units == "%") {
                     colElement.width = width.toString();
                 } else {
-                    colElement.width = EchoWebCore.Measure.extentToPixels(width.value, width.units, true);
+                    colElement.width = WebCore.Measure.extentToPixels(width.value, width.units, true);
                 }
             }
             colGroupElement.appendChild(colElement);

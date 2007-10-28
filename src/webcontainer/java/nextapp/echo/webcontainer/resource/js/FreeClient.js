@@ -45,7 +45,7 @@ EchoFreeClient = Core.extend(EchoClient, {
      * This method must be invoked before the client is initially used.
      */
     init: function() {
-        EchoWebCore.init();
+        WebCore.init();
         this._autoUpdate = new EchoFreeClient.AutoUpdate(this);
         this.application.updateManager.addUpdateListener(new Core.MethodRef(this, this._processUpdate));
         Core.Scheduler.add(this._autoUpdate);
@@ -59,7 +59,7 @@ EchoFreeClient = Core.extend(EchoClient, {
      * @param url the URL from which the StyleSheet should be fetched.
      */
     loadStyleSheet: function(url) {
-        var conn = new EchoWebCore.HttpConnection(url, "GET");
+        var conn = new WebCore.HttpConnection(url, "GET");
         conn.addResponseListener(new Core.MethodRef(this, this._processStyleSheet));
         conn.connect();
     },

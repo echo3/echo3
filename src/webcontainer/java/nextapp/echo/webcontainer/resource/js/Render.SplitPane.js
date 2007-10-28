@@ -27,10 +27,10 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                 if (this.layoutData) {
                     var extent;
                     extent = this.layoutData.getProperty("minimumSize");
-                    this.minimumSize = extent ? EchoWebCore.Measure.extentToPixels(extent.value, extent.units, 
+                    this.minimumSize = extent ? WebCore.Measure.extentToPixels(extent.value, extent.units, 
                             !splitPanePeer._orientationVertical) : 0;
                     extent = this.layoutData.getProperty("maximumSize");
-                    this.maximumSize = extent ? EchoWebCore.Measure.extentToPixels(extent.value, extent.units, 
+                    this.maximumSize = extent ? WebCore.Measure.extentToPixels(extent.value, extent.units, 
                             !splitPanePeer._orientationVertical) : null;
                 } else {
                     this.minimumSize = 100;
@@ -76,7 +76,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
         
         if (this._separatorDivElement) {
-            EchoWebCore.EventProcessor.remove(this._separatorDivElement, "mousedown", new Core.MethodRef(this,
+            WebCore.EventProcessor.remove(this._separatorDivElement, "mousedown", new Core.MethodRef(this,
                     this._processSeparatorMouseDown), false);
             this._separatorDivElement = null;
         }
@@ -144,9 +144,9 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             return;
         }
     
-        EchoWebCore.DOM.preventEventDefault(e);
+        WebCore.DOM.preventEventDefault(e);
         
-        EchoWebCore.dragInProgress = true;
+        WebCore.dragInProgress = true;
     
         this._dragInitPosition = this._separatorPosition;
         if (this._orientationVertical) {
@@ -156,9 +156,9 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
         
         var bodyElement = document.getElementsByTagName("body")[0];
-        EchoWebCore.EventProcessor.add(bodyElement, "mousemove", 
+        WebCore.EventProcessor.add(bodyElement, "mousemove", 
                 new Core.MethodRef(this, this._processSeparatorMouseMove), true);
-        EchoWebCore.EventProcessor.add(bodyElement, "mouseup", 
+        WebCore.EventProcessor.add(bodyElement, "mouseup", 
                 new Core.MethodRef(this, this._processSeparatorMouseUp), true);
     },
     
@@ -182,9 +182,9 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _processSeparatorMouseUp: function(e) {
-        EchoWebCore.DOM.preventEventDefault(e);
+        WebCore.DOM.preventEventDefault(e);
         
-        EchoWebCore.dragInProgress = false;
+        WebCore.dragInProgress = false;
     
         this._removeSeparatorListeners();
         this.component.setProperty("separatorPosition", new EchoApp.Extent(this._separatorPosition));
@@ -194,10 +194,10 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._userSeparatorPosition = this._separatorPosition;
     
         if (this._firstPaneDivElement) {
-            EchoWebCore.VirtualPosition.redraw(this._firstPaneDivElement);
+            WebCore.VirtualPosition.redraw(this._firstPaneDivElement);
         }
         if (this._secondPaneDivElement) {
-            EchoWebCore.VirtualPosition.redraw(this._secondPaneDivElement);
+            WebCore.VirtualPosition.redraw(this._secondPaneDivElement);
         }
     
         EchoRender.notifyResize(this.component);
@@ -278,9 +278,9 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     
     _removeSeparatorListeners: function() {
         var bodyElement = document.getElementsByTagName("body")[0];
-        EchoWebCore.EventProcessor.remove(bodyElement, "mousemove", 
+        WebCore.EventProcessor.remove(bodyElement, "mousemove", 
                 new Core.MethodRef(this, this._processSeparatorMouseMove), true);
-        EchoWebCore.EventProcessor.remove(bodyElement, "mouseup", 
+        WebCore.EventProcessor.remove(bodyElement, "mouseup", 
                 new Core.MethodRef(this, this._processSeparatorMouseUp), true);
     },
     
@@ -358,7 +358,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         parentElement.appendChild(this._splitPaneDivElement);
         
         if (this._resizable) {
-            EchoWebCore.EventProcessor.add(this._separatorDivElement, "mousedown", new Core.MethodRef(this,
+            WebCore.EventProcessor.add(this._separatorDivElement, "mousedown", new Core.MethodRef(this,
                     this._processSeparatorMouseDown), false);
         }
     },
@@ -456,26 +456,26 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._childPanes[index] = null;
         switch (index) {
         case 0:
-            EchoWebCore.DOM.removeNode(this._firstPaneDivElement);
+            WebCore.DOM.removeNode(this._firstPaneDivElement);
             this._firstPaneDivElement = null;
             break;
         case 1:
-            EchoWebCore.DOM.removeNode(this._secondPaneDivElement);
+            WebCore.DOM.removeNode(this._secondPaneDivElement);
             this._secondPaneDivElement = null;
             break;
         }
     },
         
     renderDisplay: function() {
-        EchoWebCore.VirtualPosition.redraw(this._splitPaneDivElement);
+        WebCore.VirtualPosition.redraw(this._splitPaneDivElement);
         if (this.component.getRenderProperty("resizable")) {
             this._setSeparatorPosition(this._userSeparatorPosition);
         }
         if (this._firstPaneDivElement) {
-            EchoWebCore.VirtualPosition.redraw(this._firstPaneDivElement);
+            WebCore.VirtualPosition.redraw(this._firstPaneDivElement);
         }
         if (this._secondPaneDivElement) {
-            EchoWebCore.VirtualPosition.redraw(this._secondPaneDivElement);
+            WebCore.VirtualPosition.redraw(this._secondPaneDivElement);
         }
     },
     

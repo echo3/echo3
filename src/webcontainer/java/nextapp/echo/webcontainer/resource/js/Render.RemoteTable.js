@@ -42,7 +42,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         this._tableElement = document.createElement("table");
         
         var width = this.component.getRenderProperty("width");
-        if (width && EchoWebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.units == "%") {
+        if (width && WebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.units == "%") {
             this._renderPercentWidthByMeasure = width.value;
             width = null;
         }
@@ -56,7 +56,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         var border = this.component.getRenderProperty("border");
         if (border) {
             EchoAppRender.Border.render(border, this._tableElement);
-            if (border.size && !EchoWebCore.Environment.QUIRK_CSS_BORDER_COLLAPSE_INSIDE) {
+            if (border.size && !WebCore.Environment.QUIRK_CSS_BORDER_COLLAPSE_INSIDE) {
                 this._tableElement.style.margin = (EchoAppRender.Extent.toPixels(border.size, false) / 2) + "px";
             }
         }
@@ -69,13 +69,13 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         if (this.component.getRenderProperty("columnWidth")) {
             // If any column widths are set, render colgroup.
             var columnPixelAdjustment;
-            if (EchoWebCore.Environment.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING) {
+            if (WebCore.Environment.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING) {
                 var pixelInsets = EchoAppRender.Insets.toPixels(this._defaultInsets);
                 columnPixelAdjustment = pixelInsets.left + pixelInsets.right;
             }
             
             var colGroupElement = document.createElement("colgroup");
-            var renderRelative = !EchoWebCore.Environment.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS;
+            var renderRelative = !WebCore.Environment.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS;
             for (var i = 0; i < this._columnCount; ++i) {
                 var colElement = document.createElement("col");
                 var width = this.component.getRenderIndexedProperty("columnWidth", i); 
@@ -83,7 +83,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
                     if (width.units == "%") {
                         colElement.width = width.value + (renderRelative ? "*" : "%");
                     } else {
-                        var columnPixels = EchoWebCore.Measure.extentToPixels(width.value, width.units, true);
+                        var columnPixels = WebCore.Measure.extentToPixels(width.value, width.units, true);
                         if (columnPixelAdjustment) {
                             colElement.width = columnPixels - columnPixelAdjustment;
                         } else {
@@ -234,7 +234,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
                 trElement = trElement.nextSibling;
             }
             while (trElement) {
-                EchoWebCore.EventProcessor.removeAll(trElement);
+                WebCore.EventProcessor.removeAll(trElement);
                 trElement = trElement.nextSibling;
             }
         }
@@ -315,7 +315,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             if (this._rowCount == 0) {
                 return;
             }
-            var mouseEnterLeaveSupport = EchoWebCore.Environment.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
+            var mouseEnterLeaveSupport = WebCore.Environment.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
             var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
             var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
             var rowOffset = (this._headerVisible ? 1 : 0);
@@ -326,12 +326,12 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
                 var trElement = this._tableElement.rows[rowIndex + rowOffset];
                 if (this._rolloverEnabled) {
-                    EchoWebCore.EventProcessor.add(trElement, enterEvent, rolloverEnterRef, false);
-                    EchoWebCore.EventProcessor.add(trElement, exitEvent, rolloverExitRef, false);
+                    WebCore.EventProcessor.add(trElement, enterEvent, rolloverEnterRef, false);
+                    WebCore.EventProcessor.add(trElement, exitEvent, rolloverExitRef, false);
                 }
                 if (this._selectionEnabled) {
-                    EchoWebCore.EventProcessor.add(trElement, "click", clickRef, false);
-                    EchoWebCore.EventProcessor.addSelectionDenialListener(trElement);
+                    WebCore.EventProcessor.add(trElement, "click", clickRef, false);
+                    WebCore.EventProcessor.addSelectionDenialListener(trElement);
                 }
             }
         }    
@@ -352,7 +352,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             return;
         }
         
-        EchoWebCore.DOM.preventEventDefault(e);
+        WebCore.DOM.preventEventDefault(e);
     
         if (this.selectionModel.getSelectionMode() == EchoApp.ListSelectionModel.SINGLE_SELECTION 
                 || !(e.shiftKey || e.ctrlKey || e.metaKey || e.altKey)) {

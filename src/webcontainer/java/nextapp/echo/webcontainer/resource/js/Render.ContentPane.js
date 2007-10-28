@@ -100,7 +100,7 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
     renderDisplay: function() {
         var child = this._divElement.firstChild;
         while (child) {
-            EchoWebCore.VirtualPosition.redraw(child);
+            WebCore.VirtualPosition.redraw(child);
             child = child.nextSibling;
         }
     

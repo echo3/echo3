@@ -27,7 +27,7 @@ EchoBoot = {
      * @param serverBaseUrl the servlet URL
      */
     boot: function(serverBaseUrl, debug) {
-        EchoWebCore.init();
+        WebCore.init();
         
         if (window.EchoDebugConsole) {
             EchoDebugConsole.install();

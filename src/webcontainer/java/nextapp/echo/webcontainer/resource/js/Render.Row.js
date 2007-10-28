@@ -36,13 +36,13 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         switch (e.keyCode) {
         case 37:
             if (this.component.application.focusManager.focusNextChild(this.component, true)) {
-                EchoWebCore.DOM.preventEventDefault(e);
+                WebCore.DOM.preventEventDefault(e);
                 return false;
             }
             break;
         case 39:
             if (this.component.application.focusManager.focusNextChild(this.component, false)) {
-                EchoWebCore.DOM.preventEventDefault(e);
+                WebCore.DOM.preventEventDefault(e);
                 return false;
             }
             break;
@@ -76,7 +76,7 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
             this._renderAddChild(update, child);
         }
         
-        EchoWebCore.EventProcessor.add(this._divElement, "keydown", new Core.MethodRef(this, this.processKeyDown), false);
+        WebCore.EventProcessor.add(this._divElement, "keydown", new Core.MethodRef(this, this.processKeyDown), false);
         
         parentElement.appendChild(this._divElement);
     },
@@ -161,7 +161,7 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderDispose: function(update) { 
-        EchoWebCore.EventProcessor.remove(this._divElement, "keydown", new Core.MethodRef(this, this.processKeyDown), false);
+        WebCore.EventProcessor.remove(this._divElement, "keydown", new Core.MethodRef(this, this.processKeyDown), false);
         this._divElement = null;
         this._trElement = null;
         this._childIdToElementMap = null;

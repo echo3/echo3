@@ -11,13 +11,13 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
         switch (e.keyCode) {
         case 38:
             if (this.component.application.focusManager.focusNextChild(this.component, true)) {
-                EchoWebCore.DOM.preventEventDefault(e);
+                WebCore.DOM.preventEventDefault(e);
                 return false;
             }
             break;
         case 40:
             if (this.component.application.focusManager.focusNextChild(this.component, false)) {
-                EchoWebCore.DOM.preventEventDefault(e);
+                WebCore.DOM.preventEventDefault(e);
                 return false;
             }
             break;
@@ -51,7 +51,7 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
             this._renderAddChild(update, child);
         }
         
-        EchoWebCore.EventProcessor.add(this._divElement, "keydown", new Core.MethodRef(this, this.processKeyDown), false);
+        WebCore.EventProcessor.add(this._divElement, "keydown", new Core.MethodRef(this, this.processKeyDown), false);
         
         parentElement.appendChild(this._divElement);
     },
@@ -127,7 +127,7 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderDispose: function(update) { 
-        EchoWebCore.EventProcessor.remove(this._divElement, "keydown", new Core.MethodRef(this, this.processKeyDown), false);
+        WebCore.EventProcessor.remove(this._divElement, "keydown", new Core.MethodRef(this, this.processKeyDown), false);
         this._divElement = null;
         this._childIdToElementMap = null;
         this._spacingPrototype = null;

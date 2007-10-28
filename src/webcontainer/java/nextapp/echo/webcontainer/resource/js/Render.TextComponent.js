@@ -30,13 +30,13 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _addEventHandlers: function() {
-        EchoWebCore.EventProcessor.add(this._textComponentElement, "click", new Core.MethodRef(this, this._processClick), false);
-        EchoWebCore.EventProcessor.add(this._textComponentElement, "blur", new Core.MethodRef(this, this._processBlur), false);
-        EchoWebCore.EventProcessor.add(this._textComponentElement, "keyup", new Core.MethodRef(this, this._processKeyUp), false);
+        WebCore.EventProcessor.add(this._textComponentElement, "click", new Core.MethodRef(this, this._processClick), false);
+        WebCore.EventProcessor.add(this._textComponentElement, "blur", new Core.MethodRef(this, this._processBlur), false);
+        WebCore.EventProcessor.add(this._textComponentElement, "keyup", new Core.MethodRef(this, this._processKeyUp), false);
     },
     
     renderDispose: function(update) {
-        EchoWebCore.EventProcessor.removeAll(this._textComponentElement);
+        WebCore.EventProcessor.removeAll(this._textComponentElement);
         this._textComponentElement = null;
     },
     
@@ -57,7 +57,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     
     _processKeyUp: function(e) {
         if (!this.client.verifyInput(this.component)) {
-    		EchoWebCore.DOM.preventEventDefault(e);
+    		WebCore.DOM.preventEventDefault(e);
             return true;
         }
         this._sanitizeInput();
@@ -76,7 +76,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderFocus: function() {
-        EchoWebCore.DOM.focusElement(this._textComponentElement);
+        WebCore.DOM.focusElement(this._textComponentElement);
     },
     
     renderUpdate: function(update) {

@@ -399,7 +399,7 @@ TestApp.Tests.WindowPane.prototype._setTitleNull = function() {
 
 init = function() {
     Core.Debug.consoleElement = document.getElementById("debugconsole");
-    EchoWebCore.init();
+    WebCore.init();
 
     var app = new TestApp();
     var client = new EchoFreeClient(app, document.getElementById("rootArea"));

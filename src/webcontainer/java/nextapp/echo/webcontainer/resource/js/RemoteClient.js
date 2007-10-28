@@ -36,7 +36,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
      * @param serverUrl the URL of the server
      */
     $construct: function(serverUrl) {
-        EchoWebCore.init();
+        WebCore.init();
     
         EchoClient.prototype.$construct.call(this);
         
@@ -336,7 +336,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
     /**
      * Process a response to a client-server synchronization.
      * 
-     * @param {EchoWebCore.HttpConnection.ResponseEvent} e the HttpConnection response event
+     * @param {WebCore.HttpConnection.ResponseEvent} e the HttpConnection response event
      */
     _processSyncResponse: function(e) {
         // Remove wait indicator from scheduling (if wait indicator has not been presented yet, it will not be).
@@ -416,7 +416,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
     
         this._asyncManager._stop();    
         this._syncInitTime = new Date().getTime();
-        var conn = new EchoWebCore.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST", 
+        var conn = new WebCore.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST", 
                 this._clientMessage._renderXml(), "text/xml");
         this._clientMessage = null;
         conn.addResponseListener(new Core.MethodRef(this, this._processSyncResponse));
@@ -460,7 +460,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
      * it has any updates that need to be pushed to the client.
      */
     _pollServerForUpdates: function() {
-        var conn = new EchoWebCore.HttpConnection(this._client.getServiceUrl("Echo.AsyncMonitor"), "GET");
+        var conn = new WebCore.HttpConnection(this._client.getServiceUrl("Echo.AsyncMonitor"), "GET");
         conn.addResponseListener(new Core.MethodRef(this, this._processPollResponse));
         conn.connect();
     },
@@ -471,7 +471,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
      * server immediately.  The server will push any updates into the reciprocated server message.
      * If no action is required, the next polling interval will be scheduled.
      * 
-     * @param {EchoWebCore.HttpConnection.ResponseEvent} e the poll response event 
+     * @param {WebCore.HttpConnection.ResponseEvent} e the poll response event 
      */
     _processPollResponse: function(e) {
         var responseDocument = e.source.getResponseXml();
@@ -558,7 +558,7 @@ EchoRemoteClient.ClientMessage = Core.extend({
         this._client = client;
         this._componentIdToPropertyMap = {};
         
-        this._document = EchoWebCore.DOM.createDocument("http://www.nextapp.com/products/echo/svrmsg/clientmessage.3.0", "cmsg");
+        this._document = WebCore.DOM.createDocument("http://www.nextapp.com/products/echo/svrmsg/clientmessage.3.0", "cmsg");
         if (initialize) {
             this._document.documentElement.setAttribute("t", "init");
             this._renderClientProperties();
@@ -647,7 +647,7 @@ EchoRemoteClient.ClientMessage = Core.extend({
         properties._add("navigatorPlatform", window.navigator.platform);
         properties._add("navigatorUserAgent", window.navigator.userAgent);
         
-        var env = EchoWebCore.Environment;
+        var env = WebCore.Environment;
         properties._add("browserOpera", env.BROWSER_OPERA);
         properties._add("browserSafari", env.BROWSER_SAFARI);
         properties._add("browserKonqueror", env.BROWSER_KONQUEROR);
@@ -980,9 +980,9 @@ EchoRemoteClient.ServerMessage = Core.extend({
     
     process: function() {
         // Processing phase 1: load libraries.
-        var libsElement = EchoWebCore.DOM.getChildElementByTagName(this.document.documentElement, "libs");
+        var libsElement = WebCore.DOM.getChildElementByTagName(this.document.documentElement, "libs");
         if (libsElement) {
-            var libraryGroup = new EchoWebCore.Library.Group();
+            var libraryGroup = new WebCore.Library.Group();
             var element = libsElement.firstChild;
             while (element) {
                 if (element.nodeType == 1) {
@@ -1007,9 +1007,9 @@ EchoRemoteClient.ServerMessage = Core.extend({
     _processPostLibraryLoad: function() {
         EchoClient.profilingTimer.mark("lib"); // Library Loading
         // Processing phase 2: invoke directives.
-        var groupElements = EchoWebCore.DOM.getChildElementsByTagName(this.document.documentElement, "group");
+        var groupElements = WebCore.DOM.getChildElementsByTagName(this.document.documentElement, "group");
         for (var i = 0; i < groupElements.length; ++i) {
-            var dirElements = EchoWebCore.DOM.getChildElementsByTagName(groupElements[i], "dir");
+            var dirElements = WebCore.DOM.getChildElementsByTagName(groupElements[i], "dir");
             for (var j = 0; j < dirElements.length; ++j) {
                 var procName = dirElements[j].getAttribute("proc");
                 var processor = this._processorInstances[procName];
@@ -1092,7 +1092,7 @@ EchoRemoteClient.DefaultWaitIndicator = Core.extend(EchoRemoteClient.WaitIndicat
         // Divide this value by 30, so the range goes from 2/3 to 0 to 2/3.
         // Subtract that value from 1, so the range goes from 1/3 to 1 and back.
         var opacityValue = 1 - ((Math.abs((this._opacity % 40) - 20)) / 30);
-        if (!EchoWebCore.Environment.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
+        if (!WebCore.Environment.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
     	    this._divElement.style.opacity = opacityValue;
         }
     }

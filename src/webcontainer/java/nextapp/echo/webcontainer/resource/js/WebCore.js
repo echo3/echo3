@@ -23,7 +23,7 @@
  * @class
  * Namespace for Web Core.  Non-instantiable object.
  */
-EchoWebCore = { 
+WebCore = { 
 
     /**
      * Flag indicating that a drag-and-drop operation is in process.
@@ -38,26 +38,26 @@ EchoWebCore = {
      * Initializes the web core.  This method must be executed prior to using any Web Core capabilities.
      */
     init: function() { 
-        if (EchoWebCore.initialized) {
+        if (WebCore.initialized) {
             // Already initialized.
             return;
         }
     
-        EchoWebCore.Environment._init();
-        EchoWebCore.Measure._calculateExtentSizes();
-        if (EchoWebCore.Environment.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY) {
+        WebCore.Environment._init();
+        WebCore.Measure._calculateExtentSizes();
+        if (WebCore.Environment.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY) {
             // Enable virtual positioning.
-            EchoWebCore.VirtualPosition._init();
+            WebCore.VirtualPosition._init();
         }
     
-        if (EchoWebCore.Environment.BROWSER_INTERNET_EXPLORER) {
-            EchoWebCore.DOM.addEventListener(document, "selectstart", EchoWebCore._selectStartListener, false);
+        if (WebCore.Environment.BROWSER_INTERNET_EXPLORER) {
+            WebCore.DOM.addEventListener(document, "selectstart", WebCore._selectStartListener, false);
             // Set documentElement.style.overflow to hidden in order to hide root scrollbar in IE.
             // This is a non-standard CSS property.
             document.documentElement.style.overflow = "hidden";
         }
         
-        EchoWebCore.initialized = true;
+        WebCore.initialized = true;
     },
     
     /**
@@ -68,8 +68,8 @@ EchoWebCore = {
      */
     _selectStartListener: function(e) {
         e = e ? e : window.event;
-        if (EchoWebCore.dragInProgress) {
-            EchoWebCore.DOM.preventEventDefault(e);
+        if (WebCore.dragInProgress) {
+            WebCore.DOM.preventEventDefault(e);
         }
     }
 };
@@ -79,7 +79,7 @@ EchoWebCore = {
  * DOM manipulation utility method namespace.
  * Do not instantiate.
  */
-EchoWebCore.DOM = {
+WebCore.DOM = {
 
     /**
      * Adds an event listener to an object, using the client's supported event 
@@ -141,7 +141,7 @@ EchoWebCore.DOM = {
      * @param {Element} the DOM element to focus
      */
     focusElement: function(element) {
-        if (EchoWebCore.Environment.QUIRK_DELAYED_FOCUS_REQUIRED) {
+        if (WebCore.Environment.QUIRK_DELAYED_FOCUS_REQUIRED) {
             Core.Scheduler.run(new Core.MethodRef(window, this._focusElementImpl, element));
         } else {
             this._focusElementImpl(element);
@@ -313,7 +313,7 @@ EchoWebCore.DOM = {
             // not in DOM tree
             return;
         }
-        if (EchoWebCore.Environment.QUIRK_PERFORMANCE_LARGE_DOM_REMOVE) {
+        if (WebCore.Environment.QUIRK_PERFORMANCE_LARGE_DOM_REMOVE) {
             this._removeNodeRecursive(node);
         } else {
             parentNode.removeChild(node);
@@ -361,7 +361,7 @@ EchoWebCore.DOM = {
  * Provides information about the web browser environment.
  * Non-instantiable class.
  */
-EchoWebCore.Environment = {
+WebCore.Environment = {
 
     /**
      * Performs initial analysis of environment.
@@ -503,7 +503,7 @@ EchoWebCore.Environment = {
  * This implementation relies on the fact that all event listeners will be registered
  * through it.
  */
-EchoWebCore.EventProcessor = {
+WebCore.EventProcessor = {
     
     /**
      * The next element identifier.
@@ -537,16 +537,16 @@ EchoWebCore.EventProcessor = {
             alert(eventType + eventTarget);
         }
         if (!element.__eventProcessorId) {
-            element.__eventProcessorId = ++EchoWebCore.EventProcessor._nextId;
+            element.__eventProcessorId = ++WebCore.EventProcessor._nextId;
         }
     
         var listenerList;
-        if (element == EchoWebCore.EventProcessor._lastElement && capture == EchoWebCore.EventProcessor._lastCapture) {
-            listenerList = EchoWebCore.EventProcessor._lastListenerList; 
+        if (element == WebCore.EventProcessor._lastElement && capture == WebCore.EventProcessor._lastCapture) {
+            listenerList = WebCore.EventProcessor._lastListenerList; 
         } else {
             // Obtain correct id->ListenerList mapping based on capture parameter.
-            var listenerMap = capture ? EchoWebCore.EventProcessor._capturingListenerMap 
-                                      : EchoWebCore.EventProcessor._bubblingListenerMap;
+            var listenerMap = capture ? WebCore.EventProcessor._capturingListenerMap 
+                                      : WebCore.EventProcessor._bubblingListenerMap;
             
             // Obtain ListenerList based on element id.                              
             listenerList = listenerMap.map[element.__eventProcessorId];
@@ -556,9 +556,9 @@ EchoWebCore.EventProcessor = {
                 listenerMap.map[element.__eventProcessorId] = listenerList;
             }
             
-            EchoWebCore.EventProcessor._lastElement = element;
-            EchoWebCore.EventProcessor._lastCapture = capture;
-            EchoWebCore.EventProcessor._lastListenerList = listenerList;
+            WebCore.EventProcessor._lastElement = element;
+            WebCore.EventProcessor._lastCapture = capture;
+            WebCore.EventProcessor._lastListenerList = listenerList;
         }
     
         // Add event handler to the ListenerList.
@@ -566,7 +566,7 @@ EchoWebCore.EventProcessor = {
     
         // Register event listener on DOM element.
         // FIXME...not handling multiple listeners of same type!
-        EchoWebCore.DOM.addEventListener(element, eventType, EchoWebCore.EventProcessor._processEvent, false);
+        WebCore.DOM.addEventListener(element, eventType, WebCore.EventProcessor._processEvent, false);
     },
     
     /**
@@ -576,12 +576,12 @@ EchoWebCore.EventProcessor = {
      * when the element is to be disposed.
      * 
      * @param {Element} element the element on which to forbid text selection
-     * @see EchoWebCore.EventProcessor#removeSelectionDenialListener
+     * @see WebCore.EventProcessor#removeSelectionDenialListener
      */
     addSelectionDenialListener: function(element) {
-        EchoWebCore.EventProcessor.add(element, "mousedown", EchoWebCore.EventProcessor._selectionDenialHandler, false);
-        if (EchoWebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
-            EchoWebCore.EventProcessor.add(element, "selectstart", EchoWebCore.EventProcessor._selectionDenialHandler, false);
+        WebCore.EventProcessor.add(element, "mousedown", WebCore.EventProcessor._selectionDenialHandler, false);
+        if (WebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
+            WebCore.EventProcessor.add(element, "selectstart", WebCore.EventProcessor._selectionDenialHandler, false);
         }
     },
     
@@ -616,7 +616,7 @@ EchoWebCore.EventProcessor = {
         
         // Fire event to capturing listeners.
         for (var i = elementAncestry.length - 1; i >= 0; --i) {
-            listenerList = EchoWebCore.EventProcessor._capturingListenerMap.map[elementAncestry[i].__eventProcessorId];
+            listenerList = WebCore.EventProcessor._capturingListenerMap.map[elementAncestry[i].__eventProcessorId];
             if (listenerList) {
                 // Set registered target on event.
                 e.registeredTarget = elementAncestry[i];
@@ -633,7 +633,7 @@ EchoWebCore.EventProcessor = {
         if (propagate) {
             // Fire event to bubbling listeners.
             for (var i = 0; i < elementAncestry.length; ++i) {
-                listenerList = EchoWebCore.EventProcessor._bubblingListenerMap.map[elementAncestry[i].__eventProcessorId];
+                listenerList = WebCore.EventProcessor._bubblingListenerMap.map[elementAncestry[i].__eventProcessorId];
                 // Set registered target on event.
                 e.registeredTarget = elementAncestry[i];
                 if (listenerList) {
@@ -651,7 +651,7 @@ EchoWebCore.EventProcessor = {
         if (!propagate) {
             //FIXME Possibly always invoke this to avoid bug #71 propagation issue.
             // Inform DOM to stop propagation of event.
-            EchoWebCore.DOM.stopEventPropagation(e);
+            WebCore.DOM.stopEventPropagation(e);
         }
     },
     
@@ -665,7 +665,7 @@ EchoWebCore.EventProcessor = {
      *        the bubbling phase
      */
     remove: function(element, eventType, eventTarget, capture) {
-        EchoWebCore.EventProcessor._lastElement = null;
+        WebCore.EventProcessor._lastElement = null;
         
         if (!element.__eventProcessorId) {
             return;
@@ -673,11 +673,11 @@ EchoWebCore.EventProcessor = {
     
         // Unregister event listener on DOM element.
         // FIXME...not handling multiple listeners of same type!
-        EchoWebCore.DOM.removeEventListener(element, eventType, EchoWebCore.EventProcessor._processEvent, false);
+        WebCore.DOM.removeEventListener(element, eventType, WebCore.EventProcessor._processEvent, false);
     
         // Obtain correct id->ListenerList mapping based on capture parameter.
-        var listenerMap = capture ? EchoWebCore.EventProcessor._capturingListenerMap 
-                                  : EchoWebCore.EventProcessor._bubblingListenerMap;
+        var listenerMap = capture ? WebCore.EventProcessor._capturingListenerMap 
+                                  : WebCore.EventProcessor._bubblingListenerMap;
     
         // Obtain ListenerList based on element id.                              
         var listenerList = listenerMap.map[element.__eventProcessorId];
@@ -702,8 +702,8 @@ EchoWebCore.EventProcessor = {
         if (!element.__eventProcessorId) {
             return;
         }
-        EchoWebCore.EventProcessor._removeAllImpl(element, EchoWebCore.EventProcessor._capturingListenerMap);
-        EchoWebCore.EventProcessor._removeAllImpl(element, EchoWebCore.EventProcessor._bubblingListenerMap);
+        WebCore.EventProcessor._removeAllImpl(element, WebCore.EventProcessor._capturingListenerMap);
+        WebCore.EventProcessor._removeAllImpl(element, WebCore.EventProcessor._bubblingListenerMap);
     },
     
     /**
@@ -712,7 +712,7 @@ EchoWebCore.EventProcessor = {
      * 
      * @param {Element} the element
      * @param {Core.Arrays.LargeMap} the map from which the listeners should be removed, either
-     *        EchoWebCore.EventProcessor._capturingListenerMap or EchoWebCore.EventProcessor._bubblingListenerMap
+     *        WebCore.EventProcessor._capturingListenerMap or WebCore.EventProcessor._bubblingListenerMap
      * @private
      */
     _removeAllImpl: function(element, listenerMap) {
@@ -723,7 +723,7 @@ EchoWebCore.EventProcessor = {
     
         var types = listenerList.getListenerTypes();
         for (var i = 0; i < types.length; ++i) {
-            EchoWebCore.DOM.removeEventListener(element, types[i], EchoWebCore.EventProcessor._processEvent, false); 
+            WebCore.DOM.removeEventListener(element, types[i], WebCore.EventProcessor._processEvent, false); 
         }
         
         listenerMap.remove(element.__eventProcessorId);
@@ -733,12 +733,12 @@ EchoWebCore.EventProcessor = {
      * Removes a selection denial listener.
      * 
      * @param element the element from which to remove the selection denial listener
-     * @see EchoWebCore.EventProcessor#addSelectionDenialListener
+     * @see WebCore.EventProcessor#addSelectionDenialListener
      */
     removeSelectionDenialListener: function(element) {
-        EchoWebCore.EventProcessor.remove(element, "mousedown", EchoWebCore.EventProcessor._selectionDenialHandler, false);
-        if (EchoWebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
-            EchoWebCore.EventProcessor.remove(element, "selectstart", EchoWebCore.EventProcessor._selectionDenialHandler, false);
+        WebCore.EventProcessor.remove(element, "mousedown", WebCore.EventProcessor._selectionDenialHandler, false);
+        if (WebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
+            WebCore.EventProcessor.remove(element, "selectstart", WebCore.EventProcessor._selectionDenialHandler, false);
         }
     },
     
@@ -749,7 +749,7 @@ EchoWebCore.EventProcessor = {
      * @private
      */
     _selectionDenialHandler: function(e) {
-        EchoWebCore.DOM.preventEventDefault(e);
+        WebCore.DOM.preventEventDefault(e);
     },
     
     /**
@@ -760,8 +760,8 @@ EchoWebCore.EventProcessor = {
      * @type String
      */
     $toString: function() {
-        return "Capturing: " + EchoWebCore.EventProcessor._capturingListenerMap + "\n"
-                + "Bubbling: " + EchoWebCore.EventProcessor._bubblingListenerMap;
+        return "Capturing: " + WebCore.EventProcessor._capturingListenerMap + "\n"
+                + "Bubbling: " + WebCore.EventProcessor._bubblingListenerMap;
     }
 };
 
@@ -771,7 +771,7 @@ EchoWebCore.EventProcessor = {
  * platform wrapper for XMLHttpRequest and additionally allows method
  * reference-based listener registration.  
  */
-EchoWebCore.HttpConnection = Core.extend({
+WebCore.HttpConnection = Core.extend({
 
     $static: {
     
@@ -784,7 +784,7 @@ EchoWebCore.HttpConnection = Core.extend({
             // FIXME Current "valid" flag for 2XX responses is probably a horrible idea.
             /**
              * Creates a new response event
-             * @param source {EchoWebCore.HttpConnection} the connection which fired the event
+             * @param source {WebCore.HttpConnection} the connection which fired the event
              * @param valid {Boolean} a flag indicating a valid 2XX response was received
              * 
              * @constructor
@@ -921,9 +921,9 @@ EchoWebCore.HttpConnection = Core.extend({
                 // 0 included as a valid response code for non-served applications.
                 var valid = this._xmlHttpRequest.status == 0 ||  
                         (this._xmlHttpRequest.status >= 200 && this._xmlHttpRequest.status <= 299);
-                responseEvent = new EchoWebCore.HttpConnection.ResponseEvent(this, valid);
+                responseEvent = new WebCore.HttpConnection.ResponseEvent(this, valid);
             } catch (ex) {
-                responseEvent = new EchoWebCore.HttpConnection.ResponseEvent(this, false);
+                responseEvent = new WebCore.HttpConnection.ResponseEvent(this, false);
                 responseEvent.exception = ex;
             }
             
@@ -947,7 +947,7 @@ EchoWebCore.HttpConnection = Core.extend({
  * Utilities for dynamically loading additional script libraries.
  * Non-instantiable class. 
  */
-EchoWebCore.Library = {
+WebCore.Library = {
 
     /**
      * Set of loaded libraries (keys are library urls, value is true when library has been loaded).
@@ -982,12 +982,12 @@ EchoWebCore.Library = {
          * @param libraryUrl the URL from which to retrieve the library.
          */
         add: function(libraryUrl) {
-            if (EchoWebCore.Library._loadedLibraries[libraryUrl]) {
+            if (WebCore.Library._loadedLibraries[libraryUrl]) {
                 // Library already loaded: ignore.
                 return;
             }
             
-            var libraryItem = new EchoWebCore.Library._Item(this, libraryUrl);
+            var libraryItem = new WebCore.Library._Item(this, libraryUrl);
             this._libraries.push(libraryItem);
         },
         
@@ -1087,7 +1087,7 @@ EchoWebCore.Library = {
         /**
          * Creates a new library item.
          * 
-         * @param {EchoWebCore.Library.Group} group the library group in which the item is contained
+         * @param {WebCore.Library.Group} group the library group in which the item is contained
          * @param {String} url the URL from which the library may be retrieved
          * @constructor
          */
@@ -1099,7 +1099,7 @@ EchoWebCore.Library = {
         /**
          * Event listener for response from the HttpConnection used to retrive the library.
          * 
-         * @param {EchoWebCore.HttpConnection.ResponseEvent} e the event
+         * @param {WebCore.HttpConnection.ResponseEvent} e the event
          * @private
          */
         _retrieveListener: function(e) {
@@ -1116,7 +1116,7 @@ EchoWebCore.Library = {
          * @private
          */
         _install: function() {
-            EchoWebCore.Library._loadedLibraries[this._url] = true;
+            WebCore.Library._loadedLibraries[this._url] = true;
             if (this._content == null) {
                 throw new Error("Attempt to install library when no content has been loaded.");
             }
@@ -1131,7 +1131,7 @@ EchoWebCore.Library = {
          * it will return before the library has been retrieved.
          */
         _retrieve: function() {
-            var conn = new EchoWebCore.HttpConnection(this._url, "GET");
+            var conn = new WebCore.HttpConnection(this._url, "GET");
             conn.addResponseListener(new Core.MethodRef(this, this._retrieveListener));
             conn.connect();
         }
@@ -1143,7 +1143,7 @@ EchoWebCore.Library = {
  * Namespace for measuring-related operations.
  * Do not instantiate.  
  */
-EchoWebCore.Measure = { 
+WebCore.Measure = { 
 
     /** Size of one inch in horizontal pixels. */
     _hInch: 96,
@@ -1175,16 +1175,16 @@ EchoWebCore.Measure = {
         if (!units || units == "px") {
             return value;
         }
-        var dpi = horizontal ? EchoWebCore.Measure._hInch : EchoWebCore.Measure._vInch;
+        var dpi = horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch;
         switch (units) {
         case "%":  return 0;
-        case "in": return value * (horizontal ? EchoWebCore.Measure._hInch : EchoWebCore.Measure._vInch);
-        case "cm": return value * (horizontal ? EchoWebCore.Measure._hInch : EchoWebCore.Measure._vInch) / 2.54;
-        case "mm": return value * (horizontal ? EchoWebCore.Measure._hInch : EchoWebCore.Measure._vInch) / 25.4;
-        case "pt": return value * (horizontal ? EchoWebCore.Measure._hInch : EchoWebCore.Measure._vInch) / 72;
-        case "pc": return value * (horizontal ? EchoWebCore.Measure._hInch : EchoWebCore.Measure._vInch) / 6;
-        case "em": return value * (horizontal ? EchoWebCore.Measure._hEm   : EchoWebCore.Measure._vEm);
-        case "ex": return value * (horizontal ? EchoWebCore.Measure._hEx   : EchoWebCore.Measure._vEx);
+        case "in": return value * (horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch);
+        case "cm": return value * (horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch) / 2.54;
+        case "mm": return value * (horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch) / 25.4;
+        case "pt": return value * (horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch) / 72;
+        case "pc": return value * (horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch) / 6;
+        case "em": return value * (horizontal ? WebCore.Measure._hEm   : WebCore.Measure._vEm);
+        case "ex": return value * (horizontal ? WebCore.Measure._hEx   : WebCore.Measure._vEx);
         }
     },
 
@@ -1201,24 +1201,24 @@ EchoWebCore.Measure = {
         inchDiv4.style.width = "4in";
         inchDiv4.style.height = "4in";
         containerElement.appendChild(inchDiv4);
-        EchoWebCore.Measure._hInch = inchDiv4.offsetWidth / 4;
-        EchoWebCore.Measure._vInch = inchDiv4.offsetHeight / 4;
+        WebCore.Measure._hInch = inchDiv4.offsetWidth / 4;
+        WebCore.Measure._vInch = inchDiv4.offsetHeight / 4;
         containerElement.removeChild(inchDiv4);
         
         var emDiv24 = document.createElement("div");
         emDiv24.style.width = "24em";
         emDiv24.style.height = "24em";
         containerElement.appendChild(emDiv24);
-        EchoWebCore.Measure._hEm = emDiv24.offsetWidth / 24;
-        EchoWebCore.Measure._vEm = emDiv24.offsetHeight / 24;
+        WebCore.Measure._hEm = emDiv24.offsetWidth / 24;
+        WebCore.Measure._vEm = emDiv24.offsetHeight / 24;
         containerElement.removeChild(emDiv24);
         
         var exDiv24 = document.createElement("div");
         exDiv24.style.width = "24ex";
         exDiv24.style.height = "24ex";
         containerElement.appendChild(exDiv24);
-        EchoWebCore.Measure._hEx = exDiv24.offsetWidth / 24;
-        EchoWebCore.Measure._vEx = exDiv24.offsetHeight / 24;
+        WebCore.Measure._hEx = exDiv24.offsetWidth / 24;
+        WebCore.Measure._vEx = exDiv24.offsetHeight / 24;
         containerElement.removeChild(exDiv24);
     },
     
@@ -1282,11 +1282,11 @@ EchoWebCore.Measure = {
             var rendered = testElement == document;
             
             // Create off-screen div element for evaluating sizes if necessary.
-            if (!EchoWebCore.Measure.Bounds._offscreenDiv) {
-                EchoWebCore.Measure.Bounds._offscreenDiv = document.createElement("div");
-                EchoWebCore.Measure.Bounds._offscreenDiv.style.cssText 
+            if (!WebCore.Measure.Bounds._offscreenDiv) {
+                WebCore.Measure.Bounds._offscreenDiv = document.createElement("div");
+                WebCore.Measure.Bounds._offscreenDiv.style.cssText 
                         = "position: absolute; top: -1700px; left: -1300px; width: 1600px; height: 1200px;";
-                document.body.appendChild(EchoWebCore.Measure.Bounds._offscreenDiv);
+                document.body.appendChild(WebCore.Measure.Bounds._offscreenDiv);
             }
         
             var parentNode, nextSibling;
@@ -1304,7 +1304,7 @@ EchoWebCore.Measure = {
                 }
                 
                 // Append element to measuring container DIV.
-                EchoWebCore.Measure.Bounds._offscreenDiv.appendChild(element);
+                WebCore.Measure.Bounds._offscreenDiv.appendChild(element);
             }
             
             // Store  width and height of element.
@@ -1323,7 +1323,7 @@ EchoWebCore.Measure = {
             
             if (!rendered) {
                 // Replace off-screen measured element in previous location.
-                EchoWebCore.Measure.Bounds._offscreenDiv.removeChild(element);
+                WebCore.Measure.Bounds._offscreenDiv.removeChild(element);
                 if (parentNode) {
                     parentNode.insertBefore(element, nextSibling);
                 }
@@ -1331,8 +1331,8 @@ EchoWebCore.Measure = {
             
             // Determine top and left positions of element if rendered on-screen.
             if (rendered) {
-                var cumulativeOffset = EchoWebCore.Measure._getCumulativeOffset(element);
-                var scrollOffset = EchoWebCore.Measure._getScrollOffset(element);
+                var cumulativeOffset = WebCore.Measure._getCumulativeOffset(element);
+                var scrollOffset = WebCore.Measure._getScrollOffset(element);
         
                 /**
                  * The top coordinate of the element, in pixels relative to the upper-left corner of the interior of the window.
@@ -1374,7 +1374,7 @@ EchoWebCore.Measure = {
  * must be invoked whenever the size of the element should be redrawn,
  * e.g., when the screen or its containing element resizes.
  */
-EchoWebCore.VirtualPosition = {
+WebCore.VirtualPosition = {
 
     _OFFSETS_VERTICAL: ["paddingTop", "paddingBottom", "marginTop", "marginBottom", "borderTopWidth", "borderBottomWidth"],
             
