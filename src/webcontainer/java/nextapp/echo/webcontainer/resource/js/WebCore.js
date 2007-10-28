@@ -142,7 +142,7 @@ EchoWebCore.DOM = {
      */
     focusElement: function(element) {
         if (EchoWebCore.Environment.QUIRK_DELAYED_FOCUS_REQUIRED) {
-            EchoCore.Scheduler.run(new EchoCore.MethodRef(window, this._focusElementImpl, element));
+            Core.Scheduler.run(new Core.MethodRef(window, this._focusElementImpl, element));
         } else {
             this._focusElementImpl(element);
         }
@@ -429,7 +429,7 @@ EchoWebCore.Environment = {
                 this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
                 
                 // Enable 'garbage collection' on large associative arrays to avoid memory leak.
-                EchoCore.Arrays.LargeMap.garbageCollectEnabled = true;
+                Core.Arrays.LargeMap.garbageCollectEnabled = true;
             }
         } else if (this.BROWSER_MOZILLA) {
             if (this.BROWSER_FIREFOX) {
@@ -493,7 +493,7 @@ EchoWebCore.Environment = {
  * DOM events across incompatible browser platforms.
  * <p>
  * <b>Object-oriented events:</b>  
- * This implementation provides the capability to register EchoCore.MethodRef-based
+ * This implementation provides the capability to register Core.MethodRef-based
  * listeners, allowing event processing methods of specific object instances to 
  * be invoked (i.e., preserving the 'this' pointer).
  * <p>
@@ -513,15 +513,15 @@ EchoWebCore.EventProcessor = {
     
     /**
      * Mapping between element ids and ListenerLists containing listeners to invoke during capturing phase.
-     * @type EchoCore.Arrays.LargeMap
+     * @type Core.Arrays.LargeMap
      */
-    _capturingListenerMap: new EchoCore.Arrays.LargeMap(),
+    _capturingListenerMap: new Core.Arrays.LargeMap(),
     
     /**
      * Mapping between element ids and ListenerLists containing listeners to invoke during bubbling phase.
-     * @type EchoCore.Arrays.LargeMap
+     * @type Core.Arrays.LargeMap
      */
-    _bubblingListenerMap: new EchoCore.Arrays.LargeMap(),
+    _bubblingListenerMap: new Core.Arrays.LargeMap(),
     
     /**
      * Registers an event handler.
@@ -552,7 +552,7 @@ EchoWebCore.EventProcessor = {
             listenerList = listenerMap.map[element.__eventProcessorId];
             if (!listenerList) {
                 // Create new ListenerList if none exists.
-                listenerList = new EchoCore.ListenerList();
+                listenerList = new Core.ListenerList();
                 listenerMap.map[element.__eventProcessorId] = listenerList;
             }
             
@@ -711,7 +711,7 @@ EchoWebCore.EventProcessor = {
      * Removes all capturing or bubbling listeners from a specific element
      * 
      * @param {Element} the element
-     * @param {EchoCore.Arrays.LargeMap} the map from which the listeners should be removed, either
+     * @param {Core.Arrays.LargeMap} the map from which the listeners should be removed, either
      *        EchoWebCore.EventProcessor._capturingListenerMap or EchoWebCore.EventProcessor._bubblingListenerMap
      * @private
      */
@@ -771,7 +771,7 @@ EchoWebCore.EventProcessor = {
  * platform wrapper for XMLHttpRequest and additionally allows method
  * reference-based listener registration.  
  */
-EchoWebCore.HttpConnection = EchoCore.extend({
+EchoWebCore.HttpConnection = Core.extend({
 
     $static: {
     
@@ -779,7 +779,7 @@ EchoWebCore.HttpConnection = EchoCore.extend({
          * @class
          * An event which indicates a response has been received to a connection
          */
-        ResponseEvent: EchoCore.extend({
+        ResponseEvent: Core.extend({
         
             // FIXME Current "valid" flag for 2XX responses is probably a horrible idea.
             /**
@@ -791,7 +791,7 @@ EchoWebCore.HttpConnection = EchoCore.extend({
              */
             $construct: function(source, valid) {
                 //FIXME h4x0r3d up!
-                EchoCore.Event.prototype.$construct.call(this, "response", source);
+                Core.Event.prototype.$construct.call(this, "response", source);
                 this.valid = valid;
             }
         })
@@ -814,13 +814,13 @@ EchoWebCore.HttpConnection = EchoCore.extend({
         this._method = method;
         this._messageObject = messageObject;
         this._disposed = false;
-        this._listenerList = new EchoCore.ListenerList();
+        this._listenerList = new Core.ListenerList();
     },
     
     /**
      * Adds a response listener to be notified when a response is received from the connection.
      * 
-     * @param l the listener to add (may be a Function or EchoCore.MethodRef)
+     * @param l the listener to add (may be a Function or Core.MethodRef)
      */
     addResponseListener: function(l) {
         this._listenerList.addListener("response", l);
@@ -935,7 +935,7 @@ EchoWebCore.HttpConnection = EchoCore.extend({
     /**
      * Adds a response listener to be notified when a response is received from the connection.
      * 
-     * @param l the listener to add (may be a Function or EchoCore.MethodRef)
+     * @param l the listener to add (may be a Function or Core.MethodRef)
      */
     removeResponseListener: function(l) {
         this._listenerList.removeListener("response", l);
@@ -962,14 +962,14 @@ EchoWebCore.Library = {
      * invoked to add libraries to the group (without regard for the order in which the 
      * HTTP server returns the library code).
      */
-    Group: EchoCore.extend({
+    Group: Core.extend({
     
         /**
          * Creates a new library group.
          * @constructor 
          */
         $construct: function() {
-            this._listenerList = new EchoCore.ListenerList();
+            this._listenerList = new Core.ListenerList();
             this._libraries = [];
             this._loadedCount = 0;
             this._totalCount = 0;
@@ -994,7 +994,7 @@ EchoWebCore.Library = {
         /**
          * Adds a listener to be notified when all libraries in the group have been loaded.
          *
-         * @param l the listener to add (may be a Function or EchoCore.MethodRef)
+         * @param l the listener to add (may be a Function or Core.MethodRef)
          */
         addLoadListener: function(l) {
             this._listenerList.addListener("load", l);
@@ -1006,7 +1006,7 @@ EchoWebCore.Library = {
          * @private
          */
         _fireLoadEvent: function() {
-            var e = new EchoCore.Event("load", this);
+            var e = new Core.Event("load", this);
             this._listenerList.fireEvent(e);
         },
         
@@ -1069,7 +1069,7 @@ EchoWebCore.Library = {
         /**
          * Removes a listener from being notified when all libraries in the group have been loaded.
          *
-         * @param l the listener to remove (may be a Function or EchoCore.MethodRef)
+         * @param l the listener to remove (may be a Function or Core.MethodRef)
          */
         removeLoadListener: function(l) {
             this._listenerList.removeListener("load", l);
@@ -1082,7 +1082,7 @@ EchoWebCore.Library = {
      * 
      * @private 
      */    
-    _Item: EchoCore.extend({
+    _Item: Core.extend({
     
         /**
          * Creates a new library item.
@@ -1132,7 +1132,7 @@ EchoWebCore.Library = {
          */
         _retrieve: function() {
             var conn = new EchoWebCore.HttpConnection(this._url, "GET");
-            conn.addResponseListener(new EchoCore.MethodRef(this, this._retrieveListener));
+            conn.addResponseListener(new Core.MethodRef(this, this._retrieveListener));
             conn.connect();
         }
     })
@@ -1266,7 +1266,7 @@ EchoWebCore.Measure = {
      * the element will be temporarily removed from its hierarchy and placed in an
      * off-screen buffer for measuring.
      */
-    Bounds: EchoCore.extend({
+    Bounds: Core.extend({
 
         /**
          * Creates a new Bounds object to calculate the size and/or position of an element.

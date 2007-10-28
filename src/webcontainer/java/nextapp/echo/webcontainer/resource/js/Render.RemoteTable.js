@@ -3,7 +3,7 @@
 /**
  * Component rendering peer: RemoteTable
  */
-EchoAppRender.RemoteTableSync = EchoCore.extend(EchoRender.ComponentSync, {
+EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
     
     $static: {
     
@@ -209,7 +209,7 @@ EchoAppRender.RemoteTableSync = EchoCore.extend(EchoRender.ComponentSync, {
     
     renderUpdate: function(update) {
     	if (!update.hasUpdatedLayoutDataChildren() && !update.getAddedChildren() && !update.getRemovedChildren()) {
-    		if (EchoCore.Arrays.containsAll(EchoAppRender.RemoteTableSync._supportedPartialProperties, update.getUpdatedPropertyNames(), true)) {
+    		if (Core.Arrays.containsAll(EchoAppRender.RemoteTableSync._supportedPartialProperties, update.getUpdatedPropertyNames(), true)) {
     		    // partial update
     			var selectionUpdate = update.getUpdatedProperty("selection");
     			if (selectionUpdate) {
@@ -319,9 +319,9 @@ EchoAppRender.RemoteTableSync = EchoCore.extend(EchoRender.ComponentSync, {
             var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
             var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
             var rowOffset = (this._headerVisible ? 1 : 0);
-            var rolloverEnterRef = new EchoCore.MethodRef(this, this._processRolloverEnter);
-            var rolloverExitRef = new EchoCore.MethodRef(this, this._processRolloverExit);
-            var clickRef = new EchoCore.MethodRef(this, this._processClick);
+            var rolloverEnterRef = new Core.MethodRef(this, this._processRolloverEnter);
+            var rolloverExitRef = new Core.MethodRef(this, this._processRolloverExit);
+            var clickRef = new Core.MethodRef(this, this._processClick);
             
             for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
                 var trElement = this._tableElement.rows[rowIndex + rowOffset];
@@ -339,7 +339,7 @@ EchoAppRender.RemoteTableSync = EchoCore.extend(EchoRender.ComponentSync, {
     
     _doAction: function() {
         //FIXME fire from component.
-        this.component.fireEvent(new EchoCore.Event("action", this.component));
+        this.component.fireEvent(new Core.Event("action", this.component));
     },
     
     _processClick: function(e) {

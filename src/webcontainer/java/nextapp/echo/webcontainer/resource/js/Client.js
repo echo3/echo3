@@ -1,7 +1,7 @@
 /**
  * Abstract base class for Echo clients.
  */
-EchoClient = EchoCore.extend({ 
+EchoClient = Core.extend({ 
     
     $static: {
 
@@ -68,27 +68,27 @@ EchoClient = EchoCore.extend({
      */
     configure: function(application, domainElement) {
         if (this.application) {
-            EchoCore.Arrays.remove(EchoClient._activeClients, this);
+            Core.Arrays.remove(EchoClient._activeClients, this);
             EchoWebCore.EventProcessor.remove(this.domainElement, "keydown", 
-                    new EchoCore.MethodRef(this, this._processKeyDown), false);
+                    new Core.MethodRef(this, this._processKeyDown), false);
             EchoWebCore.EventProcessor.remove(this.domainElement, "keypress", 
-                    new EchoCore.MethodRef(this, this._processKeyPress), false);
+                    new Core.MethodRef(this, this._processKeyPress), false);
             EchoWebCore.EventProcessor.remove(this.domainElement, "keyup", 
-                    new EchoCore.MethodRef(this, this._processKeyUp), false);
-            this.application.removeFocusListener(new EchoCore.MethodRef(this, this._processApplicationFocus));
+                    new Core.MethodRef(this, this._processKeyUp), false);
+            this.application.removeFocusListener(new Core.MethodRef(this, this._processApplicationFocus));
         }
         
         this.application = application;
         this.domainElement = domainElement;
     
         if (this.application) {
-            this.application.addFocusListener(new EchoCore.MethodRef(this, this._processApplicationFocus));
+            this.application.addFocusListener(new Core.MethodRef(this, this._processApplicationFocus));
             EchoWebCore.EventProcessor.add(this.domainElement, "keydown", 
-                    new EchoCore.MethodRef(this, this._processKeyDown), false);
+                    new Core.MethodRef(this, this._processKeyDown), false);
             EchoWebCore.EventProcessor.add(this.domainElement, "keyup", 
-                    new EchoCore.MethodRef(this, this._processKeyUp), false);
+                    new Core.MethodRef(this, this._processKeyUp), false);
             EchoWebCore.EventProcessor.add(this.domainElement, "keypress", 
-                    new EchoCore.MethodRef(this, this._processKeyPress), false);
+                    new Core.MethodRef(this, this._processKeyPress), false);
             EchoClient._activeClients.push(this);
         }
     },

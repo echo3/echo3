@@ -8,7 +8,7 @@ TestApp = function() {
     this.rootComponent.add(testScreen);
 };
 
-TestApp.prototype = EchoCore.derive(EchoApp.Application);
+TestApp.prototype = Core.derive(EchoApp.Application);
 
 TestApp.randomColor = function() {
     var colorValue = parseInt(Math.random() * 0x1000000).toString(16);
@@ -42,14 +42,14 @@ TestApp.TestScreen = function() {
     });
 };
 
-TestApp.TestScreen.prototype = EchoCore.derive(EchoApp.ContentPane);
+TestApp.TestScreen.prototype = Core.derive(EchoApp.ContentPane);
 
 TestApp.TestScreen.prototype.addTest = function(testName) {
     this.testSelectColumn.add(new EchoApp.Button({
         styleName: "Default",
         text: testName,
         events: {
-            action: new EchoCore.MethodRef(this, this._launchTest)
+            action: new Core.MethodRef(this, this._launchTest)
         }
     }));
 };
@@ -88,7 +88,7 @@ TestApp.TestPane = function() {
 
 this.component = null;
 
-TestApp.TestPane.prototype = EchoCore.derive(EchoApp.ContentPane);
+TestApp.TestPane.prototype = Core.derive(EchoApp.ContentPane);
 
 TestApp.TestPane.prototype.addTestButton = function(text, action) {
     this.controlsColumn.add(
@@ -121,25 +121,25 @@ TestApp.Tests.Column = function() {
     });
     this.content.add(this.column);
 
-    this.addTestButton("CellSpacing=0", new EchoCore.MethodRef(this, this._cellSpacing0));
-    this.addTestButton("CellSpacing=1", new EchoCore.MethodRef(this, this._cellSpacing1));
-    this.addTestButton("CellSpacing=5", new EchoCore.MethodRef(this, this._cellSpacing5));
-    this.addTestButton("CellSpacing=25", new EchoCore.MethodRef(this, this._cellSpacing25));
-    this.addTestButton("CellSpacing=null", new EchoCore.MethodRef(this, this._cellSpacingNull));
-    this.addTestButton("Add child, i=0", new EchoCore.MethodRef(this, this._addChild0));
-    this.addTestButton("Add child, i=1", new EchoCore.MethodRef(this, this._addChild1));
-    this.addTestButton("Add child, i=2", new EchoCore.MethodRef(this, this._addChild2));
-    this.addTestButton("Add child, i=END", new EchoCore.MethodRef(this, this._addChildEnd));
-    this.addTestButton("Remove child, i=0", new EchoCore.MethodRef(this, this._removeChild0));
-    this.addTestButton("Remove child, i=1", new EchoCore.MethodRef(this, this._removeChild1));
-    this.addTestButton("Remove child, i=2", new EchoCore.MethodRef(this, this._removeChild2));
-    this.addTestButton("Remove child, i=END", new EchoCore.MethodRef(this, this._removeChildEnd));
-    this.addTestButton("Set child background", new EchoCore.MethodRef(this, this._setChildBackground));
-    this.addTestButton("Set LayoutData Background, i = 0", new EchoCore.MethodRef(this, this._setLayoutDataBackground));
-    this.addTestButton("Set LayoutData Insets, i = 0", new EchoCore.MethodRef(this, this._setLayoutDataInsets));
+    this.addTestButton("CellSpacing=0", new Core.MethodRef(this, this._cellSpacing0));
+    this.addTestButton("CellSpacing=1", new Core.MethodRef(this, this._cellSpacing1));
+    this.addTestButton("CellSpacing=5", new Core.MethodRef(this, this._cellSpacing5));
+    this.addTestButton("CellSpacing=25", new Core.MethodRef(this, this._cellSpacing25));
+    this.addTestButton("CellSpacing=null", new Core.MethodRef(this, this._cellSpacingNull));
+    this.addTestButton("Add child, i=0", new Core.MethodRef(this, this._addChild0));
+    this.addTestButton("Add child, i=1", new Core.MethodRef(this, this._addChild1));
+    this.addTestButton("Add child, i=2", new Core.MethodRef(this, this._addChild2));
+    this.addTestButton("Add child, i=END", new Core.MethodRef(this, this._addChildEnd));
+    this.addTestButton("Remove child, i=0", new Core.MethodRef(this, this._removeChild0));
+    this.addTestButton("Remove child, i=1", new Core.MethodRef(this, this._removeChild1));
+    this.addTestButton("Remove child, i=2", new Core.MethodRef(this, this._removeChild2));
+    this.addTestButton("Remove child, i=END", new Core.MethodRef(this, this._removeChildEnd));
+    this.addTestButton("Set child background", new Core.MethodRef(this, this._setChildBackground));
+    this.addTestButton("Set LayoutData Background, i = 0", new Core.MethodRef(this, this._setLayoutDataBackground));
+    this.addTestButton("Set LayoutData Insets, i = 0", new Core.MethodRef(this, this._setLayoutDataInsets));
 };
 
-TestApp.Tests.Column.prototype = EchoCore.derive(TestApp.TestPane);
+TestApp.Tests.Column.prototype = Core.derive(TestApp.TestPane);
 
 TestApp.Tests.Column.prototype._cellSpacing0 = function() {
     this.column.setProperty("cellSpacing", new EchoApp.Extent(0));
@@ -248,21 +248,21 @@ TestApp.Tests.SplitPane = function() {
         ]
     }));
 
-    this.addTestButton("Orientation: L/R", new EchoCore.MethodRef(this, this._setOrientationLR));
-    this.addTestButton("Orientation: R/L", new EchoCore.MethodRef(this, this._setOrientationRL));
-    this.addTestButton("Orientation: T/B", new EchoCore.MethodRef(this, this._setOrientationTB));
-    this.addTestButton("Orientation: B/T", new EchoCore.MethodRef(this, this._setOrientationBT));
-    this.addTestButton("Component1: Set LD", new EchoCore.MethodRef(this, this._setLayoutData1));
-    this.addTestButton("Component1: Clear LD", new EchoCore.MethodRef(this, this._clearLayoutData1));
-    this.addTestButton("Component2: Set LD", new EchoCore.MethodRef(this, this._setLayoutData2));
-    this.addTestButton("Component2: Clear LD", new EchoCore.MethodRef(this, this._clearLayoutData2));
-    this.addTestButton("Add Component", new EchoCore.MethodRef(this, this._addComponent));
-    this.addTestButton("Insert Component", new EchoCore.MethodRef(this, this._insertComponent));
-    this.addTestButton("Remove First Component", new EchoCore.MethodRef(this, this._removeFirstComponent));
-    this.addTestButton("Remove Last Component", new EchoCore.MethodRef(this, this._removeLastComponent));
+    this.addTestButton("Orientation: L/R", new Core.MethodRef(this, this._setOrientationLR));
+    this.addTestButton("Orientation: R/L", new Core.MethodRef(this, this._setOrientationRL));
+    this.addTestButton("Orientation: T/B", new Core.MethodRef(this, this._setOrientationTB));
+    this.addTestButton("Orientation: B/T", new Core.MethodRef(this, this._setOrientationBT));
+    this.addTestButton("Component1: Set LD", new Core.MethodRef(this, this._setLayoutData1));
+    this.addTestButton("Component1: Clear LD", new Core.MethodRef(this, this._clearLayoutData1));
+    this.addTestButton("Component2: Set LD", new Core.MethodRef(this, this._setLayoutData2));
+    this.addTestButton("Component2: Clear LD", new Core.MethodRef(this, this._clearLayoutData2));
+    this.addTestButton("Add Component", new Core.MethodRef(this, this._addComponent));
+    this.addTestButton("Insert Component", new Core.MethodRef(this, this._insertComponent));
+    this.addTestButton("Remove First Component", new Core.MethodRef(this, this._removeFirstComponent));
+    this.addTestButton("Remove Last Component", new Core.MethodRef(this, this._removeLastComponent));
 };
 
-TestApp.Tests.SplitPane.prototype = EchoCore.derive(TestApp.TestPane);
+TestApp.Tests.SplitPane.prototype = Core.derive(TestApp.TestPane);
 
 TestApp.Tests.SplitPane.prototype._addComponent = function(e) {
     if (this.splitPane.children.length >= 2) {
@@ -351,12 +351,12 @@ TestApp.Tests.TextComponent = function() {
         ]
     }));
 
-    this.addTestButton("Set Text", new EchoCore.MethodRef(this, this._setText));
-    this.addTestButton("Set Text Empty", new EchoCore.MethodRef(this, this._setTextEmpty));
-    this.addTestButton("Set Text Null", new EchoCore.MethodRef(this, this._setTextNull));
+    this.addTestButton("Set Text", new Core.MethodRef(this, this._setText));
+    this.addTestButton("Set Text Empty", new Core.MethodRef(this, this._setTextEmpty));
+    this.addTestButton("Set Text Null", new Core.MethodRef(this, this._setTextNull));
 };
 
-TestApp.Tests.TextComponent.prototype = EchoCore.derive(TestApp.TestPane);
+TestApp.Tests.TextComponent.prototype = Core.derive(TestApp.TestPane);
 
 TestApp.Tests.TextComponent.prototype._setText = function() {
     this.textField.setProperty("text", "Hello, world");
@@ -378,12 +378,12 @@ TestApp.Tests.WindowPane = function() {
         title: "This is a Window"
     }));
 
-    this.addTestButton("Set Title", new EchoCore.MethodRef(this, this._setTitle));
-    this.addTestButton("Set Title Empty", new EchoCore.MethodRef(this, this._setTitleEmpty));
-    this.addTestButton("Set Title Null", new EchoCore.MethodRef(this, this._setTitleNull));
+    this.addTestButton("Set Title", new Core.MethodRef(this, this._setTitle));
+    this.addTestButton("Set Title Empty", new Core.MethodRef(this, this._setTitleEmpty));
+    this.addTestButton("Set Title Null", new Core.MethodRef(this, this._setTitleNull));
 };
 
-TestApp.Tests.WindowPane.prototype = EchoCore.derive(TestApp.TestPane);
+TestApp.Tests.WindowPane.prototype = Core.derive(TestApp.TestPane);
 
 TestApp.Tests.WindowPane.prototype._setTitle = function() {
     this.windowPane.setProperty("title", "Hello, world");
@@ -398,7 +398,7 @@ TestApp.Tests.WindowPane.prototype._setTitleNull = function() {
 };
 
 init = function() {
-    EchoCore.Debug.consoleElement = document.getElementById("debugconsole");
+    Core.Debug.consoleElement = document.getElementById("debugconsole");
     EchoWebCore.init();
 
     var app = new TestApp();

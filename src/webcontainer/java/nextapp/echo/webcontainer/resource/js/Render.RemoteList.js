@@ -33,7 +33,7 @@ EchoAppRender._ListComponentSyncMixins = {
 /**
  * @class Remote List Box implementation.
  */
-EchoAppRender.RemoteListBox = EchoCore.extend(EchoApp.ListBox, {
+EchoAppRender.RemoteListBox = Core.extend(EchoApp.ListBox, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("RemoteListBox", this);
@@ -47,7 +47,7 @@ EchoAppRender.RemoteListBox = EchoCore.extend(EchoApp.ListBox, {
 /**
  * @class Remote List Box synchronization peer implementation.
  */
-EchoAppRender.RemoteListBoxSync = EchoCore.extend(EchoAppRender.ListBoxSync, {
+EchoAppRender.RemoteListBoxSync = Core.extend(EchoAppRender.ListBoxSync, {
 
     $staticConstruct: function() {
         EchoRender.registerPeer("RemoteListBox", this);
@@ -61,7 +61,7 @@ EchoAppRender.RemoteListBoxSync = EchoCore.extend(EchoAppRender.ListBoxSync, {
  * @param properties initial property values
  * @class Remote Select Field implementation.
  */
-EchoAppRender.RemoteSelectField = EchoCore.extend(EchoApp.SelectField, {
+EchoAppRender.RemoteSelectField = Core.extend(EchoApp.SelectField, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("RemoteSelectField", this);
@@ -76,7 +76,7 @@ EchoAppRender.RemoteSelectField = EchoCore.extend(EchoApp.SelectField, {
  * Creates a new RemoteSelectField synchronization peer instance.
  * @class Remote Select Field synchronization peer implementation.
  */
-EchoAppRender.RemoteSelectFieldSync = EchoCore.extend(EchoAppRender.SelectFieldSync, {
+EchoAppRender.RemoteSelectFieldSync = Core.extend(EchoAppRender.SelectFieldSync, {
 
     $staticConstruct: function() {
         EchoRender.registerPeer("RemoteSelectField", this);;
@@ -85,7 +85,7 @@ EchoAppRender.RemoteSelectFieldSync = EchoCore.extend(EchoAppRender.SelectFieldS
     $include: [ EchoAppRender._ListComponentSyncMixins ]
 });
     
-EchoAppRender.RemoteListData = EchoCore.extend({
+EchoAppRender.RemoteListData = Core.extend({
 
     $construct: function(items) { 
         this.items = items;
@@ -97,7 +97,7 @@ EchoAppRender.RemoteListData = EchoCore.extend({
 });
 
     
-EchoAppRender.RemoteListDataItem = EchoCore.extend({
+EchoAppRender.RemoteListDataItem = Core.extend({
 
     $construct: function(text) { 
         this.text = text;

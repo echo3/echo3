@@ -17,14 +17,14 @@
 /**
  * Namespace for core functionality.
  */
-EchoCore = {
+Core = {
 
     /**
      * Creates a new class, optionally extending an existing class.
      * This method may be called with one or two parameters as follows:
      * <p>
-     * EchoCore.extend(definition)
-     * EchoCore.extend(base, definition)
+     * Core.extend(definition)
+     * Core.extend(base, definition)
      * <p>
      * 
      * @param {Function} base the base class
@@ -40,16 +40,16 @@ EchoCore = {
         
         if (definition && definition.$abstract) {
             objectFunction = function() {
-                if (!EchoCore._extending) {
+                if (!Core._extending) {
                     throw new Error("Cannot instantiate abstract class.");
                 }
             }
         } else {
             objectFunction = function() {
     
-                if (!EchoCore._extending) {
+                if (!Core._extending) {
                     // Only invoke $construct() (constructor replacement method)
-                    // when EchoCore._extending flag is not set.  EchoCore._extending flag
+                    // when Core._extending flag is not set.  Core._extending flag
                     // will be set temporarily any time an object prototype is being created.
                     this.$construct.apply(this, arguments);
                 }
@@ -59,13 +59,13 @@ EchoCore = {
         // Create object prototype.
         if (typeof(base) == "function") {
             // Set "extending" flag so $construct() method will not be invoked.
-            EchoCore._extending = true;
+            Core._extending = true;
             
             // Create prototype instance.
             objectFunction.prototype = new base();
             
             // Clear "extending" flag.
-            delete EchoCore._extending;
+            delete Core._extending;
             
             // Assign constructor correctly.
             objectFunction.prototype.constructor = objectFunction;
@@ -76,7 +76,7 @@ EchoCore = {
         
         // Process static properties and methods defined in the '$static' object.
         if (definition && definition.$static) {
-            EchoCore.inherit(objectFunction, definition.$static);
+            Core.inherit(objectFunction, definition.$static);
 
             // Clean up:
             delete definition.$static;
@@ -94,7 +94,7 @@ EchoCore = {
         // Add Mixins.
         if (definition && definition.$include) {
             var mixins = definition.$include.reverse();
-            EchoCore.mixin(objectFunction, mixins);
+            Core.mixin(objectFunction, mixins);
             
             // Clean up:
             delete definition.$include;
@@ -126,7 +126,7 @@ EchoCore = {
         
         // Process instance properties and methods.
         if (definition) {
-            EchoCore.inherit(objectFunction.prototype, definition);
+            Core.inherit(objectFunction.prototype, definition);
         }
         
         // If class is concrete, verify all abstract methods are provided.
@@ -173,7 +173,7 @@ EchoCore = {
         }
         
         if (constructor.base && constructor.base.$abstract) {
-            EchoCore._verifyAbstractImpl(objectFunction, constructor.base);
+            Core._verifyAbstractImpl(objectFunction, constructor.base);
         }
     }
 };
@@ -182,7 +182,7 @@ EchoCore = {
  * @class 
  * Namespace for debugging related utilities.
  */
-EchoCore.Debug = { 
+Core.Debug = { 
 
     /**
      * The DOM element to which console output should be written.
@@ -203,15 +203,15 @@ EchoCore.Debug = {
      * @param {String} text the message
      */
     consoleWrite: function(text) {
-        if (EchoCore.Debug.consoleElement) {
+        if (Core.Debug.consoleElement) {
             var entryElement = document.createElement("div");
             entryElement.appendChild(document.createTextNode(text));
-            if (EchoCore.Debug.consoleElement.childNodes.length == 0) {
-                EchoCore.Debug.consoleElement.appendChild(entryElement);
+            if (Core.Debug.consoleElement.childNodes.length == 0) {
+                Core.Debug.consoleElement.appendChild(entryElement);
             } else {
-                EchoCore.Debug.consoleElement.insertBefore(entryElement, EchoCore.Debug.consoleElement.firstChild);
+                Core.Debug.consoleElement.insertBefore(entryElement, Core.Debug.consoleElement.firstChild);
             }
-        } else if (EchoCore.Debug.useAlertDialog) {
+        } else if (Core.Debug.useAlertDialog) {
             alert("DEBUG:" + text);
         }
     },
@@ -237,7 +237,7 @@ EchoCore.Debug = {
 /**
  * @class Provides a tool for measuring performance of the Echo3 client engine.
  */
-EchoCore.Debug.Timer = EchoCore.extend({
+Core.Debug.Timer = Core.extend({
     
     /**
      * Creates a new debug timer.
@@ -285,7 +285,7 @@ EchoCore.Debug.Timer = EchoCore.extend({
  * Arrays namespace.  
  * Non-instantiable object.
  */
-EchoCore.Arrays = {
+Core.Arrays = {
 
     /**
      * Returns <tt>true</tt> if the first array contains all of the elements
@@ -413,7 +413,7 @@ EchoCore.Arrays = {
  *        Null values are not permitted as keys.  Setting a key to a null value
  *        will result in the key being removed.
  */
-EchoCore.Arrays.LargeMap = EchoCore.extend({
+Core.Arrays.LargeMap = Core.extend({
     
     $static: {
     
@@ -465,7 +465,7 @@ EchoCore.Arrays.LargeMap = EchoCore.extend({
      */
     remove: function(key) {
         delete this.map[key];
-        if (EchoCore.Arrays.LargeMap.garbageCollectEnabled) {
+        if (Core.Arrays.LargeMap.garbageCollectEnabled) {
             ++this._removeCount;
             if (this._removeCount >= this.garbageCollectionInterval) {
                 this._garbageCollect();
@@ -477,7 +477,7 @@ EchoCore.Arrays.LargeMap = EchoCore.extend({
 /**
  * @class Event object.
  */
-EchoCore.Event = EchoCore.extend({
+Core.Event = Core.extend({
     
     /**
      * Creates a new event object.
@@ -511,7 +511,7 @@ EchoCore.Event = EchoCore.extend({
  * @class A collection of event listeners.  Provides capability to manage listeners
  *        of multiple types, and fire events to listeners based on type.
  */
-EchoCore.ListenerList = EchoCore.extend({
+Core.ListenerList = Core.extend({
    
     /**
      * Creates a new listener list.
@@ -523,7 +523,7 @@ EchoCore.ListenerList = EchoCore.extend({
         /**
          * Array containing event types and event listeners.  
          * Even indexes contain event types, and the subsequent odd
-         * index contains a method or EchoCore.MethodRef instance.
+         * index contains a method or Core.MethodRef instance.
          * @type Array
          */
         this._data = [];
@@ -533,7 +533,7 @@ EchoCore.ListenerList = EchoCore.extend({
      * Adds an event listener.
      * 
      * @param {String} eventType the event type
-     * @param eventTarget the event target (a function or EchoCore.MethodRef instance)
+     * @param eventTarget the event target (a function or Core.MethodRef instance)
      */
     addListener: function(eventType, eventTarget) {
         this._data.push(eventType, eventTarget);
@@ -542,7 +542,7 @@ EchoCore.ListenerList = EchoCore.extend({
     /**
      * Fires an event.
      * 
-     * @param {EchoCore.Event} event the event to fire
+     * @param {Core.Event} event the event to fire
      * @return true if all event listeners returned values that evaluate to true, 
      *         or false if any event listeners returned values that evaluate to 
      *         false
@@ -562,7 +562,7 @@ EchoCore.ListenerList = EchoCore.extend({
         
         var returnValue = true;
         for (var i = 0; i < listeners.length; ++i) {
-            returnValue = (listeners[i] instanceof EchoCore.MethodRef ? listeners[i].invoke(event) : listeners[i](event)) 
+            returnValue = (listeners[i] instanceof Core.MethodRef ? listeners[i].invoke(event) : listeners[i](event)) 
                     && returnValue; 
         }
         return returnValue;
@@ -580,7 +580,7 @@ EchoCore.ListenerList = EchoCore.extend({
         for (var i = 0; i < this._data.length; i += 2) {
             types.push(this._data[i]);
         }
-        EchoCore.Arrays.removeDuplicates(types);
+        Core.Arrays.removeDuplicates(types);
         return types;
     },
     
@@ -648,7 +648,7 @@ EchoCore.ListenerList = EchoCore.extend({
      * Removes an event listener.
      * 
      * @param {String} eventType the event type
-     * @param eventTarget the event target (a function or EchoCore.MethodRef instance)
+     * @param eventTarget the event target (a function or Core.MethodRef instance)
      */
     removeListener: function(eventType, eventTarget) {
         for (var i = 0; i < this._data.length; i += 2) {
@@ -684,7 +684,7 @@ EchoCore.ListenerList = EchoCore.extend({
  * such that they may be invoked with the "this pointer" set to their
  * containing object.
  */
-EchoCore.MethodRef = EchoCore.extend({
+Core.MethodRef = Core.extend({
     
     /**
      * Creates a new MethodRef.
@@ -738,7 +738,7 @@ EchoCore.MethodRef = EchoCore.extend({
 /**
  * @class A localized resource bundle instance.
  */
-EchoCore.ResourceBundle = EchoCore.extend({
+Core.ResourceBundle = Core.extend({
     
     /**
      * Creates a Resourcebundle
@@ -773,7 +773,7 @@ EchoCore.ResourceBundle = EchoCore.extend({
  * or after the current JavaScript execution context has completed.
  * Provides an object-oriented means of accomplishing this task.
  */
-EchoCore.Scheduler = {
+Core.Scheduler = {
 
     /**
      * Interval at which the scheduler should wake to check for queued tasks.
@@ -794,8 +794,8 @@ EchoCore.Scheduler = {
     _execute: function() {
         var time = new Date().getTime();
         
-        for (var i = 0; i < EchoCore.Scheduler._runnables.length; ++i) {
-            var runnable = EchoCore.Scheduler._runnables[i];
+        for (var i = 0; i < Core.Scheduler._runnables.length; ++i) {
+            var runnable = Core.Scheduler._runnables[i];
             if (!runnable._nextExecution) {
             	continue;
             }
@@ -818,35 +818,35 @@ EchoCore.Scheduler = {
         }
     
     	var newRunnables = [];
-        for (var i = 0; i < EchoCore.Scheduler._runnables.length; ++i) {
-            var runnable = EchoCore.Scheduler._runnables[i];
+        for (var i = 0; i < Core.Scheduler._runnables.length; ++i) {
+            var runnable = Core.Scheduler._runnables[i];
             if (runnable._nextExecution) {
             	newRunnables.push(runnable);
             }
         }
-    	EchoCore.Scheduler._runnables = newRunnables;
+    	Core.Scheduler._runnables = newRunnables;
     	
-        if (EchoCore.Scheduler._runnables.length == 0) {
-            EchoCore.Scheduler._stop();
+        if (Core.Scheduler._runnables.length == 0) {
+            Core.Scheduler._stop();
         }
     },
     
     /**
      * Enqueues a Runnable to be executed by the scheduler.
      * 
-     * @param {EchoCore.Scheduler.Runnable} the runnable to enqueue
+     * @param {Core.Scheduler.Runnable} the runnable to enqueue
      */
     add: function(runnable) {
         var currentTime = new Date().getTime();
         runnable._nextExecution = runnable.timeInterval ? runnable.timeInterval + currentTime : currentTime;
-        EchoCore.Scheduler._runnables.push(runnable);
-        EchoCore.Scheduler._start();
+        Core.Scheduler._runnables.push(runnable);
+        Core.Scheduler._start();
     },
     
     /**
      * Dequeues a Runnable so it will no longer be executed by the scheduler.
      * 
-     * @param {EchoCore.Scheduler.Runnable} the runnable to dequeue
+     * @param {Core.Scheduler.Runnable} the runnable to dequeue
      */
     remove: function(runnable) {
         runnable._nextExecution = null;
@@ -858,12 +858,12 @@ EchoCore.Scheduler = {
      * @param {Number} time the time interval, in milleseconds, after which the Runnable should be executed
      *        (may be null/undefined to execute task immediately, in such cases repeat must be false)
      * @param {Boolean} repeat a flag indicating whether the task should be repeated
-     * @param methodRef a method or EchoCore.MethodRef instance to invoke, may be null/undefined
+     * @param methodRef a method or Core.MethodRef instance to invoke, may be null/undefined
      * @return the created Runnable.
-     * @type EchoCore.Scheduler.Runnable 
+     * @type Core.Scheduler.Runnable 
      */
     run: function(methodRef, timeInterval, repeat) {
-        var runnable = new EchoCore.Scheduler.Runnable(methodRef, timeInterval, repeat);
+        var runnable = new Core.Scheduler.Runnable(methodRef, timeInterval, repeat);
         this.add(runnable);
         return runnable;
     },
@@ -874,10 +874,10 @@ EchoCore.Scheduler = {
      * @private
      */
     _start: function() {
-        if (EchoCore.Scheduler._interval != null) {
+        if (Core.Scheduler._interval != null) {
             return;
         }
-        EchoCore.Scheduler._interval = window.setInterval(EchoCore.Scheduler._execute, EchoCore.Scheduler.INTERVAL);
+        Core.Scheduler._interval = window.setInterval(Core.Scheduler._execute, Core.Scheduler.INTERVAL);
     },
     
     /**
@@ -886,18 +886,18 @@ EchoCore.Scheduler = {
      * @private
      */
     _stop: function() {
-        if (EchoCore.Scheduler._interval == null) {
+        if (Core.Scheduler._interval == null) {
             return;
         }
-        window.clearInterval(EchoCore.Scheduler._interval);
-        EchoCore.Scheduler._interval = null;
+        window.clearInterval(Core.Scheduler._interval);
+        Core.Scheduler._interval = null;
     }
 };
 
 /**
  * @class A runnable task that may be scheduled with the Scheduler.
  */
-EchoCore.Scheduler.Runnable = EchoCore.extend({
+Core.Scheduler.Runnable = Core.extend({
 
     /**
      * Creates a new Runnable.
@@ -906,7 +906,7 @@ EchoCore.Scheduler.Runnable = EchoCore.extend({
      * @param {Number} time the time interval, in milleseconds, after which the Runnable should be executed
      *        (may be null/undefined to execute task immediately, in such cases repeat must be false)
      * @param {Boolean} repeat a flag indicating whether the task should be repeated
-     * @param methodRef a method or EchoCore.MethodRef instance to invoke, may be null/undefined
+     * @param methodRef a method or Core.MethodRef instance to invoke, may be null/undefined
      */
     $construct: function(methodRef, timeInterval, repeat) {
         if (!timeInterval && repeat) {

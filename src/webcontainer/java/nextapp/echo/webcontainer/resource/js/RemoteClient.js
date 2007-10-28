@@ -16,7 +16,7 @@
  * provide custom property XML serialization.  This should be avoided if possible, but may
  * be necessary for serializing certain information such as the state of a model.
  */
-EchoRemoteClient = EchoCore.extend(EchoClient, {
+EchoRemoteClient = Core.extend(EchoClient, {
     
     $static: {
         
@@ -49,17 +49,17 @@ EchoRemoteClient = EchoCore.extend(EchoClient, {
     
         /**
          * MethodRef to _processClientUpdate() method.
-         * @type EchoCore.MethodRef
+         * @type Core.MethodRef
          * @private
          */
-        this._processClientUpdateRef = new EchoCore.MethodRef(this, this._processClientUpdate);
+        this._processClientUpdateRef = new Core.MethodRef(this, this._processClientUpdate);
     
         /**
          * MethodRef to _processClientEvent() method.
-         * @type EchoCore.MethodRef
+         * @type Core.MethodRef
          * @private
          */
-        this._processClientEventRef = new EchoCore.MethodRef(this, this._processClientEvent);
+        this._processClientEventRef = new Core.MethodRef(this, this._processClientEvent);
         
         /**
          * Associative array mapping between shorthand URL codes and replacement values.
@@ -110,10 +110,10 @@ EchoRemoteClient = EchoCore.extend(EchoClient, {
         
         /**
          * Runnable that will trigger initialization of wait indicator.
-         * @type EchoCore.Scheduler.Runnable
+         * @type Core.Scheduler.Runnable
          * @private
          */
-        this._waitIndicatorRunnable = new EchoCore.Scheduler.Runnable(new EchoCore.MethodRef(this, this._waitIndicatorActivate), 
+        this._waitIndicatorRunnable = new Core.Scheduler.Runnable(new Core.MethodRef(this, this._waitIndicatorActivate), 
                 this._preWaitIndicatorDelay, false);
         
         /**
@@ -301,7 +301,7 @@ EchoRemoteClient = EchoCore.extend(EchoClient, {
     /**
      * ServerMessage completion listener.
      * 
-     * @param {EchoCore.Event} e the server message completion event
+     * @param {Core.Event} e the server message completion event
      */
     _processSyncComplete: function(e) {
         // Mark time of serialization completion with profiling timer.
@@ -323,7 +323,7 @@ EchoRemoteClient = EchoCore.extend(EchoClient, {
         }
     
         if (EchoClient.profilingTimer) {
-            EchoCore.Debug.consoleWrite(EchoClient.profilingTimer);
+            Core.Debug.consoleWrite(EchoClient.profilingTimer);
             EchoClient.profilingTimer = null;
         }
         
@@ -340,7 +340,7 @@ EchoRemoteClient = EchoCore.extend(EchoClient, {
      */
     _processSyncResponse: function(e) {
         // Remove wait indicator from scheduling (if wait indicator has not been presented yet, it will not be).
-        EchoCore.Scheduler.remove(this._waitIndicatorRunnable);
+        Core.Scheduler.remove(this._waitIndicatorRunnable);
         
         // Retrieve response document.
         var responseDocument = e.source.getResponseXml();
@@ -368,7 +368,7 @@ EchoRemoteClient = EchoCore.extend(EchoClient, {
         }
         
         // Profiling Timer (Uncomment to enable, comment to disable).
-        EchoClient.profilingTimer = new EchoCore.Debug.Timer();
+        EchoClient.profilingTimer = new Core.Debug.Timer();
         
         // Remove component update listener from application.  This listener is listening
         // for user input.  
@@ -379,7 +379,7 @@ EchoRemoteClient = EchoCore.extend(EchoClient, {
         
         // Add completion listener to invoke _processSyncComplete when message has been fully processed.
         // (Some elements of the server message are processed asynchronously). 
-        serverMessage.addCompletionListener(new EchoCore.MethodRef(this, this._processSyncComplete));
+        serverMessage.addCompletionListener(new Core.MethodRef(this, this._processSyncComplete));
         
         // Start server message processing.
         serverMessage.process();
@@ -412,14 +412,14 @@ EchoRemoteClient = EchoCore.extend(EchoClient, {
      * Initiates a client-server synchronization.
      */
     sync: function() {
-        EchoCore.Scheduler.add(this._waitIndicatorRunnable);
+        Core.Scheduler.add(this._waitIndicatorRunnable);
     
         this._asyncManager._stop();    
         this._syncInitTime = new Date().getTime();
         var conn = new EchoWebCore.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST", 
                 this._clientMessage._renderXml(), "text/xml");
         this._clientMessage = null;
-        conn.addResponseListener(new EchoCore.MethodRef(this, this._processSyncResponse));
+        conn.addResponseListener(new Core.MethodRef(this, this._processSyncResponse));
         conn.connect();
     },
     
@@ -448,11 +448,11 @@ EchoRemoteClient = EchoCore.extend(EchoClient, {
 /**
  * Manages server-pushed updates to the client. 
  */
-EchoRemoteClient.AsyncManager = EchoCore.extend({
+EchoRemoteClient.AsyncManager = Core.extend({
 
     $construct: function(client) {
         this._client = client;
-        this._runnable = new EchoCore.Scheduler.Runnable(new EchoCore.MethodRef(this, this._pollServerForUpdates), 1000, false);
+        this._runnable = new Core.Scheduler.Runnable(new Core.MethodRef(this, this._pollServerForUpdates), 1000, false);
     },
     
     /**
@@ -461,7 +461,7 @@ EchoRemoteClient.AsyncManager = EchoCore.extend({
      */
     _pollServerForUpdates: function() {
         var conn = new EchoWebCore.HttpConnection(this._client.getServiceUrl("Echo.AsyncMonitor"), "GET");
-        conn.addResponseListener(new EchoCore.MethodRef(this, this._processPollResponse));
+        conn.addResponseListener(new Core.MethodRef(this, this._processPollResponse));
         conn.connect();
     },
     
@@ -492,7 +492,7 @@ EchoRemoteClient.AsyncManager = EchoCore.extend({
         if (responseDocument.documentElement.getAttribute("request-sync") == "true") {
             this._client.sync();
         } else {
-            EchoCore.Scheduler.add(this._runnable);
+            Core.Scheduler.add(this._runnable);
         }
     },
     
@@ -509,18 +509,18 @@ EchoRemoteClient.AsyncManager = EchoCore.extend({
      * Starts server polling for asynchronous tasks.
      */
     _start: function() {
-        EchoCore.Scheduler.add(this._runnable);
+        Core.Scheduler.add(this._runnable);
     },
     
     /**
      * Stops server polling for asynchronous tasks.
      */
     _stop: function() {
-        EchoCore.Scheduler.remove(this._runnable);
+        Core.Scheduler.remove(this._runnable);
     }
 });
 
-EchoRemoteClient.ClientMessage = EchoCore.extend({
+EchoRemoteClient.ClientMessage = Core.extend({
 
     $static: {
     
@@ -528,7 +528,7 @@ EchoRemoteClient.ClientMessage = EchoCore.extend({
          * @class Utility class for constructing the client properties directive.
          * @private
          */
-        _ClientProperties: EchoCore.extend({
+        _ClientProperties: Core.extend({
 
             /**        
              * Creates a new ClientProperties directive object.
@@ -691,7 +691,7 @@ EchoRemoteClient.CommandExec = { };
 /**
  * SerevrMessage directive processor for command executions.
  */
-EchoRemoteClient.CommandExecProcessor = EchoCore.extend({
+EchoRemoteClient.CommandExecProcessor = Core.extend({
 
     $static: {
     
@@ -738,7 +738,7 @@ EchoRemoteClient.CommandExecProcessor = EchoCore.extend({
 /**
  * ServerMessage directive processor for component focus.
  */
-EchoRemoteClient.ComponentFocusProcessor = EchoCore.extend({
+EchoRemoteClient.ComponentFocusProcessor = Core.extend({
 
     $construct: function(client) { 
         this._client = client;
@@ -767,7 +767,7 @@ EchoRemoteClient.ComponentFocusProcessor = EchoCore.extend({
 /**
  * ServerMessage directive processor for component synchronizations (remove phase).
  */
-EchoRemoteClient.ComponentSyncRemoveProcessor = EchoCore.extend({
+EchoRemoteClient.ComponentSyncRemoveProcessor = Core.extend({
 
     $construct: function(client) { 
         this._client = client;
@@ -836,7 +836,7 @@ EchoRemoteClient.ComponentSyncRemoveProcessor = EchoCore.extend({
 /**
  * ServerMessage directive processor for component synchronizations (update phase).
  */
-EchoRemoteClient.ComponentSyncUpdateProcessor = EchoCore.extend({
+EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
 
     $static: {
         
@@ -956,7 +956,7 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = EchoCore.extend({
     }
 });
 
-EchoRemoteClient.ServerMessage = EchoCore.extend({
+EchoRemoteClient.ServerMessage = Core.extend({
 
     $static: {
     
@@ -970,7 +970,7 @@ EchoRemoteClient.ServerMessage = EchoCore.extend({
     $construct: function(client, xmlDocument) { 
         this.client = client;
         this.document = xmlDocument;
-        this._listenerList = new EchoCore.ListenerList();
+        this._listenerList = new Core.ListenerList();
         this._processorInstances = { };
     },
     
@@ -994,7 +994,7 @@ EchoRemoteClient.ServerMessage = EchoCore.extend({
                 element = element.nextSibling;
             }
             if (libraryGroup.hasNewLibraries()) {
-                libraryGroup.addLoadListener(new EchoCore.MethodRef(this, this._processPostLibraryLoad));
+                libraryGroup.addLoadListener(new Core.MethodRef(this, this._processPostLibraryLoad));
                 libraryGroup.load();
             } else {
                 this._processPostLibraryLoad();
@@ -1026,7 +1026,7 @@ EchoRemoteClient.ServerMessage = EchoCore.extend({
         }
     
         // Complete: notify listeners of completion.
-        this._listenerList.fireEvent(new EchoCore.Event("completion", this));
+        this._listenerList.fireEvent(new Core.Event("completion", this));
         
         // Start server push listener if required.
         if (this.document.documentElement.getAttribute("async-interval")) {
@@ -1043,7 +1043,7 @@ EchoRemoteClient.ServerMessage = EchoCore.extend({
 /**
  * Wait indicator base class.
  */
-EchoRemoteClient.WaitIndicator = EchoCore.extend({
+EchoRemoteClient.WaitIndicator = Core.extend({
 
     $construct: function() { },
 
@@ -1061,26 +1061,26 @@ EchoRemoteClient.WaitIndicator = EchoCore.extend({
 /**
  * @class Default wait indicator implementation.
  */
-EchoRemoteClient.DefaultWaitIndicator = EchoCore.extend(EchoRemoteClient.WaitIndicator, {
+EchoRemoteClient.DefaultWaitIndicator = Core.extend(EchoRemoteClient.WaitIndicator, {
 
     $construct: function() {
         this._divElement = document.createElement("div");
         this._divElement.style.cssText = "display: none; z-index: 32767; position: absolute; top: 30px; right: 30px; width: 200px;"
                  + " padding: 20px; border: 1px outset #abcdef; background-color: #abcdef; color: #000000; text-align: center;";
         this._divElement.appendChild(document.createTextNode("Please wait..."));
-        this._fadeRunnable = new EchoCore.Scheduler.Runnable(new EchoCore.MethodRef(this, this._tick), 50, true);
+        this._fadeRunnable = new Core.Scheduler.Runnable(new Core.MethodRef(this, this._tick), 50, true);
         document.body.appendChild(this._divElement);
     },
     
     activate: function() {
         this._divElement.style.display = "block";
-        EchoCore.Scheduler.add(this._fadeRunnable);
+        Core.Scheduler.add(this._fadeRunnable);
         this._opacity = 0;
     },
     
     deactivate: function() {
         this._divElement.style.display = "none";
-        EchoCore.Scheduler.remove(this._fadeRunnable);
+        Core.Scheduler.remove(this._fadeRunnable);
     },
     
     _tick: function() {

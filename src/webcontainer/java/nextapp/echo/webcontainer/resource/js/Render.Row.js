@@ -1,7 +1,7 @@
 /**
  * Component rendering peer: Row
  */
-EchoAppRender.RowSync = EchoCore.extend(EchoRender.ComponentSync, {
+EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
     
     $static: {
     
@@ -76,7 +76,7 @@ EchoAppRender.RowSync = EchoCore.extend(EchoRender.ComponentSync, {
             this._renderAddChild(update, child);
         }
         
-        EchoWebCore.EventProcessor.add(this._divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
+        EchoWebCore.EventProcessor.add(this._divElement, "keydown", new Core.MethodRef(this, this.processKeyDown), false);
         
         parentElement.appendChild(this._divElement);
     },
@@ -161,7 +161,7 @@ EchoAppRender.RowSync = EchoCore.extend(EchoRender.ComponentSync, {
     },
     
     renderDispose: function(update) { 
-        EchoWebCore.EventProcessor.remove(this._divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
+        EchoWebCore.EventProcessor.remove(this._divElement, "keydown", new Core.MethodRef(this, this.processKeyDown), false);
         this._divElement = null;
         this._trElement = null;
         this._childIdToElementMap = null;

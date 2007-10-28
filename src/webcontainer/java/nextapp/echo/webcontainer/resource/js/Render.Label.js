@@ -1,7 +1,7 @@
 /**
  * Component rendering peer: Label
  */
-EchoAppRender.LabelSync = EchoCore.extend(EchoRender.ComponentSync, { 
+EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, { 
 
     $static: {
     

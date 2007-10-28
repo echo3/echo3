@@ -14,7 +14,7 @@ EchoApp = { };
  * Representation of a single application instance.
  * Derived objects must invoke construtor with root component id.
  */
-EchoApp.Application = EchoCore.extend({
+EchoApp.Application = Core.extend({
 
     /**
      * Creates a new application instance.  
@@ -25,16 +25,16 @@ EchoApp.Application = EchoCore.extend({
         /** 
          * Mapping between component ids and component instances.
          * @private 
-         * @type EchoCore.Arrays.LargeMap
+         * @type Core.Arrays.LargeMap
          */
-        this._idToComponentMap = new EchoCore.Arrays.LargeMap();
+        this._idToComponentMap = new Core.Arrays.LargeMap();
         
         /** 
          * ListenerList instance for application-level events.
          * @private 
-         * @type EchoCore.ListenerList 
+         * @type Core.ListenerList 
          */
-        this._listenerList = new EchoCore.ListenerList();
+        this._listenerList = new Core.ListenerList();
     
         /** 
          * Root component instance.
@@ -83,7 +83,7 @@ EchoApp.Application = EchoCore.extend({
     /**
      * Adds a ComponentUpdateListener.
      * 
-     * @param l the listener to add (may be of type Function or EchoCore.MethodRef)
+     * @param l the listener to add (may be of type Function or Core.MethodRef)
      */
     addComponentUpdateListener: function(l) {
         this._listenerList.addListener("componentUpdate", l);
@@ -93,7 +93,7 @@ EchoApp.Application = EchoCore.extend({
      * Adds a FocusListener.  Focus listeners will be invoked when the focused
      * component in the application changes.
      * 
-     * @param l the listener to add (may be of type Function or EchoCore.MethodRef)
+     * @param l the listener to add (may be of type Function or Core.MethodRef)
      */
     addFocusListener: function(l) {
         this._listenerList.addListener("focus", l);
@@ -242,7 +242,7 @@ EchoApp.Application = EchoCore.extend({
     /**
      * Removes a ComponentUpdateListener.
      * 
-     * @param l the listener to add (may be of type Function or EchoCore.MethodRef)
+     * @param l the listener to add (may be of type Function or Core.MethodRef)
      */
     removeComponentUpdateListener: function(l) {
         this._listenerList.removeListener("componentUpdate", l);
@@ -252,7 +252,7 @@ EchoApp.Application = EchoCore.extend({
      * Removes a FocusListener.  Focus listeners will be invoked when the focused
      * component in the application changes.
      * 
-     * @param l the listener to remove (may be of type Function or EchoCore.MethodRef)
+     * @param l the listener to remove (may be of type Function or Core.MethodRef)
      */
     removeFocusListener: function(l) {
         this._listenerList.removeListener("focus", l);
@@ -270,7 +270,7 @@ EchoApp.Application = EchoCore.extend({
         }
         
         this._focusedComponent = newValue;
-        this._listenerList.fireEvent(new EchoCore.Event("focus", this));
+        this._listenerList.fireEvent(new Core.Event("focus", this));
     },
     
     /**
@@ -288,7 +288,7 @@ EchoApp.Application = EchoCore.extend({
      * in order to avoid a memory leak.
      */
     _setModal: function(component, modal) {
-        EchoCore.Arrays.remove(this._modalComponents, component);
+        Core.Arrays.remove(this._modalComponents, component);
         if (modal) {
             this._modalComponents.push(component);
         }
@@ -326,7 +326,7 @@ EchoApp.Application = EchoCore.extend({
  * @class
  * Event object describing an update to a component.
  */
-EchoApp.Application.ComponentUpdateEvent = EchoCore.extend(EchoCore.Event, {
+EchoApp.Application.ComponentUpdateEvent = Core.extend(Core.Event, {
 
     /**
      * Creates an Event object describing an update to a component.
@@ -339,7 +339,7 @@ EchoApp.Application.ComponentUpdateEvent = EchoCore.extend(EchoCore.Event, {
      * @param newValue the new value of the property
      */
     $construct: function(source, parent, propertyName, oldValue, newValue) {
-        EchoCore.Event.prototype.$construct.call(this, "componentUpdate", source);
+        Core.Event.prototype.$construct.call(this, "componentUpdate", source);
         this.parent = parent;
         this.propertyName = propertyName;
         this.oldValue = oldValue;
@@ -404,7 +404,7 @@ EchoApp.ComponentFactory = {
  * A component MUST have its componentType property set before it is used in a hierarchy.  Failing to do so
  * will throw an exception and/or result in indeterminate behavior.
  */
-EchoApp.Component = EchoCore.extend({
+EchoApp.Component = Core.extend({
     
     $static: {
 
@@ -467,7 +467,7 @@ EchoApp.Component = EchoCore.extend({
         /**
          * Listener list.  Lazily created.
          * @private
-         * @type EchoCore.ListenerList
+         * @type Core.ListenerList
          */
         this._listenerList = null;
         
@@ -567,11 +567,11 @@ EchoApp.Component = EchoCore.extend({
      * @param {String} eventType the event type name
      * @param eventTarget the method to invoke when the event occurs 
      *        (the event will be passed as the single argument)
-     *        (argument may be of type Function or EchoCore.MethodRef)
+     *        (argument may be of type Function or Core.MethodRef)
      */
     addListener: function(eventType, eventTarget) {
         if (this._listenerList == null) {
-            this._listenerList = new EchoCore.ListenerList();
+            this._listenerList = new Core.ListenerList();
         }
         this._listenerList.addListener(eventType, eventTarget);
         if (this.application) {
@@ -583,7 +583,7 @@ EchoApp.Component = EchoCore.extend({
      * Provides notification of an arbitrary event.
      * Listeners will be notified based on the event's type property.
      * 
-     * @param {EchoCore.Event} event the event to fire
+     * @param {Core.Event} event the event to fire
      */
     fireEvent: function(event) {
         if (this._listenerList == null) {
@@ -978,7 +978,7 @@ EchoApp.Component = EchoCore.extend({
      * @param {String} eventType the event type name
      * @param eventTarget the method to invoke when the event occurs 
      *        (the event will be passed as the single argument)
-     *        (values may be of type Function or EchoCore.MethodRef)
+     *        (values may be of type Function or Core.MethodRef)
      */
     removeListener: function(eventType, eventTarget) {
         if (this._listenerList == null) {
@@ -1037,7 +1037,7 @@ EchoApp.Component = EchoCore.extend({
         var oldValue = this._localStyle.getProperty(name);
         this._localStyle.setProperty(name, newValue);
         if (this._listenerList && this._listenerList.hasListeners("property")) {
-            var e = new EchoCore.Event("property", this);
+            var e = new Core.Event("property", this);
             e.propertyName = name;
             e.oldValue = oldValue;
             e.newValue = newValue;
@@ -1115,7 +1115,7 @@ EchoApp.Component = EchoCore.extend({
     }
 });
 
-EchoApp.FocusManager = EchoCore.extend({
+EchoApp.FocusManager = Core.extend({
 
     /**
      * Focus management handler for a specific application instance.
@@ -1324,7 +1324,7 @@ EchoApp.FocusManager = EchoCore.extend({
 
 // Fundamental Property Types
 
-EchoApp.LayoutData = EchoCore.extend({
+EchoApp.LayoutData = Core.extend({
     
     /**
      * Layout Data Object, describing how a child component is rendered/laid out 
@@ -1379,7 +1379,7 @@ EchoApp.LayoutData = EchoCore.extend({
     }
 });
 
-EchoApp.LayoutDirection = EchoCore.extend({
+EchoApp.LayoutDirection = Core.extend({
     
     /**
      * LayoutDirection property.  Do not instantiate, use LTR/RTL constants.
@@ -1419,7 +1419,7 @@ EchoApp.LayoutDirection.LTR = new EchoApp.LayoutDirection(true);
  */
 EchoApp.LayoutDirection.RTL = new EchoApp.LayoutDirection(false);
 
-EchoApp.Alignment = EchoCore.extend({
+EchoApp.Alignment = Core.extend({
     
     $static: {
     
@@ -1532,7 +1532,7 @@ EchoApp.Alignment = EchoCore.extend({
 /**
  * @class Border property.
  */
-EchoApp.Border = EchoCore.extend({
+EchoApp.Border = Core.extend({
 
     /**
      * Creates a border property. 
@@ -1543,7 +1543,7 @@ EchoApp.Border = EchoCore.extend({
         /**
          * @class Border side sub-property.
          */
-        Side: EchoCore.extend({
+        Side: Core.extend({
             
             /**
              * Creates a border side.
@@ -1645,7 +1645,7 @@ EchoApp.Border = EchoCore.extend({
  * @class 
  * A representation of a group of RadioButtons, where only one may be selected at a time.
  */
-EchoApp.ButtonGroup = EchoCore.extend({
+EchoApp.ButtonGroup = Core.extend({
 
     /**
      * Creates a RadioButton group.
@@ -1729,7 +1729,7 @@ EchoApp.ButtonGroup = EchoCore.extend({
 /**
  * @class Color property.
  */
-EchoApp.Color = EchoCore.extend({
+EchoApp.Color = Core.extend({
     
     /**
      * Property class name.
@@ -1824,7 +1824,7 @@ EchoApp.Color = EchoCore.extend({
 /**
  * @class Extent property.
  */
-EchoApp.Extent = EchoCore.extend({
+EchoApp.Extent = Core.extend({
 
     $static: {
         
@@ -1891,7 +1891,7 @@ EchoApp.Extent = EchoCore.extend({
 /**
  * @class FillImage property.  Describes a repeating image, typically used as a background.
  */
-EchoApp.FillImage = EchoCore.extend({
+EchoApp.FillImage = Core.extend({
 
     $static: {
     
@@ -1997,7 +1997,7 @@ EchoApp.FillImage = EchoCore.extend({
  * represent each side and each corner, and with configurable Insets to define 
  * the border size. 
  */
-EchoApp.FillImageBorder = EchoCore.extend({
+EchoApp.FillImageBorder = Core.extend({
     
     /**
      * Property class name.
@@ -2064,7 +2064,7 @@ EchoApp.FillImageBorder = EchoCore.extend({
 /**
  * @class Font property
  */
-EchoApp.Font = EchoCore.extend({
+EchoApp.Font = Core.extend({
 
     $static: {
     
@@ -2171,7 +2171,7 @@ EchoApp.Font = EchoCore.extend({
 /**
  * @class Image Reference Property.
  */
-EchoApp.ImageReference = EchoCore.extend({
+EchoApp.ImageReference = Core.extend({
     
     /**
      * Property class name.
@@ -2212,7 +2212,7 @@ EchoApp.ImageReference = EchoCore.extend({
 /**
  * @class Insets property.  Describes inset margins within a box.
  */
-EchoApp.Insets = EchoCore.extend({
+EchoApp.Insets = Core.extend({
     
     /**
      * Property class name.
@@ -2310,7 +2310,7 @@ EchoApp.Insets = EchoCore.extend({
  * @class Minimalistic representation of ListSelectionModel.
  */
  
-EchoApp.ListSelectionModel = EchoCore.extend({
+EchoApp.ListSelectionModel = Core.extend({
 
     $static: {
     
@@ -2412,7 +2412,7 @@ EchoApp.ListSelectionModel = EchoCore.extend({
 /**
  * @class Component Style.
  */
-EchoApp.Style = EchoCore.extend({ 
+EchoApp.Style = Core.extend({ 
 
     /**
      * Creates a new Component Syle.
@@ -2494,7 +2494,7 @@ EchoApp.Style = EchoCore.extend({
  * @class
  * An application style sheet.
  */
-EchoApp.StyleSheet = EchoCore.extend({
+EchoApp.StyleSheet = Core.extend({
 
     /**
      * Creates a new style sheet.
@@ -2562,7 +2562,7 @@ EchoApp.Update = { };
  * @class Representation of an update to a single existing component 
  *        which is currently rendered on the screen.
  */
-EchoApp.Update.ComponentUpdate = EchoCore.extend({
+EchoApp.Update.ComponentUpdate = Core.extend({
 
     $static: {
     
@@ -2678,7 +2678,7 @@ EchoApp.Update.ComponentUpdate = EchoCore.extend({
         }
         
         if (this._removedDescendantIds != null) {
-    	    EchoCore.Arrays.removeDuplicates(this._removedDescendantIds);
+    	    Core.Arrays.removeDuplicates(this._removedDescendantIds);
         }
     },
     
@@ -2839,12 +2839,12 @@ EchoApp.Update.ComponentUpdate = EchoCore.extend({
     
         if (this._addedChildIds) {
             // Remove child from add list if found.
-            EchoCore.Arrays.remove(this._addedChildIds, child.renderId);
+            Core.Arrays.remove(this._addedChildIds, child.renderId);
         }
         
         if (this._updatedLayoutDataChildIds) {
             // Remove child from updated layout data list if found.
-            EchoCore.Arrays.remove(this._updatedLayoutDataChildIds, child.renderId);
+            Core.Arrays.remove(this._updatedLayoutDataChildIds, child.renderId);
         }
     
         if (!this._removedChildIds) {
@@ -2932,7 +2932,7 @@ EchoApp.Update.ComponentUpdate = EchoCore.extend({
  *        Provides API to determine changes to component hierarchy since last update
  *        in order to efficiently repaint the screen.
  */
-EchoApp.Update.Manager = EchoCore.extend({
+EchoApp.Update.Manager = Core.extend({
     /**
      * Creates a new Update Manager.
      *
@@ -2962,7 +2962,7 @@ EchoApp.Update.Manager = EchoCore.extend({
          */
         this._hasUpdates = true;
         
-        this._listenerList = new EchoCore.ListenerList();
+        this._listenerList = new Core.ListenerList();
         
         /**
          * Associative mapping between component ids and component instances for all
@@ -2982,7 +2982,7 @@ EchoApp.Update.Manager = EchoCore.extend({
     /**
      * Adds a listener to receive notification of update events.
      * 
-     * @param l the listener to add (may be a function or EchoCore.MethodRef)
+     * @param l the listener to add (may be a function or Core.MethodRef)
      */
     addUpdateListener: function(l) {
         this._listenerList.addListener("update", l);
@@ -3021,7 +3021,7 @@ EchoApp.Update.Manager = EchoCore.extend({
      */
     _fireUpdate: function() {
         if (!this._listenerList.isEmpty()) {
-            var e = new EchoCore.Event("update", this);
+            var e = new Core.Event("update", this);
             this._listenerList.fireEvent(e);
         }
     },
@@ -3213,7 +3213,7 @@ EchoApp.Update.Manager = EchoCore.extend({
     /**
      * Removes a listener from receiving notification of update events.
      * 
-     * @param l the listener to remove (may be a function or EchoCore.MethodRef)
+     * @param l the listener to remove (may be a function or Core.MethodRef)
      */
     removeUpdateListener: function(l) {
         this._listenerList.removeListener("update", l);
@@ -3244,7 +3244,7 @@ EchoApp.Update.Manager = EchoCore.extend({
  * @class Button component.
  * @base EchoApp.Component
  */ 
-EchoApp.Button = EchoCore.extend(EchoApp.Component, {
+EchoApp.Button = Core.extend(EchoApp.Component, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("Button", this);
@@ -3257,7 +3257,7 @@ EchoApp.Button = EchoCore.extend(EchoApp.Component, {
      * Programatically performs a button action.
      */
     doAction: function() {
-        var e = new EchoCore.Event("action", this, this.getProperty("actionCommand"));
+        var e = new Core.Event("action", this, this.getProperty("actionCommand"));
         this.fireEvent(e);
     }
 });
@@ -3266,7 +3266,7 @@ EchoApp.Button = EchoCore.extend(EchoApp.Component, {
  * @class ToggleButton component.
  * @base EchoApp.Button
  */
-EchoApp.ToggleButton = EchoCore.extend(EchoApp.Button, {
+EchoApp.ToggleButton = Core.extend(EchoApp.Button, {
 
     $abstract: true,
     componentType: "ToggleButton"
@@ -3276,7 +3276,7 @@ EchoApp.ToggleButton = EchoCore.extend(EchoApp.Button, {
  * @class CheckBox component.
  * @base EchoApp.ToggleButton
  */
-EchoApp.CheckBox = EchoCore.extend(EchoApp.ToggleButton, {
+EchoApp.CheckBox = Core.extend(EchoApp.ToggleButton, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("CheckBox", this);
@@ -3289,7 +3289,7 @@ EchoApp.CheckBox = EchoCore.extend(EchoApp.ToggleButton, {
  * @class RadioButton component.
  * @base EchoApp.ToggleButton
  */
-EchoApp.RadioButton = EchoCore.extend(EchoApp.ToggleButton, {
+EchoApp.RadioButton = Core.extend(EchoApp.ToggleButton, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("RadioButton", this);
@@ -3302,7 +3302,7 @@ EchoApp.RadioButton = EchoCore.extend(EchoApp.ToggleButton, {
  * @class Column component.
  * @base EchoApp.Component
  */
-EchoApp.Column = EchoCore.extend(EchoApp.Component, {
+EchoApp.Column = Core.extend(EchoApp.Component, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("Column", this);
@@ -3315,7 +3315,7 @@ EchoApp.Column = EchoCore.extend(EchoApp.Component, {
  * @class ContentPane component.
  * @base EchoApp.Component
  */
-EchoApp.ContentPane = EchoCore.extend(EchoApp.Component, {
+EchoApp.ContentPane = Core.extend(EchoApp.Component, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("ContentPane", this);
@@ -3329,7 +3329,7 @@ EchoApp.ContentPane = EchoCore.extend(EchoApp.Component, {
  * @class Grid component.
  * @base EchoApp.Component
  */
-EchoApp.Grid = EchoCore.extend(EchoApp.Component, {
+EchoApp.Grid = Core.extend(EchoApp.Component, {
 
     $static: {
         SPAN_FILL: -1
@@ -3346,7 +3346,7 @@ EchoApp.Grid = EchoCore.extend(EchoApp.Component, {
  * @class Label component.
  * @base EchoApp.Component
  */
-EchoApp.Label = EchoCore.extend(EchoApp.Component, {
+EchoApp.Label = Core.extend(EchoApp.Component, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("Label", this);
@@ -3359,7 +3359,7 @@ EchoApp.Label = EchoCore.extend(EchoApp.Component, {
  * @class ListBox component.
  * @base EchoApp.Component
  */
-EchoApp.ListBox = EchoCore.extend(EchoApp.Component, {
+EchoApp.ListBox = Core.extend(EchoApp.Component, {
 
     $static: {
 
@@ -3386,7 +3386,7 @@ EchoApp.ListBox = EchoCore.extend(EchoApp.Component, {
  * @class Row component.
  * @base EchoApp.Component
  */
-EchoApp.Row = EchoCore.extend(EchoApp.Component, {
+EchoApp.Row = Core.extend(EchoApp.Component, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("Row", this);
@@ -3399,7 +3399,7 @@ EchoApp.Row = EchoCore.extend(EchoApp.Component, {
  * @class SelectField component.
  * @base EchoApp.Component
  */
-EchoApp.SelectField = EchoCore.extend(EchoApp.Component, {
+EchoApp.SelectField = Core.extend(EchoApp.Component, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("SelectField", this);
@@ -3413,7 +3413,7 @@ EchoApp.SelectField = EchoCore.extend(EchoApp.Component, {
  * @class SplitPane component.
  * @base EchoApp.Component
  */
-EchoApp.SplitPane = EchoCore.extend(EchoApp.Component, {
+EchoApp.SplitPane = Core.extend(EchoApp.Component, {
 
     $static: {
         ORIENTATION_HORIZONTAL_LEADING_TRAILING: 0,
@@ -3441,7 +3441,7 @@ EchoApp.SplitPane = EchoCore.extend(EchoApp.Component, {
  * @class Abstract base class for text components.
  * @base EchoApp.Component
  */
-EchoApp.TextComponent = EchoCore.extend(EchoApp.Component, {
+EchoApp.TextComponent = Core.extend(EchoApp.Component, {
 
     $abstract: true,
     componentType: "TextComponent",
@@ -3452,7 +3452,7 @@ EchoApp.TextComponent = EchoCore.extend(EchoApp.Component, {
  * @class TextArea component.
  * @base EchoApp.Component
  */
-EchoApp.TextArea = EchoCore.extend(EchoApp.TextComponent, {
+EchoApp.TextArea = Core.extend(EchoApp.TextComponent, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("TextArea", this);
@@ -3465,7 +3465,7 @@ EchoApp.TextArea = EchoCore.extend(EchoApp.TextComponent, {
  * @class TextField component.
  * @base EchoApp.Component
  */
-EchoApp.TextField = EchoCore.extend(EchoApp.TextComponent, {
+EchoApp.TextField = Core.extend(EchoApp.TextComponent, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("TextField", this);
@@ -3478,7 +3478,7 @@ EchoApp.TextField = EchoCore.extend(EchoApp.TextComponent, {
  * @class PasswordField component.
  * @base EchoApp.Component
  */
-EchoApp.PasswordField = EchoCore.extend(EchoApp.TextField, {
+EchoApp.PasswordField = Core.extend(EchoApp.TextField, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("PasswordField", this);
@@ -3491,7 +3491,7 @@ EchoApp.PasswordField = EchoCore.extend(EchoApp.TextField, {
  * @class WindowPane component.
  * @base EchoApp.Component
  */
-EchoApp.WindowPane = EchoCore.extend(EchoApp.Component, {
+EchoApp.WindowPane = Core.extend(EchoApp.Component, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("WindowPane", this);
@@ -3518,7 +3518,7 @@ EchoApp.WindowPane = EchoCore.extend(EchoApp.Component, {
      * Programmatically perform a window closing operation.
      */
     doWindowClosing: function() {
-        var e = new EchoCore.Event("close", this);
+        var e = new Core.Event("close", this);
         this.fireEvent(e);
     }
 });

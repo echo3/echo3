@@ -15,7 +15,7 @@ EchoArc = function() { }
  * These clients are automatically created and destroyed by the
  * ArcClient component synchronization peer.
  */
-EchoArc.Client = EchoCore.extend(EchoFreeClient, {
+EchoArc.Client = Core.extend(EchoFreeClient, {
 
     //FIXME This class has been created with the intention that methods will be added to it.  
     // If not, remove and use freeclient?
@@ -28,7 +28,7 @@ EchoArc.Client = EchoCore.extend(EchoFreeClient, {
  * The super-implementations of the renderAdd(), renderDispose(),
  * renderDisplay(), and renderUpdate() methods must be invoked.
  */
-EchoArc.ComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
+EchoArc.ComponentSync = Core.extend(EchoRender.ComponentSync, {
 
     $construct: function() { },
 
@@ -127,7 +127,7 @@ EchoArc.ComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
  * A simple container in which to render children of an application rendered component.
  * This container will render as a simple DIV element.
  */
-EchoArc.ChildContainer = EchoCore.extend(EchoApp.Component, {
+EchoArc.ChildContainer = Core.extend(EchoApp.Component, {
 
     $staticConstruct: function() {
         EchoApp.ComponentFactory.registerType("ArcChildContainer", this);
@@ -139,7 +139,7 @@ EchoArc.ChildContainer = EchoCore.extend(EchoApp.Component, {
 /**
  * Synchronization peer for ChildContainer.
  */
-EchoArc.ChildContainerPeer = EchoCore.extend(EchoRender.ComponentSync, {
+EchoArc.ChildContainerPeer = Core.extend(EchoRender.ComponentSync, {
 
     $staticConstruct: function() {
         EchoRender.registerPeer("ArcChildContainer", this);

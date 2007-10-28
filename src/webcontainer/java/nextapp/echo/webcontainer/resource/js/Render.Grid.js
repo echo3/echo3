@@ -1,7 +1,7 @@
 /**
  * Component rendering peer: Grid
  */
-EchoAppRender.GridSync = EchoCore.extend(EchoRender.ComponentSync, {
+EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
 
     $static: {
 
@@ -20,11 +20,11 @@ EchoAppRender.GridSync = EchoCore.extend(EchoRender.ComponentSync, {
             return tableElement;
         },
         
-        Processor: EchoCore.extend({
+        Processor: Core.extend({
         
             $static: {
             
-                Cell: EchoCore.extend({
+                Cell: Core.extend({
                     $construct: function(component, index, xSpan, ySpan) {
                         this.component = component;
                         this.index = index;

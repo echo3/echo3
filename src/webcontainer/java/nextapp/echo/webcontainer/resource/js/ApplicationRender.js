@@ -326,7 +326,7 @@ EchoAppRender.Insets = {
  * such that floating panes may adjust their z-indices appropriately for correct display.
  * Registered listeners will be notified when one or more z-indices have changed.
  */
-EchoAppRender.FloatingPaneManager = EchoCore.extend({
+EchoAppRender.FloatingPaneManager = Core.extend({
 
     /**
      * Creates a new Floating Pane Manager.
@@ -348,7 +348,7 @@ EchoAppRender.FloatingPaneManager = EchoCore.extend({
         if (!this._floatingPanes) {
             this._floatingPanes = [];
         }
-        EchoCore.Arrays.remove(this._floatingPanes, renderId);
+        Core.Arrays.remove(this._floatingPanes, renderId);
         this._floatingPanes.push(renderId);
         this._fireZIndexEvent();
         return this._floatingPanes.length;
@@ -361,7 +361,7 @@ EchoAppRender.FloatingPaneManager = EchoCore.extend({
      */
     addZIndexListener: function(l) {
         if (!this._listeners) {
-            this._listeners = new EchoCore.ListenerList();
+            this._listeners = new Core.ListenerList();
         }
         this._listeners.addListener("zIndex", l);
     },
@@ -372,7 +372,7 @@ EchoAppRender.FloatingPaneManager = EchoCore.extend({
      */
     _fireZIndexEvent: function() {
         if (this._listeners) {
-            this._listeners.fireEvent(new EchoCore.Event("zIndex", this));
+            this._listeners.fireEvent(new Core.Event("zIndex", this));
         }
     },
     
@@ -385,7 +385,7 @@ EchoAppRender.FloatingPaneManager = EchoCore.extend({
      */
     getIndex: function(renderId) {
         if (this._floatingPanes) {
-            var index = EchoCore.Arrays.indexOf(this._floatingPanes, renderId);
+            var index = Core.Arrays.indexOf(this._floatingPanes, renderId);
             return index == -1 ? -1 : index + 1;
         } else {
             return -1;
@@ -401,7 +401,7 @@ EchoAppRender.FloatingPaneManager = EchoCore.extend({
         if (!this._floatingPanes) {
             return;
         }
-        EchoCore.Arrays.remove(this._floatingPanes, renderId);
+        Core.Arrays.remove(this._floatingPanes, renderId);
         this._fireZIndexEvent();
     },
     
@@ -418,7 +418,7 @@ EchoAppRender.FloatingPaneManager = EchoCore.extend({
     }
 });
 
-EchoAppRender.TriCellTable = EchoCore.extend({
+EchoAppRender.TriCellTable = Core.extend({
 
     $static: {
         

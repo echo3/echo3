@@ -11,7 +11,7 @@
  * The init() and dispose() lifecycle methods must be called before the client is used,
  * and when the client will no longer be used, respectively.
  */ 
-EchoFreeClient = EchoCore.extend(EchoClient, {
+EchoFreeClient = Core.extend(EchoClient, {
 
     /**
      * Creates a new FreeClient.
@@ -29,8 +29,8 @@ EchoFreeClient = EchoCore.extend(EchoClient, {
      * This method must be invoked when the client will no longer be used, in order to clean up resources.
      */
     dispose: function() {
-        EchoCore.Scheduler.remove(this._autoUpdate);
-        this.application.updateManager.removeUpdateListener(new EchoCore.MethodRef(this, this._processUpdate));
+        Core.Scheduler.remove(this._autoUpdate);
+        this.application.updateManager.removeUpdateListener(new Core.MethodRef(this, this._processUpdate));
         this._autoUpdate = null;
         EchoRender.renderComponentDispose(null, this.application.rootComponent);
         EchoClient.prototype.dispose.call(this);
@@ -47,8 +47,8 @@ EchoFreeClient = EchoCore.extend(EchoClient, {
     init: function() {
         EchoWebCore.init();
         this._autoUpdate = new EchoFreeClient.AutoUpdate(this);
-        this.application.updateManager.addUpdateListener(new EchoCore.MethodRef(this, this._processUpdate));
-        EchoCore.Scheduler.add(this._autoUpdate);
+        this.application.updateManager.addUpdateListener(new Core.MethodRef(this, this._processUpdate));
+        Core.Scheduler.add(this._autoUpdate);
     },
     
     //FIXME This method is asynchronous, first autoupdate might want to wait on it being completed.
@@ -60,7 +60,7 @@ EchoFreeClient = EchoCore.extend(EchoClient, {
      */
     loadStyleSheet: function(url) {
         var conn = new EchoWebCore.HttpConnection(url, "GET");
-        conn.addResponseListener(new EchoCore.MethodRef(this, this._processStyleSheet));
+        conn.addResponseListener(new Core.MethodRef(this, this._processStyleSheet));
         conn.connect();
     },
     
@@ -82,9 +82,9 @@ EchoFreeClient = EchoCore.extend(EchoClient, {
 });
 
 /**
- * @class EchoCore.Scheduler.Runnable to automatically update client when application state has changed.
+ * @class Core.Scheduler.Runnable to automatically update client when application state has changed.
  */
-EchoFreeClient.AutoUpdate = EchoCore.extend(EchoCore.Scheduler.Runnable, {
+EchoFreeClient.AutoUpdate = Core.extend(Core.Scheduler.Runnable, {
 
     /**
      * Creates a new automatic render update runnable.
@@ -93,7 +93,7 @@ EchoFreeClient.AutoUpdate = EchoCore.extend(EchoCore.Scheduler.Runnable, {
      */
     $construct: function(client) {
         this.client = client;
-        EchoCore.Scheduler.Runnable.prototype.$construct.call(this, null, 10, true);
+        Core.Scheduler.Runnable.prototype.$construct.call(this, null, 10, true);
     },
     
     /**

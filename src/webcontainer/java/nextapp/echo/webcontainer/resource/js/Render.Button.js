@@ -4,7 +4,7 @@
 /**
  * Component rendering peer: Button
  */
-EchoAppRender.ButtonSync = EchoCore.extend(EchoRender.ComponentSync, {
+EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
 
     $static: {
         _createPrototypeButton: function() {
@@ -33,27 +33,27 @@ EchoAppRender.ButtonSync = EchoCore.extend(EchoRender.ComponentSync, {
      */
     _addEventListeners: function() {
         // Remove initialization listeners.
-        EchoWebCore.EventProcessor.remove(this._divElement, "focus", new EchoCore.MethodRef(this, this._processInitFocus), false);
+        EchoWebCore.EventProcessor.remove(this._divElement, "focus", new Core.MethodRef(this, this._processInitFocus), false);
         EchoWebCore.EventProcessor.remove(this._divElement, "mouseover", 
-                new EchoCore.MethodRef(this, this._processInitMouseOver), false);
+                new Core.MethodRef(this, this._processInitMouseOver), false);
         
-        EchoWebCore.EventProcessor.add(this._divElement, "click", new EchoCore.MethodRef(this, this._processClick), false);
-        EchoWebCore.EventProcessor.add(this._divElement, "keypress", new EchoCore.MethodRef(this, this._processKeyPress), false);
+        EchoWebCore.EventProcessor.add(this._divElement, "click", new Core.MethodRef(this, this._processClick), false);
+        EchoWebCore.EventProcessor.add(this._divElement, "keypress", new Core.MethodRef(this, this._processKeyPress), false);
         if (this.component.getRenderProperty("rolloverEnabled")) {
             var mouseEnterLeaveSupport = EchoWebCore.Environment.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
             var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
             var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
             EchoWebCore.EventProcessor.add(this._divElement, enterEvent, 
-                    new EchoCore.MethodRef(this, this._processRolloverEnter), false);
+                    new Core.MethodRef(this, this._processRolloverEnter), false);
             EchoWebCore.EventProcessor.add(this._divElement, exitEvent, 
-                    new EchoCore.MethodRef(this, this._processRolloverExit), false);
+                    new Core.MethodRef(this, this._processRolloverExit), false);
         }
         if (this.component.getRenderProperty("pressedEnabled")) {
-            EchoWebCore.EventProcessor.add(this._divElement, "mousedown", new EchoCore.MethodRef(this, this._processPress), false);
-            EchoWebCore.EventProcessor.add(this._divElement, "mouseup", new EchoCore.MethodRef(this, this._processRelease), false);
+            EchoWebCore.EventProcessor.add(this._divElement, "mousedown", new Core.MethodRef(this, this._processPress), false);
+            EchoWebCore.EventProcessor.add(this._divElement, "mouseup", new Core.MethodRef(this, this._processRelease), false);
         }
-        EchoWebCore.EventProcessor.add(this._divElement, "focus", new EchoCore.MethodRef(this, this._processFocus), false);
-        EchoWebCore.EventProcessor.add(this._divElement, "blur", new EchoCore.MethodRef(this, this._processBlur), false);
+        EchoWebCore.EventProcessor.add(this._divElement, "focus", new Core.MethodRef(this, this._processFocus), false);
+        EchoWebCore.EventProcessor.add(this._divElement, "blur", new Core.MethodRef(this, this._processBlur), false);
         
         EchoWebCore.EventProcessor.addSelectionDenialListener(this._divElement);
     },
@@ -160,7 +160,7 @@ EchoAppRender.ButtonSync = EchoCore.extend(EchoRender.ComponentSync, {
         if (!this.client.verifyInput(this.component) || EchoWebCore.dragInProgress) {
             return;
         }
-        this.component.application.addFocusListener(new EchoCore.MethodRef(this, this._processRolloverExit));
+        this.component.application.addFocusListener(new Core.MethodRef(this, this._processRolloverExit));
         this._setRolloverState(true);
     },
     
@@ -168,7 +168,7 @@ EchoAppRender.ButtonSync = EchoCore.extend(EchoRender.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             return;
         }
-        this.component.application.removeFocusListener(new EchoCore.MethodRef(this, this._processRolloverExit));
+        this.component.application.removeFocusListener(new Core.MethodRef(this, this._processRolloverExit));
         this._setRolloverState(false);
     },
     
@@ -216,9 +216,9 @@ EchoAppRender.ButtonSync = EchoCore.extend(EchoRender.ComponentSync, {
             // Add event listeners for focus and mouseover.  When invoked, these listeners will register the full gamut
             // of button event listeners.  There may be a large number of such listeners depending on how many effects
             // are enabled, and as such we do this lazily for performance reasons.
-            EchoWebCore.EventProcessor.add(this._divElement, "focus", new EchoCore.MethodRef(this, this._processInitFocus), false);
+            EchoWebCore.EventProcessor.add(this._divElement, "focus", new Core.MethodRef(this, this._processInitFocus), false);
             EchoWebCore.EventProcessor.add(this._divElement, "mouseover", 
-                    new EchoCore.MethodRef(this, this._processInitMouseOver), false);
+                    new Core.MethodRef(this, this._processInitMouseOver), false);
         }
     
         parentElement.appendChild(this._divElement);
@@ -270,7 +270,7 @@ EchoAppRender.ButtonSync = EchoCore.extend(EchoRender.ComponentSync, {
     },
     
     renderDispose: function(update) {
-        this.client.application.removeFocusListener(new EchoCore.MethodRef(this, this._processRolloverExit));
+        this.client.application.removeFocusListener(new Core.MethodRef(this, this._processRolloverExit));
         EchoWebCore.EventProcessor.removeAll(this._divElement);
         this._iconElement = null;
     },
@@ -369,7 +369,7 @@ EchoAppRender.ButtonSync = EchoCore.extend(EchoRender.ComponentSync, {
 /**
  * Component rendering peer: ToggleButton
  */
-EchoAppRender.ToggleButtonSync = EchoCore.extend(EchoAppRender.ButtonSync, {
+EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
     
     $staticConstruct: function() {
         EchoRender.registerPeer("ToggleButton", this);
@@ -484,7 +484,7 @@ EchoAppRender.ToggleButtonSync = EchoCore.extend(EchoAppRender.ButtonSync, {
 /**
  * Component rendering peer: CheckBox
  */
-EchoAppRender.CheckBoxSync = EchoCore.extend(EchoAppRender.ToggleButtonSync, {
+EchoAppRender.CheckBoxSync = Core.extend(EchoAppRender.ToggleButtonSync, {
     
     $staticConstruct: function() {
         EchoRender.registerPeer("CheckBox", this);
@@ -500,7 +500,7 @@ EchoAppRender.CheckBoxSync = EchoCore.extend(EchoAppRender.ToggleButtonSync, {
             stateElement = document.createElement("input");
             stateElement.type = "checkbox";
             stateElement.defaultChecked = this._selected ? true : false;
-            EchoWebCore.EventProcessor.add(stateElement, "change", new EchoCore.MethodRef(this, this._processStateChange), false);
+            EchoWebCore.EventProcessor.add(stateElement, "change", new Core.MethodRef(this, this._processStateChange), false);
         }
         return stateElement;
     },
@@ -522,7 +522,7 @@ EchoAppRender.CheckBoxSync = EchoCore.extend(EchoAppRender.ToggleButtonSync, {
 /**
  * Component rendering peer: RadioButton
  */
-EchoAppRender.RadioButtonSync = EchoCore.extend(EchoAppRender.ToggleButtonSync, {
+EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
 
     $static: {
     
@@ -531,9 +531,9 @@ EchoAppRender.RadioButtonSync = EchoCore.extend(EchoAppRender.ToggleButtonSync, 
         /**
          * Contains mappings from RadioButton render ids to EchoApp.ButtonGroup objects.
          * 
-         * @type {EchoCore.Arrays.LargeMap}
+         * @type {Core.Arrays.LargeMap}
          */
-        _groups: new EchoCore.Arrays.LargeMap()
+        _groups: new Core.Arrays.LargeMap()
     },
 
     $staticConstruct: function() {
@@ -576,7 +576,7 @@ EchoAppRender.RadioButtonSync = EchoCore.extend(EchoAppRender.ToggleButtonSync, 
             stateElement.type = "radio";
             stateElement.name = "__echo_" + EchoAppRender.RadioButtonSync._nextNameId++;
             stateElement.defaultChecked = this._selected ? true : false;
-            EchoWebCore.EventProcessor.add(stateElement, "change", new EchoCore.MethodRef(this, this._processStateChange), false);
+            EchoWebCore.EventProcessor.add(stateElement, "change", new Core.MethodRef(this, this._processStateChange), false);
         }
         return stateElement;
     },

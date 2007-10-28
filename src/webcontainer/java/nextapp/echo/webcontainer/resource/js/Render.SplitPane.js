@@ -4,7 +4,7 @@
  * @class
  * @base EchoRender.ComponentSync
  */
-EchoAppRender.SplitPaneSync = EchoCore.extend(EchoRender.ComponentSync, {
+EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
 
     $static: {
 
@@ -12,7 +12,7 @@ EchoAppRender.SplitPaneSync = EchoCore.extend(EchoRender.ComponentSync, {
          * @class Describes the configuration of a child pane of the SplitPane,
          *        including the child component and scroll bar positions.
          */
-        ChildPane: EchoCore.extend({
+        ChildPane: Core.extend({
         
             /**
              * Creates a new PaneConfiguration instance
@@ -76,7 +76,7 @@ EchoAppRender.SplitPaneSync = EchoCore.extend(EchoRender.ComponentSync, {
         }
         
         if (this._separatorDivElement) {
-            EchoWebCore.EventProcessor.remove(this._separatorDivElement, "mousedown", new EchoCore.MethodRef(this,
+            EchoWebCore.EventProcessor.remove(this._separatorDivElement, "mousedown", new Core.MethodRef(this,
                     this._processSeparatorMouseDown), false);
             this._separatorDivElement = null;
         }
@@ -157,9 +157,9 @@ EchoAppRender.SplitPaneSync = EchoCore.extend(EchoRender.ComponentSync, {
         
         var bodyElement = document.getElementsByTagName("body")[0];
         EchoWebCore.EventProcessor.add(bodyElement, "mousemove", 
-                new EchoCore.MethodRef(this, this._processSeparatorMouseMove), true);
+                new Core.MethodRef(this, this._processSeparatorMouseMove), true);
         EchoWebCore.EventProcessor.add(bodyElement, "mouseup", 
-                new EchoCore.MethodRef(this, this._processSeparatorMouseUp), true);
+                new Core.MethodRef(this, this._processSeparatorMouseUp), true);
     },
     
     _processSeparatorMouseMove: function(e) {
@@ -279,9 +279,9 @@ EchoAppRender.SplitPaneSync = EchoCore.extend(EchoRender.ComponentSync, {
     _removeSeparatorListeners: function() {
         var bodyElement = document.getElementsByTagName("body")[0];
         EchoWebCore.EventProcessor.remove(bodyElement, "mousemove", 
-                new EchoCore.MethodRef(this, this._processSeparatorMouseMove), true);
+                new Core.MethodRef(this, this._processSeparatorMouseMove), true);
         EchoWebCore.EventProcessor.remove(bodyElement, "mouseup", 
-                new EchoCore.MethodRef(this, this._processSeparatorMouseUp), true);
+                new Core.MethodRef(this, this._processSeparatorMouseUp), true);
     },
     
     renderAdd: function(update, parentElement) {
@@ -358,7 +358,7 @@ EchoAppRender.SplitPaneSync = EchoCore.extend(EchoRender.ComponentSync, {
         parentElement.appendChild(this._splitPaneDivElement);
         
         if (this._resizable) {
-            EchoWebCore.EventProcessor.add(this._separatorDivElement, "mousedown", new EchoCore.MethodRef(this,
+            EchoWebCore.EventProcessor.add(this._separatorDivElement, "mousedown", new Core.MethodRef(this,
                     this._processSeparatorMouseDown), false);
         }
     },

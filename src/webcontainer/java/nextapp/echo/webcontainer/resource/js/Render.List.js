@@ -5,7 +5,7 @@
 /**
  * Abstract base class for SELECT-element based list components.
  */
-EchoAppRender.ListComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
+EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
 
     $abstract: true,
 
@@ -31,7 +31,7 @@ EchoAppRender.ListComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
         this.component.setProperty("selection", selection);
         
         //FIXME fire from component
-        this.component.fireEvent(new EchoCore.Event("action", this.component));
+        this.component.fireEvent(new Core.Event("action", this.component));
     },
     
     _renderMain: function(update, parentElement, size) {
@@ -73,7 +73,7 @@ EchoAppRender.ListComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
             }
         }
         
-        EchoWebCore.EventProcessor.add(this._selectElement, "change", new EchoCore.MethodRef(this, this._processChange), false);
+        EchoWebCore.EventProcessor.add(this._selectElement, "change", new Core.MethodRef(this, this._processChange), false);
         
         parentElement.appendChild(this._selectElement);
     },
@@ -96,7 +96,7 @@ EchoAppRender.ListComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
 /**
  * Component rendering peer: ListBox
  */
-EchoAppRender.ListBoxSync = EchoCore.extend(EchoAppRender.ListComponentSync, {
+EchoAppRender.ListBoxSync = Core.extend(EchoAppRender.ListComponentSync, {
 
     $staticConstruct: function() {
         EchoRender.registerPeer("ListBox", this);
@@ -114,7 +114,7 @@ EchoAppRender.ListBoxSync = EchoCore.extend(EchoAppRender.ListComponentSync, {
 /**
  * Component rendering peer: SelectField
  */
-EchoAppRender.SelectFieldSync = EchoCore.extend(EchoAppRender.ListComponentSync, { 
+EchoAppRender.SelectFieldSync = Core.extend(EchoAppRender.ListComponentSync, { 
 
     $staticConstruct: function() {
         EchoRender.registerPeer("SelectField", this);

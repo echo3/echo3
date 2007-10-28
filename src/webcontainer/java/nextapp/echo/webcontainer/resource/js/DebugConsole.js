@@ -10,7 +10,7 @@ EchoDebugConsole = {
             return;
         }
         EchoWebCore.DOM.addEventListener(document, "keydown", EchoDebugConsole._keyListener, false);
-        EchoCore.Debug.consoleWrite = EchoDebugConsole._consoleWrite;
+        Core.Debug.consoleWrite = EchoDebugConsole._consoleWrite;
         EchoDebugConsole._installed = true;
     },
     

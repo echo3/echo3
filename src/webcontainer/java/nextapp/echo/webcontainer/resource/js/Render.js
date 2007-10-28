@@ -414,7 +414,7 @@ EchoRender = {
  *                                    resized.</li>
  * </ul>
  */
-EchoRender.ComponentSync = EchoCore.extend({ 
+EchoRender.ComponentSync = Core.extend({ 
 
     /**
      * Creates a new copmonent synchronization peer.
@@ -453,7 +453,7 @@ EchoRender.ComponentSync = EchoCore.extend({
  * @constructor
  * @class Root component synchronization peer.
  */
-EchoRender.RootSync = EchoCore.extend(EchoRender.ComponentSync, { 
+EchoRender.RootSync = Core.extend(EchoRender.ComponentSync, { 
 
     renderAdd: function(update, parentElement) {
         throw new Error("Unsupported operation: renderAdd().");

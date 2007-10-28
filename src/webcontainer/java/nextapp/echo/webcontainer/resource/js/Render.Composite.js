@@ -1,7 +1,7 @@
 /**
  * Component rendering peer: Composite
  */
-EchoAppRender.CompositeSync = EchoCore.extend(EchoRender.ComponentSync, {
+EchoAppRender.CompositeSync = Core.extend(EchoRender.ComponentSync, {
 
     $staticConstruct: function() {
         EchoRender.registerPeer("Composite", this);
@@ -41,7 +41,7 @@ EchoAppRender.CompositeSync = EchoCore.extend(EchoRender.ComponentSync, {
     }
 });
 
-EchoRender.ComponentSync.Panel = EchoCore.extend(EchoAppRender.CompositeSync, {
+EchoRender.ComponentSync.Panel = Core.extend(EchoAppRender.CompositeSync, {
     $staticConstruct: function() {
         EchoRender.registerPeer("Panel", this);
     },

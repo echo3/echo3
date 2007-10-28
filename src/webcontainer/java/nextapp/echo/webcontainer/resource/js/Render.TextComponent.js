@@ -1,7 +1,7 @@
 /**
  * Component rendering peer: TextComponent
  */
-EchoAppRender.TextComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
+EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     
     $abstract: true,
     
@@ -30,9 +30,9 @@ EchoAppRender.TextComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
     },
     
     _addEventHandlers: function() {
-        EchoWebCore.EventProcessor.add(this._textComponentElement, "click", new EchoCore.MethodRef(this, this._processClick), false);
-        EchoWebCore.EventProcessor.add(this._textComponentElement, "blur", new EchoCore.MethodRef(this, this._processBlur), false);
-        EchoWebCore.EventProcessor.add(this._textComponentElement, "keyup", new EchoCore.MethodRef(this, this._processKeyUp), false);
+        EchoWebCore.EventProcessor.add(this._textComponentElement, "click", new Core.MethodRef(this, this._processClick), false);
+        EchoWebCore.EventProcessor.add(this._textComponentElement, "blur", new Core.MethodRef(this, this._processBlur), false);
+        EchoWebCore.EventProcessor.add(this._textComponentElement, "keyup", new Core.MethodRef(this, this._processKeyUp), false);
     },
     
     renderDispose: function(update) {
@@ -70,7 +70,7 @@ EchoAppRender.TextComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
         this.component.setProperty("text", this._text);
         if (e.keyCode == 13) {
             //FIXME fire from component.
-    	    this.component.fireEvent(new EchoCore.Event("action", this.component));
+    	    this.component.fireEvent(new Core.Event("action", this.component));
         }
         return true;
     },
@@ -80,7 +80,7 @@ EchoAppRender.TextComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
     },
     
     renderUpdate: function(update) {
-        var fullRender =  !EchoCore.Arrays.containsAll(EchoAppRender.TextComponentSync._supportedPartialProperties, 
+        var fullRender =  !Core.Arrays.containsAll(EchoAppRender.TextComponentSync._supportedPartialProperties, 
                     update.getUpdatedPropertyNames(), true);
     
         if (fullRender) {
@@ -114,7 +114,7 @@ EchoAppRender.TextComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
 /**
  * Component rendering peer: TextArea
  */
-EchoAppRender.TextAreaSync = EchoCore.extend(EchoAppRender.TextComponentSync, {
+EchoAppRender.TextAreaSync = Core.extend(EchoAppRender.TextComponentSync, {
 
     $staticConstruct: function() {
         EchoRender.registerPeer("TextArea", this);
@@ -137,7 +137,7 @@ EchoAppRender.TextAreaSync = EchoCore.extend(EchoAppRender.TextComponentSync, {
 /**
  * Component rendering peer: TextField
  */
-EchoAppRender.TextFieldSync = EchoCore.extend(EchoAppRender.TextComponentSync, {
+EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
     
     $staticConstruct: function() {
         EchoRender.registerPeer("TextField", this);
@@ -170,7 +170,7 @@ EchoAppRender.TextFieldSync = EchoCore.extend(EchoAppRender.TextComponentSync, {
 /**
  * Component rendering peer: PasswordField
  */
-EchoAppRender.PasswordFieldSync = EchoCore.extend(EchoAppRender.TextFieldSync, {
+EchoAppRender.PasswordFieldSync = Core.extend(EchoAppRender.TextFieldSync, {
     
     $staticConstruct: function() {
         EchoRender.registerPeer("PasswordField", this);

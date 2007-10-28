@@ -179,7 +179,7 @@ EchoSerial = {
      * Serializes a property value into an XML representation.
      */
     storeProperty: function(client, propertyElement, propertyValue) {
-        EchoCore.Debug.consoleWrite("Storing property:" + propertyValue);
+        Core.Debug.consoleWrite("Storing property:" + propertyValue);
         if (typeof (propertyValue) == "object") {
             if (!propertyValue.className) {
                 throw new Error("propertyValue \"" + propertyValue 

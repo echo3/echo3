@@ -3,7 +3,7 @@ ArcTest = { };
 /**
  * TestComponent component.
  */
-ArcTest.TestComponent = EchoCore.extend(EchoApp.Component, {
+ArcTest.TestComponent = Core.extend(EchoApp.Component, {
 
     componentType: "ArcTestComponent",
     
@@ -15,7 +15,7 @@ ArcTest.TestComponent = EchoCore.extend(EchoApp.Component, {
 /**
  * TestContainer component.
  */
-ArcTest.TestContainer = EchoCore.extend(EchoApp.Component, {
+ArcTest.TestContainer = Core.extend(EchoApp.Component, {
 
     componentType: "ArcTestContainer",
 
@@ -27,7 +27,7 @@ ArcTest.TestContainer = EchoCore.extend(EchoApp.Component, {
 /**
  * TestPane component.
  */
-ArcTest.TestPane = EchoCore.extend(EchoApp.Component, {
+ArcTest.TestPane = Core.extend(EchoApp.Component, {
 
     componentType: "ArcTestPane",
 
@@ -41,7 +41,7 @@ ArcTest.ComponentSync = { };
 /**
  * Component rendering peer: TestComponent
  */
-ArcTest.ComponentSync.TestComponent = EchoCore.extend(EchoArc.ComponentSync, {
+ArcTest.ComponentSync.TestComponent = Core.extend(EchoArc.ComponentSync, {
 
     $staticConstruct: function() {
         EchoRender.registerPeer("ArcTestComponent", this);
@@ -59,7 +59,7 @@ ArcTest.ComponentSync.TestComponent = EchoCore.extend(EchoArc.ComponentSync, {
 /**
  * Component rendering peer: TestContainer
  */
-ArcTest.ComponentSync.TestContainer = EchoCore.extend(EchoArc.ComponentSync, {
+ArcTest.ComponentSync.TestContainer = Core.extend(EchoArc.ComponentSync, {
 
     $staticConstruct: function() {
         EchoRender.registerPeer("ArcTestContainer", this);
@@ -107,7 +107,7 @@ ArcTest.ComponentSync.TestContainer = EchoCore.extend(EchoArc.ComponentSync, {
 /**
  * Component rendering peer: TestPane
  */
-ArcTest.ComponentSync.TestPane = EchoCore.extend(EchoArc.ComponentSync, {
+ArcTest.ComponentSync.TestPane = Core.extend(EchoArc.ComponentSync, {
 
     $staticConstruct: function() {
         EchoRender.registerPeer("ArcTestPane", this);
@@ -136,13 +136,13 @@ ArcTest.ComponentSync.TestPane = EchoCore.extend(EchoArc.ComponentSync, {
         var addButton = new EchoApp.Button();
         addButton.setProperty("text", "Add Label");
         addButton.setProperty("background", new EchoApp.Color("#00ff00"));
-        addButton.addListener("action", new EchoCore.MethodRef(this, this._processAddButton));
+        addButton.addListener("action", new Core.MethodRef(this, this._processAddButton));
         controlsRow.add(addButton);
     
         var removeButton = new EchoApp.Button();
         removeButton.setProperty("text", "Remove Label");
         removeButton.setProperty("background", new EchoApp.Color("#ff0000"));
-        removeButton.addListener("action", new EchoCore.MethodRef(this, this._processRemoveButton));
+        removeButton.addListener("action", new Core.MethodRef(this, this._processRemoveButton));
         controlsRow.add(removeButton);
         
         this._testColumn = new EchoApp.Column();

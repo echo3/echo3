@@ -1,7 +1,7 @@
 /**
  * Component rendering peer: Column
  */
-EchoAppRender.ColumnSync = EchoCore.extend(EchoRender.ComponentSync, {
+EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
 
     $staticConstruct: function() {
         EchoRender.registerPeer("Column", this);
@@ -51,7 +51,7 @@ EchoAppRender.ColumnSync = EchoCore.extend(EchoRender.ComponentSync, {
             this._renderAddChild(update, child);
         }
         
-        EchoWebCore.EventProcessor.add(this._divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
+        EchoWebCore.EventProcessor.add(this._divElement, "keydown", new Core.MethodRef(this, this.processKeyDown), false);
         
         parentElement.appendChild(this._divElement);
     },
@@ -127,7 +127,7 @@ EchoAppRender.ColumnSync = EchoCore.extend(EchoRender.ComponentSync, {
     },
     
     renderDispose: function(update) { 
-        EchoWebCore.EventProcessor.remove(this._divElement, "keydown", new EchoCore.MethodRef(this, this.processKeyDown), false);
+        EchoWebCore.EventProcessor.remove(this._divElement, "keydown", new Core.MethodRef(this, this.processKeyDown), false);
         this._divElement = null;
         this._childIdToElementMap = null;
         this._spacingPrototype = null;
