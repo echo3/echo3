@@ -71,7 +71,7 @@ Core = {
             objectFunction.prototype.constructor = objectFunction;
             
             // Store base class.
-            objectFunction.base = base;
+            objectFunction.$base = base;
         }
         
         // Process static properties and methods defined in the '$static' object.
@@ -162,8 +162,8 @@ Core = {
     
     _verifyAbstractImpl: function(objectFunction, constructor) {
         if (!constructor) {
-            if (objectFunction.base) {
-                constructor = objectFunction.base;
+            if (objectFunction.$base) {
+                constructor = objectFunction.$base;
             } else {
                 return;
             }
@@ -177,8 +177,8 @@ Core = {
             }
         }
         
-        if (constructor.base && constructor.base.$abstract) {
-            Core._verifyAbstractImpl(objectFunction, constructor.base);
+        if (constructor.$base && constructor.$base.$abstract) {
+            Core._verifyAbstractImpl(objectFunction, constructor.$base);
         }
     }
 };
