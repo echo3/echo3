@@ -17,12 +17,8 @@ EchoArc = function() { }
  */
 EchoArc.Client = EchoCore.extend(EchoFreeClient, {
 
-    /**
-     * Create a new ArcClient. 
-     */
-    initialize: function(application, domainElement) {
-        EchoFreeClient.prototype.initialize.call(this, application, domainElement);
-    }
+    //FIXME This class has been created with the intention that methods will be added to it.  
+    // If not, remove and use freeclient?
 });
 
 /**
@@ -137,11 +133,7 @@ EchoArc.ChildContainer = EchoCore.extend(EchoApp.Component, {
         EchoApp.ComponentFactory.registerType("ArcChildContainer", this);
     },
 
-    componentType: "ArcChildContainer",
-
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
-    }
+    componentType: "ArcChildContainer"
 });
 
 /**

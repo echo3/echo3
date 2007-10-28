@@ -41,15 +41,7 @@ EchoAppRender.RemoteListBox = EchoCore.extend(EchoApp.ListBox, {
 
     componentType: "RemoteListBox",
     
-    include: [ EchoAppRender._ListComponentMixins ],
-
-    /**
-     * Creates a new RemoteListBox.
-     * @param properties initial property values
-     */
-    initialize: function(properties) { 
-        EchoApp.ListBox.prototype.initialize.call(this, properties);
-    }
+    include: [ EchoAppRender._ListComponentMixins ]
 });
 
 /**
@@ -61,14 +53,7 @@ EchoAppRender.RemoteListBoxSync = EchoCore.extend(EchoAppRender.ListBoxSync, {
         EchoRender.registerPeer("RemoteListBox", this);
     },
     
-    include: [ EchoAppRender._ListComponentSyncMixins ],
-
-    /**
-     * Creates a new RemoteListBox synchronization peer instance.
-     */
-    initialize: function() {
-        EchoAppRender.ListBoxSync.prototype.initialize.call(this);
-    }
+    include: [ EchoAppRender._ListComponentSyncMixins ]
 });
 
 /**
@@ -84,12 +69,7 @@ EchoAppRender.RemoteSelectField = EchoCore.extend(EchoApp.SelectField, {
 
     componentType: "RemoteSelectField",
 
-    include: [ EchoAppRender._ListComponentMixins ],
-
-    initialize: function(properties) {
-        EchoApp.SelectField.prototype.initialize.call(this, properties);
-        this.componentType = "RemoteSelectField";
-    }
+    include: [ EchoAppRender._ListComponentMixins ]
 });
 
 /**
@@ -102,11 +82,7 @@ EchoAppRender.RemoteSelectFieldSync = EchoCore.extend(EchoAppRender.SelectFieldS
         EchoRender.registerPeer("RemoteSelectField", this);;
     },
 
-    include: [ EchoAppRender._ListComponentSyncMixins ],
-
-    initialize: function() {
-        EchoAppRender.SelectFieldSync.prototype.initialize.call(this);
-    }
+    include: [ EchoAppRender._ListComponentSyncMixins ]
 });
     
 EchoAppRender.RemoteListData = EchoCore.extend({

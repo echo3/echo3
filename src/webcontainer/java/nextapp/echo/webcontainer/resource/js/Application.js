@@ -3242,6 +3242,7 @@ EchoApp.Update.Manager = EchoCore.extend({
 
 /**
  * @class Button component.
+ * @base EchoApp.Component
  */ 
 EchoApp.Button = EchoCore.extend(EchoApp.Component, {
 
@@ -3253,16 +3254,6 @@ EchoApp.Button = EchoCore.extend(EchoApp.Component, {
     focusable: true,
     
     /**
-     * Creates a new Button component.
-     * 
-     * @constructor
-     * @base EchoApp.Component
-     */
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
-    },
-
-    /**
      * Programatically performs a button action.
      */
     doAction: function() {
@@ -3273,24 +3264,17 @@ EchoApp.Button = EchoCore.extend(EchoApp.Component, {
 
 /**
  * @class ToggleButton component.
+ * @base EchoApp.Button
  */
 EchoApp.ToggleButton = EchoCore.extend(EchoApp.Button, {
 
-    componentType: "ToggleButton",
-
-    /**
-     * Creates a new ToggleButton.
-     * 
-     * @constructor
-     * @base EchoApp.Button
-     */
-    initialize: function(properties) {
-        EchoApp.Button.prototype.initialize.call(this, properties);
-    }
+    virtual: true,
+    componentType: "ToggleButton"
 });
 
 /**
  * @class CheckBox component.
+ * @base EchoApp.ToggleButton
  */
 EchoApp.CheckBox = EchoCore.extend(EchoApp.ToggleButton, {
 
@@ -3298,21 +3282,12 @@ EchoApp.CheckBox = EchoCore.extend(EchoApp.ToggleButton, {
         EchoApp.ComponentFactory.registerType("CheckBox", this);
     },
 
-    componentType: "CheckBox",
-
-    /**
-     * Creates a new CheckBox.
-     * 
-     * @constructor
-     * @base EchoApp.ToggleButton
-     */
-    initialize: function(properties) {
-        EchoApp.ToggleButton.prototype.initialize.call(this, properties);
-    }
+    componentType: "CheckBox"
 });
 
 /**
  * @class RadioButton component.
+ * @base EchoApp.ToggleButton
  */
 EchoApp.RadioButton = EchoCore.extend(EchoApp.ToggleButton, {
 
@@ -3320,21 +3295,12 @@ EchoApp.RadioButton = EchoCore.extend(EchoApp.ToggleButton, {
         EchoApp.ComponentFactory.registerType("RadioButton", this);
     },
 
-    componentType: "RadioButton",
-
-    /**
-     * Creates a new RadioButton.
-     * 
-     * @constructor
-     * @base EchoApp.ToggleButton
-     */
-    initialize: function(properties) {
-        EchoApp.ToggleButton.prototype.initialize.call(this, properties);
-    }
+    componentType: "RadioButton"
 });
 
 /**
  * @class Column component.
+ * @base EchoApp.Component
  */
 EchoApp.Column = EchoCore.extend(EchoApp.Component, {
 
@@ -3342,21 +3308,12 @@ EchoApp.Column = EchoCore.extend(EchoApp.Component, {
         EchoApp.ComponentFactory.registerType("Column", this);
     },
 
-    componentType: "Column",
-
-    /**
-     * Creates a new Column.
-     * 
-     * @constructor
-     * @base EchoApp.Component
-     */
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
-    }
+    componentType: "Column"
 });
 
 /**
  * @class ContentPane component.
+ * @base EchoApp.Component
  */
 EchoApp.ContentPane = EchoCore.extend(EchoApp.Component, {
 
@@ -3365,21 +3322,12 @@ EchoApp.ContentPane = EchoCore.extend(EchoApp.Component, {
     },
 
     componentType: "ContentPane",
-    pane: true,
-
-    /**
-     * Creates a new ContentPane.
-     * 
-     * @constructor
-     * @base EchoApp.Component
-     */
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
-    }
+    pane: true
 });
 
 /**
  * @class Grid component.
+ * @base EchoApp.Component
  */
 EchoApp.Grid = EchoCore.extend(EchoApp.Component, {
 
@@ -3391,21 +3339,12 @@ EchoApp.Grid = EchoCore.extend(EchoApp.Component, {
         EchoApp.ComponentFactory.registerType("Grid", this);
     },
 
-    componentType: "Grid",
-
-    /**
-     * Creates a new Grid.
-     * 
-     * @constructor
-     * @base EchoApp.Component
-     */
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
-    }
+    componentType: "Grid"
 });
 
 /**
  * @class Label component.
+ * @base EchoApp.Component
  */
 EchoApp.Label = EchoCore.extend(EchoApp.Component, {
 
@@ -3413,21 +3352,12 @@ EchoApp.Label = EchoCore.extend(EchoApp.Component, {
         EchoApp.ComponentFactory.registerType("Label", this);
     },
 
-    componentType: "Label",
-
-    /**
-     * Creates a new Label.
-     * 
-     * @constructor
-     * @base EchoApp.Component
-     */
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
-    }
+    componentType: "Label"
 });
 
 /**
  * @class ListBox component.
+ * @base EchoApp.Component
  */
 EchoApp.ListBox = EchoCore.extend(EchoApp.Component, {
 
@@ -3449,43 +3379,25 @@ EchoApp.ListBox = EchoCore.extend(EchoApp.Component, {
     },
 
     componentType: "ListBox",
-    focusable: true,
-
-    /**
-     * Creates a new ListBox.
-     * 
-     * @constructor
-     * @base EchoApp.Component
-     */
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
-    }
+    focusable: true
 });
 
 /**
  * @class Row component.
+ * @base EchoApp.Component
  */
 EchoApp.Row = EchoCore.extend(EchoApp.Component, {
-
-    componentType: "Row",
 
     globalInitialize: function() {
         EchoApp.ComponentFactory.registerType("Row", this);
     },
 
-    /**
-     * Creates a new Row.
-     * 
-     * @constructor
-     * @base EchoApp.Component
-     */
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
-    }
+    componentType: "Row"
 });
 
 /**
  * @class SelectField component.
+ * @base EchoApp.Component
  */
 EchoApp.SelectField = EchoCore.extend(EchoApp.Component, {
 
@@ -3494,21 +3406,12 @@ EchoApp.SelectField = EchoCore.extend(EchoApp.Component, {
     },
 
     componentType: "SelectField",
-    focusable: true,
-
-    /**
-     * Creates a new SelectField.
-     * 
-     * @constructor
-     * @base EchoApp.Component
-     */
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
-    }
+    focusable: true
 });
 
 /**
  * @class SplitPane component.
+ * @base EchoApp.Component
  */
 EchoApp.SplitPane = EchoCore.extend(EchoApp.Component, {
 
@@ -3531,40 +3434,23 @@ EchoApp.SplitPane = EchoCore.extend(EchoApp.Component, {
     },
 
     componentType: "SplitPane",
-    pane: true,
-
-    /**
-     * Creates a new SplitPane.
-     * 
-     * @constructor
-     * @base EchoApp.Component
-     */
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
-    }
+    pane: true
 });
 
 /**
- * Abstract base class for text components.
+ * @class Abstract base class for text components.
+ * @base EchoApp.Component
  */
 EchoApp.TextComponent = EchoCore.extend(EchoApp.Component, {
 
+    virtual: true,
     componentType: "TextComponent",
-    focusable: true,
-
-    /**
-     * @private
-     * @constructor
-     * @class TextComponent component.
-     * @base EchoApp.Component
-     */ 
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
-    }
+    focusable: true
 });
 
 /**
  * @class TextArea component.
+ * @base EchoApp.Component
  */
 EchoApp.TextArea = EchoCore.extend(EchoApp.TextComponent, {
 
@@ -3572,21 +3458,12 @@ EchoApp.TextArea = EchoCore.extend(EchoApp.TextComponent, {
         EchoApp.ComponentFactory.registerType("TextArea", this);
     },
 
-    componentType: "TextArea",
-
-    /**
-     * Creates a new TextArea.
-     * 
-     * @constructor
-     * @base EchoApp.Component
-     */
-    initialize: function(properties) {
-        EchoApp.TextComponent.prototype.initialize.call(this, properties);
-    }
+    componentType: "TextArea"
 });
 
 /**
  * @class TextField component.
+ * @base EchoApp.Component
  */
 EchoApp.TextField = EchoCore.extend(EchoApp.TextComponent, {
 
@@ -3594,21 +3471,12 @@ EchoApp.TextField = EchoCore.extend(EchoApp.TextComponent, {
         EchoApp.ComponentFactory.registerType("TextField", this);
     },
 
-    componentType: "TextField",
-
-    /**
-     * Creates a new TextField.
-     * 
-     * @constructor
-     * @base EchoApp.Component
-     */
-    initialize: function(properties) {
-        EchoApp.TextComponent.prototype.initialize.call(this, properties);
-    }
+    componentType: "TextField"
 });
 
 /**
  * @class PasswordField component.
+ * @base EchoApp.Component
  */
 EchoApp.PasswordField = EchoCore.extend(EchoApp.TextField, {
 
@@ -3616,21 +3484,12 @@ EchoApp.PasswordField = EchoCore.extend(EchoApp.TextField, {
         EchoApp.ComponentFactory.registerType("PasswordField", this);
     },
 
-    componentType: "PasswordField",
-
-    /**
-     * Creates a new PasswordField.
-     * 
-     * @constructor
-     * @base EchoApp.Component
-     */
-    initialize: function(properties) {
-        EchoApp.TextField.prototype.initialize.call(this, properties);
-    }
+    componentType: "PasswordField"
 });
 
 /**
  * @class WindowPane component.
+ * @base EchoApp.Component
  */
 EchoApp.WindowPane = EchoCore.extend(EchoApp.Component, {
 
@@ -3654,16 +3513,6 @@ EchoApp.WindowPane = EchoCore.extend(EchoApp.Component, {
     modalSupport: true,
     floatingPane: true,
     pane: true,
-
-    /**
-     * Creates a new WindowPane.
-     * 
-     * @constructor
-     * @base EchoApp.Component
-     */
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
-    },
     
     /**
      * Programmatically perform a window closing operation.

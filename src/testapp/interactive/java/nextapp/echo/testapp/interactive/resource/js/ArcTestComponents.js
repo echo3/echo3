@@ -9,10 +9,6 @@ ArcTest.TestComponent = EchoCore.extend(EchoApp.Component, {
     
     globalInitialize: function() {
         EchoApp.ComponentFactory.registerType("ArcTestComponent", this);
-    },
-
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
     }
 });
 
@@ -25,10 +21,6 @@ ArcTest.TestContainer = EchoCore.extend(EchoApp.Component, {
 
     globalInitialize: function() {
         EchoApp.ComponentFactory.registerType("ArcTestContainer", this);
-    },
-
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
     }
 });
 
@@ -41,10 +33,6 @@ ArcTest.TestPane = EchoCore.extend(EchoApp.Component, {
 
     globalInitialize: function() {
         EchoApp.ComponentFactory.registerType("ArcTestPane", this);
-    },
-
-    initialize: function(properties) {
-        EchoApp.Component.prototype.initialize.call(this, properties);
     }
 });
 
