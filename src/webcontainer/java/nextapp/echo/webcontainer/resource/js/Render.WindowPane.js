@@ -106,6 +106,7 @@ EchoAppRender.WindowPaneSync = EchoCore.extend(EchoRender.ComponentSync, {
         switch (e.keyCode) {
         case 27:
             this.component.doWindowClosing();
+            return false;
             break;
         }
         return true;
