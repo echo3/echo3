@@ -23,7 +23,7 @@ EchoClient = Core.extend({
         }
     },
     
-    $staticConstruct: function() {
+    $load: function() {
         // Register resize listener on containing window one time.
         WebCore.DOM.addEventListener(window, "resize", this._globalWindowResizeListener, false);
     },

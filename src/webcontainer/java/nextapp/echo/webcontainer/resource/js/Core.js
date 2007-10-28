@@ -83,12 +83,12 @@ Core = {
         }
         
         // Invoke static constructors.
-        if (definition && definition.$staticConstruct) {
-            // Invoke $staticConstruct() function with this pointer set to class.
-            definition.$staticConstruct.call(objectFunction);
+        if (definition && definition.$load) {
+            // Invoke $load() function with this pointer set to class.
+            definition.$load.call(objectFunction);
 
             // Clean up:
-            delete definition.$staticConstruct;
+            delete definition.$load;
         }
         
         // Add Mixins.

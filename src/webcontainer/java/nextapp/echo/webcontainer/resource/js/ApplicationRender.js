@@ -468,7 +468,7 @@ EchoAppRender.TriCellTable = Core.extend({
         }
     },
     
-    $staticConstruct: function() {
+    $load: function() {
         this._tablePrototype = this._createTablePrototype(); 
     },
 

@@ -329,7 +329,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         })
     },
     
-    $staticConstruct: function() {
+    $load: function() {
         this._prototypeTable = this._createPrototypeTable();
         EchoRender.registerPeer("Grid", this);
     },

@@ -12,7 +12,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         _supportedPartialProperties: ["selection"]
     },
     
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("RemoteTable", this);
     },
     

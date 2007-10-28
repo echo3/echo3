@@ -116,7 +116,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
  */
 EchoAppRender.TextAreaSync = Core.extend(EchoAppRender.TextComponentSync, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("TextArea", this);
     },
 
@@ -139,7 +139,7 @@ EchoAppRender.TextAreaSync = Core.extend(EchoAppRender.TextComponentSync, {
  */
 EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
     
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("TextField", this);
     },
 
@@ -172,7 +172,7 @@ EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
  */
 EchoAppRender.PasswordFieldSync = Core.extend(EchoAppRender.TextFieldSync, {
     
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("PasswordField", this);
     },
 

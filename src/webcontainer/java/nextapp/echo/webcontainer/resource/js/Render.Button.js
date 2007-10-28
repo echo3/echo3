@@ -18,7 +18,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         _defaultIconTextMargin: new EchoApp.Extent(5)
     },
     
-    $staticConstruct: function() {
+    $load: function() {
         this._prototypeButton = this._createPrototypeButton();
         EchoRender.registerPeer("Button", this);
     },
@@ -371,7 +371,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
  */
 EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
     
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("ToggleButton", this);
     },
     
@@ -486,7 +486,7 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
  */
 EchoAppRender.CheckBoxSync = Core.extend(EchoAppRender.ToggleButtonSync, {
     
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("CheckBox", this);
     },
     
@@ -536,7 +536,7 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
         _groups: new Core.Arrays.LargeMap()
     },
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("RadioButton", this);;
     },
 

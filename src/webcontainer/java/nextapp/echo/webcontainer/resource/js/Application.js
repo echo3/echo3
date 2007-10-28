@@ -3246,7 +3246,7 @@ EchoApp.Update.Manager = Core.extend({
  */ 
 EchoApp.Button = Core.extend(EchoApp.Component, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("Button", this);
     },
 
@@ -3278,7 +3278,7 @@ EchoApp.ToggleButton = Core.extend(EchoApp.Button, {
  */
 EchoApp.CheckBox = Core.extend(EchoApp.ToggleButton, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("CheckBox", this);
     },
 
@@ -3291,7 +3291,7 @@ EchoApp.CheckBox = Core.extend(EchoApp.ToggleButton, {
  */
 EchoApp.RadioButton = Core.extend(EchoApp.ToggleButton, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("RadioButton", this);
     },
 
@@ -3304,7 +3304,7 @@ EchoApp.RadioButton = Core.extend(EchoApp.ToggleButton, {
  */
 EchoApp.Column = Core.extend(EchoApp.Component, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("Column", this);
     },
 
@@ -3317,7 +3317,7 @@ EchoApp.Column = Core.extend(EchoApp.Component, {
  */
 EchoApp.ContentPane = Core.extend(EchoApp.Component, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("ContentPane", this);
     },
 
@@ -3335,7 +3335,7 @@ EchoApp.Grid = Core.extend(EchoApp.Component, {
         SPAN_FILL: -1
     },
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("Grid", this);
     },
 
@@ -3348,7 +3348,7 @@ EchoApp.Grid = Core.extend(EchoApp.Component, {
  */
 EchoApp.Label = Core.extend(EchoApp.Component, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("Label", this);
     },
 
@@ -3374,7 +3374,7 @@ EchoApp.ListBox = Core.extend(EchoApp.Component, {
         MULTIPLE_SELECTION: 2
     },
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("ListBox", this);
     },
 
@@ -3388,7 +3388,7 @@ EchoApp.ListBox = Core.extend(EchoApp.Component, {
  */
 EchoApp.Row = Core.extend(EchoApp.Component, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("Row", this);
     },
 
@@ -3401,7 +3401,7 @@ EchoApp.Row = Core.extend(EchoApp.Component, {
  */
 EchoApp.SelectField = Core.extend(EchoApp.Component, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("SelectField", this);
     },
 
@@ -3454,7 +3454,7 @@ EchoApp.TextComponent = Core.extend(EchoApp.Component, {
  */
 EchoApp.TextArea = Core.extend(EchoApp.TextComponent, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("TextArea", this);
     },
 
@@ -3467,7 +3467,7 @@ EchoApp.TextArea = Core.extend(EchoApp.TextComponent, {
  */
 EchoApp.TextField = Core.extend(EchoApp.TextComponent, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("TextField", this);
     },
 
@@ -3480,7 +3480,7 @@ EchoApp.TextField = Core.extend(EchoApp.TextComponent, {
  */
 EchoApp.PasswordField = Core.extend(EchoApp.TextField, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("PasswordField", this);
     },
 
@@ -3493,7 +3493,7 @@ EchoApp.PasswordField = Core.extend(EchoApp.TextField, {
  */
 EchoApp.WindowPane = Core.extend(EchoApp.Component, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("WindowPane", this);
     },
 

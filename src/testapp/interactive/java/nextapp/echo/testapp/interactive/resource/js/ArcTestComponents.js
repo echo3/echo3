@@ -7,7 +7,7 @@ ArcTest.TestComponent = Core.extend(EchoApp.Component, {
 
     componentType: "ArcTestComponent",
     
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("ArcTestComponent", this);
     }
 });
@@ -19,7 +19,7 @@ ArcTest.TestContainer = Core.extend(EchoApp.Component, {
 
     componentType: "ArcTestContainer",
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("ArcTestContainer", this);
     }
 });
@@ -31,7 +31,7 @@ ArcTest.TestPane = Core.extend(EchoApp.Component, {
 
     componentType: "ArcTestPane",
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("ArcTestPane", this);
     }
 });
@@ -43,7 +43,7 @@ ArcTest.ComponentSync = { };
  */
 ArcTest.ComponentSync.TestComponent = Core.extend(EchoArc.ComponentSync, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("ArcTestComponent", this);
     },
 
@@ -61,7 +61,7 @@ ArcTest.ComponentSync.TestComponent = Core.extend(EchoArc.ComponentSync, {
  */
 ArcTest.ComponentSync.TestContainer = Core.extend(EchoArc.ComponentSync, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("ArcTestContainer", this);
     },
 
@@ -109,7 +109,7 @@ ArcTest.ComponentSync.TestContainer = Core.extend(EchoArc.ComponentSync, {
  */
 ArcTest.ComponentSync.TestPane = Core.extend(EchoArc.ComponentSync, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("ArcTestPane", this);
     },
 

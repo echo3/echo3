@@ -8,7 +8,7 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
        _defaultIconTextMargin: new EchoApp.Extent(5)
     },
     
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("Label", this);
     },
 

@@ -129,7 +129,7 @@ EchoArc.ComponentSync = Core.extend(EchoRender.ComponentSync, {
  */
 EchoArc.ChildContainer = Core.extend(EchoApp.Component, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("ArcChildContainer", this);
     },
 
@@ -141,7 +141,7 @@ EchoArc.ChildContainer = Core.extend(EchoApp.Component, {
  */
 EchoArc.ChildContainerPeer = Core.extend(EchoRender.ComponentSync, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("ArcChildContainer", this);
     },
 

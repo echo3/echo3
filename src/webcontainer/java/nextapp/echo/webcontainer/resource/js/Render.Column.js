@@ -3,7 +3,7 @@
  */
 EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("Column", this);
     },
     

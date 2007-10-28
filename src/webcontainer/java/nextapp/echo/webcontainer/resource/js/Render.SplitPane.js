@@ -49,7 +49,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         })
     },
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("SplitPane", this);
     },
 

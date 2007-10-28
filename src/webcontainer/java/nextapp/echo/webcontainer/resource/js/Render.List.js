@@ -98,7 +98,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
  */
 EchoAppRender.ListBoxSync = Core.extend(EchoAppRender.ListComponentSync, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("ListBox", this);
     },
     
@@ -116,7 +116,7 @@ EchoAppRender.ListBoxSync = Core.extend(EchoAppRender.ListComponentSync, {
  */
 EchoAppRender.SelectFieldSync = Core.extend(EchoAppRender.ListComponentSync, { 
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("SelectField", this);
     },
     

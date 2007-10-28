@@ -11,7 +11,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         adjustOpacity: false
     },
     
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("WindowPane", this);
     },
 

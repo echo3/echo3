@@ -27,7 +27,7 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         }
     },
     
-    $staticConstruct: function() {
+    $load: function() {
         this._rowPrototype = this._createRowPrototype();
         EchoRender.registerPeer("Row", this);
     },

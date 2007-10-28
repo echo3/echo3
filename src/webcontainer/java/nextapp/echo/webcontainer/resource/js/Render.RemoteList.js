@@ -35,7 +35,7 @@ EchoAppRender._ListComponentSyncMixins = {
  */
 EchoAppRender.RemoteListBox = Core.extend(EchoApp.ListBox, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("RemoteListBox", this);
     },
 
@@ -49,7 +49,7 @@ EchoAppRender.RemoteListBox = Core.extend(EchoApp.ListBox, {
  */
 EchoAppRender.RemoteListBoxSync = Core.extend(EchoAppRender.ListBoxSync, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("RemoteListBox", this);
     },
     
@@ -63,7 +63,7 @@ EchoAppRender.RemoteListBoxSync = Core.extend(EchoAppRender.ListBoxSync, {
  */
 EchoAppRender.RemoteSelectField = Core.extend(EchoApp.SelectField, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoApp.ComponentFactory.registerType("RemoteSelectField", this);
     },
 
@@ -78,7 +78,7 @@ EchoAppRender.RemoteSelectField = Core.extend(EchoApp.SelectField, {
  */
 EchoAppRender.RemoteSelectFieldSync = Core.extend(EchoAppRender.SelectFieldSync, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("RemoteSelectField", this);;
     },
 

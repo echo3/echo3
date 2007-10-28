@@ -3,7 +3,7 @@
  */
 EchoAppRender.CompositeSync = Core.extend(EchoRender.ComponentSync, {
 
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("Composite", this);
     },
 
@@ -42,7 +42,7 @@ EchoAppRender.CompositeSync = Core.extend(EchoRender.ComponentSync, {
 });
 
 EchoRender.ComponentSync.Panel = Core.extend(EchoAppRender.CompositeSync, {
-    $staticConstruct: function() {
+    $load: function() {
         EchoRender.registerPeer("Panel", this);
     },
 
