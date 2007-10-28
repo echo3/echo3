@@ -15,7 +15,7 @@ EchoAppRender.ListComponentSync = EchoCore.extend(EchoRender.ComponentSync, {
             return;
         }
         var selectElement = e.registeredTarget;
-        var selection = new Array();
+        var selection = [];
         if (this.component.getProperty("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION) {
             for (var i = 0; i < selectElement.options.length; ++i) {
                 if (selectElement.options[i].selected) {

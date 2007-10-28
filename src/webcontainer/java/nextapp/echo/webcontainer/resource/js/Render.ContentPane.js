@@ -42,7 +42,7 @@ EchoAppRender.ContentPaneSync = EchoCore.extend(EchoRender.ComponentSync, {
         EchoAppRender.Color.renderFB(this.component, this._divElement);
         EchoAppRender.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._divElement); 
     
-        this._childIdToElementMap = new Object();
+        this._childIdToElementMap = {};
         
         var componentCount = this.component.getComponentCount();
         for (var i = 0; i < componentCount; ++i) {

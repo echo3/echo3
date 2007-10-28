@@ -234,8 +234,8 @@ EchoCore.Debug.Timer = EchoCore.extend({
      * @constructor
      */
     initialize: function() {
-        this._times = new Array();
-        this._labels = new Array();
+        this._times = [];
+        this._labels = [];
         this._times.push(new Date().getTime());
         this._labels.push("Start");
     },
@@ -430,7 +430,7 @@ EchoCore.Arrays.LargeMap = EchoCore.extend({
         /**
          * Associative mapping.
          */
-        this.map = new Object();
+        this.map = {};
     },
     
     /**
@@ -440,7 +440,7 @@ EchoCore.Arrays.LargeMap = EchoCore.extend({
      */
     _garbageCollect: function() {
         this._removeCount = 0;
-        var newMap = new Object();
+        var newMap = {};
         for (var key in this.map) {
             newMap[key] = this.map[key];
         }
@@ -515,7 +515,7 @@ EchoCore.ListenerList = EchoCore.extend({
          * index contains a method or EchoCore.MethodRef instance.
          * @type Array
          */
-        this._data = new Array();
+        this._data = [];
     },
 
     /**
@@ -542,7 +542,7 @@ EchoCore.ListenerList = EchoCore.extend({
             throw new Error("Cannot fire event, type property not set.");
         }
         
-        var listeners = new Array();
+        var listeners = [];
         for (var i = 0; i < this._data.length; i += 2) {
             if (this._data[i] == event.type) {
                 listeners.push(this._data[i + 1]);
@@ -565,7 +565,7 @@ EchoCore.ListenerList = EchoCore.extend({
      * @type Array
      */
     getListenerTypes: function() {
-        var types = new Array();
+        var types = [];
         for (var i = 0; i < this._data.length; i += 2) {
             types.push(this._data[i]);
         }
@@ -581,7 +581,7 @@ EchoCore.ListenerList = EchoCore.extend({
      * @type Array
      */
     getListeners: function(eventType) {
-        var listeners = new Array();
+        var listeners = [];
         for (var i = 0; i < this._data.length; i += 2) {
             if (this._data[i] == eventType) {
                 listeners.push(this._data[i + 1]);
@@ -686,7 +686,7 @@ EchoCore.MethodRef = EchoCore.extend({
         this.instance = instance;
         this.method = method;
         if (arguments.length > 2) {
-            this.arguments = new Array();
+            this.arguments = [];
             for (var i = 2; i < arguments.length; ++i) {
                 this.arguments.push(arguments[i]);
             }
@@ -735,7 +735,7 @@ EchoCore.ResourceBundle = EchoCore.extend({
      * @param map initial mappings
      */
     initialize: function(map) {
-        this.map = map ? map : new Object();
+        this.map = map ? map : {};
         this.parent = null;
     },
     
@@ -774,7 +774,7 @@ EchoCore.Scheduler = {
      * Collection of runnables to execute.
      * @private
      */
-    _runnables: new Array(),
+    _runnables: [],
     
     /**
      * Executes the scheduler, running any runnables that are due.
@@ -806,7 +806,7 @@ EchoCore.Scheduler = {
             }
         }
     
-    	var newRunnables = new Array();
+    	var newRunnables = [];
         for (var i = 0; i < EchoCore.Scheduler._runnables.length; ++i) {
             var runnable = EchoCore.Scheduler._runnables[i];
             if (runnable._nextExecution) {

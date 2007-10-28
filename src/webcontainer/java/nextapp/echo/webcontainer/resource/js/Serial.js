@@ -119,7 +119,7 @@ EchoSerial = {
                 } else {
                     var indexValues = styleData[propertyName];
                     if (!indexValues) {
-                        indexValues = new Array();
+                        indexValues = [];
                         styleData[propertyName] = indexValues;
                     }
                     indexValues[propertyIndex] = propertyValue;
@@ -154,7 +154,7 @@ EchoSerial = {
         while (ssChild) {
             if (ssChild.nodeType == 1) {
                 if (ssChild.nodeName == "s") {
-                    var styleData = new Object();
+                    var styleData = {};
                     var style = new EchoApp.Style(styleData);
                     var sChild = ssChild.firstChild;
                     while (sChild) {
@@ -271,7 +271,7 @@ EchoSerial.addPropertyTranslator("s", EchoSerial.PropertyTranslator.String);
 EchoSerial.PropertyTranslator.Map = {
 
     toProperty: function(client, propertyElement) {
-        var mapObject = new Object();
+        var mapObject = {};
         var element = propertyElement.firstChild;
         while (element) {
             if (element.nodeType != 1) {
@@ -326,7 +326,7 @@ EchoSerial.PropertyTranslator.Border = {
             return new EchoApp.Border(value);
         } else {
             var element = EchoWebCore.DOM.getChildElementByTagName(propertyElement, "b");
-            var sides = new Array();
+            var sides = [];
             
             value = element.getAttribute("t");
             if (value) {
@@ -432,7 +432,7 @@ EchoSerial.PropertyTranslator.FillImageBorder = {
         borderInsets = borderInsets ? new EchoApp.Insets(borderInsets) : null;
         var borderColor = fibElement.getAttribute("bc");
         borderColor = borderColor ? new EchoApp.Color(borderColor) : null;
-        var fillImages = new Array();
+        var fillImages = [];
         
         var element = fibElement.firstChild;
         while(element) {
@@ -525,7 +525,7 @@ EchoSerial.addPropertyTranslator("Insets", EchoSerial.PropertyTranslator.Insets)
 EchoSerial.PropertyTranslator.LayoutData = {
 
     toProperty: function(client, propertyElement) {
-        var styleData = new Object();
+        var styleData = {};
         var layoutData = new EchoApp.LayoutData(styleData);
         var element = propertyElement.firstChild;
         while (element) {

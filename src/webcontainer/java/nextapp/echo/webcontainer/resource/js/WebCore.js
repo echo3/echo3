@@ -189,7 +189,7 @@ EchoWebCore.DOM = {
      * @type Array
      */
     getChildElementsByTagName: function(parentElement, tagName) {
-        var elements = new Array();
+        var elements = [];
         var element = parentElement.firstChild;
         while (element) {
             if (element.nodeType == 1 && element.nodeName == tagName) {
@@ -601,7 +601,7 @@ EchoWebCore.EventProcessor = {
         // Establish array containing elements ancestry, with index 0 containing 
         // the element and the last index containing its most distant ancestor.  
         // Only record elements that have ids.
-        var elementAncestry = new Array();
+        var elementAncestry = [];
         var targetElement = e.target;
         while (targetElement) {
             if (targetElement.__eventProcessorId) { // Element Node with identifier.

@@ -21,7 +21,7 @@ EchoRender = {
      * @type Object
      * @private
      */
-    _peers: new Object(),
+    _peers: {},
     
     /**
      * Map containing removed components.  Maps component ids to removed components.
@@ -190,7 +190,7 @@ EchoRender = {
         }
         
         // Create map to contain removed components (for peer unloading).
-        EchoRender._disposedComponents = new Object();
+        EchoRender._disposedComponents = {};
         
         // Retrieve updates, sorting by depth in hierarchy.  This will ensure that higher
         // level updates have a chance to execute first, in case they null out lower-level

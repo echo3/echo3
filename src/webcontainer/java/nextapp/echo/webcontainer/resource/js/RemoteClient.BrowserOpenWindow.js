@@ -15,7 +15,7 @@ EchoRemoteClient.CommandExec.BrowserOpenWindow = {
             throw new Error("URI not specified in BrowserOpenWindowCommand.");
         }
         
-        var features = new Array();
+        var features = [];
         if (commandData.width) {
             if (commandData.width.units == "%") {
                 features.push("width=" + screen.width * commandData.width.value / 100);

@@ -43,7 +43,7 @@ EchoAppRender.ColumnSync = EchoCore.extend(EchoRender.ComponentSync, {
             this._spacingPrototype.style.lineHeight = "0px";
         }
         
-        this._childIdToElementMap = new Object();
+        this._childIdToElementMap = {};
         
         var componentCount = this.component.getComponentCount();
         for (var i = 0; i < componentCount; ++i) {

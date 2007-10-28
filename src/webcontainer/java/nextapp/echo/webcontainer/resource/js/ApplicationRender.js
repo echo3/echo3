@@ -535,7 +535,7 @@ EchoAppRender.TriCellTable = EchoCore.extend({
      * @param id the id of 
      */
     configure2: function(orientation0_1, margin0_1) {
-        this.tdElements = new Array(document.createElement("td"), document.createElement("td"));
+        this.tdElements = [document.createElement("td"), document.createElement("td")];
         this.tdElements[0].style.padding = "0px";
         this.tdElements[1].style.padding = "0px";
         this.marginTdElements = new Array(1);

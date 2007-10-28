@@ -36,7 +36,7 @@ EchoAppRender.GridSync = EchoCore.extend(EchoRender.ComponentSync, {
         
             initialize: function(grid) {
                 this.grid = grid;
-                this.cellArrays = new Array();
+                this.cellArrays = [];
                 this.horizontalOrientation = true;
                 
                 
@@ -60,12 +60,12 @@ EchoAppRender.GridSync = EchoCore.extend(EchoRender.ComponentSync, {
                 var xProperty = this.horizontalOrientation ? "columnWidth" : "rowHeight";
                 var yProperty = this.horizontalOrientation ? "rowHeight" : "columnWidth";
                 
-                this.xExtents = new Array();
+                this.xExtents = [];
                 for (var i = 0; i < this.gridXSize; ++i) {
                     this.xExtents.push(this.grid.getRenderIndexedProperty(xProperty, i));
                 }
             
-                this.yExtents = new Array();
+                this.yExtents = [];
                 for (var i = 0; i < this.gridYSize; ++i) {
                     this.yExtents.push(this.grid.getRenderIndexedProperty(yProperty, i));
                 }
@@ -78,7 +78,7 @@ EchoAppRender.GridSync = EchoCore.extend(EchoRender.ComponentSync, {
                     return null;
                 }
                 
-                var cells = new Array();
+                var cells = [];
                 for (var i = 0; i < childCount; ++i) {
                     var child = this.grid.getComponent(i);
                     var layoutData = child.getRenderProperty("layoutData");
@@ -151,7 +151,7 @@ EchoAppRender.GridSync = EchoCore.extend(EchoRender.ComponentSync, {
              */
             reduceX: function() {
                 // Determine duplicate cell sets on x-axis.
-                var xRemoves = new Array();
+                var xRemoves = [];
                 var x = 1;
                 var length = this.cellArrays[0].length;
                 while (x < length) {
@@ -203,7 +203,7 @@ EchoAppRender.GridSync = EchoCore.extend(EchoRender.ComponentSync, {
              * "span over" a given y-axis coordinate. 
              */
             reduceY: function() {
-                var yRemoves = new Array();
+                var yRemoves = [];
                 var y = 1;
                 
                 var size = this.cellArrays.length;
@@ -393,7 +393,7 @@ EchoAppRender.GridSync = EchoCore.extend(EchoRender.ComponentSync, {
         
         var trElement;
         var height;
-        var renderedComponentIds = new Object();
+        var renderedComponentIds = {};
         
         var xSpan, ySpan;
         if (gridProcessor.horizontalOrientation) {

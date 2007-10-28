@@ -65,7 +65,7 @@ EchoRemoteClient = EchoCore.extend(EchoClient, {
          * Associative array mapping between shorthand URL codes and replacement values.
          * @private
          */
-        this._urlMappings = new Object();
+        this._urlMappings = {};
         
         /**
          * Image URL mapping constant.
@@ -556,7 +556,7 @@ EchoRemoteClient.ClientMessage = EchoCore.extend({
 
     initialize: function(client, initialize) {
         this._client = client;
-        this._componentIdToPropertyMap = new Object();
+        this._componentIdToPropertyMap = {};
         
         this._document = EchoWebCore.DOM.createDocument("http://www.nextapp.com/products/echo/svrmsg/clientmessage.3.0", "cmsg");
         if (initialize) {
@@ -676,7 +676,7 @@ EchoRemoteClient.ClientMessage = EchoCore.extend({
     storeProperty: function(componentId, propertyName, propertyValue) {
         var propertyMap = this._componentIdToPropertyMap[componentId];
         if (!propertyMap) {
-            propertyMap = new Object();
+            propertyMap = {};
             this._componentIdToPropertyMap[componentId] = propertyMap;
         }
         propertyMap[propertyName] = propertyValue;
@@ -695,7 +695,7 @@ EchoRemoteClient.CommandExecProcessor = EchoCore.extend({
 
     global: {
     
-        _typeToPeerMap: new Object(),
+        _typeToPeerMap: {},
         
         /**
          * Registers a command execution peer.
@@ -723,7 +723,7 @@ EchoRemoteClient.CommandExecProcessor = EchoCore.extend({
             if (!commandPeer) {
     	        throw new Error("Peer not found for: " + type);
             }
-            var commandData = new Object();
+            var commandData = {};
             var pElement = cmdElement.firstChild;
             while (pElement) {
                 EchoSerial.loadProperty(this._client, pElement, null, commandData, null);
@@ -803,7 +803,7 @@ EchoRemoteClient.ComponentSyncRemoveProcessor = EchoCore.extend({
             // in order to prevent Component.indexOf() of from being invoked n times.
             
             // Create map between ids and indices.
-            var idToIndexMap = new Object();
+            var idToIndexMap = {};
             for (var i = 0; i < parentComponent.children.length; ++i) {
                 idToIndexMap[parentComponent.children[i].renderId] = i;
             }
@@ -847,7 +847,7 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = EchoCore.extend({
 
     initialize: function(client) { 
         this._client = client;
-        this._referenceMap = new Object();
+        this._referenceMap = {};
     },
     
     /**

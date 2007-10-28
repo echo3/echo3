@@ -114,7 +114,7 @@ EchoAppRender.RemoteListDataItem = EchoCore.extend({
 EchoAppRender.RemoteListDataTranslator = { 
     
     toProperty: function(client, propertyElement) {
-        var items = new Array();
+        var items = [];
         var eElement = propertyElement.firstChild;
         while (eElement.nextSibling) {
             var text = eElement.getAttribute("t");
