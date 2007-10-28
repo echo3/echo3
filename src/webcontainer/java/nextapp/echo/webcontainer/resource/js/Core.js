@@ -24,15 +24,15 @@ Core = {
      * This method may be called with one or two parameters as follows:
      * <p>
      * Core.extend(definition)
-     * Core.extend(base, definition)
+     * Core.extend(baseClass, definition)
      * <p>
      * 
-     * @param {Function} base the base class
+     * @param {Function} baseClass the base class
      * @param {Object} definition an associative array containing methods and properties of the class
      */
     extend: function() {
-        // Configure base/definition arguments
-        var base = arguments.length == 1 ? null : arguments[0];
+        // Configure baseClass/definition arguments
+        var baseClass = arguments.length == 1 ? null : arguments[0];
         var definition = arguments.length == 1 ? arguments[0] : arguments[1];
         
         // Create new object function which will invoke '$construct' pseudo-constructor method of object.
@@ -57,12 +57,12 @@ Core = {
         }
         
         // Create object prototype.
-        if (typeof(base) == "function") {
+        if (typeof(baseClass) == "function") {
             // Set "extending" flag so $construct() method will not be invoked.
             Core._extending = true;
             
             // Create prototype instance.
-            objectFunction.prototype = new base();
+            objectFunction.prototype = new baseClass();
             
             // Clear "extending" flag.
             delete Core._extending;
@@ -71,7 +71,7 @@ Core = {
             objectFunction.prototype.constructor = objectFunction;
             
             // Store base class.
-            objectFunction.$base = base;
+            objectFunction.$super = baseClass;
         }
         
         // Process static properties and methods defined in the '$static' object.
@@ -162,8 +162,8 @@ Core = {
     
     _verifyAbstractImpl: function(objectFunction, constructor) {
         if (!constructor) {
-            if (objectFunction.$base) {
-                constructor = objectFunction.$base;
+            if (objectFunction.$super) {
+                constructor = objectFunction.$super;
             } else {
                 return;
             }
@@ -177,8 +177,8 @@ Core = {
             }
         }
         
-        if (constructor.$base && constructor.$base.$abstract) {
-            Core._verifyAbstractImpl(objectFunction, constructor.$base);
+        if (constructor.$super && constructor.$super.$abstract) {
+            Core._verifyAbstractImpl(objectFunction, constructor.$super);
         }
     }
 };
