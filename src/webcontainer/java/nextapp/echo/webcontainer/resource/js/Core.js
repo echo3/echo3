@@ -20,6 +20,13 @@
 Core = {
 
     /**
+     * Modifier flag indicating that a method should replace any super-implementation rather
+     * than using overriding it (where the descendent implementation is enclosed in a closure
+     * that has a reference, this.$super, to its parent whenever it is executed).
+     */
+    REPLACE: 0x1,
+
+    /**
      * Creates a new class, optionally extending an existing class.
      * This method may be called with one or two parameters as follows:
      * <p>
@@ -149,6 +156,11 @@ Core = {
         }
     },
     
+    modify: function(modifiers, f) {
+        f.$modifiers = modifiers;
+        return f;
+    },
+    
     inherit: function(destination, source) {
         for (var name in source) {
             // Verify that inherited item does not exist in destination if it begins with
@@ -156,8 +168,34 @@ Core = {
             if (name.charAt(0) == "_" && destination[name]) {
                 throw new Error("Interval variable \"" + name + "\" already exists in destination object.");
             }
-            destination[name] = source[name];
+            
+            if (destination[name] && typeof destination[name] == "function") {
+                // Overriding function.
+                if (source[name].$modifiers && source[name].$modifiers & Core.REPLACE) {
+                    destination[name] = source[name];
+                } else {
+                    Core.override(destination, source, name);
+                }
+            } else {
+                // Not an overriding function.
+                destination[name] = source[name];
+            }
         }
+    },
+    
+    override: function(destination, source, name) {
+        var $super = destination[name];
+        var impl = source[name];
+        var wrapper = function() {
+            var oldSuper = this.$super;
+            try {
+                this.$super = $super;
+                return impl.apply(this, arguments);
+            } finally {
+                this.$super = oldSuper;
+            }
+        };
+        destination[name] = wrapper;
     },
     
     _verifyAbstractImpl: function(objectFunction, constructor) {
