@@ -339,7 +339,7 @@ EchoApp.Application.ComponentUpdateEvent = Core.extend(Core.Event, {
      * @param newValue the new value of the property
      */
     $construct: function(source, parent, propertyName, oldValue, newValue) {
-        Core.Event.prototype.$construct.call(this, "componentUpdate", source);
+        this.$super("componentUpdate", source);
         this.parent = parent;
         this.propertyName = propertyName;
         this.oldValue = oldValue;

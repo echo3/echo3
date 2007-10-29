@@ -38,7 +38,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
     $construct: function(serverUrl) {
         WebCore.init();
     
-        EchoClient.prototype.$construct.call(this);
+        this.$super();
         
         /**
          * The base server url.

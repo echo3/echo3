@@ -779,7 +779,7 @@ WebCore.HttpConnection = Core.extend({
          * @class
          * An event which indicates a response has been received to a connection
          */
-        ResponseEvent: Core.extend({
+        ResponseEvent: Core.extend(Core.Event, {
         
             // FIXME Current "valid" flag for 2XX responses is probably a horrible idea.
             /**
@@ -790,8 +790,7 @@ WebCore.HttpConnection = Core.extend({
              * @constructor
              */
             $construct: function(source, valid) {
-                //FIXME h4x0r3d up!
-                Core.Event.prototype.$construct.call(this, "response", source);
+                this.$super("response", source);
                 this.valid = valid;
             }
         })
