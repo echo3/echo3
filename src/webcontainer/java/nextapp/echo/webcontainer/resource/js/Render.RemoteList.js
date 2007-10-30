@@ -116,7 +116,7 @@ EchoAppRender.RemoteListDataTranslator = {
     toProperty: function(client, propertyElement) {
         var items = [];
         var eElement = propertyElement.firstChild;
-        while (eElement.nextSibling) {
+        while (eElement) {
             var text = eElement.getAttribute("t");
             var item = new EchoAppRender.RemoteListDataItem(text);
             if (eElement.getAttribute("f")) {
