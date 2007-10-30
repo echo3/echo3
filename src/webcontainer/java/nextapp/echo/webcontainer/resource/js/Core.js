@@ -20,13 +20,6 @@
 Core = {
 
     /**
-     * Modifier flag indicating that a method should replace any super-implementation rather
-     * than using overriding it (where the descendent implementation is enclosed in a closure
-     * that has a reference, this.$super, to its parent whenever it is executed).
-     */
-    REPLACE: 0x1,
-
-    /**
      * Creates a new class, optionally extending an existing class.
      * This method may be called with one or two parameters as follows:
      * <p>
@@ -42,66 +35,24 @@ Core = {
         var baseClass = arguments.length == 1 ? null : arguments[0];
         var definition = arguments.length == 1 ? arguments[0] : arguments[1];
         
-        // Create new object function which will invoke '$construct' pseudo-constructor method of object.
-        var objectFunction;
-        
-        if (definition && definition.$abstract) {
-            objectFunction = function() {
-                if (!Core._extending) {
-                    throw new Error("Cannot instantiate abstract class.");
-                }
-            }
-        } else {
-            objectFunction = function() {
-    
-                if (!Core._extending) {
-                    // Only invoke $construct() (constructor replacement method)
-                    // when Core._extending flag is not set.  Core._extending flag
-                    // will be set temporarily any time an object prototype is being created.
-                    this.$construct.apply(this, arguments);
-                }
-            }
-        }
-        
+        var prototypeClass = function() { };
+
         // Create object prototype.
-        if (typeof(baseClass) == "function") {
-            // Set "extending" flag so $construct() method will not be invoked.
-            Core._extending = true;
-            
+        if (typeof(baseClass) == "function" && baseClass.$prototype) {
             // Create prototype instance.
-            objectFunction.prototype = new baseClass();
-            
-            // Clear "extending" flag.
-            delete Core._extending;
+            prototypeClass.prototype = new baseClass.$prototype();
             
             // Assign constructor correctly.
-            objectFunction.prototype.constructor = objectFunction;
+            prototypeClass.prototype.constructor = prototypeClass;
             
             // Store base class.
-            objectFunction.$super = baseClass;
-        }
-        
-        // Process static properties and methods defined in the '$static' object.
-        if (definition && definition.$static) {
-            Core.inherit(objectFunction, definition.$static);
-
-            // Clean up:
-            delete definition.$static;
-        }
-        
-        // Invoke static constructors.
-        if (definition && definition.$load) {
-            // Invoke $load() function with this pointer set to class.
-            definition.$load.call(objectFunction);
-
-            // Clean up:
-            delete definition.$load;
+            prototypeClass.$super = baseClass;
         }
         
         // Add Mixins.
         if (definition && definition.$include) {
             var mixins = definition.$include.reverse();
-            Core.mixin(objectFunction, mixins);
+            Core.mixin(prototypeClass, mixins);
             
             // Clean up:
             delete definition.$include;
@@ -109,9 +60,9 @@ Core = {
         
         // Add Abstract Methods.
         if (definition && definition.$abstract) {
-            // Note that 'objectFunction.$abstract' now evaluates as true,
+            // Note that 'prototypeClass.$abstract' now evaluates as true,
             // indicating the object is abstract.
-            objectFunction.$abstract = definition.$abstract;
+            prototypeClass.$abstract = definition.$abstract;
 
             // Clean up:
             delete definition.$abstract;
@@ -120,28 +71,64 @@ Core = {
         // Add toString method (toString method should be defined as $toString to avoid
         // it being removed by the MSIE scripting engine.
         if (definition && definition.$toString) {
-            objectFunction.prototype.toString = definition.$toString;
+            prototypeClass.prototype.toString = definition.$toString;
             delete definition.$toString;
         }
 
         // Add valueOf method (valueOf method should be defined as $valueOf to avoid
         // it being removed by the MSIE scripting engine.
         if (definition && definition.$valueOf) {
-            objectFunction.prototype.valueOf = definition.$valueOf;
+            prototypeClass.prototype.valueOf = definition.$valueOf;
             delete definition.$valueOf;
         }
         
         // Process instance properties and methods.
         if (definition) {
-            Core.inherit(objectFunction.prototype, definition);
+            Core.inherit(prototypeClass.prototype, definition);
         }
         
         // If class is concrete, verify all abstract methods are provided.
-        if (!objectFunction.$abstract) {
-            this._verifyAbstractImpl(objectFunction);
+        if (!prototypeClass.$abstract) {
+            this._verifyAbstractImpl(prototypeClass);
         }
         
-        return objectFunction;
+        // Create new object function which will invoke '$construct' pseudo-constructor method of object.
+        var objectClass;
+        
+        if (definition && definition.$abstract) {
+            objectClass = function() {
+            }
+        } else {
+            if (definition.$construct) {
+                objectClass = definition.$construct;
+            } else {
+                objectClass = function() {
+                    prototypeClass.$super.apply(this, arguments);
+                };
+            }
+        }
+        
+        objectClass.prototype = prototypeClass.prototype;
+        objectClass.$prototype = prototypeClass;
+        
+        // Process static properties and methods defined in the '$static' object.
+        if (definition && definition.$static) {
+            Core.inherit(objectClass, definition.$static);
+
+            // Clean up:
+            delete definition.$static;
+        }
+        
+        // Invoke static constructors.
+        if (definition && definition.$load) {
+            // Invoke $load() function with this pointer set to class.
+            definition.$load.call(objectClass);
+
+            // Clean up:
+            delete definition.$load;
+        }
+        
+        return objectClass;
     },
     
     mixin: function(destination, mixins) {
@@ -156,11 +143,6 @@ Core = {
         }
     },
     
-    modify: function(modifiers, f) {
-        f.$modifiers = modifiers;
-        return f;
-    },
-    
     inherit: function(destination, source) {
         for (var name in source) {
             // Verify that inherited item does not exist in destination if it begins with
@@ -168,40 +150,14 @@ Core = {
             if (name.charAt(0) == "_" && destination[name]) {
                 throw new Error("Interval variable \"" + name + "\" already exists in destination object.");
             }
-            
-            if (destination[name] && typeof destination[name] == "function") {
-                // Overriding function.
-                if (source[name].$modifiers && source[name].$modifiers & Core.REPLACE) {
-                    destination[name] = source[name];
-                } else {
-                    Core.override(destination, source, name);
-                }
-            } else {
-                // Not an overriding function.
-                destination[name] = source[name];
-            }
+            destination[name] = source[name];
         }
     },
     
-    override: function(destination, source, name) {
-        var $super = destination[name];
-        var impl = source[name];
-        var wrapper = function() {
-            var oldSuper = this.$super;
-            try {
-                this.$super = $super;
-                return impl.apply(this, arguments);
-            } finally {
-                this.$super = oldSuper;
-            }
-        };
-        destination[name] = wrapper;
-    },
-    
-    _verifyAbstractImpl: function(objectFunction, constructor) {
+    _verifyAbstractImpl: function(objectClass, constructor) {
         if (!constructor) {
-            if (objectFunction.$super) {
-                constructor = objectFunction.$super;
+            if (objectClass.$super) {
+                constructor = objectClass.$super;
             } else {
                 return;
             }
@@ -209,14 +165,14 @@ Core = {
 
         if (constructor.$abstract && constructor.$abstract instanceof Object) {
             for (var name in constructor.$abstract) {
-                if (!objectFunction.prototype[name]) {
+                if (!objectClass.prototype[name]) {
                     throw new Error("Cannot build concrete implementation due to missing abstract method: " + name); 
                 }
             }
         }
         
         if (constructor.$super && constructor.$super.$abstract) {
-            Core._verifyAbstractImpl(objectFunction, constructor.$super);
+            Core._verifyAbstractImpl(objectClass, constructor.$super);
         }
     }
 };

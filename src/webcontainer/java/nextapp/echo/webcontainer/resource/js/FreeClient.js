@@ -20,7 +20,7 @@ EchoFreeClient = Core.extend(EchoClient, {
      * @param {Element} domainElement the HTML 
      */
     $construct: function(application, domainElement) {
-        this.$super();
+        EchoClient.call(this);
         this.configure(application, domainElement);
     },
 
@@ -93,7 +93,7 @@ EchoFreeClient.AutoUpdate = Core.extend(Core.Scheduler.Runnable, {
      */
     $construct: function(client) {
         this.client = client;
-        this.$super(null, 10, true);
+        Core.Scheduler.Runnable.call(this, null, 10, true);
     },
     
     /**

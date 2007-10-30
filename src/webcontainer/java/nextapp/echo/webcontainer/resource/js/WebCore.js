@@ -396,7 +396,7 @@ WebCore.Environment = {
         } else if (this.BROWSER_MOZILLA) {
             this._parseVersionInfo(ua, "rv:")
         } else if (this.BROWSER_KONQUEROR) {
-            this._parseVersionInf(ua, "konqueror/");
+            this._parseVersionInfo(ua, "konqueror/");
         }
     
         //FIXME Quirk flags not refined yet, some quirk flags from Echo 2.0/1 will/may be deprecated/removed.
@@ -790,7 +790,7 @@ WebCore.HttpConnection = Core.extend({
              * @constructor
              */
             $construct: function(source, valid) {
-                this.$super("response", source);
+                Core.Event.call(this, "response", source);
                 this.valid = valid;
             }
         })
