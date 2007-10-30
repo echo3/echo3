@@ -68,18 +68,13 @@ Core = {
             delete definition.$abstract;
         }
         
-        // Add toString method (toString method should be defined as $toString to avoid
-        // it being removed by the MSIE scripting engine.
-        if (definition && definition.$toString) {
-            prototypeClass.prototype.toString = definition.$toString;
-            delete definition.$toString;
-        }
-
-        // Add valueOf method (valueOf method should be defined as $valueOf to avoid
-        // it being removed by the MSIE scripting engine.
-        if (definition && definition.$valueOf) {
-            prototypeClass.prototype.valueOf = definition.$valueOf;
-            delete definition.$valueOf;
+        // Add toString and valueOf manually, as they will not be iterated
+        // by for...in iteration in Internet Explorer.
+        if (definition) {
+            prototypeClass.prototype.toString = definition.toString;
+            prototypeClass.prototype.valueOf = definition.valueOf;
+            delete definition.toString;
+            delete definition.valueOf;
         }
         
         // Process instance properties and methods.
@@ -268,7 +263,7 @@ Core.Debug.Timer = Core.extend({
      * @return the timer results
      * @type String
      */
-    $toString: function() {
+    toString: function() {
         var out = "";
         for (var i = 1; i < this._times.length; ++i) {
             var time = this._times[i] - this._times[i - 1];

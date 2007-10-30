@@ -1105,7 +1105,7 @@ EchoApp.Component = Core.extend({
      * @return a string representation of the component
      * @type String
      */
-    $toString: function(longFormat) {
+    toString: function(longFormat) {
         var out = this.renderId + "/" + this.componentType;
         if (longFormat) {
             out += "\n";
@@ -1889,7 +1889,7 @@ EchoApp.Extent = Core.extend({
      * @return a string representation
      * @type String
      */
-    $toString: function() {
+    toString: function() {
         return this.value + this.units;
     }
 });
@@ -2307,7 +2307,7 @@ EchoApp.Insets = Core.extend({
      * @return a string representation
      * @type String
      */
-    $toString: function() {
+    toString: function() {
         return this.top + " " + this.right + " " + this.bottom + " " + this.left;
     }
 });
@@ -2487,7 +2487,7 @@ EchoApp.Style = Core.extend({
      * @return a string representation
      * @type String
      */
-    $toString: function() {
+    toString: function() {
         var outArray = [];
         for (var x in this._properties) {
             outArray.push(x + "=" + this._properties[x]);
@@ -2891,7 +2891,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      * @return a string representation
      * @type String
      */
-    $toString: function() {
+    toString: function() {
         var s = "ComponentUpdate\n";
         s += "- Parent: " + this.parent + "\n";
         s += "- Adds: " + this._addedChildIds + "\n";
@@ -3231,7 +3231,7 @@ EchoApp.Update.Manager = Core.extend({
      * @return a string representation
      * @type String
      */
-    $toString: function() {
+    toString: function() {
         var s = "[ UpdateManager ]\n";
         if (this.fullRefreshRequired) {
             s += "fullRefresh";
