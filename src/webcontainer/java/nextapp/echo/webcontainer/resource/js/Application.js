@@ -16,24 +16,50 @@ EchoApp = { };
  */
 EchoApp.Application = Core.extend({
 
+    /** 
+     * Mapping between component ids and component instances.
+     * @private 
+     * @type Core.Arrays.LargeMap
+     */
+    _idToComponentMap: null,
+
+    /** 
+     * ListenerList instance for application-level events.
+     * @private 
+     * @type Core.ListenerList 
+     */
+    _listenerList: null,
+        
+    /** 
+     * Array of modal components.
+     * This value is read-only.
+     * @type Array 
+     */
+    _modalComponents: null,
+
+    /** 
+     * Displayed style sheet.
+     * 
+     * @private 
+     * @type EchoApp.StyleSheet
+     */
+    _styleSheet: null,
+    
+    /** 
+     * Currently focused component.
+     * @private
+     * @type EchoApp.Component
+     */
+    _focusedComponent: null,
+    
     /**
      * Creates a new application instance.  
      * @constructor
      */
     $construct: function() {
         
-        /** 
-         * Mapping between component ids and component instances.
-         * @private 
-         * @type Core.Arrays.LargeMap
-         */
         this._idToComponentMap = new Core.Arrays.LargeMap();
         
-        /** 
-         * ListenerList instance for application-level events.
-         * @private 
-         * @type Core.ListenerList 
-         */
         this._listenerList = new Core.ListenerList();
     
         /** 
@@ -45,27 +71,7 @@ EchoApp.Application = Core.extend({
         this.rootComponent.componentType = "Root";
         this.rootComponent.register(this);
         
-        /** 
-         * Array of modal components.
-         * This value is read-only.
-         * @type Array 
-         */
         this._modalComponents = [];
-        
-        /** 
-         * Displayed style sheet.
-         * 
-         * @private 
-         * @type EchoApp.StyleSheet
-         */
-        this._styleSheet = null;
-        
-        /** 
-         * Currently focused component.
-         * @private
-         * @type EchoApp.Component
-         */
-        this._focusedComponent = null;
         
         /** 
          * UpdateManager instance monitoring changes to the application for redraws. 
@@ -422,6 +428,55 @@ EchoApp.Component = Core.extend({
     componentType: null,
 
     /**
+     * The render id.
+     * This value should be treated as read-only and immutable.
+     * @type String
+     */
+    renderId: null,
+    
+    /**
+     * The parent component.
+     * This value is read-only.
+     * @type EchoApp.Component
+     */
+    parent: null,
+    
+    /**
+     * The registered application.
+     * This value is read-only.
+     * @type EchoApp.Application
+     */
+    application: null,
+    
+    /**
+     * Listener list.  Lazily created.
+     * @private
+     * @type Core.ListenerList
+     */
+    _listenerList: null,
+    
+    /**
+     * Referenced external style
+     * @private
+     * @type EchoApp.Style
+     */
+    _style: null,
+    
+    /**
+     * Assigned style name from application-level style sheet.
+     * @private
+     * @type String
+     */
+    _styleName: null,
+
+    /**
+     * Enabled state of the component (default true).
+     * @private
+     * @type Boolean
+     */
+    _enabled: true,
+    
+    /**
      * Creates a new Component.
      *  
      * @param {String} renderId the render id
@@ -437,60 +492,11 @@ EchoApp.Component = Core.extend({
     $construct: function(properties) {
         
         /**
-         * The render id.
-         * This value should be treated as read-only and immutable.
-         * @type String
-         */
-        this.renderId = null;
-        
-        /**
-         * The parent component.
-         * This value is read-only.
-         * @type EchoApp.Component
-         */
-        this.parent = null;
-        
-        /**
          * Array of child components.
          * This value is read-only.  Modifying this array will result in undefined behavior.
          * @type Array
          */
         this.children = [];
-        
-        /**
-         * The registered application.
-         * This value is read-only.
-         * @type EchoApp.Application
-         */
-        this.application = null;
-        
-        /**
-         * Listener list.  Lazily created.
-         * @private
-         * @type Core.ListenerList
-         */
-        this._listenerList = null;
-        
-        /**
-         * Referenced external style
-         * @private
-         * @type EchoApp.Style
-         */
-        this._style = null;
-        
-        /**
-         * Assigned style name from application-level style sheet.
-         * @private
-         * @type String
-         */
-        this._styleName = null;
-    
-        /**
-         * Enabled state of the component (default true).
-         * @private
-         * @type Boolean
-         */
-        this._enabled = true;
         
         var localStyleProperties = null;
         if (properties) {
@@ -3483,7 +3489,7 @@ EchoApp.PasswordField = Core.extend(EchoApp.TextField, {
     $load: function() {
         EchoApp.ComponentFactory.registerType("PasswordField", this);
     },
-
+    
     componentType: "PasswordField"
 });
 
