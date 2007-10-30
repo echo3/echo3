@@ -759,7 +759,7 @@ WebCore.EventProcessor = {
      * @return string represenation of listener maps
      * @type String
      */
-    $toString: function() {
+    toString: function() {
         return "Capturing: " + WebCore.EventProcessor._capturingListenerMap + "\n"
                 + "Bubbling: " + WebCore.EventProcessor._bubblingListenerMap;
     }
@@ -1353,7 +1353,7 @@ WebCore.Measure = {
          * @return a string representation of the object
          * @type String
          */
-        $toString: function() {
+        toString: function() {
             return (this.left != null ? (this.left + "," + this.top + " : ") : "") + "[" + this.width + "x" + this.height + "]";
         }
     })

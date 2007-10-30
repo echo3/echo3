@@ -91,7 +91,7 @@ EchoAppRender.RemoteListData = Core.extend({
         this.items = items;
     },
     
-    $toString: function() {
+    toString: function() {
         return this.items.toString();
     }
 });
@@ -103,7 +103,7 @@ EchoAppRender.RemoteListDataItem = Core.extend({
         this.text = text;
     },
     
-    $toString: function() {
+    toString: function() {
         return this.text;
     }
 });
