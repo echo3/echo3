@@ -156,7 +156,11 @@ WebCore.DOM = {
      */
     _focusElementImpl: function(element) {
         if (element.focus) {
-            element.focus();
+            try {
+                element.focus();
+            } catch (ex) {
+                // Silently digest IE focus exceptions.
+            }
         }
     },
     
