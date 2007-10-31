@@ -55,6 +55,67 @@ EchoClient = Core.extend({
 
     $construct: function() { },
     
+    $virtual: {
+
+        /**
+         * Returns a default named image.
+         * May return null if the client does not provide a default image for the specified name.
+         * Default implementation delegates to parent client
+         * (if one is present) or otherwise returns null.
+         * 
+         * @param {String} imageName the image name 
+         */
+        getDefaultImage: function(imageName) {
+            if (this.parent) {
+                return this.parent.getDefaultImage(imageName);
+            } else {
+                return null;
+            }
+        },
+        
+        /**
+         * Returns the URL of a service based on the serviceId.
+         * Default implementation delegates to parent client
+         * (if one is present) or otherwise returns null.
+         * 
+         * @param {String} serviceId the serviceId
+         * @return the full URL
+         * @type String
+         */
+        getServiceUrl: function(serviceId) {
+            if (this.parent) {
+                return this.parent.getServiceUrl(serviceId);
+            } else {
+                return null;
+            }
+        },
+    
+        /**
+         * Determines if the specified component and containing application is ready to receive input.
+         * This method should be overridden by client implementations as needed, returning the value
+         * from this implementation if the client has no other reason to disallow input.
+         * 
+         * @param component optional parameter indicating the component to query (if omitted, only the
+         *        applications readiness state will be investigated)
+         * @return true if the application/component are ready to receive inputs
+         */
+        verifyInput: function(component) {
+            if (component) {
+                return component.isActive();
+            } else {
+                return this.application.isActive();
+            }
+        },
+        
+        /**
+         * Default dispose implementation.
+         * Invokes configure(null, null) to deconfigure the client. 
+         */
+        dispose: function() {
+            this.configure(null, null);
+        }
+    },
+    
     /**
      * Configures/Deconfigures the client.  This method must be invoked
      * with the supported application/containing domain element before
@@ -90,47 +151,6 @@ EchoClient = Core.extend({
             WebCore.EventProcessor.add(this.domainElement, "keypress", 
                     new Core.MethodRef(this, this._processKeyPress), false);
             EchoClient._activeClients.push(this);
-        }
-    },
-    
-    /**
-     * Default dispose implementation.
-     * Invokes configure(null, null) to deconfigure the client. 
-     */
-    dispose: function() {
-        this.configure(null, null);
-    },
-    
-    /**
-     * Returns a default named image.
-     * May return null if the client does not provide a default image for the specified name.
-     * Default implementation delegates to parent client
-     * (if one is present) or otherwise returns null.
-     * 
-     * @param {String} imageName the image name 
-     */
-    getDefaultImage: function(imageName) {
-        if (this.parent) {
-            return this.parent.getDefaultImage(imageName);
-        } else {
-            return null;
-        }
-    },
-    
-    /**
-     * Returns the URL of a service based on the serviceId.
-     * Default implementation delegates to parent client
-     * (if one is present) or otherwise returns null.
-     * 
-     * @param {String} serviceId the serviceId
-     * @return the full URL
-     * @type String
-     */
-    getServiceUrl: function(serviceId) {
-        if (this.parent) {
-            return this.parent.getServiceUrl(serviceId);
-        } else {
-            return null;
         }
     },
     
@@ -194,23 +214,6 @@ EchoClient = Core.extend({
     _processKeyUp: function(e) {
         this._tabDown = 0;
         return true;
-    },
-    
-    /**
-     * Determines if the specified component and containing application is ready to receive input.
-     * This method should be overridden by client implementations as needed, returning the value
-     * from this implementation if the client has no other reason to disallow input.
-     * 
-     * @param component optional parameter indicating the component to query (if omitted, only the
-     *        applications readiness state will be investigated)
-     * @return true if the application/component are ready to receive inputs
-     */
-    verifyInput: function(component) {
-        if (component) {
-            return component.isActive();
-        } else {
-            return this.application.isActive();
-        }
     },
     
     /**

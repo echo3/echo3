@@ -421,11 +421,14 @@ EchoApp.Component = Core.extend({
          */
         _nextRenderId: 0
     },
-
-    /**
-     * Component type.  This must be set by implementors in order for peer discovery to work properly.
-     */
-    componentType: null,
+    
+    $virtual: {
+    
+        /**
+         * Component type.  This must be set by implementors in order for peer discovery to work properly.
+         */
+        componentType: null
+    },
 
     /**
      * The render id.
@@ -3259,12 +3262,15 @@ EchoApp.Button = Core.extend(EchoApp.Component, {
     componentType: "Button",
     focusable: true,
     
-    /**
-     * Programatically performs a button action.
-     */
-    doAction: function() {
-        var e = new Core.Event("action", this, this.getProperty("actionCommand"));
-        this.fireEvent(e);
+    $virtual: {
+        
+        /**
+         * Programatically performs a button action.
+         */
+        doAction: function() {
+            var e = new Core.Event("action", this, this.getProperty("actionCommand"));
+            this.fireEvent(e);
+        }
     }
 });
 

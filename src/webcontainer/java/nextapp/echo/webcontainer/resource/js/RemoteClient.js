@@ -1047,15 +1047,18 @@ EchoRemoteClient.WaitIndicator = Core.extend({
 
     $construct: function() { },
 
-    /**
-     * Wait indicator activation method.  Invoked when the wait indicator should be activated.
-     */
-    activate: function() { },
-    
-    /**
-     * Wait indicator deactivation method.  Invoked when the wait indicator should be deactivated.
-     */
-    deactivate: function() { }
+    $abstract: {
+        
+        /**
+         * Wait indicator activation method.  Invoked when the wait indicator should be activated.
+         */
+        activate: function() { },
+        
+        /**
+         * Wait indicator deactivation method.  Invoked when the wait indicator should be deactivated.
+         */
+        deactivate: function() { }
+    }
 });
 
 /**

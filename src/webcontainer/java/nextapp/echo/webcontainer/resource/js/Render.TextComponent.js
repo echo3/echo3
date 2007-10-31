@@ -9,6 +9,18 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
         _supportedPartialProperties: ["text"]
     },
     
+    $virtual: {
+        
+        sanitizeInput: function() {
+            var maximumLength = this.component.getRenderProperty("maximumLength", -1);
+            if (maximumLength >= 0) {
+                if (this._textComponentElement.value && this._textComponentElement.value.length > maximumLength) {
+                    this._textComponentElement.value = this._textComponentElement.value.substring(0, maximumLength);
+                }
+            }
+        }
+    },
+
     _renderStyle: function() {
         EchoAppRender.Border.render(this.component.getRenderProperty("border"), this._textComponentElement);
         EchoAppRender.Color.renderFB(this.component, this._textComponentElement);
@@ -99,15 +111,6 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
         }
         
         return false; // Child elements not supported: safe to return false.
-    },
-    
-    sanitizeInput: function() {
-        var maximumLength = this.component.getRenderProperty("maximumLength", -1);
-        if (maximumLength >= 0) {
-            if (this._textComponentElement.value && this._textComponentElement.value.length > maximumLength) {
-                this._textComponentElement.value = this._textComponentElement.value.substring(0, maximumLength);
-            }
-        }
     }
 });
 

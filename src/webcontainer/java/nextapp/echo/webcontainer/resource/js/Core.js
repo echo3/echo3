@@ -56,7 +56,7 @@ Core = {
         var definition = arguments.length == 1 ? arguments[0] : arguments[1];
         
         var prototypeClass = function() { };
-
+        
         // Create object prototype.
         if (typeof(baseClass) == "function" && baseClass.$prototype) {
             // Create prototype instance.
@@ -67,6 +67,11 @@ Core = {
             
             // Store base class.
             prototypeClass.$super = baseClass;
+        }
+        
+        if (baseClass) {
+            this._inheritVirtualPropertyFlags(prototypeClass, baseClass);
+            this._inheritVirtualPropertyFlags(prototypeClass.prototype, baseClass.prototype);
         }
         
         // Add Mixins.
@@ -95,6 +100,11 @@ Core = {
             prototypeClass.prototype.valueOf = definition.valueOf;
             delete definition.toString;
             delete definition.valueOf;
+        }
+        
+        if (definition.$virtual) {
+            Core.inherit(prototypeClass.prototype, definition.$virtual, true);
+            delete definition.$virtual;
         }
         
         // Process instance properties and methods.
@@ -148,6 +158,47 @@ Core = {
         return objectClass;
     },
     
+    _inheritVirtualPropertyFlags: function(destination, source) {
+        if (source.$_virtualProperties) {
+            destination.$_virtualProperties = {};
+            for (var x in source.$_virtualProperties) {
+                destination.$_virtualProperties[x] = source.$_virtualProperties[x];
+            }
+        }
+    },
+    
+    _isVirtual: function(object, propertyName) {
+        switch (propertyName) {
+        case "$construct":
+        case "$load":
+        case "$static":
+            return true;
+        }
+        
+        if (!object.$_virtualProperties) {
+            return false;
+        }
+        
+        return object.$_virtualProperties[propertyName];
+    },
+    
+    inherit: function(destination, source, virtualState) {
+        for (var name in source) {
+            if (destination[name] && !this._isVirtual(destination, name)) {
+                // Property exists in destination as is not marked as virtual.
+                throw new Error("Cannot override non-virtual property \"" + name + "\".");
+            } else {
+                if (virtualState) {
+                    if (!destination.$_virtualProperties) {
+                        destination.$_virtualProperties = {};
+                    }
+                    destination.$_virtualProperties[name] = true;
+                }
+                destination[name] = source[name];
+            }
+        }
+    },
+    
     mixin: function(destination, mixins) {
         for (var i = 0; i < mixins.length; ++i) {
             for (var mixinProperty in mixins[i]) {
@@ -157,17 +208,6 @@ Core = {
                 }
                 destination.prototype[mixinProperty] = mixins[i][mixinProperty];
             }
-        }
-    },
-    
-    inherit: function(destination, source) {
-        for (var name in source) {
-            // Verify that inherited item does not exist in destination if it begins with
-            // an underscore ("_"), which is used to indicate an internal variable name.
-            if (name.charAt(0) == "_" && destination[name] !== undefined) {
-                throw new Error("Interval variable \"" + name + "\" already exists in destination object.");
-            }
-            destination[name] = source[name];
         }
     },
     
@@ -944,12 +984,15 @@ Core.Scheduler.Runnable = Core.extend({
         this.repeat = repeat;
     },
 
-    /**
-     * Default run() implementation. Should be overidden by subclasses.
-     */
-    run: function() {
-        if (this.methodRef) {
-            this.methodRef.invoke();
+    $virtual: {
+        
+        /**
+         * Default run() implementation. Should be overidden by subclasses.
+         */
+        run: function() {
+            if (this.methodRef) {
+                this.methodRef.invoke();
+            }
         }
     }
 });

@@ -7,6 +7,13 @@ EchoAppRender.CompositeSync = Core.extend(EchoRender.ComponentSync, {
         EchoRender.registerPeer("Composite", this);
     },
 
+    $virtual: {
+        renderStyle: function(element) {
+            EchoAppRender.Color.renderFB(this.component, element);
+            EchoAppRender.Font.renderDefault(this.component, element);
+        }
+    },
+    
     renderAdd: function(update, parentElement) {
         this._divElement = document.createElement("div");
         
@@ -20,11 +27,6 @@ EchoAppRender.CompositeSync = Core.extend(EchoRender.ComponentSync, {
         }
         
         parentElement.appendChild(this._divElement);
-    },
-    
-    renderStyle: function(element) {
-        EchoAppRender.Color.renderFB(this.component, element);
-        EchoAppRender.Font.renderDefault(this.component, element);
     },
     
     renderDispose: function(update) { 
