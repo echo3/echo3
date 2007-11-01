@@ -35,7 +35,10 @@ Core = {
         return fCopy;
     },
     
-    _createFunction: function(f) {
+    /**
+     * Creates an empty function.
+     */
+    _createFunction: function() {
         return function() { };
     },
     
@@ -46,6 +49,19 @@ Core = {
      * Core.extend(definition)
      * Core.extend(baseClass, definition)
      * <p>
+     * Each property of the definition object will be added to the prototype of defined class.
+     * Properties that begin with a dollar-sign ($) will be treated specially:
+     * <p>
+     * The $constructor property, which must be a function, will be used as the constructor.
+     * The $load property, which must be a function if provided, will be used as a static initializer,
+     * executed once when the class is *defined*.
+     * The $static property, an object, if provided, will have its properties installed as class variables.
+     * The $abstract property, an object or 'true', if provided, will define methods that must be implemented
+     * by derivative classes.  If the value is simply true, the object will be marked as abstract (such that
+     * it does not necessarily need to provide implementations of abstract methods defined in its base class.
+     * The $virtual property, an object, if provided, defines methods that will be placed into the prototype
+     * that may be overridden by subclasses.  Attempting to override a property/method that is not defined 
+     * in the virtual block will result in an exception. 
      * 
      * @param {Function} baseClass the base class
      * @param {Object} definition an associative array containing methods and properties of the class
