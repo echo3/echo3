@@ -15,6 +15,8 @@ EchoApp = { };
  * Derived objects must invoke construtor with root component id.
  */
 EchoApp.Application = Core.extend({
+    
+    $abstract: true,
 
     /** 
      * Mapping between component ids and component instances.
@@ -2942,6 +2944,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
  *        in order to efficiently repaint the screen.
  */
 EchoApp.Update.Manager = Core.extend({
+    
     /**
      * Creates a new Update Manager.
      *

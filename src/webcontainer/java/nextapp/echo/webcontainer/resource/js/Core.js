@@ -71,7 +71,7 @@ Core = {
         var baseClass = arguments.length == 1 ? null : arguments[0];
         var definition = arguments.length == 1 ? arguments[0] : arguments[1];
         
-        // Argument error checking.
+        // Perform argument error checking.
         if (baseClass) {
             if (typeof(baseClass) != "function") {
                 throw new Error("Base class is not a function, cannot derive.");
@@ -81,13 +81,15 @@ Core = {
             }
         }
         if (!definition) {
-            throw new Error("No definition.");
+            throw new Error("Object definition not provided.");
         }
         
-        // Create prototype class object.
+        // Create prototype class object.  
+        // The prototype class and object class will share a prototype, 
+        // but the prototype class will have this empty constructor.
         var prototypeClass = function() { };
 
-        // Create object prototype.
+        // Configure prototype from base class.
         if (baseClass) {
             // Create prototype instance.
             prototypeClass.prototype = new baseClass.$prototype();
@@ -103,7 +105,9 @@ Core = {
         }
         
         // Add Mixins.
-        if (definition && definition.$include) {
+        if (definition.$include) {
+            // Reverse order of mixins, such that later-defined mixins will override earlier ones.
+            // (Mixins will only be added if they will NOT override an existing method.)
             var mixins = definition.$include.reverse();
             Core.mixin(prototypeClass, mixins);
             
@@ -112,7 +116,7 @@ Core = {
         }
         
         // Add Abstract Methods.
-        if (definition && definition.$abstract) {
+        if (definition.$abstract) {
             // Note that 'prototypeClass.$abstract' now evaluates as true,
             // indicating the object is abstract.
             prototypeClass.$abstract = definition.$abstract;
@@ -126,12 +130,17 @@ Core = {
         if (definition) {
             prototypeClass.prototype.toString = definition.toString;
             prototypeClass.prototype.valueOf = definition.valueOf;
+
+            // Clean up:
             delete definition.toString;
             delete definition.valueOf;
         }
         
+        // Add virtual instance properties to prototype.
         if (definition.$virtual) {
             Core.inherit(prototypeClass.prototype, definition.$virtual, true);
+
+            // Clean up:
             delete definition.$virtual;
         }
         
@@ -145,29 +154,34 @@ Core = {
             this._verifyAbstractImpl(prototypeClass);
         }
         
-        // Create new object function which will invoke '$construct' pseudo-constructor method of object.
+        // Create object class.
         var objectClass;
-        
-        if (definition && definition.$abstract) {
-            objectClass = function() {
-            }
+        if (definition.$construct) {
+            objectClass = definition.$construct;
         } else {
-            if (definition.$construct) {
-                objectClass = definition.$construct;
+            if (baseClass) {
+                objectClass = Core._copyFunction(baseClass);
             } else {
-                if (baseClass) {
-                    objectClass = Core._copyFunction(baseClass);
-                } else {
-                    objectClass = Core._createFunction();
-                }
+                objectClass = Core._createFunction();
             }
         }
         
+        // Share prototype of prototype class with object class. 
         objectClass.prototype = prototypeClass.prototype;
+
+        // Store reference to prototype class in object class.
         objectClass.$prototype = prototypeClass;
         
+        // Store $load static initializer and remove from definition so it is not inherited in static processing.
+        
         // Process static properties and methods defined in the '$static' object.
-        if (definition && definition.$static) {
+        var loadMethod = null;
+        if (definition.$load) {
+            loadMethod = definition.$load;
+            delete definition.$load;
+        }
+        
+        if (definition.$static) {
             Core.inherit(objectClass, definition.$static);
 
             // Clean up:
@@ -175,12 +189,9 @@ Core = {
         }
         
         // Invoke static constructors.
-        if (definition && definition.$load) {
-            // Invoke $load() function with this pointer set to class.
-            definition.$load.call(objectClass);
-
-            // Clean up:
-            delete definition.$load;
+        if (loadMethod) {
+            // Invoke $load() function with "this" pointer set to class.
+            loadMethod.call(objectClass);
         }
         
         return objectClass;
