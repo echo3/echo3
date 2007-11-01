@@ -67,26 +67,38 @@ Core = {
      * @param {Object} definition an associative array containing methods and properties of the class
      */
     extend: function() {
-        // Configure baseClass/definition arguments
+        // Configure baseClass/definition arguments.
         var baseClass = arguments.length == 1 ? null : arguments[0];
         var definition = arguments.length == 1 ? arguments[0] : arguments[1];
         
-        var prototypeClass = function() { };
+        // Argument error checking.
+        if (baseClass) {
+            if (typeof(baseClass) != "function") {
+                throw new Error("Base class is not a function, cannot derive.");
+            }
+            if (!baseClass.$prototype) {
+                throw new Error("Base class not defined using Core.extend(), cannot derive.");
+            }
+        }
+        if (!definition) {
+            throw new Error("No definition.");
+        }
         
+        // Create prototype class object.
+        var prototypeClass = function() { };
+
         // Create object prototype.
-        if (typeof(baseClass) == "function" && baseClass.$prototype) {
+        if (baseClass) {
             // Create prototype instance.
             prototypeClass.prototype = new baseClass.$prototype();
             
             // Assign constructor correctly.
             prototypeClass.prototype.constructor = prototypeClass;
             
-            // Store base class.
-            prototypeClass.$super = baseClass;
-        }
-        
-        if (baseClass) {
+            // Copy virtual property flags for class properties from base class.
             this._inheritVirtualPropertyFlags(prototypeClass, baseClass);
+
+            // Copy virtual property flags for instance properties from base class.
             this._inheritVirtualPropertyFlags(prototypeClass.prototype, baseClass.prototype);
         }
         
@@ -183,11 +195,17 @@ Core = {
         }
     },
     
+    /**
+     * Determines if the specified propertyName of the specified object is a virtual
+     * property, i.e., that it can be overridden by subclasses.
+     */
     _isVirtual: function(object, propertyName) {
         switch (propertyName) {
         case "$construct":
         case "$load":
         case "$static":
+        case "toString":
+        case "valueOf":
             return true;
         }
         
