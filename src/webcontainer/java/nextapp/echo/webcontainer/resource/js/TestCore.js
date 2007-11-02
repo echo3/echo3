@@ -57,7 +57,7 @@ TestCore.TestCase = Core.extend({
     },
    
     assertNotSame: function(expected, actual) {
-        if (expected !== actual) {
+        if (expected === actual) {
             throw new TestCore.AssertionFailedError("Expected value to not be: " + expected + " but value was: " + value + ".");
         }
     },
@@ -85,7 +85,7 @@ TestCore.AssertionFailedError = Core.extend({
         this.message = message;
     },
     
-    $toString: function() {
+    toString: function() {
         return "AssertionFailedError: " + this.message;
     }
 });

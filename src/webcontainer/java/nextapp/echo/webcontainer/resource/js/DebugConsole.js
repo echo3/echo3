@@ -112,5 +112,19 @@ EchoDebugConsole = {
         } else {
             EchoDebugConsole._windowElement.style.display = "block";
         }
+    },
+    
+    isVisible: function() {
+        if (!EchoDebugConsole._initialized) {
+            EchoDebugConsole._init();
+        }
+        return EchoDebugConsole._windowElement.style.display == "block";
+    },
+    
+    setVisible: function(newValue) {
+        if (!EchoDebugConsole._initialized) {
+            EchoDebugConsole._init();
+        }
+        EchoDebugConsole._windowElement.style.display = newValue ? "block" : "none";
     }
 };
