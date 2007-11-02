@@ -40,25 +40,25 @@ TestCore.TestCase = Core.extend({
    
     assertEquals: function(expected, actual) {
         if (expected != actual) {
-            throw new TestCore.AssertionFailedError("Expected: " + expected + " but value was: " + value + ".");
+            throw new TestCore.AssertionFailedError("Expected: " + expected + " but value was: " + actual + ".");
         }
     },
    
     assertNotEquals: function(expected, actual) {
         if (expected == actual) {
-            throw new TestCore.AssertionFailedError("Expected value to not be: " + expected + " but value was: " + value + ".");
+            throw new TestCore.AssertionFailedError("Expected value to not be: " + expected + " but value was: " + actual + ".");
         }
     },
    
     assertSame: function(expected, actual) {
         if (expected !== actual) {
-            throw new TestCore.AssertionFailedError("Expected: " + expected + " but value was: " + value + ".");
+            throw new TestCore.AssertionFailedError("Expected: " + expected + " but value was: " + actual + ".");
         }
     },
    
     assertNotSame: function(expected, actual) {
         if (expected === actual) {
-            throw new TestCore.AssertionFailedError("Expected value to not be: " + expected + " but value was: " + value + ".");
+            throw new TestCore.AssertionFailedError("Expected value to not be: " + expected + " but value was: " + actual + ".");
         }
     },
    
