@@ -61,7 +61,15 @@ Core = {
      * it does not necessarily need to provide implementations of abstract methods defined in its base class.
      * The $virtual property, an object, if provided, defines methods that will be placed into the prototype
      * that may be overridden by subclasses.  Attempting to override a property/method that is not defined 
-     * in the virtual block will result in an exception. 
+     * in the virtual block will result in an exception.
+     * <p>
+     * Use of this method enables a class to be derived WIHTOUT executing the constructor of the base class
+     * in order to create a prototype for the derived class.  This method uses a "shared prototype" architecture,
+     * where two objects are created, a "prototype class" and a "constructor class".  These two objects share
+     * the same prototype, but the "prototype class" has an empty constructor.  When a class created with
+     * this method is derived, the "prototype class" is used when to create a prototype for the derivative.
+     * This method will always return the constructor class, which contains an internal reference to the 
+     * prototype class that will be used if the returned class is later derived by this method.
      * 
      * @param {Function} baseClass the base class
      * @param {Object} definition an associative array containing methods and properties of the class
@@ -76,7 +84,7 @@ Core = {
             if (typeof(baseClass) != "function") {
                 throw new Error("Base class is not a function, cannot derive.");
             }
-            if (!baseClass.$prototype) {
+            if (!baseClass.$_prototypeClass) {
                 throw new Error("Base class not defined using Core.extend(), cannot derive.");
             }
         }
@@ -84,24 +92,28 @@ Core = {
             throw new Error("Object definition not provided.");
         }
         
-        // Create prototype class object.  
-        // The prototype class and object class will share a prototype, 
-        // but the prototype class will have this empty constructor.
+        // Create the contructor-less prototype class.
         var prototypeClass = function() { };
-
+        
+        // Reference to shared prototype.
+        var sharedPrototype;
+        
         // Configure prototype from base class.
         if (baseClass) {
+            // Create shared prototype by instantiating the prototype class referenced by the base class.
+            sharedPrototype = new baseClass.$_prototypeClass();
+        
             // Create prototype instance.
-            prototypeClass.prototype = new baseClass.$prototype();
-            
-            // Assign constructor correctly.
-            prototypeClass.prototype.constructor = prototypeClass;
+            prototypeClass.prototype = sharedPrototype;
             
             // Copy virtual property flags for class properties from base class.
             this._inheritVirtualPropertyFlags(prototypeClass, baseClass);
 
             // Copy virtual property flags for instance properties from base class.
-            this._inheritVirtualPropertyFlags(prototypeClass.prototype, baseClass.prototype);
+            this._inheritVirtualPropertyFlags(sharedPrototype, baseClass.prototype);
+        } else {
+            // If not deriving, simply set shared prototype to empty prototype of newly created prototypeClass.
+            sharedPrototype = prototypeClass.prototype;
         }
         
         // Add Mixins.
@@ -125,28 +137,28 @@ Core = {
             delete definition.$abstract;
         }
         
-        // Add toString and valueOf manually, as they will not be iterated
-        // by for...in iteration in Internet Explorer.
-        if (definition) {
-            prototypeClass.prototype.toString = definition.toString;
-            prototypeClass.prototype.valueOf = definition.valueOf;
-
-            // Clean up:
-            delete definition.toString;
-            delete definition.valueOf;
-        }
-        
         // Add virtual instance properties to prototype.
         if (definition.$virtual) {
-            Core.inherit(prototypeClass.prototype, definition.$virtual, true);
+            Core.inherit(sharedPrototype, definition.$virtual, true);
 
             // Clean up:
             delete definition.$virtual;
         }
         
+        // Add toString and valueOf manually, as they will not be iterated
+        // by for...in iteration in Internet Explorer.
+        if (definition) {
+            sharedPrototype.toString = definition.toString;
+            sharedPrototype.valueOf = definition.valueOf;
+
+            // Clean up:
+            delete definition.toString;
+            delete definition.valueOf;
+        }
+
         // Process instance properties and methods.
         if (definition) {
-            Core.inherit(prototypeClass.prototype, definition);
+            Core.inherit(sharedPrototype, definition);
         }
         
         // If class is concrete, verify all abstract methods are provided.
@@ -155,22 +167,28 @@ Core = {
         }
         
         // Create object class.
-        var objectClass;
+        var constructorClass;
         if (definition.$construct) {
-            objectClass = definition.$construct;
+            constructorClass = definition.$construct;
         } else {
             if (baseClass) {
-                objectClass = Core._copyFunction(baseClass);
+                constructorClass = Core._copyFunction(baseClass);
             } else {
-                objectClass = Core._createFunction();
+                constructorClass = Core._createFunction();
             }
         }
         
+        // Store reference to base class.
+        constructorClass.$super = baseClass;
+        
         // Share prototype of prototype class with object class. 
-        objectClass.prototype = prototypeClass.prototype;
+        constructorClass.prototype = sharedPrototype;
+
+        // Assign constructor correctly.
+        constructorClass.prototype.constructor = constructorClass;
 
         // Store reference to prototype class in object class.
-        objectClass.$prototype = prototypeClass;
+        constructorClass.$_prototypeClass = prototypeClass;
         
         // Store $load static initializer and remove from definition so it is not inherited in static processing.
         
@@ -182,7 +200,7 @@ Core = {
         }
         
         if (definition.$static) {
-            Core.inherit(objectClass, definition.$static);
+            Core.inherit(constructorClass, definition.$static);
 
             // Clean up:
             delete definition.$static;
@@ -191,10 +209,10 @@ Core = {
         // Invoke static constructors.
         if (loadMethod) {
             // Invoke $load() function with "this" pointer set to class.
-            loadMethod.call(objectClass);
+            loadMethod.call(constructorClass);
         }
         
-        return objectClass;
+        return constructorClass;
     },
     
     _inheritVirtualPropertyFlags: function(destination, source) {

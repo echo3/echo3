@@ -1,4 +1,3 @@
-
 CoreTests = Core.extend(TestCore.TestCase, {
 
     testEmpty: function() {
@@ -10,6 +9,7 @@ CoreTests = Core.extend(TestCore.TestCase, {
      */
     testAbstractSimpleFail: function() {
         var base = Core.extend({
+        
             $abstract: {
                 abstractFunction: function() { }
             }
@@ -22,7 +22,7 @@ CoreTests = Core.extend(TestCore.TestCase, {
             exceptionThrown = true;
         }
         if (!exceptionThrown) {
-            this.fail("Non-virtual property was overridden without throwing an exception.");
+            this.fail("Non-abstract property was overridden without throwing an exception.");
         }
     },
     
@@ -141,5 +141,6 @@ CoreTests = Core.extend(TestCore.TestCase, {
 init = function() {
     EchoDebugConsole.install();
     EchoDebugConsole.setVisible(true);
-    TestCore.run(new CoreTests());
+new CoreTests().testAbstractSimpleFail();
+//    TestCore.run(new CoreTests());
 };
