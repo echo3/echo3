@@ -116,56 +116,6 @@ Core = {
             sharedPrototype = prototypeClass.prototype;
         }
         
-        // Add Mixins.
-        if (definition.$include) {
-            // Reverse order of mixins, such that later-defined mixins will override earlier ones.
-            // (Mixins will only be added if they will NOT override an existing method.)
-            var mixins = definition.$include.reverse();
-            Core.mixin(prototypeClass, mixins);
-            
-            // Clean up:
-            delete definition.$include;
-        }
-        
-        // Add Abstract Methods.
-        if (definition.$abstract) {
-            // Note that 'prototypeClass.$abstract' now evaluates as true,
-            // indicating the object is abstract.
-            prototypeClass.$abstract = definition.$abstract;
-
-            // Clean up:
-            delete definition.$abstract;
-        }
-        
-        // Add virtual instance properties to prototype.
-        if (definition.$virtual) {
-            Core.inherit(sharedPrototype, definition.$virtual, true);
-
-            // Clean up:
-            delete definition.$virtual;
-        }
-        
-        // Add toString and valueOf manually, as they will not be iterated
-        // by for...in iteration in Internet Explorer.
-        if (definition) {
-            sharedPrototype.toString = definition.toString;
-            sharedPrototype.valueOf = definition.valueOf;
-
-            // Clean up:
-            delete definition.toString;
-            delete definition.valueOf;
-        }
-
-        // Process instance properties and methods.
-        if (definition) {
-            Core.inherit(sharedPrototype, definition);
-        }
-        
-        // If class is concrete, verify all abstract methods are provided.
-        if (!prototypeClass.$abstract) {
-            this._verifyAbstractImpl(prototypeClass);
-        }
-        
         // Create object class.
         var constructorClass;
         if (definition.$construct) {
@@ -181,7 +131,7 @@ Core = {
         // Store reference to base class.
         constructorClass.$super = baseClass;
         
-        // Share prototype of prototype class with object class. 
+        // Assign prototype of constructor class to shared prototype.
         constructorClass.prototype = sharedPrototype;
 
         // Assign constructor correctly.
@@ -190,20 +140,67 @@ Core = {
         // Store reference to prototype class in object class.
         constructorClass.$_prototypeClass = prototypeClass;
         
-        // Store $load static initializer and remove from definition so it is not inherited in static processing.
+        // Add Mixins.
+        if (definition.$include) {
+            // Reverse order of mixins, such that later-defined mixins will override earlier ones.
+            // (Mixins will only be added if they will NOT override an existing method.)
+            var mixins = definition.$include.reverse();
+            Core.mixin(prototypeClass, mixins);
+            
+            // Remove property to avoid adding later when Core.inherit() is invoked.
+            delete definition.$include;
+        }
         
-        // Process static properties and methods defined in the '$static' object.
+        // Add Abstract Methods.
+        if (definition.$abstract) {
+            // Note that 'prototypeClass.$abstract' now evaluates as true,
+            // indicating the object is abstract.
+            prototypeClass.$abstract = definition.$abstract;
+
+            // Remove property to avoid adding later when Core.inherit() is invoked.
+            delete definition.$abstract;
+        }
+        
+        // Add virtual instance properties to prototype.
+        if (definition.$virtual) {
+            Core.inherit(sharedPrototype, definition.$virtual, true);
+
+            // Remove property to avoid adding later when Core.inherit() is invoked.
+            delete definition.$virtual;
+        }
+        
+        // Add toString and valueOf manually, as they will not be iterated
+        // by for...in iteration in Internet Explorer.
+        sharedPrototype.toString = definition.toString;
+        sharedPrototype.valueOf = definition.valueOf;
+
+        // Remove properties to avoid re-adding later when Core.inherit() is invoked.
+        delete definition.toString;
+        delete definition.valueOf;
+
+        // Store $load static initializer and remove from definition so it is not inherited in static processing.
         var loadMethod = null;
         if (definition.$load) {
             loadMethod = definition.$load;
+
+            // Remove property to avoid adding later when Core.inherit() is invoked.
             delete definition.$load;
         }
         
+        // Process static properties and methods defined in the '$static' object.
         if (definition.$static) {
             Core.inherit(constructorClass, definition.$static);
 
-            // Clean up:
+            // Remove property to avoid adding later when Core.inherit() is invoked.
             delete definition.$static;
+        }
+
+        // Process instance properties and methods.
+        Core.inherit(sharedPrototype, definition);
+        
+        // If class is concrete, verify all abstract methods are provided.
+        if (!prototypeClass.$abstract) {
+            this._verifyAbstractImpl(prototypeClass);
         }
         
         // Invoke static constructors.
