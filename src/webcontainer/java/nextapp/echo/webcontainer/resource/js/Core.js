@@ -153,9 +153,9 @@ Core = {
         
         // Add Abstract Methods.
         if (definition.$abstract) {
-            // Note that 'prototypeClass.$abstract' now evaluates as true,
+            // Note that 'prototype.$abstract' now evaluates as true,
             // indicating the object is abstract.
-            prototypeClass.$abstract = definition.$abstract;
+            Core._markAbstract(sharedPrototype, definition.$abstract);
 
             // Remove property to avoid adding later when Core.inherit() is invoked.
             delete definition.$abstract;
@@ -212,11 +212,20 @@ Core = {
         return constructorClass;
     },
     
+    _inheritAbstractPropertyFlags: function(destination, source) {
+        if (source.$_abstractProperties) {
+            destination.$_abstractProperties = {};
+            for (var x in source.$_abstractProperties) {
+                destination.$_abstractProperties[x] = source.$_abstractProperties[x];
+            }
+        }
+    },
+    
     _inheritVirtualPropertyFlags: function(destination, source) {
-        if (source.$_virtualProperties) {
-            destination.$_virtualProperties = {};
-            for (var x in source.$_virtualProperties) {
-                destination.$_virtualProperties[x] = source.$_virtualProperties[x];
+        if (source.$virtual) {
+            destination.$virtual = {};
+            for (var x in source.$virtual) {
+                destination.$virtual[x] = source.$virtual[x];
             }
         }
     },
@@ -235,11 +244,11 @@ Core = {
             return true;
         }
         
-        if (!object.$_virtualProperties) {
+        if (!object.$virtual) {
             return false;
         }
         
-        return object.$_virtualProperties[propertyName];
+        return object.$virtual[propertyName];
     },
     
     inherit: function(destination, source, virtualState) {
@@ -249,13 +258,21 @@ Core = {
                 throw new Error("Cannot override non-virtual property \"" + name + "\".");
             } else {
                 if (virtualState) {
-                    if (!destination.$_virtualProperties) {
-                        destination.$_virtualProperties = {};
+                    // Property is being declared virtual, flag in $virtual property.
+                    if (!destination.$virtual) {
+                        destination.$virtual = {};
                     }
-                    destination.$_virtualProperties[name] = true;
+                    destination.$virtual[name] = true;
                 }
                 destination[name] = source[name];
             }
+        }
+    },
+    
+    _markAbstract: function(destination, abstractProperties) {
+        destination.$abstract = {};
+        for (var x in abstractProperties) {
+            destination.$abstract[x] = true;
         }
     },
     
