@@ -98,24 +98,6 @@ Core = {
         // Reference to shared prototype.
         var sharedPrototype;
         
-        // Configure prototype from base class.
-        if (baseClass) {
-            // Create shared prototype by instantiating the prototype class referenced by the base class.
-            sharedPrototype = new baseClass.$_prototypeClass();
-        
-            // Create prototype instance.
-            prototypeClass.prototype = sharedPrototype;
-            
-            // Copy virtual property flags for class properties from base class.
-            this._inheritVirtualPropertyFlags(prototypeClass, baseClass);
-
-            // Copy virtual property flags for instance properties from base class.
-            this._inheritVirtualPropertyFlags(sharedPrototype, baseClass.prototype);
-        } else {
-            // If not deriving, simply set shared prototype to empty prototype of newly created prototypeClass.
-            sharedPrototype = prototypeClass.prototype;
-        }
-        
         // Create object class.
         var constructorClass;
         if (definition.$construct) {
@@ -130,33 +112,50 @@ Core = {
         
         // Store reference to base class.
         constructorClass.$super = baseClass;
+
+        if (baseClass) {
+            // Create shared prototype by instantiating the prototype class referenced by the base class.
+            sharedPrototype = new baseClass.$_prototypeClass();
+        
+            // Assign shared prototype to prototype class.
+            prototypeClass.prototype = sharedPrototype;
+            
+            // Copy virtual property flags for class properties from base class.
+            this._inheritVirtualPropertyFlags(prototypeClass, baseClass);
+
+            // Copy virtual property flags for instance properties from base class.
+            this._inheritVirtualPropertyFlags(sharedPrototype, baseClass.prototype);
+        } else {
+            // If not deriving, simply set shared prototype to empty prototype of newly created prototypeClass.
+            sharedPrototype = prototypeClass.prototype;
+        }
         
         // Assign prototype of constructor class to shared prototype.
         constructorClass.prototype = sharedPrototype;
 
         // Assign constructor correctly.
-        constructorClass.prototype.constructor = constructorClass;
+        sharedPrototype.constructor = constructorClass;
 
         // Store reference to prototype class in object class.
         constructorClass.$_prototypeClass = prototypeClass;
         
-        // Add Mixins.
-        if (definition.$include) {
-            // Reverse order of mixins, such that later-defined mixins will override earlier ones.
-            // (Mixins will only be added if they will NOT override an existing method.)
-            var mixins = definition.$include.reverse();
-            Core.mixin(prototypeClass, mixins);
-            
-            // Remove property to avoid adding later when Core.inherit() is invoked.
-            delete definition.$include;
-        }
-        
-        // Add Abstract Methods.
+        // Add abstract properties.
         if (definition.$abstract) {
-            // Note that 'prototype.$abstract' now evaluates as true,
-            // indicating the object is abstract.
-            Core._markAbstract(sharedPrototype, definition.$abstract);
+            constructorClass.$abstract = {};
+            if (baseClass && baseClass.$abstract) {
+                // Copy abstract properties from base class.
+                for (var x in baseClass.$abstract) {
+                    constructorClass.$abstract[x] = baseClass.$abstract[x];
+                }
+            }
 
+            if (definition.$abstract instanceof Object) {
+                // Add abstract properties from definition.
+                for (var x in definition.$abstract) {
+                    constructorClass.$abstract[x] = true;
+                }
+            }
+            
             // Remove property to avoid adding later when Core.inherit() is invoked.
             delete definition.$abstract;
         }
@@ -173,6 +172,17 @@ Core = {
         // by for...in iteration in Internet Explorer.
         sharedPrototype.toString = definition.toString;
         sharedPrototype.valueOf = definition.valueOf;
+
+        // Add Mixins.
+        if (definition.$include) {
+            // Reverse order of mixins, such that later-defined mixins will override earlier ones.
+            // (Mixins will only be added if they will NOT override an existing method.)
+            var mixins = definition.$include.reverse();
+            Core.mixin(prototypeClass, mixins);
+            
+            // Remove property to avoid adding later when Core.inherit() is invoked.
+            delete definition.$include;
+        }
 
         // Remove properties to avoid re-adding later when Core.inherit() is invoked.
         delete definition.toString;
@@ -199,8 +209,8 @@ Core = {
         Core.inherit(sharedPrototype, definition);
         
         // If class is concrete, verify all abstract methods are provided.
-        if (!prototypeClass.$abstract) {
-            this._verifyAbstractImpl(prototypeClass);
+        if (!constructorClass.$abstract) {
+            this._verifyAbstractImpl(constructorClass);
         }
         
         // Invoke static constructors.
@@ -212,15 +222,13 @@ Core = {
         return constructorClass;
     },
     
-    _inheritAbstractPropertyFlags: function(destination, source) {
-        if (source.$_abstractProperties) {
-            destination.$_abstractProperties = {};
-            for (var x in source.$_abstractProperties) {
-                destination.$_abstractProperties[x] = source.$_abstractProperties[x];
-            }
-        }
-    },
-    
+    /**
+     * Duplicates the virtual property data of the source object and 
+     * places it in the destination object.
+     *
+     * @param destination the object into which the $virtual data should be copied
+     * @param source an object which may contain a $virtual property specifying virtual properties
+     */
     _inheritVirtualPropertyFlags: function(destination, source) {
         if (source.$virtual) {
             destination.$virtual = {};
@@ -269,17 +277,10 @@ Core = {
         }
     },
     
-    _markAbstract: function(destination, abstractProperties) {
-        destination.$abstract = {};
-        for (var x in abstractProperties) {
-            destination.$abstract[x] = true;
-        }
-    },
-    
     mixin: function(destination, mixins) {
         for (var i = 0; i < mixins.length; ++i) {
             for (var mixinProperty in mixins[i]) {
-                if (destination.prototype[mixinProperty]) {
+                if (destination.prototype[mixinProperty]) { 
                     // Ignore mixin properties that already exist.
                     continue;
                 }
@@ -288,26 +289,23 @@ Core = {
         }
     },
     
-    _verifyAbstractImpl: function(objectClass, constructor) {
-        if (!constructor) {
-            if (objectClass.$super) {
-                constructor = objectClass.$super;
-            } else {
-                return;
-            }
-        }
-
-        if (constructor.$abstract && constructor.$abstract instanceof Object) {
-            for (var name in constructor.$abstract) {
-                if (!objectClass.prototype[name]) {
-                    throw new Error("Cannot build concrete implementation due to missing abstract method: " + name); 
-                }
-            }
-        }
-        
-        if (constructor.$super && constructor.$super.$abstract) {
-            Core._verifyAbstractImpl(objectClass, constructor.$super);
-        }
+    /**
+     * Verifies that a concrete derivative of an abstract class implements
+     * abstract properties present in the base class.
+     *
+     * @param constructorClass the class to verify
+     */
+    _verifyAbstractImpl: function(constructorClass) {
+         var baseClass = constructorClass.$super;
+         if (!baseClass || !baseClass.$abstract || baseClass.$abstract === true) {
+             return;
+         }
+         
+         for (var x in baseClass.$abstract) {
+             if (!constructorClass.prototype[x]) {
+                 throw new Error("Concrete class does not provide implementation of abstract method \"" + x + "\".");
+             }
+         }
     }
 };
 
