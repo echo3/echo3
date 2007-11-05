@@ -2356,7 +2356,7 @@ EchoApp.ListSelectionModel = Core.extend({
      * @constructor
      *
      */
-    intialize: function(selectionMode) {
+    $construct: function(selectionMode) {
         this._selectionState = [];
         this._selectionMode = selectionMode;
     },
