@@ -166,7 +166,7 @@ Core = {
                 }
             }
             
-            // Remove property to avoid adding later when Core.inherit() is invoked.
+            // Remove property to avoid adding later when Core._inherit() is invoked.
             delete definition.$abstract;
         }
         
@@ -181,9 +181,9 @@ Core = {
         
         // Add virtual instance properties to prototype.
         if (definition.$virtual) {
-            Core.inherit(sharedPrototype, definition.$virtual, true);
+            Core._inherit(sharedPrototype, definition.$virtual, true);
 
-            // Remove property to avoid adding later when Core.inherit() is invoked.
+            // Remove property to avoid adding later when Core._inherit() is invoked.
             delete definition.$virtual;
         }
         
@@ -192,7 +192,7 @@ Core = {
         sharedPrototype.toString = definition.toString;
         sharedPrototype.valueOf = definition.valueOf;
 
-        // Remove properties to avoid re-adding later when Core.inherit() is invoked.
+        // Remove properties to avoid re-adding later when Core._inherit() is invoked.
         delete definition.toString;
         delete definition.valueOf;
 
@@ -201,9 +201,9 @@ Core = {
             // Reverse order of mixins, such that later-defined mixins will override earlier ones.
             // (Mixins will only be added if they will NOT override an existing method.)
             var mixins = definition.$include.reverse();
-            Core.mixin(prototypeClass, mixins);
+            Core._mixin(prototypeClass, mixins);
             
-            // Remove property to avoid adding later when Core.inherit() is invoked.
+            // Remove property to avoid adding later when Core._inherit() is invoked.
             delete definition.$include;
         }
 
@@ -212,20 +212,20 @@ Core = {
         if (definition.$load) {
             loadMethod = definition.$load;
 
-            // Remove property to avoid adding later when Core.inherit() is invoked.
+            // Remove property to avoid adding later when Core._inherit() is invoked.
             delete definition.$load;
         }
         
         // Process static properties and methods defined in the '$static' object.
         if (definition.$static) {
-            Core.inherit(constructorClass, definition.$static);
+            Core._inherit(constructorClass, definition.$static);
 
-            // Remove property to avoid adding later when Core.inherit() is invoked.
+            // Remove property to avoid adding later when Core._inherit() is invoked.
             delete definition.$static;
         }
 
         // Process instance properties and methods.
-        Core.inherit(sharedPrototype, definition);
+        Core._inherit(sharedPrototype, definition);
         
         // If class is concrete, verify all abstract methods are provided.
         if (!constructorClass.$abstract) {
@@ -278,7 +278,18 @@ Core = {
         return object.$virtual[propertyName];
     },
     
-    inherit: function(destination, source, virtualState) {
+    /**
+     * Installs properties from source object into destination object.
+     * <p>
+     * In the case where the destination object already has a property defined,
+     * the virtual flag of that property is checked to make certain is may be 
+     * overridden.  If it cannot be overridden, an error is thrown.
+     *
+     * @param destination the destination object
+     * @param soruce the source object
+     * @private  
+     */
+    _inherit: function(destination, source, virtualState) {
         for (var name in source) {
             if (destination[name] && !this._isVirtual(destination, name)) {
                 // Property exists in destination as is not marked as virtual.
@@ -296,7 +307,7 @@ Core = {
         }
     },
     
-    mixin: function(destination, mixins) {
+    _mixin: function(destination, mixins) {
         for (var i = 0; i < mixins.length; ++i) {
             for (var mixinProperty in mixins[i]) {
                 if (destination.prototype[mixinProperty]) { 
