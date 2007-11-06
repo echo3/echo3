@@ -131,9 +131,6 @@ EchoRender = {
         component.peer = new peerClass();
         component.peer.component = component;
         component.peer.client = client;
-        
-        // Initialize the peer.
-        component.peer.init();
     },
     
     /**
@@ -421,10 +418,6 @@ EchoRender.ComponentSync = Core.extend({
      * @constructor
      */
     $construct: function() { },
-        
-    init: function() {
-    
-    },
     
     $abstract: {
 
