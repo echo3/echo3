@@ -427,6 +427,7 @@ EchoRender.ComponentSync = Core.extend({
     },
     
     $abstract: {
+
         renderAdd: function(update, parentElement) {
             throw new Error("Operation \"renderAdd\" not supported (Component: " + this.component + ").");
         },

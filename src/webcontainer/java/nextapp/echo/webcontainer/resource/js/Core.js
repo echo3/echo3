@@ -170,15 +170,23 @@ Core = {
             delete definition.$abstract;
         }
         
-        // Pull up virtual properties from base class.
-        if (baseClass) {
-            // Copy virtual property flags for instance properties from base class.
-            this._inheritVirtualPropertyFlags(sharedPrototype, baseClass.prototype);
+        // Copy virtual property flags from base class to shared prototype.
+        if (baseClass && baseClass.prototype.$virtual) {
+            sharedPrototype.$virtual = {};
+            for (var name in baseClass.prototype.$virtual) {
+                sharedPrototype.$virtual[name] = baseClass.prototype.$virtual[name];
+            }
         }
         
-        // Add virtual instance properties to prototype.
+        // Add virtual instance properties from definition to shared prototype.
         if (definition.$virtual) {
-            Core._inherit(sharedPrototype, definition.$virtual, true);
+            Core._inherit(sharedPrototype, definition.$virtual);
+            if (!sharedPrototype.$virtual) {
+                sharedPrototype.$virtual = {};
+            }
+            for (var name in definition.$virtual) {
+                sharedPrototype.$virtual[name] = true;
+            }
 
             // Remove property to avoid adding later when Core._inherit() is invoked.
             delete definition.$virtual;
@@ -239,22 +247,6 @@ Core = {
     },
     
     /**
-     * Duplicates the virtual property data of the source object and 
-     * places it in the destination object.
-     *
-     * @param destination the object into which the $virtual data should be copied
-     * @param source an object which may contain a $virtual property specifying virtual properties
-     */
-    _inheritVirtualPropertyFlags: function(destination, source) {
-        if (source.$virtual) {
-            destination.$virtual = {};
-            for (var x in source.$virtual) {
-                destination.$virtual[x] = source.$virtual[x];
-            }
-        }
-    },
-    
-    /**
      * Determines if the specified propertyName of the specified object is a virtual
      * property, i.e., that it can be overridden by subclasses.
      */
@@ -286,19 +278,12 @@ Core = {
      * @param soruce the source object
      * @private  
      */
-    _inherit: function(destination, source, virtualState) {
+    _inherit: function(destination, source) {
         for (var name in source) {
             if (destination[name] && !this._isVirtual(destination, name)) {
                 // Property exists in destination as is not marked as virtual.
                 throw new Error("Cannot override non-virtual property \"" + name + "\".");
             } else {
-                if (virtualState) {
-                    // Property is being declared virtual, flag in $virtual property.
-                    if (!destination.$virtual) {
-                        destination.$virtual = {};
-                    }
-                    destination.$virtual[name] = true;
-                }
                 destination[name] = source[name];
             }
         }
