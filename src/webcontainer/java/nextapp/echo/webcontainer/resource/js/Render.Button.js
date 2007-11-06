@@ -31,58 +31,6 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
             this.component.doAction();
         },
         
-        renderAdd: function(update, parentElement) {
-            this._enabled = this.component.isRenderEnabled();
-            
-            this._divElement = EchoAppRender.ButtonSync._prototypeButton.cloneNode(false); 
-        
-            EchoAppRender.Color.render(
-                    EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
-                    this._divElement, "color");
-            EchoAppRender.Color.render(
-                    EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
-                    this._divElement, "backgroundColor");
-            EchoAppRender.Border.render(
-                    EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
-                    this._divElement);
-            EchoAppRender.Font.render(
-                    EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
-                    this._divElement);
-            EchoAppRender.FillImage.render(
-                    EchoAppRender.getEffectProperty(this.component, "backgroundImage", "disabledBackgroundImage", !this._enabled),
-                    this._divElement);
-            
-            EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
-            EchoAppRender.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
-            
-            var toolTipText = this.component.getRenderProperty("toolTipText");
-            if (toolTipText) {
-                this._divElement.title = toolTipText;
-            }
-            var width = this.component.getRenderProperty("width");
-            if (width) {
-                this._divElement.style.width = width.toString();
-            }
-            var height = this.component.getRenderProperty("height");
-            if (height) {
-                this._divElement.style.height = height.toString();
-                this._divElement.style.overflow = "hidden";
-            }
-            
-            this.renderContent();
-            
-            if (this._enabled) {
-                // Add event listeners for focus and mouseover.  When invoked, these listeners will register the full gamut
-                // of button event listeners.  There may be a large number of such listeners depending on how many effects
-                // are enabled, and as such we do this lazily for performance reasons.
-                WebCore.EventProcessor.add(this._divElement, "focus", new Core.MethodRef(this, this._processInitFocus), false);
-                WebCore.EventProcessor.add(this._divElement, "mouseover", 
-                        new Core.MethodRef(this, this._processInitMouseOver), false);
-            }
-        
-            parentElement.appendChild(this._divElement);
-        },
-        
         renderContent: function() {
             var text = this.component.getRenderProperty("text");
             var icon = EchoAppRender.getEffectProperty(this.component, "icon", "disabledIcon", !this._enabled);
@@ -105,12 +53,6 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
                 // Icon only.
                 this._iconElement = this._renderButtonIcon(this._divElement, icon);
             }
-        },
-
-        renderDispose: function(update) {
-            this.client.application.removeFocusListener(new Core.MethodRef(this, this._processRolloverExit));
-            WebCore.EventProcessor.removeAll(this._divElement);
-            this._iconElement = null;
         }
     },
     
@@ -257,6 +199,58 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         this._setRolloverState(false);
     },
     
+    renderAdd: function(update, parentElement) {
+        this._enabled = this.component.isRenderEnabled();
+        
+        this._divElement = EchoAppRender.ButtonSync._prototypeButton.cloneNode(false); 
+    
+        EchoAppRender.Color.render(
+                EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
+                this._divElement, "color");
+        EchoAppRender.Color.render(
+                EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
+                this._divElement, "backgroundColor");
+        EchoAppRender.Border.render(
+                EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
+                this._divElement);
+        EchoAppRender.Font.render(
+                EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
+                this._divElement);
+        EchoAppRender.FillImage.render(
+                EchoAppRender.getEffectProperty(this.component, "backgroundImage", "disabledBackgroundImage", !this._enabled),
+                this._divElement);
+        
+        EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
+        EchoAppRender.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
+        
+        var toolTipText = this.component.getRenderProperty("toolTipText");
+        if (toolTipText) {
+            this._divElement.title = toolTipText;
+        }
+        var width = this.component.getRenderProperty("width");
+        if (width) {
+            this._divElement.style.width = width.toString();
+        }
+        var height = this.component.getRenderProperty("height");
+        if (height) {
+            this._divElement.style.height = height.toString();
+            this._divElement.style.overflow = "hidden";
+        }
+        
+        this.renderContent();
+        
+        if (this._enabled) {
+            // Add event listeners for focus and mouseover.  When invoked, these listeners will register the full gamut
+            // of button event listeners.  There may be a large number of such listeners depending on how many effects
+            // are enabled, and as such we do this lazily for performance reasons.
+            WebCore.EventProcessor.add(this._divElement, "focus", new Core.MethodRef(this, this._processInitFocus), false);
+            WebCore.EventProcessor.add(this._divElement, "mouseover", 
+                    new Core.MethodRef(this, this._processInitMouseOver), false);
+        }
+    
+        parentElement.appendChild(this._divElement);
+    },
+    
     _renderButtonText: function(element, text) {
         element.appendChild(document.createTextNode(text));
         if (!this.component.getRenderProperty("lineWrap", true)) {
@@ -278,6 +272,12 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         return imgElement;
     },
     
+    renderDispose: function(update) {
+        this.client.application.removeFocusListener(new Core.MethodRef(this, this._processRolloverExit));
+        WebCore.EventProcessor.removeAll(this._divElement);
+        this._iconElement = null;
+    },
+
     renderFocus: function() {
         WebCore.DOM.focusElement(this._divElement);
         this._setFocusState(true);

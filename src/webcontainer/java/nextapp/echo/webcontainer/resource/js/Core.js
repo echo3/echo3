@@ -126,6 +126,9 @@ Core = {
             }
         }
         
+        // Create virtual property storage.
+        constructorClass.$virtual = {};
+        
         // Store reference to base class in constructor class.
         constructorClass.$super = baseClass;
 
@@ -163,6 +166,7 @@ Core = {
                 // Add abstract properties from definition.
                 for (var x in definition.$abstract) {
                     constructorClass.$abstract[x] = true;
+                    constructorClass.$virtual[x] = true;
                 }
             }
             
@@ -171,21 +175,17 @@ Core = {
         }
         
         // Copy virtual property flags from base class to shared prototype.
-        if (baseClass && baseClass.prototype.$virtual) {
-            sharedPrototype.$virtual = {};
-            for (var name in baseClass.prototype.$virtual) {
-                sharedPrototype.$virtual[name] = baseClass.prototype.$virtual[name];
+        if (baseClass) {
+            for (var name in baseClass.$virtual) {
+                constructorClass.$virtual[name] = baseClass.$virtual[name];
             }
         }
         
         // Add virtual instance properties from definition to shared prototype.
         if (definition.$virtual) {
-            Core._inherit(sharedPrototype, definition.$virtual);
-            if (!sharedPrototype.$virtual) {
-                sharedPrototype.$virtual = {};
-            }
+            Core._inherit(sharedPrototype, definition.$virtual, constructorClass.$virtual);
             for (var name in definition.$virtual) {
-                sharedPrototype.$virtual[name] = true;
+                constructorClass.$virtual[name] = true;
             }
 
             // Remove property to avoid adding later when Core._inherit() is invoked.
@@ -193,7 +193,7 @@ Core = {
         }
         
         // Add toString and valueOf manually, as they will not be iterated
-        // by for...in iteration in Internet Explorer.
+        // by for-in iteration in Internet Explorer.
         sharedPrototype.toString = definition.toString;
         sharedPrototype.valueOf = definition.valueOf;
 
@@ -230,7 +230,7 @@ Core = {
         }
 
         // Process instance properties and methods.
-        Core._inherit(sharedPrototype, definition);
+        Core._inherit(sharedPrototype, definition, constructorClass.$virtual);
         
         // If class is concrete, verify all abstract methods are provided.
         if (!constructorClass.$abstract) {
@@ -250,7 +250,7 @@ Core = {
      * Determines if the specified propertyName of the specified object is a virtual
      * property, i.e., that it can be overridden by subclasses.
      */
-    _isVirtual: function(object, propertyName) {
+    _isVirtual: function(virtualProperties, propertyName) {
         switch (propertyName) {
         case "$construct":
         case "$load":
@@ -260,11 +260,7 @@ Core = {
             return true;
         }
         
-        if (!object.$virtual) {
-            return false;
-        }
-        
-        return object.$virtual[propertyName];
+        return virtualProperties[propertyName];
     },
     
     /**
@@ -278,9 +274,9 @@ Core = {
      * @param soruce the source object
      * @private  
      */
-    _inherit: function(destination, source) {
+    _inherit: function(destination, source, virtualProperties) {
         for (var name in source) {
-            if (destination[name] && !this._isVirtual(destination, name)) {
+            if (virtualProperties && destination[name] && !this._isVirtual(virtualProperties, name)) {
                 // Property exists in destination as is not marked as virtual.
                 throw new Error("Cannot override non-virtual property \"" + name + "\".");
             } else {
