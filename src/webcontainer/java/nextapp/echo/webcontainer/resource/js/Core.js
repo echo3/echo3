@@ -2,15 +2,17 @@
  * @fileoverview
  * Provides low-level core functionality.  Non-instantiable object.  Requires nothing.
  * <p>
- * Provides core APIs for creating object-oriented and event-driven JavaScript code:
+ * Provides core APIs for creating object-oriented and event-driven JavaScript code.  Features include:
  * <ul>
+ *  <li>Provides API for declaring JavaScript classes which includes support for
+ *   specifying abstract and virtual properties and validating subtypes to such
+ *   specification.</li>
  *  <li>Provides "Method Reference" object to describe reference to a member function
  *    of a specific object instance (enabling invocation with "this pointer" set 
  *    appropriately.</li>
  *  <li>Provides event/listener management framework.  Event listeners may be 
  *    "Method Reference" objects, thus allowing specific class instances to process events.</li>
  *  <li>Does not provide any web-specific functionality.</li>
- *  <li>Provides string tokenization capability.</li>
  * </ul>
  */
 
@@ -25,6 +27,7 @@ Core = {
      * string representation of the function.
      * Creating a copy of a constructor is more efficient than invoking Function.apply() in certain browsers
      * (a significant performance improvement was observed in Internet Explorer 6).
+     *
      * @param f the function
      * @return an identical copy
      * @private
@@ -37,6 +40,8 @@ Core = {
     
     /**
      * Creates an empty function.
+     *
+     * @private
      */
     _createFunction: function() {
         return function() { };
@@ -49,30 +54,37 @@ Core = {
      * Core.extend(definition)
      * Core.extend(baseClass, definition)
      * <p>
-     * Each property of the definition object will be added to the prototype of defined class.
-     * Properties that begin with a dollar-sign ($) will be treated specially:
+     * Each property of the definition object will be added to the prototype of the returned defined class.
+     * Properties that begin with a dollar-sign ($) will be processed specially:
      * <p>
-     * The $constructor property, which must be a function, will be used as the constructor.
-     * The $load property, which must be a function if provided, will be used as a static initializer,
-     * executed once when the class is *defined*.
-     * The $static property, an object, if provided, will have its properties installed as class variables.
-     * The $abstract property, an object or 'true', if provided, will define methods that must be implemented
+     * <ul>
+     * <li>The $constructor property, which must be a function, will be used as the constructor.
+     * The $load property, which must be a function, f provided, will be used as a static initializer,
+     * executed once when the class is *defined*.  The this pointer will be set to the class when
+     * this method is executed.</li>
+     * <li>The $static property, an object, if provided, will have its properties installed as class variables.</li>
+     * <li>The $abstract property, an object or 'true', if provided, will define methods that must be implemented
      * by derivative classes.  If the value is simply true, the object will be marked as abstract (such that
-     * it does not necessarily need to provide implementations of abstract methods defined in its base class.
-     * The $virtual property, an object, if provided, defines methods that will be placed into the prototype
-     * that may be overridden by subclasses.  Attempting to override a property/method that is not defined 
-     * in the virtual block will result in an exception.
+     * it does not necessarily need to provide implementations of abstract methods defined in its base class.</li>
+     * <li>The $virtual property, an object, if provided, defines methods that will be placed into the prototype
+     * that may be overridden by subclasses.  Attempting to override a property/method of the superclass that
+     * is not defined in the virtual block will result in an exception.  Having the default behavior NOT allow
+     * for overriding ensures that namespacing between super- and sub-types if all internal variables are instance
+     * during Core.extend().</li>
+     * </ul>
      * <p>
      * Use of this method enables a class to be derived WIHTOUT executing the constructor of the base class
      * in order to create a prototype for the derived class.  This method uses a "shared prototype" architecture,
      * where two objects are created, a "prototype class" and a "constructor class".  These two objects share
      * the same prototype, but the "prototype class" has an empty constructor.  When a class created with
-     * this method is derived, the "prototype class" is used when to create a prototype for the derivative.
-     * This method will always return the constructor class, which contains an internal reference to the 
+     * this method is derived, the "prototype class" is used to create a prototype for the derivative.
+     * <p>
+     * This method will return the constructor class, which contains an internal reference to the 
      * prototype class that will be used if the returned class is later derived by this method.
      * 
      * @param {Function} baseClass the base class
      * @param {Object} definition an associative array containing methods and properties of the class
+     * @return the constructor class
      */
     extend: function() {
         // Configure baseClass/definition arguments.
@@ -92,25 +104,29 @@ Core = {
             throw new Error("Object definition not provided.");
         }
         
-        // Create the contructor-less prototype class.
-        var prototypeClass = function() { };
-        
         // Reference to shared prototype.
         var sharedPrototype;
         
-        // Create object class.
+        // Create the contructor-less prototype class.
+        var prototypeClass = function() { };
+        
+        // Create the constructor class.
         var constructorClass;
         if (definition.$construct) {
+            // Definition provides constructor, provided constructor function will be used as object.
             constructorClass = definition.$construct;
         } else {
+            // Definition does not provide constructor.
             if (baseClass) {
+                // Bas class available: copy constructor function from base class.
                 constructorClass = Core._copyFunction(baseClass);
             } else {
+                // No base class: constructor is an empty function.
                 constructorClass = Core._createFunction();
             }
         }
         
-        // Store reference to base class.
+        // Store reference to base class in constructor class.
         constructorClass.$super = baseClass;
 
         if (baseClass) {
@@ -119,12 +135,6 @@ Core = {
         
             // Assign shared prototype to prototype class.
             prototypeClass.prototype = sharedPrototype;
-            
-            // Copy virtual property flags for class properties from base class.
-            this._inheritVirtualPropertyFlags(prototypeClass, baseClass);
-
-            // Copy virtual property flags for instance properties from base class.
-            this._inheritVirtualPropertyFlags(sharedPrototype, baseClass.prototype);
         } else {
             // If not deriving, simply set shared prototype to empty prototype of newly created prototypeClass.
             sharedPrototype = prototypeClass.prototype;
@@ -160,6 +170,15 @@ Core = {
             delete definition.$abstract;
         }
         
+        // Pull up virtual properties from base class.
+        if (baseClass) {
+            // Copy virtual property flags for class properties from base class.
+            this._inheritVirtualPropertyFlags(prototypeClass, baseClass);
+
+            // Copy virtual property flags for instance properties from base class.
+            this._inheritVirtualPropertyFlags(sharedPrototype, baseClass.prototype);
+        }
+        
         // Add virtual instance properties to prototype.
         if (definition.$virtual) {
             Core.inherit(sharedPrototype, definition.$virtual, true);
@@ -173,6 +192,10 @@ Core = {
         sharedPrototype.toString = definition.toString;
         sharedPrototype.valueOf = definition.valueOf;
 
+        // Remove properties to avoid re-adding later when Core.inherit() is invoked.
+        delete definition.toString;
+        delete definition.valueOf;
+
         // Add Mixins.
         if (definition.$include) {
             // Reverse order of mixins, such that later-defined mixins will override earlier ones.
@@ -183,10 +206,6 @@ Core = {
             // Remove property to avoid adding later when Core.inherit() is invoked.
             delete definition.$include;
         }
-
-        // Remove properties to avoid re-adding later when Core.inherit() is invoked.
-        delete definition.toString;
-        delete definition.valueOf;
 
         // Store $load static initializer and remove from definition so it is not inherited in static processing.
         var loadMethod = null;
