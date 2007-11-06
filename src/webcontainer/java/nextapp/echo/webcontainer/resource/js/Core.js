@@ -115,6 +115,9 @@ Core = {
         if (definition.$construct) {
             // Definition provides constructor, provided constructor function will be used as object.
             constructorClass = definition.$construct;
+            
+            // Remove property such that it will not later be added to the object prototype.
+            delete definition.$construct;
         } else {
             // Definition does not provide constructor.
             if (baseClass) {
@@ -170,7 +173,7 @@ Core = {
                 }
             }
             
-            // Remove property to avoid adding later when Core._inherit() is invoked.
+            // Remove property such that it will not later be added to the object prototype.
             delete definition.$abstract;
         }
         
@@ -188,7 +191,7 @@ Core = {
                 constructorClass.$virtual[name] = true;
             }
 
-            // Remove property to avoid adding later when Core._inherit() is invoked.
+            // Remove property such that it will not later be added to the object prototype.
             delete definition.$virtual;
         }
         
@@ -197,7 +200,7 @@ Core = {
         sharedPrototype.toString = definition.toString;
         sharedPrototype.valueOf = definition.valueOf;
 
-        // Remove properties to avoid re-adding later when Core._inherit() is invoked.
+        // Remove properties such that they will not later be added to the object prototype.
         delete definition.toString;
         delete definition.valueOf;
 
@@ -208,7 +211,7 @@ Core = {
             var mixins = definition.$include.reverse();
             Core._mixin(prototypeClass, mixins);
             
-            // Remove property to avoid adding later when Core._inherit() is invoked.
+            // Remove property such that it will not later be added to the object prototype.
             delete definition.$include;
         }
 
@@ -217,7 +220,7 @@ Core = {
         if (definition.$load) {
             loadMethod = definition.$load;
 
-            // Remove property to avoid adding later when Core._inherit() is invoked.
+            // Remove property such that it will not later be added to the object prototype.
             delete definition.$load;
         }
         
@@ -225,7 +228,7 @@ Core = {
         if (definition.$static) {
             Core._inherit(constructorClass, definition.$static);
 
-            // Remove property to avoid adding later when Core._inherit() is invoked.
+            // Remove property such that it will not later be added to the object prototype.
             delete definition.$static;
         }
 
@@ -252,9 +255,6 @@ Core = {
      */
     _isVirtual: function(virtualProperties, propertyName) {
         switch (propertyName) {
-        case "$construct":
-        case "$load":
-        case "$static":
         case "toString":
         case "valueOf":
             return true;
@@ -266,12 +266,15 @@ Core = {
     /**
      * Installs properties from source object into destination object.
      * <p>
-     * In the case where the destination object already has a property defined,
-     * the virtual flag of that property is checked to make certain is may be 
-     * overridden.  If it cannot be overridden, an error is thrown.
+     * In the case where the destination object already has a property defined
+     * and the "virtualProperties" argument is provided, the "virtualProperties"
+     * collection will be checked to ensure that property is allowed to be
+     * overridden.  If "virtualProperties" is omitted, any property may be
+     * overridden.
      *
      * @param destination the destination object
      * @param soruce the source object
+     * @param virtualProperties (optional) collection of virtual properties from base class.
      * @private  
      */
     _inherit: function(destination, source, virtualProperties) {
@@ -317,7 +320,7 @@ Core = {
     }
 };
 
-/** 
+/**
  * @class 
  * Namespace for debugging related utilities.
  */
