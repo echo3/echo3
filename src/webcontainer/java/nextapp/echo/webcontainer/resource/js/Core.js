@@ -172,9 +172,6 @@ Core = {
         
         // Pull up virtual properties from base class.
         if (baseClass) {
-            // Copy virtual property flags for class properties from base class.
-            this._inheritVirtualPropertyFlags(prototypeClass, baseClass);
-
             // Copy virtual property flags for instance properties from base class.
             this._inheritVirtualPropertyFlags(sharedPrototype, baseClass.prototype);
         }
@@ -1061,6 +1058,23 @@ Core.Scheduler = {
 Core.Scheduler.Runnable = Core.extend({
 
     /**
+     * MethodRef to invoke at specified interval (used by default implementation). 
+     */
+    methodRef: null,
+    
+    /** 
+     * Time interval, in milleseconds after which the Runnable should be executed.
+     * @type Number
+     */
+    timeInterval: null,
+    
+    /**
+     * Flag indicating whether task should be repeated.
+     * @type Boolean
+     */
+    repeat: false,
+
+    /**
      * Creates a new Runnable.
      *
      * @constructor
@@ -1073,20 +1087,9 @@ Core.Scheduler.Runnable = Core.extend({
         if (!timeInterval && repeat) {
             throw new Error("Cannot create repeating runnable without time delay:" + methodRef);
         }
-        
         this.methodRef = methodRef;
-        
-        /** 
-         * Time interval, in milleseconds after which the Runnable should be executed.
-         * @type Number
-         */
         this.timeInterval = timeInterval;
-        
-        /**
-         * Flag indicating whether task should be repeated.
-         * @type Boolean
-         */
-        this.repeat = repeat;
+        this.repeat = !!repeat;
     },
 
     $virtual: {
