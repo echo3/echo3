@@ -209,7 +209,7 @@ Core = {
             // Reverse order of mixins, such that later-defined mixins will override earlier ones.
             // (Mixins will only be added if they will NOT override an existing method.)
             var mixins = definition.$include.reverse();
-            Core._mixin(prototypeClass, mixins);
+            Core._processMixins(prototypeClass, mixins);
             
             // Remove property such that it will not later be added to the object prototype.
             delete definition.$include;
@@ -288,7 +288,15 @@ Core = {
         }
     },
     
-    _mixin: function(destination, mixins) {
+    /**
+     * Add properties of mixin objects to destination object.
+     * Mixins will be added in order, and any property which is already
+     * present in the destination object will not be overridden.
+     *
+     * @param destination the destination object
+     * @param {Array} the mixin objects to add 
+     */
+    _processMixins: function(destination, mixins) {
         for (var i = 0; i < mixins.length; ++i) {
             for (var mixinProperty in mixins[i]) {
                 if (destination.prototype[mixinProperty]) { 
@@ -380,6 +388,10 @@ Core.Debug = {
  * @class Provides a tool for measuring performance of the Echo3 client engine.
  */
 Core.Debug.Timer = Core.extend({
+
+    _times: null,
+    
+    _labels: null,
     
     /**
      * Creates a new debug timer.
@@ -558,31 +570,31 @@ Core.Arrays = {
 Core.Arrays.LargeMap = Core.extend({
     
     $static: {
-    
         garbageCollectEnabled: false
     },
+    
+    /**
+     * Number of removes since last associative array re-creation.
+     * @type Number
+     * @private
+     */
+    _removeCount: 0,
+    
+    /**
+     * Number (integer) of removes between associative array re-creation.
+     * @type Number
+     */
+    garbageCollectionInterval: 250,
+    
+    /**
+     * Associative mapping.
+     */
+    map: null, 
     
     /**
      * Creates a new LargeMap.
      */
     $construct: function() {
-        
-        /**
-         * Number of removes since last associative array re-creation.
-         * @type Number
-         * @private
-         */
-        this._removeCount = 0;
-        
-        /**
-         * Number (integer) of removes between associative array re-creation.
-         * @type Number
-         */
-        this.garbageCollectionInterval = 250;
-        
-        /**
-         * Associative mapping.
-         */
         this.map = {};
     },
     
@@ -622,6 +634,22 @@ Core.Arrays.LargeMap = Core.extend({
 Core.Event = Core.extend({
     
     /**
+     * The source of the event.
+     */
+    source: null,
+
+    /**
+     * The event type.
+     * @type String
+     */
+    type: null,
+    
+    /**
+     * The event data.
+     */
+    data: null,
+    
+    /**
      * Creates a new event object.
      * 
      * @constructor
@@ -630,21 +658,8 @@ Core.Event = Core.extend({
      * @param data the optional data of the event
      */
     $construct: function(type, source, data) {
-        
-        /**
-         * The source of the event.
-         */
         this.source = source;
-        
-        /**
-         * The event type.
-         * @type String
-         */
         this.type = type;
-        
-        /**
-         * The event data.
-         */
         this.data = data;
     } 
 });
@@ -654,6 +669,14 @@ Core.Event = Core.extend({
  *        of multiple types, and fire events to listeners based on type.
  */
 Core.ListenerList = Core.extend({
+
+    /**
+     * Array containing event types and event listeners.  
+     * Even indexes contain event types, and the subsequent odd
+     * index contains a method or Core.MethodRef instance.
+     * @type Array
+     */
+    _data: null,
    
     /**
      * Creates a new listener list.
@@ -661,13 +684,6 @@ Core.ListenerList = Core.extend({
      * @constructor
      */
     $construct: function() {
-        
-        /**
-         * Array containing event types and event listeners.  
-         * Even indexes contain event types, and the subsequent odd
-         * index contains a method or Core.MethodRef instance.
-         * @type Array
-         */
         this._data = [];
     },
 
@@ -828,6 +844,9 @@ Core.ListenerList = Core.extend({
  */
 Core.MethodRef = Core.extend({
     
+    instance: null,
+    method: null,
+    
     /**
      * Creates a new MethodRef.
      *
@@ -881,6 +900,9 @@ Core.MethodRef = Core.extend({
  * @class A localized resource bundle instance.
  */
 Core.ResourceBundle = Core.extend({
+    
+    map: null,
+    parent: null,
     
     /**
      * Creates a Resourcebundle
