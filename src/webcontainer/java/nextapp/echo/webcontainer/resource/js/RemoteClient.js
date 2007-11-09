@@ -911,12 +911,6 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         var styleName = upElement.getAttribute("s");
         if (styleName != null) {
             parentComponent.setStyleName(styleName == "" ? null : styleName); //FIXME verify this works as desired for unsets.
-            var styleType = upElement.getAttribute("st");
-            if (styleType) {
-                parentComponent.setStyleType(styleType);
-            } else {
-                parentComponent.setStyleType(null);
-            }
         }
     
         var enabledState = upElement.getAttribute("en");

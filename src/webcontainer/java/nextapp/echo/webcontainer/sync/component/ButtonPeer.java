@@ -36,6 +36,10 @@ import nextapp.echo.app.Button;
  */
 public class ButtonPeer extends AbstractButtonPeer {
     
+    public String getClientComponentType() {
+        return "Button";
+    }
+    
     /**
      * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getComponentClass()
      */

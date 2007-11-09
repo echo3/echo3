@@ -382,15 +382,17 @@ EchoApp.ComponentFactory = {
      */
     newInstance: function(typeName, renderId) {
         var typeConstructor = this._typeToConstructorMap[typeName];
-        if (typeConstructor == null) {
-            var component = new EchoApp.Component();
-            component.renderId = renderId;
-            component.componentType = typeName;
-            return component;
+        var component = new typeConstructor();
+        component.renderId = renderId;
+        return component;
+    },
+    
+    getSuperType: function(typeName) {
+        var typeConstructor = this._typeToConstructorMap[typeName];
+        if (typeConstructor.$super) {
+            return typeConstructor.$super.prototype.componentType;
         } else {
-            var component = new typeConstructor();
-            component.renderId = renderId;
-            return component;
+            return null;
         }
     },
     
@@ -703,8 +705,7 @@ EchoApp.Component = Core.extend({
                 value = this._style.getIndexedProperty(name, index);
             }
             if (value == null && this._styleName && this.application && this.application._styleSheet) {
-                var style = this.application._styleSheet.getRenderStyle(this._styleName, 
-                        this._styleType ? this._styleType : this.componentType);
+                var style = this.application._styleSheet.getRenderStyle(this._styleName, this.componentType);
                 if (style) {
                     value = style.getIndexedProperty(name, index);
                 }
@@ -752,8 +753,7 @@ EchoApp.Component = Core.extend({
                 value = this._style.getProperty(name);
             }
             if (value == null && this._styleName && this.application && this.application._styleSheet) {
-                var style = this.application._styleSheet.getRenderStyle(this._styleName, 
-                        this._styleType ? this._styleType : this.componentType);
+                var style = this.application._styleSheet.getRenderStyle(this._styleName, this.componentType);
                 if (style) {
                     value = style.getProperty(name);
                 }
@@ -781,19 +781,6 @@ EchoApp.Component = Core.extend({
      */
     getStyleName: function() {
         return this._styleName;
-    },
-    
-    /** 
-     * Returns the type name of the style (from the application's style sheet)
-     * assigned to this component.
-     * This value may differ from the component type in the event
-     * the component is a derivative of the type specified in the style sheet
-     * 
-     * @return the style type
-     * @type String
-     */
-    getStyleType: function() {
-        return this._styleType;
     },
     
     /**
@@ -1083,22 +1070,6 @@ EchoApp.Component = Core.extend({
         this._styleName = newValue;
         if (this.application) {
             this.application.notifyComponentUpdate(this, "styleName", oldValue, newValue);
-        }
-    },
-    
-    /** 
-     * Sets the type name of the style (from the application's style sheet)
-     * assigned to this component.
-     * This value may differ from the component type in the event
-     * the component is a derivative of the type specified in the style sheet
-     * 
-     * @param {String} newValue the style type
-     */
-    setStyleType: function(newValue) {
-        var oldValue = this._styleType;
-        this._styleType = newValue;
-        if (this.application) {
-            this.application.notifyComponentUpdate(this, "styleType", oldValue, newValue);
         }
     },
     
@@ -2507,6 +2478,8 @@ EchoApp.Style = Core.extend({
  */
 EchoApp.StyleSheet = Core.extend({
 
+    _nameToStyleMap: null,
+    
     /**
      * Creates a new style sheet.
      */
@@ -2523,8 +2496,19 @@ EchoApp.StyleSheet = Core.extend({
      *  @type EchoApp.Style
      */
     getRenderStyle: function(name, componentType) {
-        //FIXME. Does not query super component types.
-        return this.getStyle(name, componentType);
+        var typeToStyleMap = this._nameToStyleMap[name];
+        if (typeToStyleMap == null) {
+            return null;
+        }
+        var style = typeToStyleMap[componentType];
+        while (style == null) {
+            componentType = EchoApp.ComponentFactory.getSuperType(componentType);
+            if (componentType == null) {
+                return null;
+            }
+            style = typeToStyleMap[componentType];
+        }
+        return style;
     },
     
     /**
@@ -3252,17 +3236,15 @@ EchoApp.Update.Manager = Core.extend({
 
 // Built-in Component Object Definitions
 
-/**
- * @class Button component.
- * @base EchoApp.Component
- */ 
-EchoApp.Button = Core.extend(EchoApp.Component, {
+EchoApp.AbstractButton = Core.extend(EchoApp.Component, {
 
+    $abstract: true,
+    
     $load: function() {
-        EchoApp.ComponentFactory.registerType("Button", this);
+        EchoApp.ComponentFactory.registerType("AbstractButton", this);
     },
 
-    componentType: "Button",
+    componentType: "AbstractButton",
     focusable: true,
     
     $virtual: {
@@ -3278,10 +3260,23 @@ EchoApp.Button = Core.extend(EchoApp.Component, {
 });
 
 /**
+ * @class Button component.
+ * @base EchoApp.Component
+ */ 
+EchoApp.Button = Core.extend(EchoApp.AbstractButton, {
+
+    $load: function() {
+        EchoApp.ComponentFactory.registerType("Button", this);
+    },
+
+    componentType: "Button"
+});
+
+/**
  * @class ToggleButton component.
  * @base EchoApp.Button
  */
-EchoApp.ToggleButton = Core.extend(EchoApp.Button, {
+EchoApp.ToggleButton = Core.extend(EchoApp.AbstractButton, {
 
     $abstract: true,
     componentType: "ToggleButton"
@@ -3314,6 +3309,61 @@ EchoApp.RadioButton = Core.extend(EchoApp.ToggleButton, {
 });
 
 /**
+ * @class AbstractListComponent base component.
+ * @base EchoApp.Component
+ */
+EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
+
+    $abstract: true,
+
+    $load: function() {
+        EchoApp.ComponentFactory.registerType("AbstractListComponent", this);
+    },
+
+    componentType: "AbstractListComponent",
+    focusable: true
+});
+
+/**
+ * @class ListBox component.
+ * @base EchoApp.AbstractListComponent
+ */
+EchoApp.ListBox = Core.extend(EchoApp.AbstractListComponent, {
+
+    $static: {
+
+        /**
+         * Constant for "selectionMode" property indicating single selection.
+         */
+        SINGLE_SELECTION: 0,
+        
+        /**
+         * Constant for "selectionMode" property indicating multiple selection.
+         */
+        MULTIPLE_SELECTION: 2
+    },
+
+    $load: function() {
+        EchoApp.ComponentFactory.registerType("ListBox", this);
+    },
+
+    componentType: "ListBox"
+});
+
+/**
+ * @class SelectField component.
+ * @base EchoApp.AbstractListComponent
+ */
+EchoApp.SelectField = Core.extend(EchoApp.AbstractListComponent, {
+
+    $load: function() {
+        EchoApp.ComponentFactory.registerType("SelectField", this);
+    },
+
+    componentType: "SelectField"
+});
+
+/**
  * @class Column component.
  * @base EchoApp.Component
  */
@@ -3324,6 +3374,32 @@ EchoApp.Column = Core.extend(EchoApp.Component, {
     },
 
     componentType: "Column"
+});
+
+/**
+ * @class Composite component.
+ * @base EchoApp.Component
+ */
+EchoApp.Composite = Core.extend(EchoApp.Component, {
+
+    $load: function() {
+        EchoApp.ComponentFactory.registerType("Composite", this);
+    },
+
+    componentType: "Composite"
+});
+
+/**
+ * @class Panel component.
+ * @base EchoApp.Composite
+ */
+EchoApp.Panel = Core.extend(EchoApp.Composite, {
+
+    $load: function() {
+        EchoApp.ComponentFactory.registerType("Panel", this);
+    },
+
+    componentType: "Panel"
 });
 
 /**
@@ -3371,33 +3447,6 @@ EchoApp.Label = Core.extend(EchoApp.Component, {
 });
 
 /**
- * @class ListBox component.
- * @base EchoApp.Component
- */
-EchoApp.ListBox = Core.extend(EchoApp.Component, {
-
-    $static: {
-
-        /**
-         * Constant for "selectionMode" property indicating single selection.
-         */
-        SINGLE_SELECTION: 0,
-        
-        /**
-         * Constant for "selectionMode" property indicating multiple selection.
-         */
-        MULTIPLE_SELECTION: 2
-    },
-
-    $load: function() {
-        EchoApp.ComponentFactory.registerType("ListBox", this);
-    },
-
-    componentType: "ListBox",
-    focusable: true
-});
-
-/**
  * @class Row component.
  * @base EchoApp.Component
  */
@@ -3408,20 +3457,6 @@ EchoApp.Row = Core.extend(EchoApp.Component, {
     },
 
     componentType: "Row"
-});
-
-/**
- * @class SelectField component.
- * @base EchoApp.Component
- */
-EchoApp.SelectField = Core.extend(EchoApp.Component, {
-
-    $load: function() {
-        EchoApp.ComponentFactory.registerType("SelectField", this);
-    },
-
-    componentType: "SelectField",
-    focusable: true
 });
 
 /**
@@ -3446,6 +3481,10 @@ EchoApp.SplitPane = Core.extend(EchoApp.Component, {
         OVERFLOW_AUTO: 0,
         OVERFLOW_HIDDEN: 1,
         OVERFLOW_SCROLL: 2
+    },
+
+    $load: function() {
+        EchoApp.ComponentFactory.registerType("SplitPane", this);
     },
 
     componentType: "SplitPane",

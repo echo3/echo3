@@ -197,8 +197,12 @@ Core = {
         
         // Add toString and valueOf manually, as they will not be iterated
         // by for-in iteration in Internet Explorer.
-        sharedPrototype.toString = definition.toString;
-        sharedPrototype.valueOf = definition.valueOf;
+        if (definition.hasOwnProperty("toString")) {
+            sharedPrototype.toString = definition.toString;
+        }
+        if (definition.hasOwnProperty("valueOf")) {
+            sharedPrototype.valueOf = definition.valueOf;
+        }
 
         // Remove properties such that they will not later be added to the object prototype.
         delete definition.toString;

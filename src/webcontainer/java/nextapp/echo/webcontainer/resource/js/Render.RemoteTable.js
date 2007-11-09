@@ -1,6 +1,18 @@
 // FIXME handle enabled/disabled state
 
 /**
+ * @class Remote Table implementation.
+ */
+EchoAppRender.RemoteTable = Core.extend(EchoApp.Component, {
+
+    $load: function() {
+        EchoApp.ComponentFactory.registerType("RemoteTable", this);
+    },
+
+    componentType: "RemoteTable"
+});
+
+/**
  * Component rendering peer: RemoteTable
  */
 EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {

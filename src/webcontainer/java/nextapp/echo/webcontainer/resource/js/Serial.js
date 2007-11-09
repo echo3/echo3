@@ -41,10 +41,6 @@ EchoSerial = {
         var styleName = componentElement.getAttribute("s");
         if (styleName) {
             component.setStyleName(styleName);
-            var styleType = componentElement.getAttribute("st");
-            if (styleType) {
-                component.setStyleType(styleType);
-            }
         }
         
         var styleData = component.getLocalStyleData();

@@ -39,6 +39,13 @@ import nextapp.echo.app.CheckBox;
 public class CheckBoxPeer extends ToggleButtonPeer {
     
     /**
+     * @see nextapp.echo.webcontainer.sync.component.AbstractButtonPeer#getClientComponentType()
+     */
+    public String getClientComponentType() {
+        return "CheckBox";
+    }
+    
+    /**
      * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getComponentClass()
      */
     public Class getComponentClass() {

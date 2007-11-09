@@ -577,16 +577,6 @@ class OutputProcessor {
         StyleSheet styleSheet = c.getApplicationInstance().getStyleSheet();
         if (styleSheet != null && c.getStyleName() != null) {
             element.setAttribute("s", c.getStyleName());
-            Class styleClass = getComponentStyleClass(styleSheet, c.getStyleName(), c.getClass());
-            if (styleClass != null && styleClass != c.getClass()) {
-                ComponentSynchronizePeer styleComponentSyncPeer 
-                        = SynchronizePeerFactory.getPeerForComponent(styleClass, false);
-                if (styleComponentSyncPeer == null) {
-                    element.setAttribute("st", styleClass.getName());
-                } else {
-                    element.setAttribute("st", styleComponentSyncPeer.getClientComponentType());
-                }
-            }
         }
     }
     

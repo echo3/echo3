@@ -21,9 +21,9 @@
    <p n="background" t="Color" v="#ffffaf"/>
   </p>
  </s>
- <s n="Default" t="nextapp.echo.testapp.interactive.testscreen.StyleSheetTest$SpecialButton">
+ <!--<s n="Default" t="nextapp.echo.testapp.interactive.testscreen.StyleSheetTest$SpecialButton">
   <p n="background" t="Color" v="#abcdef"/>
- </s>
+ </s>-->
  <s n="Default" t="nextapp.echo.app.button.AbstractButton">
   <p n="background" t="Color" v="#4f4f5f"/>
   <p n="foreground" t="Color" v="#efefff"/>

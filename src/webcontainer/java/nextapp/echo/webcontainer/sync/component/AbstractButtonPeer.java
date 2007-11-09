@@ -41,7 +41,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 /**
  * Base synchronization peer for <code>AbstractButton</code>s.
  */
-public abstract class AbstractButtonPeer extends AbstractComponentSynchronizePeer {
+public class AbstractButtonPeer extends AbstractComponentSynchronizePeer {
     
     protected static final Service BUTTON_SERVICE = JavaScriptService.forResource("Echo.Button", 
             "/nextapp/echo/webcontainer/resource/js/Render.Button.js");
@@ -61,6 +61,13 @@ public abstract class AbstractButtonPeer extends AbstractComponentSynchronizePee
                 return ((AbstractButton) component).hasActionListeners();
             }
         });
+    }
+    
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType()
+     */
+    public String getClientComponentType() {
+        return "AbstractButton";
     }
     
     /**
