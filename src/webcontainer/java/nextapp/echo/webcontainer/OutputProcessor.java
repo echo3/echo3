@@ -146,24 +146,6 @@ class OutputProcessor {
         propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME temporary
     }
     
-    private Class getComponentStyleClass(StyleSheet styleSheet, String styleName, Class componentClass) {
-        if (styleSheet.getStyle(styleName, componentClass, false) != null) {
-            // StyleSheet provides style specifically for componentClass.
-            return componentClass;
-        }
-        
-        // StyleSheet does not provide style specifically for componentClass: search superclasses.
-        componentClass = componentClass.getSuperclass();
-        while (componentClass != null) {
-            if (styleSheet.getStyle(styleName, componentClass, false) != null) {
-                return componentClass;
-            }
-            componentClass = componentClass.getSuperclass();
-        }
-        
-        return null;
-    }
-    
     /**
      * Determines if the specified <code>component</code> has been rendered to
      * the client by determining if it is a descendant of any
@@ -487,7 +469,7 @@ class OutputProcessor {
         }
         
         if (propertyValue == null) {
-            // Set nulll property value.
+            // Set null property value.
             pElement.setAttribute("t", "0");
         } else if (propertyDataElement != null) {
             // Set non-null property value (if necessary, i.e., if propertyDataElement is set).
@@ -568,16 +550,39 @@ class OutputProcessor {
     }
 
     /**
-     * Render style name (and style type, if necessary).
+     * Render style name.
      * 
      * @param element the element to append the style attributes to
      * @param c the rendering component
      */ 
-    private void renderComponentStyleAttributes(Element element, Component c) {
+    private void renderComponentStyleAttributes(Element element, Component c) 
+    throws SerialException {
         StyleSheet styleSheet = c.getApplicationInstance().getStyleSheet();
-        if (styleSheet != null && c.getStyleName() != null) {
-            element.setAttribute("s", c.getStyleName());
+        String styleName = c.getStyleName();
+        
+        if (styleSheet == null || styleName  == null) {
+            return;
         }
+        
+        Class styleClass = c.getClass();
+        Style style = styleSheet.getStyle(styleName, styleClass, false);
+        while (style == null && styleClass != Component.class) {
+            styleClass = styleClass.getSuperclass();
+            style = styleSheet.getStyle(styleName, styleClass, false);
+        }
+        
+        ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(styleClass, false);
+        if (componentPeer == null) {
+            componentPeer = SynchronizePeerFactory.getPeerForComponent(styleClass, true);
+            if (componentPeer == null) {
+                // Should not occur.
+                throw new SerialException("No peer available for component: " + styleClass.getName(), null);
+            }
+            element.setAttribute("s", (styleName == null ? "" : styleName) + ":" + styleClass.getName());
+        } else {
+            element.setAttribute("s", styleName);
+        }
+        
     }
     
     private void renderComponentUpdatedProperties(Element upElement, Component c, ServerComponentUpdate update) 
@@ -694,14 +699,20 @@ class OutputProcessor {
             while (componentTypeIterator.hasNext()) {
                 Class componentClass = (Class) componentTypeIterator.next();
                 Element sElement = document.createElement("s");
-                ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(componentClass);
-                if (componentPeer != null) {
+                ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(componentClass, false);
+                if (componentPeer == null) {
+                    componentPeer = SynchronizePeerFactory.getPeerForComponent(componentClass, true);
+                    if (componentPeer == null) {
+                        // Should not occur.
+                        throw new SerialException("No peer available for component: " + componentClass.getName(), null);
+                    }
                     sElement.setAttribute("t", componentPeer.getClientComponentType());
+                    sElement.setAttribute("n", (styleName == null ? "" : styleName) + ":" + componentClass.getName());
                 } else {
-                    sElement.setAttribute("t", componentClass.getName());
-                }
-                if (styleName != null) {
-                    sElement.setAttribute("n", styleName);
+                    sElement.setAttribute("t", componentPeer.getClientComponentType());
+                    if (styleName != null) {
+                        sElement.setAttribute("n", styleName);
+                    }
                 }
                 
                 Style style = styleSheet.getStyle(styleName, componentClass, false);

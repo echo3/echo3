@@ -50,7 +50,7 @@ extends Serializable {
      * @param componentClass the <code>Class</code> of the 
      *        <code>Component</code> for which style information is being
      *        determined
-     * @param searchSuperClasses TODO
+     * @param searchSuperClasses FIXME doc
      * 
      * @return the appropriate <code>Style</code> if found, or null otherwise
      */

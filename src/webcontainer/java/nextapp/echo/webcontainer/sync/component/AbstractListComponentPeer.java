@@ -60,7 +60,7 @@ import nextapp.echo.webcontainer.util.MultiIterator;
 /**
  * Abstract base synchronization peer for <code>AbstractListComponent</code>s.
  */
-public abstract class AbstractListComponentPeer extends AbstractComponentSynchronizePeer  {
+public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer  {
     
     /**
      * Property object describing rendered list data, 
@@ -196,6 +196,20 @@ public abstract class AbstractListComponentPeer extends AbstractComponentSynchro
                 return ((AbstractListComponent) component).hasActionListeners();
             }
         });
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     */
+    public String getClientComponentType() {
+        return "AbstractListComponent";
+    }
+    
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getComponentClass()
+     */
+    public Class getComponentClass() {
+        return AbstractListComponent.class;
     }
 
     /**

@@ -39,7 +39,7 @@ import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
 
-public abstract class TextComponentPeer extends AbstractComponentSynchronizePeer {
+public class TextComponentPeer extends AbstractComponentSynchronizePeer {
 
     private static final Service TEXT_COMPONENT_SERVICE = JavaScriptService.forResource("Echo.TextComponent", 
             "/nextapp/echo/webcontainer/resource/js/Render.TextComponent.js");
@@ -56,6 +56,20 @@ public abstract class TextComponentPeer extends AbstractComponentSynchronizePeer
                 return ((TextComponent) c).hasActionListeners();
             }
         });
+    }
+    
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     */
+    public String getClientComponentType() {
+        return "TextComponent";
+    }
+    
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getComponentClass()
+     */
+    public Class getComponentClass() {
+        return TextComponent.class;
     }
     
     /**

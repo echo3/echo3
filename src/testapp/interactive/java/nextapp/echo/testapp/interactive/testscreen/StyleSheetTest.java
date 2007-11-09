@@ -143,10 +143,8 @@ public class StyleSheetTest extends Column {
         styleSheetEntryTextArea.setHeight(new Extent(300));
         add(styleSheetEntryTextArea);
         
-        //FIXME. SpecialButton has demonstrated the current style rendering is a bit flawed.
-        // We need to render the class names of custom component styles to the client.
         SpecialButton specialButton = new SpecialButton();
-        specialButton.setText("This is a special button class.");
+        specialButton.setText("This is a special button class (it should look hideous and unlike the other buttons).");
         specialButton.setStyleName("Default");
         add(specialButton);
     }
