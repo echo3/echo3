@@ -66,6 +66,13 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
     }
     
     /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     */
+    public String getClientComponentType() {
+        return "WindowPane";
+    }
+    
+    /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getComponentClass()
      */
     public Class getComponentClass() {

@@ -52,7 +52,7 @@ public class ArcTest extends SplitPane {
         }
     
         /**
-         * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType()
+         * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
          */
         public String getClientComponentType() {
             return "ArcTestComponent";

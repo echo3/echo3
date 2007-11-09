@@ -387,8 +387,18 @@ EchoApp.ComponentFactory = {
         return component;
     },
     
+    /**
+     * Determines the super type of a component, based on the type name of the component.
+     *
+     * @param {String} typeName the component type
+     * @return the parent componetn type
+     * @type String
+     */
     getSuperType: function(typeName) {
         var typeConstructor = this._typeToConstructorMap[typeName];
+        if (!typeConstructor) {
+            throw new Error("Type not found: " + typeName + ".");
+        }
         if (typeConstructor.$super) {
             return typeConstructor.$super.prototype.componentType;
         } else {
@@ -3498,6 +3508,11 @@ EchoApp.SplitPane = Core.extend(EchoApp.Component, {
 EchoApp.TextComponent = Core.extend(EchoApp.Component, {
 
     $abstract: true,
+
+    $load: function() {
+        EchoApp.ComponentFactory.registerType("TextComponent", this);
+    },
+
     componentType: "TextComponent",
     focusable: true
 });

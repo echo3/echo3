@@ -53,6 +53,13 @@ public class SplitPanePeer extends AbstractComponentSynchronizePeer {
     }
     
     /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     */
+    public String getClientComponentType() {
+        return "SplitPane";
+    }
+    
+    /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getComponentClass()
      */
     public Class getComponentClass() {

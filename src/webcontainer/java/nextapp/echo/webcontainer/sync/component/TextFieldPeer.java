@@ -33,6 +33,16 @@ import nextapp.echo.app.TextField;
 
 public class TextFieldPeer extends TextComponentPeer {
 
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     */
+    public String getClientComponentType() {
+        return "TextField";
+    }
+    
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getComponentClass()
+     */
     public Class getComponentClass() {
         return TextField.class;
     }

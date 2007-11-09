@@ -50,6 +50,13 @@ public class ContentPanePeer extends AbstractComponentSynchronizePeer {
     }
     
     /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     */
+    public String getClientComponentType() {
+        return "ContentPane";
+    }
+    
+    /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getComponentClass()
      */
     public Class getComponentClass() {

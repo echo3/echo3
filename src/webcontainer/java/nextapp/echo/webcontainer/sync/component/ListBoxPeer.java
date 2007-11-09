@@ -38,7 +38,7 @@ import nextapp.echo.app.ListBox;
 public class ListBoxPeer extends AbstractListComponentPeer {
 
     /**
-     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType()
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
      */
     public String getClientComponentType() {
         return "RemoteListBox";

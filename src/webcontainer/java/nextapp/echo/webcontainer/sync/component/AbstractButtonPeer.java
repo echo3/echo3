@@ -64,7 +64,7 @@ public class AbstractButtonPeer extends AbstractComponentSynchronizePeer {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType()
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
      */
     public String getClientComponentType() {
         return "AbstractButton";

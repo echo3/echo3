@@ -46,7 +46,7 @@ import nextapp.echo.app.util.Context;
 /**
  * Default abstract implementation of <code>ComponentSynchronizePeer</code>.
  * Provides implementations of all methods less <code>getComponentClass()</code>.
- * Determines properties to render to client by quertying a <code>Component</code>'s
+ * Determines properties to render to client by querying a <code>Component</code>'s
  * local style and using a <code>ComponentIntrospector</code> to determine whether
  * those properties 
  */
@@ -129,13 +129,6 @@ implements ComponentSynchronizePeer {
     
     private Set referencedProperties = null;
     
-    /**
-     * The determined client component type.
-     * 
-     * @see #getClientComponentType()
-     */
-    private String clientComponentType;
-
     private Map eventTypeToEventPeer;
     
     private Set requiredComponentClasses;
@@ -145,13 +138,7 @@ implements ComponentSynchronizePeer {
      */
     public AbstractComponentSynchronizePeer() {
         super();
-        clientComponentType = getComponentClass().getName();
-        if (clientComponentType.startsWith("nextapp.echo.app.")) {
-            // Use relative class name automatically for nextapp.echo.app objects.
-            int lastDot = clientComponentType.lastIndexOf(".");
-            clientComponentType = clientComponentType.substring(lastDot + 1);
-        }
-        
+
         try {
             stylePropertyNames = new HashSet();
             indexedPropertyNames = new HashSet();
@@ -223,17 +210,6 @@ implements ComponentSynchronizePeer {
         requiredComponentClasses.add(componentClass);
     }
 
-    /**
-     * Default implementation: return full class name if component is not in core Echo package.
-     * Return relative name for base Echo classes.
-     * Overriding this method is not generally recommended, due to potential client namespace issues.
-     * 
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
-     */
-    public String getClientComponentType() {
-        return clientComponentType;
-    }
-    
     /**
      * Returns the (most basic) supported component class.
      * 

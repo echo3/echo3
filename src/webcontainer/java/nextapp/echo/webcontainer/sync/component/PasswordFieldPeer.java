@@ -33,6 +33,16 @@ import nextapp.echo.app.PasswordField;
 
 public class PasswordFieldPeer extends TextComponentPeer {
 
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     */
+    public String getClientComponentType() {
+        return "PasswordField";
+    }
+    
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getComponentClass()
+     */
     public Class getComponentClass() {
         return PasswordField.class;
     }

@@ -33,6 +33,13 @@ import nextapp.echo.app.TextArea;
 
 public class TextAreaPeer extends TextComponentPeer {
 
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     */
+    public String getClientComponentType() {
+        return "TextArea";
+    }
+    
     public Class getComponentClass() {
         return TextArea.class;
     }

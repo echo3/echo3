@@ -50,6 +50,13 @@ public class LabelPeer extends AbstractComponentSynchronizePeer {
     }
     
     /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     */
+    public String getClientComponentType() {
+        return "Label";
+    }
+    
+    /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getComponentClass()
      */
     public Class getComponentClass() {

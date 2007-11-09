@@ -38,6 +38,13 @@ import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
 public class WindowPeer extends AbstractComponentSynchronizePeer {
     
     /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     */
+    public String getClientComponentType() {
+        return "Window";
+    }
+    
+    /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getComponentClass()
      */
     public Class getComponentClass() {
