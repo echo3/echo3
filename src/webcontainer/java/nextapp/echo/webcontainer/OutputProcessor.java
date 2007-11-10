@@ -550,7 +550,7 @@ class OutputProcessor {
     }
 
     /**
-     * Render style name.
+     * Sets the style attribute on a component (c) element.
      * 
      * @param element the element to append the style attributes to
      * @param c the rendering component
@@ -564,6 +564,8 @@ class OutputProcessor {
             return;
         }
         
+        // Determine the class of the style that will be used to render the component.
+        // This may be the component's class, or one of its ancestor classes.
         Class styleClass = c.getClass();
         Style style = styleSheet.getStyle(styleName, styleClass, false);
         while (style == null && styleClass != Component.class) {
@@ -571,8 +573,12 @@ class OutputProcessor {
             style = styleSheet.getStyle(styleName, styleClass, false);
         }
         
+        // Retrieve the component peer for the style class.
         ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(styleClass, false);
+        
         if (componentPeer == null) {
+            // A synchronize peer DOES NOT exist for the style class, the style name will be rendered as:
+            // styleName:styleClass.
             componentPeer = SynchronizePeerFactory.getPeerForComponent(styleClass, true);
             if (componentPeer == null) {
                 // Should not occur.
@@ -580,9 +586,9 @@ class OutputProcessor {
             }
             element.setAttribute("s", (styleName == null ? "" : styleName) + ":" + styleClass.getName());
         } else {
+            // A synchronize peer exists for the style class, simply render the style name.
             element.setAttribute("s", styleName);
         }
-        
     }
     
     private void renderComponentUpdatedProperties(Element upElement, Component c, ServerComponentUpdate update) 
@@ -699,21 +705,28 @@ class OutputProcessor {
             while (componentTypeIterator.hasNext()) {
                 Class componentClass = (Class) componentTypeIterator.next();
                 Element sElement = document.createElement("s");
+                
+                // Retrieve component synchronize peer for style's SPECIFIC component class (not searching superclasses).
                 ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(componentClass, false);
                 if (componentPeer == null) {
+                    // No synchronize peer exists for style's specific component class, find synchronize peer for
+                    // a superclass.
                     componentPeer = SynchronizePeerFactory.getPeerForComponent(componentClass, true);
                     if (componentPeer == null) {
-                        // Should not occur.
+                        // No synchronize peer for any superclass.
                         throw new SerialException("No peer available for component: " + componentClass.getName(), null);
                     }
-                    sElement.setAttribute("t", componentPeer.getClientComponentType());
+                    
+                    // Render style name as styleName:styleClass.
                     sElement.setAttribute("n", (styleName == null ? "" : styleName) + ":" + componentClass.getName());
                 } else {
-                    sElement.setAttribute("t", componentPeer.getClientComponentType());
+                    // Synchronize peer does exist for style's specific component class, render style name unmodified.
                     if (styleName != null) {
                         sElement.setAttribute("n", styleName);
                     }
                 }
+
+                sElement.setAttribute("t", componentPeer.getClientComponentType());
                 
                 Style style = styleSheet.getStyle(styleName, componentClass, false);
                 renderStyle(componentClass, sElement, style);
