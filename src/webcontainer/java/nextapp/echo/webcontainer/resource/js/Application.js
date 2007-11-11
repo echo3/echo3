@@ -2489,12 +2489,17 @@ EchoApp.Style = Core.extend({
 EchoApp.StyleSheet = Core.extend({
 
     _nameToStyleMap: null,
+
+    _renderCache: null,
+    
+    _renderCacheHasItems: false,
     
     /**
      * Creates a new style sheet.
      */
     $construct: function() {
         this._nameToStyleMap = { };
+        this._renderCache = {};
     },
     
     /**
@@ -2506,18 +2511,41 @@ EchoApp.StyleSheet = Core.extend({
      *  @type EchoApp.Style
      */
     getRenderStyle: function(name, componentType) {
+        // Retrieve style from cache.
+        var style = this._renderCache[name + "!" + componentType];
+        
+        if (style !== undefined) {
+            // If style found in cache, return immediately.
+            return style;
+        }
+        
+        // Retrieve value (type-to-style-map) from name-to-style-map with specified name key.
         var typeToStyleMap = this._nameToStyleMap[name];
         if (typeToStyleMap == null) {
+            // No styles available for specified name, mark cache entry as null and return null.
+            this._renderCache[name + "!" + componentType] = null;
+            this._renderCacheHasItems = true;
             return null;
         }
-        var style = typeToStyleMap[componentType];
-        while (style == null) {
-            componentType = EchoApp.ComponentFactory.getSuperType(componentType);
-            if (componentType == null) {
-                return null;
+        
+        // Retrieve style for specific componentType.
+        style = typeToStyleMap[componentType];
+        if (style == null) {
+            var testType = componentType;
+            while (style == null) {
+                // Search super types of testType to find style until found.
+                testType = EchoApp.ComponentFactory.getSuperType(testType);
+                if (testType == null) {
+                    // No style available for component type, mark cache entry as null and return null.
+                    this._renderCache[name + "!" + testType] = null;
+                    this._renderCacheHasItems = true;
+                    return null;
+                }
+                style = typeToStyleMap[testType];
             }
-            style = typeToStyleMap[componentType];
         }
+        this._renderCache[name + "!" + componentType] = style;
+        this._renderCacheHasItems = true;
         return style;
     },
     
@@ -2545,9 +2573,13 @@ EchoApp.StyleSheet = Core.extend({
      * @param {EchoApp.Style} the style
      */
     setStyle: function(name, componentType, style) {
+        if (this._renderCacheHasItems) {
+            this._renderCache = {};
+            this._renderCacheHasItems = false;
+        }
         var typeToStyleMap = this._nameToStyleMap[name];
         if (typeToStyleMap == null) {
-            typeToStyleMap = { };
+            typeToStyleMap = {};
             this._nameToStyleMap[name] = typeToStyleMap;
         }
         typeToStyleMap[componentType] = style;
