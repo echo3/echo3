@@ -2492,8 +2492,6 @@ EchoApp.StyleSheet = Core.extend({
 
     _renderCache: null,
     
-    _renderCacheHasItems: false,
-    
     /**
      * Creates a new style sheet.
      */
@@ -2512,19 +2510,21 @@ EchoApp.StyleSheet = Core.extend({
      */
     getRenderStyle: function(name, componentType) {
         // Retrieve style from cache.
-        var style = this._renderCache[name + "!" + componentType];
-        
+        var style = this._renderCache[name][componentType];
         if (style !== undefined) {
             // If style found in cache, return immediately.
             return style;
+        } else {
+            return this._loadRenderStyle(name, componentType);
         }
-        
+    },
+    
+    _loadRenderStyle: function(name, componentType) {
         // Retrieve value (type-to-style-map) from name-to-style-map with specified name key.
         var typeToStyleMap = this._nameToStyleMap[name];
         if (typeToStyleMap == null) {
             // No styles available for specified name, mark cache entry as null and return null.
-            this._renderCache[name + "!" + componentType] = null;
-            this._renderCacheHasItems = true;
+            this._renderCache[name][componentType] = null;
             return null;
         }
         
@@ -2537,15 +2537,13 @@ EchoApp.StyleSheet = Core.extend({
                 testType = EchoApp.ComponentFactory.getSuperType(testType);
                 if (testType == null) {
                     // No style available for component type, mark cache entry as null and return null.
-                    this._renderCache[name + "!" + testType] = null;
-                    this._renderCacheHasItems = true;
+                    this._renderCache[name][testType] = null;
                     return null;
                 }
                 style = typeToStyleMap[testType];
             }
         }
-        this._renderCache[name + "!" + componentType] = style;
-        this._renderCacheHasItems = true;
+        this._renderCache[name][componentType] = style;
         return style;
     },
     
@@ -2573,10 +2571,9 @@ EchoApp.StyleSheet = Core.extend({
      * @param {EchoApp.Style} the style
      */
     setStyle: function(name, componentType, style) {
-        if (this._renderCacheHasItems) {
-            this._renderCache = {};
-            this._renderCacheHasItems = false;
-        }
+        // Create or clear cache entry for name.
+        this._renderCache[name] = {};
+        
         var typeToStyleMap = this._nameToStyleMap[name];
         if (typeToStyleMap == null) {
             typeToStyleMap = {};
