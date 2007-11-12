@@ -182,11 +182,25 @@ class OutputProcessor {
         return rendered;
     }
     
+    /**
+     * Processes pending output from the application, generating a server message and rendering it
+     * to the output <code>PrintWriter</code> of the <code>Connection</code> specified in the constructor.
+     */
     public void process() 
     throws IOException {
         serverMessage.setTransactionId(userInstance.getNextTransactionId());
         try {
-            processServerOutput();
+            // Render output to server message DOM.
+            if (serverUpdateManager.isFullRefreshRequired()) {
+                renderComponentFullRefresh();
+            } else {
+                renderComponentUpdates();
+            }
+            renderCommands();
+            renderFocus();
+            renderAsyncState();
+
+            // Render DOM to <code>PrintWriter</code>.
             conn.setContentType(ContentType.TEXT_XML);
             DomUtil.save(serverMessage.getDocument(), conn.getWriter(), null);
         } catch (SerialException ex) {
@@ -198,7 +212,7 @@ class OutputProcessor {
         }
         
         if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
-            // Print ServerMessage to console. 
+            // Print ServerMessage DOM to console. 
             try {
                 DomUtil.save(document, System.err, DomUtil.OUTPUT_PROPERTIES_INDENT);
             } catch (SAXException ex) {
@@ -207,24 +221,10 @@ class OutputProcessor {
             }
         }
     }
-
-    private void processServerOutput() 
-    throws SerialException {
-        if (serverUpdateManager.isFullRefreshRequired()) {
-            renderComponentFullRefresh();
-        } else {
-            renderComponentUpdates();
-        }
-        
-        // Render Commands.
-        renderCommands();
-        
-        renderFocus();
-        
-        renderAsyncState();
-        
-    }
     
+    /**
+     * Renders asynchronous callback settings to server message.
+     */
     private void renderAsyncState() {
         if (userInstance.getApplicationInstance().hasTaskQueues()) {
              //FIXME ...not sure I want this in the root of the smsg again.
@@ -232,6 +232,9 @@ class OutputProcessor {
         }
     }
     
+    /**
+     * Renders enqueued commands to server message.
+     */
     private void renderCommands() 
     throws SerialException {
         Command[] commands = serverUpdateManager.getCommands();
@@ -263,14 +266,14 @@ class OutputProcessor {
     /**
      * Renders an individual property of a <code>Command</code>.
      * 
-     * @param parentElement
-     * @param commandPeer
-     * @param command
-     * @param propertyName
-     * @param propertyIndex
+     * @param commandExecuteElement the command execute element to which the property should be added
+     * @param commandPeer the <code>CommandSynchronizePeer</code>
+     * @param command the <code>Command</code>
+     * @param propertyName the name of the property
+     * @param propertyIndex the property index
      * @throws SerialException
      */
-    private void renderCommandProperty(Element parentElement, CommandSynchronizePeer commandPeer,
+    private void renderCommandProperty(Element commandExecuteElement, CommandSynchronizePeer commandPeer,
             Command command, String propertyName, int propertyIndex) 
     throws SerialException {
         Element pElement = document.createElement("p");
@@ -295,9 +298,15 @@ class OutputProcessor {
         }
         
         // Append to parent element.
-        parentElement.appendChild(pElement);
+        commandExecuteElement.appendChild(pElement);
     }
     
+    /**
+     * Renders the state of the entire component hierarchy to the server message, i.e.,
+     * on initialization or when the client page is reloaded.
+     * 
+     * @throws SerialException
+     */
     private void renderComponentFullRefresh()
     throws SerialException {
         // Special case: full refresh.  Render entire component hierarchy by rendering an
@@ -332,6 +341,11 @@ class OutputProcessor {
         }
     }
     
+    /**
+     * Renders an incremental update to the state of the client component hierarchy.
+     * 
+     * @throws SerialException
+     */
     private void renderComponentUpdates() 
     throws SerialException {
         ServerComponentUpdate[] componentUpdates = serverUpdateManager.getComponentUpdates();
@@ -641,6 +655,12 @@ class OutputProcessor {
         }
     }
     
+    /**   
+     * @param upElement
+     * @param c
+     * @param update
+     * @throws SerialException
+     */
     private void renderComponentUpdatedProperties(Element upElement, Component c, ServerComponentUpdate update) 
     throws SerialException {
         ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(c.getClass());
@@ -679,6 +699,9 @@ class OutputProcessor {
         }
     }
     
+    /**
+     * Renders the focus state of the application, if necessary.
+     */
     private void renderFocus() {
         Component focusedComponent = userInstance.getApplicationInstance().getFocusedComponent();
         if (focusedComponent != null) {
