@@ -186,6 +186,17 @@ public class LabelTest extends SplitPane {
                 });
             }
         });
+        controlsColumn.addButton("Set Text = <HTML>", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(Label label) {
+                        if (label.getText() != null) {
+                            label.setText("<foo>\"foo!\" & foo!</foo>");
+                        }
+                    }
+                });
+            }
+        });
         controlsColumn.addButton("Set Text = Formatted", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator() {
