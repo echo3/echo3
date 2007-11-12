@@ -189,8 +189,9 @@ EchoSerial = {
             translator.toXml(client, propertyElement, propertyValue);
         } else {
             // call toString here, IE will otherwise convert boolean values to integers
-            var value = propertyValue == null ? propertyValue : propertyValue.toString(); 
-            propertyElement.setAttribute("v", value);
+            if (propertyValue != null) {
+                propertyElement.appendChild(propertyElement.ownerDocument.createTextNode(propertyValue.toString()));
+            }
         }
     }
 };
@@ -218,7 +219,7 @@ EchoSerial.addPropertyTranslator("0", EchoSerial.PropertyTranslator.Null);
 EchoSerial.PropertyTranslator.Boolean = {
 
     toProperty: function(client, propertyElement) {
-        return propertyElement.getAttribute("v") == "true";
+        return propertyElement.firstChild.data == "true";
     }
 };
 
@@ -230,7 +231,7 @@ EchoSerial.addPropertyTranslator("b", EchoSerial.PropertyTranslator.Boolean);
 EchoSerial.PropertyTranslator.Float = {
 
     toProperty: function(client, propertyElement) {
-        return parseFloat(propertyElement.getAttribute("v"));
+        return parseFloat(propertyElement.firstChild.data);
     }
 };
 
@@ -242,7 +243,7 @@ EchoSerial.addPropertyTranslator("f", EchoSerial.PropertyTranslator.Float);
 EchoSerial.PropertyTranslator.Integer = { 
 
     toProperty: function(client, propertyElement) {
-        return parseInt(propertyElement.getAttribute("v"));
+        return parseInt(propertyElement.firstChild.data);
     }
 };
 
@@ -254,8 +255,16 @@ EchoSerial.addPropertyTranslator("i", EchoSerial.PropertyTranslator.Integer);
 EchoSerial.PropertyTranslator.String = {
 
     toProperty: function(client, propertyElement) {
-    	var firstChild = propertyElement.firstChild;
-    	return firstChild ? firstChild.nodeValue : "";
+        var textNode = propertyElement.firstChild;
+        if (!textNode) {
+            return "";
+        }
+        var text = textNode.data;
+        while (textNode.nextSibling) {
+            textNode = textNode.nextSibling;
+            text += textNode.data;
+        }
+    	return text;
     }
 };
 

@@ -31,6 +31,7 @@ package nextapp.echo.app.serial.property;
 
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
+import nextapp.echo.app.util.DomUtil;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -46,12 +47,7 @@ implements SerialPropertyPeer {
      *      Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) {
-        if (propertyElement.hasAttribute("v")) {
-            return propertyElement.getAttribute("v");
-        } else if (propertyElement.hasChildNodes()) {
-            return propertyElement.getFirstChild().getNodeValue();
-        }
-        return null;
+        return propertyElement.hasAttribute("v") ? propertyElement.getAttribute("v") : DomUtil.getElementText(propertyElement);
     }
 
     /**

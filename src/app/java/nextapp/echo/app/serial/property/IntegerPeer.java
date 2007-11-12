@@ -35,6 +35,7 @@ import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
+import nextapp.echo.app.util.DomUtil;
 
 import org.w3c.dom.Element;
 
@@ -79,7 +80,8 @@ implements SerialPropertyPeer {
 
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws SerialException {
-        String valueText = propertyElement.getAttribute("v");
+        String valueText = propertyElement.hasAttribute("v") 
+                ? propertyElement.getAttribute("v") : DomUtil.getElementText(propertyElement);
         try {
             return new Integer(valueText);
         } catch (NumberFormatException ex) {
@@ -92,7 +94,8 @@ implements SerialPropertyPeer {
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         propertyElement.setAttribute("t", "i");
-        propertyElement.setAttribute("v", propertyValue.toString());
+        propertyElement.appendChild(serialContext.getDocument().createTextNode(propertyValue.toString()));
     }
 }

@@ -29,8 +29,10 @@
 
 package nextapp.echo.app.serial.property;
 
+import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
+import nextapp.echo.app.util.DomUtil;
 
 import org.w3c.dom.Element;
 
@@ -45,7 +47,8 @@ implements SerialPropertyPeer {
      *      Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) {
-        String valueText = propertyElement.getAttribute("v");
+        String valueText = propertyElement.hasAttribute("v") 
+                ? propertyElement.getAttribute("v") : DomUtil.getElementText(propertyElement);
         if (valueText == null) {
             return null;
         }
@@ -57,7 +60,8 @@ implements SerialPropertyPeer {
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         propertyElement.setAttribute("t", "b");
-        propertyElement.setAttribute("v", propertyValue.toString());
+        propertyElement.appendChild(serialContext.getDocument().createTextNode(propertyValue.toString()));
     }
 }
