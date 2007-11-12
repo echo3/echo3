@@ -396,8 +396,8 @@ EchoSerial.PropertyTranslator.FillImage = {
         if (client.decompressUrl) {
             url = client.decompressUrl(url);
         }
-        var repeat = fiElement.getAttribute("r");
-        switch (repeat) {
+        var repeat;
+        switch (fiElement.getAttribute("r")) {
         case "0": repeat = EchoApp.FillImage.NO_REPEAT; break;
         case "xy": repeat = EchoApp.FillImage.REPEAT; break;
         case "x": repeat = EchoApp.FillImage.REPEAT_HORIZONTAL; break;
