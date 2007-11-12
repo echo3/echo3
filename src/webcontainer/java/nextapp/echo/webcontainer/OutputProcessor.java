@@ -53,7 +53,6 @@ import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.update.ServerUpdateManager;
-import nextapp.echo.app.update.UpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 
@@ -117,6 +116,8 @@ class OutputProcessor {
     private Connection conn;
     private UserInstance userInstance;
     private ServerMessage serverMessage;
+    private ServerUpdateManager serverUpdateManager;
+    
     private Context context;
     private PropertyPeerFactory propertyPeerFactory;
     private Document document;
@@ -143,6 +144,7 @@ class OutputProcessor {
         serverMessage = new ServerMessage();
         document = serverMessage.getDocument();
         userInstance = conn.getUserInstance();
+        serverUpdateManager = userInstance.getUpdateManager().getServerUpdateManager();
         propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME temporary
     }
     
@@ -208,129 +210,30 @@ class OutputProcessor {
 
     private void processServerOutput() 
     throws SerialException {
-        UpdateManager updateManager = userInstance.getUpdateManager();
-        ServerUpdateManager serverUpdateManager = updateManager.getServerUpdateManager();
-        
         if (serverUpdateManager.isFullRefreshRequired()) {
-            // Special case: full refresh.  Render entire component hierarchy by rendering an
-            // add directive to add the Window's child ContentPane to the root.   
-            // Render all properties of Window. 
-            Window window = userInstance.getApplicationInstance().getDefaultWindow();
-            serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSyncUp", "fr");
-            serverMessage.setAttribute("root", userInstance.getRootHtmlElementId());
-            
-            // Render Style Sheet
-            renderStyleSheet();
-            
-            // Render Add ContentPane to Window
-            ContentPane content = window.getContent();
-            if (content == null) {
-                throw new IllegalStateException("No content to render: default window has no content.");
-            }
-            
-            Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSyncUp", "up");
-            upElement.setAttribute("r", "true"); // Adding to root.
-            renderComponentState(upElement, content);
-
-            // Render Window properties
-            ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(window.getClass());
-            if (componentPeer == null) {
-                throw new IllegalStateException("No synchronize peer found for component: " + window.getClass().getName());
-            }
-            Iterator propertyNameIterator = componentPeer.getOutputPropertyNames(context, window);
-            while (propertyNameIterator.hasNext()) {
-                String propertyName = (String) propertyNameIterator.next();
-                renderComponentProperty(upElement, componentPeer, window, propertyName, false);
-            }
+            renderComponentFullRefresh();
         } else {
-            ServerComponentUpdate[] componentUpdates = updateManager.getServerUpdateManager().getComponentUpdates();
-            
-            // Remove any updates whose updates are descendants of components which have not been rendered to the
-            // client yet due to lazy-loading containers.
-            for (int i = 0; i < componentUpdates.length; ++i) {
-                if (!isComponentRendered(componentUpdates[i].getParent())) {
-                    componentUpdates[i] = null;
-                }
-            }
-            
-            // Render Component Synchronization Removes
-            for (int i = 0; i < componentUpdates.length; ++i) {
-                if (componentUpdates[i] == null || !componentUpdates[i].hasRemovedChildren()) {
-                    // Update removed, or update has no removed children: do nothing.
-                    continue;
-                }
-
-                Element rmElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSyncRm", "rm");
-
-                Component parentComponent = componentUpdates[i].getParent();
-                setComponentId(rmElement, parentComponent);
-                    
-                Component[] removedChildren = componentUpdates[i].getRemovedChildren();
-                StringBuffer out = new StringBuffer();
-                for (int j = 0; j < removedChildren.length; ++j) {
-                    if (j > 0) {
-                        out.append(",");
-                    }
-                    out.append(userInstance.getClientRenderId(removedChildren[j]));
-                }
-                rmElement.setAttribute("rm", out.toString());
-            }
-
-            // Render Component Synchronization Updates
-            for (int i = 0; i < componentUpdates.length; ++i) {
-                if (componentUpdates[i] == null) {
-                    // Update removed, do nothing.
-                    continue;
-                }
-                
-                // Process added/removed children and updated properties of update's parent component.
-                if (componentUpdates[i].hasAddedChildren() || componentUpdates[i].hasUpdatedProperties()) {
-                    Component parentComponent = componentUpdates[i].getParent();
-                    Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSyncUp", "up");
-                    setComponentId(upElement, parentComponent);
-                
-                    // Added children.
-                    Component[] addedChildren = componentUpdates[i].getAddedChildren();
-                    if (addedChildren.length > 0) {
-                        // sort components by their index
-                        SortedMap indexedComponents = new TreeMap();
-                        for (int j = 0; j < addedChildren.length; ++j) {
-                            Component addedChild = addedChildren[j];
-                            if (isComponentRendered(addedChild)) {
-                                indexedComponents.put(new Integer((parentComponent.visibleIndexOf(addedChild))), addedChild);
-                            }
-                        }
-                        Iterator indexedComponentsIter = indexedComponents.entrySet().iterator();
-                        while (indexedComponentsIter.hasNext()) {
-                            Entry entry = (Entry)indexedComponentsIter.next();
-                            Element cElement = renderComponentState(upElement, (Component) entry.getValue());
-                            cElement.setAttribute("x", ((Integer)entry.getKey()).toString()); 
-                        }
-                    }
-                    
-                    // Updated properties.
-                    renderComponentUpdatedProperties(upElement, parentComponent, componentUpdates[i]);
-                }
-                
-                // Process updated layout data on immediate children of update's parent component.
-                if (componentUpdates[i].hasUpdatedLayoutDataChildren()) {
-                    Component[] updatedLayoutDataChildren = componentUpdates[i].getUpdatedLayoutDataChildren();
-                    for (int j = 0; j < updatedLayoutDataChildren.length; ++j) {
-                        Component component = updatedLayoutDataChildren[j];
-                        ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
-                        if (componentPeer == null) {
-                            throw new IllegalStateException("No synchronize peer found for component: " 
-                                    + component.getClass().getName());
-                        }
-                        Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSyncUp", "up");
-                        setComponentId(upElement, component);
-                        renderComponentProperty(upElement, componentPeer, component, Component.PROPERTY_LAYOUT_DATA, true); 
-                    }
-                }
-            }
+            renderComponentUpdates();
         }
         
         // Render Commands.
+        renderCommands();
+        
+        renderFocus();
+        
+        renderAsyncState();
+        
+    }
+    
+    private void renderAsyncState() {
+        if (userInstance.getApplicationInstance().hasTaskQueues()) {
+             //FIXME ...not sure I want this in the root of the smsg again.
+            serverMessage.setAttribute("async-interval", Integer.toString(userInstance.getCallbackInterval()));
+        }
+    }
+    
+    private void renderCommands() 
+    throws SerialException {
         Command[] commands = serverUpdateManager.getCommands();
         for (int i = 0; i < commands.length; ++i) {
             CommandSynchronizePeer commandPeer = SynchronizePeerFactory.getPeerForCommand(commands[i].getClass());
@@ -355,19 +258,18 @@ class OutputProcessor {
                 }
             }
         }
-        
-        Component focusedComponent = userInstance.getApplicationInstance().getFocusedComponent();
-        if (focusedComponent != null) {
-            Element focusElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CFocus", "focus");
-            focusElement.setAttribute("i", userInstance.getClientRenderId(focusedComponent));
-        }        
-        
-        if (userInstance.getApplicationInstance().hasTaskQueues()) {
-             //FIXME ...not sure I want this in the root of the smsg again.
-            serverMessage.setAttribute("async-interval", Integer.toString(userInstance.getCallbackInterval()));
-        }
     }
     
+    /**
+     * Renders an individual property of a <code>Command</code>.
+     * 
+     * @param parentElement
+     * @param commandPeer
+     * @param command
+     * @param propertyName
+     * @param propertyIndex
+     * @throws SerialException
+     */
     private void renderCommandProperty(Element parentElement, CommandSynchronizePeer commandPeer,
             Command command, String propertyName, int propertyIndex) 
     throws SerialException {
@@ -396,6 +298,140 @@ class OutputProcessor {
         parentElement.appendChild(pElement);
     }
     
+    private void renderComponentFullRefresh()
+    throws SerialException {
+        // Special case: full refresh.  Render entire component hierarchy by rendering an
+        // add directive to add the Window's child ContentPane to the root.   
+        // Render all properties of Window. 
+        Window window = userInstance.getApplicationInstance().getDefaultWindow();
+        serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSyncUp", "fr");
+        serverMessage.setAttribute("root", userInstance.getRootHtmlElementId());
+        
+        // Render Style Sheet
+        renderStyleSheet();
+        
+        // Render Add ContentPane to Window
+        ContentPane content = window.getContent();
+        if (content == null) {
+            throw new IllegalStateException("No content to render: default window has no content.");
+        }
+        
+        Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSyncUp", "up");
+        upElement.setAttribute("r", "true"); // Adding to root.
+        renderComponentState(upElement, content);
+
+        // Render Window properties
+        ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(window.getClass());
+        if (componentPeer == null) {
+            throw new IllegalStateException("No synchronize peer found for component: " + window.getClass().getName());
+        }
+        Iterator propertyNameIterator = componentPeer.getOutputPropertyNames(context, window);
+        while (propertyNameIterator.hasNext()) {
+            String propertyName = (String) propertyNameIterator.next();
+            renderComponentProperty(upElement, componentPeer, window, propertyName, false);
+        }
+    }
+    
+    private void renderComponentUpdates() 
+    throws SerialException {
+        ServerComponentUpdate[] componentUpdates = serverUpdateManager.getComponentUpdates();
+        
+        // Remove any updates whose updates are descendants of components which have not been rendered to the
+        // client yet due to lazy-loading containers.
+        for (int i = 0; i < componentUpdates.length; ++i) {
+            if (!isComponentRendered(componentUpdates[i].getParent())) {
+                componentUpdates[i] = null;
+            }
+        }
+        
+        // Render Component Synchronization Removes
+        for (int i = 0; i < componentUpdates.length; ++i) {
+            if (componentUpdates[i] == null || !componentUpdates[i].hasRemovedChildren()) {
+                // Update removed, or update has no removed children: do nothing.
+                continue;
+            }
+
+            Element rmElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSyncRm", "rm");
+
+            Component parentComponent = componentUpdates[i].getParent();
+            setComponentId(rmElement, parentComponent);
+                
+            Component[] removedChildren = componentUpdates[i].getRemovedChildren();
+            StringBuffer out = new StringBuffer();
+            for (int j = 0; j < removedChildren.length; ++j) {
+                if (j > 0) {
+                    out.append(",");
+                }
+                out.append(userInstance.getClientRenderId(removedChildren[j]));
+            }
+            rmElement.setAttribute("rm", out.toString());
+        }
+
+        // Render Component Synchronization Updates
+        for (int i = 0; i < componentUpdates.length; ++i) {
+            if (componentUpdates[i] == null) {
+                // Update removed, do nothing.
+                continue;
+            }
+            
+            // Process added/removed children and updated properties of update's parent component.
+            if (componentUpdates[i].hasAddedChildren() || componentUpdates[i].hasUpdatedProperties()) {
+                Component parentComponent = componentUpdates[i].getParent();
+                Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSyncUp", "up");
+                setComponentId(upElement, parentComponent);
+            
+                // Added children.
+                Component[] addedChildren = componentUpdates[i].getAddedChildren();
+                if (addedChildren.length > 0) {
+                    // sort components by their index
+                    SortedMap indexedComponents = new TreeMap();
+                    for (int j = 0; j < addedChildren.length; ++j) {
+                        Component addedChild = addedChildren[j];
+                        if (isComponentRendered(addedChild)) {
+                            indexedComponents.put(new Integer((parentComponent.visibleIndexOf(addedChild))), addedChild);
+                        }
+                    }
+                    Iterator indexedComponentsIter = indexedComponents.entrySet().iterator();
+                    while (indexedComponentsIter.hasNext()) {
+                        Entry entry = (Entry)indexedComponentsIter.next();
+                        Element cElement = renderComponentState(upElement, (Component) entry.getValue());
+                        cElement.setAttribute("x", ((Integer)entry.getKey()).toString()); 
+                    }
+                }
+                
+                // Updated properties.
+                renderComponentUpdatedProperties(upElement, parentComponent, componentUpdates[i]);
+            }
+            
+            // Process updated layout data on immediate children of update's parent component.
+            if (componentUpdates[i].hasUpdatedLayoutDataChildren()) {
+                Component[] updatedLayoutDataChildren = componentUpdates[i].getUpdatedLayoutDataChildren();
+                for (int j = 0; j < updatedLayoutDataChildren.length; ++j) {
+                    Component component = updatedLayoutDataChildren[j];
+                    ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
+                    if (componentPeer == null) {
+                        throw new IllegalStateException("No synchronize peer found for component: " 
+                                + component.getClass().getName());
+                    }
+                    Element upElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSyncUp", "up");
+                    setComponentId(upElement, component);
+                    renderComponentProperty(upElement, componentPeer, component, Component.PROPERTY_LAYOUT_DATA, true); 
+                }
+            }
+        }
+    }
+    
+    /**
+     * Renders a single property of a component.
+     * 
+     * @param parentElement the component element ("c") or update element ("up") on which the property should be added. 
+     * @param componentPeer the peer of the component
+     * @param c the component
+     * @param propertyName the name of the property
+     * @param renderNulls flag indicating whether null values should be rendered (i.e., when updating an existing) 
+     *        or ignored (i.e., when rendering a complete component)
+     * @throws SerialException
+     */
     private void renderComponentProperty(Element parentElement, ComponentSynchronizePeer componentPeer, 
             Component c, String propertyName, boolean renderNulls) 
     throws SerialException {
@@ -411,6 +447,20 @@ class OutputProcessor {
         }
     }
     
+    /**
+     * Implementation method for renderComponentProperty().
+     * This method is invoked by renderComponentProperty() to render a non-indexed property or to render individual
+     * indices of an indexed property
+     * 
+     * @param parentElement the component element ("c") or update element ("up") on which the property should be added. 
+     * @param componentPeer the peer of the component
+     * @param c the component
+     * @param propertyName the name of the property
+     * @param propertyIndex the index of the property (-1 for a non-indexed property)
+     * @param renderNulls flag indicating whether null values should be rendered (i.e., when updating an existing) 
+     *        or ignored (i.e., when rendering a complete component)
+     * @throws SerialException
+     */
     private void renderComponentPropertyImpl(Element parentElement, ComponentSynchronizePeer componentPeer, 
             Component c, String propertyName, int propertyIndex, boolean renderNulls) 
     throws SerialException {
@@ -629,9 +679,25 @@ class OutputProcessor {
         }
     }
     
-    private void renderStyle(Class componentClass, Element parentElement, Style style)
+    private void renderFocus() {
+        Component focusedComponent = userInstance.getApplicationInstance().getFocusedComponent();
+        if (focusedComponent != null) {
+            Element focusElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CFocus", "focus");
+            focusElement.setAttribute("i", userInstance.getClientRenderId(focusedComponent));
+        }        
+    }
+    
+    /**
+     * Renders an individual style.
+     * 
+     * @param componentClass the component class
+     * @param sElement the style ("s") element into which the style should be rendered
+     * @param style the style
+     * @throws SerialException
+     */
+    private void renderStyle(Class componentClass, Element sElement, Style style)
     throws SerialException {
-        Document document = parentElement.getOwnerDocument();
+        Document document = sElement.getOwnerDocument();
         
         ComponentIntrospector ci;
         try {
@@ -665,7 +731,7 @@ class OutputProcessor {
                     // Set property index.
                     pElement.setAttribute("x", Integer.toString(index));
                     propertySyncPeer.toXml(context, componentClass, pElement, propertyValue);
-                    parentElement.appendChild(pElement);
+                    sElement.appendChild(pElement);
                 }
             } else {
                 Object propertyValue = style.getProperty(propertyName);
@@ -683,11 +749,16 @@ class OutputProcessor {
                 Element pElement = document.createElement("p");
                 pElement.setAttribute("n", propertyName);
                 propertySyncPeer.toXml(context, componentClass, pElement, propertyValue);
-                parentElement.appendChild(pElement);
+                sElement.appendChild(pElement);
             }
         }
     }
     
+    /**
+     * Renders the complete style sheet of an application to the ServerMessage.
+     * 
+     * @throws SerialException
+     */
     private void renderStyleSheet() 
     throws SerialException {
         Element ssElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CSyncUp", "ss");
