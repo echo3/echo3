@@ -406,10 +406,15 @@ class OutputProcessor {
                         }
                     }
                     Iterator indexedComponentsIter = indexedComponents.entrySet().iterator();
+                    int lastIndex = Integer.MIN_VALUE;
                     while (indexedComponentsIter.hasNext()) {
                         Entry entry = (Entry)indexedComponentsIter.next();
                         Element cElement = renderComponentState(upElement, (Component) entry.getValue());
-                        cElement.setAttribute("x", ((Integer)entry.getKey()).toString()); 
+                        int index = ((Integer) entry.getKey()).intValue();
+                        if (index != lastIndex + 1) {
+                            cElement.setAttribute("x", Integer.toString(index));
+                        }
+                        lastIndex = index;
                     }
                 }
                 

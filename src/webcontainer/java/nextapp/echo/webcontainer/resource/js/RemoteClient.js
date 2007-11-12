@@ -919,6 +919,10 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         }
     
         var element = upElement.firstChild;
+        
+        // Child insertion cursor index (if index is omitted, children are added at this position).
+        var cursorIndex = 0;
+        
         while (element) {
             if (element.nodeType == 1) {
                 switch (element.nodeName) {
@@ -926,9 +930,14 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                     var component = EchoSerial.loadComponent(this._client, element, this._referenceMap);
                     var index = element.getAttribute("x");
                     if (index == null) {
-                        parentComponent.add(component);
+                        // No index specified, add children at current insertion cursor position.
+                        parentComponent.add(component, cursorIndex);
+                        ++cursorIndex;
                     } else {
-                        parentComponent.add(component, parseInt(index));
+                        // Index specified, add child at index, set insertion cursor position to index + 1.
+                        index = parseInt(index);
+                        parentComponent.add(component, index);
+                        cursorIndex = index + 1;
                     }
                     break;
                 case "p": // Property update.
