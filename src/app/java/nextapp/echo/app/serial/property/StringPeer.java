@@ -62,7 +62,7 @@ implements SerialPropertyPeer {
             Element propertyElement, Object propertyValue) {
         propertyElement.setAttribute("t", "s");
         // FIXME investigate whether using CDATA-sections gives us a performance penalty
-        Text textNode = propertyElement.getOwnerDocument().createCDATASection((String) propertyValue);
+        Text textNode = propertyElement.getOwnerDocument().createTextNode((String) propertyValue);
         propertyElement.appendChild(textNode);
     }
 }
