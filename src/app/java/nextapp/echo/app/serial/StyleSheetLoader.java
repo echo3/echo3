@@ -143,6 +143,10 @@ public class StyleSheetLoader {
                 public ClassLoader getClassLoader() {
                     return classLoader;
                 }
+                
+                public int getFlags() {
+                    return 0;
+                }
             
                 public Document getDocument() {
                     return document;

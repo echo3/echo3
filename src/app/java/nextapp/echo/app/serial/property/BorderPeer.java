@@ -127,7 +127,8 @@ implements SerialPropertyPeer {
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
-        propertyElement.setAttribute("t", "Border");
+        propertyElement.setAttribute("t", 
+                (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Border" : "BO");
         Border border = (Border) propertyValue;
         if (border.isMultisided()) {
             Element borderElement = serialContext.getDocument().createElement("b");

@@ -125,8 +125,10 @@ implements SerialPropertyPeer {
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         FillImage fillImage = (FillImage) propertyValue;
-        propertyElement.setAttribute("t", "FillImage");
+        propertyElement.setAttribute("t", 
+                (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "FillImage" : "FI");
         propertyElement.appendChild(createFillImageElement(context, fillImage));
     }
 }

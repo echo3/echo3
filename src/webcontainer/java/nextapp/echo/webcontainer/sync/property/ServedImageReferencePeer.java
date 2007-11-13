@@ -77,14 +77,15 @@ public class ServedImageReferencePeer implements ImageReferencePeer {
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         ImageReference imageReference = (ImageReference) propertyValue;
-        propertyElement.setAttribute("t", "ImageReference");
-        propertyElement.setAttribute("v", getImageUrl(context, imageReference));
+        propertyElement.setAttribute("t", 
+                (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "ImageReference" : "I");
+        propertyElement.appendChild(serialContext.getDocument().createTextNode(getImageUrl(context, imageReference)));
 
         Extent width = imageReference.getWidth();
         Extent height = imageReference.getHeight();
         if (width != null || height != null) {
-            SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
             Element sizeElement = serialContext.getDocument().createElement("size");
             if (width != null ) {
                 sizeElement.setAttribute("w", ExtentPeer.toString(width));

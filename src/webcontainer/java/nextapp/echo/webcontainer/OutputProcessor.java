@@ -91,6 +91,13 @@ class OutputProcessor {
             public Document getDocument() {
                 return document;
             }
+
+            /**
+             * @see nextapp.echo.app.serial.SerialContext#getFlags()
+             */
+            public int getFlags() {
+                return FLAG_RENDER_SHORT_NAMES;
+            }
         };
         
         /**

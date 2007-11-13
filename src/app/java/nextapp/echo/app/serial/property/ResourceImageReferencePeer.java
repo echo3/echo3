@@ -62,6 +62,7 @@ implements SerialPropertyPeer {
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+//FIXME borked.        
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         ResourceImageReference resourceImage = (ResourceImageReference) propertyValue;
         Element iElement = serialContext.getDocument().createElement("i");

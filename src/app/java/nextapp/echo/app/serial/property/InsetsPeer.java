@@ -35,9 +35,11 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Insets;
+import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
+import nextapp.echo.app.util.DomUtil;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>Insets</code> properties.
@@ -108,7 +110,8 @@ implements SerialPropertyPeer {
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws SerialException {
-        return fromString(propertyElement.getAttribute("v"));
+        return fromString(propertyElement.hasAttribute("v") 
+                ? propertyElement.getAttribute("v") : DomUtil.getElementText(propertyElement));
     }
 
     /**
@@ -117,8 +120,9 @@ implements SerialPropertyPeer {
      */
     public void toXml(Context context, Class objectClass,
             Element propertyElement, Object propertyValue) {
-        propertyElement.setAttribute("t", "Insets");
-        Insets insets = (Insets) propertyValue;
-        propertyElement.setAttribute("v", toString(insets));
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
+        propertyElement.setAttribute("t", 
+                (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Insets" : "N");
+        propertyElement.appendChild(serialContext.getDocument().createTextNode(toString((Insets) propertyValue)));
     }
 }

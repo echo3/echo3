@@ -32,6 +32,7 @@ package nextapp.echo.app.serial.property;
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.layout.SplitPaneLayoutData;
+import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialUtil;
 import nextapp.echo.app.util.Context;
@@ -48,8 +49,10 @@ extends LayoutDataPeer {
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         SplitPaneLayoutData layoutData = (SplitPaneLayoutData) propertyValue;
-        propertyElement.setAttribute("t", "LayoutData");
+        propertyElement.setAttribute("t", 
+                (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "LayoutData" : "L");
         SerialUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "alignment", layoutData.getAlignment());
         SerialUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "background", layoutData.getBackground());
         SerialUtil.toXml(context, SplitPaneLayoutData.class, propertyElement, "backgroundImage", layoutData.getBackgroundImage());

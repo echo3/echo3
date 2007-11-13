@@ -34,7 +34,6 @@ import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>String</code> properties.
@@ -54,10 +53,7 @@ implements SerialPropertyPeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(Context context, Class objectClass,
-            Element propertyElement, Object propertyValue) {
-        // FIXME investigate whether using CDATA-sections gives us a performance penalty
-        Text textNode = propertyElement.getOwnerDocument().createTextNode((String) propertyValue);
-        propertyElement.appendChild(textNode);
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+        propertyElement.appendChild(propertyElement.getOwnerDocument().createTextNode((String) propertyValue));
     }
 }

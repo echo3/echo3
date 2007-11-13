@@ -60,7 +60,7 @@ implements SerialPropertyPeer {
     throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
-        propertyElement.setAttribute("t", "map");
+        propertyElement.setAttribute("t", "m");
         Map map = (Map) propertyValue;
         Iterator keyIt = map.keySet().iterator();
         while (keyIt.hasNext()) {

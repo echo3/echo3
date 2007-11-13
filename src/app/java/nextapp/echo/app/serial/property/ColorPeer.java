@@ -32,9 +32,11 @@ package nextapp.echo.app.serial.property;
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.Color;
+import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
+import nextapp.echo.app.util.DomUtil;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>Color</code> properties.
@@ -68,7 +70,8 @@ implements SerialPropertyPeer {
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws SerialException {
-        return fromString(propertyElement.getAttribute("v"));
+        return fromString(propertyElement.hasAttribute("v") 
+                ? propertyElement.getAttribute("v") : DomUtil.getElementText(propertyElement));
     }
 
     /**
@@ -76,8 +79,9 @@ implements SerialPropertyPeer {
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        propertyElement.setAttribute("t", "Color");
-        Color color = (Color) propertyValue;
-        propertyElement.setAttribute("v", toString(color));
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
+        propertyElement.setAttribute("t", 
+                (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Color" : "C");
+        propertyElement.appendChild(serialContext.getDocument().createTextNode(toString((Color) propertyValue)));
     }
 }

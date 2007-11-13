@@ -78,7 +78,8 @@ implements SerialPropertyPeer {
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
-        propertyElement.setAttribute("t", "Alignment");
+        propertyElement.setAttribute("t", 
+                (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Alignment" : "AL");
         Alignment alignment = (Alignment) propertyValue;
         Element aElement = serialContext.getDocument().createElement("a");
         String horizontal = HORIZONTAL_CONSTANTS.get(alignment.getHorizontal());

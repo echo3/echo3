@@ -85,7 +85,8 @@ implements SerialPropertyPeer {
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         FillImageBorder border = (FillImageBorder) propertyValue;
-        propertyElement.setAttribute("t", "FillImageBorder");
+        propertyElement.setAttribute("t", 
+                (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "FillImageBorder" : "FIB");
         
         PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
         FillImagePeer fillImagePeer = (FillImagePeer) propertyPeerFactory.getPeerForProperty(FillImage.class);

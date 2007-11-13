@@ -62,6 +62,10 @@ public class InputProcessor {
             public Document getDocument() {
                 return clientMessage.getDocument();
             }
+
+            public int getFlags() {
+                return 0;
+            }
         };
         
         /**

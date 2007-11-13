@@ -293,7 +293,7 @@ EchoSerial.PropertyTranslator.Map = {
     }
 };
 
-EchoSerial.addPropertyTranslator("map", EchoSerial.PropertyTranslator.Map);
+EchoSerial.addPropertyTranslator("m", EchoSerial.PropertyTranslator.Map);
 
 /**
  * Alignment PropertyTranslator Singleton.
@@ -322,6 +322,7 @@ EchoSerial.PropertyTranslator.Alignment = {
 };
 
 EchoSerial.addPropertyTranslator("Alignment", EchoSerial.PropertyTranslator.Alignment);
+EchoSerial.addPropertyTranslator("AL", EchoSerial.PropertyTranslator.Alignment);
 
 /**
  * Border PropertyTranslator Singleton.
@@ -360,6 +361,7 @@ EchoSerial.PropertyTranslator.Border = {
 };
 
 EchoSerial.addPropertyTranslator("Border", EchoSerial.PropertyTranslator.Border);
+EchoSerial.addPropertyTranslator("BO", EchoSerial.PropertyTranslator.Border);
 
 /**
  * Color PropertyTranslator Singleton.
@@ -367,15 +369,16 @@ EchoSerial.addPropertyTranslator("Border", EchoSerial.PropertyTranslator.Border)
 EchoSerial.PropertyTranslator.Color = {
 
     toProperty: function(client, propertyElement) {
-        return new EchoApp.Color(propertyElement.getAttribute("v"));
+        return new EchoApp.Color(propertyElement.firstChild.data);
     },
     
     toXml: function(client, propertyElement, propertyValue) {
-        propertyElement.setAttribute("v", propertyValue.value);
+        propertyElement.appendChild(propertyElement.ownerDocument.createTextNode(propertyValue.value));
     }
 };
 
 EchoSerial.addPropertyTranslator("Color", EchoSerial.PropertyTranslator.Color);
+EchoSerial.addPropertyTranslator("C", EchoSerial.PropertyTranslator.Color);
 
 /**
  * Extent PropertyTranslator Singleton.
@@ -383,15 +386,16 @@ EchoSerial.addPropertyTranslator("Color", EchoSerial.PropertyTranslator.Color);
 EchoSerial.PropertyTranslator.Extent = {
 
     toProperty: function(client, propertyElement) {
-        return new EchoApp.Extent(propertyElement.getAttribute("v"));
+        return new EchoApp.Extent(propertyElement.firstChild.data);
     },
     
     toXml: function(client, propertyElement, propertyValue) {
-        propertyElement.setAttribute("v", propertyValue.toString());
+        propertyElement.appendChild(propertyElement.ownerDocument.createTextNode(propertyValue.toString()));
     }
 };
 
 EchoSerial.addPropertyTranslator("Extent", EchoSerial.PropertyTranslator.Extent);
+EchoSerial.addPropertyTranslator("X", EchoSerial.PropertyTranslator.Extent);
 
 /**
  * FillImage PropertyTranslator Singleton.
@@ -422,6 +426,7 @@ EchoSerial.PropertyTranslator.FillImage = {
 };
 
 EchoSerial.addPropertyTranslator("FillImage", EchoSerial.PropertyTranslator.FillImage);
+EchoSerial.addPropertyTranslator("FI", EchoSerial.PropertyTranslator.FillImage);
 
 /**
  * FillImageBorder PropertyTranslator Singleton.
@@ -462,6 +467,7 @@ EchoSerial.PropertyTranslator.FillImageBorder = {
 };
 
 EchoSerial.addPropertyTranslator("FillImageBorder", EchoSerial.PropertyTranslator.FillImageBorder);
+EchoSerial.addPropertyTranslator("FIB", EchoSerial.PropertyTranslator.FillImageBorder);
 
 /**
  * Font PropertyTranslator Singleton.
@@ -493,6 +499,7 @@ EchoSerial.PropertyTranslator.Font = {
 };
 
 EchoSerial.addPropertyTranslator("Font", EchoSerial.PropertyTranslator.Font);
+EchoSerial.addPropertyTranslator("F", EchoSerial.PropertyTranslator.Font);
 
 /**
  * ImageReference PropertyTranslator Singleton.
@@ -500,7 +507,7 @@ EchoSerial.addPropertyTranslator("Font", EchoSerial.PropertyTranslator.Font);
 EchoSerial.PropertyTranslator.ImageReference = {
 
     toProperty: function(client, propertyElement) {
-        var url = propertyElement.getAttribute("v");
+        var url = propertyElement.firstChild.data;
         if (client.decompressUrl) {
             url = client.decompressUrl(url);
         }
@@ -514,6 +521,7 @@ EchoSerial.PropertyTranslator.ImageReference = {
 };
 
 EchoSerial.addPropertyTranslator("ImageReference", EchoSerial.PropertyTranslator.ImageReference);
+EchoSerial.addPropertyTranslator("I", EchoSerial.PropertyTranslator.ImageReference);
 
 /**
  * Insets PropertyTranslator Singleton.
@@ -521,11 +529,12 @@ EchoSerial.addPropertyTranslator("ImageReference", EchoSerial.PropertyTranslator
 EchoSerial.PropertyTranslator.Insets = {
 
     toProperty: function(client, propertyElement) {
-        return new EchoApp.Insets(propertyElement.getAttribute("v"));
+        return new EchoApp.Insets(propertyElement.firstChild.data);
     }
 };
 
 EchoSerial.addPropertyTranslator("Insets", EchoSerial.PropertyTranslator.Insets);
+EchoSerial.addPropertyTranslator("N", EchoSerial.PropertyTranslator.Insets);
 
 /**
  * LayoutData PropertyTranslator Singleton.
@@ -551,3 +560,4 @@ EchoSerial.PropertyTranslator.LayoutData = {
 };
 
 EchoSerial.addPropertyTranslator("LayoutData", EchoSerial.PropertyTranslator.LayoutData);
+EchoSerial.addPropertyTranslator("L", EchoSerial.PropertyTranslator.LayoutData);

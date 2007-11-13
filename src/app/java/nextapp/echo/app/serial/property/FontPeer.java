@@ -83,8 +83,8 @@ implements SerialPropertyPeer {
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
-        
-        propertyElement.setAttribute("t", "Font");
+        propertyElement.setAttribute("t", 
+                (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Font" : "F");
         Font font = (Font) propertyValue;
         Element element = serialContext.getDocument().createElement("f");
         

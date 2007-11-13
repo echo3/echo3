@@ -32,9 +32,11 @@ package nextapp.echo.app.serial.property;
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.Extent;
+import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.ConstantMap;
 import nextapp.echo.app.util.Context;
+import nextapp.echo.app.util.DomUtil;
 
 /**
  * <code>XmlPropertyPeer</code> for <code>Extent</code> properties.
@@ -88,7 +90,8 @@ implements SerialPropertyPeer {
      *      Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) {
-        return fromString(propertyElement.getAttribute("v"));
+        return fromString(propertyElement.hasAttribute("v") 
+                ? propertyElement.getAttribute("v") : DomUtil.getElementText(propertyElement));
     }
 
     /**
@@ -96,8 +99,9 @@ implements SerialPropertyPeer {
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
-        propertyElement.setAttribute("t", "Extent");
-        Extent extent = (Extent) propertyValue;
-        propertyElement.setAttribute("v", toString(extent));
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
+        propertyElement.setAttribute("t", 
+                (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Extent" : "X");
+        propertyElement.appendChild(serialContext.getDocument().createTextNode(toString((Extent) propertyValue)));
     }
 }

@@ -37,6 +37,8 @@ import org.w3c.dom.Document;
  */
 public interface SerialContext {
     
+    public static final int FLAG_RENDER_SHORT_NAMES = 0x1;
+    
     /**
      * Returns the DOM <code>Document</code> to/from which the property is 
      * being (de)serialized.
@@ -44,6 +46,13 @@ public interface SerialContext {
      * @return the DOM <code>Document</code>
      */
     public Document getDocument();
+    
+    /**
+     * Returns flags used to alter rendering and parsing behavior.
+     * 
+     * @return the flags
+     */
+    public int getFlags();
 
     /**
      * Returns the <code>ClassLoader</code> from which new should
