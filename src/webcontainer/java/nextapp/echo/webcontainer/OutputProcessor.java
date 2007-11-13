@@ -607,7 +607,6 @@ class OutputProcessor {
             }
             Element eElement = document.createElement("e");
             eElement.setAttribute("t", eventType);
-            eElement.setAttribute("v", "true");
             cElement.appendChild(eElement);
         }
         
