@@ -1247,7 +1247,7 @@ WebCore.Measure = {
     /**
      * Measures the cumulative offset of an element.
      * 
-     * @param element the elemnt to measure
+     * @param element the element to measure
      * @return the offset data, with 'left' and 'top' properties specifying the offset amounts
      * @type Object
      * @private
@@ -1257,7 +1257,7 @@ WebCore.Measure = {
         do {
             valueT += element.offsetTop  || 0;
             valueL += element.offsetLeft || 0;
-            element = element.parentNode;
+            element = element.offsetParent;
         } while (element);
         return { left: valueL, top: valueT };
     },
