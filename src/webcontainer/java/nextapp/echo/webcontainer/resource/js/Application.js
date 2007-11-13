@@ -382,6 +382,9 @@ EchoApp.ComponentFactory = {
      */
     newInstance: function(typeName, renderId) {
         var typeConstructor = this._typeToConstructorMap[typeName];
+        if (!typeConstructor) {
+        	throw new Error("Type not registered: " + typeName);
+        }
         var component = new typeConstructor();
         component.renderId = renderId;
         return component;
@@ -417,6 +420,9 @@ EchoApp.ComponentFactory = {
      * @param typeConstructor the constructor
      */
     registerType: function(typeName, typeConstructor) {
+    	if (this._typeToConstructorMap[typeName]) {
+    		throw new Error("Type already registered: " + typeName);
+    	}
         this._typeToConstructorMap[typeName] = typeConstructor;
     }
 };
