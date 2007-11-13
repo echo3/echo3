@@ -56,7 +56,6 @@ implements SerialPropertyPeer {
      */
     public void toXml(Context context, Class objectClass,
             Element propertyElement, Object propertyValue) {
-        propertyElement.setAttribute("t", "s");
         // FIXME investigate whether using CDATA-sections gives us a performance penalty
         Text textNode = propertyElement.getOwnerDocument().createTextNode((String) propertyValue);
         propertyElement.appendChild(textNode);

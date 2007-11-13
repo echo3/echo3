@@ -98,14 +98,17 @@ EchoSerial = {
                 throw new Error("Translator not available for property type: " + propertyType);
             }
             propertyValue = translator.toProperty(client, propertyElement);
-        } else if (referenceMap) {
-            var propertyReference = propertyElement.getAttribute("r");
-            if (!propertyReference) {
-                throw new Error("No property type specified for property: " + propertyName + referenceMap);
-            }
-            propertyValue = referenceMap[propertyReference];
         } else {
-            throw new Error("No property type specified for property: " + propertyName + referenceMap);
+            if (referenceMap) {
+                var propertyReference = propertyElement.getAttribute("r");
+                if (propertyReference) {
+                    propertyValue = referenceMap[propertyReference];
+                } else {
+                    propertyValue = EchoSerial.PropertyTranslator.String.toProperty(client, propertyElement);
+                }
+            } else {
+                propertyValue = EchoSerial.PropertyTranslator.String.toProperty(client, propertyElement);
+            }
         }
         
         if (propertyName) {

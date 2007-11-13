@@ -845,9 +845,10 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         }
     },
 
+    _referenceMap : null,
+    
     $construct: function(client) { 
         this._client = client;
-        this._referenceMap = {};
     },
     
     /**
@@ -886,6 +887,9 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                     throw new Error("Translator not available for property type: " + propertyType);
                 }
                 propertyValue = translator.toProperty(this._client, propertyElement);
+                if (!this._referenceMap) {
+                    this._referenceMap = {};
+                }
                 this._referenceMap[propertyId] = propertyValue;
                 break;
             }
