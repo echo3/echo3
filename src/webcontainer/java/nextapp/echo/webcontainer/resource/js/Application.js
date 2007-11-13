@@ -445,7 +445,7 @@ EchoApp.Component = Core.extend({
         /**
          * Component type.  This must be set by implementors in order for peer discovery to work properly.
          */
-        componentType: null
+        componentType: "Component"       
     },
 
     /**
@@ -3322,6 +3322,11 @@ EchoApp.Button = Core.extend(EchoApp.AbstractButton, {
  * @base EchoApp.Button
  */
 EchoApp.ToggleButton = Core.extend(EchoApp.AbstractButton, {
+
+    $load: function() {
+        EchoApp.ComponentFactory.registerType("ToggleButton", this);
+        EchoApp.ComponentFactory.registerType("TB", this);
+    },
 
     $abstract: true,
     componentType: "ToggleButton"

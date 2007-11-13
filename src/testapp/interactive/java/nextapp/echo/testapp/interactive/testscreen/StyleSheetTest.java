@@ -147,6 +147,11 @@ public class StyleSheetTest extends Column {
         specialButton.setText("This is a special button class (it should look hideous and unlike the other buttons).");
         specialButton.setStyleName("Default");
         add(specialButton);
+
+        Button genericComponent = new Button();
+        genericComponent.setText("This button has a style set using 'Component'.  It should be red.");
+        genericComponent.setStyleName("Test.GenericStyle");
+        add(genericComponent);
     }
     
     private void displayCustomStyleError(Exception exception) {

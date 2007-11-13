@@ -275,4 +275,8 @@
   <p n="columnWidth" t="Extent" x="2" v="140px"/>
   <p n="columnWidth" t="Extent" x="3" v="160px"/>
  </s>
+ <s n="Test.GenericStyle" t="nextapp.echo.app.Component">
+  <p n="background" t="Color" v="#ff0000"/>
+  <p n="foreground" t="Color" v="#ffffff"/>
+ </s>
 </ss>
