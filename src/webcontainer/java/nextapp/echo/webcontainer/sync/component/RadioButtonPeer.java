@@ -50,10 +50,10 @@ public class RadioButtonPeer extends ToggleButtonPeer {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.sync.component.AbstractButtonPeer#getClientComponentType()
+     * @see nextapp.echo.webcontainer.sync.component.AbstractButtonPeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType() {
-        return "RadioButton";
+    public String getClientComponentType(boolean shortType) {
+        return shortType ? "RB" : "RadioButton";
     }
     
     /**

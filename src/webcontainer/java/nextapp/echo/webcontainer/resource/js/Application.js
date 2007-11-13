@@ -387,6 +387,10 @@ EchoApp.ComponentFactory = {
         return component;
     },
     
+    getConstructor: function(typeName) {
+        return this._typeToConstructorMap[typeName];
+    },
+    
     /**
      * Determines the super type of a component, based on the type name of the component.
      *
@@ -3281,6 +3285,7 @@ EchoApp.AbstractButton = Core.extend(EchoApp.Component, {
     
     $load: function() {
         EchoApp.ComponentFactory.registerType("AbstractButton", this);
+        EchoApp.ComponentFactory.registerType("AB", this);
     },
 
     componentType: "AbstractButton",
@@ -3306,6 +3311,7 @@ EchoApp.Button = Core.extend(EchoApp.AbstractButton, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("Button", this);
+        EchoApp.ComponentFactory.registerType("B", this);
     },
 
     componentType: "Button"
@@ -3329,6 +3335,7 @@ EchoApp.CheckBox = Core.extend(EchoApp.ToggleButton, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("CheckBox", this);
+        EchoApp.ComponentFactory.registerType("CB", this);
     },
 
     componentType: "CheckBox"
@@ -3342,6 +3349,7 @@ EchoApp.RadioButton = Core.extend(EchoApp.ToggleButton, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("RadioButton", this);
+        EchoApp.ComponentFactory.registerType("RB", this);
     },
 
     componentType: "RadioButton"
@@ -3357,6 +3365,7 @@ EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("AbstractListComponent", this);
+        EchoApp.ComponentFactory.registerType("LC", this);
     },
 
     componentType: "AbstractListComponent",
@@ -3384,6 +3393,7 @@ EchoApp.ListBox = Core.extend(EchoApp.AbstractListComponent, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("ListBox", this);
+        EchoApp.ComponentFactory.registerType("LB", this);
     },
 
     componentType: "ListBox"
@@ -3397,6 +3407,7 @@ EchoApp.SelectField = Core.extend(EchoApp.AbstractListComponent, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("SelectField", this);
+        EchoApp.ComponentFactory.registerType("SF", this);
     },
 
     componentType: "SelectField"
@@ -3410,6 +3421,7 @@ EchoApp.Column = Core.extend(EchoApp.Component, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("Column", this);
+        EchoApp.ComponentFactory.registerType("C", this);
     },
 
     componentType: "Column"
@@ -3423,6 +3435,7 @@ EchoApp.Composite = Core.extend(EchoApp.Component, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("Composite", this);
+        EchoApp.ComponentFactory.registerType("CM", this);
     },
 
     componentType: "Composite"
@@ -3436,6 +3449,7 @@ EchoApp.Panel = Core.extend(EchoApp.Composite, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("Panel", this);
+        EchoApp.ComponentFactory.registerType("P", this);
     },
 
     componentType: "Panel"
@@ -3449,6 +3463,7 @@ EchoApp.ContentPane = Core.extend(EchoApp.Component, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("ContentPane", this);
+        EchoApp.ComponentFactory.registerType("CP", this);
     },
 
     componentType: "ContentPane",
@@ -3467,6 +3482,7 @@ EchoApp.Grid = Core.extend(EchoApp.Component, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("Grid", this);
+        EchoApp.ComponentFactory.registerType("G", this);
     },
 
     componentType: "Grid"
@@ -3480,6 +3496,7 @@ EchoApp.Label = Core.extend(EchoApp.Component, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("Label", this);
+        EchoApp.ComponentFactory.registerType("L", this);
     },
 
     componentType: "Label"
@@ -3493,6 +3510,7 @@ EchoApp.Row = Core.extend(EchoApp.Component, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("Row", this);
+        EchoApp.ComponentFactory.registerType("R", this);
     },
 
     componentType: "Row"
@@ -3524,6 +3542,7 @@ EchoApp.SplitPane = Core.extend(EchoApp.Component, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("SplitPane", this);
+        EchoApp.ComponentFactory.registerType("SP", this);
     },
 
     componentType: "SplitPane",
@@ -3540,6 +3559,7 @@ EchoApp.TextComponent = Core.extend(EchoApp.Component, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("TextComponent", this);
+        EchoApp.ComponentFactory.registerType("TC", this);
     },
 
     componentType: "TextComponent",
@@ -3554,6 +3574,7 @@ EchoApp.TextArea = Core.extend(EchoApp.TextComponent, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("TextArea", this);
+        EchoApp.ComponentFactory.registerType("TA", this);
     },
 
     componentType: "TextArea"
@@ -3567,6 +3588,7 @@ EchoApp.TextField = Core.extend(EchoApp.TextComponent, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("TextField", this);
+        EchoApp.ComponentFactory.registerType("TF", this);
     },
 
     componentType: "TextField"
@@ -3580,6 +3602,7 @@ EchoApp.PasswordField = Core.extend(EchoApp.TextField, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("PasswordField", this);
+        EchoApp.ComponentFactory.registerType("PF", this);
     },
     
     componentType: "PasswordField"
@@ -3593,6 +3616,7 @@ EchoApp.WindowPane = Core.extend(EchoApp.Component, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("WindowPane", this);
+        EchoApp.ComponentFactory.registerType("WP", this);
     },
 
     $static: {

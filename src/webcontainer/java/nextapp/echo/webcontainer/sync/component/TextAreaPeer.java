@@ -34,10 +34,10 @@ import nextapp.echo.app.TextArea;
 public class TextAreaPeer extends TextComponentPeer {
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType() {
-        return "TextArea";
+    public String getClientComponentType(boolean shortType) {
+        return shortType ? "TA" : "TextArea";
     }
     
     public Class getComponentClass() {

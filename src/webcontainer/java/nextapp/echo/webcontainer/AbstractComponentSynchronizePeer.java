@@ -209,7 +209,7 @@ implements ComponentSynchronizePeer {
         }
         requiredComponentClasses.add(componentClass);
     }
-
+    
     /**
      * Returns the (most basic) supported component class.
      * 

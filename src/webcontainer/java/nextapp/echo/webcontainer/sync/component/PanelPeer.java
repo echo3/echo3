@@ -39,6 +39,13 @@ import nextapp.echo.app.Panel;
 public class PanelPeer extends CompositePeer {
 
     /**
+     * @see nextapp.echo.webcontainer.sync.component.CompositePeer#getClientComponentType(boolean)
+     */
+    public String getClientComponentType(boolean shortType) {
+        return shortType ? "P" : "Panel";
+    }
+    
+    /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getComponentClass()
      */
     public Class getComponentClass() {

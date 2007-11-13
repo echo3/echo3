@@ -7,6 +7,7 @@ EchoAppRender.RemoteTable = Core.extend(EchoApp.Component, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("RemoteTable", this);
+        EchoApp.ComponentFactory.registerType("RT", this);
     },
 
     componentType: "RemoteTable"

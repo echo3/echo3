@@ -39,10 +39,10 @@ import nextapp.echo.app.CheckBox;
 public class CheckBoxPeer extends ToggleButtonPeer {
     
     /**
-     * @see nextapp.echo.webcontainer.sync.component.AbstractButtonPeer#getClientComponentType()
+     * @see nextapp.echo.webcontainer.sync.component.AbstractButtonPeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType() {
-        return "CheckBox";
+    public String getClientComponentType(boolean shortType) {
+        return shortType ? "CB" : "CheckBox";
     }
     
     /**

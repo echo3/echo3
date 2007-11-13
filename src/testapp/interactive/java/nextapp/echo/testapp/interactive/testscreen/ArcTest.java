@@ -52,9 +52,9 @@ public class ArcTest extends SplitPane {
         }
     
         /**
-         * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+         * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
          */
-        public String getClientComponentType() {
+        public String getClientComponentType(boolean shortType) {
             return "ArcTestComponent";
         }
 
@@ -92,9 +92,9 @@ public class ArcTest extends SplitPane {
         }
     
         /**
-         * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType()
+         * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType(boolean)
          */
-        public String getClientComponentType() {
+        public String getClientComponentType(boolean shortType) {
             return "ArcTestPane";
         }
 
@@ -128,9 +128,9 @@ public class ArcTest extends SplitPane {
         }
     
         /**
-         * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType()
+         * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getClientComponentType(boolean)
          */
-        public String getClientComponentType() {
+        public String getClientComponentType(boolean shortType) {
             return "ArcTestContainer";
         }
 

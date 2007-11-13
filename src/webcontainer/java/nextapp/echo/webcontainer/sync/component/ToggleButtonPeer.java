@@ -74,6 +74,13 @@ public class ToggleButtonPeer extends AbstractButtonPeer {
     }
     
     /**
+     * @see nextapp.echo.webcontainer.sync.component.AbstractButtonPeer#getClientComponentType(boolean)
+     */
+    public String getClientComponentType(boolean shortType) {
+        return shortType ? "TB" : "ToggleButton";
+    }
+    
+    /**
      * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getComponentClass()
      */
     public Class getComponentClass() {

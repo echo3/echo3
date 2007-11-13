@@ -66,10 +66,10 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType() {
-        return "WindowPane";
+    public String getClientComponentType(boolean shortType) {
+        return shortType ? "WP" : "WindowPane";
     }
     
     /**

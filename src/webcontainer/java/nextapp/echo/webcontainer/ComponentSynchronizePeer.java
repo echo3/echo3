@@ -53,9 +53,12 @@ import nextapp.echo.app.util.Context;
 public interface ComponentSynchronizePeer {
     
     /**
-     * Returns the remote client component name.
+     * Returns the remote client component type name.
+     * 
+     * @param shortType flag indicating whether short type or normal type name should be returned
+     * @return the client component type name
      */
-    public String getClientComponentType();
+    public String getClientComponentType(boolean shortType);
     
     /**
      * Returns the <code>Class</code> of <code>Component</code>

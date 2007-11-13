@@ -34,10 +34,10 @@ import nextapp.echo.app.TextField;
 public class TextFieldPeer extends TextComponentPeer {
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType() {
-        return "TextField";
+    public String getClientComponentType(boolean shortType) {
+        return shortType ? "TF" : "TextField";
     }
     
     /**

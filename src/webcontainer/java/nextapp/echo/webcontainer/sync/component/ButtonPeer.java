@@ -36,8 +36,8 @@ import nextapp.echo.app.Button;
  */
 public class ButtonPeer extends AbstractButtonPeer {
     
-    public String getClientComponentType() {
-        return "Button";
+    public String getClientComponentType(boolean shortType) {
+        return shortType ? "B" : "Button";
     }
     
     /**

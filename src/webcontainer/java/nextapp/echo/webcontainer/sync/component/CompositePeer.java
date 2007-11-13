@@ -52,10 +52,10 @@ public class CompositePeer extends AbstractComponentSynchronizePeer {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType() {
-        return "Composite";
+    public String getClientComponentType(boolean shortType) {
+        return shortType ? "CM" : "Composite";
     }
     
     /**

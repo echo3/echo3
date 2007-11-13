@@ -37,6 +37,7 @@ EchoAppRender.RemoteListBox = Core.extend(EchoApp.ListBox, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("RemoteListBox", this);
+        EchoApp.ComponentFactory.registerType("RLB", this);
     },
 
     componentType: "RemoteListBox",
@@ -65,6 +66,7 @@ EchoAppRender.RemoteSelectField = Core.extend(EchoApp.SelectField, {
 
     $load: function() {
         EchoApp.ComponentFactory.registerType("RemoteSelectField", this);
+        EchoApp.ComponentFactory.registerType("RSF", this);
     },
 
     componentType: "RemoteSelectField",

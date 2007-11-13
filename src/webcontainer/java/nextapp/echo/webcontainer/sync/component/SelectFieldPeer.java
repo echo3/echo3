@@ -38,10 +38,10 @@ import nextapp.echo.app.SelectField;
 public class SelectFieldPeer extends AbstractListComponentPeer {
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType()
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType() {
-        return "RemoteSelectField";
+    public String getClientComponentType(boolean shortType) {
+        return shortType ? "RSF" : "RemoteSelectField";
     }
 
     /**

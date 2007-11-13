@@ -581,7 +581,7 @@ class OutputProcessor {
         Element cElement = document.createElement("c");
         cElement.setAttribute("i", userInstance.getClientRenderId(c));
 
-        cElement.setAttribute("t", componentPeer.getClientComponentType());
+        cElement.setAttribute("t", componentPeer.getClientComponentType(true));
         
         componentPeer.init(context);
 
@@ -832,7 +832,7 @@ class OutputProcessor {
                     }
                 }
 
-                sElement.setAttribute("t", componentPeer.getClientComponentType());
+                sElement.setAttribute("t", componentPeer.getClientComponentType(false));
                 
                 Style style = styleSheet.getStyle(styleName, componentClass, false);
                 renderStyle(componentClass, sElement, style);
