@@ -48,16 +48,6 @@ EchoClient = Core.extend({
      * The parent client.
      */
     parent: null,
-    
-    /**
-     * Number of tab keyDown/keyPress events since the last tab keyUp event.
-     * Used to handle out-of-order/missing keyDown/keyPress events presented by browsers
-     * It is necessary to capture keyDown and keyPress events in order to invoke
-     * preventEventDefault() and manually manage all tab processing.  The missing/out-of-order
-     * event scenario is handled by ignoring the second KeyPress or KeyDown tab event since the
-     * last KeyUp event.
-     */
-    _tabDown: 0,
 
     $construct: function() { },
     
@@ -140,8 +130,6 @@ EchoClient = Core.extend({
                     new Core.MethodRef(this, this._processKeyDown), false);
             WebCore.EventProcessor.remove(this.domainElement, "keypress", 
                     new Core.MethodRef(this, this._processKeyPress), false);
-            WebCore.EventProcessor.remove(this.domainElement, "keyup", 
-                    new Core.MethodRef(this, this._processKeyUp), false);
             this.application.removeFocusListener(new Core.MethodRef(this, this._processApplicationFocus));
         }
         
@@ -152,8 +140,6 @@ EchoClient = Core.extend({
             this.application.addFocusListener(new Core.MethodRef(this, this._processApplicationFocus));
             WebCore.EventProcessor.add(this.domainElement, "keydown", 
                     new Core.MethodRef(this, this._processKeyDown), false);
-            WebCore.EventProcessor.add(this.domainElement, "keyup", 
-                    new Core.MethodRef(this, this._processKeyUp), false);
             WebCore.EventProcessor.add(this.domainElement, "keypress", 
                     new Core.MethodRef(this, this._processKeyPress), false);
             EchoClient._activeClients.push(this);
@@ -181,11 +167,7 @@ EchoClient = Core.extend({
      */
     _processKeyDown: function(e) {
         if (e.keyCode == 9) { // Tab
-            if (this._tabDown != 1) {
-                // See this._tabDown comment for explanation of this unsual code.
-                this.application.focusNext(e.shiftKey);
-            }
-            this._tabDown++;
+            this.application.focusNext(e.shiftKey);
             WebCore.DOM.preventEventDefault(e);
             return false; // Stop propagation.
         }
@@ -200,26 +182,11 @@ EchoClient = Core.extend({
      */
     _processKeyPress: function(e) {
         if (e.keyCode == 9) { // Tab
-            if (this._tabDown != 1) {
-                // See this._tabDown comment for explanation of this unsual code.
-                this.application.focusNext(e.shiftKey);
-            }
-            this._tabDown++;
+            this.application.focusNext(e.shiftKey);
             WebCore.DOM.preventEventDefault(e);
             return false; // Stop propagation.
         }
         return true; // Allow propagation.
-    },
-    
-    /**
-     * Root KeyUp event handler.
-     * Specifically processes tab key events for focus management.
-     * 
-     * @param {Event} e the event
-     */
-    _processKeyUp: function(e) {
-        this._tabDown = 0;
-        return true;
     },
     
     /**
