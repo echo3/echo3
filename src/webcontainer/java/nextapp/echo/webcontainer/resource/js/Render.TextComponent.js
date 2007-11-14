@@ -54,7 +54,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _processBlur: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client.verifyInput(this.component, EchoClient.FLAG_INPUT_PROPERTY)) {
             return;
         }
         this.sanitizeInput();
@@ -62,21 +62,21 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _processClick: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client.verifyInput(this.component, EchoClient.FLAG_INPUT_PROPERTY)) {
             return;
         }
         this.component.application.setFocusedComponent(this.component);
     },
 
     _processKeyPress: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client.verifyInput(this.component, EchoClient.FLAG_INPUT_PROPERTY)) {
     		WebCore.DOM.preventEventDefault(e);
             return true;
         }
     },
     
     _processKeyUp: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client.verifyInput(this.component, EchoClient.FLAG_INPUT_PROPERTY)) {
     		WebCore.DOM.preventEventDefault(e);
             return true;
         }

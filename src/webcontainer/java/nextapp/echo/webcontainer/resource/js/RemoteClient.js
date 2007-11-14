@@ -31,6 +31,88 @@ EchoRemoteClient = Core.extend(EchoClient, {
     },
     
     /**
+     * The base server url.
+     * @type String
+     * @private
+     */
+    _serverUrl: null,
+    
+    /**
+     * Flag indicating whether a client-server transaction is currently in progres.
+     * @type Boolean
+     * @private
+     */
+    _transactionInProgress: false,
+
+    /**
+     * MethodRef to _processClientUpdate() method.
+     * @type Core.MethodRef
+     * @private
+     */
+    _processClientUpdateRef: null,
+    
+    /**
+     * MethodRef to _processClientEvent() method.
+     * @type Core.MethodRef
+     * @private
+     */
+    _processClientEventRef: null,
+    
+    /**
+     * Associative array mapping between shorthand URL codes and replacement values.
+     * @private
+     */
+    _urlMappings: null,
+    
+    /**
+     * Queue of commands to be executed.  Each command occupies two
+     * indices, first index is the command peer, second is the command data.
+     * @type Array
+     * @private
+     */
+    _commandQueue: null,
+    
+    /**
+     * Outgoing client message.
+     * @type EchoRemoteClient.ClientMessage
+     * @private
+     */
+    _clientMessage: null,
+    
+    /**
+     * AsyncManager instance which will invoke server-pushed operations.
+     * @type EchoRemoteClient.AsyncManager
+     * @private
+     */
+    _asyncManager: null,
+    
+    /**
+     * Wait indicator.
+     * @type EchoRemoteClient.WaitIndicator
+     * @private
+     */
+    _waitIndicator: null,
+    
+    /**
+     * Network delay before raising wait indicator, in milleseconds.
+     * @type Integer
+     * @private
+     */
+    _preWaitIndicatorDelay: 500,
+    
+    /**
+     * Runnable that will trigger initialization of wait indicator.
+     * @type Core.Scheduler.Runnable
+     * @private
+     */
+    _waitIndicatorRunnable: null,
+    
+    /**
+     * Flag indicating whether the remote client has been initialized.
+     */
+    _initialized: false,
+    
+    /**
      * Creates a new RemoteClient instance.
      * @constructor
      * @param serverUrl the URL of the server
@@ -40,86 +122,17 @@ EchoRemoteClient = Core.extend(EchoClient, {
     
         EchoClient.call(this);
         
-        /**
-         * The base server url.
-         * @type String
-         * @private
-         */
         this._serverUrl = serverUrl;
-    
-        /**
-         * MethodRef to _processClientUpdate() method.
-         * @type Core.MethodRef
-         * @private
-         */
         this._processClientUpdateRef = new Core.MethodRef(this, this._processClientUpdate);
-    
-        /**
-         * MethodRef to _processClientEvent() method.
-         * @type Core.MethodRef
-         * @private
-         */
         this._processClientEventRef = new Core.MethodRef(this, this._processClientEvent);
-        
-        /**
-         * Associative array mapping between shorthand URL codes and replacement values.
-         * @private
-         */
         this._urlMappings = {};
-        
-        /**
-         * Image URL mapping constant.
-         */
         this._urlMappings.I = this._serverUrl + "?sid=Echo.Image&iid=";
-        
-        /**
-         * Queue of commands to be executed.  Each command occupies two
-         * indices, first index is the command peer, second is the command data.
-         * @type Array
-         * @private
-         */
         this._commandQueue = null;
-        
-        /**
-         * Outgoing client message.
-         * @type EchoRemoteClient.ClientMessage
-         * @private
-         */
         this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
-    
-        /**
-         * AsyncManager instance which will invoke server-pushed operations.
-         * @type EchoRemoteClient.AsyncManager
-         * @private
-         */
         this._asyncManager = new EchoRemoteClient.AsyncManager(this);
-        
-        /**
-         * Wait indicator.
-         * @type EchoRemoteClient.WaitIndicator
-         * @private
-         */
         this._waitIndicator = new EchoRemoteClient.DefaultWaitIndicator();
-        
-        /**
-         * Network delay before raising wait indicator, in milleseconds.
-         * @type Integer
-         * @private
-         */
-        this._preWaitIndicatorDelay = 500;
-        
-        /**
-         * Runnable that will trigger initialization of wait indicator.
-         * @type Core.Scheduler.Runnable
-         * @private
-         */
         this._waitIndicatorRunnable = new Core.Scheduler.Runnable(new Core.MethodRef(this, this._waitIndicatorActivate), 
                 this._preWaitIndicatorDelay, false);
-        
-        /**
-         * Flag indicating whether the remote client has been initialized.
-         */
-        this._initialized = false;
     },
     
     /**
@@ -266,7 +279,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
      * @param e the event to process
      */
     _processClientEvent: function(e) {
-        if (!this._clientMessage) {
+        if (this._transactionInProgress) {
             if (new Date().getTime() - this._syncInitTime > 2000) {
                 //FIXME Central error handling for these.
                 alert("Waiting on server response.  Press the browser reload or refresh button if server fails to respond.");
@@ -284,7 +297,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
      * @param e the property update event from the component
      */
     _processClientUpdate: function(e) {
-        if (!this._clientMessage) {
+        if (this._transactionInProgress) {
             //FIXME need to work on scenarios where clientmessage is null, for both this and events too.
             return;
         }
@@ -309,8 +322,8 @@ EchoRemoteClient = Core.extend(EchoClient, {
             EchoClient.profilingTimer.mark("ser");
         }
         
-        // Create new client message.
-        this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
+        // Flag transaction as being complete.
+        this._transactionInProgress = false;
         
         // Register component update listener 
         this.application.addComponentUpdateListener(this._processClientUpdateRef);
@@ -412,13 +425,21 @@ EchoRemoteClient = Core.extend(EchoClient, {
      * Initiates a client-server synchronization.
      */
     sync: function() {
+        if (this._transactionInProgress) {
+            throw new Error("Attempt to invoke client/server synchronization while another transaction is in progress."); 
+        }
         Core.Scheduler.add(this._waitIndicatorRunnable);
+    
+        this._transactionInProgress = true;
     
         this._asyncManager._stop();    
         this._syncInitTime = new Date().getTime();
         var conn = new WebCore.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST", 
                 this._clientMessage._renderXml(), "text/xml");
-        this._clientMessage = null;
+        
+        // Create new client message.
+        this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
+
         conn.addResponseListener(new Core.MethodRef(this, this._processSyncResponse));
         conn.connect();
     },
@@ -426,7 +447,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
     /**
      * @see EchoClient#verifyInput
      */
-    verifyInput: function(component) {
+    verifyInput: function(component, flags) {
         if (false) {
             //FIXME implement
             return false;
@@ -563,6 +584,14 @@ EchoRemoteClient.ClientMessage = Core.extend({
             this._document.documentElement.setAttribute("t", "init");
             this._renderClientProperties();
         }
+    },
+    
+    /**
+     * Removes any data from client message that was overwritten by server message.
+     *
+     * @param serverMessage the serverMessage
+     */
+    _clean: function(serverMessage) {
     },
     
     _createPropertyElement: function(name, value) {

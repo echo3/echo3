@@ -1,9 +1,15 @@
 /**
  * Abstract base class for Echo clients.
  */
-EchoClient = Core.extend({ 
+EchoClient = Core.extend({
     
     $static: {
+    
+        /**
+         * Flag for verifyInput() flags parameter, indicating that input is 
+         * a property update.
+         */
+        FLAG_INPUT_PROPERTY: 0x1,
 
         /**
          * Global array containing all active client instances in the current browser window.
@@ -99,7 +105,7 @@ EchoClient = Core.extend({
          *        applications readiness state will be investigated)
          * @return true if the application/component are ready to receive inputs
          */
-        verifyInput: function(component) {
+        verifyInput: function(component, flags) {
             if (component) {
                 return component.isActive();
             } else {
