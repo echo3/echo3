@@ -66,12 +66,30 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         
         WebCore.EventProcessor.add(this._selectElement, "change", new Core.MethodRef(this, this._processChange), false);
         
-        parentElement.appendChild(this._selectElement);
+        if (size != 0 && WebCore.Environment.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
+            // Render select element inside of a table to stop crazy IE6 behavior where listboxes turn into
+            // select fields when removed and then re-added to the DOM.
+            // As ridiculous as this might seem, it does appear necessary.  It is unknown why a table is required,
+            // but a div does not cure the problem. 
+            this._tableElement = document.createElement("table");
+            var tbodyElement = document.createElement("tbody");
+            this._tableElement.appendChild(tbodyElement);
+            var trElement = document.createElement("tr");
+            tbodyElement.appendChild(trElement);
+            var tdElement = document.createElement("td");
+            trElement.appendChild(tdElement);
+            tdElement.appendChild(this._selectElement);
+
+            parentElement.appendChild(this._tableElement);
+        } else {
+            parentElement.appendChild(this._selectElement);
+        }
     },
     
     renderDispose: function(update) { 
         WebCore.EventProcessor.removeAll(this._selectElement);
         this._selectElement = null;
+        this._tableElement = null;
     },
     
     _renderSelection: function(clearSelection) {
@@ -98,7 +116,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderUpdate: function(update) {
-        var element = this._selectElement;
+        var element = this._tableElement ? this._tableElement : this._selectElement;
         var containerElement = element.parentNode;
         this.renderDispose(update);
         containerElement.removeChild(element);
