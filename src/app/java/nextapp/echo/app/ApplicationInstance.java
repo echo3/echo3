@@ -67,7 +67,7 @@ implements Serializable {
      * A <code>ThreadLocal</code> reference to the 
      * <code>ApplicationInstance</code> relevant to the current thread.
      */ 
-    private static final ThreadLocal activeInstance = new InheritableThreadLocal();
+    private static final ThreadLocal activeInstance = new ThreadLocal();
     
     /**
      * Determines the current modal component by searching the entire hierarchy for modal components.
