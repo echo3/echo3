@@ -52,6 +52,7 @@ import nextapp.echo.app.button.ButtonGroup;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.SplitPaneLayoutData;
+import nextapp.echo.app.list.ListSelectionModel;
 import nextapp.echo.testapp.interactive.ButtonColumn;
 import nextapp.echo.testapp.interactive.InteractiveApp;
 import nextapp.echo.testapp.interactive.StyleUtil;
@@ -477,6 +478,17 @@ public class WindowPaneExamplesTest extends SplitPane {
         componentSamplerColumn.add(table);
         
         ListBox listBox = new ListBox(ListBoxTest.NUMBERS);
+        if (launchModals) {
+            listBox.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    getApplicationInstance().getDefaultWindow().getContent().add(createComponentSamplerModalTestWindow());
+                }
+            });
+        }
+        componentSamplerColumn.add(listBox);
+
+        listBox= new ListBox(ListBoxTest.NUMBERS);
+        listBox.setSelectionMode(ListSelectionModel.MULTIPLE_SELECTION);
         if (launchModals) {
             listBox.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {

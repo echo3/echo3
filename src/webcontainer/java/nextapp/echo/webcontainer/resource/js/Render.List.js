@@ -12,6 +12,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     _processChange: function(e) {
         if (!this.client.verifyInput(this.component)) {
             WebCore.DOM.preventEventDefault(e);
+            this._renderSelection(true);
             return;
         }
         var selectElement = e.registeredTarget;
@@ -29,9 +30,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         }
     
         this.component.setProperty("selection", selection);
-        
-        //FIXME fire from component
-        this.component.fireEvent(new Core.Event("action", this.component));
+        this.component.doAction();
     },
     
     _renderMain: function(update, parentElement, size) {
@@ -63,15 +62,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             }
         }
         
-        // Set selection.
-        var selection = this.component.getProperty("selection");
-        if (selection) {
-            for (var i = 0; i < selection.length; ++i) {
-                if (selection[i] >= 0 && selection[i] < this._selectElement.options.length) {
-                    this._selectElement.options[selection[i]].selected = "selected";
-                }
-            }
-        }
+        this._renderSelection(false);
         
         WebCore.EventProcessor.add(this._selectElement, "change", new Core.MethodRef(this, this._processChange), false);
         
@@ -81,6 +72,29 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     renderDispose: function(update) { 
         WebCore.EventProcessor.removeAll(this._selectElement);
         this._selectElement = null;
+    },
+    
+    _renderSelection: function(clearSelection) {
+        // Set selection.
+        var selection = this.component.getProperty("selection");
+        if (selection) {
+            if (clearSelection) {
+                for (var i = 0; i < this._selectElement.options.length; ++i) {
+                    this._selectElement.options[i].selected = "";
+                }
+            }
+            for (var i = 0; i < selection.length; ++i) {
+                if (selection[i] >= 0 && selection[i] < this._selectElement.options.length) {
+                    this._selectElement.options[selection[i]].selected = "selected";
+                }
+            }
+        } else {
+            if (this._selectElement.multiple) {
+                this._selectElement.selectedIndex = null;
+            } else {
+                this._selectElement.selectedIndex = 0;
+            }
+        }
     },
     
     renderUpdate: function(update) {
@@ -101,9 +115,6 @@ EchoAppRender.ListBoxSync = Core.extend(EchoAppRender.ListComponentSync, {
     $load: function() {
         EchoRender.registerPeer("ListBox", this);
     },
-    
-    $construct: function() {
-    },
 
     renderAdd: function(update, parentElement) {
         this._renderMain(update, parentElement, 6);
@@ -118,9 +129,6 @@ EchoAppRender.SelectFieldSync = Core.extend(EchoAppRender.ListComponentSync, {
 
     $load: function() {
         EchoRender.registerPeer("SelectField", this);
-    },
-    
-    $construct: function() {
     },
     
     renderAdd: function(update, parentElement) {

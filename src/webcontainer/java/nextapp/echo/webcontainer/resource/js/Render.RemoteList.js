@@ -101,7 +101,7 @@ EchoAppRender.RemoteListData = Core.extend({
     
 EchoAppRender.RemoteListDataItem = Core.extend({
 
-    $construct: function(text) { 
+    $construct: function(text) {
         this.text = text;
     },
     

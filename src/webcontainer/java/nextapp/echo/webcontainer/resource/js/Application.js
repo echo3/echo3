@@ -3380,7 +3380,18 @@ EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
     },
 
     componentType: "AbstractListComponent",
-    focusable: true
+    focusable: true,
+    
+    $virtual: {
+        
+        /**
+         * Programatically performs a list select action.
+         */
+        doAction: function() {
+            var e = new Core.Event("action", this, this.getProperty("actionCommand"));
+            this.fireEvent(e);
+        }
+    }
 });
 
 /**
