@@ -41,6 +41,7 @@ import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.ListBox;
+import nextapp.echo.app.PasswordField;
 import nextapp.echo.app.RadioButton;
 import nextapp.echo.app.SelectField;
 import nextapp.echo.app.SplitPane;
@@ -487,6 +488,28 @@ public class WindowPaneExamplesTest extends SplitPane {
             });
         }
         componentSamplerColumn.add(textField);
+        
+        PasswordField passwordField = new PasswordField();
+        passwordField.setText("Hello");
+        if (launchModals) {
+            passwordField.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    getApplicationInstance().getDefaultWindow().getContent().add(createComponentSamplerModalTestWindow());
+                }
+            });
+        }
+        componentSamplerColumn.add(passwordField);
+        
+        TextArea textArea = new TextArea();
+        textArea.setText("Hello");
+        if (launchModals) {
+            textArea.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    getApplicationInstance().getDefaultWindow().getContent().add(createComponentSamplerModalTestWindow());
+                }
+            });
+        }
+        componentSamplerColumn.add(textArea);
         
         ListBox listBox = new ListBox(ListBoxTest.NUMBERS);
         if (launchModals) {
