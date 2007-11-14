@@ -1,7 +1,3 @@
-//FIXME.  This code is fairly temporary, once I'm comfortable with the way selection/model/rendering data properties are being set
-// during serialization, it needs to be gutted to support IE6 (with a DIV/DHTML based listbox impl because of this browser's
-// totally broken impl of rendering listbox-style select elements.
-
 /**
  * Abstract base class for SELECT-element based list components.
  */
