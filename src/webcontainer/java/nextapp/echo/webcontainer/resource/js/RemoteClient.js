@@ -448,12 +448,16 @@ EchoRemoteClient = Core.extend(EchoClient, {
      * @see EchoClient#verifyInput
      */
     verifyInput: function(component, flags) {
-        if (false) {
-            //FIXME implement
-            return false;
-        } else {
-            return EchoClient.prototype.verifyInput.call(this, component);
+        if (this._transactionInProgress) {
+            // Verify input acceptable for transaction-in-progress state.
+            if (!(flags & EchoClient.FLAG_INPUT_PROPERTY)) {
+                // Disallow input that does not have the property flag set.
+                return false;
+            }
         }
+        
+        // Invoke super.
+        return EchoClient.prototype.verifyInput.call(this, component);
     },
         
     /**
@@ -584,14 +588,6 @@ EchoRemoteClient.ClientMessage = Core.extend({
             this._document.documentElement.setAttribute("t", "init");
             this._renderClientProperties();
         }
-    },
-    
-    /**
-     * Removes any data from client message that was overwritten by server message.
-     *
-     * @param serverMessage the serverMessage
-     */
-    _clean: function(serverMessage) {
     },
     
     _createPropertyElement: function(name, value) {

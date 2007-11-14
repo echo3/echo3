@@ -30,8 +30,10 @@
 package nextapp.echo.testapp.interactive.testscreen;
 
 import nextapp.echo.app.Button;
+import nextapp.echo.app.CheckBox;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Column;
+import nextapp.echo.app.TextField;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.SplitPaneLayoutData;
@@ -69,5 +71,11 @@ public class DelayTest extends Column {
             }
         });
         add(blockedButton);
+        
+        TextField textField = new TextField();
+        add(textField);
+        
+        CheckBox checkBox = new CheckBox();
+        add(checkBox);
     }
 }
