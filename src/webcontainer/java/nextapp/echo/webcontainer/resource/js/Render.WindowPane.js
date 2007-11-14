@@ -99,6 +99,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     	this._userWindowHeight = this._windowHeight;
         
         WebCore.VirtualPosition.redraw(this._contentDivElement);
+        WebCore.VirtualPosition.redraw(this._maskDivElement);
         EchoRender.notifyResize(this.component);
     },
     
@@ -228,6 +229,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._borderDivElements[4].style.height = borderSideHeight + "px";   
         
         WebCore.VirtualPosition.redraw(this._contentDivElement);
+        WebCore.VirtualPosition.redraw(this._maskDivElement);
     },
     
     _removeBorderListeners: function() {
@@ -585,6 +587,19 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             throw new Error("Too many children: " + componentCount);
         }
     
+        // Render Internet Explorer 6-specific windowed control-blocking IFRAME.
+        if (WebCore.Environment.QUIRK_IE_SELECT_Z_INDEX) {
+            // Render Select Field Masking Transparent IFRAME.
+            this._maskDivElement = document.createElement("div");
+            this._maskDivElement.style.cssText 
+                    = "filter:alpha(opacity=0);zIndex:1;position:absolute;left:0,right:0,top:0,bottom:0,borderWidth: 0;";
+            var maskIFrameElement = document.createElement("iframe");
+            maskIFrameElement.style.cssText = "width:100%;height:100%;";
+//            maskIFrameElement.src = EchoClientEngine.baseServerUri + "?serviceId=Echo.WindowPane.IFrame";
+            this._maskDivElement.appendChild(maskIFrameElement);
+    	    this._windowPaneDivElement.appendChild(this._maskDivElement);
+        }
+    
         parentElement.appendChild(this._windowPaneDivElement);
         
         // Register event listeners.
@@ -634,6 +649,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
         WebCore.EventProcessor.removeAll(this._windowPaneDivElement);
         this._windowPaneDivElement = null;
+        this._maskDivElement = null;
     },
     
     renderDisplay: function() {
@@ -649,6 +665,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             
         this.setPosition(this._userWindowX, this._userWindowY, this._userWindowWidth, this._userWindowHeight);
         WebCore.VirtualPosition.redraw(this._contentDivElement);
+        WebCore.VirtualPosition.redraw(this._maskDivElement);
     },
     
     renderUpdate: function(update) {

@@ -1428,7 +1428,7 @@ WebCore.VirtualPosition = {
             return;
         }
     
-        if (!element.parentNode) {
+        if (!element || !element.parentNode) {
             return;
         }
     
