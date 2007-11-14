@@ -44,6 +44,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     _addEventHandlers: function() {
         WebCore.EventProcessor.add(this._textComponentElement, "click", new Core.MethodRef(this, this._processClick), false);
         WebCore.EventProcessor.add(this._textComponentElement, "blur", new Core.MethodRef(this, this._processBlur), false);
+        WebCore.EventProcessor.add(this._textComponentElement, "keypress", new Core.MethodRef(this, this._processKeyPress), false);
         WebCore.EventProcessor.add(this._textComponentElement, "keyup", new Core.MethodRef(this, this._processKeyUp), false);
     },
     
@@ -65,6 +66,13 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
             return;
         }
         this.component.application.setFocusedComponent(this.component);
+    },
+
+    _processKeyPress: function(e) {
+        if (!this.client.verifyInput(this.component)) {
+    		WebCore.DOM.preventEventDefault(e);
+            return true;
+        }
     },
     
     _processKeyUp: function(e) {
@@ -145,9 +153,9 @@ EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
     $load: function() {
         EchoRender.registerPeer("TextField", this);
     },
-
-    $construct: function() {
-        this._type = "text";
+    
+    $virtual: {
+        _type: "text"
     },
 
     renderAdd: function(update, parentElement) {
@@ -160,7 +168,7 @@ EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
         this._renderStyle(this._textComponentElement);
         this._addEventHandlers(this._textComponentElement);
         if (this.component.getProperty("text")) {
-            this._textComponentElement.setAttribute("value", this.component.getProperty("text"));
+            this._textComponentElement.value = this.component.getProperty("text");
         }
         parentElement.appendChild(this._textComponentElement);
     },
@@ -178,9 +186,7 @@ EchoAppRender.PasswordFieldSync = Core.extend(EchoAppRender.TextFieldSync, {
     $load: function() {
         EchoRender.registerPeer("PasswordField", this);
     },
-
-    $construct: function() {
-        this._type = "password";
-    }
+    
+    _type: "password"
 });
 

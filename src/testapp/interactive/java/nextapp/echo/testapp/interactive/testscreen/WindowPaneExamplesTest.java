@@ -477,6 +477,17 @@ public class WindowPaneExamplesTest extends SplitPane {
         }
         componentSamplerColumn.add(table);
         
+        TextField textField = new TextField();
+        textField.setText("Hello");
+        if (launchModals) {
+            textField.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    getApplicationInstance().getDefaultWindow().getContent().add(createComponentSamplerModalTestWindow());
+                }
+            });
+        }
+        componentSamplerColumn.add(textField);
+        
         ListBox listBox = new ListBox(ListBoxTest.NUMBERS);
         if (launchModals) {
             listBox.addActionListener(new ActionListener() {
