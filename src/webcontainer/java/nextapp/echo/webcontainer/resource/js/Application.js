@@ -446,6 +446,10 @@ EchoApp.Component = Core.extend({
         _nextRenderId: 0
     },
     
+    $load: function() {
+        EchoApp.ComponentFactory.registerType("Component", this);
+    },
+
     $virtual: {
     
         /**
@@ -454,6 +458,8 @@ EchoApp.Component = Core.extend({
         componentType: "Component"       
     },
 
+    $abstract: true,
+    
     /**
      * The render id.
      * This value should be treated as read-only and immutable.
