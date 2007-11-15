@@ -467,6 +467,27 @@ EchoRemoteClient = Core.extend(EchoClient, {
  */
 EchoRemoteClient.AsyncManager = Core.extend({
 
+    /**
+     * The supported client.
+     *
+     * @type EchoRemoteClient
+     * @private
+     */
+    _client: null,
+    
+    /**
+     * The repeating runnable used for server polling.
+     *
+     * @type Core.Scheduler.Runnable
+     * @private 
+     */
+    _runnable: null,
+
+    /** 
+     * Creates a new asynchronous manager.
+     *
+     * @param {EchoRemoteClient} client the supported cilent
+     */
     $construct: function(client) {
         this._client = client;
         this._runnable = new Core.Scheduler.Runnable(new Core.MethodRef(this, this._pollServerForUpdates), 1000, false);
@@ -598,18 +619,31 @@ EchoRemoteClient.ClientMessage = Core.extend({
     /**
      * Id of the component which fired the event that is responsible for
      * the client message being sent to the server.
+     * @type String
+     * @private
      */
     _eventComponentId: null,
     
     /**
      * Type of event fired to cause server interaction.
+     * @type String
+     * @private
      */
     _eventType: null,
     
     /**
      * Event data object of event responsible for server interaction.
+     * @type Object
+     * @private
      */
     _eventData: null,
+    
+    /**
+     * The DOM object to which the client message will be rendered.
+     * @type Docuemnt
+     * @private
+     */
+    _document: null,
 
     /**
      * Creates a new client message.
@@ -629,6 +663,12 @@ EchoRemoteClient.ClientMessage = Core.extend({
         }
     },
     
+    /**
+     * Queries the application for the currently focused component and renders
+     * this information to the client message DOM.
+     *
+     * @private
+     */
     _renderCFocus: function() {
         if (!this._client.application) {
             return;
@@ -644,6 +684,12 @@ EchoRemoteClient.ClientMessage = Core.extend({
         }
     },
     
+    /**
+     * Renders compoennt hierarchy state change information to the client message DOM.
+     * This information is retrieved from instance variables of the client message object,
+     * i.e., the component-id-to-property-value map and event properties.  
+     * @private
+     */
     _renderCSync: function() {
         var cSyncElement = this._document.createElement("dir");
         cSyncElement.setAttribute("proc", "CSync");
@@ -686,6 +732,12 @@ EchoRemoteClient.ClientMessage = Core.extend({
         this._document.documentElement.appendChild(cSyncElement);
     },
     
+    /**
+     * Renders information about the client environment to the client message DOM.
+     * This information is rendered only in the first client message to the server.
+     *
+     * @private
+     */
     _renderClientProperties: function() {
         var cp = new EchoRemoteClient.ClientMessage._ClientProperties(this);
         
@@ -714,6 +766,13 @@ EchoRemoteClient.ClientMessage = Core.extend({
         cp._add("browserVersionMinor", env.BROWSER_MINOR_VERSION);
     },
     
+    /**
+     * Renders all information to the XML DOM and returns it.
+     * 
+     * @return the DOM
+     * @type Document
+     * @private
+     */
     _renderXml: function() {
         if (!this._rendered) {
             this._renderCFocus();
@@ -723,12 +782,26 @@ EchoRemoteClient.ClientMessage = Core.extend({
         return this._document;
     },
     
+    /**
+     * Sets the event that will cause the client-server interaction.
+     *
+     * @param {String} componentId the renderId of the event-firing component
+     * @param {String} eventType the type of the event
+     * @param {Object} the event data object
+     */
     setEvent: function(componentId, eventType, eventData) {
         this._eventComponentId = componentId;
         this._eventType = eventType;
         this._eventData = eventData;
     },
     
+    /**
+     * Stores information about a property change to a component.
+     *
+     * @param {String} componentId the renderId of the component
+     * @param {String} propertyName the name of the property
+     * @param {Object} the new property value
+     */
     storeProperty: function(componentId, propertyName, propertyValue) {
         var propertyMap = this._componentIdToPropertyMap[componentId];
         if (!propertyMap) {
