@@ -58,7 +58,7 @@ Core = {
      * Properties that begin with a dollar-sign ($) will be processed specially:
      * <p>
      * <ul>
-     * <li>The $constructor property, which must be a function, will be used as the constructor.
+     * <li>The $construct property, which must be a function, will be used as the constructor.
      * The $load property, which must be a function, f provided, will be used as a static initializer,
      * executed once when the class is *defined*.  The this pointer will be set to the class when
      * this method is executed.</li>
@@ -73,7 +73,7 @@ Core = {
      * during Core.extend().</li>
      * </ul>
      * <p>
-     * Use of this method enables a class to be derived WIHTOUT executing the constructor of the base class
+     * Use of this method enables a class to be derived WITHOUT executing the constructor of the base class
      * in order to create a prototype for the derived class.  This method uses a "shared prototype" architecture,
      * where two objects are created, a "prototype class" and a "constructor class".  These two objects share
      * the same prototype, but the "prototype class" has an empty constructor.  When a class created with
