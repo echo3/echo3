@@ -43,6 +43,12 @@ EchoRemoteClient = Core.extend(EchoClient, {
      * @private
      */
     _transactionInProgress: false,
+    
+    /**
+     * Identifier for input restriction registered with client during transactions.
+     * @private
+     */
+    _inputRestrictionId: null,
 
     /**
      * MethodRef to _processClientUpdate() method.
@@ -324,6 +330,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
         
         // Flag transaction as being complete.
         this._transactionInProgress = false;
+        this.removeInputRestriction(this._inputRestrictionId);
         
         // Register component update listener 
         this.application.addComponentUpdateListener(this._processClientUpdateRef);
@@ -431,6 +438,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
         Core.Scheduler.add(this._waitIndicatorRunnable);
     
         this._transactionInProgress = true;
+        this._inputRestrictionId = this.createInputRestriction(true);
     
         this._asyncManager._stop();    
         this._syncInitTime = new Date().getTime();
@@ -444,22 +452,6 @@ EchoRemoteClient = Core.extend(EchoClient, {
         conn.connect();
     },
     
-    /**
-     * @see EchoClient#verifyInput
-     */
-    verifyInput: function(component, flags) {
-        if (this._transactionInProgress) {
-            // Verify input acceptable for transaction-in-progress state.
-            if (!(flags & EchoClient.FLAG_INPUT_PROPERTY)) {
-                // Disallow input that does not have the property flag set.
-                return false;
-            }
-        }
-        
-        // Invoke super.
-        return EchoClient.prototype.verifyInput.call(this, component);
-    },
-        
     /**
      * Activates the wait indicator.
      * @private

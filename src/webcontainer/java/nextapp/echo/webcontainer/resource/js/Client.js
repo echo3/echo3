@@ -44,12 +44,20 @@ EchoClient = Core.extend({
      */
     application: null,
     
+    _nextInputRestrictionId: 0,
+    
+    _inputRestrictionCount: 0,
+    
+    _inputRescriptionMap: null,
+    
     /**
      * The parent client.
      */
     parent: null,
 
-    $construct: function() { },
+    $construct: function() { 
+        this._inputRestrictionMap = { };
+    },
     
     $virtual: {
 
@@ -85,7 +93,7 @@ EchoClient = Core.extend({
                 return null;
             }
         },
-    
+
         /**
          * Determines if the specified component and containing application is ready to receive input.
          * This method should be overridden by client implementations as needed, returning the value
@@ -96,6 +104,20 @@ EchoClient = Core.extend({
          * @return true if the application/component are ready to receive inputs
          */
         verifyInput: function(component, flags) {
+            // Check for input restrictions.
+            if (this._inputRestrictionCount != 0) {
+                if (!flags & EchoClient.FLAG_INPUT_PROPERTY) {
+                    // Input is not a property update, automatically return false if any input restrictions pressent.
+                    return false;
+                }
+                for (var x in this._inputRestrictionMap) {
+                    if (this._inputRestrictionMap[x] === false) {
+                        // Input restriction set to false, indicating no updates, not even property updates.
+                        return false;
+                    }
+                }
+            }
+        
             if (component) {
                 return component.isActive();
             } else {
@@ -144,6 +166,21 @@ EchoClient = Core.extend({
                     new Core.MethodRef(this, this._processKeyPress), false);
             EchoClient._activeClients.push(this);
         }
+    },
+    
+    createInputRestriction: function(allowPropertyUpdates) {
+        var id = (++this._nextInputRestrictionId).toString();
+        ++this._inputRestrictionCount;
+        this._inputRestrictionMap[id] = allowPropertyUpdates;
+        return id;
+    },
+    
+    removeInputRestriction: function(id) {
+        if (this._inputRestrictionMap[id] === undefined) {
+            return;
+        }
+        delete this._inputRestrictionMap[id];
+        --this._inputRestrictionCount;
     },
     
     /**
