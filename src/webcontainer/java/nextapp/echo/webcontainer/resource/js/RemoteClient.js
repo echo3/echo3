@@ -537,6 +537,11 @@ EchoRemoteClient.AsyncManager = Core.extend({
     }
 });
 
+/**
+ * Client-to-server synchronization message.
+ * This object is used to collect state changes on the client and then
+ * render an XML version to be POSTed to a server-side Echo application.
+ */
 EchoRemoteClient.ClientMessage = Core.extend({
 
     $static: {
@@ -566,11 +571,53 @@ EchoRemoteClient.ClientMessage = Core.extend({
              * @param value the value
              */
             _add: function(key, value) {
-                this._element.appendChild(this._clientMessage._createPropertyElement(key, value));
+                var element = this._clientMessage._document.createElement("p");
+                element.setAttribute("n", key);
+                EchoSerial.storeProperty(this._clientMessage._client, element, value);
+                this._element.appendChild(element);
             }
         })
     },
+    
+    /**
+     * The RemoteClient which generated this message.
+     * @type {EchoRemoteClient}
+     * @private
+     */
+    _client: null,
+    
+    /**
+     * Mapping between component ids and updated property values.
+     * Values in this map are updated by the storeProperty() method.
+     * These values will be rendered to XML when required.
+     * @type {Object}
+     * @private
+     */
+    _componentIdToPropertyMap: null,
 
+    /**
+     * Id of the component which fired the event that is responsible for
+     * the client message being sent to the server.
+     */
+    _eventComponentId: null,
+    
+    /**
+     * Type of event fired to cause server interaction.
+     */
+    _eventType: null,
+    
+    /**
+     * Event data object of event responsible for server interaction.
+     */
+    _eventData: null,
+
+    /**
+     * Creates a new client message.
+     *
+     * @param client the RemoteClient
+     * @param initialize flag indicating whether this is the initial client message, which will 
+     *        gather data about the client environment
+     */
     $construct: function(client, initialize) {
         this._client = client;
         this._componentIdToPropertyMap = {};
@@ -580,13 +627,6 @@ EchoRemoteClient.ClientMessage = Core.extend({
             this._document.documentElement.setAttribute("t", "init");
             this._renderClientProperties();
         }
-    },
-    
-    _createPropertyElement: function(name, value) {
-        var element = this._document.createElement("p");
-        element.setAttribute("n", name);
-        EchoSerial.storeProperty(this._client, element, value);    
-        return element;
     },
     
     _renderCFocus: function() {
@@ -647,32 +687,31 @@ EchoRemoteClient.ClientMessage = Core.extend({
     },
     
     _renderClientProperties: function() {
-        var properties = new EchoRemoteClient.ClientMessage._ClientProperties(this);
+        var cp = new EchoRemoteClient.ClientMessage._ClientProperties(this);
         
-        properties._add("screenWidth", screen.width);
-        properties._add("screenHeight", screen.height);
-        properties._add("screenColorDepth", screen.colorDepth);
-        properties._add("utcOffset", 0 - parseInt((new Date()).getTimezoneOffset()));
+        cp._add("screenWidth", screen.width);
+        cp._add("screenHeight", screen.height);
+        cp._add("screenColorDepth", screen.colorDepth);
+        cp._add("utcOffset", 0 - parseInt((new Date()).getTimezoneOffset()));
         
-        properties._add("navigatorAppName", window.navigator.appName);
-        properties._add("navigatorAppVersion", window.navigator.appVersion);
-        properties._add("navigatorAppCodeName", window.navigator.appCodeName);
-        properties._add("navigatorCookieEnabled", window.navigator.cookieEnabled);
-        properties._add("navigatorJavaEnabled", window.navigator.javaEnabled());
-        properties._add("navigatorLanguage", 
-                window.navigator.language ? window.navigator.language : window.navigator.userLanguage);
-        properties._add("navigatorPlatform", window.navigator.platform);
-        properties._add("navigatorUserAgent", window.navigator.userAgent);
+        cp._add("navigatorAppName", window.navigator.appName);
+        cp._add("navigatorAppVersion", window.navigator.appVersion);
+        cp._add("navigatorAppCodeName", window.navigator.appCodeName);
+        cp._add("navigatorCookieEnabled", window.navigator.cookieEnabled);
+        cp._add("navigatorJavaEnabled", window.navigator.javaEnabled());
+        cp._add("navigatorLanguage", window.navigator.language ? window.navigator.language : window.navigator.userLanguage);
+        cp._add("navigatorPlatform", window.navigator.platform);
+        cp._add("navigatorUserAgent", window.navigator.userAgent);
         
         var env = WebCore.Environment;
-        properties._add("browserOpera", env.BROWSER_OPERA);
-        properties._add("browserSafari", env.BROWSER_SAFARI);
-        properties._add("browserKonqueror", env.BROWSER_KONQUEROR);
-        properties._add("browserMozillaFirefox", env.BROWSER_FIREFOX);
-        properties._add("browserMozilla", env.BROWSER_MOZILLA);
-        properties._add("browserInternetExplorer", env.BROWSER_INTERNET_EXPLORER);
-        properties._add("browserVersionMajor", env.BROWSER_MAJOR_VERSION);
-        properties._add("browserVersionMinor", env.BROWSER_MINOR_VERSION);
+        cp._add("browserOpera", env.BROWSER_OPERA);
+        cp._add("browserSafari", env.BROWSER_SAFARI);
+        cp._add("browserKonqueror", env.BROWSER_KONQUEROR);
+        cp._add("browserMozillaFirefox", env.BROWSER_FIREFOX);
+        cp._add("browserMozilla", env.BROWSER_MOZILLA);
+        cp._add("browserInternetExplorer", env.BROWSER_INTERNET_EXPLORER);
+        cp._add("browserVersionMajor", env.BROWSER_MAJOR_VERSION);
+        cp._add("browserVersionMinor", env.BROWSER_MINOR_VERSION);
     },
     
     _renderXml: function() {

@@ -44,10 +44,27 @@ EchoClient = Core.extend({
      */
     application: null,
     
-    _nextInputRestrictionId: 0,
+    /**
+     * Id of last issued input restriction id (incremented to deliver unique identifiers). 
+     * @type Integer
+     * @private
+     */
+    _lastInputRestrictionId: 0,
     
+    /**
+     * Number of currently registered input restrictions.
+     * @type Integer
+     * @private
+     */
     _inputRestrictionCount: 0,
     
+    /**
+     * Id (String) map containing input restrictions.
+     * Values are booleans, true indicating property updates are NOT restricted, and false
+     * indicated all updates are restricted.
+     * @type Object
+     * @private
+     */
     _inputRescriptionMap: null,
     
     /**
@@ -168,19 +185,20 @@ EchoClient = Core.extend({
         }
     },
     
+    /**
+     * Registers a new input restriction.  Input will be restricted until this and all other
+     * input restrictiosn are removed.
+     *
+     * @param {Boolean} allowPropertyUpdates flag indicating whether property updates should be
+     *        allowed (if true) or whether all input should be restricted (if false)
+     * @return a handle identifier for the input restriction, which will be used to unregister
+     *         the restriction by invoking removeInputRestriction()
+     */
     createInputRestriction: function(allowPropertyUpdates) {
-        var id = (++this._nextInputRestrictionId).toString();
+        var id = (++this._lastInputRestrictionId).toString();
         ++this._inputRestrictionCount;
         this._inputRestrictionMap[id] = allowPropertyUpdates;
         return id;
-    },
-    
-    removeInputRestriction: function(id) {
-        if (this._inputRestrictionMap[id] === undefined) {
-            return;
-        }
-        delete this._inputRestrictionMap[id];
-        --this._inputRestrictionCount;
     },
     
     /**
@@ -224,6 +242,19 @@ EchoClient = Core.extend({
             return false; // Stop propagation.
         }
         return true; // Allow propagation.
+    },
+    
+    /**
+     * Removes an input restriction.
+     *
+     * @param id the id of the input restriction to remove
+     */
+    removeInputRestriction: function(id) {
+        if (this._inputRestrictionMap[id] === undefined) {
+            return;
+        }
+        delete this._inputRestrictionMap[id];
+        --this._inputRestrictionCount;
     },
     
     /**
