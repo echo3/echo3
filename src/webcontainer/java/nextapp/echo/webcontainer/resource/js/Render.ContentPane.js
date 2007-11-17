@@ -139,11 +139,16 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
                 }
             }
             var addedChildren = update.getAddedChildren();
+
+            // FIXME experimental, nonfinal API
+            update.renderDisplayComponents = [];
+            
             if (addedChildren) {
                 // Add children.
                 for (var i = 0; i < addedChildren.length; ++i) {
                     //FIXME. third attribute is ignored...undecided whether order matters AT ALL here (set by z-index?)
-                    this._renderAddChild(update, addedChildren[i], this.component.indexOf(addedChildren[i])); 
+                    this._renderAddChild(update, addedChildren[i], this.component.indexOf(addedChildren[i]));
+                    update.renderDisplayComponents.push(addedChildren[i]); 
                 }
             }
         }

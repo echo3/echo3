@@ -259,7 +259,15 @@ EchoRender = {
             }
             //FIXME. this does needless work....resizing twice is quite possible.
             // if property updates are present.
-            EchoRender._doRenderDisplay(updates[i].parent, true);
+            if (updates[i].renderDisplayComponents) {
+                // FIXME experimental, nonfinal API
+                for (var j = 0; j < updates[i].renderDisplayComponents.length; ++j) {
+                    Core.Debug.consoleWrite("PartialRenderUpdate:" + updates[i].renderDisplayComponents[j]);
+                    EchoRender._doRenderDisplay(updates[i].renderDisplayComponents[j], true);
+                }
+            } else {
+                EchoRender._doRenderDisplay(updates[i].parent, true);
+            }
         }
     
         // Profiling: Mark completion of display phase.
