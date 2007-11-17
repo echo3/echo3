@@ -442,6 +442,12 @@ EchoRender.ComponentSync = Core.extend({
 
         /**
          * Invoked when the rendered component is about to be removed from the DOM.
+         * This method should dispose of any client resources in use by the component, e.g.,
+         * unregistering event listeners and removing any DOM elements that are not children of
+         * the parent component's DOM element.
+         * The DOM should NOT be modified to remove the element(s) representing this component
+         * for performance as well as aesthetic reasons (e.g., in the case where a parent component
+         * might be using an animated transition effect to remove the component.
          * The supplied update will refer to a ancestor component of the supported component
          * being updated.
          *        
