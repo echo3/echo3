@@ -405,16 +405,21 @@ EchoRender = {
 /**
  * @class
  * Component synchronization peer. 
- * <p>
- * <strong>Optional methods:</strong>
- * <ul>
- *  <li><code>renderFocus()</code>: Invoked when component is rendered focused.</li>
- *  <li><code>renderDisplay()</code>: Invoked when the component has been added to the hierarchy and first appears
- *                                    on screen, and when ancestors of the component (or the containing window) have
- *                                    resized.</li>
- * </ul>
  */
 EchoRender.ComponentSync = Core.extend({ 
+
+    /**
+     * The client supported by this peer.
+     * @type EchoClient
+     */
+    client: null,
+
+    /**
+     * The component instance supported by this peer.  
+     * Each peer instance will support a single component instance.
+     * @type EchoApp.Component
+     */
+    component: null,
 
     /**
      * Creates a new copmonent synchronization peer.
@@ -424,20 +429,53 @@ EchoRender.ComponentSync = Core.extend({
     
     $abstract: {
 
+        /**
+         * Renders the component to the DOM.
+         * The supplied update will refer to a ancestor component of the supported component
+         * being updated.
+         *
+         * @param {EchoApp.Update.ComponentUpdate} update the update being rendered
+         */
         renderAdd: function(update, parentElement) {
             throw new Error("Operation \"renderAdd\" not supported (Component: " + this.component + ").");
         },
-        
+
+        /**
+         * Invoked when the rendered component is about to be removed from the DOM.
+         * The supplied update will refer to a ancestor component of the supported component
+         * being updated.
+         *        
+         * @param {EchoApp.Update.ComponentUpdate} update the update being rendered
+         */
         renderDispose: function(update) {
             throw new Error("Operation \"renderDispose\" not supported (Component: " + this.component + ").");
         },
         
         /**
+         * Renders an update to a component, e.g., children added/removed, properties updated.
+         * The supplied update will refer specifically to an update of the supported component.
+         *
+         * @param {EchoApp.Update.ComponentUpdate} update the update being rendered
          * @return true if this invocation has re-rendered all child components, false otherwise
          */
         renderUpdate: function(update) {
             throw new Error("Operation \"renderUpdate\" not supported (Component: " + this.component + ").");
         }
+    },
+    
+    $virtual: {
+    
+        /**
+         * Invoked when component is rendered focused.
+         */
+        renderFocus: null,
+        
+        /**
+         * Optional method.  Invoked when the component has been added to the hierarchy and first appears
+         * on screen, and when ancestors of the component (or the containing window) have
+         * resized.         
+         */
+        renderDisplay: null
     }
 });
 
