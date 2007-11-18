@@ -96,19 +96,10 @@ Core = {
             if (typeof(baseClass) != "function") {
                 throw new Error("Base class is not a function, cannot derive.");
             }
-            if (!baseClass.$_prototypeClass) {
-                throw new Error("Base class not defined using Core.extend(), cannot derive.");
-            }
         }
         if (!definition) {
             throw new Error("Object definition not provided.");
         }
-        
-        // Reference to shared prototype.
-        var sharedPrototype;
-        
-        // Create the contructor-less prototype class.
-        var prototypeClass = function() { };
         
         // Create the constructor class.
         var constructorClass;
@@ -121,7 +112,7 @@ Core = {
         } else {
             // Definition does not provide constructor.
             if (baseClass) {
-                // Bas class available: copy constructor function from base class.
+                // Base class available: copy constructor function from base class.
                 constructorClass = Core._copyFunction(baseClass);
             } else {
                 // No base class: constructor is an empty function.
@@ -136,25 +127,17 @@ Core = {
         constructorClass.$super = baseClass;
 
         if (baseClass) {
-            // Create shared prototype by instantiating the prototype class referenced by the base class.
-            sharedPrototype = new baseClass.$_prototypeClass();
-        
-            // Assign shared prototype to prototype class.
-            prototypeClass.prototype = sharedPrototype;
-        } else {
-            // If not deriving, simply set shared prototype to empty prototype of newly created prototypeClass.
-            sharedPrototype = prototypeClass.prototype;
+            // Create class with empty constructor that shares prototype of base class.
+            var prototypeClass = Core._createFunction();
+            prototypeClass.prototype = baseClass.prototype;
+            
+            // Create new instance of constructor-less prototype for use as prototype of new class.
+            constructorClass.prototype = new prototypeClass();
         }
         
-        // Assign prototype of constructor class to shared prototype.
-        constructorClass.prototype = sharedPrototype;
-
         // Assign constructor correctly.
-        sharedPrototype.constructor = constructorClass;
+        constructorClass.prototype.constructor = constructorClass;
 
-        // Store reference to prototype class in object class.
-        constructorClass.$_prototypeClass = prototypeClass;
-        
         // Add abstract properties.
         if (definition.$abstract) {
             constructorClass.$abstract = {};
@@ -186,7 +169,7 @@ Core = {
         
         // Add virtual instance properties from definition to shared prototype.
         if (definition.$virtual) {
-            Core._inherit(sharedPrototype, definition.$virtual, constructorClass.$virtual);
+            Core._inherit(constructorClass.prototype, definition.$virtual, constructorClass.$virtual);
             for (var name in definition.$virtual) {
                 constructorClass.$virtual[name] = true;
             }
@@ -198,10 +181,10 @@ Core = {
         // Add toString and valueOf manually, as they will not be iterated
         // by for-in iteration in Internet Explorer.
         if (definition.hasOwnProperty("toString")) {
-            sharedPrototype.toString = definition.toString;
+            constructorClass.prototype.toString = definition.toString;
         }
         if (definition.hasOwnProperty("valueOf")) {
-            sharedPrototype.valueOf = definition.valueOf;
+            constructorClass.prototype.valueOf = definition.valueOf;
         }
 
         // Remove properties such that they will not later be added to the object prototype.
@@ -213,7 +196,7 @@ Core = {
             // Reverse order of mixins, such that later-defined mixins will override earlier ones.
             // (Mixins will only be added if they will NOT override an existing method.)
             var mixins = definition.$include.reverse();
-            Core._processMixins(prototypeClass, mixins);
+            Core._processMixins(constructorClass, mixins);
             
             // Remove property such that it will not later be added to the object prototype.
             delete definition.$include;
@@ -237,7 +220,7 @@ Core = {
         }
 
         // Process instance properties and methods.
-        Core._inherit(sharedPrototype, definition, constructorClass.$virtual);
+        Core._inherit(constructorClass.prototype, definition, constructorClass.$virtual);
         
         // If class is concrete, verify all abstract methods are provided.
         if (!constructorClass.$abstract) {
