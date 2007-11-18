@@ -197,6 +197,8 @@ EchoRender = {
     
         // Load peers for any root components being updated.
         for (var i = 0; i < updates.length; ++i) {
+            updates[i].renderContext = {};
+        
             var peers = updates[i].parent.peer;
             if (peer == null && updates[i].parent.componentType == "Root") {
                 EchoRender._loadPeer(client, updates[i].parent);
@@ -259,11 +261,10 @@ EchoRender = {
             }
             //FIXME. this does needless work....resizing twice is quite possible.
             // if property updates are present.
-            if (updates[i].renderDisplayComponents) {
-                // FIXME experimental, nonfinal API
-                for (var j = 0; j < updates[i].renderDisplayComponents.length; ++j) {
-                    Core.Debug.consoleWrite("PartialRenderUpdate:" + updates[i].renderDisplayComponents[j]);
-                    EchoRender._doRenderDisplay(updates[i].renderDisplayComponents[j], true);
+            if (updates[i].renderContext.displayRequired) {
+                for (var j = 0; j < updates[i].renderContext.displayRequired.length; ++j) {
+                    Core.Debug.consoleWrite("PartialRenderUpdate:" + updates[i].renderContext.displayRequired[j]);
+                    EchoRender._doRenderDisplay(updates[i].renderContext.displayRequired[j], true);
                 }
             } else {
                 EchoRender._doRenderDisplay(updates[i].parent, true);

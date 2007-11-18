@@ -2627,7 +2627,14 @@ EchoApp.Update.ComponentUpdate = Core.extend({
             this.newValue = newValue;
         }
     },
-
+    
+    /**
+     * Storage for contextual information used by application container to render this update.
+     * Object type and content are specified by the application container, this variable is not
+     * used by the application module in any capacity.
+     */
+    renderContext : null,
+    
     /**
      * Creates a new ComponentUpdate.
      * 
