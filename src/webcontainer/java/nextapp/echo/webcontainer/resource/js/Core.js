@@ -1049,23 +1049,32 @@ Core.Scheduler = {
  * @class A runnable task that may be scheduled with the Scheduler.
  */
 Core.Scheduler.Runnable = Core.extend({
+    
+    $virtual: {
 
-    /**
-     * MethodRef to invoke at specified interval (used by default implementation). 
-     */
-    methodRef: null,
-    
-    /** 
-     * Time interval, in milleseconds after which the Runnable should be executed.
-     * @type Number
-     */
-    timeInterval: null,
-    
-    /**
-     * Flag indicating whether task should be repeated.
-     * @type Boolean
-     */
-    repeat: false,
+        /** 
+         * Time interval, in milleseconds after which the Runnable should be executed.
+         * @type Number
+         */
+        timeInterval: null,
+        
+        /**
+         * Flag indicating whether task should be repeated.
+         * @type Boolean
+         */
+        repeat: false
+    },
+
+    $abstract: {
+        
+        run: function() { }
+    }
+});
+
+/**
+ * @class A runnable task implemenation that invokes a Core.MethodRef at regular intervals.
+ */
+Core.Scheduler.MethodRefRunnable = Core.extend(Core.Scheduler.Runnable, {
 
     /**
      * Creates a new Runnable.

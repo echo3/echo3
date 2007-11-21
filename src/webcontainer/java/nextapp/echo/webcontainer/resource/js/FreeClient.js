@@ -86,20 +86,25 @@ EchoFreeClient = Core.extend(EchoClient, {
  */
 EchoFreeClient.AutoUpdate = Core.extend(Core.Scheduler.Runnable, {
 
+    timeInterval: 10,
+    
+    repeat: true,
+    
+    _client: null,
+
     /**
      * Creates a new automatic render update runnable.
      * 
      * @param client the supported client
      */
     $construct: function(client) {
-        this.client = client;
-        Core.Scheduler.Runnable.call(this, null, 10, true);
+        this._client = client;
     },
     
     /**
      * Runnable run() implementation.
      */
     run: function() {
-        EchoRender.processUpdates(this.client);
+        EchoRender.processUpdates(this._client);
     }
 });
