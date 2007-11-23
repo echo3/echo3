@@ -30,15 +30,28 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _renderMain: function(update, parentElement, size) {
+        this._enabled = this.component.isRenderEnabled();
         this._selectElement = document.createElement("select");
         this._selectElement.size = size;
         if (this.component.getProperty("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION) {
             this._selectElement.multiple = "multiple";
         }
+        if (!this._enabled) {
+        	this._selectElement.disabled = true;
+        }
         
-        EchoAppRender.Border.render(this.component.getRenderProperty("border"), this._selectElement);
-        EchoAppRender.Color.renderFB(this.component, this._selectElement);
-        EchoAppRender.Font.renderComponentProperty(this.component, "font", null, this._selectElement);
+        EchoAppRender.Border.render(
+                EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
+                this._selectElement);
+        EchoAppRender.Color.render(
+                EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
+                this._selectElement, "color");
+        EchoAppRender.Color.render(
+                EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
+                this._selectElement, "backgroundColor");
+        EchoAppRender.Font.render(
+                EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
+                this._selectElement);
         EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._selectElement, "padding");
     
         if (this.component.items) {
@@ -60,7 +73,9 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         
         this._renderSelection(false);
         
-        WebCore.EventProcessor.add(this._selectElement, "change", new Core.MethodRef(this, this._processChange), false);
+        if (this._enabled) {
+	        WebCore.EventProcessor.add(this._selectElement, "change", new Core.MethodRef(this, this._processChange), false);
+        }
         
         if (size != 0 && WebCore.Environment.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
             // Render select element inside of a table to stop crazy IE6 behavior where listboxes turn into
@@ -83,7 +98,9 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderDispose: function(update) { 
-        WebCore.EventProcessor.removeAll(this._selectElement);
+        if (this._enabled) {
+	        WebCore.EventProcessor.removeAll(this._selectElement);
+        }
         this._selectElement = null;
         this._tableElement = null;
     },
