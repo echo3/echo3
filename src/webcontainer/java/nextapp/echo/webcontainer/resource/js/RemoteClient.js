@@ -137,7 +137,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
         this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
         this._asyncManager = new EchoRemoteClient.AsyncManager(this);
         this._waitIndicator = new EchoRemoteClient.DefaultWaitIndicator();
-        this._waitIndicatorRunnable = new Core.Scheduler.MethodRefRunnable(new Core.MethodRef(this, this._waitIndicatorActivate), 
+        this._waitIndicatorRunnable = new Core.Scheduler.MethodRunnable(new Core.MethodRef(this, this._waitIndicatorActivate), 
                 this._preWaitIndicatorDelay, false);
     },
     
@@ -490,7 +490,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
      */
     $construct: function(client) {
         this._client = client;
-        this._runnable = new Core.Scheduler.MethodRefRunnable(new Core.MethodRef(this, this._pollServerForUpdates), 1000, false);
+        this._runnable = new Core.Scheduler.MethodRunnable(new Core.MethodRef(this, this._pollServerForUpdates), 1000, false);
     },
     
     /**
@@ -1207,7 +1207,7 @@ EchoRemoteClient.DefaultWaitIndicator = Core.extend(EchoRemoteClient.WaitIndicat
         this._divElement.style.cssText = "display: none; z-index: 32767; position: absolute; top: 30px; right: 30px; width: 200px;"
                  + " padding: 20px; border: 1px outset #abcdef; background-color: #abcdef; color: #000000; text-align: center;";
         this._divElement.appendChild(document.createTextNode("Please wait..."));
-        this._fadeRunnable = new Core.Scheduler.MethodRefRunnable(new Core.MethodRef(this, this._tick), 50, true);
+        this._fadeRunnable = new Core.Scheduler.MethodRunnable(new Core.MethodRef(this, this._tick), 50, true);
         document.body.appendChild(this._divElement);
     },
     

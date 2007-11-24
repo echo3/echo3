@@ -1014,7 +1014,7 @@ Core.Scheduler = {
      * @type Core.Scheduler.Runnable 
      */
     run: function(methodRef, timeInterval, repeat) {
-        var runnable = new Core.Scheduler.MethodRefRunnable(methodRef, timeInterval, repeat);
+        var runnable = new Core.Scheduler.MethodRunnable(methodRef, timeInterval, repeat);
         this.add(runnable);
         return runnable;
     },
@@ -1072,9 +1072,9 @@ Core.Scheduler.Runnable = Core.extend({
 });
 
 /**
- * @class A runnable task implemenation that invokes a Core.MethodRef at regular intervals.
+ * @class A runnable task implemenation that invokes a method or Core.MethodRef at regular intervals.
  */
-Core.Scheduler.MethodRefRunnable = Core.extend(Core.Scheduler.Runnable, {
+Core.Scheduler.MethodRunnable = Core.extend(Core.Scheduler.Runnable, {
 
     /**
      * Creates a new Runnable.
