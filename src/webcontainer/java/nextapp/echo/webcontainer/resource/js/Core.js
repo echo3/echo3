@@ -1014,7 +1014,7 @@ Core.Scheduler = {
      * @type Core.Scheduler.Runnable 
      */
     run: function(methodRef, timeInterval, repeat) {
-        var runnable = new Core.Scheduler.Runnable(methodRef, timeInterval, repeat);
+        var runnable = new Core.Scheduler.MethodRefRunnable(methodRef, timeInterval, repeat);
         this.add(runnable);
         return runnable;
     },
@@ -1100,8 +1100,10 @@ Core.Scheduler.MethodRefRunnable = Core.extend(Core.Scheduler.Runnable, {
          * Default run() implementation. Should be overidden by subclasses.
          */
         run: function() {
-            if (this.methodRef) {
+            if (this.methodRef instanceof Core.MethodRef) {
                 this.methodRef.invoke();
+            } else {
+                this.methodRef();
             }
         }
     }
