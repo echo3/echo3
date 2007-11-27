@@ -273,6 +273,25 @@ EchoSerial.PropertyTranslator.String = {
 EchoSerial.addPropertyTranslator("s", EchoSerial.PropertyTranslator.String);
 
 /**
+ * Date PropertyTranslator Singleton.
+ */
+EchoSerial.PropertyTranslator.Date = {
+
+    _expr: /(\d{4})\.(\d{2}).(\d{2})/,
+
+    toProperty: function(client, propertyElement) {
+        var value = EchoSerial.PropertyTranslator.String.toProperty(client, propertyElement);
+        var result = this._expr.exec(value);
+        if (!result) {
+            return null;
+        }
+        return new Date(result[1], result[2], result[3]);
+    }
+};
+
+EchoSerial.addPropertyTranslator("d", EchoSerial.PropertyTranslator.Date);
+
+/**
  * Map (Associative Array) PropertyTranslator Singleton.
  */
 EchoSerial.PropertyTranslator.Map = {
