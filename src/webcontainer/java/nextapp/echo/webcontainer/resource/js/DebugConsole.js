@@ -111,19 +111,19 @@ EchoDebugConsole = {
         EchoDebugConsole._titleBarElement.appendChild(controlsContainerDivElement);
     
         var clearButtonElement = document.createElement("span");
-        clearButtonElement.style.cssText = "padding:0 0 0 20px;cursor:pointer;";
+        clearButtonElement.style.cssText = "padding:0 20px 0 0;cursor:pointer;";
         clearButtonElement.appendChild(document.createTextNode("[Clear]"));
         controlsContainerDivElement.appendChild(clearButtonElement);
         WebCore.DOM.addEventListener(clearButtonElement, "click", EchoDebugConsole._clearListener, false);
         
         var maximizeButtonElement = document.createElement("span");
-        maximizeButtonElement.style.cssText = "padding:0 0 0 20px;cursor:pointer;";
+        maximizeButtonElement.style.cssText = "padding:0 20px 0 0;cursor:pointer;";
         maximizeButtonElement.appendChild(document.createTextNode("[^]"));
         controlsContainerDivElement.appendChild(maximizeButtonElement);
         WebCore.DOM.addEventListener(maximizeButtonElement, "click", EchoDebugConsole._maximizeListener, false);
         
         var closeButtonElement = document.createElement("span");
-        closeButtonElement.style.cssText = "padding:0 0 0 20px;cursor:pointer;";
+        closeButtonElement.style.cssText = "padding:0 20px 0 0;cursor:pointer;";
         closeButtonElement.appendChild(document.createTextNode("[X]"));
         controlsContainerDivElement.appendChild(closeButtonElement);
         WebCore.DOM.addEventListener(closeButtonElement, "click", EchoDebugConsole._closeListener, false);
