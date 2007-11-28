@@ -30,12 +30,14 @@
 package nextapp.echo.app.serial.property;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
+import nextapp.echo.app.util.DomUtil;
 
 import org.w3c.dom.Element;
 
@@ -52,7 +54,12 @@ implements SerialPropertyPeer {
      *      Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) {
-        throw new UnsupportedOperationException();
+        String text = DomUtil.getElementText(propertyElement);
+        try {
+            return DATE_FORMAT.parse(text);
+        } catch (ParseException ex) {
+            return null;
+        }
     }
 
     /**

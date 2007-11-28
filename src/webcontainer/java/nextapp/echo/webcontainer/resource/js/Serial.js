@@ -5,12 +5,33 @@ EchoSerial = {
 
     _propertyTranslatorMap: { },
     
-    addPropertyTranslator: function(type, propertyTranslator) {
-        EchoSerial._propertyTranslatorMap[type] = propertyTranslator;
+    _propertyTranslatorTypeData: [ ],
+    
+    addPropertyTranslator: function(typeName, propertyTranslator) {
+        this._propertyTranslatorMap[typeName] = propertyTranslator;
     },
     
-    getPropertyTranslator: function(type) {
-        return this._propertyTranslatorMap[type];
+    addPropertyTranslatorByType: function(type, propertyTranslator) {
+        this._propertyTranslatorTypeData.push(type, propertyTranslator);
+    },
+    
+    /**
+     * Retrieves a property translator for a specific type name.
+     */
+    getPropertyTranslator: function(typeName) {
+        return this._propertyTranslatorMap[typeName];
+    },
+    
+    /**
+     * Retrieves a property translator for a specific type.
+     */
+    getPropertyTranslatorByType: function(type) {
+        for (var i = 0; i < this._propertyTranslatorTypeData.length; i += 2) {
+            if (this._propertyTranslatorTypeData[i] == type) {
+                return this._propertyTranslatorTypeData[i + 1];
+            } 
+        }
+        return null;
     },
     
     /**
@@ -179,11 +200,13 @@ EchoSerial = {
      */
     storeProperty: function(client, propertyElement, propertyValue) {
         if (typeof (propertyValue) == "object") {
-            if (!propertyValue.className) {
-                throw new Error("propertyValue \"" + propertyValue 
-                        + "\" does not provide className property, cannot determine translator.");
+            var translator = null;
+            if (propertyValue.className) {
+                translator = this._propertyTranslatorMap[propertyValue.className];
+            } else {
+                translator = this.getPropertyTranslatorByType(propertyValue.constructor);
             }
-            var translator = this._propertyTranslatorMap[propertyValue.className];
+            
             if (!translator || !translator.toXml) {
                 throw new Error("No to-XML translator available for class name: " + propertyValue.className);
                 //FIXME. silently ignore and return may be desired behavior.
@@ -285,11 +308,17 @@ EchoSerial.PropertyTranslator.Date = {
         if (!result) {
             return null;
         }
-        return new Date(result[1], result[2], result[3]);
+        return new Date(result[1], parseInt(result[2]) - 1, result[3]);
+    },
+    
+    toXml: function(client, propertyElement, propertyValue) {
+        propertyElement.appendChild(propertyElement.ownerDocument.createTextNode(
+                propertyValue.getFullYear() + "." + (propertyValue.getMonth() + 1) + "." + propertyValue.getDate()));
     }
 };
 
 EchoSerial.addPropertyTranslator("d", EchoSerial.PropertyTranslator.Date);
+EchoSerial.addPropertyTranslatorByType(Date, EchoSerial.PropertyTranslator.Date);
 
 /**
  * Map (Associative Array) PropertyTranslator Singleton.
