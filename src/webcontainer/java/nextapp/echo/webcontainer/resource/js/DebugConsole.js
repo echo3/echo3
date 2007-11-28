@@ -1,9 +1,10 @@
 EchoDebugConsole = {
         
     _installed: false,
-    _initalized: false,
+    _rendered: false,
     _contentElement: null,
     _windowElement: null,
+    _logging: false,
     
     install: function() {
         if (EchoDebugConsole._installed) {
@@ -11,6 +12,12 @@ EchoDebugConsole = {
         }
         WebCore.DOM.addEventListener(document, "keydown", EchoDebugConsole._keyListener, false);
         Core.Debug.consoleWrite = EchoDebugConsole._consoleWrite;
+        
+        if (document.URL.toString().indexOf("?debug") != -1) {
+            EchoDebugConsole.setVisible(true);
+            EchoDebugConsole._logging = true;
+        }
+        
         EchoDebugConsole._installed = true;
     },
     
@@ -28,8 +35,12 @@ EchoDebugConsole = {
      * Method which will overwrite Core.Debug.consoleWrite().
      */
     _consoleWrite: function(text) {
-        if (!EchoDebugConsole._initialized) {
-            EchoDebugConsole._init();
+        if (!EchoDebugConsole._logging) {
+            return;
+        }
+    
+        if (!EchoDebugConsole._rendered) {
+            EchoDebugConsole._render();
         }
         
         var lineElement = document.createElement("div");
@@ -38,7 +49,25 @@ EchoDebugConsole = {
         EchoDebugConsole._contentElement.scrollTop = 10000000;
     },
     
-    _init: function() {
+    _keyListener: function(e) {
+        //FIXME MSIE.
+        e = e ? e : window.event;
+        if (!(e.keyCode == 67 && e.ctrlKey && e.altKey)) {
+            return;
+        }
+        
+        EchoDebugConsole._logging = true;
+        EchoDebugConsole.setVisible(!EchoDebugConsole.isVisible());
+    },
+    
+    isVisible: function() {
+        if (!EchoDebugConsole._rendered) {
+            return false;
+        }
+        return EchoDebugConsole._windowElement.style.display == "block";
+    },
+    
+    _render: function() {
         EchoDebugConsole._windowElement = document.createElement("div");
         EchoDebugConsole._windowElement.id = "__DebugConsole__";
         EchoDebugConsole._windowElement.style.cssText 
@@ -71,38 +100,12 @@ EchoDebugConsole = {
         
         document.body.appendChild(EchoDebugConsole._windowElement);
     
-        EchoDebugConsole._initialized = true;
-    },
-    
-    _keyListener: function(e) {
-        //FIXME MSIE.
-        e = e ? e : window.event;
-        if (!(e.keyCode == 67 && e.ctrlKey && e.altKey)) {
-            return;
-        }
-        
-        if (!EchoDebugConsole._initialized) {
-            EchoDebugConsole._init();
-            return;
-        }
-        
-        if (EchoDebugConsole._windowElement.style.display == "block") {
-            EchoDebugConsole._windowElement.style.display = "none";
-        } else {
-            EchoDebugConsole._windowElement.style.display = "block";
-        }
-    },
-    
-    isVisible: function() {
-        if (!EchoDebugConsole._initialized) {
-            EchoDebugConsole._init();
-        }
-        return EchoDebugConsole._windowElement.style.display == "block";
+        EchoDebugConsole._rendered = true;
     },
     
     setVisible: function(newValue) {
-        if (!EchoDebugConsole._initialized) {
-            EchoDebugConsole._init();
+        if (!EchoDebugConsole._rendered) {
+            EchoDebugConsole._render();
         }
         EchoDebugConsole._windowElement.style.display = newValue ? "block" : "none";
     }
