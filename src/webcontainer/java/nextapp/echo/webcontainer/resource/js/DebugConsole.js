@@ -5,6 +5,7 @@ EchoDebugConsole = {
     _contentElement: null,
     _windowElement: null,
     _logging: false,
+    _maximized: false,
     
     install: function() {
         if (EchoDebugConsole._installed) {
@@ -29,6 +30,27 @@ EchoDebugConsole = {
     
     _closeListener: function() {
         EchoDebugConsole._windowElement.style.display = "none";
+    },
+    
+    _maximizeListener: function() {
+        EchoDebugConsole._maximized = !EchoDebugConsole._maximized;
+        if (EchoDebugConsole._maximized) {
+            var height = document.height;
+            height = height ? height : 600;
+            var width = document.width;
+            width = width ? width : 600;
+            EchoDebugConsole._windowElement.style.width = (width - 50) + "px";
+            EchoDebugConsole._titleBarElement.style.width = (width - 72) + "px";
+            EchoDebugConsole._contentElement.style.width = (width - 72) + "px";
+            EchoDebugConsole._windowElement.style.height = (height - 50) + "px";
+            EchoDebugConsole._contentElement.style.height = (height - 85) + "px";
+        } else {
+            EchoDebugConsole._windowElement.style.width = "300px";
+            EchoDebugConsole._titleBarElement.style.width = "278px";
+            EchoDebugConsole._contentElement.style.width = "278px";
+            EchoDebugConsole._windowElement.style.height = "300px";
+            EchoDebugConsole._contentElement.style.height = "265px";
+        }
     },
     
     /**
@@ -73,23 +95,37 @@ EchoDebugConsole = {
                 = "display:none;position:absolute;top:20px;right:20px;width:300px;height:300px;background-color:#2f2f3f;"
                 + "border:5px solid #3f6fff;overflow:hidden;z-index:32767;";
         
-        var titleBarElement = document.createElement("div");
-        titleBarElement.style.cssText
+        EchoDebugConsole._titleBarElement = document.createElement("div");
+        EchoDebugConsole._titleBarElement.style.cssText
                 = "position:absolute;top:1px;left:1px;width:278px;height:20px;padding:3px 10px;background-color:#5f5f8f;"
                 + "color:#ffffff;overflow:hidden;";
-        titleBarElement.appendChild(document.createTextNode("/ Debug Console /"));
-        EchoDebugConsole._windowElement.appendChild(titleBarElement);
+        EchoDebugConsole._windowElement.appendChild(EchoDebugConsole._titleBarElement);
+
+        var titleDivElement = document.createElement("div");
+        titleDivElement.style.cssText = "position:absolute;font-weight:bold;";
+        titleDivElement.appendChild(document.createTextNode("Debug Console"));
+        EchoDebugConsole._titleBarElement.appendChild(titleDivElement);
+    
+        var controlsContainerDivElement = document.createElement("div");
+        controlsContainerDivElement.style.cssText = "position:absolute;right:0px;";
+        EchoDebugConsole._titleBarElement.appendChild(controlsContainerDivElement);
     
         var clearButtonElement = document.createElement("span");
         clearButtonElement.style.cssText = "padding:0 0 0 20px;cursor:pointer;";
-        clearButtonElement.appendChild(document.createTextNode("[clear]"));
-        titleBarElement.appendChild(clearButtonElement);
+        clearButtonElement.appendChild(document.createTextNode("[Clear]"));
+        controlsContainerDivElement.appendChild(clearButtonElement);
         WebCore.DOM.addEventListener(clearButtonElement, "click", EchoDebugConsole._clearListener, false);
+        
+        var maximizeButtonElement = document.createElement("span");
+        maximizeButtonElement.style.cssText = "padding:0 0 0 20px;cursor:pointer;";
+        maximizeButtonElement.appendChild(document.createTextNode("[^]"));
+        controlsContainerDivElement.appendChild(maximizeButtonElement);
+        WebCore.DOM.addEventListener(maximizeButtonElement, "click", EchoDebugConsole._maximizeListener, false);
         
         var closeButtonElement = document.createElement("span");
         closeButtonElement.style.cssText = "padding:0 0 0 20px;cursor:pointer;";
-        closeButtonElement.appendChild(document.createTextNode("[close]"));
-        titleBarElement.appendChild(closeButtonElement);
+        closeButtonElement.appendChild(document.createTextNode("[X]"));
+        controlsContainerDivElement.appendChild(closeButtonElement);
         WebCore.DOM.addEventListener(closeButtonElement, "click", EchoDebugConsole._closeListener, false);
     
         EchoDebugConsole._contentElement = document.createElement("div");
