@@ -715,16 +715,7 @@ EchoRemoteClient.ClientMessage = Core.extend({
                 var pElement = this._document.createElement("p");
                 pElement.setAttribute("i", componentId);
                 pElement.setAttribute("n", propertyName);
-                var propertyType = peerClass.getPropertyType ? peerClass.getPropertyType(propertyName) : null;
-                if (propertyType) {
-                    var propertyTranslator = EchoSerial.getPropertyTranslator(propertyType);
-                    if (!propertyTranslator) {
-                        throw new Error("No property translator available for custom property type: " + propertyType);
-                    }
-                    propertyTranslator.toXml(this._client, pElement, propertyValue);
-                } else {
-                    EchoSerial.storeProperty(this._client, pElement, propertyValue);
-                }
+                EchoSerial.storeProperty(this._client, pElement, propertyValue);
                 cSyncElement.appendChild(pElement);
             }
         }
