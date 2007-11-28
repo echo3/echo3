@@ -50,7 +50,6 @@ EchoDebugConsole = {
     },
     
     _keyListener: function(e) {
-        //FIXME MSIE.
         e = e ? e : window.event;
         if (!(e.keyCode == 67 && e.ctrlKey && e.altKey)) {
             return;
