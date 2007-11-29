@@ -37,9 +37,13 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         case 37:
         case 39:
             var focusPrevious = e.keyCode == 37;
-            if (this.component.application.focusManager.focusNextChild(this.component, focusPrevious)) {
-                WebCore.DOM.preventEventDefault(e);
-                return false;
+            var focusedComponent = this.component.application.getFocusedComponent();
+            if (focusedComponent && focusedComponent.peer && 
+                    (focusedComponent.peer.flags & EchoRender.ComponentSync.FLAG_PERMIT_ARROW_FOCUS_NAVIGATION_H)) {
+                if (this.component.application.focusManager.focusNextChild(this.component, focusPrevious)) {
+                    WebCore.DOM.preventEventDefault(e);
+                    return false;
+                }
             }
             break;
         }
