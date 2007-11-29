@@ -35,13 +35,9 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
     processKeyDown: function(e) { 
         switch (e.keyCode) {
         case 37:
-            if (this.component.application.focusManager.focusNextChild(this.component, true)) {
-                WebCore.DOM.preventEventDefault(e);
-                return false;
-            }
-            break;
         case 39:
-            if (this.component.application.focusManager.focusNextChild(this.component, false)) {
+            var focusPrevious = e.keyCode == 37;
+            if (this.component.application.focusManager.focusNextChild(this.component, focusPrevious)) {
                 WebCore.DOM.preventEventDefault(e);
                 return false;
             }
