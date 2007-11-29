@@ -68,6 +68,12 @@ EchoClient = Core.extend({
     _inputRescriptionMap: null,
     
     /**
+     * Flag set when tab pressed to properly handle a user holding down the tab key, while not
+     * causing the first press to trigger two tab events (for keydown and keypress).
+     */ 
+    _ignoreTabKeyPress: false,
+    
+    /**
      * The parent client.
      */
     parent: null,
@@ -222,6 +228,7 @@ EchoClient = Core.extend({
      */
     _processKeyDown: function(e) {
         if (e.keyCode == 9) { // Tab
+            this._ignoreTabKeyPress = true;
             this.application.focusNext(e.shiftKey);
             WebCore.DOM.preventEventDefault(e);
             return false; // Stop propagation.
@@ -237,7 +244,11 @@ EchoClient = Core.extend({
      */
     _processKeyPress: function(e) {
         if (e.keyCode == 9) { // Tab
-            this.application.focusNext(e.shiftKey);
+            if (this._ignoreTabKeyPress) {
+                this._ignoreTabKeyPress = false;
+            } else {
+                this.application.focusNext(e.shiftKey);
+            }
             WebCore.DOM.preventEventDefault(e);
             return false; // Stop propagation.
         }
