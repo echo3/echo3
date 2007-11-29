@@ -1139,40 +1139,40 @@ EchoApp.FocusManager = Core.extend({
      * be investigated and the first focusable descendant will be focused. 
      */
     focusNextChild: function(parentComponent, reverse) {
-        var childComponent = this._application.getFocusedComponent();
+        var focusedComponent = this._application.getFocusedComponent();
         
-        // Determine which child of the parentComponent is focused, or which child has
-        // a focused descendant.
-        while (childComponent.parent != parentComponent && childComponent.parent != null) {
-            childComponent = childComponent.parent;
+        var focusedIndex = this._getDescendantIndex(parentComponent, focusedComponent);
+        if (focusedIndex == -1) {
+            return null;
         }
-        if (childComponent.parent == null) {
-            return false;
+        
+        var componentIndex = focusedIndex;
+        var component = focusedComponent;
+        do {
+            component = reverse ? this.findPrevious(component) : this.findNext(component);
+            if (component == null) {
+                return null;
+            }
+            componentIndex = this._getDescendantIndex(parentComponent, component);
+        } while (componentIndex == focusedIndex && component != focusedComponent);
+
+        if (component == focusedComponent) {
+            // Search wrapped, only one focusable component.
+            return null;
         }
-        var index = parentComponent.indexOf(childComponent);
+        
+        this._application.setFocusedComponent(component);
+        return component;
+    },
     
-        if (reverse) {
-            while (index > 0) {
-                --index;
-                childComponent = parentComponent.getComponent(index);
-                if (childComponent.focusable && childComponent.isActive()) {
-                    this._application.setFocusedComponent(childComponent);
-                    return true;
-                }
-            }
-            return false;
-        } else {
-            var count = parentComponent.getComponentCount();
-            while (index < count - 1) {
-                ++index;
-                childComponent = parentComponent.getComponent(index);
-                if (childComponent.focusable && childComponent.isActive()) {
-                    this._application.setFocusedComponent(childComponent);
-                    return true;
-                }
-            }
-            return false;
+    _getDescendantIndex: function(parentComponent, descendant) {
+        while (descendant.parent != parentComponent && descendant.parent != null) {
+            descendant = descendant.parent;
         }
+        if (descendant.parent == null) {
+            return -1;
+        }
+        return parentComponent.indexOf(descendant);
     },
     
     /**
@@ -1187,11 +1187,12 @@ EchoApp.FocusManager = Core.extend({
      * @return the Component which should be focused
      * @type EchoApp.Component
      */
-    findNext: function() {
-        /** The component that is currently being analyzed */
-        var component = this._application.getFocusedComponent();
-        if (component == null) {
-            component = this._application.rootComponent;
+    findNext: function(component) {
+        if (!component) {
+            component = this._application.getFocusedComponent();
+            if (!component) {
+                component = this._application.rootComponent;
+            }
         }
         
         /** The component which is currently focused by the application. */
@@ -1265,11 +1266,12 @@ EchoApp.FocusManager = Core.extend({
      * @return the Component which should be focused
      * @type EchoApp.Component
      */
-    findPrevious: function() {
-        /** The component that is currently being analyzed */
-        var component = this._application.getFocusedComponent();
-        if (component == null) {
-            component = this._application.rootComponent;
+    findPrevious: function(component) {
+        if (!component) {
+            component = this._application.getFocusedComponent();
+            if (!component) {
+                component = this._application.rootComponent;
+            }
         }
         
         /** The component which is currently focused by the application. */

@@ -20,7 +20,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
             }
         }
     },
-
+    
     _renderStyle: function() {
         EchoAppRender.Border.render(this.component.getRenderProperty("border"), this._textComponentElement);
         EchoAppRender.Color.renderFB(this.component, this._textComponentElement);
@@ -157,6 +157,8 @@ EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
     $virtual: {
         _type: "text"
     },
+
+    flags: EchoRender.ComponentSync.FLAG_PERMIT_ARROW_FOCUS_NAVIGATION_V,
 
     renderAdd: function(update, parentElement) {
         this._textComponentElement = document.createElement("input");
