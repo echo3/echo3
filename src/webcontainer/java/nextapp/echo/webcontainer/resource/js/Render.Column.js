@@ -10,15 +10,15 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
     processKeyDown: function(e) { 
         switch (e.keyCode) {
         case 38:
-            if (this.component.application.focusManager.focusNextChild(this.component, true)) {
-                WebCore.DOM.preventEventDefault(e);
-                return false;
-            }
-            break;
         case 40:
-            if (this.component.application.focusManager.focusNextChild(this.component, false)) {
-                WebCore.DOM.preventEventDefault(e);
-                return false;
+            var focusPrevious = e.keyCode == 38;
+            var focusedComponent = this.component.application.getFocusedComponent();
+            if (focusedComponent && focusedComponent.peer && 
+                    (focusedComponent.peer.flags & EchoRender.ComponentSync.FLAG_PERMIT_ARROW_FOCUS_NAVIGATION_V)) {
+                if (this.component.application.focusManager.focusNextChild(this.component, focusPrevious)) {
+                    WebCore.DOM.preventEventDefault(e);
+                    return false;
+                }
             }
             break;
         }

@@ -417,6 +417,11 @@ EchoRender = {
  */
 EchoRender.ComponentSync = Core.extend({ 
 
+    $static: {
+        FLAG_PERMIT_ARROW_FOCUS_NAVIGATION_H: 0x1,
+        FLAG_PERMIT_ARROW_FOCUS_NAVIGATION_V: 0x2 
+    },
+
     /**
      * The client supported by this peer.
      * @type EchoClient
@@ -480,6 +485,8 @@ EchoRender.ComponentSync = Core.extend({
     
     $virtual: {
     
+        flags: null,
+        
         /**
          * Invoked when component is rendered focused.
          */
