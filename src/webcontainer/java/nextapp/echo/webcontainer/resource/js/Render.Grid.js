@@ -334,6 +334,27 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         EchoRender.registerPeer("Grid", this);
     },
     
+    _processKeyPress: function(e) { 
+        switch (e.keyCode) {
+        case 37:
+        case 39:
+            var focusPrevious = e.keyCode == 37;
+            var focusedComponent = this.component.application.getFocusedComponent();
+            if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
+                var focusFlags = focusedComponent.peer.getFocusFlags();
+                if ((focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_LEFT)
+                        || (!focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT)) {
+                    if (this.component.application.focusManager.focusNextChild(this.component, focusPrevious)) {
+                        WebCore.DOM.preventEventDefault(e);
+                        return false;
+                    }
+                }
+            }
+            break;
+        }
+        return true;
+    },
+
     renderAdd: function(update, parentElement) {
         var gridProcessor = new EchoAppRender.GridSync.Processor(this.component);
         
@@ -453,10 +474,17 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
             }
         }
         
+        WebCore.EventProcessor.add(this._tableElement, 
+                WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
+                new Core.MethodRef(this, this._processKeyPress), false);
+
         parentElement.appendChild(this._tableElement);
     },
     
     renderDispose: function(update) {
+        WebCore.EventProcessor.remove(this._tableElement, 
+                WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
+                new Core.MethodRef(this, this._processKeyPress), false);
         this._tableElement = null;
     },
     

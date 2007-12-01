@@ -3,6 +3,7 @@ package nextapp.echo.testapp.interactive.testscreen;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Extent;
+import nextapp.echo.app.Grid;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Row;
@@ -22,6 +23,7 @@ public class FocusTest extends SplitPane {
     
     private Column focusColumn;
     private Row focusRow;
+    private Grid focusGrid1;
     private TextField focusTextField;
     private TextArea focusTextArea;
 
@@ -65,6 +67,8 @@ public class FocusTest extends SplitPane {
                 }
             });
         }
+
+        createFocusGrid1();
         
         focusTextField = new TextField();
         controlsColumn.addButton("Focus TextField", new ActionListener(){
@@ -111,5 +115,20 @@ public class FocusTest extends SplitPane {
             focusRow.add(button);
         }
         testColumn.add(focusRow);
+    }
+
+    private void createFocusGrid1() {
+        focusGrid1 = new Grid(TEST_SIZE);
+        for (int i = 0; i < TEST_SIZE * TEST_SIZE; ++i) {
+            final Button button = new Button("0");
+            button.setStyleName("Default");
+            button.addActionListener(new ActionListener(){
+                public void actionPerformed(ActionEvent e) {
+                    button.setText(Integer.toString(Integer.parseInt(button.getText()) + 1));
+                }
+            });
+            focusGrid1.add(button);
+        }
+        testColumn.add(focusGrid1);
     }
 }
