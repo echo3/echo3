@@ -421,6 +421,7 @@ WebCore.Environment = {
             this.PROPRIETARY_EVENT_SELECT_START_SUPPORTED = true;
             this.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR = true;
             this.QUIRK_IE_SELECT_PERCENT_WIDTH = true;
+            this.QUIRK_IE_KEY_DOWN_EVENT_REPEAT = true;
             this.CSS_FLOAT = "styleFloat";
             
             if (this.BROWSER_MAJOR_VERSION < 7) {

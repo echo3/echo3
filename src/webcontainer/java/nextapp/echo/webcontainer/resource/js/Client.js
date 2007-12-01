@@ -68,12 +68,6 @@ EchoClient = Core.extend({
     _inputRescriptionMap: null,
     
     /**
-     * Flag set when tab pressed to properly handle a user holding down the tab key, while not
-     * causing the first press to trigger two tab events (for keydown and keypress).
-     */ 
-    _ignoreTabKeyPress: false,
-    
-    /**
      * The parent client.
      */
     parent: null,
@@ -171,9 +165,8 @@ EchoClient = Core.extend({
     configure: function(application, domainElement) {
         if (this.application) {
             Core.Arrays.remove(EchoClient._activeClients, this);
-            WebCore.EventProcessor.remove(this.domainElement, "keydown", 
-                    new Core.MethodRef(this, this._processKeyDown), false);
-            WebCore.EventProcessor.remove(this.domainElement, "keypress", 
+            WebCore.EventProcessor.remove(this.domainElement, 
+                    WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
                     new Core.MethodRef(this, this._processKeyPress), false);
             this.application.removeFocusListener(new Core.MethodRef(this, this._processApplicationFocus));
         }
@@ -183,9 +176,8 @@ EchoClient = Core.extend({
     
         if (this.application) {
             this.application.addFocusListener(new Core.MethodRef(this, this._processApplicationFocus));
-            WebCore.EventProcessor.add(this.domainElement, "keydown", 
-                    new Core.MethodRef(this, this._processKeyDown), false);
-            WebCore.EventProcessor.add(this.domainElement, "keypress", 
+            WebCore.EventProcessor.add(this.domainElement, 
+                    WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
                     new Core.MethodRef(this, this._processKeyPress), false);
             EchoClient._activeClients.push(this);
         }
@@ -226,29 +218,9 @@ EchoClient = Core.extend({
      * 
      * @param {Event} e the event
      */
-    _processKeyDown: function(e) {
-        if (e.keyCode == 9) { // Tab
-            this._ignoreTabKeyPress = true;
-            this.application.focusNext(e.shiftKey);
-            WebCore.DOM.preventEventDefault(e);
-            return false; // Stop propagation.
-        }
-        return true; // Allow propagation.
-    },
-    
-    /**
-     * Root KeyPress event handler.
-     * Specifically processes tab key events for focus management.
-     * 
-     * @param {Event} e the event
-     */
     _processKeyPress: function(e) {
         if (e.keyCode == 9) { // Tab
-            if (this._ignoreTabKeyPress) {
-                this._ignoreTabKeyPress = false;
-            } else {
-                this.application.focusNext(e.shiftKey);
-            }
+            this.application.focusNext(e.shiftKey);
             WebCore.DOM.preventEventDefault(e);
             return false; // Stop propagation.
         }
