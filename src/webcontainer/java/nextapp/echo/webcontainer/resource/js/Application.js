@@ -1138,7 +1138,11 @@ EchoApp.FocusManager = Core.extend({
      * If the next immediate child is not focusable, its descendants will
      * be investigated and the first focusable descendant will be focused. 
      */
-    focusNextChild: function(parentComponent, reverse) {
+    focusNextChild: function(parentComponent, reverse, minimumDistance) {
+        if (!minimumDistance) {
+            minimumDistance = 1;
+        }
+        
         var focusedComponent = this._application.getFocusedComponent();
         
         var focusedIndex = this._getDescendantIndex(parentComponent, focusedComponent);
@@ -1154,7 +1158,7 @@ EchoApp.FocusManager = Core.extend({
                 return null;
             }
             componentIndex = this._getDescendantIndex(parentComponent, component);
-        } while (componentIndex == focusedIndex && component != focusedComponent);
+        } while (Math.abs(componentIndex - focusedIndex) < minimumDistance && component != focusedComponent);
 
         if (component == focusedComponent) {
             // Search wrapped, only one focusable component.

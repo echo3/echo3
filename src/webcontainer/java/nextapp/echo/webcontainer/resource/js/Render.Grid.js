@@ -351,6 +351,22 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                 }
             }
             break;
+        case 38:
+        case 40:
+            var focusPrevious = e.keyCode == 38;
+            var focusedComponent = this.component.application.getFocusedComponent();
+            if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
+                var focusFlags = focusedComponent.peer.getFocusFlags();
+                if ((focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_UP)
+                        || (!focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_DOWN)) {
+                    //FIXME minimumdistance hardcoded to 6 for testing.
+                    if (this.component.application.focusManager.focusNextChild(this.component, focusPrevious, 6)) {
+                        WebCore.DOM.preventEventDefault(e);
+                        return false;
+                    }
+                }
+            }
+            break;
         }
         return true;
     },
