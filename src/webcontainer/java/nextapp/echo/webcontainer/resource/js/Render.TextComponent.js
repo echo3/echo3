@@ -158,7 +158,10 @@ EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
         _type: "text"
     },
 
-    flags: EchoRender.ComponentSync.FLAG_PERMIT_ARROW_FOCUS_NAVIGATION_V,
+    getFocusFlags: function() {
+        return EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_UP | 
+                EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_DOWN;
+    },
 
     renderAdd: function(update, parentElement) {
         this._textComponentElement = document.createElement("input");

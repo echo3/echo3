@@ -56,9 +56,6 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         }
     },
     
-    flags: EchoRender.ComponentSync.FLAG_PERMIT_ARROW_FOCUS_NAVIGATION_H
-            | EchoRender.ComponentSync.FLAG_PERMIT_ARROW_FOCUS_NAVIGATION_V,
-    
     /**
      * Registers listners on the button.  This method is invoked lazily, i.e., the first time the button
      * is focused or moused over.  The initial focus/mouseover listeners are removed by this method.
@@ -113,8 +110,8 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         return new EchoApp.Alignment(horizontal, vertical);
     },
     
-    getElement: function() {
-        return this._divElement;
+    getFocusFlags: function() {
+        return EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_ALL;
     },
     
     _processBlur: function(e) {

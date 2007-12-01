@@ -418,8 +418,11 @@ EchoRender = {
 EchoRender.ComponentSync = Core.extend({ 
 
     $static: {
-        FLAG_PERMIT_ARROW_FOCUS_NAVIGATION_H: 0x1,
-        FLAG_PERMIT_ARROW_FOCUS_NAVIGATION_V: 0x2 
+        FOCUS_PERMIT_ARROW_UP: 0x1,
+        FOCUS_PERMIT_ARROW_DOWN: 0x2, 
+        FOCUS_PERMIT_ARROW_LEFT: 0x4,
+        FOCUS_PERMIT_ARROW_RIGHT: 0x8, 
+        FOCUS_PERMIT_ARROW_ALL: 0xf
     },
 
     /**
@@ -485,7 +488,7 @@ EchoRender.ComponentSync = Core.extend({
     
     $virtual: {
     
-        flags: null,
+        getFocusFlags: null,
         
         /**
          * Invoked when component is rendered focused.
