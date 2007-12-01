@@ -60,7 +60,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
          */
         this._childPanes = new Array(2);
     },
-    
+
     renderDispose: function(update) {
         if (this._firstPaneDivElement) {
             if (this._childPanes[0]) {
@@ -76,10 +76,11 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
         
         if (this._separatorDivElement) {
-            WebCore.EventProcessor.remove(this._separatorDivElement, "mousedown", new Core.MethodRef(this,
-                    this._processSeparatorMouseDown), false);
+            WebCore.EventProcessor.removeAll(this._separatorDivElement);
             this._separatorDivElement = null;
         }
+
+        WebCore.EventProcessor.removeAll(this._splitPaneDivElement);
     
         this._splitPaneDivElement = null;
     },
@@ -138,6 +139,46 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                 this._resizable ? EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
                 : EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED), this._orientationVertical);
     },
+    
+    _processKeyDown: function(e) {
+        switch (e.keyCode) {
+        case 37:
+        case 39:
+            if (!this._orientationVertical) {
+                var focusPrevious = (e.keyCode == 37) ^ (!this._orientationTopLeft);
+                var focusedComponent = this.component.application.getFocusedComponent();
+                if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
+                    var focusFlags = focusedComponent.peer.getFocusFlags();
+                    if ((focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_LEFT)
+                            || (!focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT)) {
+                        if (this.component.application.focusManager.focusNextChild(this.component, focusPrevious)) {
+                            WebCore.DOM.preventEventDefault(e);
+                            return false;
+                        }
+                    }
+                }
+            }
+            break;
+        case 38:
+        case 40:
+            if (this._orientationVertical) {
+                var focusPrevious = (e.keyCode == 38) ^ (!this._orientationTopLeft);
+                var focusedComponent = this.component.application.getFocusedComponent();
+                if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
+                    var focusFlags = focusedComponent.peer.getFocusFlags();
+                    if ((focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_UP)
+                            || (!focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_DOWN)) {
+                        if (this.component.application.focusManager.focusNextChild(this.component, focusPrevious)) {
+                            WebCore.DOM.preventEventDefault(e);
+                            return false;
+                        }
+                    }
+                }
+            }
+            break;
+        }
+        return true;
+    }, 
     
     _processSeparatorMouseDown: function(e) {
         if (!this.client.verifyInput(this.component)) {
@@ -357,6 +398,8 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         parentElement.appendChild(this._splitPaneDivElement);
         
+        WebCore.EventProcessor.add(this._splitPaneDivElement, "keydown", new Core.MethodRef(this,
+                this._processKeyDown), false);
         if (this._resizable) {
             WebCore.EventProcessor.add(this._separatorDivElement, "mousedown", new Core.MethodRef(this,
                     this._processSeparatorMouseDown), false);
