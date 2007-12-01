@@ -32,7 +32,7 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         EchoRender.registerPeer("Row", this);
     },
 
-    processKeyDown: function(e) { 
+    _processKeyPress: function(e) { 
         switch (e.keyCode) {
         case 37:
         case 39:
@@ -79,7 +79,9 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
             this._renderAddChild(update, child);
         }
         
-        WebCore.EventProcessor.add(this._divElement, "keydown", new Core.MethodRef(this, this.processKeyDown), false);
+        WebCore.EventProcessor.add(this._divElement, 
+                WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
+                new Core.MethodRef(this, this._processKeyPress), false);
         
         parentElement.appendChild(this._divElement);
     },
@@ -164,7 +166,9 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderDispose: function(update) { 
-        WebCore.EventProcessor.remove(this._divElement, "keydown", new Core.MethodRef(this, this.processKeyDown), false);
+        WebCore.EventProcessor.remove(this._divElement, 
+                WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
+                new Core.MethodRef(this, this._processKeyPress), false);
         this._divElement = null;
         this._trElement = null;
         this._childIdToElementMap = null;

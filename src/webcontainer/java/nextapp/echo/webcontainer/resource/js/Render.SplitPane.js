@@ -140,7 +140,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                 : EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED), this._orientationVertical);
     },
     
-    _processKeyDown: function(e) {
+    _processKeyPress: function(e) {
         switch (e.keyCode) {
         case 37:
         case 39:
@@ -398,8 +398,10 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         parentElement.appendChild(this._splitPaneDivElement);
         
-        WebCore.EventProcessor.add(this._splitPaneDivElement, "keydown", new Core.MethodRef(this,
-                this._processKeyDown), false);
+        WebCore.EventProcessor.add(this._splitPaneDivElement, 
+                WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
+                new Core.MethodRef(this, this._processKeyPress), false);
+                
         if (this._resizable) {
             WebCore.EventProcessor.add(this._separatorDivElement, "mousedown", new Core.MethodRef(this,
                     this._processSeparatorMouseDown), false);
