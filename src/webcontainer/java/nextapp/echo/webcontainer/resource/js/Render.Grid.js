@@ -334,6 +334,10 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         EchoRender.registerPeer("Grid", this);
     },
     
+    _columnCount: null,
+    
+    _rowCount: null,
+    
     _processKeyPress: function(e) { 
         switch (e.keyCode) {
         case 37:
@@ -359,8 +363,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                 var focusFlags = focusedComponent.peer.getFocusFlags();
                 if ((focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_UP)
                         || (!focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_DOWN)) {
-                    //FIXME minimumdistance hardcoded to 6 for testing.
-                    if (this.component.application.focusManager.focusNextChild(this.component, focusPrevious, 6)) {
+                    if (this.component.application.focusManager.focusNextChild(this.component, focusPrevious, this._columnCount)) {
                         WebCore.DOM.preventEventDefault(e);
                         return false;
                     }
@@ -374,8 +377,8 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
     renderAdd: function(update, parentElement) {
         var gridProcessor = new EchoAppRender.GridSync.Processor(this.component);
         
-        var columnCount = gridProcessor.getColumnCount();
-        var rowCount = gridProcessor.getRowCount();
+        this._columnCount = gridProcessor.getColumnCount();
+        this._rowCount = gridProcessor.getRowCount();
         
         var defaultInsets = this.component.getRenderProperty("insets", "0");
         var defaultBorder = this.component.getRenderProperty("border", "");
@@ -411,7 +414,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         }
         
         var colGroupElement = this._tableElement.firstChild;
-        for (var columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
+        for (var columnIndex = 0; columnIndex < this._columnCount; ++columnIndex) {
             var colElement = document.createElement("col");
             var width = gridProcessor.xExtents[columnIndex];
             if (width != null) {
@@ -446,7 +449,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         tdPrototype.style.padding = defaultInsets.toString();
         tdPrototype.style.overflow = "hidden";
         
-        for (var rowIndex = 0; rowIndex < rowCount; ++rowIndex) {
+        for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
             trElement = document.createElement("tr");
             height = gridProcessor.yExtents[rowIndex];
             if (height) {
@@ -454,7 +457,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
             }
             tbodyElement.appendChild(trElement);
             
-            for (var columnIndex = 0; columnIndex < columnCount; ++columnIndex) {
+            for (var columnIndex = 0; columnIndex < this._columnCount; ++columnIndex) {
                 var cell = gridProcessor.getCell(columnIndex, rowIndex);
                 if (cell == null) {
                     var tdElement = document.createElement("td");
