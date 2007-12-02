@@ -1211,25 +1211,17 @@ EchoApp.FocusManager = Core.extend({
                     }
                 }
             }
-            
-            if (reverse) {
-                if (nextComponent == null) {
-                    // Attempt to move left.
-                    if (component.parent) {
-                        // Get previous sibling.
+                
+            if (nextComponent == null) {
+                // Attempt to move to next/previous sibling.
+                if (component.parent) {
+                    // Get previous sibling.
+                    if (reverse) {
                         var componentIndex = component.parent.indexOf(component);
                         if (componentIndex > 0) {
                             nextComponent = component.parent.getComponent(componentIndex - 1);
                         }
-                    }
-                }
-            } else {
-                if (nextComponent == null) {
-                    // Attempt to move right.
-        
-                    // Verify component is not root.
-                    if (component.parent) {
-                        // Get next sibling.
+                    } else {
                         var componentIndex = component.parent.indexOf(component);
                         if (componentIndex < component.parent.getComponentCount() - 1) {
                             nextComponent = component.parent.getComponent(componentIndex + 1);
@@ -1237,7 +1229,7 @@ EchoApp.FocusManager = Core.extend({
                     }
                 }
             }
-                
+
             if (nextComponent == null) {
                 // Attempt to move up.
                 nextComponent = component.parent;
