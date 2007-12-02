@@ -3,27 +3,58 @@
  */
 EchoSerial = { 
 
+    /**
+     * Map between property class names and property translators.
+     * Property translators stored in this map will be used when an object
+     * provides a "className" property.
+     */
     _propertyTranslatorMap: { },
     
+    /**
+     * Array describing mapping between object constructors and property translators.
+     * Even indices of the map contain constructors, and the subsequent odd indices
+     * contain the property translator suitable for the constructor at the previous
+     * index.  This array is iterated to determine the appropriate property translator.
+     * This array is only used for a very small number of non-primitive 
+     * property types which are provided by JavaScript itself, e.g., Date.
+     */
     _propertyTranslatorTypeData: [ ],
     
-    addPropertyTranslator: function(typeName, propertyTranslator) {
-        this._propertyTranslatorMap[typeName] = propertyTranslator;
+    /**
+     * Adds a property translator for a specific class name.
+     *
+     * @param className the class name
+     * @param propertyTranslator the property translator 
+     */
+    addPropertyTranslator: function(className, propertyTranslator) {
+        this._propertyTranslatorMap[className] = propertyTranslator;
     },
     
+    /**
+     * Adds a property translator for a specific constructor.
+     *
+     * @param type the constructor
+     * @param propertyTranslator the property translator 
+     */
     addPropertyTranslatorByType: function(type, propertyTranslator) {
         this._propertyTranslatorTypeData.push(type, propertyTranslator);
     },
     
     /**
-     * Retrieves a property translator for a specific type name.
+     * Retrieves a property translator for a specific class name.
+     *
+     * @param className the class name
+     * @return the property translator
      */
-    getPropertyTranslator: function(typeName) {
-        return this._propertyTranslatorMap[typeName];
+    getPropertyTranslator: function(className) {
+        return this._propertyTranslatorMap[className];
     },
     
     /**
-     * Retrieves a property translator for a specific type.
+     * Retrieves a property translator for a specific constructor.
+     *
+     * @param type the constructor
+     * @return the property translator
      */
     getPropertyTranslatorByType: function(type) {
         for (var i = 0; i < this._propertyTranslatorTypeData.length; i += 2) {
