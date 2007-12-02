@@ -147,7 +147,7 @@ EchoApp.Application = Core.extend({
      *        previous component
      */
     focusNext: function(reverse) {
-        focusedComponent = reverse ? this.focusManager.findPrevious() : this.focusManager.findNext();
+        focusedComponent = this.focusManager.find(null, reverse);
         if (focusedComponent != null) {
             this.setFocusedComponent(focusedComponent);
         }
@@ -1155,6 +1155,16 @@ EchoApp.FocusManager = Core.extend({
         this._application = application;
     },
     
+    find: function(component, reverse) {
+        if (!component) {
+            component = this._application.getFocusedComponent();
+            if (!component) {
+                component = this._application.rootComponent;
+            }
+        }
+        return reverse ? this._findPrevious(component) : this._findNext(component);
+    },
+    
     /**
      * Finds next (or previous) focusable descendant of a parent component.
      * This method requires that the application's currently focused component
@@ -1182,7 +1192,7 @@ EchoApp.FocusManager = Core.extend({
         var componentIndex = focusedIndex;
         var component = focusedComponent;
         do {
-            component = reverse ? this.findPrevious(component) : this.findNext(component);
+            component = this.find(component, reverse);
             if (component == null) {
                 return null;
             }
@@ -1210,14 +1220,7 @@ EchoApp.FocusManager = Core.extend({
      * @return the Component which should be focused
      * @type EchoApp.Component
      */
-    findNext: function(component) {
-        if (!component) {
-            component = this._application.getFocusedComponent();
-            if (!component) {
-                component = this._application.rootComponent;
-            }
-        }
-        
+    _findNext: function(component) {
         /** The component which is currently focused by the application. */
         var originComponent = component;
         
@@ -1289,14 +1292,7 @@ EchoApp.FocusManager = Core.extend({
      * @return the Component which should be focused
      * @type EchoApp.Component
      */
-    findPrevious: function(component) {
-        if (!component) {
-            component = this._application.getFocusedComponent();
-            if (!component) {
-                component = this._application.rootComponent;
-            }
-        }
-        
+    _findPrevious: function(component) {
         /** The component which is currently focused by the application. */
         var originComponent = component;
         
