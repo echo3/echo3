@@ -1155,6 +1155,18 @@ EchoApp.FocusManager = Core.extend({
         this._application = application;
     },
     
+    /**
+     * Searches the component hierarchy for the next component that should
+     * be focused (based on the currently focused component).
+     * Container components are queried to determine the order in which their
+     * children should naturally be focused (certain components, e.g., SplitPanes,
+     * will have a child focus order that may be different from the order of their 
+     * children).
+     * This search is depth first.
+     * 
+     * @return the Component which should be focused
+     * @type EchoApp.Component
+     */
     find: function(component, reverse) {
         if (!component) {
             component = this._application.getFocusedComponent();
@@ -1162,7 +1174,91 @@ EchoApp.FocusManager = Core.extend({
                 component = this._application.rootComponent;
             }
         }
-        return reverse ? this._findPrevious(component) : this._findNext(component);
+
+        /** The component which is currently focused by the application. */
+        var originComponent = component;
+        
+        /** An associative array containing the ids of all previously visited components. */
+        var visitedComponents = { };
+        
+        /** The value of 'component' on the previous iteration. */
+        var lastComponent = null;
+        
+        while (true) {
+            /** The candidate next component to be focused */
+            var nextComponent = null;
+
+            if (reverse) {
+                if (component == originComponent || (lastComponent && lastComponent.parent == component)) {
+                    // On origin component (OR) Previously moved up: do not move down.
+                } else {
+                    var componentCount = component.getComponentCount();
+                    if (componentCount > 0) {
+                        // Attempt to move down.
+                        nextComponent = component.getComponent(componentCount - 1);
+                        if (visitedComponents[nextComponent.renderId]) {
+                            // Already visited children, cancel the move.
+                            nextComponent = null;
+                        }
+                    }
+                }
+                
+                if (nextComponent == null) {
+                    // Attempt to move left.
+                    if (component.parent) {
+                        // Get previous sibling.
+                        var componentIndex = component.parent.indexOf(component);
+                        if (componentIndex > 0) {
+                            nextComponent = component.parent.getComponent(componentIndex - 1);
+                        }
+                    }
+                }
+            } else {
+                if (component.getComponentCount() > 0) {
+                    if (lastComponent && lastComponent.parent == component) {
+                        // Previously moved up: do not move down.
+                    } else {
+                        // Attempt to move down.
+                        nextComponent = component.getComponent(0);
+        
+                        if (visitedComponents[nextComponent.renderId]) {
+                            // Already visited children, cancel the move.
+                            nextComponent = null;
+                        }
+                    }
+                }
+                
+                if (nextComponent == null) {
+                    // Attempt to move right.
+        
+                    // Verify component is not root.
+                    if (component.parent) {
+                        // Get next sibling.
+                        var componentIndex = component.parent.indexOf(component);
+                        if (componentIndex < component.parent.getComponentCount() - 1) {
+                            nextComponent = component.parent.getComponent(componentIndex + 1);
+                        }
+                    }
+                }
+            }
+                
+            if (nextComponent == null) {
+                // Attempt to move up.
+                nextComponent = component.parent;
+            }
+            
+            if (nextComponent == null) {
+                return null;
+            }
+
+            lastComponent = component;
+            component = nextComponent;
+            visitedComponents[component.renderId] = true;
+            
+            if (component != originComponent && component.isActive() && component.focusable) {
+                return component;
+            }
+        }
     },
     
     /**
@@ -1206,148 +1302,6 @@ EchoApp.FocusManager = Core.extend({
         
         this._application.setFocusedComponent(component);
         return component;
-    },
-    
-    /**
-     * Searches the component hierarchy for the next component that should
-     * be focused (based on the currently focused component).
-     * Container components are queried to determine the order in which their
-     * children should naturally be focused (certain components, e.g., SplitPanes,
-     * will have a child focus order that may be different from the order of their 
-     * children).
-     * This search is depth first.
-     * 
-     * @return the Component which should be focused
-     * @type EchoApp.Component
-     */
-    _findNext: function(component) {
-        /** The component which is currently focused by the application. */
-        var originComponent = component;
-        
-        /** An associative array containing the ids of all previously visited components. */
-        var visitedComponents = { };
-        
-        /** The value of 'component' on the previous iteration. */
-        var lastComponent = null;
-        
-        while (true) {
-            /** The candidate next component to be focused */
-            var nextComponent = null;
-            
-            if (component.getComponentCount() > 0) {
-                if (lastComponent && lastComponent.parent == component) {
-                    // Previously moved up: do not move down.
-                } else {
-                    // Attempt to move down.
-                    nextComponent = component.getComponent(0);
-    
-                    if (visitedComponents[nextComponent.renderId]) {
-                        // Already visited children, cancel the move.
-                        nextComponent = null;
-                    }
-                }
-            }
-            
-            if (nextComponent == null) {
-                // Attempt to move right.
-    
-                // Verify component is not root.
-                if (component.parent) {
-                    // Get next sibling.
-                    var componentIndex = component.parent.indexOf(component);
-                    if (componentIndex < component.parent.getComponentCount() - 1) {
-                        nextComponent = component.parent.getComponent(componentIndex + 1);
-                    }
-                }
-            }
-            
-            if (nextComponent == null) {
-                // Attempt to move up.
-                nextComponent = component.parent;
-            }
-            
-            if (nextComponent == null) {
-                return null;
-            }
-            
-            lastComponent = component;
-            component = nextComponent;
-            visitedComponents[component.renderId] = true;
-            
-            if (component != originComponent && component.isActive() && component.focusable) {
-                return component;
-            }
-        }
-    },
-    
-    /**
-     * Searches the component hierarchy for the previous component that should
-     * be focused (based on the currently focused component).
-     * Container components are queried to determine the order in which their
-     * children should naturally be focused (certain components, e.g., SplitPanes,
-     * will have a child focus order that may be different from the order of their 
-     * children).
-     * This search is depth first.
-     * 
-     * @return the Component which should be focused
-     * @type EchoApp.Component
-     */
-    _findPrevious: function(component) {
-        /** The component which is currently focused by the application. */
-        var originComponent = component;
-        
-        /** An associative array containing the ids of all previously visited components. */
-        var visitedComponents = { };
-        
-        /** The value of 'component' on the previous iteration. */
-        var lastComponent = null;
-        
-        while (true) {
-            /** The candidate next component to be focused */
-            var nextComponent = null;
-            
-            if (component == originComponent || (lastComponent && lastComponent.parent == component)) {
-                // On origin component (OR) Previously moved up: do not move down.
-            } else {
-                var componentCount = component.getComponentCount();
-                if (componentCount > 0) {
-                    // Attempt to move down.
-                    nextComponent = component.getComponent(componentCount - 1);
-                    if (visitedComponents[nextComponent.renderId]) {
-                        // Already visited children, cancel the move.
-                        nextComponent = null;
-                    }
-                }
-            }
-            
-            if (nextComponent == null) {
-                // Attempt to move left.
-                if (component.parent) {
-                    // Get previous sibling.
-                    var componentIndex = component.parent.indexOf(component);
-                    if (componentIndex > 0) {
-                        nextComponent = component.parent.getComponent(componentIndex - 1);
-                    }
-                }
-            }
-            
-            if (nextComponent == null) {
-                // Move up.
-                nextComponent = component.parent;
-            }
-            
-            if (nextComponent == null) {
-                return null;
-            }
-    
-            lastComponent = component;
-            component = nextComponent;
-            visitedComponents[component.renderId] = true;
-            
-            if (component != originComponent && component.isActive() && component.focusable) {
-                return component;
-            }
-        }
     },
     
     _getDescendantIndex: function(parentComponent, descendant) {
