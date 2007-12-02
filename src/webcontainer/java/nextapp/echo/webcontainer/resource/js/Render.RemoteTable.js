@@ -51,7 +51,8 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         this._headerVisible = this.component.getProperty("headerVisible");
     
         if (this._selectionEnabled) {
-            this.selectionModel = new EchoApp.ListSelectionModel(parseInt(this.component.getProperty("selectionMode")));
+            this.selectionModel = new EchoAppRender.RemoteTableSync.ListSelectionModel(
+                    parseInt(this.component.getProperty("selectionMode")));
         }
         
         this._tableElement = document.createElement("table");
@@ -369,12 +370,12 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         
         WebCore.DOM.preventEventDefault(e);
     
-        if (this.selectionModel.getSelectionMode() == EchoApp.ListSelectionModel.SINGLE_SELECTION 
+        if (this.selectionModel.getSelectionMode() == EchoAppRender.RemoteTableSync.ListSelectionModel.SINGLE_SELECTION 
                 || !(e.shiftKey || e.ctrlKey || e.metaKey || e.altKey)) {
             this._clearSelected();
         }
     
-        if (!this.selectionModel.getSelectionMode() == EchoApp.ListSelectionModel.SINGLE_SELECTION 
+        if (!this.selectionModel.getSelectionMode() == EchoAppRender.RemoteTableSync.ListSelectionModel.SINGLE_SELECTION 
                 && e.shiftKey && this.lastSelectedIndex != -1) {
             var startIndex;
             var endIndex;
@@ -430,5 +431,103 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         }
     
         this._renderRowStyle(rowIndex);
+    }
+});
+
+/**
+ * @class Minimalistic representation of ListSelectionModel.
+ */
+EchoAppRender.RemoteTableSync.ListSelectionModel = Core.extend({
+
+    $static: {
+    
+        /**
+         * Value for selection mode setting indicating single selection.
+         * 
+         * @type Number
+         * @final
+         */
+        SINGLE_SELECTION: 0,
+        
+        /**
+         * Value for selection mode setting indicating multiple selection.
+         * 
+         * @type Number
+         * @final
+         */
+        MULTIPLE_SELECTION: 2
+    },
+    
+    /**
+     * Property class name.
+     * @type String
+     * @final
+     */
+    className: "ListSelectionModel",
+
+    /**
+     * Creates a ListSelectionModel.
+     * 
+     * @param {Number} selectionMode the selectionMode
+     * @constructor
+     *
+     */
+    $construct: function(selectionMode) {
+        this._selectionState = [];
+        this._selectionMode = selectionMode;
+    },
+    
+    /**
+     * Returns the selection mode. 
+     * 
+     * @return the selection mode
+     * @type Number
+     */
+    getSelectionMode: function() {
+        return this._selectionMode;
+    },
+    
+    /**
+     * Determines whether an index is selected.
+     * 
+     * @param {Number} index the index
+     * @return true if the index is selected
+     * @type Boolean
+     */
+    isSelectedIndex: function(index) {
+        if (this._selectionState.length <= index) {
+            return false;
+        } else {
+            return this._selectionState[index];
+        }
+    },
+    
+    /**
+     * Sets the selection state of the given index.
+     * 
+     * @param {Number} index the index
+     * @param {Boolean} selected the new selection state
+     */
+    setSelectedIndex: function(index, selected) {
+        this._selectionState[index] = selected;
+    },
+    
+    /**
+     * Gets a comma-delimited list containing the selected indices.
+     * 
+     * @return the list
+     * @type String
+     */
+    getSelectionString: function() {
+        var selection = "";
+        for (var i = 0; i < this._selectionState.length; i++) {
+            if (this._selectionState[i]) {
+                if (selection.length > 0) {
+                    selection += ",";
+                }
+                selection += i;
+            }
+        }
+        return selection;
     }
 });
