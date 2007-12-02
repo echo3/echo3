@@ -348,7 +348,9 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                 var focusFlags = focusedComponent.peer.getFocusFlags();
                 if ((focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_LEFT)
                         || (!focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT)) {
-                    if (this.component.application.focusManager.focusNextChild(this.component, focusPrevious)) {
+                    var focusChild = this.component.application.focusManager.findInParent(this.component, focusPrevious);
+                    if (focusChild) {
+                        this.component.application.setFocusedComponent(focusChild);
                         WebCore.DOM.preventEventDefault(e);
                         return false;
                     }
@@ -363,7 +365,10 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                 var focusFlags = focusedComponent.peer.getFocusFlags();
                 if ((focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_UP)
                         || (!focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_DOWN)) {
-                    if (this.component.application.focusManager.focusNextChild(this.component, focusPrevious, this._columnCount)) {
+                    var focusChild = this.component.application.focusManager.findInParent(this.component, focusPrevious,
+                            this._columnCount);
+                    if (focusChild) {
+                        this.component.application.setFocusedComponent(focusChild);
                         WebCore.DOM.preventEventDefault(e);
                         return false;
                     }

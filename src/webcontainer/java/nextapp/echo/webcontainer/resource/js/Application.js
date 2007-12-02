@@ -1156,11 +1156,18 @@ EchoApp.FocusManager = Core.extend({
     },
     
     /**
-     * Focuses next (or previous) child of a parent component.
-     * If the next immediate child is not focusable, its descendants will
-     * be investigated and the first focusable descendant will be focused. 
+     * Finds next (or previous) focusable descendant of a parent component.
+     * This method requires that the application's currently focused component
+     * be a descendant of the specified parent component.  The search will
+     * be limited to descendants of the parent component, i.e., if a suitable descendant
+     * component cannot be found, null will be returned.
+     *
+     * @param parentComponent the parent component to search
+     * @param reverse the search direction, false indicating to search forward, true
+     *        indicating reverse
+     * @param minimumDistance FIXME
      */
-    focusNextChild: function(parentComponent, reverse, minimumDistance) {
+    findInParent: function(parentComponent, reverse, minimumDistance) {
         if (!minimumDistance) {
             minimumDistance = 1;
         }
@@ -1189,16 +1196,6 @@ EchoApp.FocusManager = Core.extend({
         
         this._application.setFocusedComponent(component);
         return component;
-    },
-    
-    _getDescendantIndex: function(parentComponent, descendant) {
-        while (descendant.parent != parentComponent && descendant.parent != null) {
-            descendant = descendant.parent;
-        }
-        if (descendant.parent == null) {
-            return -1;
-        }
-        return parentComponent.indexOf(descendant);
     },
     
     /**
@@ -1355,6 +1352,16 @@ EchoApp.FocusManager = Core.extend({
                 return component;
             }
         }
+    },
+    
+    _getDescendantIndex: function(parentComponent, descendant) {
+        while (descendant.parent != parentComponent && descendant.parent != null) {
+            descendant = descendant.parent;
+        }
+        if (descendant.parent == null) {
+            return -1;
+        }
+        return parentComponent.indexOf(descendant);
     }
 });
 
