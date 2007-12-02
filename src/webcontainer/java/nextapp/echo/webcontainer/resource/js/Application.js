@@ -116,9 +116,18 @@ EchoApp.Application = Core.extend({
         this.updateManager.dispose();
     },
     
-    _findCurrentModalComponent: function(searchComponent) {
+    /**
+     * Recurisvely determines the current root component of the modal context.
+     *
+     * @param {EchoApp.Component} searchComponent (optional) the component from which to search
+     *        (this paramater is provided when recursively searching, if omitted the sear
+     *        will begin at the root component of the application).
+     * @return the current modal context root component
+     */
+    _findModalContextRoot: function(searchComponent) {
+        searchComponent = searchComponent ? searchComponent : this.rootComponent;
         for (var i = searchComponent.children.length - 1; i >= 0; --i) {
-            var foundComponent = this._findCurrentModalComponent(searchComponent.children[i]);
+            var foundComponent = this._findModalContextRoot(searchComponent.children[i]);
             if (foundComponent) {
                 return foundComponent;
             }
@@ -178,6 +187,11 @@ EchoApp.Application = Core.extend({
         return this._layoutDirection ? this._layoutDirection : EchoApp.LayoutDirection.LTR;
     },
         
+    /**
+     * Returns the root component of the modal context.
+     *
+     * @return the root component of the modal context
+     */
     getModalContextRoot: function() {
         if (this._modalComponents.length == 0) {
             return null;
@@ -185,7 +199,7 @@ EchoApp.Application = Core.extend({
             return this._modalComponents[0];
         }
         
-        return this._findCurrentModalComponent(this.rootComponent);
+        return this._findModalContextRoot();
     },
     
     /**
@@ -390,6 +404,13 @@ EchoApp.ComponentFactory = {
         return component;
     },
     
+    /**
+     * Returns the component constructor for the specified type.
+     *
+     * @param {String} typeName the type name
+     * @return the component constructor
+     * @type Function
+     */
     getConstructor: function(typeName) {
         return this._typeToConstructorMap[typeName];
     },
@@ -1123,6 +1144,9 @@ EchoApp.Component = Core.extend({
     }
 });
 
+/**
+ * Provides focus management tools for an application.
+ */
 EchoApp.FocusManager = Core.extend({
 
     /**
@@ -1338,6 +1362,9 @@ EchoApp.FocusManager = Core.extend({
 
 // Fundamental Property Types
 
+/**
+ * Describes the interface between a child Component and its parent.
+ */
 EchoApp.LayoutData = Core.extend({
     
     /**
@@ -1393,6 +1420,10 @@ EchoApp.LayoutData = Core.extend({
     }
 });
 
+/**
+ * Describes the layout direction of text and content to provide support 
+ * for bidirectional localization.
+ */
 EchoApp.LayoutDirection = Core.extend({
     
     /**
@@ -1433,6 +1464,10 @@ EchoApp.LayoutDirection.LTR = new EchoApp.LayoutDirection(true);
  */
 EchoApp.LayoutDirection.RTL = new EchoApp.LayoutDirection(false);
 
+/**
+ * A property object which describes the alignment or positioning of a 
+ * particular item relative to others.
+ */
 EchoApp.Alignment = Core.extend({
     
     $static: {
