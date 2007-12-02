@@ -312,6 +312,19 @@ EchoApp.Application = Core.extend({
         if (modal) {
             this._modalComponents.push(component);
         }
+        
+        // Auto-focus first component in modal context if component is currently focused component is not within modal context.
+        // FIXME not working.
+        if (this._modalComponents.length > 0 && this._focusedComponent) {
+            var modalContextRoot = this.getModalContextRoot();
+            if (!modalContextRoot.isAncestorOf(this._focusedComponent)) {
+                if (modalContextRoot.focusable) {
+                    this.setFocusedComponent(modalContextRoot);
+                } else {
+                    this.setFocusedComponent(this.focusManager.findInParent(modalContextRoot, false));
+                }
+            }
+        }
     },
     
     /**
@@ -3553,6 +3566,7 @@ EchoApp.WindowPane = Core.extend(EchoApp.Component, {
     modalSupport: true,
     floatingPane: true,
     pane: true,
+    focusable: true,
     
     /**
      * Programmatically perform a window closing operation.

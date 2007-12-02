@@ -107,8 +107,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         switch (e.keyCode) {
         case 27:
             this.component.doWindowClosing();
+            WebCore.DOM.preventEventDefault(e);
             return false;
-            break;
         }
         return true;
     },
