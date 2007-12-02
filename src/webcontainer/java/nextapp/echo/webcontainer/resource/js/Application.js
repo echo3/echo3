@@ -148,9 +148,7 @@ EchoApp.Application = Core.extend({
      */
     focusNext: function(reverse) {
         focusedComponent = reverse ? this.focusManager.findPrevious() : this.focusManager.findNext();
-        if (focusedComponent == null) {
-            //FIXME Focus first or last component
-        } else {
+        if (focusedComponent != null) {
             this.setFocusedComponent(focusedComponent);
         }
     },
@@ -471,16 +469,34 @@ EchoApp.Component = Core.extend({
         EchoApp.ComponentFactory.registerType("Component", this);
     },
 
+    $abstract: true,
+    
     $virtual: {
     
         /**
          * Component type.  This must be set by implementors in order for peer discovery to work properly.
          */
-        componentType: "Component"       
+        componentType: "Component",
+
+        /**
+         * Returns the child component at the specified index
+         * after sorting the children in the order which they 
+         * should be focused.  The default implementation simply
+         * returns the same value as getComponent().
+         * Implementations should override this method when
+         * the natural order to focus child components is
+         * different than their normal ordering (e.g., when
+         * the component at index 1 is positioned above the 
+         * component at index 0).
+         * 
+         * @param index the index of the child (in focus order)
+         * @return the child component
+         */
+        getFocusComponent: function(index) {
+            return this.children[index];
+        }
     },
 
-    $abstract: true,
-    
     /**
      * The render id.
      * This value should be treated as read-only and immutable.
@@ -671,24 +687,6 @@ EchoApp.Component = Core.extend({
      */
     getComponentCount: function() {
         return this.children.length;
-    },
-    
-    /**
-     * Returns the child component at the specified index
-     * after sorting the children in the order which they 
-     * should be focused.  The default implementation simply
-     * returns the same value as getComponent().
-     * Implementations should override this method when
-     * the natural order to focus child components is
-     * different than their normal ordering (e.g., when
-     * the component at index 1 is positioned above the 
-     * component at index 0).
-     * 
-     * @param index the index of the child (in focus order)
-     * @return the child component
-     */
-    getFocusComponent: function(index) {
-        return this.children[index];
     },
     
     /**
