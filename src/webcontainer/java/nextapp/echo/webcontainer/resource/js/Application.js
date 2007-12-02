@@ -1164,6 +1164,15 @@ EchoApp.FocusManager = Core.extend({
      * children).
      * This search is depth first.
      * 
+     * Search order (FORWARD):
+     * 
+     * (Start on Component)
+     * First Child, next sibling, parent
+     *
+     * Search order (REVERSE):
+     * Last Child, previous sibling, parent
+     * 
+     *
      * @return the Component which should be focused
      * @type EchoApp.Component
      */
@@ -1188,21 +1197,22 @@ EchoApp.FocusManager = Core.extend({
             /** The candidate next component to be focused */
             var nextComponent = null;
 
-            if (reverse) {
-                if (component == originComponent || (lastComponent && lastComponent.parent == component)) {
-                    // On origin component (OR) Previously moved up: do not move down.
-                } else {
-                    var componentCount = component.getComponentCount();
-                    if (componentCount > 0) {
-                        // Attempt to move down.
-                        nextComponent = component.getComponent(componentCount - 1);
-                        if (visitedComponents[nextComponent.renderId]) {
-                            // Already visited children, cancel the move.
-                            nextComponent = null;
-                        }
+            if ((reverse && component == originComponent) || (lastComponent && lastComponent.parent == component)) {
+                // Searching in reverse on origin component (OR) Previously moved up: do not move down.
+            } else {
+                var componentCount = component.getComponentCount();
+                if (componentCount > 0) {
+                    // Attempt to move down.
+                    // Next component is first child (searching forward) or last child (searching reverse).
+                    nextComponent = component.getComponent(reverse ? componentCount - 1 : 0);
+                    if (visitedComponents[nextComponent.renderId]) {
+                        // Already visited children, cancel the move.
+                        nextComponent = null;
                     }
                 }
-                
+            }
+            
+            if (reverse) {
                 if (nextComponent == null) {
                     // Attempt to move left.
                     if (component.parent) {
@@ -1214,20 +1224,6 @@ EchoApp.FocusManager = Core.extend({
                     }
                 }
             } else {
-                if (component.getComponentCount() > 0) {
-                    if (lastComponent && lastComponent.parent == component) {
-                        // Previously moved up: do not move down.
-                    } else {
-                        // Attempt to move down.
-                        nextComponent = component.getComponent(0);
-        
-                        if (visitedComponents[nextComponent.renderId]) {
-                            // Already visited children, cancel the move.
-                            nextComponent = null;
-                        }
-                    }
-                }
-                
                 if (nextComponent == null) {
                     // Attempt to move right.
         
