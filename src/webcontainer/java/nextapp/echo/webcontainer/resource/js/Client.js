@@ -228,9 +228,7 @@ EchoClient = Core.extend({
      */
     _processKeyPress: function(e) {
         if (e.keyCode == 9) { // Tab
-            Core.Debug.consoleWrite("OLD focused: " + this.application.getFocusedComponent());
             this.application.focusNext(e.shiftKey);
-            Core.Debug.consoleWrite("NEW focused: " + this.application.getFocusedComponent());
             WebCore.DOM.preventEventDefault(e);
             return false; // Stop propagation.
         }

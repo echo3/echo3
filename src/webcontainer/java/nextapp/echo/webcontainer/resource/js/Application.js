@@ -294,6 +294,7 @@ EchoApp.Application = Core.extend({
             var modalContextRoot = this.getModalContextRoot();
             if (!modalContextRoot.isAncestorOf(newValue)) {
                 // Reject request to focus component outside of modal context.
+                Core.Debug.consoleWrite("not in modal:" + newValue);
                 return;
             }
         }
@@ -953,11 +954,6 @@ EchoApp.Component = Core.extend({
     
         if (!application) { // unregistering
             
-            // Change application focus in the event the focused component is being removed.
-            if (this.application._focusedComponent == this) {
-                this.application.setFocusedComponent(this.parent);
-            }
-            
             if (this.children != null) {
                 // Recursively unregister children.
                 for (var i = 0; i < this.children.length; ++i) {
@@ -967,6 +963,12 @@ EchoApp.Component = Core.extend({
             
             // Notify application.
             this.application._unregisterComponent(this);
+            
+            // Change application focus in the event the focused component is being removed.
+            // Note that this is performed after deregistration to ensure any removed modal context is cleared.
+            if (this.application._focusedComponent == this) {
+                this.application.setFocusedComponent(this.parent);
+            }
         }
     
         // Link/unlink with application.
