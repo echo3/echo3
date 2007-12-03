@@ -285,12 +285,6 @@ EchoRender = {
         
         // Inform UpdateManager that all updates have been completed.
         updateManager.purge();
-        
-        // Focus the currently specified focused component, if possible.
-        var component = client.application.getFocusedComponent();
-        if (component && component.peer && component.peer.renderFocus) {
-            component.peer.renderFocus();
-        }
     },
     
     /**
