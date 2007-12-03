@@ -538,9 +538,6 @@ WebCore.EventProcessor = {
      *        the bubbling phase
      */
     add: function(element, eventType, eventTarget, capture) {
-        if (!element) {
-            alert(eventType + eventTarget);
-        }
         if (!element.__eventProcessorId) {
             element.__eventProcessorId = ++WebCore.EventProcessor._nextId;
         }
@@ -786,6 +783,8 @@ WebCore.HttpConnection = Core.extend({
          */
         ResponseEvent: Core.extend(Core.Event, {
         
+            valid: false,
+        
             // FIXME Current "valid" flag for 2XX responses is probably a horrible idea.
             /**
              * Creates a new response event
@@ -800,6 +799,20 @@ WebCore.HttpConnection = Core.extend({
             }
         })
     },
+
+    _url: null,
+    
+    _contentType: null,
+    
+    _method: null,
+    
+    _messageObject: null,
+    
+    _listenerList: null,
+    
+    _disposed: false,
+    
+    _xmlHttpRequest: null,
 
     /**
      * Creates a new <code>HttpConnection</code>.
@@ -817,7 +830,6 @@ WebCore.HttpConnection = Core.extend({
         this._contentType = contentType;
         this._method = method;
         this._messageObject = messageObject;
-        this._disposed = false;
         this._listenerList = new Core.ListenerList();
     },
     
@@ -968,6 +980,14 @@ WebCore.Library = {
      */
     Group: Core.extend({
     
+        _listenerList: null,
+        
+        _libraries: null,
+        
+        _loadedCount: 0,
+        
+        _totalCount: 0,
+    
         /**
          * Creates a new library group.
          * @constructor 
@@ -975,8 +995,6 @@ WebCore.Library = {
         $construct: function() {
             this._listenerList = new Core.ListenerList();
             this._libraries = [];
-            this._loadedCount = 0;
-            this._totalCount = 0;
         },
         
         /**
@@ -1087,6 +1105,12 @@ WebCore.Library = {
      * @private 
      */    
     _Item: Core.extend({
+    
+        _url: null,
+        
+        _group: null,
+        
+        _content: null,
     
         /**
          * Creates a new library item.
@@ -1273,6 +1297,30 @@ WebCore.Measure = {
     Bounds: Core.extend({
 
         /**
+         * The width of the element, in pixels.
+         * @type Integer
+         */
+        width: null,
+        
+        /**
+         * The height of the element, in pixels.
+         * @type Integer
+         */
+        height: null,
+        
+        /**
+         * The top coordinate of the element, in pixels relative to the upper-left corner of the interior of the window.
+         * @type Integer
+         */
+        top: null,
+         
+        /**
+         * The left coordinate of the element, in pixels relative to the upper-left corner of the interior of the window.
+         * @type Integer
+         */
+        left: null,
+
+        /**
          * Creates a new Bounds object to calculate the size and/or position of an element.
          * 
          * @param element the element to measure.
@@ -1313,16 +1361,7 @@ WebCore.Measure = {
             
             // Store  width and height of element.
         
-            /**
-             * The width of the element, in pixels.
-             * @type Integer
-             */
             this.width = element.offsetWidth;
-        
-            /**
-             * The height of the element, in pixels.
-             * @type Integer
-             */
             this.height = element.offsetHeight;
             
             if (!rendered) {
@@ -1338,16 +1377,7 @@ WebCore.Measure = {
                 var cumulativeOffset = WebCore.Measure._getCumulativeOffset(element);
                 var scrollOffset = WebCore.Measure._getScrollOffset(element);
         
-                /**
-                 * The top coordinate of the element, in pixels relative to the upper-left corner of the interior of the window.
-                 * @type Integer
-                 */
                 this.top = cumulativeOffset.top - scrollOffset.top;
-        
-                /**
-                 * The left coordinate of the element, in pixels relative to the upper-left corner of the interior of the window.
-                 * @type Integer
-                 */
                 this.left = cumulativeOffset.left - scrollOffset.left;
             }
         },
