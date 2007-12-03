@@ -54,37 +54,37 @@ EchoApp.Application = Core.extend({
      */
     _focusedComponent: null,
     
+    /** 
+     * Root component instance.
+     * This value is read-only.
+     * @type EchoApp.Component 
+     */
+    rootComponent: null,
+    
+    /** 
+     * UpdateManager instance monitoring changes to the application for redraws. 
+     * @type EchoApp.Update.Manager
+     */
+    updateManager: null,
+    
+    /**
+     * FocusManager instance handling application focus behavior.
+     * @type EchoApp.FocusManager
+     */
+    focusManager: null,
+    
     /**
      * Creates a new application instance.  
      * @constructor
      */
     $construct: function() {
-        
         this._idToComponentMap = new Core.Arrays.LargeMap();
-        
         this._listenerList = new Core.ListenerList();
-    
-        /** 
-         * Root component instance.
-         * This value is read-only.
-         * @type EchoApp.Component 
-         */
         this.rootComponent = new EchoApp.Component();
         this.rootComponent.componentType = "Root";
         this.rootComponent.register(this);
-        
         this._modalComponents = [];
-        
-        /** 
-         * UpdateManager instance monitoring changes to the application for redraws. 
-         * @type EchoApp.Update.Manager
-         */
         this.updateManager = new EchoApp.Update.Manager(this);
-        
-        /**
-         * FocusManager instance handling application focus behavior.
-         * @type EchoApp.FocusManager
-         */
         this.focusManager = new EchoApp.FocusManager(this);
     },
 
@@ -370,6 +370,14 @@ EchoApp.Application = Core.extend({
  */
 EchoApp.Application.ComponentUpdateEvent = Core.extend(Core.Event, {
 
+    parent: null,
+    
+    oldValue: null,
+    
+    newValue: null,
+    
+    propertyName: null,
+
     /**
      * Creates an Event object describing an update to a component.
      * 
@@ -569,6 +577,20 @@ EchoApp.Component = Core.extend({
     _enabled: true,
     
     /**
+     * Array of child components.
+     * This value is read-only.  Modifying this array will result in undefined behavior.
+     * @type Array
+     */
+    children: null,
+    
+    /**
+     * Internal style used to store properties set directly on component.
+     * @private
+     * @type EchoApp.Style
+     */
+    _localStyle: null,
+    
+    /**
      * Creates a new Component.
      *  
      * @param {String} renderId the render id
@@ -583,11 +605,6 @@ EchoApp.Component = Core.extend({
      */
     $construct: function(properties) {
         
-        /**
-         * Array of child components.
-         * This value is read-only.  Modifying this array will result in undefined behavior.
-         * @type Array
-         */
         this.children = [];
         
         var localStyleProperties = null;
@@ -617,11 +634,6 @@ EchoApp.Component = Core.extend({
             }
         }
         
-        /**
-         * Internal style used to store properties set directly on component.
-         * @private
-         * @type EchoApp.Style
-         */
         this._localStyle = new EchoApp.Style(localStyleProperties);
     },
 
@@ -1169,6 +1181,8 @@ EchoApp.Component = Core.extend({
  * Provides focus management tools for an application.
  */
 EchoApp.FocusManager = Core.extend({
+
+    _application: null,
 
     /**
      * Focus management handler for a specific application instance.
