@@ -668,6 +668,10 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         WebCore.VirtualPosition.redraw(this._maskDivElement);
     },
     
+    renderFocus: function() {
+        WebCore.DOM.focusElement(this._windowPaneDivElement);
+    },
+
     renderUpdate: function(update) {
         var element = this._windowPaneDivElement;
         var containerElement = element.parentNode;
