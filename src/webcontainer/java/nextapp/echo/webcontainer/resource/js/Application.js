@@ -1333,6 +1333,8 @@ EchoApp.FocusManager = Core.extend({
  */
 EchoApp.LayoutData = Core.extend({
     
+    _localStyle: null,
+    
     /**
      * Layout Data Object, describing how a child component is rendered/laid out 
      * within its parent container.
@@ -1393,16 +1395,17 @@ EchoApp.LayoutData = Core.extend({
 EchoApp.LayoutDirection = Core.extend({
     
     /**
+     * Flag indicating whether layout direction is left-to-right.
+     * @type Boolean 
+     */
+    _ltr: false,
+    
+    /**
      * LayoutDirection property.  Do not instantiate, use LTR/RTL constants.
      * @constructor
      */
-    $construct: function() {
-    
-        /**
-         * Flag indicating whether layout direction is left-to-right.
-         * @type Boolean 
-         */
-        this._ltr = arguments[0];
+    $construct: function(ltr) {
+        this._ltr = ltr;
     },
 
     /**
@@ -1496,6 +1499,25 @@ EchoApp.Alignment = Core.extend({
          */
         BOTTOM: 7
     },
+    
+    /**
+     * Property class name.
+     * @type String
+     * @final
+     */
+    className: "Alignment",
+
+    /**
+     * The horizontal alignment setting.
+     * @type {Number}
+     */
+    horizontal: null,
+    
+    /**
+     * The vertical alignment setting.
+     * @type {Number}
+     */
+    vertical: null,
 
     /**
      * Creates an alignment property.
@@ -1522,26 +1544,9 @@ EchoApp.Alignment = Core.extend({
      * @constructor
      */
     $construct: function(horizontal, vertical) {
-    
-        /**
-         * The horizontal alignment setting.
-         * @type {Number}
-         */
         this.horizontal = horizontal ? horizontal : 0;
-    
-        /**
-         * The vertical alignment setting.
-         * @type {Number}
-         */
         this.vertical = vertical ? vertical : 0;
-    },
-    
-    /**
-     * Property class name.
-     * @type String
-     * @final
-     */
-    className: "Alignment"
+    }
 });
 
 /**
@@ -1560,6 +1565,24 @@ EchoApp.Border = Core.extend({
          */
         Side: Core.extend({
             
+            /** 
+             * Border side size
+             * @type EchoApp.Extent
+             */ 
+            size: null,
+            
+            /** 
+             * Border side style
+             * @type Number
+             */ 
+            style: null,
+            
+            /** 
+             * Border side color
+             * @type EchoApp.Color
+             */ 
+            color: null,
+            
             /**
              * Creates a border side.
              * @constructor
@@ -1571,22 +1594,8 @@ EchoApp.Border = Core.extend({
                         throw new Error("Invalid border string: " + arguments[0]);
                     }
                     
-                    /** 
-                     * Border side size
-                     * @type EchoApp.Extent
-                     */ 
                     this.size = new EchoApp.Extent(items[0]);
-                    
-                    /** 
-                     * Border side style
-                     * @type Number
-                     */ 
                     this.style = items[1];
-            
-                    /** 
-                     * Border side color
-                     * @type EchoApp.Color
-                     */ 
                     this.color = new EchoApp.Color(items[2]);
                 }
             }
@@ -1600,6 +1609,43 @@ EchoApp.Border = Core.extend({
      */
     className: "Border",
     
+    /**
+     * Flag indicating whether the border has individually specified sides.
+     * @type Boolean
+     */
+    multisided: false,
+    
+    /**
+     * Array of Border.Side objects, specifying top, right, bottom, and left
+     * sides in that order.
+     * @type Array
+     */
+    sides: null,
+    
+    /**
+     * Default border size (used by components that do not support borders
+     * with individually specified sides, or in the case of a border that
+     * does not individually specify sides).
+     * @type EchoApp.Extent
+     */
+    size: null,
+
+    /**
+     * Default border style (used by components that do not support borders
+     * with individually specified sides, or in the case of a border that
+     * does not individually specify sides).
+     * @type Number
+     */
+    style: null,
+
+    /**
+     * Default border color (used by components that do not support borders
+     * with individually specified sides, or in the case of a border that
+     * does not individually specify sides).
+     * @type EchoApp.Color
+     */
+    color: null,
+
     $construct: function() {
         if (arguments.length == 1 && arguments[0] instanceof Array) {
             /**
@@ -1639,7 +1685,6 @@ EchoApp.Border = Core.extend({
              */
             this.color = this.sides[0].color;
         } else if (arguments.length == 1 && typeof arguments[0] == "string") {
-            this.multisided = false;
             var items = arguments[0].split(" ");
             if (items.length != 3) {
                 throw new Error("Invalid border string: " + arguments[0]);
@@ -1648,7 +1693,6 @@ EchoApp.Border = Core.extend({
             this.style = items[1];
             this.color = new EchoApp.Color(items[2]);
         } else if (arguments.length == 3) {
-            this.multisided = false;
             this.size = arguments[0];
             this.style = arguments[1];
             this.color = arguments[2];
@@ -1661,6 +1705,10 @@ EchoApp.Border = Core.extend({
  * A representation of a group of RadioButtons, where only one may be selected at a time.
  */
 EchoApp.ButtonGroup = Core.extend({
+
+    _id: null,
+    
+    _buttonArray: null,
 
     /**
      * Creates a RadioButton group.
@@ -1754,15 +1802,17 @@ EchoApp.Color = Core.extend({
     className: "Color",
     
     /**
+     * The hexadecimal value of the color, e.g., #ab12c3.
+     * @type String
+     */
+    value: null,
+    
+    /**
      * Creates a color property.
      * @constructor
      * @param value the color hex value
      */
     $construct: function(value) {
-        /**
-         * The hexadecimal value of the color, e.g., #ab12c3.
-         * @type String
-         */
         this.value = value;
     },
     
@@ -1858,6 +1908,18 @@ EchoApp.Extent = Core.extend({
     className: "Extent",
 
     /**
+     * The dimensionless value of the extent, e.g., 30.
+     * @type Number 
+     */
+    value: null,
+    
+    /**
+     * The dimension of the extent, e.g., "px", "%", or "in"/
+     * @type String
+     */
+    units: null,
+    
+    /**
      * Creates a new Extent property.  
      * This method takes multiple configurations of arguments.
      * <p>
@@ -1872,15 +1934,7 @@ EchoApp.Extent = Core.extend({
      */
     $construct: function() {
         if (arguments.length == 2) {
-            /**
-             * The dimensionless value of the extent, e.g., 30.
-             * @type Number 
-             */
             this.value = arguments[0];
-            /**
-             * The dimension of the extent, e.g., "px", "%", or "in"/
-             * @type String
-             */
             this.units = arguments[1];
         } else {
             var parts = EchoApp.Extent._PATTERN.exec(arguments[0]);
@@ -1945,6 +1999,36 @@ EchoApp.FillImage = Core.extend({
      * @final
      */
     className: "FillImage",
+    
+    /**
+     * The image.
+     * @type EchoApp.ImageReference
+     */
+    image: null,
+    
+    /**
+     * The repeat configuration, one of the following values:
+     * <ul>
+     *  <li>EchoApp.FillImage.NO_REPEAT</li>
+     *  <li>EchoApp.FillImage.REPEAT_HORIZONTAL</li>
+     *  <li>EchoApp.FillImage.REPEAT_VERTICAL</li>
+     *  <li>EchoApp.FillImage.REPEAT</li>
+     * </ul>
+     * @type Number
+     */
+    repeat: null,
+    
+    /**
+     * The horizontal aligment/position of the image.
+     * @type EchoApp.Extent
+     */
+    x: null,
+    
+    /**
+     * The vertical aligment/position of the image.
+     * @type EchoApp.Extent
+     */
+    y: null,
 
     /**
      * Creates a FillImage property.
@@ -1966,39 +2050,18 @@ EchoApp.FillImage = Core.extend({
      */
     $construct: function(image, repeat, x, y) {
         if (image instanceof EchoApp.ImageReference) {
-            /**
-             * The image.
-             * @type EchoApp.ImageReference
-             */
             this.image = image;
         } else {
             this.image = new EchoApp.ImageReference(image);
         }
-        /**
-         * The repeat configuration, one of the following values:
-         * <ul>
-         *  <li>EchoApp.FillImage.NO_REPEAT</li>
-         *  <li>EchoApp.FillImage.REPEAT_HORIZONTAL</li>
-         *  <li>EchoApp.FillImage.REPEAT_VERTICAL</li>
-         *  <li>EchoApp.FillImage.REPEAT</li>
-         * </ul>
-         * @type Number
-         */
+
         this.repeat = repeat;
         if (x == null || x instanceof EchoApp.Extent) {
-            /**
-             * The horizontal aligment/position of the image.
-             * @type EchoApp.Extent
-             */
             this.x = x;
         } else {
             this.x = new EchoApp.Extent(x);
         }
         if (y == null || y instanceof EchoApp.Extent) {
-            /**
-             * The vertical aligment/position of the image.
-             * @type EchoApp.Extent
-             */
             this.y = y;
         } else {
             this.y = new EchoApp.Extent(y);
@@ -2020,6 +2083,35 @@ EchoApp.FillImageBorder = Core.extend({
      * @final
      */
     className: "FillImageBorder",
+    
+    /**
+     * The border background color.
+     * @type EchoApp.Color
+     */
+    color: null,
+    
+    /**
+     * The content insets (defines the content area inside of the border, if smaller than the
+     * border insets, the content will overlap the border).
+     * 
+     * @type EchoApp.Insets 
+     */
+    contentInsets: null,
+    
+    /**
+     * The border insets 
+     * (effectively defines the sizes of the cells where the border FillImages are rendered).
+     * @type EchoApp.Insets 
+     */
+    borderInsets: null,
+    
+    /**
+     * An array containing eight fill images, specifying the images used for the
+     * top-left, top, top-right, left, right, bottom-left, bottom, and bottom-right
+     * images in that order.
+     * @type Array
+     */
+    fillImages: null,
 
     /**
      * Creates a FillImageBorder
@@ -2036,42 +2128,21 @@ EchoApp.FillImageBorder = Core.extend({
      */
     $construct: function(color, borderInsets, contentInsets, fillImages) {
         if (color == null || color instanceof EchoApp.Color) {
-            /**
-             * The border background color.
-             * @type EchoApp.Color
-             */
             this.color = color;
         } else {
             this.color = new EchoApp.Color(color);
         }
         if (borderInsets == null || borderInsets instanceof EchoApp.Insets) {
-            /**
-             * The border insets 
-             * (effectively defines the sizes of the cells where the border FillImages are rendered).
-             * @type EchoApp.Insets 
-             */
             this.borderInsets = borderInsets;
         } else {
             this.borderInsets = new EchoApp.Insets(borderInsets);
         }
         if (contentInsets == null || contentInsets instanceof EchoApp.Insets) {
-            /**
-             * The content insets (defines the content area inside of the border, if smaller than the
-             * border insets, the content will overlap the border).
-             * 
-             * @type EchoApp.Insets 
-             */
             this.contentInsets = contentInsets;
         } else {
             this.contentInsets = new EchoApp.Insets(contentInsets);
         }
         
-        /**
-         * An array containing eight fill images, specifying the images used for the
-         * top-left, top, top-right, left, right, bottom-left, bottom, and bottom-right
-         * images in that order.
-         * @type Array
-         */
         this.fillImages = fillImages ? fillImages : new Array(8);
     }
 });
@@ -2132,6 +2203,32 @@ EchoApp.Font = Core.extend({
      * @final
      */
     className: "Font",
+    
+    /**
+     * The typeface of the font, may be a string or an array of strings.
+     */
+    typeface: null,
+    
+    /**
+     * The style of the font, one or more of the following values ORed together:
+     * <ul>
+     *  <li>EchoApp.Font.PLAIN</li>
+     *  <li>EchoApp.Font.BOLD</li>
+     *  <li>EchoApp.Font.ITALIC</li>
+     *  <li>EchoApp.Font.UNDERLINE</li>
+     *  <li>EchoApp.Font.OVERLINE</li>
+     *  <li>EchoApp.Font.LINE_THROUGH</li>
+     * </ul>
+     * @type Number
+     */
+    style: null,
+    
+    /**
+     * The size of the font.
+     * 
+     * @type EchoApp.Extent
+     */
+    size: null,
 
     /**
      * Creates a Font property.
@@ -2150,32 +2247,9 @@ EchoApp.Font = Core.extend({
      * @constructor
      */
     $construct: function(typeface, style, size) {
-        
-        /**
-         * The typeface of the font, may be a string or an array of strings.
-         */
         this.typeface = typeface;
-        
-        /**
-         * The style of the font, one or more of the following values ORed together:
-         * <ul>
-         *  <li>EchoApp.Font.PLAIN</li>
-         *  <li>EchoApp.Font.BOLD</li>
-         *  <li>EchoApp.Font.ITALIC</li>
-         *  <li>EchoApp.Font.UNDERLINE</li>
-         *  <li>EchoApp.Font.OVERLINE</li>
-         *  <li>EchoApp.Font.LINE_THROUGH</li>
-         * </ul>
-         * @type Number
-         */
         this.style = style;
-        
         if (typeof size == "number") {
-            /**
-             * The size of the font.
-             * 
-             * @type EchoApp.Extent
-             */
             this.size = new Extent(size);
         } else {
             this.size = size;
@@ -2196,6 +2270,24 @@ EchoApp.ImageReference = Core.extend({
     className: "ImageReference",
 
     /**
+     * The URL from which the image may be obtained.
+     * @type String
+     */
+    url: null,
+    
+    /**
+     * The width of the image.
+     * @type EchoApp.Extent
+     */
+    width: null, 
+    
+    /**
+     * The height of the image.
+     * @type EchoApp.Extent
+     */
+    height: null,
+    
+    /**
      * Creates a new Image Reference.
      * 
      * @param {String} url the URL from which the image may be obtained
@@ -2204,22 +2296,8 @@ EchoApp.ImageReference = Core.extend({
      * @constructor
      */
     $construct: function(url, width, height) {
-        /**
-         * The URL from which the image may be obtained.
-         * @type String
-         */
         this.url = url;
-        
-        /**
-         * The width of the image.
-         * @type EchoApp.Extent
-         */
         this.width = width;
-    
-        /**
-         * The height of the image.
-         * @type EchoApp.Extent
-         */
         this.height = height;
     }
 });
@@ -2235,6 +2313,30 @@ EchoApp.Insets = Core.extend({
      * @final
      */
     className: "Insets",
+    
+    /**
+     * The top inset size.
+     * @type EchoApp.Extent
+     */
+    top: null,
+    
+    /**
+     * The right inset size.
+     * @type EchoApp.Extent
+     */
+    right: null,
+    
+    /**
+     * The bottom inset size.
+     * @type EchoApp.Extent
+     */
+    bottom: null,
+    
+    /**
+     * The left inset size.
+     * @type EchoApp.Extent
+     */
+    left: null,
  
     /**
      * Creates a new Insets Property.
@@ -2284,25 +2386,9 @@ EchoApp.Insets = Core.extend({
             this.bottom = values[2];
             break;
         case 4:
-            /**
-             * The top inset size.
-             * @type EchoApp.Extent
-             */
             this.top = values[0];
-            /**
-             * The right inset size.
-             * @type EchoApp.Extent
-             */
             this.right = values[1];
-            /**
-             * The bottom inset size.
-             * @type EchoApp.Extent
-             */
             this.bottom = values[2];
-            /**
-             * The left inset size.
-             * @type EchoApp.Extent
-             */
             this.left = values[3];
             break;
         default:
@@ -2327,6 +2413,8 @@ EchoApp.Insets = Core.extend({
  * @class Component Style.
  */
 EchoApp.Style = Core.extend({ 
+
+    _properties: null, 
 
     /**
      * Creates a new Component Syle.
@@ -2535,12 +2623,57 @@ EchoApp.Update.ComponentUpdate = Core.extend({
     },
     
     /**
+     * The <code>Manager</code> to which this update belongs.
+     * @type Array
+     */
+    _manager: null,
+    
+    /**
+     * The parent component represented in this <code>ServerComponentUpdate</code>.
+     * @type EchoApp.Component
+     */
+    parent: null,
+    
+    /**
      * Storage for contextual information used by application container to render this update.
      * Object type and content are specified by the application container, this variable is not
      * used by the application module in any capacity.
      */
     renderContext : null,
     
+    /**
+     * The set of child Component ids added to the <code>parent</code>.
+     * @type Array
+     */
+    _addedChildIds: null,
+    
+    /**
+     * A mapping between property names of the parent component and 
+     * <code>PropertyUpdate</code>s.
+     * @type Object
+     */
+    _propertyUpdates: null,
+    
+    /**
+     * The set of child Component ids removed from the <code>parent</code>.
+     * @type Array
+     */
+    _removedChildIds: null,
+    
+    /**
+     * The set of descendant Component ids which are implicitly removed 
+     * as they were children of removed children.
+     * @type Array
+     */
+    _removedDescendantIds: null,
+
+    /**
+     * The set of child Component ids whose <code>LayoutData</code> 
+     * was updated. 
+     * @type Array
+     */
+    _updatedLayoutDataChildIds: null,
+
     /**
      * Creates a new ComponentUpdate.
      * 
@@ -2560,39 +2693,6 @@ EchoApp.Update.ComponentUpdate = Core.extend({
          * @type EchoApp.Component
          */
         this.parent = parent;
-    
-        /**
-         * The set of child Component ids added to the <code>parent</code>.
-         * @type Array
-         */
-        this._addedChildIds = null;
-        
-        /**
-         * A mapping between property names of the parent component and 
-         * <code>PropertyUpdate</code>s.
-         * @type Object
-         */
-        this._propertyUpdates = null;
-        
-        /**
-         * The set of child Component ids removed from the <code>parent</code>.
-         * @type Array
-         */
-        this._removedChildIds = null;
-        
-        /**
-         * The set of descendant Component ids which are implicitly removed 
-         * as they were children of removed children.
-         * @type Array
-         */
-        this._removedDescendantIds = null;
-    
-        /**
-         * The set of child Component ids whose <code>LayoutData</code> 
-         * was updated. 
-         * @type Array
-         */
-        this._updatedLayoutDataChildIds = null;
     },
     
     /**
@@ -2898,49 +2998,53 @@ EchoApp.Update.ComponentUpdate = Core.extend({
 EchoApp.Update.Manager = Core.extend({
     
     /**
+     * Associative mapping between component ids and EchoApp.Update.ComponentUpdate
+     * instances.
+     * @type Object
+     */
+    _componentUpdateMap: null,
+    
+    /**
+     * Flag indicating whether a full refresh or incremental update will be performed.
+     * @type Boolean
+     */
+    _fullRefreshRequired: false,
+    
+    application: null,
+    
+    /**
+     * Flag indicating whether any updates are pending.
+     * @type Boolean
+     */
+    _hasUpdates: true,
+    
+    _listenerList: null,
+    
+    /**
+     * Associative mapping between component ids and component instances for all
+     * updates held in this manager object.
+     */
+    _idMap: null,
+    
+    /** 
+     * The id of the last parent component whose child was analyzed by
+     * _isAncestorBeingAdded() that resulted in that method returning false.
+     * This id is stored for performance optimization purposes.
+     * @type String
+     */
+    _lastAncestorTestParentId: null,
+    
+    /**
      * Creates a new Update Manager.
      *
      * @constructor
      * @param {EchoApp.Application} application the supported application
      */
     $construct: function(application) {
-        
-        /**
-         * Associative mapping between component ids and EchoApp.Update.ComponentUpdate
-         * instances.
-         * @type Object
-         */
         this._componentUpdateMap = { };
-    
-        /**
-         * Flag indicating whether a full refresh or incremental update will be performed.
-         * @type Boolean
-         */
-        this.fullRefreshRequired = false;
-        
         this.application = application;
-    
-        /**
-         * Flag indicating whether any updates are pending.
-         * @type Boolean
-         */
-        this._hasUpdates = true;
-        
         this._listenerList = new Core.ListenerList();
-        
-        /**
-         * Associative mapping between component ids and component instances for all
-         * updates held in this manager object.
-         */
         this._idMap = { };
-    
-        /** 
-         * The id of the last parent component whose child was analyzed by
-         * _isAncestorBeingAdded() that resulted in that method returning false.
-         * This id is stored for performance optimization purposes.
-         * @type String
-         */
-        this._lastAncestorTestParentId = null;
     },
     
     /**
