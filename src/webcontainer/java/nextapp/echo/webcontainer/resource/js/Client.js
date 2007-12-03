@@ -45,6 +45,11 @@ EchoClient = Core.extend({
     application: null,
     
     /**
+     * Flag indicating whether a focus update is required once the renderer has completed its next update cycle.
+     */
+    focusUpdateRequired: false,
+    
+    /**
      * Id of last issued input restriction id (incremented to deliver unique identifiers). 
      * @type Integer
      * @private
@@ -209,6 +214,9 @@ EchoClient = Core.extend({
         var focusedComponent = this.application.getFocusedComponent();
         if (focusedComponent && focusedComponent.peer && focusedComponent.peer.renderFocus) {
             focusedComponent.peer.renderFocus();
+            this.focusUpdateRequired = false;
+        } else {
+            this.focusUpdateRequired = true;
         }
     },
     
@@ -220,7 +228,9 @@ EchoClient = Core.extend({
      */
     _processKeyPress: function(e) {
         if (e.keyCode == 9) { // Tab
+            Core.Debug.consoleWrite("OLD focused: " + this.application.getFocusedComponent());
             this.application.focusNext(e.shiftKey);
+            Core.Debug.consoleWrite("NEW focused: " + this.application.getFocusedComponent());
             WebCore.DOM.preventEventDefault(e);
             return false; // Stop propagation.
         }

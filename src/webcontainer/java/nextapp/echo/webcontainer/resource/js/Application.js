@@ -289,6 +289,15 @@ EchoApp.Application = Core.extend({
             newValue = newValue.parent;
         }
         
+        // Verify new focused component is within modal context.
+        if (this._modalComponents.length > 0) {
+            var modalContextRoot = this.getModalContextRoot();
+            if (!modalContextRoot.isAncestorOf(newValue)) {
+                // Reject request to focus component outside of modal context.
+                return;
+            }
+        }
+        
         this._focusedComponent = newValue;
         this._listenerList.fireEvent(new Core.Event("focus", this));
     },
@@ -314,7 +323,6 @@ EchoApp.Application = Core.extend({
         }
         
         // Auto-focus first component in modal context if component is currently focused component is not within modal context.
-        // FIXME not working.
         if (this._modalComponents.length > 0 && this._focusedComponent) {
             var modalContextRoot = this.getModalContextRoot();
             if (!modalContextRoot.isAncestorOf(this._focusedComponent)) {

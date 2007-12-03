@@ -103,7 +103,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         EchoRender.notifyResize(this.component);
     },
     
-    processKeyDown: function(e) { 
+    _processKeyDown: function(e) {
         switch (e.keyCode) {
         case 27:
             this.component.doWindowClosing();
@@ -606,7 +606,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         if (closable) {
     	    WebCore.EventProcessor.add(this._windowPaneDivElement, "keydown", 
-    	            new Core.MethodRef(this, this.processKeyDown), false);
+    	            new Core.MethodRef(this, this._processKeyDown), false);
     	    WebCore.EventProcessor.add(this._closeDivElement, "click", 
     	            new Core.MethodRef(this, this._processCloseClick), false);
         }

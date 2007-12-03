@@ -285,6 +285,15 @@ EchoRender = {
         
         // Inform UpdateManager that all updates have been completed.
         updateManager.purge();
+        
+        // Perform focus update if required.
+        if (client.focusUpdateRequired) {
+            var focusedComponent = client.application.getFocusedComponent();
+            if (focusedComponent && focusedComponent.peer && focusedComponent.peer.renderFocus) {
+                focusedComponent.peer.renderFocus();
+                client.focusUpdateRequired = false;
+            }
+        }
     },
     
     /**
