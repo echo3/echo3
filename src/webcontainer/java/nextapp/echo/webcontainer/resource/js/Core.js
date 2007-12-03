@@ -113,6 +113,10 @@ Core = {
             // Definition does not provide constructor.
             if (baseClass) {
                 // Base class available: copy constructor function from base class.
+                // Note: should function copying not be supported by a future client,
+                // it is possible to simply create a new constructor which invokes the base
+                // class constructor (using closures and Function.apply()) to achieve the
+                // same effect (with a slight performance penalty).
                 constructorClass = Core._copyFunction(baseClass);
             } else {
                 // No base class: constructor is an empty function.
@@ -386,10 +390,8 @@ Core.Debug.Timer = Core.extend({
      * @constructor
      */
     $construct: function() {
-        this._times = [];
-        this._labels = [];
-        this._times.push(new Date().getTime());
-        this._labels.push("Start");
+        this._times = [new Date().getTime()];
+        this._labels = ["Start"];
     },
     
     /**
@@ -898,7 +900,6 @@ Core.ResourceBundle = Core.extend({
      */
     $construct: function(map) {
         this.map = map ? map : {};
-        this.parent = null;
     },
     
     /**
@@ -1075,6 +1076,8 @@ Core.Scheduler.Runnable = Core.extend({
  * @class A runnable task implemenation that invokes a method or Core.MethodRef at regular intervals.
  */
 Core.Scheduler.MethodRunnable = Core.extend(Core.Scheduler.Runnable, {
+
+    methodRef: null,
 
     /**
      * Creates a new Runnable.
