@@ -572,6 +572,10 @@ EchoRemoteClient.ClientMessage = Core.extend({
          * @private
          */
         _ClientProperties: Core.extend({
+        
+            _element: null,
+            
+            _clientMessage: null,
 
             /**        
              * Creates a new ClientProperties directive object.
@@ -860,6 +864,8 @@ EchoRemoteClient.CommandExecProcessor = Core.extend({
  */
 EchoRemoteClient.ComponentFocusProcessor = Core.extend({
 
+    _client: null,
+
     $construct: function(client) { 
         this._client = client;
     },
@@ -888,6 +894,8 @@ EchoRemoteClient.ComponentFocusProcessor = Core.extend({
  * ServerMessage directive processor for component synchronizations (remove phase).
  */
 EchoRemoteClient.ComponentSyncRemoveProcessor = Core.extend({
+
+    _client: null,
 
     $construct: function(client) { 
         this._client = client;
