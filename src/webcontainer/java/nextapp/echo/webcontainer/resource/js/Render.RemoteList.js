@@ -14,7 +14,11 @@ EchoAppRender._ListComponentMixins = {
     },
     
     updateListData: function(listData) {
+        var oldValue = this.items;
         this.items = listData.items;
+        if (this.application) {
+            this.application.notifyComponentUpdate(this, "items", oldValue, this.items);
+        }
     }
 };
 
