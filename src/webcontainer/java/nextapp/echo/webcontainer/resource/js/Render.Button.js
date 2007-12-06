@@ -25,13 +25,10 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
     
     _processRolloverExitRef: null,
     
-    _processInitFocusRef: null,
-    
-    _processInitMouseOverRef: null,
+    _processInitEventRef: null,
     
     $construct: function() { 
-        this._processInitFocusRef = Core.method(this, this._processInitFocus);
-        this._processInitMouseOverRef = Core.method(this, this._processInitMouseOver);
+        this._processInitEventRef = Core.method(this, this._processInitEvent);
     },
     
     $virtual: {
@@ -75,8 +72,8 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         this._processRolloverExitRef = Core.method(this, this._processRolloverExit);
     
         // Remove initialization listeners.
-        WebCore.EventProcessor.remove(this._divElement, "focus", this._processInitFocusRef);
-        WebCore.EventProcessor.remove(this._divElement, "mouseover", this._processInitMouseOverRef);
+        WebCore.EventProcessor.remove(this._divElement, "focus", this._processInitEventRef);
+        WebCore.EventProcessor.remove(this._divElement, "mouseover", this._processInitEventRef);
         
         WebCore.EventProcessor.add(this._divElement, "click", Core.method(this, this._processClick), false);
         WebCore.EventProcessor.add(this._divElement, "keypress", Core.method(this, this._processKeyPress), false);
@@ -147,22 +144,21 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     /**
-     * Initial focus listener.  This listener is invoked the FIRST TIME the button is focused.
+     * Initial focus/mouseover listener.
+     * This listener is invoked the FIRST TIME the button is focused or moused over.
      * It invokes the addListeners() method to lazily add the full listener set to the button.
      */
-    _processInitFocus: function(e) {
+    _processInitEvent: function(e) {
         this._addEventListeners();
-        this._processFocus(e);
-    },
-    
-    /**
-     * Initial mouse over listener.  This listener is invoked the FIRST TIME the button is moused over.
-     * It invokes the addListeners() method to lazily add the full listener set to the button.
-     */
-    _processInitMouseOver: function(e) {
-        this._addEventListeners();
-        if (this.component.getRenderProperty("rolloverEnabled")) {
-            this._processRolloverEnter(e);
+        switch (e.type) {
+        case "focus":
+            this._processFocus(e);
+            break;
+        case "mouseover":
+            if (this.component.getRenderProperty("rolloverEnabled")) {
+                this._processRolloverEnter(e);
+            }
+            break;
         }
     },
     
@@ -255,8 +251,8 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
             // Add event listeners for focus and mouseover.  When invoked, these listeners will register the full gamut
             // of button event listeners.  There may be a large number of such listeners depending on how many effects
             // are enabled, and as such we do this lazily for performance reasons.
-            WebCore.EventProcessor.add(this._divElement, "focus", this._processInitFocusRef, false);
-            WebCore.EventProcessor.add(this._divElement, "mouseover", this._processInitMouseOverRef, false);
+            WebCore.EventProcessor.add(this._divElement, "focus", this._processInitEventRef, false);
+            WebCore.EventProcessor.add(this._divElement, "mouseover", this._processInitEventRef, false);
         }
     
         parentElement.appendChild(this._divElement);
