@@ -7,11 +7,16 @@
  *  <li>Provides API for declaring JavaScript classes which includes support for
  *   specifying abstract and virtual properties and validating subtypes to such
  *   specification.</li>
- *  <li>Provides "Method Reference" object to describe reference to a member function
- *    of a specific object instance (enabling invocation with "this pointer" set 
- *    appropriately.</li>
- *  <li>Provides event/listener management framework.  Event listeners may be 
- *    "Method Reference" objects, thus allowing specific class instances to process events.</li>
+ *  <li>Provides a "Method Wrapper" function (Core.method()) to create a function which will invoke 
+ *    a member function of a specific object instance (enabling invocation with the "this pointer" set
+ *    appropriately).</li>
+ *  <li>Provides event/listener management framework.  Event-listeners which invoke
+ *    methods of an object instance may be created using the Core.method() function.</li>
+ *  <li>Provides a "Large Map" useful for managing an associative array that is frequently modified
+ *    and will exist for a long period of time.  This object is unfortunately necessary due to
+ *    issues present in certain clients (Internet Explorer 6 memory leak / performance degredation).</li>
+ *  <li>Provides array manipulation utilities.<li>
+ *  <li>Provides some simple debugging utilities, e.g., a pseudo-console output.</li>
  *  <li>Does not provide any web-specific functionality.</li>
  * </ul>
  */
