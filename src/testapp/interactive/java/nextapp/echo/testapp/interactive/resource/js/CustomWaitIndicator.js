@@ -19,7 +19,7 @@ CustomWaitIndicator = Core.extend(EchoRemoteClient.WaitIndicator, {
         this._divElement.style.cssText = "display: none; z-index: 32767; position: absolute; top: 30px; right: 30px; width: 200px;"
                  + " padding: 20px; border: 1px outset #000000; background-color: #000000; color: #00ff00; text-align: center;";
         this._divElement.appendChild(document.createTextNode("LOADING"));
-        this._fadeRunnable = new Core.Scheduler.MethodRunnable(new Core.MethodRef(this, this._tick), 50, true);
+        this._fadeRunnable = new Core.Scheduler.MethodRunnable(Core.method(this, this._tick), 50, true);
         document.body.appendChild(this._divElement);
     },
     
