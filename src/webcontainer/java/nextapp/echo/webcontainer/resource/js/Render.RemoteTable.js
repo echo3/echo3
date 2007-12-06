@@ -335,9 +335,9 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
             var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
             var rowOffset = (this._headerVisible ? 1 : 0);
-            var rolloverEnterRef = new Core.MethodRef(this, this._processRolloverEnter);
-            var rolloverExitRef = new Core.MethodRef(this, this._processRolloverExit);
-            var clickRef = new Core.MethodRef(this, this._processClick);
+            var rolloverEnterRef = Core.method(this, this._processRolloverEnter);
+            var rolloverExitRef = Core.method(this, this._processRolloverExit);
+            var clickRef = Core.method(this, this._processClick);
             
             for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
                 var trElement = this._tableElement.rows[rowIndex + rowOffset];

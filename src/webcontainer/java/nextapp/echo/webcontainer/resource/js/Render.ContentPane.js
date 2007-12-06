@@ -26,7 +26,7 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
     raise: function(child) {
         if (!this._floatingPaneManager) {
             this._floatingPaneManager = new EchoAppRender.FloatingPaneManager();
-            this._floatingPaneManager.addZIndexListener(new Core.MethodRef(this, this._processZIndexChanged));
+            this._floatingPaneManager.addZIndexListener(Core.method(this, this._processZIndexChanged));
         }
         this._floatingPaneManager.add(child.renderId);
     },

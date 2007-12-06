@@ -74,7 +74,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         this._renderSelection(false);
         
         if (this._enabled) {
-	        WebCore.EventProcessor.add(this._selectElement, "change", new Core.MethodRef(this, this._processChange), false);
+	        WebCore.EventProcessor.add(this._selectElement, "change", Core.method(this, this._processChange), false);
         }
         
         if (size != 0 && WebCore.Environment.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {

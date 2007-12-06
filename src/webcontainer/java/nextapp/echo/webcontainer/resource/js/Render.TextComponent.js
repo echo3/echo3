@@ -42,10 +42,10 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _addEventHandlers: function() {
-        WebCore.EventProcessor.add(this._textComponentElement, "click", new Core.MethodRef(this, this._processClick), false);
-        WebCore.EventProcessor.add(this._textComponentElement, "blur", new Core.MethodRef(this, this._processBlur), false);
-        WebCore.EventProcessor.add(this._textComponentElement, "keypress", new Core.MethodRef(this, this._processKeyPress), false);
-        WebCore.EventProcessor.add(this._textComponentElement, "keyup", new Core.MethodRef(this, this._processKeyUp), false);
+        WebCore.EventProcessor.add(this._textComponentElement, "click", Core.method(this, this._processClick), false);
+        WebCore.EventProcessor.add(this._textComponentElement, "blur", Core.method(this, this._processBlur), false);
+        WebCore.EventProcessor.add(this._textComponentElement, "keypress", Core.method(this, this._processKeyPress), false);
+        WebCore.EventProcessor.add(this._textComponentElement, "keyup", Core.method(this, this._processKeyUp), false);
     },
     
     renderDispose: function(update) {

@@ -1160,7 +1160,7 @@ WebCore.Library = {
          */
         _retrieve: function() {
             var conn = new WebCore.HttpConnection(this._url, "GET");
-            conn.addResponseListener(new Core.MethodRef(this, this._retrieveListener));
+            conn.addResponseListener(Core.method(this, this._retrieveListener));
             conn.connect();
         }
     })

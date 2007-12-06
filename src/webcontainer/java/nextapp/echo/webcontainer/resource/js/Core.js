@@ -279,6 +279,12 @@ Core = {
         }
     },
     
+    method: function(instance, method) {
+        return function() {
+            return method.apply(instance, arguments);
+        };
+    },
+    
     /**
      * Add properties of mixin objects to destination object.
      * Mixins will be added in order, and any property which is already

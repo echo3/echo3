@@ -129,15 +129,15 @@ EchoRemoteClient = Core.extend(EchoClient, {
         EchoClient.call(this);
         
         this._serverUrl = serverUrl;
-        this._processClientUpdateRef = new Core.MethodRef(this, this._processClientUpdate);
-        this._processClientEventRef = new Core.MethodRef(this, this._processClientEvent);
+        this._processClientUpdateRef = Core.method(this, this._processClientUpdate);
+        this._processClientEventRef = Core.method(this, this._processClientEvent);
         this._urlMappings = {};
         this._urlMappings.I = this._serverUrl + "?sid=Echo.Image&iid=";
         this._commandQueue = null;
         this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
         this._asyncManager = new EchoRemoteClient.AsyncManager(this);
         this._waitIndicator = new EchoRemoteClient.DefaultWaitIndicator();
-        this._waitIndicatorRunnable = new Core.Scheduler.MethodRunnable(new Core.MethodRef(this, this._waitIndicatorActivate), 
+        this._waitIndicatorRunnable = new Core.Scheduler.MethodRunnable(Core.method(this, this._waitIndicatorActivate), 
                 this._preWaitIndicatorDelay, false);
     },
     
@@ -343,7 +343,6 @@ EchoRemoteClient = Core.extend(EchoClient, {
         }
     
         if (EchoClient.profilingTimer) {
-            Core.Debug.consoleWrite(EchoClient.profilingTimer);
             EchoClient.profilingTimer = null;
         }
         
@@ -399,7 +398,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
         
         // Add completion listener to invoke _processSyncComplete when message has been fully processed.
         // (Some elements of the server message are processed asynchronously). 
-        serverMessage.addCompletionListener(new Core.MethodRef(this, this._processSyncComplete));
+        serverMessage.addCompletionListener(Core.method(this, this._processSyncComplete));
         
         // Start server message processing.
         serverMessage.process();
@@ -448,7 +447,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
         // Create new client message.
         this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
 
-        conn.addResponseListener(new Core.MethodRef(this, this._processSyncResponse));
+        conn.addResponseListener(Core.method(this, this._processSyncResponse));
         conn.connect();
     },
     
@@ -490,7 +489,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
      */
     $construct: function(client) {
         this._client = client;
-        this._runnable = new Core.Scheduler.MethodRunnable(new Core.MethodRef(this, this._pollServerForUpdates), 1000, false);
+        this._runnable = new Core.Scheduler.MethodRunnable(Core.method(this, this._pollServerForUpdates), 1000, false);
     },
     
     /**
@@ -499,7 +498,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
      */
     _pollServerForUpdates: function() {
         var conn = new WebCore.HttpConnection(this._client.getServiceUrl("Echo.AsyncMonitor"), "GET");
-        conn.addResponseListener(new Core.MethodRef(this, this._processPollResponse));
+        conn.addResponseListener(Core.method(this, this._processPollResponse));
         conn.connect();
     },
     
@@ -1129,7 +1128,7 @@ EchoRemoteClient.ServerMessage = Core.extend({
                 element = element.nextSibling;
             }
             if (libraryGroup.hasNewLibraries()) {
-                libraryGroup.addLoadListener(new Core.MethodRef(this, this._processPostLibraryLoad));
+                libraryGroup.addLoadListener(Core.method(this, this._processPostLibraryLoad));
                 libraryGroup.load();
             } else {
                 this._processPostLibraryLoad();
@@ -1206,7 +1205,7 @@ EchoRemoteClient.DefaultWaitIndicator = Core.extend(EchoRemoteClient.WaitIndicat
         this._divElement.style.cssText = "display: none; z-index: 32767; position: absolute; top: 30px; right: 30px; width: 200px;"
                  + " padding: 20px; border: 1px outset #abcdef; background-color: #abcdef; color: #000000; text-align: center;";
         this._divElement.appendChild(document.createTextNode("Please wait..."));
-        this._fadeRunnable = new Core.Scheduler.MethodRunnable(new Core.MethodRef(this, this._tick), 50, true);
+        this._fadeRunnable = new Core.Scheduler.MethodRunnable(Core.method(this, this._tick), 50, true);
         document.body.appendChild(this._divElement);
     },
     

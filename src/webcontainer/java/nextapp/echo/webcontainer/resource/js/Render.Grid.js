@@ -500,15 +500,13 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         
         WebCore.EventProcessor.add(this._tableElement, 
                 WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
-                new Core.MethodRef(this, this._processKeyPress), false);
+                Core.method(this, this._processKeyPress), false);
 
         parentElement.appendChild(this._tableElement);
     },
     
     renderDispose: function(update) {
-        WebCore.EventProcessor.remove(this._tableElement, 
-                WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
-                new Core.MethodRef(this, this._processKeyPress), false);
+        WebCore.EventProcessor.removeAll(this._tableElement);
         this._tableElement = null;
     },
     

@@ -7,7 +7,7 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
         EchoRender.registerPeer("Column", this);
     },
     
-    _processKeyPress: function(e) { 
+    _processKeyPress: function(e) {
         switch (e.keyCode) {
         case 38:
         case 40:
@@ -58,7 +58,7 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
         
         WebCore.EventProcessor.add(this._divElement, 
                 WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
-                new Core.MethodRef(this, this._processKeyPress), false);
+                Core.method(this, this._processKeyPress), false);
         
         parentElement.appendChild(this._divElement);
     },
@@ -133,10 +133,8 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
         delete this._childIdToElementMap[child.renderId];
     },
     
-    renderDispose: function(update) { 
-        WebCore.EventProcessor.remove(this._divElement, 
-                WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
-                new Core.MethodRef(this, this._processKeyPress), false);
+    renderDispose: function(update) {
+        WebCore.EventProcessor.removeAll(this._divElement);
         this._divElement = null;
         this._childIdToElementMap = null;
         this._spacingPrototype = null;

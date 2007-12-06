@@ -13,6 +13,8 @@
  */ 
 EchoFreeClient = Core.extend(EchoClient, {
 
+    _processUpdateRef: null,
+
     /**
      * Creates a new FreeClient.
      *
@@ -21,6 +23,7 @@ EchoFreeClient = Core.extend(EchoClient, {
      */
     $construct: function(application, domainElement) {
         EchoClient.call(this);
+        this._processUpdateRef = Core.method(this, this._processUpdate);;
         this.configure(application, domainElement);
     },
 
@@ -30,7 +33,7 @@ EchoFreeClient = Core.extend(EchoClient, {
      */
     dispose: function() {
         Core.Scheduler.remove(this._autoUpdate);
-        this.application.updateManager.removeUpdateListener(new Core.MethodRef(this, this._processUpdate));
+        this.application.updateManager.removeUpdateListener(this._processUpdateRef);
         this._autoUpdate = null;
         EchoRender.renderComponentDispose(null, this.application.rootComponent);
         EchoClient.prototype.dispose.call(this);
@@ -47,7 +50,7 @@ EchoFreeClient = Core.extend(EchoClient, {
     init: function() {
         WebCore.init();
         this._autoUpdate = new EchoFreeClient.AutoUpdate(this);
-        this.application.updateManager.addUpdateListener(new Core.MethodRef(this, this._processUpdate));
+        this.application.updateManager.addUpdateListener(this._processUpdateRef);
         Core.Scheduler.add(this._autoUpdate);
     },
     
@@ -60,7 +63,7 @@ EchoFreeClient = Core.extend(EchoClient, {
      */
     loadStyleSheet: function(url) {
         var conn = new WebCore.HttpConnection(url, "GET");
-        conn.addResponseListener(new Core.MethodRef(this, this._processStyleSheet));
+        conn.addResponseListener(Core.method(this, this._processStyleSheet));
         conn.connect();
     },
     

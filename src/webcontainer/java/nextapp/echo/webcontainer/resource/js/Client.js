@@ -72,6 +72,10 @@ EchoClient = Core.extend({
      */
     _inputRescriptionMap: null,
     
+    _keyPressListener: null,
+    
+    _applicationFocusListener: null,
+    
     /**
      * The parent client.
      */
@@ -79,6 +83,8 @@ EchoClient = Core.extend({
 
     $construct: function() { 
         this._inputRestrictionMap = { };
+        this._keyPressListener = Core.method(this, this._processKeyPress);
+        this._applicationFocusListener = Core.method(this, this._processApplicationFocus);
     },
     
     $virtual: {
@@ -171,19 +177,17 @@ EchoClient = Core.extend({
         if (this.application) {
             Core.Arrays.remove(EchoClient._activeClients, this);
             WebCore.EventProcessor.remove(this.domainElement, 
-                    WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
-                    new Core.MethodRef(this, this._processKeyPress), false);
-            this.application.removeFocusListener(new Core.MethodRef(this, this._processApplicationFocus));
+                    WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._keyPressListener, false);
+            this.application.removeFocusListener(this._applicationFocusListener);
         }
         
         this.application = application;
         this.domainElement = domainElement;
     
         if (this.application) {
-            this.application.addFocusListener(new Core.MethodRef(this, this._processApplicationFocus));
+            this.application.addFocusListener(this._applicationFocusListener);
             WebCore.EventProcessor.add(this.domainElement, 
-                    WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
-                    new Core.MethodRef(this, this._processKeyPress), false);
+                    WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._keyPressListener, false);
             EchoClient._activeClients.push(this);
         }
     },

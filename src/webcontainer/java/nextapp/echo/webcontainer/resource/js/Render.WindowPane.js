@@ -15,6 +15,21 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         EchoRender.registerPeer("WindowPane", this);
     },
 
+    _processBorderMouseMoveRef: null,
+    
+    _processBorderMouseUpRef: null,
+    
+    _processTitleBarMouseMoveRef: null,
+    
+    _processTitleBarMouseUpRef: null,
+
+    $construct: function() {
+        this._processBorderMouseMoveRef = Core.method(this, this.processBorderMouseMove);
+        this._processBorderMouseUpRef = Core.method(this, this.processBorderMouseUp);
+        this._processTitleBarMouseMoveRef = Core.method(this, this.processTitleBarMouseMove);
+        this._processTitleBarMouseUpRef = Core.method(this, this.processTitleBarMouseUp);
+    },
+
     _loadContainerSize: function() {
         //FIXME. the "parentnode.parentnode" business needs to go.
         this._containerSize = new WebCore.Measure.Bounds(this._windowPaneDivElement.parentNode.parentNode);
@@ -50,8 +65,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         var bodyElement = document.getElementsByTagName("body")[0];
     
-        WebCore.EventProcessor.add(bodyElement, "mousemove", new Core.MethodRef(this, this.processBorderMouseMove), true);
-        WebCore.EventProcessor.add(bodyElement, "mouseup", new Core.MethodRef(this, this.processBorderMouseUp), true);
+        WebCore.EventProcessor.add(bodyElement, "mousemove", this._processBorderMouseMoveRef, true);
+        WebCore.EventProcessor.add(bodyElement, "mouseup", this._processBorderMouseUpRef, true);
     
         // Reduce opacity.   
         if (EchoAppRender.WindowPaneSync.adjustOpacity) {
@@ -144,8 +159,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
         
         var bodyElement = document.getElementsByTagName("body")[0];
-        WebCore.EventProcessor.add(bodyElement, "mousemove", new Core.MethodRef(this, this.processTitleBarMouseMove), true);
-        WebCore.EventProcessor.add(bodyElement, "mouseup", new Core.MethodRef(this, this.processTitleBarMouseUp), true);
+        WebCore.EventProcessor.add(bodyElement, "mousemove", this._processTitleBarMouseMoveRef, true);
+        WebCore.EventProcessor.add(bodyElement, "mouseup", this._processTitleBarMouseUpRef, true);
     },
     
     processTitleBarMouseMove: function(e) {
@@ -233,17 +248,13 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _removeBorderListeners: function() {
-        var bodyElement = document.getElementsByTagName("body")[0];
-        WebCore.EventProcessor.remove(bodyElement, "mousemove", new Core.MethodRef(this, this.processBorderMouseMove), true);
-        WebCore.EventProcessor.remove(bodyElement, "mouseup", new Core.MethodRef(this, this.processBorderMouseUp), true);
+        WebCore.EventProcessor.remove(document.body, "mousemove", this._processBorderMouseMoveRef, true);
+        WebCore.EventProcessor.remove(document.body, "mouseup", this._processBorderMouseUpRef, true);
     },
     
     _removeTitleBarListeners: function() {
-        var bodyElement = document.getElementsByTagName("body")[0];
-        WebCore.EventProcessor.remove(bodyElement, "mousemove",
-                new Core.MethodRef(this, this.processTitleBarMouseMove), true);
-        WebCore.EventProcessor.remove(bodyElement, "mouseup", 
-                new Core.MethodRef(this, this.processTitleBarMouseUp), true);
+        WebCore.EventProcessor.remove(document.body, "mousemove", this._processTitleBarMouseMoveRef, true);
+        WebCore.EventProcessor.remove(document.body, "mouseup", this._processTitleBarMouseUpRef, true);
     },
     
     renderAdd: function(update, parentElement) {
@@ -606,18 +617,18 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         if (closable) {
     	    WebCore.EventProcessor.add(this._windowPaneDivElement, "keydown", 
-    	            new Core.MethodRef(this, this._processKeyDown), false);
+    	            Core.method(this, this._processKeyDown), false);
     	    WebCore.EventProcessor.add(this._closeDivElement, "click", 
-    	            new Core.MethodRef(this, this._processCloseClick), false);
+    	            Core.method(this, this._processCloseClick), false);
         }
         if (movable) {
     	    WebCore.EventProcessor.add(this._titleBarDivElement, "mousedown", 
-    	            new Core.MethodRef(this, this.processTitleBarMouseDown), true);
+    	            Core.method(this, this.processTitleBarMouseDown), true);
         }
         if (resizable) {
     	    for (var i = 0; i < this._borderDivElements.length; ++i) {
     	        WebCore.EventProcessor.add(this._borderDivElements[i], "mousedown", 
-    	                new Core.MethodRef(this, this.processBorderMouseDown), true);
+    	                Core.method(this, this.processBorderMouseDown), true);
     	    }
         }
     },
