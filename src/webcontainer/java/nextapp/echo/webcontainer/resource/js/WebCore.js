@@ -4,12 +4,10 @@
  * <ul>
  *  <li>Provides cross-platform API for accessing web client features that have
  *   inconsistent implementations on various browser platforms.</li>
- *  <li>Provides HTTP Connection object (wrapper for XMLHttpRequest) that allows
- *   for object-oriented "MethodRef"-based event listeners.</li>
+ *  <li>Provides HTTP Connection object (wrapper for XMLHttpRequest).</li>
  *  <li>Provides HTML DOM manipulation capabilites.</li>
  *  <li>Provides DOM event mangement facility, enabling capturing/bubbling phases
- *   on all browsers, including Internet Explorer 6 and allowing object-oriented
- *   "MethodRef"-based event listeners.</li>
+ *   on all browsers, including Internet Explorer 6.</li>
  *  <li>Provides "virtual positioning" capability for Internet Explorer 6 to
  *   render proper top/left/right/bottom CSS positioning.</li>
  *  <li>Provides facilities to convert dimensions (e.g., in/cm/pc) to pixels.</li>
@@ -507,11 +505,6 @@ WebCore.Environment = {
  * The static methods in this object provide a standard framework for handling
  * DOM events across incompatible browser platforms.
  * <p>
- * <b>Object-oriented events:</b>  
- * This implementation provides the capability to register Core.MethodRef-based
- * listeners, allowing event processing methods of specific object instances to 
- * be invoked (i.e., preserving the 'this' pointer).
- * <p>
  * <b>Capturing/Bubbling Listeners:</b>
  * This implementation additionally allows for the registration of capturing and bubbling event 
  * listeners that work even on Internet Explorer platforms, where they are not natively supported.
@@ -543,7 +536,7 @@ WebCore.EventProcessor = {
      *
      * @param {Element} element the DOM element on which to add the event handler
      * @param {String} eventType the DOM event type
-     * @param eventTarget the method or MethodRef to invoke when the event is fired
+     * @param {Function} eventTarget the event handler to invoke when the event is fired
      * @param {Boolean} capture true to fire the event during the capturing phase, false to fire the event during
      *        the bubbling phase
      */
@@ -672,7 +665,7 @@ WebCore.EventProcessor = {
      *
      * @param {Element} element the DOM element on which to add the event handler
      * @param {String} eventType the DOM event type
-     * @param eventTarget the method of MethodRef to invoke when the event is fired
+     * @param {Function} eventTarget the function to invoke when the event is fired
      * @param {Boolean} capture true to fire the event during the capturing phase, false to fire the event during
      *        the bubbling phase
      */
@@ -846,7 +839,7 @@ WebCore.HttpConnection = Core.extend({
     /**
      * Adds a response listener to be notified when a response is received from the connection.
      * 
-     * @param l the listener to add (may be a Function or Core.MethodRef)
+     * @param {Function} l the listener to add
      */
     addResponseListener: function(l) {
         this._listenerList.addListener("response", l);
@@ -959,9 +952,9 @@ WebCore.HttpConnection = Core.extend({
     },
     
     /**
-     * Adds a response listener to be notified when a response is received from the connection.
+     * Removes a response listener to be notified when a response is received from the connection.
      * 
-     * @param l the listener to add (may be a Function or Core.MethodRef)
+     * @param {Function} l the listener to remove
      */
     removeResponseListener: function(l) {
         this._listenerList.removeListener("response", l);
@@ -1026,7 +1019,7 @@ WebCore.Library = {
         /**
          * Adds a listener to be notified when all libraries in the group have been loaded.
          *
-         * @param l the listener to add (may be a Function or Core.MethodRef)
+         * @param {Function} l the listener to add
          */
         addLoadListener: function(l) {
             this._listenerList.addListener("load", l);
@@ -1101,7 +1094,7 @@ WebCore.Library = {
         /**
          * Removes a listener from being notified when all libraries in the group have been loaded.
          *
-         * @param l the listener to remove (may be a Function or Core.MethodRef)
+         * @param {Function} l the listener to remove
          */
         removeLoadListener: function(l) {
             this._listenerList.removeListener("load", l);

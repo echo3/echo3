@@ -51,15 +51,15 @@ EchoRemoteClient = Core.extend(EchoClient, {
     _inputRestrictionId: null,
 
     /**
-     * MethodRef to _processClientUpdate() method.
-     * @type Core.MethodRef
+     * Function wrapper to invoke _processClientUpdate() method.
+     * @type Function
      * @private
      */
     _processClientUpdateRef: null,
     
     /**
-     * MethodRef to _processClientEvent() method.
-     * @type Core.MethodRef
+     * Function wrapper to invoke _processClientEvent() method.
+     * @type Function
      * @private
      */
     _processClientEventRef: null,

@@ -357,7 +357,7 @@ EchoAppRender.FloatingPaneManager = Core.extend({
     /**
      * Adds a z-index listener.  
      * 
-     * @param the listener to add (a method or MethodRef)
+     * @param {Function} the listener to add
      */
     addZIndexListener: function(l) {
         if (!this._listeners) {
@@ -408,7 +408,7 @@ EchoAppRender.FloatingPaneManager = Core.extend({
     /**
      * Removes a z-index listener.
      * 
-     * @param the listener to remove (a method or MethodRef)
+     * @param {Function} the listener to remove
      */
     removeZIndexListener: function(l) {
         if (!this._listeners) {

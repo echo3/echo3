@@ -682,7 +682,7 @@ Core.ListenerList = Core.extend({
     /**
      * Array containing event types and event listeners.  
      * Even indexes contain event types, and the subsequent odd
-     * index contains a method or Core.MethodRef instance.
+     * index contain Functions to invoke.
      * @type Array
      */
     _data: null,
@@ -700,7 +700,7 @@ Core.ListenerList = Core.extend({
      * Adds an event listener.
      * 
      * @param {String} eventType the event type
-     * @param eventTarget the event target (a function or Core.MethodRef instance)
+     * @param {Function} eventTarget the event target
      */
     addListener: function(eventType, eventTarget) {
         this._data.push(eventType, eventTarget);
@@ -729,8 +729,7 @@ Core.ListenerList = Core.extend({
         
         var returnValue = true;
         for (var i = 0; i < listeners.length; ++i) {
-            returnValue = (listeners[i] instanceof Core.MethodRef ? listeners[i].invoke(event) : listeners[i](event)) 
-                    && returnValue; 
+            returnValue = listeners[i](event) && returnValue; 
         }
         return returnValue;
     },
@@ -815,7 +814,7 @@ Core.ListenerList = Core.extend({
      * Removes an event listener.
      * 
      * @param {String} eventType the event type
-     * @param eventTarget the event target (a function or Core.MethodRef instance)
+     * @param {Function} eventTarget the event target
      */
     removeListener: function(eventType, eventTarget) {
         for (var i = 0; i < this._data.length; i += 2) {
@@ -841,67 +840,6 @@ Core.ListenerList = Core.extend({
             out += this._data[i] + ":" + this._data[i + 1];
         }
         return out;
-    }
-});
-
-/**
- * @class 
- * A representation of a method of a specific instance of a class.
- * This object is often used for representing object-oriented event handlers,
- * such that they may be invoked with the "this pointer" set to their
- * containing object.
- */
-Core.MethodRef = Core.extend({
-    
-    instance: null,
-    method: null,
-    
-    /**
-     * Creates a new MethodRef.
-     *
-     * @constructor
-     * @param instance the object instance on which the method should be invoked
-     * @param {Function} method the method to invoke
-     */
-    $construct: function(instance, method) {
-        this.instance = instance;
-        this.method = method;
-        if (arguments.length > 2) {
-            this.arguments = [];
-            for (var i = 2; i < arguments.length; ++i) {
-                this.arguments.push(arguments[i]);
-            }
-        }
-    },
-
-    /**
-     * .equals() implementation for use with collections.
-     */
-    equals: function(that) {
-        return this.instance == that.instance && this.method == that.method;
-    },
-    
-    /**
-     * Invokes the method on the instance.
-     *
-     * @param args a single argument or array of arguments to pass
-     *        to the instance method
-     * @return the value returned by the method
-     */
-    invoke: function(args) {
-        if (args) {
-            if (args instanceof Array) {
-                return this.method.apply(this.instance, args);
-            } else {
-                return this.method.call(this.instance, args);
-            }
-        } else {
-            if (this.arguments) {
-                return this.method.apply(this.instance, this.arguments);
-            } else {
-                return this.method.call(this.instance);
-            }
-        }
     }
 });
 
@@ -1030,12 +968,12 @@ Core.Scheduler = {
      * @param {Number} time the time interval, in milleseconds, after which the Runnable should be executed
      *        (may be null/undefined to execute task immediately, in such cases repeat must be false)
      * @param {Boolean} repeat a flag indicating whether the task should be repeated
-     * @param methodRef a method or Core.MethodRef instance to invoke, may be null/undefined
+     * @param f a function to invoke, may be null/undefined
      * @return the created Runnable.
      * @type Core.Scheduler.Runnable 
      */
-    run: function(methodRef, timeInterval, repeat) {
-        var runnable = new Core.Scheduler.MethodRunnable(methodRef, timeInterval, repeat);
+    run: function(f, timeInterval, repeat) {
+        var runnable = new Core.Scheduler.MethodRunnable(f, timeInterval, repeat);
         this.add(runnable);
         return runnable;
     },
@@ -1093,11 +1031,11 @@ Core.Scheduler.Runnable = Core.extend({
 });
 
 /**
- * @class A runnable task implemenation that invokes a method or Core.MethodRef at regular intervals.
+ * @class A runnable task implemenation that invokes a function at regular intervals.
  */
 Core.Scheduler.MethodRunnable = Core.extend(Core.Scheduler.Runnable, {
 
-    methodRef: null,
+    f: null,
 
     /**
      * Creates a new Runnable.
@@ -1106,13 +1044,13 @@ Core.Scheduler.MethodRunnable = Core.extend(Core.Scheduler.Runnable, {
      * @param {Number} time the time interval, in milleseconds, after which the Runnable should be executed
      *        (may be null/undefined to execute task immediately, in such cases repeat must be false)
      * @param {Boolean} repeat a flag indicating whether the task should be repeated
-     * @param methodRef a method or Core.MethodRef instance to invoke, may be null/undefined
+     * @param {Function} f a function to invoke, may be null/undefined
      */
-    $construct: function(methodRef, timeInterval, repeat) {
+    $construct: function(f, timeInterval, repeat) {
         if (!timeInterval && repeat) {
-            throw new Error("Cannot create repeating runnable without time delay:" + methodRef);
+            throw new Error("Cannot create repeating runnable without time delay:" + f);
         }
-        this.methodRef = methodRef;
+        this.f = f;
         this.timeInterval = timeInterval;
         this.repeat = !!repeat;
     },
@@ -1123,11 +1061,7 @@ Core.Scheduler.MethodRunnable = Core.extend(Core.Scheduler.Runnable, {
          * Default run() implementation. Should be overidden by subclasses.
          */
         run: function() {
-            if (this.methodRef instanceof Core.MethodRef) {
-                this.methodRef.invoke();
-            } else {
-                this.methodRef();
-            }
+            this.f();
         }
     }
 });

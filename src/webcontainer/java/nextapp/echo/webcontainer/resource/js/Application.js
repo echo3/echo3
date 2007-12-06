@@ -91,7 +91,7 @@ EchoApp.Application = Core.extend({
     /**
      * Adds a ComponentUpdateListener.
      * 
-     * @param l the listener to add (may be of type Function or Core.MethodRef)
+     * @param {Function} l the listener to add
      */
     addComponentUpdateListener: function(l) {
         this._listenerList.addListener("componentUpdate", l);
@@ -101,7 +101,7 @@ EchoApp.Application = Core.extend({
      * Adds a FocusListener.  Focus listeners will be invoked when the focused
      * component in the application changes.
      * 
-     * @param l the listener to add (may be of type Function or Core.MethodRef)
+     * @param {Function} l the listener to add
      */
     addFocusListener: function(l) {
         this._listenerList.addListener("focus", l);
@@ -262,7 +262,7 @@ EchoApp.Application = Core.extend({
     /**
      * Removes a ComponentUpdateListener.
      * 
-     * @param l the listener to add (may be of type Function or Core.MethodRef)
+     * @param {Function} l the listener to remove
      */
     removeComponentUpdateListener: function(l) {
         this._listenerList.removeListener("componentUpdate", l);
@@ -272,7 +272,7 @@ EchoApp.Application = Core.extend({
      * Removes a FocusListener.  Focus listeners will be invoked when the focused
      * component in the application changes.
      * 
-     * @param l the listener to remove (may be of type Function or Core.MethodRef)
+     * @param {Function} l the listener to remove
      */
     removeFocusListener: function(l) {
         this._listenerList.removeListener("focus", l);
@@ -675,9 +675,8 @@ EchoApp.Component = Core.extend({
      * Adds an arbitrary event listener.
      * 
      * @param {String} eventType the event type name
-     * @param eventTarget the method to invoke when the event occurs 
+     * @param {Function} eventTarget the method to invoke when the event occurs 
      *        (the event will be passed as the single argument)
-     *        (argument may be of type Function or Core.MethodRef)
      */
     addListener: function(eventType, eventTarget) {
         if (this._listenerList == null) {
@@ -1054,9 +1053,8 @@ EchoApp.Component = Core.extend({
      * Removes an arbitrary event listener.
      * 
      * @param {String} eventType the event type name
-     * @param eventTarget the method to invoke when the event occurs 
+     * @param {Function} eventTarget the method to invoke when the event occurs 
      *        (the event will be passed as the single argument)
-     *        (values may be of type Function or Core.MethodRef)
      */
     removeListener: function(eventType, eventTarget) {
         if (this._listenerList == null) {
@@ -3064,7 +3062,7 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Adds a listener to receive notification of update events.
      * 
-     * @param l the listener to add (may be a function or Core.MethodRef)
+     * @param {Function} l the listener to add
      */
     addUpdateListener: function(l) {
         this._listenerList.addListener("update", l);
@@ -3295,7 +3293,7 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Removes a listener from receiving notification of update events.
      * 
-     * @param l the listener to remove (may be a function or Core.MethodRef)
+     * @param {Function} l the listener to remove
      */
     removeUpdateListener: function(l) {
         this._listenerList.removeListener("update", l);
