@@ -82,6 +82,11 @@ WebCore = {
 WebCore.DOM = {
 
     /**
+     * Temporary storage for the element about to be focused (for clients that require 'delayed' focusing).
+     */
+    _focusPendingElement: null,
+
+    /**
      * Adds an event listener to an object, using the client's supported event 
      * model.  This method does NOT support method references. 
      *
@@ -142,7 +147,8 @@ WebCore.DOM = {
      */
     focusElement: function(element) {
         if (WebCore.Environment.QUIRK_DELAYED_FOCUS_REQUIRED) {
-            Core.Scheduler.run(new Core.MethodRef(window, this._focusElementImpl, element));
+            WebCore.DOM._focusPendingElement = element;
+            Core.Scheduler.run(Core.method(window, this._focusElementImpl));
         } else {
             this._focusElementImpl(element);
         }
@@ -155,7 +161,11 @@ WebCore.DOM = {
      * @private
      */
     _focusElementImpl: function(element) {
-        if (element.focus) {
+        if (!element) {
+            element = WebCore.DOM._focusPendingElement;
+            WebCore.DOM._focusPendingElement = null;
+        }
+        if (element && element.focus) {
             try {
                 element.focus();
             } catch (ex) {
