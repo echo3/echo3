@@ -30,7 +30,6 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
     _processInitMouseOverRef: null,
     
     $construct: function() { 
-        this._processRolloverExitRef = Core.method(this, this._processRolloverExit);
         this._processInitFocusRef = Core.method(this, this._processInitFocus);
         this._processInitMouseOverRef = Core.method(this, this._processInitMouseOver);
     },
@@ -73,6 +72,8 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
      * on the screen, and each button has many event listeners.
      */
     _addEventListeners: function() {
+        this._processRolloverExitRef = Core.method(this, this._processRolloverExit);
+    
         // Remove initialization listeners.
         WebCore.EventProcessor.remove(this._divElement, "focus", this._processInitFocusRef);
         WebCore.EventProcessor.remove(this._divElement, "mouseover", this._processInitMouseOverRef);
@@ -204,7 +205,9 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             return;
         }
-        this.component.application.removeFocusListener(this._processRolloverExitRef);
+        if (this._processRolloverExitRef) {
+            this.component.application.removeFocusListener(this._processRolloverExitRef);
+        }
         this._setRolloverState(false);
     },
     
@@ -281,7 +284,9 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderDispose: function(update) {
-        this.client.application.removeFocusListener(this._processRolloverExitRef);
+        if (this._processRolloverExitRef) {
+            this.client.application.removeFocusListener(this._processRolloverExitRef);
+        }
         WebCore.EventProcessor.removeAll(this._divElement);
         this._iconElement = null;
     },
