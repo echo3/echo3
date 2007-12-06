@@ -279,6 +279,20 @@ Core = {
         }
     },
     
+    /**
+     * Creates a new function which executes a specific method of an object instance.
+     * Any arguments passed to the returned function will be passed to the method.
+     * The return value of the method will be returned by the function.
+     *
+     * CAUTION: When adding and removing methods as listeners, not that two seperately
+     * constructed methods will not be treated as equal, even if their instance and method
+     * properties are the same.  Failing to heed this warning can result in a memory leak,
+     * as listeners would never be removed.
+     *
+     * @param the object instance
+     * @param {Function} method the method to be invoked on the instance
+     * @return the return value provided by the method
+     */
     method: function(instance, method) {
         return function() {
             return method.apply(instance, arguments);
