@@ -343,6 +343,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
         }
     
         if (EchoClient.profilingTimer) {
+            Core.Debug.consoleWrite(EchoClient.profilingTimer);
             EchoClient.profilingTimer = null;
         }
         
