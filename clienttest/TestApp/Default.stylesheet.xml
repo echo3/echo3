@@ -3,24 +3,23 @@
   <p t="Border" n="border">
    <b t="2px groove #00ff00" r="2px groove #ffff00" l="2px groove #00ffff" b="2px groove #ff00ff"/>
   </p>
-  <p t="s" n="text" v="A button"/>
-  <p t="b" n="rolloverEnabled" v="true"/>
-  <p t="Color" n="rolloverBackground" v="#afffaf"/>
-  <p t="b" n="pressedEnabled" v="true"/>
-  <p t="Color" n="pressedBackground" v="#ffafff"/>
-  <p t="Color" n="foreground" v="#00007f"/>
-  <p t="Insets" n="insets" v="5px"/>
+  <p t="b" n="rolloverEnabled">true</p>
+  <p t="Color" n="rolloverBackground">#afffaf</p>
+  <p t="b" n="pressedEnabled">true</p>
+  <p t="Color" n="pressedBackground">#ffafff</p>
+  <p t="Color" n="foreground">#00007f</p>
+  <p t="Insets" n="insets">5px</p>
  </s>
  <s n="DefaultSpaced" t="Row">
-  <p t="Extent" n="cellSpacing" v="5px"/>
-  <p t="Insets" n="padding" v="5px"/>
+  <p t="Extent" n="cellSpacing">5px</p>
+  <p t="Insets" n="padding">5px</p>
  </s>
  <s n="DefaultResizable" t="SplitPane">
-  <p t="b" n="resizable" v="true"/>
+  <p t="b" n="resizable">true</p>
  </s>
  <s n="Default" t="WindowPane">
-  <p t="Color" n="titleForeground" v="#ffffff"/>
-  <p t="Color" n="titleBackground" v="#4f4f7f"/>
+  <p t="Color" n="titleForeground">#ffffff</p>
+  <p t="Color" n="titleBackground">#4f4f7f</p>
   <p t="FillImageBorder" n="border">
    <fib bi="17px 23px 23px 17px" ci="8px 14px 14px 8px">
     <fi u="../image/defaultwindow/BorderTopLeft.png" r="0"/>
