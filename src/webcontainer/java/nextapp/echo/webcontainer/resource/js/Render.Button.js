@@ -545,7 +545,7 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
         /**
          * Contains mappings from RadioButton render ids to EchoApp.ButtonGroup objects.
          * 
-         * @type {Core.Arrays.LargeMap}
+         * @type Core.Arrays.LargeMap
          */
         _groups: new Core.Arrays.LargeMap()
     },
