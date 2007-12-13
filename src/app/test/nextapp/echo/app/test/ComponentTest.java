@@ -29,7 +29,7 @@
 
 package nextapp.echo.app.test;
 
-import java.util.Locale;
+//import java.util.Locale;
 
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Color;
@@ -511,16 +511,16 @@ public class ComponentTest extends TestCase {
         assertEquals(Component.PROPERTY_LAYOUT_DATA, pce.lastEvent.getPropertyName());
     }
 
-    /**
-     * Test querying rendered <code>locale</code> property when no application 
-     * is active. 
-     */
-    public void testRenderLocaleWithoutApplication() {
-        NullComponent c = new NullComponent();
-        assertNull(c.getRenderLocale());
-        c.setLocale(Locale.TRADITIONAL_CHINESE);
-        assertEquals(Locale.TRADITIONAL_CHINESE, c.getRenderLocale());
-    }
+//    /**
+//     * Test querying rendered <code>locale</code> property when no application 
+//     * is active. 
+//     */
+//    public void testRenderLocaleWithoutApplication() {
+//        NullComponent c = new NullComponent();
+//        assertNull(c.getRenderLocale());
+//        c.setLocale(Locale.TRADITIONAL_CHINESE);
+//        assertEquals(Locale.TRADITIONAL_CHINESE, c.getRenderLocale());
+//    }
     
     /**
      * Test basic <code>PropertyChangeListener</code> functionality.

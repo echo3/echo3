@@ -848,6 +848,100 @@ Core.ListenerList = Core.extend({
     }
 });
 
+Core.LocaleMap = Core.extend({
+
+    $static: {
+    
+        /**
+         * Generates a less specific version of the specified language code.
+         * Returns null if no "parent" language code can be determined.
+         * This operation is implemented  by removing the subtag (if found)
+         * from the specified RFC 1766 language code.  If the language
+         * code does not have a subtag, null is returned.
+         *
+         * @param {String} languageCode an RFC 1766 language code
+         * @return a less specific version of the specified language code,
+         *         or null if none can be determined
+         * @type String 
+         */
+        getParentLanguageCode : function(languageCode) {
+            if (languageCode.indexOf("-") == -1) {
+                return null;
+            } else {
+                return languageCode.substring(0, languageCode.indexOf("-"));
+            }
+        }
+    },
+
+    /**
+     * Association between RFC 1766 language codes and resource maps.
+     */
+    _languageCodeToMap: null,
+    
+    /**
+     * Cache of language codes to resource maps.
+     * Any time a query is made with a specific language code, the appropriate map
+     * is loaded into this cache if it is not already present.  The purpose of this
+     * cache is to avoid multiple queries to the cache map and/or 
+     * getParentLanguageCode() function.
+     */
+    _cache: null,
+    
+    /**
+     * The default resource map that should be utilized in the event that a
+     * locale-specific map is not available for a particular language code.
+     */
+    _defaultMap: null,
+
+    $construct: function(defaultMap) {
+        this._languageCodeToMap = {};
+        this._cache = {};
+        this._defaultMap = defaultMap;
+    },
+    
+    /**
+     * Adds a new locale-specific map to the 
+     */
+    addMap: function(languageCode, map) {
+        this._cache = {};
+        this._languageCodeToMap[languageCode] = map;
+    },
+    
+    get: function(languageCode, key) {
+        var value = this._cache[languageCode ? languageCode + "^" + key : key];
+        if (value !== undefined) {
+            return value;
+        }
+        
+        if (languageCode == null) {
+            // No language code specified: retrieve value from default map.
+            value = this._defaultMap[key];
+        } else {
+            // Attempt to retrieve value from map for specified language code.
+            var map = this._languageCodeToMap[languageCode];
+            if (map) {
+                value = map[key];
+            }
+            
+            if (!value) {
+                // Attempt to retrieve value from map for parent language code.
+                var parentLanguageCode = Core.LocaleMap.getParentLanguageCode(languageCode);
+                if (parentLanguageCode) {
+                    map = this._languageCodeToMap[parentLanguageCode];
+                    if (map) {
+                        value = map[key];
+                    }
+                }
+            }
+        }
+        
+        // Install retrieved value in cache.
+        this._cache[languageCode ? languageCode + "^" + key : key] = value;
+        
+        return value;
+    }
+});
+
 /**
  * @class A localized resource bundle instance.
  */
@@ -880,7 +974,6 @@ Core.ResourceBundle = Core.extend({
         }
     }
 });
-
 
 /**
  * Scheduler namespace.  Non-instantiable object.

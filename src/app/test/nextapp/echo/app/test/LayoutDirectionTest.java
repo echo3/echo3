@@ -32,8 +32,8 @@ package nextapp.echo.app.test;
 import java.util.Locale;
 
 import nextapp.echo.app.ApplicationInstance;
-import nextapp.echo.app.Component;
-import nextapp.echo.app.LayoutDirection;
+//import nextapp.echo.app.Component;
+//import nextapp.echo.app.LayoutDirection;
 import junit.framework.TestCase;
 
 /**
@@ -85,42 +85,42 @@ public class LayoutDirectionTest extends TestCase {
         assertTrue(app.getLayoutDirection().isLeftToRight());
     }
     
-    public void testComponentInheritanceFromApplication() {
-        Component component = new NullComponent();
-        assertNull(component.getRenderLayoutDirection());
-        
-        app.getColumn().add(component);
-        
-        app.setLocale(Locale.US);
-        assertTrue(component.getRenderLayoutDirection().isLeftToRight());
-        
-        app.setLocale(ARABIC);
-        assertFalse(component.getRenderLayoutDirection().isLeftToRight());
-    }
+//    public void testComponentInheritanceFromApplication() {
+//        Component component = new NullComponent();
+//        assertNull(component.getRenderLayoutDirection());
+//        
+//        app.getColumn().add(component);
+//        
+//        app.setLocale(Locale.US);
+//        assertTrue(component.getRenderLayoutDirection().isLeftToRight());
+//        
+//        app.setLocale(ARABIC);
+//        assertFalse(component.getRenderLayoutDirection().isLeftToRight());
+//    }
     
-    public void testComponentInheritanceFromHierarchy() {
-        Component component = new NullComponent();
-        app.getColumn().add(component);
-        
-        app.setLocale(Locale.US);
-        assertTrue(component.getRenderLayoutDirection().isLeftToRight());
-        
-        app.getDefaultWindow().setLocale(ARABIC);
-        assertFalse(component.getRenderLayoutDirection().isLeftToRight());
-        
-        app.getContentPane().setLocale(Locale.ITALY);
-        assertTrue(component.getRenderLayoutDirection().isLeftToRight());
-        
-        app.getContentPane().setLayoutDirection(LayoutDirection.RTL);
-        assertFalse(component.getRenderLayoutDirection().isLeftToRight());
-        
-        app.getContentPane().setLayoutDirection(null);
-        assertTrue(component.getRenderLayoutDirection().isLeftToRight());
-        
-        app.getColumn().setLocale(HEBREW);
-        assertFalse(component.getRenderLayoutDirection().isLeftToRight());
-        
-        app.getColumn().setLayoutDirection(LayoutDirection.LTR);
-        assertTrue(component.getRenderLayoutDirection().isLeftToRight());
-    }
+//    public void testComponentInheritanceFromHierarchy() {
+//        Component component = new NullComponent();
+//        app.getColumn().add(component);
+//        
+//        app.setLocale(Locale.US);
+//        assertTrue(component.getRenderLayoutDirection().isLeftToRight());
+//        
+//        app.getDefaultWindow().setLocale(ARABIC);
+//        assertFalse(component.getRenderLayoutDirection().isLeftToRight());
+//        
+//        app.getContentPane().setLocale(Locale.ITALY);
+//        assertTrue(component.getRenderLayoutDirection().isLeftToRight());
+//        
+//        app.getContentPane().setLayoutDirection(LayoutDirection.RTL);
+//        assertFalse(component.getRenderLayoutDirection().isLeftToRight());
+//        
+//        app.getContentPane().setLayoutDirection(null);
+//        assertTrue(component.getRenderLayoutDirection().isLeftToRight());
+//        
+//        app.getColumn().setLocale(HEBREW);
+//        assertFalse(component.getRenderLayoutDirection().isLeftToRight());
+//        
+//        app.getColumn().setLayoutDirection(LayoutDirection.LTR);
+//        assertTrue(component.getRenderLayoutDirection().isLeftToRight());
+//    }
 }
