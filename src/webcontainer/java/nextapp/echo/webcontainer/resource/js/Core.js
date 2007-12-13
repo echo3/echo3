@@ -848,7 +848,7 @@ Core.ListenerList = Core.extend({
     }
 });
 
-Core.LocaleMap = Core.extend({
+Core.ResourceBundle = Core.extend({
 
     $static: {
     
@@ -876,16 +876,9 @@ Core.LocaleMap = Core.extend({
     /**
      * Association between RFC 1766 language codes and resource maps.
      */
-    _languageCodeToMap: null,
+    _sourceBundles: null,
     
-    /**
-     * Cache of language codes to resource maps.
-     * Any time a query is made with a specific language code, the appropriate map
-     * is loaded into this cache if it is not already present.  The purpose of this
-     * cache is to avoid multiple queries to the cache map and/or 
-     * getParentLanguageCode() function.
-     */
-    _cache: null,
+    _generatedBundles: null,
     
     /**
      * The default resource map that should be utilized in the event that a
@@ -893,85 +886,61 @@ Core.LocaleMap = Core.extend({
      */
     _defaultMap: null,
 
-    $construct: function(defaultMap) {
-        this._languageCodeToMap = {};
-        this._cache = {};
-        this._defaultMap = defaultMap;
+    $construct: function(defaultBundle) {
+        this._sourceBundles = {};
+        this._generatedBundles = {};
+        this._defaultBundle = defaultBundle;
     },
     
     /**
-     * Adds a new locale-specific map to the 
+     * Returns a locale-specific map.
      */
-    addMap: function(languageCode, map) {
-        this._cache = {};
-        this._languageCodeToMap[languageCode] = map;
-    },
-    
-    get: function(languageCode, key) {
-        var value = this._cache[languageCode ? languageCode + "^" + key : key];
-        if (value !== undefined) {
-            return value;
+    get: function(languageCode) {
+        var bundle = languageCode ? this._generatedBundles[languageCode] : this._defaultBundle;
+        if (bundle) {
+            return bundle;
         }
-        
-        if (languageCode == null) {
-            // No language code specified: retrieve value from default map.
-            value = this._defaultMap[key];
-        } else {
-            // Attempt to retrieve value from map for specified language code.
-            var map = this._languageCodeToMap[languageCode];
-            if (map) {
-                value = map[key];
+    
+        bundle = {};
+        var x;
+
+        // Copy items from exact language bundle into new bundle.
+        var sourceBundle = this._sourceBundles[languageCode];
+        if (sourceBundle) {
+            for (x in sourceBundle) {
+                bundle[x] = this.sourceBundle[x];
             }
-            
-            if (!value) {
-                // Attempt to retrieve value from map for parent language code.
-                var parentLanguageCode = Core.LocaleMap.getParentLanguageCode(languageCode);
-                if (parentLanguageCode) {
-                    map = this._languageCodeToMap[parentLanguageCode];
-                    if (map) {
-                        value = map[key];
+        }
+
+        // Copy any missing items found in parent language bundle (if it exists) into new bundle.
+        parentLanguageCode = Core.ResourceBundle.getParentLanguageCode(languageCode);
+        if (parentLanguageCode) {
+            var sourceBundle = this._sourceBundles[parentLanguageCode];
+            if (sourceBundle) {
+                for (x in sourceBundle) {
+                    if (bundle[x] === undefined) {
+                        bundle[x] = this.sourceBundle[x];
                     }
                 }
             }
         }
-        
-        // Install retrieved value in cache.
-        this._cache[languageCode ? languageCode + "^" + key : key] = value;
-        
-        return value;
-    }
-});
 
-/**
- * @class A localized resource bundle instance.
- */
-Core.ResourceBundle = Core.extend({
-    
-    map: null,
-    parent: null,
-    
-    /**
-     * Creates a Resourcebundle
-     * 
-     * @param map initial mappings
-     */
-    $construct: function(map) {
-        this.map = map ? map : {};
-    },
-    
-    /**
-     * Retrieves a value.
-     * 
-     * @param key the key
-     * @return the value
-     */
-    get: function(key) {
-        var value = this.map[key];
-        if (value == null && this.parent != null) {
-            return this.parent.get(key);
-        } else {
-            return value;
+        // Copy any missing items found in default bundle into new bundle.
+        for (x in this._defaultMap) {
+            if (bundle[x] === undefined) {
+                bundle[x] = this._defaultMap[x];
+            }
         }
+        
+        this._generatedBundles[languageCode] = bundle;
+    },
+
+    /**
+     * Adds a new locale-specific map to the 
+     */
+    set: function(languageCode, map) {
+        this._generatedBundles = {};
+        this._sourceBundles[languageCode] = map;
     }
 });
 
