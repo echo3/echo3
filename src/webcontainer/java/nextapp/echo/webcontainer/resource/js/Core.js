@@ -884,7 +884,7 @@ Core.ResourceBundle = Core.extend({
      * The default resource map that should be utilized in the event that a
      * locale-specific map is not available for a particular language code.
      */
-    _defaultMap: null,
+    _defaultBundle: null,
 
     $construct: function(defaultBundle) {
         this._sourceBundles = {};
@@ -926,9 +926,9 @@ Core.ResourceBundle = Core.extend({
         }
 
         // Copy any missing items found in default bundle into new bundle.
-        for (x in this._defaultMap) {
+        for (x in this._defaultBundle) {
             if (bundle[x] === undefined) {
-                bundle[x] = this._defaultMap[x];
+                bundle[x] = this._defaultBundle[x];
             }
         }
         
