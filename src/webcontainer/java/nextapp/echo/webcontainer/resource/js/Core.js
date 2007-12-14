@@ -908,7 +908,7 @@ Core.ResourceBundle = Core.extend({
         var sourceBundle = this._sourceBundles[languageCode];
         if (sourceBundle) {
             for (x in sourceBundle) {
-                bundle[x] = this.sourceBundle[x];
+                bundle[x] = sourceBundle[x];
             }
         }
 
@@ -919,7 +919,7 @@ Core.ResourceBundle = Core.extend({
             if (sourceBundle) {
                 for (x in sourceBundle) {
                     if (bundle[x] === undefined) {
-                        bundle[x] = this.sourceBundle[x];
+                        bundle[x] = sourceBundle[x];
                     }
                 }
             }
@@ -933,6 +933,7 @@ Core.ResourceBundle = Core.extend({
         }
         
         this._generatedBundles[languageCode] = bundle;
+        return bundle;
     },
 
     /**
