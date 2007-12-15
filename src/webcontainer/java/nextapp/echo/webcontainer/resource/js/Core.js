@@ -248,8 +248,17 @@ Core = {
     /**
      * Retrieves a value from an object hierarchy.
      *
+     * Examples: 
+     * Given the following object 'o': { a: { b: 4, c: 2 }}
+     * Core.get(o, ["a", "b"]) will return 4.
+     * Core.get(o, ["a", "c"]) will return 2.
+     * Core.get(o, ["a", "d"]) will return null.
+     * Core.get(o, ["a"]) will return { b: 4, c: 2 }.
+     * Core.get(o, ["b"]) will return null.
+     * Core.get(o, ["d"]) will return null.
+     *
      * @param object an arbitrary object from which the value should be retrieved
-     * @param {Array} path the propertyPath to navigate through the object hierarchy to retrieve the value
+     * @param {Array} path an array of object property names describing the path to retrieve
      * @return the value, if found, or null if it does not exist
      */
     get: function(object, path) {
@@ -343,11 +352,19 @@ Core = {
     },
     
     /**
-     * Sets a value within an object hierarchy.
+     * Retrieves a value from an object hierarchy.
      *
-     * @param object an arbitrary object on which the value should be set
-     * @param {Array} path the propertyPath to navigate through the object hierarchy to set the value
-     * @param value the new value
+     * Examples: 
+     * Given the following object 'o': { a: { b: 4, c: 2 } }
+     * Core.set(o, ["a", "b"], 5) will update the value of 'o' to be: { a: { b: 5, c: 2 } }
+     * Core.set(o, ["a", "d"], 7) will update the value of 'o' to be: { a: { b: 4, c: 2, d: 7 } }
+     * Core.set(o, ["e"], 9) will update the value of 'o' to be: { a: { b: 4, c: 2 }, e: 9 }
+     * Core.set(o, ["f", "g"], 8) will update the value of 'o' to be: { a: { b: 4, c: 2 }, f: { g: 8 } }
+     * Core.set(o, ["a"], 10) will update the value of 'o' to be: { a: 10 }
+     *
+     * @param object an arbitrary object from which the value should be retrieved
+     * @param {Array} path an array of object property names describing the path to retrieve
+     * @return the value, if found, or null if it does not exist
      */
     set: function(object, path, value) {
         var parentObject = null;
