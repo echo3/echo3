@@ -246,6 +246,24 @@ Core = {
     },
     
     /**
+     * Retrieves a value from an object hierarchy.
+     *
+     * @param object an arbitrary object from which the value should be retrieved
+     * @param {Array} path the propertyPath to navigate through the object hierarchy to retrieve the value
+     * @return the value, if found, or null if it does not exist
+     */
+    get: function(object, path) {
+        for (var i = 0; i < path.length; ++i) {
+            object = object[path[i]];
+            if (!object) {
+                return null;
+            }
+        }
+
+        return object;
+    },
+    
+    /**
      * Determines if the specified propertyName of the specified object is a virtual
      * property, i.e., that it can be overridden by subclasses.
      */
@@ -322,6 +340,30 @@ Core = {
                 destination.prototype[mixinProperty] = mixins[i][mixinProperty];
             }
         }
+    },
+    
+    /**
+     * Sets a value within an object hierarchy.
+     *
+     * @param object an arbitrary object on which the value should be set
+     * @param {Array} path the propertyPath to navigate through the object hierarchy to set the value
+     * @param value the new value
+     */
+    set: function(object, path, value) {
+        var parentObject = null;
+        
+        // Find or create container object.
+        for (var i = 0; i < path.length - 1; ++i) {
+            parentObject = object; 
+            object = object[path[i]];
+            if (!object) {
+                object = {};
+                parentObject[path[i]] = object;
+            }
+        }
+        
+        // Assign value.
+        object[path[path.length - 1]] = value;
     },
     
     /**
@@ -950,63 +992,6 @@ Core.ResourceBundle = Core.extend({
             out += " " + x;
         }
         return out;
-    }
-});
-
-/**
- * This class is highly experimental and subject to change/removal.
- */
-Core.Directory = Core.extend({
-
-    _rootDirectory: null,
-    _listeners: null,
-    
-    $construct: function() {
-        this._rootDirectory = {};
-        this._listeners = new Core.ListenerList();
-    },
-    
-    addChangeListener: function(l) {
-       this._listeners.addListener("change", l);
-    },
-    
-    get: function(path) {
-        var pathElements = path.split("/");
-        var directory = this._rootDirectory;
-
-        for (var i = 0; i < pathElements.length; ++i) {
-            parentDirectory = directory; 
-            directory = directory[pathElements[i]];
-            if (!directory) {
-                return null;
-            }
-        }
-
-        return directory;
-    },
-    
-    removeChangeListener: function(l) {
-       this._listeners.removeListener("change", l);
-    },
-    
-    set: function(path, o) {
-        var pathElements = path.split("/");
-        var directory = this._rootDirectory;
-        var parentDirectory = null;
-        
-        // Find or create container directory.
-        for (var i = 0; i < pathElements.length - 1; ++i) {
-            parentDirectory = directory; 
-            directory = directory[pathElements[i]];
-            if (!directory) {
-                directory = {};
-                parentDirectory[pathElements[i]] = directory;
-            }
-        }
-        
-        // Assign value.
-        directory[pathElements[pathElements.length - 1]] = o;
-        this._listeners.fireEvent({ type: "change", source: this, path: path });
     }
 });
 
