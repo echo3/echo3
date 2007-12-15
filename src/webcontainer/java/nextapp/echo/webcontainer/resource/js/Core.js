@@ -942,6 +942,71 @@ Core.ResourceBundle = Core.extend({
     set: function(languageCode, map) {
         this._generatedBundles = {};
         this._sourceBundles[languageCode] = map;
+    },
+    
+    toString: function() {
+        out = "ResourceBundle: ";
+        for (var x in this._sourceBundles) {
+            out += " " + x;
+        }
+        return out;
+    }
+});
+
+/**
+ * This class is highly experimental and subject to change/removal.
+ */
+Core.Directory = Core.extend({
+
+    _rootDirectory: null,
+    _listeners: null,
+    
+    $construct: function() {
+        this._rootDirectory = {};
+        this._listeners = new Core.ListenerList();
+    },
+    
+    addChangeListener: function(l) {
+       this._listeners.addListener("change", l);
+    },
+    
+    get: function(path) {
+        var pathElements = path.split("/");
+        var directory = this._rootDirectory;
+
+        for (var i = 0; i < pathElements.length; ++i) {
+            parentDirectory = directory; 
+            directory = directory[pathElements[i]];
+            if (!directory) {
+                return null;
+            }
+        }
+
+        return directory;
+    },
+    
+    removeChangeListener: function(l) {
+       this._listeners.removeListener("change", l);
+    },
+    
+    set: function(path, o) {
+        var pathElements = path.split("/");
+        var directory = this._rootDirectory;
+        var parentDirectory = null;
+        
+        // Find or create container directory.
+        for (var i = 0; i < pathElements.length - 1; ++i) {
+            parentDirectory = directory; 
+            directory = directory[pathElements[i]];
+            if (!directory) {
+                directory = {};
+                parentDirectory[pathElements[i]] = directory;
+            }
+        }
+        
+        // Assign value.
+        directory[pathElements[pathElements.length - 1]] = o;
+        this._listeners.fireEvent({ type: "change", source: this, path: path });
     }
 });
 

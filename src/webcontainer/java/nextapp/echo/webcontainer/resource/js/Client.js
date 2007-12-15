@@ -26,7 +26,9 @@ EchoClient = Core.extend({
             for (var i = 0; i < EchoClient._activeClients.length; ++i) {
                 EchoClient._activeClients[i]._windowResizeListener(e);
             }
-        }
+        },
+        
+        resources: new Core.Directory()
     },
     
     $load: function() {
@@ -261,3 +263,4 @@ EchoClient = Core.extend({
         EchoRender.notifyResize(this.application.rootComponent);
     }
 });
+
