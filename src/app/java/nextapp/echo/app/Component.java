@@ -288,7 +288,8 @@ implements RenderIdSupport, Serializable {
      * implementation).
      * If the child component currently has a parent in another hierarchy, it
      * will automatically be removed from that hierarchy before being added 
-     * to this component.
+     * to this component.  This behavior will also occur if the child component
+     * is currently a child of this component.
      *
      * @param c the child component to add
      * @param n the index at which to add the child component, or -1 to add the
