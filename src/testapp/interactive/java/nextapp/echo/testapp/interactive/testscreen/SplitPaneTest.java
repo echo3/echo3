@@ -34,6 +34,7 @@ import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
+import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.Insets;
@@ -336,6 +337,15 @@ public class SplitPaneTest extends SplitPane {
                     testPane.add(label);
                     testPane.remove(label);
                     testPane.add(label);
+                }
+            }
+        });
+        controlsColumn.addButton("Remove-Add", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (testPane.getComponentCount() > 0) {
+                    Component component = testPane.getComponent(0);
+                    testPane.remove(component);
+                    testPane.add(component);
                 }
             }
         });
