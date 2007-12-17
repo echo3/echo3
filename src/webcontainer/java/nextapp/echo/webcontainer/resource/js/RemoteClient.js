@@ -388,7 +388,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
         }
         
         // Profiling Timer (Uncomment to enable, comment to disable).
-        EchoClient.profilingTimer = new Core.Debug.Timer();
+        EchoClient.profilingTimer = new EchoClient.Timer();
         
         // Remove component update listener from application.  This listener is listening
         // for user input.  

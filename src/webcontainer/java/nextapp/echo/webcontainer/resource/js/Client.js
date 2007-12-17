@@ -283,3 +283,51 @@ EchoClient = Core.extend({
     }
 });
 
+/**
+ * @class Provides a tool for measuring performance of the Echo3 client engine.
+ */
+EchoClient.Timer = Core.extend({
+
+    _times: null,
+    
+    _labels: null,
+    
+    /**
+     * Creates a new debug timer.
+     * 
+     * @constructor
+     */
+    $construct: function() {
+        this._times = [new Date().getTime()];
+        this._labels = ["Start"];
+    },
+    
+    /**
+     * Marks the time required to complete a task.  This method should be invoked
+     * when a task is completed with the 'label' specifying a description of the task.
+     * 
+     * @param {String} label a description of the completed task.
+     */
+    mark: function(label) {
+        this._times.push(new Date().getTime());
+        this._labels.push(label);
+    },
+    
+    /**
+     * Returns a String representation of the timer results, showing how long
+     * each task required to complete (and included a total time).
+     * 
+     * @return the timer results
+     * @type String
+     */
+    toString: function() {
+        var out = "";
+        for (var i = 1; i < this._times.length; ++i) {
+            var time = this._times[i] - this._times[i - 1];
+            out += this._labels[i] + ":" + time + " ";
+        }
+        out += "TOT:" + (this._times[this._times.length - 1] - this._times[0]) + "ms";
+        return out;
+    }
+});
+
