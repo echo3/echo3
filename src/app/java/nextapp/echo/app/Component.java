@@ -286,6 +286,9 @@ implements RenderIdSupport, Serializable {
      * <code>Component</code>s that require notification of all child additions
      * should override this method (making sure to call the superclass' 
      * implementation).
+     * If the child component currently has a parent in another hierarchy, it
+     * will automatically be removed from that hierarchy before being added 
+     * to this component.
      *
      * @param c the child component to add
      * @param n the index at which to add the child component, or -1 to add the
