@@ -514,22 +514,35 @@ WebCore.Environment = {
 WebCore.EventProcessor = {
     
     /**
-     * Provides utilities for restricting selection of DOM elements.
+     * Provides utilities for restricting selection of DOM elements.  These are necessary as double click and drag
+     * events will cause/begin undesired selections.
      */
     Selection: {
 
         /**
          * Adds a listener to an element that will prevent text selection / highlighting as a result of mouse clicks.
          * The disable() method should be invoked when the element is to be disposed.
+         * The event is registered using the event processor, so invoking WebCore.EventProcessor.removeAll() on its
+         * element will also dispose it.
          *
          * @param {Element} element the element on which to forbid text selection
-         * @see WebCore.EventProcessor.Selection#disable
+         * @see WebCore.EventProcessor.Selection#enable
          */
         disable: function(element) {
             WebCore.EventProcessor.add(element, "mousedown", WebCore.EventProcessor.Selection._disposeEvent, false);
             if (WebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
                 WebCore.EventProcessor.add(element, "selectstart", WebCore.EventProcessor.Selection._disposeEvent, false);
             }
+        },
+        
+        /**
+         * Selection denial listener implementation.
+         * 
+         * @param e the selection/click event
+         * @private
+         */
+        _disposeEvent: function(e) {
+            WebCore.DOM.preventEventDefault(e);
         },
     
         /**
@@ -543,17 +556,7 @@ WebCore.EventProcessor = {
             if (WebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
                 WebCore.EventProcessor.remove(element, "selectstart", WebCore.EventProcessor.Selection._disposeEvent, false);
             }
-        },
-        
-        /**
-         * Selection denial listener implementation.
-         * 
-         * @param {Event} the selection/click event
-         * @private
-         */
-        _disposeEvent: function(e) {
-            WebCore.DOM.preventEventDefault(e);
-        },
+        }
     },
 
     /**
