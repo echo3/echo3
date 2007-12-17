@@ -93,7 +93,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         WebCore.EventProcessor.add(this._divElement, "focus", Core.method(this, this._processFocus), false);
         WebCore.EventProcessor.add(this._divElement, "blur", Core.method(this, this._processBlur), false);
         
-        WebCore.EventProcessor.addSelectionDenialListener(this._divElement);
+        WebCore.EventProcessor.Selection.disable(this._divElement);
     },
     
     _getCombinedAlignment: function() {

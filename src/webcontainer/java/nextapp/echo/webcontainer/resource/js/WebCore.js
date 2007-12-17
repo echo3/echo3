@@ -513,6 +513,46 @@ WebCore.Environment = {
  */
 WebCore.EventProcessor = {
     
+    Selection: {
+
+        /**
+         * Adds a listener to an element that will prevent text selection / highlighting as a result of mouse clicks.
+         * The disable() method should be invoked when the element is to be disposed.
+         *
+         * @param {Element} element the element on which to forbid text selection
+         * @see WebCore.DOM.SelectionDenial#disable
+         */
+        disable: function(element) {
+            WebCore.EventProcessor.add(element, "mousedown", WebCore.EventProcessor.Selection._disposeEvent, false);
+            if (WebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
+                WebCore.EventProcessor.add(element, "selectstart", WebCore.EventProcessor.Selection._disposeEvent, false);
+            }
+        },
+    
+        /**
+         * Removes a selection denial listener.
+         * 
+         * @param element the element from which to remove the selection denial listener
+         * @see WebCore.DOM.SelectionDenial#enable
+         */
+        enable: function(element) {
+            WebCore.EventProcessor.remove(element, "mousedown", WebCore.EventProcessor.Selection._disposeEvent, false);
+            if (WebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
+                WebCore.EventProcessor.remove(element, "selectstart", WebCore.EventProcessor.Selection._disposeEvent, false);
+            }
+        },
+        
+        /**
+         * Selection denial listener implementation.
+         * 
+         * @param {Event} the selection/click event
+         * @private
+         */
+        _disposeEvent: function(e) {
+            WebCore.DOM.preventEventDefault(e);
+        },
+    },
+
     /**
      * The next element identifier.
      * @type Integer
@@ -572,22 +612,6 @@ WebCore.EventProcessor = {
         // Register event listener on DOM element.
         // FIXME...not handling multiple listeners of same type!
         WebCore.DOM.addEventListener(element, eventType, WebCore.EventProcessor._processEvent, false);
-    },
-    
-    /**
-     * Adds a listener to an element that will prevent text 
-     * selection / highlighting as a result of mouse clicks.
-     * The removeSelectionDenialListener() method should be invoked
-     * when the element is to be disposed.
-     * 
-     * @param {Element} element the element on which to forbid text selection
-     * @see WebCore.EventProcessor#removeSelectionDenialListener
-     */
-    addSelectionDenialListener: function(element) {
-        WebCore.EventProcessor.add(element, "mousedown", WebCore.EventProcessor._selectionDenialHandler, false);
-        if (WebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
-            WebCore.EventProcessor.add(element, "selectstart", WebCore.EventProcessor._selectionDenialHandler, false);
-        }
     },
     
     /**
@@ -732,29 +756,6 @@ WebCore.EventProcessor = {
         }
         
         listenerMap.remove(element.__eventProcessorId);
-    },
-    
-    /**
-     * Removes a selection denial listener.
-     * 
-     * @param element the element from which to remove the selection denial listener
-     * @see WebCore.EventProcessor#addSelectionDenialListener
-     */
-    removeSelectionDenialListener: function(element) {
-        WebCore.EventProcessor.remove(element, "mousedown", WebCore.EventProcessor._selectionDenialHandler, false);
-        if (WebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
-            WebCore.EventProcessor.remove(element, "selectstart", WebCore.EventProcessor._selectionDenialHandler, false);
-        }
-    },
-    
-    /**
-     * Selection denial listener implementation.
-     * 
-     * @param {Event} the selection/click event
-     * @private
-     */
-    _selectionDenialHandler: function(e) {
-        WebCore.DOM.preventEventDefault(e);
     },
     
     /**

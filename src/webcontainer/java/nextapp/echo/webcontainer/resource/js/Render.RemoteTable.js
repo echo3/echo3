@@ -347,7 +347,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
                 }
                 if (this._selectionEnabled) {
                     WebCore.EventProcessor.add(trElement, "click", clickRef, false);
-                    WebCore.EventProcessor.addSelectionDenialListener(trElement);
+                    WebCore.EventProcessor.Selection.disable(trElement);
                 }
             }
         }    
