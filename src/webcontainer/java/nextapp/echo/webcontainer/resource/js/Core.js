@@ -505,18 +505,13 @@ Core.Arrays = {
      * Returns the index of the specified item within the array, or -1 if it 
      * is not contained in the array.  
      * 
-     * Note on equality: This method will evaluate equality by
-     * invoking .equals() on the specified item if it provides such a method.
-     * If a .equals() implementation is not provided, equality will be determined
-     * based on the double-equal operator (==).
-     * 
      * @param item the item
      * @return the index of the item, or -1 if it is not present in the array
      * @type Number
      */
     indexOf: function(array, item) {
         for (var i = 0; i < array.length; ++i) {
-            if ((item.equals && item.equals(array[i])) || item == array[i]) {
+            if (item == array[i]) {
                 return i;
             }
         }
@@ -534,24 +529,6 @@ Core.Arrays = {
     remove: function(array, item) {
         for (var i = 0; i < array.length; ++i) {
             if (item == array[i]) {
-                array.splice(i, 1);
-                return;
-            }
-        }
-    },
-    
-    /**
-     * Removes the first instance of the specified item from an array.
-     * If the item does not exist in the array, no action is taken.
-     * Equality is determined using the equals() method if the item
-     * defines it, or '==' if it does not.
-     * 
-     * @param array the array from which the item should be removed
-     * @param item the item to remove
-     */
-    removeEqual: function(array, item) {
-        for (var i = 0; i < array.length; ++i) {
-            if ((item.equals && item.equals(array[i])) || item == array[i]) {
                 array.splice(i, 1);
                 return;
             }
@@ -798,8 +775,7 @@ Core.ListenerList = Core.extend({
      */
     removeListener: function(eventType, eventTarget) {
         for (var i = 0; i < this._data.length; i += 2) {
-            if (this._data[i] == eventType
-                    && (eventTarget == this._data[i + 1] || (eventTarget.equals && eventTarget.equals(this._data[i + 1])))) {
+            if (this._data[i] == eventType && eventTarget == this._data[i + 1]) {
                 var oldLength = this._data.length;
                 this._data.splice(i, 2);
                 return;
