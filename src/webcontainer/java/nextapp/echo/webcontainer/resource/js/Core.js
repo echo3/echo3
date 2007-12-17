@@ -702,42 +702,6 @@ Core.Arrays.LargeMap = Core.extend({
 });
 
 /**
- * @class Event object.
- */
-Core.Event = Core.extend({
-    
-    /**
-     * The source of the event.
-     */
-    source: null,
-
-    /**
-     * The event type.
-     * @type String
-     */
-    type: null,
-    
-    /**
-     * The event data.
-     */
-    data: null,
-    
-    /**
-     * Creates a new event object.
-     * 
-     * @constructor
-     * @param {String} type the type of the event
-     * @param source the source of the event
-     * @param data the optional data of the event
-     */
-    $construct: function(type, source, data) {
-        this.source = source;
-        this.type = type;
-        this.data = data;
-    } 
-});
-
-/**
  * @class A collection of event listeners.  Provides capability to manage listeners
  *        of multiple types, and fire events to listeners based on type.
  */
@@ -773,7 +737,7 @@ Core.ListenerList = Core.extend({
     /**
      * Fires an event.
      * 
-     * @param {Core.Event} event the event to fire
+     * @param event the event to fire
      * @return true if all event listeners returned values that evaluate to true, 
      *         or false if any event listeners returned values that evaluate to 
      *         false

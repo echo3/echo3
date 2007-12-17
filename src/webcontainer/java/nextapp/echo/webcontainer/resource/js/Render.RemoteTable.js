@@ -355,7 +355,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
     
     _doAction: function() {
         //FIXME fire from component.
-        this.component.fireEvent(new Core.Event("action", this.component));
+        this.component.fireEvent({type: "action", source: this.component});
     },
     
     _processClick: function(e) {

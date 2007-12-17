@@ -235,8 +235,8 @@ EchoApp.Application = Core.extend({
             this._setModal(parent, newValue);
         }
         if (this._listenerList.hasListeners("componentUpdate")) {
-            this._listenerList.fireEvent(new EchoApp.Application.ComponentUpdateEvent(
-                    this, parent, propertyName, oldValue, newValue));
+            this._listenerList.fireEvent({type: "componentUpdate", parent: parent, propertyName: propertyName, 
+                    oldValue: oldValue, newValue: newValue});
         }
         this.updateManager._processComponentUpdate(parent, propertyName, oldValue, newValue);
     },
@@ -300,7 +300,7 @@ EchoApp.Application = Core.extend({
         }
         
         this._focusedComponent = newValue;
-        this._listenerList.fireEvent(new Core.Event("focus", this));
+        this._listenerList.fireEvent({type: "focus", source: this});
     },
     
     /**
@@ -361,39 +361,6 @@ EchoApp.Application = Core.extend({
         if (component.modalSupport) {
             this._setModal(component, false);
         }
-    }
-});
-
-/**
- * @class
- * Event object describing an update to a component.
- */
-EchoApp.Application.ComponentUpdateEvent = Core.extend(Core.Event, {
-
-    parent: null,
-    
-    oldValue: null,
-    
-    newValue: null,
-    
-    propertyName: null,
-
-    /**
-     * Creates an Event object describing an update to a component.
-     * 
-     * @constructor
-     * @param source the generator of the event
-     * @param {EchoApp.Component} parent the updated component
-     * @param {String} propertyName the updated propery
-     * @param oldValue the previous value of the property
-     * @param newValue the new value of the property
-     */
-    $construct: function(source, parent, propertyName, oldValue, newValue) {
-        Core.Event.call(this, "componentUpdate", source);
-        this.parent = parent;
-        this.propertyName = propertyName;
-        this.oldValue = oldValue;
-        this.newValue = newValue;
     }
 });
 
@@ -692,7 +659,7 @@ EchoApp.Component = Core.extend({
      * Provides notification of an arbitrary event.
      * Listeners will be notified based on the event's type property.
      * 
-     * @param {Core.Event} event the event to fire
+     * @param event the event to fire
      */
     fireEvent: function(event) {
         if (this._listenerList == null) {
@@ -1113,11 +1080,8 @@ EchoApp.Component = Core.extend({
         var oldValue = this._localStyle.getProperty(name);
         this._localStyle.setProperty(name, newValue);
         if (this._listenerList && this._listenerList.hasListeners("property")) {
-            var e = new Core.Event("property", this);
-            e.propertyName = name;
-            e.oldValue = oldValue;
-            e.newValue = newValue;
-            this._listenerList.fireEvent(e);
+            this._listenerList.fireEvent({type: "property", source: this, propertyName: name, 
+                    oldValue: oldValue, newValue: newValue});
         }
         if (this.application) {
             this.application.notifyComponentUpdate(this, name, oldValue, newValue);
@@ -3101,8 +3065,7 @@ EchoApp.Update.Manager = Core.extend({
      */
     _fireUpdate: function() {
         if (!this._listenerList.isEmpty()) {
-            var e = new Core.Event("update", this);
-            this._listenerList.fireEvent(e);
+            this._listenerList.fireEvent({type: "update", source: this});
         }
     },
     
@@ -3338,8 +3301,7 @@ EchoApp.AbstractButton = Core.extend(EchoApp.Component, {
          * Programatically performs a button action.
          */
         doAction: function() {
-            var e = new Core.Event("action", this, this.getProperty("actionCommand"));
-            this.fireEvent(e);
+            this.fireEvent({type: "action", source: this, data: this.getProperty("actionCommand")});
         }
     }
 });
@@ -3423,8 +3385,7 @@ EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
          * Programatically performs a list select action.
          */
         doAction: function() {
-            var e = new Core.Event("action", this, this.getProperty("actionCommand"));
-            this.fireEvent(e);
+            this.fireEvent({type: "action", source: this, data: this.getProperty("actionCommand")});
         }
     }
 });
@@ -3698,7 +3659,6 @@ EchoApp.WindowPane = Core.extend(EchoApp.Component, {
      * Programmatically perform a window closing operation.
      */
     doWindowClosing: function() {
-        var e = new Core.Event("close", this);
-        this.fireEvent(e);
+        this.fireEvent({type: "close", source: this});
     }
 });

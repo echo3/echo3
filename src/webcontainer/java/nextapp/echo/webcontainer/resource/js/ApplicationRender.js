@@ -372,7 +372,7 @@ EchoAppRender.FloatingPaneManager = Core.extend({
      */
     _fireZIndexEvent: function() {
         if (this._listeners) {
-            this._listeners.fireEvent(new Core.Event("zIndex", this));
+            this._listeners.fireEvent({type: "zIndex", source: this});
         }
     },
     

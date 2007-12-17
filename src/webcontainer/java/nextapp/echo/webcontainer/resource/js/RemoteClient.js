@@ -320,7 +320,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
     /**
      * ServerMessage completion listener.
      * 
-     * @param {Core.Event} e the server message completion event
+     * @param e the server message completion event
      */
     _processSyncComplete: function(e) {
         // Mark time of serialization completion with profiling timer.
@@ -356,7 +356,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
     /**
      * Process a response to a client-server synchronization.
      * 
-     * @param {WebCore.HttpConnection.ResponseEvent} e the HttpConnection response event
+     * @param e the HttpConnection response event
      */
     _processSyncResponse: function(e) {
         // Remove wait indicator from scheduling (if wait indicator has not been presented yet, it will not be).
@@ -509,7 +509,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
      * server immediately.  The server will push any updates into the reciprocated server message.
      * If no action is required, the next polling interval will be scheduled.
      * 
-     * @param {WebCore.HttpConnection.ResponseEvent} e the poll response event 
+     * @param e the poll response event 
      */
     _processPollResponse: function(e) {
         var responseDocument = e.source.getResponseXml();
@@ -1161,7 +1161,7 @@ EchoRemoteClient.ServerMessage = Core.extend({
         }
     
         // Complete: notify listeners of completion.
-        this._listenerList.fireEvent(new Core.Event("completion", this));
+        this._listenerList.fireEvent({type: "completion", source: this});
         
         // Start server push listener if required.
         if (this.document.documentElement.getAttribute("async-interval")) {

@@ -90,7 +90,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
         this.component.setProperty("text", this._text);
         if (e.keyCode == 13) {
             //FIXME fire from component.
-    	    this.component.fireEvent(new Core.Event("action", this.component));
+    	    this.component.fireEvent({type: "action", source: this.component});
         }
         return true;
     },

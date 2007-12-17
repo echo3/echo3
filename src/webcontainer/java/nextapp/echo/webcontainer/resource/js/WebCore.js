@@ -523,7 +523,7 @@ WebCore.EventProcessor = {
          * The disable() method should be invoked when the element is to be disposed.
          *
          * @param {Element} element the element on which to forbid text selection
-         * @see WebCore.DOM.SelectionDenial#disable
+         * @see WebCore.EventProcessor.Selection#disable
          */
         disable: function(element) {
             WebCore.EventProcessor.add(element, "mousedown", WebCore.EventProcessor.Selection._disposeEvent, false);
@@ -536,7 +536,7 @@ WebCore.EventProcessor = {
          * Removes a selection denial listener.
          * 
          * @param element the element from which to remove the selection denial listener
-         * @see WebCore.DOM.SelectionDenial#enable
+         * @see WebCore.EventProcessor.Selection#enable
          */
         enable: function(element) {
             WebCore.EventProcessor.remove(element, "mousedown", WebCore.EventProcessor.Selection._disposeEvent, false);
@@ -794,31 +794,6 @@ WebCore.EventProcessor = {
  */
 WebCore.HttpConnection = Core.extend({
 
-    $static: {
-    
-        /**
-         * @class
-         * An event which indicates a response has been received to a connection
-         */
-        ResponseEvent: Core.extend(Core.Event, {
-        
-            valid: false,
-        
-            // FIXME Current "valid" flag for 2XX responses is probably a horrible idea.
-            /**
-             * Creates a new response event
-             * @param source {WebCore.HttpConnection} the connection which fired the event
-             * @param valid {Boolean} a flag indicating a valid 2XX response was received
-             * 
-             * @constructor
-             */
-            $construct: function(source, valid) {
-                Core.Event.call(this, "response", source);
-                this.valid = valid;
-            }
-        })
-    },
-
     _url: null,
     
     _contentType: null,
@@ -956,10 +931,9 @@ WebCore.HttpConnection = Core.extend({
                 // 0 included as a valid response code for non-served applications.
                 var valid = this._xmlHttpRequest.status == 0 ||  
                         (this._xmlHttpRequest.status >= 200 && this._xmlHttpRequest.status <= 299);
-                responseEvent = new WebCore.HttpConnection.ResponseEvent(this, valid);
+                responseEvent = {type: "response", source: this, valid: valid};
             } catch (ex) {
-                responseEvent = new WebCore.HttpConnection.ResponseEvent(this, false);
-                responseEvent.exception = ex;
+                responseEvent = {type: "response", source: this, valid: false, exception: ex};
             }
             
     		this._listenerList.fireEvent(responseEvent);
@@ -1047,8 +1021,7 @@ WebCore.Library = {
          * @private
          */
         _fireLoadEvent: function() {
-            var e = new Core.Event("load", this);
-            this._listenerList.fireEvent(e);
+            this._listenerList.fireEvent({type: "load", source: this});
         },
         
         /**
@@ -1146,7 +1119,7 @@ WebCore.Library = {
         /**
          * Event listener for response from the HttpConnection used to retrive the library.
          * 
-         * @param {WebCore.HttpConnection.ResponseEvent} e the event
+         * @param e the event
          * @private
          */
         _retrieveListener: function(e) {
