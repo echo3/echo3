@@ -557,7 +557,10 @@ WebCore.EventProcessor = {
     },
 
     /**
-     * The next element identifier.
+     * Next available sequentially assigned element identifier.
+     * Elements are assigned unique identifiers to enable mapping between 
+     * elements and lists of registered event listeners.
+     *
      * @type Integer
      */
     _nextId: 0,
@@ -584,12 +587,18 @@ WebCore.EventProcessor = {
      *        the bubbling phase
      */
     add: function(element, eventType, eventTarget, capture) {
+        // Assign event processor element id to element if not present.
         if (!element.__eventProcessorId) {
             element.__eventProcessorId = ++WebCore.EventProcessor._nextId;
         }
     
         var listenerList;
-        if (element == WebCore.EventProcessor._lastElement && capture == WebCore.EventProcessor._lastCapture) {
+        
+        // Determine the Core.ListenerList to which the listener should be added.
+        if (element.__eventProcessorId == WebCore.EventProcessor._lastId 
+                && capture == WebCore.EventProcessor._lastCapture) {
+            // If the 'element' and 'capture' properties are identical to those specified on the prior invocation
+            // of this method, the correct listener list is stored in the '_lastListenerList' property. 
             listenerList = WebCore.EventProcessor._lastListenerList; 
         } else {
             // Obtain correct id->ListenerList mapping based on capture parameter.
@@ -604,7 +613,10 @@ WebCore.EventProcessor = {
                 listenerMap.map[element.__eventProcessorId] = listenerList;
             }
             
-            WebCore.EventProcessor._lastElement = element;
+            // Cache element's event processor id, capture parameter value, and listener list.
+            // If the same element/capture properties are provided in the next call (which commonly occurs),
+            // the lookup operation will be unnecessary.
+            WebCore.EventProcessor._lastId = element.__eventProcessorId;
             WebCore.EventProcessor._lastCapture = capture;
             WebCore.EventProcessor._lastListenerList = listenerList;
         }
@@ -697,7 +709,7 @@ WebCore.EventProcessor = {
      *        the bubbling phase
      */
     remove: function(element, eventType, eventTarget, capture) {
-        WebCore.EventProcessor._lastElement = null;
+        WebCore.EventProcessor._lastId = null;
         
         if (!element.__eventProcessorId) {
             return;
