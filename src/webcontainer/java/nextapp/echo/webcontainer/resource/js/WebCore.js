@@ -513,6 +513,9 @@ WebCore.Environment = {
  */
 WebCore.EventProcessor = {
     
+    /**
+     * Provides utilities for restricting selection of DOM elements.
+     */
     Selection: {
 
         /**
