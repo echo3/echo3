@@ -2752,7 +2752,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
         }
         var components = new Array(this._removedChildIds.length);
         for (var i = 0; i < this._removedChildIds.length; ++i) {
-            components[i] = this._manager._idMap[this._removedChildIds[i]];
+            components[i] = this._manager._removedIdMap[this._removedChildIds[i]];
         }
         return components;
     },
@@ -2771,7 +2771,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
         }
         var components = new Array(this._removedDescendantIds.length);
         for (var i = 0; i < this._removedDescendantIds.length; ++i) {
-            components[i] = this._manager._idMap[this._removedDescendantIds[i]];
+            components[i] = this._manager._removedIdMap[this._removedDescendantIds[i]];
         }
         return components;
     },
@@ -2874,7 +2874,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      * @private
      */
     _removeChild: function(child) {
-        this._manager._idMap[child.renderId] = child;
+        this._manager._removedIdMap[child.renderId] = child;
     
         if (this._addedChildIds) {
             // Remove child from add list if found.
@@ -2908,7 +2908,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      * @param {EchoApp.Component} descendant the removed descendant 
      */
     _removeDescendant: function(descendant) {
-        this._manager._idMap[descendant.renderId] = descendant;
+        this._manager._removedIdMap[descendant.renderId] = descendant;
         if (!this._removedDescendantIds) {
             this._removedDescendantIds = [];
         }
@@ -3002,6 +3002,8 @@ EchoApp.Update.Manager = Core.extend({
      */
     _idMap: null,
     
+    _removedIdMap: null,
+    
     /** 
      * The id of the last parent component whose child was analyzed by
      * _isAncestorBeingAdded() that resulted in that method returning false.
@@ -3021,6 +3023,7 @@ EchoApp.Update.Manager = Core.extend({
         this.application = application;
         this._listenerList = new Core.ListenerList();
         this._idMap = { };
+        this._removedIdMap = { };
     },
     
     /**
@@ -3249,6 +3252,7 @@ EchoApp.Update.Manager = Core.extend({
         this.fullRefreshRequired = false;
         this._componentUpdateMap = { };
         this._idMap = { };
+        this._removedIdMap = { };
         this._hasUpdates = false;
         this._lastAncestorTestParentId = null;
     },
