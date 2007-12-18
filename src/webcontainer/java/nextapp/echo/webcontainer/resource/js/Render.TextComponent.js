@@ -168,7 +168,7 @@ EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
         this._textComponentElement.setAttribute("type", this._type);
         var maximumLength = this.component.getRenderProperty("maximumLength", -1);
         if (maximumLength >= 0) {
-            this._textComponentElement.setAttribute("maxlength", maximumLength);
+            this._textComponentElement.setAttribute("maxLength", maximumLength);
         }
         this._renderStyle(this._textComponentElement);
         this._addEventHandlers(this._textComponentElement);
