@@ -53,6 +53,10 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         EchoRender.registerPeer("SplitPane", this);
     },
 
+    /**
+     * Array containing two PaneConfiguration instances, representing the state of each child pane.
+     * @type Array
+     */
     _childPanes: null,
 
     _processSeparatorMouseMoveRef: null,
@@ -60,10 +64,6 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     _processSeparatorMouseUpRef: null,
 
     $construct: function() {
-        /**
-         * Array containing two PaneConfiguration instances, representing the state of each child pane.
-         * @type Array
-         */
         this._childPanes = new Array(2);
         
         this._processSeparatorMouseMoveRef = Core.method(this, this._processSeparatorMouseMove);
@@ -270,16 +270,6 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             adjustment = this._separatorPosition;
         }
         return adjustment;
-    },
-    
-    _getRenderedChildIndex: function(child) {
-        if (this._childPanes[0] && this._childPanes[0].component == child) {
-            return 0;
-        } else if (this._childPanes[1] && this._childPanes[1].component == child) {
-            return 1;
-        } else {
-            throw new Error("Specified component is not a child of the SplitPane.");
-        }
     },
     
     _hasRelocatedChildren: function(update) {
@@ -506,7 +496,15 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _renderRemoveChild: function(update, child) {
-        var index = this._getRenderedChildIndex(child);
+        var index;
+        if (this._childPanes[0] && this._childPanes[0].component == child) {
+            index = 0;
+        } else if (this._childPanes[1] && this._childPanes[1].component == child) {
+            index = 1;
+        } else {
+            throw new Error("Specified component is not a child of the SplitPane.");
+        }
+
         this._childPanes[index] = null;
         switch (index) {
         case 0:
@@ -541,6 +539,9 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             fullRender = true;
         } else {
             var removedChildren = update.getRemovedChildren();
+            Core.Debug.consoleWrite(removedChildren 
+            + "/" + (this._childPanes[0] ? this._childPanes[0].component : null) 
+            + "/" + (this._childPanes[1] ? this._childPanes[1].component : null));
             if (removedChildren) {
                 // Remove children.
                 for (var i = 0; i < removedChildren.length; ++i) {
