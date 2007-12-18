@@ -301,6 +301,66 @@ public class TableTest extends SplitPane {
             }
         });
         
+        controlsColumn.addButton("Delete Row 0", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!(testTable.getModel() instanceof DefaultTableModel)) {
+                    return;
+                }
+                DefaultTableModel model = (DefaultTableModel) testTable.getModel();
+                if (model.getRowCount() > 0) {
+                    model.deleteRow(0);
+                }
+            }
+        });
+        
+        controlsColumn.addButton("Delete Row 2", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!(testTable.getModel() instanceof DefaultTableModel)) {
+                    return;
+                }
+                DefaultTableModel model = (DefaultTableModel) testTable.getModel();
+                if (model.getRowCount() > 2) {
+                    model.deleteRow(2);
+                }
+            }
+        });
+        
+        controlsColumn.addButton("Duplicate Row 0", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!(testTable.getModel() instanceof DefaultTableModel)) {
+                    return;
+                }
+                DefaultTableModel model = (DefaultTableModel) testTable.getModel();
+                if (model.getRowCount() <= 0) {
+                    return;
+                }
+                int columns = model.getColumnCount();
+                Object[] data = new Object[columns];
+                for (int i = 0; i < columns; ++i) {
+                    data[i] = model.getValueAt(i, 0);
+                }
+                model.insertRow(2, data);
+            }
+        });
+        
+        controlsColumn.addButton("Duplicate Row 2", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!(testTable.getModel() instanceof DefaultTableModel)) {
+                    return;
+                }
+                DefaultTableModel model = (DefaultTableModel) testTable.getModel();
+                if (model.getRowCount() <= 2) {
+                    return;
+                }
+                int columns = model.getColumnCount();
+                Object[] data = new Object[columns];
+                for (int i = 0; i < columns; ++i) {
+                    data[i] = model.getValueAt(i, 2);
+                }
+                model.insertRow(2, data);
+            }
+        });
+        
         testTable = new Table(new MultiplicationTableModel());
         testTable.setBorder(new Border(new Extent(1), Color.BLUE, Border.STYLE_SOLID));
         testColumn.add(testTable);
