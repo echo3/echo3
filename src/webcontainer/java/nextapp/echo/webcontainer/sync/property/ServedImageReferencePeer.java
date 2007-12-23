@@ -57,7 +57,8 @@ public class ServedImageReferencePeer implements ImageReferencePeer {
      * @see nextapp.echo.app.serial.property.ImageReferencePeer#getImageUrl(nextapp.echo.app.util.Context,
      *      nextapp.echo.app.ImageReference)
      */
-    public String getImageUrl(Context context, ImageReference imageReference) {
+    public String getImageUrl(Context context, ImageReference imageReference) 
+    throws SerialException {
         UserInstance userInstance = (UserInstance) context.get(UserInstance.class);
         userInstance.getIdTable().register(imageReference);
         return "!I!" + imageReference.getRenderId();
@@ -67,7 +68,8 @@ public class ServedImageReferencePeer implements ImageReferencePeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element)
      */
-    public Object toProperty(Context context, Class objectClass, Element propertyElement) {
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) 
+    throws SerialException {
         throw new UnsupportedOperationException();
     }
 

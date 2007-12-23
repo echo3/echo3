@@ -58,7 +58,8 @@ implements SerialPropertyPeer {
         }
     }
 
-    public static final String toString(Color color) {
+    public static final String toString(Color color) 
+    throws SerialException {
         int rgb = color.getRgb();
         String colorString = Integer.toString(rgb, 16);
         return COLOR_MASK.substring(0, 7 - colorString.length()) + colorString;
@@ -78,7 +79,8 @@ implements SerialPropertyPeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue)
+    throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         propertyElement.setAttribute("t", 
                 (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Color" : "C");

@@ -33,6 +33,7 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.serial.SerialContext;
+import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.ConstantMap;
 import nextapp.echo.app.util.Context;
@@ -57,7 +58,8 @@ implements SerialPropertyPeer {
         suffixConstantMap.add(Extent.PERCENT, "%");
     }
     
-    public static Extent fromString(String value) {
+    public static Extent fromString(String value) 
+    throws SerialException {
         int separatorPoint = -1;
         int length = value.length();
         for (int i = length - 1; i >= 0; --i) {
@@ -81,7 +83,8 @@ implements SerialPropertyPeer {
         return new Extent(extentValue, extentUnits);
     }
 
-    public static String toString(Extent extent) {
+    public static String toString(Extent extent) 
+    throws SerialException {
         return extent.getValue() + suffixConstantMap.get(extent.getUnits());
     }
 
@@ -89,7 +92,8 @@ implements SerialPropertyPeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(Context,
      *      Class, org.w3c.dom.Element)
      */
-    public Object toProperty(Context context, Class objectClass, Element propertyElement) {
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) 
+    throws SerialException {
         return fromString(propertyElement.hasAttribute("v") 
                 ? propertyElement.getAttribute("v") : DomUtil.getElementText(propertyElement));
     }
@@ -98,7 +102,8 @@ implements SerialPropertyPeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context, 
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
+    throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         propertyElement.setAttribute("t", 
                 (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Extent" : "X");

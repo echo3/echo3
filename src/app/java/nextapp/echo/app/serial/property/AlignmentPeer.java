@@ -33,6 +33,7 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.serial.SerialContext;
+import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.ConstantMap;
 import nextapp.echo.app.util.Context;
@@ -64,7 +65,8 @@ implements SerialPropertyPeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(Context, 
      *      Class, org.w3c.dom.Element)
      */
-    public Object toProperty(Context context, Class objectClass, Element propertyElement) {
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) 
+    throws SerialException {
         Element alignmentElement = DomUtil.getChildElementByTagName(propertyElement, "a");
         String horizontal = alignmentElement.getAttribute("h");
         String vertical = alignmentElement.getAttribute("v");
@@ -76,7 +78,8 @@ implements SerialPropertyPeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
+    throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         propertyElement.setAttribute("t", 
                 (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Alignment" : "AL");

@@ -30,6 +30,7 @@
 package nextapp.echo.app.serial.property;
 
 import nextapp.echo.app.ImageReference;
+import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
 
@@ -47,5 +48,6 @@ public interface ImageReferencePeer extends SerialPropertyPeer {
      * @param imageReference the <code>ImageReference</code> to be rendered
      * @return the URI of the image
      */
-    public String getImageUrl(Context context, ImageReference imageReference);
+    public String getImageUrl(Context context, ImageReference imageReference)
+    throws SerialException;
 }

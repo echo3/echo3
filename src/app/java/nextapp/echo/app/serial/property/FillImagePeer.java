@@ -57,7 +57,8 @@ implements SerialPropertyPeer {
         REPEAT_CONSTANTS.add(FillImage.REPEAT, "xy");
     }
 
-    public Element createFillImageElement(Context context, FillImage fillImage) {
+    public Element createFillImageElement(Context context, FillImage fillImage) 
+    throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         Element fiElement = serialContext.getDocument().createElement("fi");
         ImageReference imageReference = fillImage.getImage();
@@ -124,7 +125,8 @@ implements SerialPropertyPeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
+    throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         FillImage fillImage = (FillImage) propertyValue;
         propertyElement.setAttribute("t", 

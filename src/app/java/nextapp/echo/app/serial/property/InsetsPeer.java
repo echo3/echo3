@@ -79,14 +79,16 @@ implements SerialPropertyPeer {
        return extent1.equals(extent2);
     }
     
-    private static String toString(Extent extent) {
+    private static String toString(Extent extent) 
+    throws SerialException {
         if (extent == null) {
             return "0px";
         }
         return ExtentPeer.toString(extent);
     }
     
-    public static String toString(Insets insets) {
+    public static String toString(Insets insets) 
+    throws SerialException {
         if (equals(insets.getTop(), insets.getBottom())) {
             if (equals(insets.getLeft(), insets.getRight())) {
                 if (equals(insets.getTop(), insets.getLeft())) {
@@ -118,8 +120,8 @@ implements SerialPropertyPeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(Context context, Class objectClass,
-            Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
+    throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         propertyElement.setAttribute("t", 
                 (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Insets" : "N");

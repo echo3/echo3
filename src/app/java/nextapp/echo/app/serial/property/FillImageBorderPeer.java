@@ -50,7 +50,8 @@ import nextapp.echo.app.util.DomUtil;
 public class FillImageBorderPeer
 implements SerialPropertyPeer {
 
-    public Object toProperty(Context context, Class objectClass, Element propertyElement) throws SerialException {
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) 
+    throws SerialException {
         PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
         FillImagePeer fillImagePeer = (FillImagePeer) propertyPeerFactory.getPeerForProperty(FillImage.class);
 
@@ -82,7 +83,8 @@ implements SerialPropertyPeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
+    throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         FillImageBorder border = (FillImageBorder) propertyValue;
         propertyElement.setAttribute("t", 

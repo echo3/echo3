@@ -64,11 +64,13 @@ implements SerialPropertyPeer {
 
     private static final String[] borderSideAttributeNames = new String[]{"t", "r", "b", "l"};
     
-    public static final String toString(Border border) {
+    public static final String toString(Border border) 
+    throws SerialException {
         return toString(border.getSides()[0]);
     }
     
-    public static final String toString(Border.Side side) {
+    public static final String toString(Border.Side side) 
+    throws SerialException {
         StringBuffer out = new StringBuffer();
         out.append(ExtentPeer.toString(side.getSize()));
         out.append(" ");
@@ -125,7 +127,8 @@ implements SerialPropertyPeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue)
+    throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         propertyElement.setAttribute("t", 
                 (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Border" : "BO");

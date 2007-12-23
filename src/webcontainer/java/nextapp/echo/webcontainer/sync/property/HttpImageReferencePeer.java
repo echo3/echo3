@@ -47,7 +47,8 @@ implements ImageReferencePeer {
      * @see nextapp.echo.app.serial.property.ImageReferencePeer#getImageUrl(
      *      nextapp.echo.app.util.Context, nextapp.echo.app.ImageReference)
      */
-    public String getImageUrl(Context context, ImageReference imageReference) {
+    public String getImageUrl(Context context, ImageReference imageReference) 
+    throws SerialException {
         HttpImageReference httpImageReference = (HttpImageReference) imageReference;
         return httpImageReference.getUri();
     }

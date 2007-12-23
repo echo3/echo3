@@ -34,6 +34,7 @@ import org.w3c.dom.Element;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.serial.SerialContext;
+import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
@@ -47,7 +48,8 @@ implements SerialPropertyPeer {
     /**
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(Context, Class, org.w3c.dom.Element)
      */
-    public Object toProperty(Context context, Class objectClass, Element propertyElement) {
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) 
+    throws SerialException {
         Element iElement = DomUtil.getChildElementByTagName(propertyElement, "i");
         String contentType = iElement.hasAttribute("t") ? iElement.getAttribute("t") : null;
         String resourceName = iElement.getAttribute("r");
@@ -61,7 +63,8 @@ implements SerialPropertyPeer {
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
      */
-    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) {
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
+    throws SerialException {
 //FIXME borked.        
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         ResourceImageReference resourceImage = (ResourceImageReference) propertyValue;
