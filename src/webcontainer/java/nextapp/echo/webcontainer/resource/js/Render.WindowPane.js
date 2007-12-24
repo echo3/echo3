@@ -281,6 +281,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         var closable = this.component.getRenderProperty("closable", true);
     
         this._windowPaneDivElement = document.createElement("div");
+        this._windowPaneDivElement.id = this.component.renderId;
         this._windowPaneDivElement.tabIndex = "0";
     
         this._windowPaneDivElement.style.outlineStyle = "none";

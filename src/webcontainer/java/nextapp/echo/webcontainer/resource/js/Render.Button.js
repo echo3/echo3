@@ -23,6 +23,8 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         EchoRender.registerPeer("Button", this);
     },
     
+    _prototypeButton: null,
+    
     _processRolloverExitRef: null,
     
     _processInitEventRef: null,
@@ -211,6 +213,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         this._enabled = this.component.isRenderEnabled();
         
         this._divElement = EchoAppRender.ButtonSync._prototypeButton.cloneNode(false); 
+        this._divElement.id = this.component.renderId;
     
         EchoAppRender.Color.render(
                 EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 

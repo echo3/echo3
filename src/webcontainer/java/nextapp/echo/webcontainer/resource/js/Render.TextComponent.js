@@ -133,6 +133,7 @@ EchoAppRender.TextAreaSync = Core.extend(EchoAppRender.TextComponentSync, {
 
     renderAdd: function(update, parentElement) {
         this._textComponentElement = document.createElement("textarea");
+        this._textComponentElement.id = this.component.renderId;
         this._renderStyle(this._textComponentElement);
         this._textComponentElement.style.overflow = "auto";
         this._addEventHandlers(this._textComponentElement);
@@ -165,6 +166,7 @@ EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
 
     renderAdd: function(update, parentElement) {
         this._textComponentElement = document.createElement("input");
+        this._textComponentElement.id = this.component.renderId;
         this._textComponentElement.type = this._type;
         var maximumLength = this.component.getRenderProperty("maximumLength", -1);
         if (maximumLength >= 0) {

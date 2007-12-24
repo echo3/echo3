@@ -33,6 +33,7 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
     
     renderAdd: function(update, parentElement) {
         this._divElement = document.createElement("div");
+        this._divElement.id = this.component.renderId;
         this._divElement.style.position = "absolute";
         this._divElement.style.width = "100%";
         this._divElement.style.height = "100%";

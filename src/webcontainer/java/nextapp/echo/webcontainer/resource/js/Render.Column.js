@@ -32,6 +32,7 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
     
     renderAdd: function(update, parentElement) {
         this._divElement = document.createElement("div");
+        this._divElement.id = this.component.renderId;
         this._divElement.style.outlineStyle = "none";
         this._divElement.tabIndex = "-1";
     

@@ -389,6 +389,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         var defaultBorder = this.component.getRenderProperty("border", "");
     
         this._tableElement = EchoAppRender.GridSync._prototypeTable.cloneNode(true);
+        this._tableElement.id = this.component.renderId;
         
         EchoAppRender.Color.renderFB(this.component, this._tableElement);
         EchoAppRender.Border.render(defaultBorder, this._tableElement);

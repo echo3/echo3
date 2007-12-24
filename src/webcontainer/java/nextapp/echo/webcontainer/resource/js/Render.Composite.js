@@ -16,6 +16,7 @@ EchoAppRender.CompositeSync = Core.extend(EchoRender.ComponentSync, {
     
     renderAdd: function(update, parentElement) {
         this._divElement = document.createElement("div");
+        this._divElement.id = this.component.renderId;
         
         var componentCount = this.component.getComponentCount();
         if (componentCount > 0) {

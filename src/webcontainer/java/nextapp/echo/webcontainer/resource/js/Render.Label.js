@@ -11,12 +11,6 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
     $load: function() {
         EchoRender.registerPeer("Label", this);
     },
-
-    _createSingleItemSpanElement: function(contentNode) {
-        var spanElement = document.createElement("span");
-        spanElement.appendChild(contentNode);
-        return spanElement;
-    },
     
     /**
      * Formats the whitespace in the given text for use in HTML.
@@ -70,14 +64,17 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
                 }
                 tct.tdElements[1].appendChild(imgElement);
                 this._labelNode = tct.tableElement;
+                this._labelNode.id = this.component.renderId;
                 EchoAppRender.Font.renderComponentProperty(this.component, "font", null, this._labelNode);
                 EchoAppRender.Color.renderFB(this.component, this._labelNode);
             } else {
+                // Text without icon.
                 var font = this.component.getRenderProperty("font");
                 if (!font && lineWrap && !foreground && !background && !formatWhitespace) {
                     this._labelNode = document.createTextNode(text);
                 } else {
                     this._labelNode = document.createElement("span");
+                    this._labelNode.id = this.component.renderId;
                     if (formatWhitespace) {
                         this._formatWhitespace(text, this._labelNode);
                     } else {
@@ -93,7 +90,9 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
         } else if (icon) {
             var imgElement = document.createElement("img");
             imgElement.src = icon.url;
-            this._labelNode = this._createSingleItemSpanElement(imgElement);
+            this._labelNode = document.createElement("span");
+            this._labelNode.id = this.component.renderId;
+            this._labelNode.appendChild(imgElement);
             EchoAppRender.Color.renderFB(this.component, this._labelNode); // should be BG only.
         } else {
             // Neither icon nor text, render blank.

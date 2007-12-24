@@ -57,6 +57,7 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
     
     renderAdd: function(update, parentElement) {
         this._divElement = EchoAppRender.RowSync._rowPrototype.cloneNode(true);
+        this._divElement.id = this.component.renderId;
         
         EchoAppRender.Border.render(this.component.getRenderProperty("border"), this._divElement);
         EchoAppRender.Color.renderFB(this.component, this._divElement);

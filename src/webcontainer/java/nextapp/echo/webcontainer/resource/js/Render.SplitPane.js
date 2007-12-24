@@ -337,6 +337,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         var child1 = childCount < 2 ? null : this.component.getComponent(1);
     
         this._splitPaneDivElement = document.createElement("div");
+        this._splitPaneDivElement.id = this.component.renderId;
         this._splitPaneDivElement.style.position = "absolute";
         this._splitPaneDivElement.style.overflow = "hidden";
         this._splitPaneDivElement.style.top = "0px"

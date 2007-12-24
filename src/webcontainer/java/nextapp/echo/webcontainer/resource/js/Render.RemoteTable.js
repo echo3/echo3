@@ -56,6 +56,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         }
         
         this._tableElement = document.createElement("table");
+        this._tableElement.id = this.component.renderId;
         
         var width = this.component.getRenderProperty("width");
         if (width && WebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.units == "%") {

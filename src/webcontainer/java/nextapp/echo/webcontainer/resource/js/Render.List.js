@@ -32,6 +32,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     _renderMain: function(update, parentElement, size) {
         this._enabled = this.component.isRenderEnabled();
         this._selectElement = document.createElement("select");
+        this._selectElement.id = this.component.renderId;
         this._selectElement.size = size;
         if (this.component.getProperty("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION) {
             this._selectElement.multiple = "multiple";
