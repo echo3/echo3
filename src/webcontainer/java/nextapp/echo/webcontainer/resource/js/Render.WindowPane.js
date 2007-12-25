@@ -24,10 +24,10 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     _processTitleBarMouseUpRef: null,
 
     $construct: function() {
-        this._processBorderMouseMoveRef = Core.method(this, this.processBorderMouseMove);
-        this._processBorderMouseUpRef = Core.method(this, this.processBorderMouseUp);
-        this._processTitleBarMouseMoveRef = Core.method(this, this.processTitleBarMouseMove);
-        this._processTitleBarMouseUpRef = Core.method(this, this.processTitleBarMouseUp);
+        this._processBorderMouseMoveRef = Core.method(this, this._processBorderMouseMove);
+        this._processBorderMouseUpRef = Core.method(this, this._processBorderMouseUp);
+        this._processTitleBarMouseMoveRef = Core.method(this, this._processTitleBarMouseMove);
+        this._processTitleBarMouseUpRef = Core.method(this, this._processTitleBarMouseUp);
     },
 
     _loadContainerSize: function() {
@@ -35,7 +35,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._containerSize = new WebCore.Measure.Bounds(this._windowPaneDivElement.parentNode.parentNode);
     },
     
-    processBorderMouseDown: function(e) {
+    _processBorderMouseDown: function(e) {
         if (!this.client.verifyInput(this.component)) {
             return;
         }
@@ -54,12 +54,12 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
         switch (e.target) {
         case this._borderDivElements[0]: this._resizeX = -1; this._resizeY = -1; break;
-        case this._borderDivElements[1]:  this._resizeX =  0; this._resizeY = -1; break;
+        case this._borderDivElements[1]: this._resizeX =  0; this._resizeY = -1; break;
         case this._borderDivElements[2]: this._resizeX =  1; this._resizeY = -1; break;
-        case this._borderDivElements[3]:  this._resizeX = -1; this._resizeY =  0; break;
-        case this._borderDivElements[4]:  this._resizeX =  1; this._resizeY =  0; break;
+        case this._borderDivElements[3]: this._resizeX = -1; this._resizeY =  0; break;
+        case this._borderDivElements[4]: this._resizeX =  1; this._resizeY =  0; break;
         case this._borderDivElements[5]: this._resizeX = -1; this._resizeY =  1; break;
-        case this._borderDivElements[6]:  this._resizeX =  0; this._resizeY =  1; break;
+        case this._borderDivElements[6]: this._resizeX =  0; this._resizeY =  1; break;
         case this._borderDivElements[7]: this._resizeX =  1; this._resizeY =  1; break;
         }
         
@@ -74,7 +74,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
     },
     
-    processBorderMouseMove: function(e) {
+    _processBorderMouseMove: function(e) {
         var x, y, width, height;
         
         if (this._resizeX == -1) {
@@ -93,7 +93,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this.setPosition(x, y, width, height);
     },
     
-    processBorderMouseUp: function(e) {
+    _processBorderMouseUp: function(e) {
         WebCore.DOM.preventEventDefault(e);
         
         WebCore.dragInProgress = false;
@@ -135,7 +135,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this.component.doWindowClosing();
     },
     
-    processTitleBarMouseDown: function(e) {
+    _processTitleBarMouseDown: function(e) {
         if (!this.client.verifyInput(this.component)) {
             return;
         }
@@ -163,13 +163,13 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         WebCore.EventProcessor.add(bodyElement, "mouseup", this._processTitleBarMouseUpRef, true);
     },
     
-    processTitleBarMouseMove: function(e) {
+    _processTitleBarMouseMove: function(e) {
         var x = this._dragInitX + e.clientX - this._dragOriginX;
         var y = this._dragInitY + e.clientY - this._dragOriginY;
         this.setPosition(x, y);
     },
     
-    processTitleBarMouseUp: function(e) {
+    _processTitleBarMouseUp: function(e) {
         WebCore.dragInProgress = false;
     
         // Set opaque.
@@ -624,12 +624,12 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
         if (movable) {
     	    WebCore.EventProcessor.add(this._titleBarDivElement, "mousedown", 
-    	            Core.method(this, this.processTitleBarMouseDown), true);
+    	            Core.method(this, this._processTitleBarMouseDown), true);
         }
         if (resizable) {
     	    for (var i = 0; i < this._borderDivElements.length; ++i) {
     	        WebCore.EventProcessor.add(this._borderDivElements[i], "mousedown", 
-    	                Core.method(this, this.processBorderMouseDown), true);
+    	                Core.method(this, this._processBorderMouseDown), true);
     	    }
         }
     },
