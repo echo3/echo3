@@ -16,11 +16,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
 
     _processBorderMouseMoveRef: null,
-    
     _processBorderMouseUpRef: null,
-    
     _processTitleBarMouseMoveRef: null,
-    
     _processTitleBarMouseUpRef: null,
 
     $construct: function() {
@@ -92,7 +89,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         this.setPosition(x, y, width, height);
     },
-    
+
     _processBorderMouseUp: function(e) {
         WebCore.DOM.preventEventDefault(e);
         
@@ -122,6 +119,15 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         switch (e.keyCode) {
         case 27:
             this.component.doWindowClosing();
+            WebCore.DOM.preventEventDefault(e);
+            return false;
+        }
+        return true;
+    },
+
+    _processKeyPress: function(e) {
+        switch (e.keyCode) {
+        case 27:
             WebCore.DOM.preventEventDefault(e);
             return false;
         }
@@ -617,8 +623,10 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         // Register event listeners.
         
         if (closable) {
-    	    WebCore.EventProcessor.add(this._windowPaneDivElement, "keydown", 
-    	            Core.method(this, this._processKeyDown), false);
+            WebCore.EventProcessor.add(this._windowPaneDivElement, "keydown", 
+                    Core.method(this, this._processKeyDown), false);
+            WebCore.EventProcessor.add(this._windowPaneDivElement, "keypress", 
+                    Core.method(this, this._processKeyPress), false);
     	    WebCore.EventProcessor.add(this._closeDivElement, "click", 
     	            Core.method(this, this._processCloseClick), false);
         }
