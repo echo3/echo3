@@ -69,7 +69,7 @@ public class PushGhostTest extends Column {
                     + "the options to run this test indefinitely and/or with a 0ms callback interval.  If you install this "
                     + "application on your own server, you will be given the option of running the more extreme version "
                     + "of this test.  A binary Web Archive (WAR file) version of this application is provided by the "
-                    + "standard Echo2 download.");
+                    + "standard Echo download.");
             add(label);
         }
         

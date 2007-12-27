@@ -98,7 +98,7 @@ public interface ContainerContext {
     public String getServiceUri(Service service);
     
     /**
-     * Returns the URI of the Echo2 servlet.
+     * Returns the URI of the Echo servlet.
      * 
      * @return the servlet URI
      */

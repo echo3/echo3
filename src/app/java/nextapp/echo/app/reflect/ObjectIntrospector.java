@@ -126,7 +126,7 @@ public class ObjectIntrospector {
      * Returns event handler names for a given event set.
      * 
      * @param eventSetName the name of the event set, e.g., 
-     *        'nextapp.echo2.app.event.Action' for <code>ActionEvent</code>s
+     *        'nextapp.echo.app.event.Action' for <code>ActionEvent</code>s
      * @return a <code>Set</code> containing the names of event listener 
      *         methods
      */

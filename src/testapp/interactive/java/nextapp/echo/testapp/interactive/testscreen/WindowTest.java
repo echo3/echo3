@@ -51,7 +51,7 @@ public class WindowTest extends SplitPane {
         controlsColumn.addButton("Set window title", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().getDefaultWindow().setTitle(
-                        "Echo2 Test Application " + ((int) ( Math.random() * Integer.MAX_VALUE)));
+                        "Echo Test Application " + ((int) ( Math.random() * Integer.MAX_VALUE)));
             }
         });
     }
