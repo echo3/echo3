@@ -113,7 +113,7 @@ public class ContainerContextTest extends Column {
     implements TableCellRenderer {
 
         /**
-         * @see nextapp.echo2.app.table.TableCellRenderer#getTableCellRendererComponent(nextapp.echo2.app.Table, 
+         * @see nextapp.echo.app.table.TableCellRenderer#getTableCellRendererComponent(nextapp.echo.app.Table, 
          *      java.lang.Object, int, int)
          */
         public Component getTableCellRendererComponent(Table table, Object value, int column, int row) {

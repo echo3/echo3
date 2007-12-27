@@ -84,7 +84,7 @@ public class ListBoxTest extends SplitPane {
     private ActionListener actionListener = new ActionListener() {
 
         /**
-         * @see nextapp.echo2.app.event.ActionListener#actionPerformed(nextapp.echo2.app.event.ActionEvent)
+         * @see nextapp.echo.app.event.ActionListener#actionPerformed(nextapp.echo.app.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent e) {
             ((InteractiveApp) getApplicationInstance()).consoleWrite(e.toString());
@@ -97,7 +97,7 @@ public class ListBoxTest extends SplitPane {
     private ChangeListener changeListener = new ChangeListener() {
 
         /**
-         * @see nextapp.echo2.app.event.ChangeListener#stateChanged(nextapp.echo2.app.event.ChangeEvent)
+         * @see nextapp.echo.app.event.ChangeListener#stateChanged(nextapp.echo.app.event.ChangeEvent)
          */
         public void stateChanged(ChangeEvent e) {
             ((InteractiveApp) getApplicationInstance()).consoleWrite(e.toString());
@@ -110,21 +110,21 @@ public class ListBoxTest extends SplitPane {
     private ListDataListener listDataListener = new ListDataListener() {
         
         /**
-         * @see nextapp.echo2.app.event.ListDataListener#contentsChanged(nextapp.echo2.app.event.ListDataEvent)
+         * @see nextapp.echo.app.event.ListDataListener#contentsChanged(nextapp.echo.app.event.ListDataEvent)
          */
         public void contentsChanged(ListDataEvent e) {
             ((InteractiveApp) getApplicationInstance()).consoleWrite(e.toString());
         }
 
         /**
-         * @see nextapp.echo2.app.event.ListDataListener#intervalAdded(nextapp.echo2.app.event.ListDataEvent)
+         * @see nextapp.echo.app.event.ListDataListener#intervalAdded(nextapp.echo.app.event.ListDataEvent)
          */
         public void intervalAdded(ListDataEvent e) {
             ((InteractiveApp) getApplicationInstance()).consoleWrite(e.toString());
         }
 
         /**
-         * @see nextapp.echo2.app.event.ListDataListener#intervalRemoved(nextapp.echo2.app.event.ListDataEvent)
+         * @see nextapp.echo.app.event.ListDataListener#intervalRemoved(nextapp.echo.app.event.ListDataEvent)
          */
         public void intervalRemoved(ListDataEvent e) {
             ((InteractiveApp) getApplicationInstance()).consoleWrite(e.toString());
@@ -140,7 +140,7 @@ public class ListBoxTest extends SplitPane {
         private Font font1 = new Font(Font.MONOSPACE, Font.BOLD, null);
         
         /**
-         * @see nextapp.echo2.app.list.ListCellRenderer#getListCellRendererComponent(nextapp.echo2.app.Component, 
+         * @see nextapp.echo.app.list.ListCellRenderer#getListCellRendererComponent(nextapp.echo.app.Component, 
          *      java.lang.Object, int)
          */
         public Object getListCellRendererComponent(Component list, final Object value, final int index) {

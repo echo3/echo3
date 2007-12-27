@@ -87,7 +87,7 @@ extends SplitPane {
     private ActionListener actionListener = new ActionListener() {
 
         /**
-         * @see nextapp.echo2.app.event.ActionListener#actionPerformed(nextapp.echo2.app.event.ActionEvent)
+         * @see nextapp.echo.app.event.ActionListener#actionPerformed(nextapp.echo.app.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent e) {
             ((InteractiveApp) getApplicationInstance()).consoleWrite(e.toString());
@@ -100,7 +100,7 @@ extends SplitPane {
     private ChangeListener changeListener = new ChangeListener() {
 
         /**
-         * @see nextapp.echo2.app.event.ChangeListener#stateChanged(nextapp.echo2.app.event.ChangeEvent)
+         * @see nextapp.echo.app.event.ChangeListener#stateChanged(nextapp.echo.app.event.ChangeEvent)
          */
         public void stateChanged(ChangeEvent e) {
             ((InteractiveApp) getApplicationInstance()).consoleWrite(e.toString());

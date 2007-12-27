@@ -57,7 +57,7 @@ public class TextComponentTest extends SplitPane {
     private ActionListener actionListener = new ActionListener() {
 
         /**
-         * @see nextapp.echo2.app.event.ActionListener#actionPerformed(nextapp.echo2.app.event.ActionEvent)
+         * @see nextapp.echo.app.event.ActionListener#actionPerformed(nextapp.echo.app.event.ActionEvent)
          */
         public void actionPerformed(ActionEvent e) {
             ((InteractiveApp) getApplicationInstance()).consoleWrite(e.toString());
@@ -70,7 +70,7 @@ public class TextComponentTest extends SplitPane {
     private DocumentListener documentListener = new DocumentListener() {
         
         /**
-         * @see nextapp.echo2.app.event.DocumentListener#documentUpdate(nextapp.echo2.app.event.DocumentEvent)
+         * @see nextapp.echo.app.event.DocumentListener#documentUpdate(nextapp.echo.app.event.DocumentEvent)
          */
         public void documentUpdate(DocumentEvent e) {
             ((InteractiveApp) getApplicationInstance()).consoleWrite(e.toString());

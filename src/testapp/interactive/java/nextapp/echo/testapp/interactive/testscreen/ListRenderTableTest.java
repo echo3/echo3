@@ -56,14 +56,14 @@ public class ListRenderTableTest extends Column {
     private ListModel dayModel = new AbstractListModel(){
     
         /**
-         * @see nextapp.echo2.app.list.ListModel#size()
+         * @see nextapp.echo.app.list.ListModel#size()
          */
         public int size() {
             return 31;
         }
     
         /**
-         * @see nextapp.echo2.app.list.ListModel#get(int)
+         * @see nextapp.echo.app.list.ListModel#get(int)
          */
         public Object get(int index) {
             return Integer.toString(index + 1);
@@ -73,14 +73,14 @@ public class ListRenderTableTest extends Column {
     private ListModel yearModel = new AbstractListModel(){
     
         /**
-         * @see nextapp.echo2.app.list.ListModel#size()
+         * @see nextapp.echo.app.list.ListModel#size()
          */
         public int size() {
             return 200;
         }
     
         /**
-         * @see nextapp.echo2.app.list.ListModel#get(int)
+         * @see nextapp.echo.app.list.ListModel#get(int)
          */
         public Object get(int index) {
             return Integer.toString(index + 1850);

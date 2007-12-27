@@ -211,7 +211,7 @@ public class WindowPaneExamplesTest extends SplitPane {
                     Button okButton = new Button("Ok");
                     okButton.addActionListener(new ActionListener() {
                         /**
-                         * @see nextapp.echo2.app.event.ActionListener#actionPerformed(nextapp.echo2.app.event.ActionEvent)
+                         * @see nextapp.echo.app.event.ActionListener#actionPerformed(nextapp.echo.app.event.ActionEvent)
                          */
                         public void actionPerformed(ActionEvent e) {
                             windowPane.getParent().remove(windowPane);

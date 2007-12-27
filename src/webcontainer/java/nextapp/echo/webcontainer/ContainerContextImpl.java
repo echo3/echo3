@@ -77,14 +77,14 @@ implements ContainerContext, Serializable {
     }
     
     /**
-     * @see nextapp.echo2.webcontainer.ContainerContext#getClientProperties()
+     * @see nextapp.echo.webcontainer.ContainerContext#getClientProperties()
      */
     public ClientProperties getClientProperties() {
         return userInstance.getClientProperties();
     }
     
     /**
-     * @see nextapp.echo2.webcontainer.ContainerContext#getCookies()
+     * @see nextapp.echo.webcontainer.ContainerContext#getCookies()
      */
     public Cookie[] getCookies() {
         Connection conn = WebContainerServlet.getActiveConnection();
@@ -96,35 +96,35 @@ implements ContainerContext, Serializable {
     }
     
     /**
-     * @see nextapp.echo2.webcontainer.ContainerContext#getInitialRequestParameterMap()
+     * @see nextapp.echo.webcontainer.ContainerContext#getInitialRequestParameterMap()
      */
     public Map getInitialRequestParameterMap() {
         return userInstance.getInitialRequestParameterMap();
     }
     
     /**
-     * @see nextapp.echo2.webcontainer.ContainerContext#getServiceUri(nextapp.echo2.webrender.Service)
+     * @see nextapp.echo.webcontainer.ContainerContext#getServiceUri(nextapp.echo.webrender.Service)
      */
     public String getServiceUri(Service service) {
         return userInstance.getServiceUri(service);
     }
     
     /**
-     * @see nextapp.echo2.webcontainer.ContainerContext#getServletUri()
+     * @see nextapp.echo.webcontainer.ContainerContext#getServletUri()
      */
     public String getServletUri() {
         return userInstance.getServletUri();
     }
     
     /**
-     * @see nextapp.echo2.webcontainer.ContainerContext#getSession()
+     * @see nextapp.echo.webcontainer.ContainerContext#getSession()
      */
     public HttpSession getSession() {
         return userInstance.getSession();
     }
     
     /**
-     * @see nextapp.echo2.webcontainer.ContainerContext#getUserPrincipal()
+     * @see nextapp.echo.webcontainer.ContainerContext#getUserPrincipal()
      */
     public Principal getUserPrincipal() {
         Connection conn = WebContainerServlet.getActiveConnection();
@@ -136,7 +136,7 @@ implements ContainerContext, Serializable {
     }
     
     /**
-     * @see nextapp.echo2.webcontainer.ContainerContext#isUserInRole(java.lang.String)
+     * @see nextapp.echo.webcontainer.ContainerContext#isUserInRole(java.lang.String)
      */
     public boolean isUserInRole(String role) {
         Connection conn = WebContainerServlet.getActiveConnection();
@@ -148,14 +148,14 @@ implements ContainerContext, Serializable {
     }
     
     /**
-     * @see nextapp.echo2.webcontainer.ContainerContext#setClientConfiguration(nextapp.echo2.webrender.ClientConfiguration)
+     * @see nextapp.echo.webcontainer.ContainerContext#setClientConfiguration(nextapp.echo.webrender.ClientConfiguration)
      */
     public void setClientConfiguration(ClientConfiguration clientConfiguration) {
         userInstance.setClientConfiguration(clientConfiguration);
     }
 
     /**
-     * @see nextapp.echo2.webcontainer.ContainerContext#setTaskQueueCallbackInterval(nextapp.echo2.app.TaskQueueHandle, int)
+     * @see nextapp.echo.webcontainer.ContainerContext#setTaskQueueCallbackInterval(nextapp.echo.app.TaskQueueHandle, int)
      */
     public void setTaskQueueCallbackInterval(TaskQueueHandle taskQueue, int ms) {
         userInstance.setTaskQueueCallbackInterval(taskQueue, ms);
