@@ -37,8 +37,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
             $construct: function(grid) {
                 this.grid = grid;
                 this.cellArrays = [];
-                this.horizontalOrientation = true;
-                
+                this.horizontalOrientation = grid.getRenderProperty("orientation") != EchoApp.Grid.ORIENTATION_VERTICAL;
                 
                 var cells = this.createCells();
                 if (cells == null) {

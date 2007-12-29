@@ -3495,6 +3495,30 @@ EchoApp.ContentPane = Core.extend(EchoApp.Component, {
 EchoApp.Grid = Core.extend(EchoApp.Component, {
 
     $static: {
+
+        /**
+         * Constant value for <code>orientation</code> property indicating cells 
+         * should be laid out horizontally and then vertically.
+         * <code>ORIENTATION_HORIZONTAL</code> is the default orientation setting.
+         */
+        ORIENTATION_HORIZONTAL: 0,
+    
+        /**
+         * Constant value for <code>orientation</code> property indicating cells 
+         * should be laid out vertically and then horizontally. 
+         */
+        ORIENTATION_VERTICAL: 1,
+
+        /**
+         * A constant value for the <code>columnSpan</code> and <code>rowSpan</code>
+         * properties of <code>LayoutData</code> objects used by children of a
+         * Grid indicating that a cell should fill all remaining cells.  
+         * <p>
+         * <strong>WARNING</strong>: This value may ONLY be used for spans in the
+         * direction of the layout of the <code>Grid</code>, i.e., it may only be 
+         * used for column-spans if the orientation is horizontal, and it may only
+         * be used for row-spans if the orientation is vertical.
+         */
         SPAN_FILL: -1
     },
 

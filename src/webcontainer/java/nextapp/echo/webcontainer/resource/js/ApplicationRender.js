@@ -471,6 +471,18 @@ EchoAppRender.TriCellTable = Core.extend({
     $load: function() {
         this._tablePrototype = this._createTablePrototype(); 
     },
+    
+    /**
+     * The rendered TABLE element.
+     * @type Element
+     */
+    tableElement: null,
+    
+    /**
+     * The rendered TBODY element.
+     * @type Element
+     */
+    tbodyElement: null,
 
     /**
      * Creates a new <code>TriCellTable</code>
