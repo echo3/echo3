@@ -2225,11 +2225,7 @@ EchoApp.Font = Core.extend({
     $construct: function(typeface, style, size) {
         this.typeface = typeface;
         this.style = style;
-        if (typeof size == "number") {
-            this.size = new Extent(size);
-        } else {
-            this.size = size;
-        }
+        this.size = (typeof size == "number") ? new Extent(size) : size;
     }
 });
 
