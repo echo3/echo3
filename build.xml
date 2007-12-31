@@ -175,6 +175,14 @@
                 <patternset refid="fileset.resources"/>
             </fileset>
         </copy>
+        <copy todir="${dir.build.webcontainer.js}">
+            <fileset dir="${dir.src.corejs}">
+                <patternset refid="fileset.resources"/>
+            </fileset>
+            <fileset dir="${dir.src.client}">
+                <patternset refid="fileset.resources"/>
+            </fileset>
+        </copy>
     </target>
     
     <target name="dist.webcontainer" depends="clean,compile.webcontainer">
