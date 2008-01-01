@@ -42,8 +42,8 @@ public class JavaScriptServiceTest extends TestCase {
      * Ensure construction and <code>forResource()</code> method are working.
      */
     public void testForResource() {
-        JavaScriptService clientEngineService = JavaScriptService.forResource("Echo.Core", 
-                        "/nextapp/echo/webcontainer/resource/js/Core.js");
-        assertEquals("Echo.Core", clientEngineService.getId());
+        JavaScriptService clientEngineService = JavaScriptService.forResource("Echo.RemoteClient", 
+                        "/nextapp/echo/webcontainer/resource/js/RemoteClient.js");
+        assertEquals("Echo.RemoteClient", clientEngineService.getId());
     }
 }
