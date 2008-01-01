@@ -329,8 +329,9 @@
         <mkdir dir="${dir.build.release.root}"/>
         <mkdir dir="${dir.build.release.root}/SourceCode"/>
         <mkdir dir="${dir.build.release.root}/Documentation"/>
-        <mkdir dir="${dir.build.release.root}/BinaryLibraries"/>
-        <mkdir dir="${dir.build.release.root}/BinaryApplications"/>
+        <mkdir dir="${dir.build.release.root}/JavaScriptLibraries"/>
+        <mkdir dir="${dir.build.release.root}/JavaLibraries"/>
+        <mkdir dir="${dir.build.release.root}/JavaWebArchives"/>
         <mkdir dir="${dir.build.release.root}/Licensing"/>
         <copy todir="${dir.build.release.root}" file="${dir.resource}/readme.txt"/>
         
@@ -350,13 +351,19 @@
             <fileset file="ant.properties"/>
         </copy>
         
+        <!-- JavaScript Libraries -->
+        <copy todir="${dir.build.release.root}/JavaScriptLibraries">
+            <fileset dir="${dir.src.client.corejs}"/>
+            <fileset dir="${dir.src.client.echo}"/>
+        </copy>
+        
         <!-- Binary Libraries -->
-        <copy todir="${dir.build.release.root}/BinaryLibraries">
+        <copy todir="${dir.build.release.root}/JavaLibraries">
             <fileset dir="${dir.dist.lib}"/>
         </copy>
         
         <!-- Binary Web Applications: Interactive Test Application -->
-        <copy todir="${dir.build.release.root}/BinaryApplications">
+        <copy todir="${dir.build.release.root}/JavaWebArchives">
             <fileset dir="${dir.dist.testapp}"/>
         </copy>
 
