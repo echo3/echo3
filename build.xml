@@ -66,9 +66,9 @@
     </target>
     
     <target name="compile.app" description="Compile Echo Application Framework">
-        <mkdir dir="${dir.build.app}"/>
-        <javac srcdir="${dir.src.server-java.app}" destdir="${dir.build.app}" debug="${debug}" deprecation="yes"/>
-        <copy todir="${dir.build.app}">
+        <mkdir dir="${dir.build.server-java.app}"/>
+        <javac srcdir="${dir.src.server-java.app}" destdir="${dir.build.server-java.app}" debug="${debug}" deprecation="yes"/>
+        <copy todir="${dir.build.server-java.app}">
             <fileset dir="${dir.src.server-java.app}">
                 <patternset refid="fileset.resources"/>
             </fileset>
@@ -77,17 +77,17 @@
     
     <target name="dist.app" depends="clean,compile.app">
         <mkdir dir="${dir.dist.lib}"/>
-        <jar jarfile="${dir.dist.lib}/${jarfile.echo.app}" basedir="${dir.build.app}"/>
+        <jar jarfile="${dir.dist.lib}/${jarfile.echo.app}" basedir="${dir.build.server-java.app}"/>
     </target>
     
     <target name="test.compile.app" depends="dist.app">
-        <mkdir dir="${dir.build.app-test}"/>
-        <javac srcdir="${dir.src.server-java.app-test}" destdir="${dir.build.app-test}" debug="${debug}" deprecation="yes">
+        <mkdir dir="${dir.build.server-java.app-test}"/>
+        <javac srcdir="${dir.src.server-java.app-test}" destdir="${dir.build.server-java.app-test}" debug="${debug}" deprecation="yes">
             <classpath>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
             </classpath>
         </javac>
-        <copy todir="${dir.build.app-test}">
+        <copy todir="${dir.build.server-java.app-test}">
             <fileset dir="${dir.src.server-java.app-test}">
                 <patternset refid="fileset.resources"/>
             </fileset>
@@ -98,7 +98,7 @@
         <mkdir dir="${dir.testoutput.app-test}"/>
         <junit printsummary="yes" haltonfailure="no">
             <classpath>
-                <pathelement path="${dir.build.app-test}"/>
+                <pathelement path="${dir.build.server-java.app-test}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
             </classpath>
             <formatter type="plain"/>
@@ -155,19 +155,19 @@
     	description="Compile Echo Web Application Container"/>
     
     <target name="compile.webcontainer.impl" depends="verify.servlet.api, compile.app">
-        <mkdir dir="${dir.build.webcontainer}"/>
-        <javac srcdir="${dir.src.server-java.webcontainer}" destdir="${dir.build.webcontainer}" debug="${debug}" deprecation="yes">
+        <mkdir dir="${dir.build.server-java.webcontainer}"/>
+        <javac srcdir="${dir.src.server-java.webcontainer}" destdir="${dir.build.server-java.webcontainer}" debug="${debug}" deprecation="yes">
             <classpath>
-                <pathelement path="${dir.build.app}"/>
+                <pathelement path="${dir.build.server-java.app}"/>
                 <pathelement path="${servlet.lib.jar}"/>
             </classpath>
         </javac>
-        <copy todir="${dir.build.webcontainer}">
+        <copy todir="${dir.build.server-java.webcontainer}">
             <fileset dir="${dir.src.server-java.webcontainer}">
                 <patternset refid="fileset.resources"/>
             </fileset>
         </copy>
-        <copy todir="${dir.build.webcontainer.js}">
+        <copy todir="${dir.build.server-java.webcontainer.js}">
             <fileset dir="${dir.src.client.corejs}">
                 <patternset refid="fileset.resources"/>
             </fileset>
@@ -179,12 +179,12 @@
     
     <target name="dist.webcontainer" depends="clean,compile.webcontainer">
         <mkdir dir="${dir.dist.lib}"/>
-        <jar jarfile="${dir.dist.lib}/${jarfile.echo.webcontainer}" basedir="${dir.build.webcontainer}"/>
+        <jar jarfile="${dir.dist.lib}/${jarfile.echo.webcontainer}" basedir="${dir.build.server-java.webcontainer}"/>
     </target>
     
     <target name="test.compile.webcontainer" depends="dist.app, dist.webcontainer">
-        <mkdir dir="${dir.build.webcontainer-test}"/>
-        <javac srcdir="${dir.src.server-java.webcontainer-test}" destdir="${dir.build.webcontainer-test}" 
+        <mkdir dir="${dir.build.server-java.webcontainer-test}"/>
+        <javac srcdir="${dir.src.server-java.webcontainer-test}" destdir="${dir.build.server-java.webcontainer-test}" 
         	    debug="${debug}" deprecation="yes">
             <classpath>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
@@ -192,7 +192,7 @@
                 <pathelement path="${servlet.lib.jar}"/>
             </classpath>
         </javac>
-        <copy todir="${dir.build.webcontainer-test}">
+        <copy todir="${dir.build.server-java.webcontainer-test}">
             <fileset dir="${dir.src.server-java.webcontainer-test}">
                 <patternset refid="fileset.resources"/>
             </fileset>
@@ -203,7 +203,7 @@
         <mkdir dir="${dir.testoutput.webcontainer-test}"/>
         <junit printsummary="yes" haltonfailure="yes">
             <classpath>
-                <pathelement path="${dir.build.webcontainer-test}"/>
+                <pathelement path="${dir.build.server-java.webcontainer-test}"/>
                 <pathelement path="${servlet.lib.jar}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
@@ -294,17 +294,17 @@
             depends="doc.app, doc.app.private, doc.webcontainer, doc.webcontainer.private"/>
 
     <target name="compile.testapp" depends="dist">
-        <mkdir dir="${dir.build.testapp}/WEB-INF/classes"/>
-        <mkdir dir="${dir.build.testapp}/WEB-INF/lib"/>
-        <copy todir="${dir.build.testapp}/WEB-INF/lib" file="${dir.dist.lib}/${jarfile.echo.app}"/>
-        <copy todir="${dir.build.testapp}/WEB-INF/lib" file="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
-        <copy todir="${dir.build.testapp}/WEB-INF">
+        <mkdir dir="${dir.build.server-java.testapp}/WEB-INF/classes"/>
+        <mkdir dir="${dir.build.server-java.testapp}/WEB-INF/lib"/>
+        <copy todir="${dir.build.server-java.testapp}/WEB-INF/lib" file="${dir.dist.lib}/${jarfile.echo.app}"/>
+        <copy todir="${dir.build.server-java.testapp}/WEB-INF/lib" file="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
+        <copy todir="${dir.build.server-java.testapp}/WEB-INF">
             <fileset dir="${dir.src.server-java.test-ia.deploy}"/>
         </copy>
-        <copy todir="${dir.build.testapp}">
+        <copy todir="${dir.build.server-java.testapp}">
             <fileset dir="${dir.src.server-java.test-ia.htdocs}"/>
         </copy>
-        <javac srcdir="${dir.src.server-java.test-ia.lib}" destdir="${dir.build.testapp}/WEB-INF/classes" 
+        <javac srcdir="${dir.src.server-java.test-ia.lib}" destdir="${dir.build.server-java.testapp}/WEB-INF/classes" 
         	    debug="${debug}" deprecation="yes">
             <classpath>
                 <pathelement path="${servlet.lib.jar}"/>
@@ -312,7 +312,7 @@
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
             </classpath>
         </javac>
-        <copy todir="${dir.build.testapp}/WEB-INF/classes">
+        <copy todir="${dir.build.server-java.testapp}/WEB-INF/classes">
             <fileset dir="${dir.src.server-java.test-ia.lib}">
                 <patternset refid="fileset.resources"/>
             </fileset>
@@ -322,75 +322,75 @@
     <target name="dist.testapp" depends="compile.testapp" 
             description="Builds a web archive of the interactive test application">
         <mkdir dir="${dir.dist.testapp}"/>
-        <jar jarfile="${dir.dist.testapp}/${warfile.testapp}" basedir="${dir.build.testapp}"/>
+        <jar jarfile="${dir.dist.testapp}/${warfile.testapp}" basedir="${dir.build.server-java.testapp}"/>
     </target>
 
     <target name="release" depends="clean, dist, dist.testapp, doc.public">
-        <mkdir dir="${dir.build.release.root}"/>
-        <mkdir dir="${dir.build.release.root}/SourceCode"/>
-        <mkdir dir="${dir.build.release.root}/Documentation"/>
-        <mkdir dir="${dir.build.release.root}/JavaScriptLibraries"/>
-        <mkdir dir="${dir.build.release.root}/JavaLibraries"/>
-        <mkdir dir="${dir.build.release.root}/JavaWebArchives"/>
-        <mkdir dir="${dir.build.release.root}/Licensing"/>
-        <copy todir="${dir.build.release.root}" file="${dir.resource}/readme.txt"/>
+        <mkdir dir="${dir.build.server-java.release.root}"/>
+        <mkdir dir="${dir.build.server-java.release.root}/SourceCode"/>
+        <mkdir dir="${dir.build.server-java.release.root}/Documentation"/>
+        <mkdir dir="${dir.build.server-java.release.root}/JavaScriptLibraries"/>
+        <mkdir dir="${dir.build.server-java.release.root}/JavaLibraries"/>
+        <mkdir dir="${dir.build.server-java.release.root}/JavaWebArchives"/>
+        <mkdir dir="${dir.build.server-java.release.root}/Licensing"/>
+        <copy todir="${dir.build.server-java.release.root}" file="${dir.resource}/readme.txt"/>
         
         <!-- Source Code -->
-        <copy todir="${dir.build.release.root}/SourceCode/src">
+        <copy todir="${dir.build.server-java.release.root}/SourceCode/src">
             <fileset dir="${dir.src}">
                 <exclude name=".svn/**"/>
             </fileset>
         </copy>
-        <copy todir="${dir.build.release.root}/SourceCode/resource">
+        <copy todir="${dir.build.server-java.release.root}/SourceCode/resource">
             <fileset dir="${dir.resource}">
                 <exclude name=".svn/**"/>
             </fileset>
         </copy>
-        <copy todir="${dir.build.release.root}/SourceCode">
+        <copy todir="${dir.build.server-java.release.root}/SourceCode">
             <fileset file="build.xml"/>
             <fileset file="ant.properties"/>
         </copy>
         
         <!-- JavaScript Libraries -->
-        <copy todir="${dir.build.release.root}/JavaScriptLibraries">
+        <copy todir="${dir.build.server-java.release.root}/JavaScriptLibraries">
             <fileset dir="${dir.src.client.corejs}"/>
             <fileset dir="${dir.src.client.echo}"/>
         </copy>
         
         <!-- Binary Libraries -->
-        <copy todir="${dir.build.release.root}/JavaLibraries">
+        <copy todir="${dir.build.server-java.release.root}/JavaLibraries">
             <fileset dir="${dir.dist.lib}"/>
         </copy>
         
         <!-- Binary Web Applications: Interactive Test Application -->
-        <copy todir="${dir.build.release.root}/JavaWebArchives">
+        <copy todir="${dir.build.server-java.release.root}/JavaWebArchives">
             <fileset dir="${dir.dist.testapp}"/>
         </copy>
 
         <!-- Documentation -->
-        <copy todir="${dir.build.release.root}/Documentation/api/public">
+        <copy todir="${dir.build.server-java.release.root}/Documentation/api/public">
             <fileset dir="${dir.javadoc.public}"/>
         </copy>
-        <copy todir="${dir.build.release.root}/Documentation">
+        <copy todir="${dir.build.server-java.release.root}/Documentation">
             <fileset dir="${dir.resource}/Documentation"/>
         </copy>
     	
     	<!-- JSDOC Temporarily Disabled -->
         <!--
-    	<copy todir="${dir.build.release.root}/Documentation/jsapi/public">
+    	<copy todir="${dir.build.server-java.release.root}/Documentation/jsapi/public">
             <fileset dir="${dir.jsdoc.public}"/>
         </copy>
         -->
         
         <!-- Licensing -->
-        <copy todir="${dir.build.release.root}/Licensing">
+        <copy todir="${dir.build.server-java.release.root}/Licensing">
             <fileset dir="${dir.resource}/Licensing"/>
         </copy>
         
         <!-- Zip & TarGz -->
         <mkdir dir="${dir.release}"/>
-        <zip zipfile="${dir.release}/${zipfile.release}" basedir="${dir.build.release}"/>
-        <tar tarfile="${dir.release}/${tarfile.release}" basedir="${dir.build.release}" longfile="gnu"/>
+        <zip zipfile="${dir.release}/${zipfile.release}" basedir="${dir.build.server-java.release}"/>
+        <tar tarfile="${dir.release}/${tarfile.release}" basedir="${dir.build.server-java.release}" longfile="gnu"/>
         <gzip src="${dir.release}/${tarfile.release}" zipfile="${dir.release}/${tgzfile.release}"/>
         <delete file="${dir.release}/${tarfile.release}"/>
     </target>
