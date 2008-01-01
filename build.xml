@@ -329,7 +329,7 @@
         <jar jarfile="${dir.dist.testapp}/${warfile.testapp}" basedir="${dir.build.testapp}"/>
     </target>
 
-    <target name="release" depends="clean, dist, dist.testapp, doc.public, doc.js.public">
+    <target name="release" depends="clean, dist, dist.testapp, doc.public">
         <mkdir dir="${dir.build.release.root}"/>
         <mkdir dir="${dir.build.release.root}/SourceCode"/>
         <mkdir dir="${dir.build.release.root}/Documentation"/>
