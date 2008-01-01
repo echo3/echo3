@@ -27,7 +27,7 @@
  * and other provisions required by the GPL or the LGPL. If you do not delete
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the MPL, the GPL or the LGPL.
---> 
+-->
  
 <project name="NextApp_Echo_3" default="dist" basedir=".">
 
@@ -46,7 +46,8 @@
     </patternset>
 
     <!-- Minimize -->
-    <target name="minimize" depends="clean" description="Removes all non-essential files, including Eclipse temporary/build output files">
+    <target name="minimize" depends="clean" 
+    	    description="Removes all non-essential files, including Eclipse temporary/build output files">
         <delete dir="${dir.temp}"/>
     </target>
     
@@ -64,21 +65,11 @@
         </delete>
     </target>
     
-    <target name="clienttest" description="Copy JS Resources to ClientTest older.">
-        <copy todir="${dir.clienttest}">
-            <fileset dir="${dir.src.webcontainer}/nextapp/echo/webcontainer/resource/js/">
-                <patternset>
-                    <include name="**/*js"/>
-                </patternset>
-            </fileset>
-        </copy>
-    </target>
-    
     <target name="compile.app" description="Compile Echo Application Framework">
         <mkdir dir="${dir.build.app}"/>
-        <javac srcdir="${dir.src.app}" destdir="${dir.build.app}" debug="${debug}" deprecation="yes"/>
+        <javac srcdir="${dir.src.server-java.app}" destdir="${dir.build.app}" debug="${debug}" deprecation="yes"/>
         <copy todir="${dir.build.app}">
-            <fileset dir="${dir.src.app}">
+            <fileset dir="${dir.src.server-java.app}">
                 <patternset refid="fileset.resources"/>
             </fileset>
         </copy>
@@ -160,26 +151,27 @@
         <fail message="${servlet.lib.msg}"/>
     </target>
     
-    <target name="compile.webcontainer" depends="verify.servlet.api,compile.webcontainer.impl" description="Compile Echo Web Application Container"/>
+    <target name="compile.webcontainer" depends="verify.servlet.api,compile.webcontainer.impl" 
+    	description="Compile Echo Web Application Container"/>
     
     <target name="compile.webcontainer.impl" depends="verify.servlet.api, compile.app">
         <mkdir dir="${dir.build.webcontainer}"/>
-        <javac srcdir="${dir.src.webcontainer}" destdir="${dir.build.webcontainer}" debug="${debug}" deprecation="yes">
+        <javac srcdir="${dir.src.server-java.webcontainer}" destdir="${dir.build.webcontainer}" debug="${debug}" deprecation="yes">
             <classpath>
                 <pathelement path="${dir.build.app}"/>
                 <pathelement path="${servlet.lib.jar}"/>
             </classpath>
         </javac>
         <copy todir="${dir.build.webcontainer}">
-            <fileset dir="${dir.src.webcontainer}">
+            <fileset dir="${dir.src.server-java.webcontainer}">
                 <patternset refid="fileset.resources"/>
             </fileset>
         </copy>
         <copy todir="${dir.build.webcontainer.js}">
-            <fileset dir="${dir.src.corejs}">
+            <fileset dir="${dir.src.client.corejs}">
                 <patternset refid="fileset.resources"/>
             </fileset>
-            <fileset dir="${dir.src.client}">
+            <fileset dir="${dir.src.client.echo}">
                 <patternset refid="fileset.resources"/>
             </fileset>
         </copy>
@@ -304,12 +296,13 @@
         <copy todir="${dir.build.testapp}/WEB-INF/lib" file="${dir.dist.lib}/${jarfile.echo.app}"/>
         <copy todir="${dir.build.testapp}/WEB-INF/lib" file="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
         <copy todir="${dir.build.testapp}/WEB-INF">
-            <fileset dir="${dir.deploy.testapp}"/>
+            <fileset dir="${dir.src.server-java.test-ia.deploy}"/>
         </copy>
         <copy todir="${dir.build.testapp}">
-            <fileset dir="${dir.htdocs.testapp}"/>
+            <fileset dir="${dir.src.server-java.test-ia.htdocs}"/>
         </copy>
-        <javac srcdir="${dir.src.testapp}" destdir="${dir.build.testapp}/WEB-INF/classes" debug="${debug}" deprecation="yes">
+        <javac srcdir="${dir.src.server-java.test-ia.lib}" destdir="${dir.build.testapp}/WEB-INF/classes" 
+        	    debug="${debug}" deprecation="yes">
             <classpath>
                 <pathelement path="${servlet.lib.jar}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
@@ -317,7 +310,7 @@
             </classpath>
         </javac>
         <copy todir="${dir.build.testapp}/WEB-INF/classes">
-            <fileset dir="${dir.src.testapp}">
+            <fileset dir="${dir.src.server-java.test-ia.lib}">
                 <patternset refid="fileset.resources"/>
             </fileset>
         </copy>
