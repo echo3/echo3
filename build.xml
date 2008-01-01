@@ -183,23 +183,23 @@
     </target>
     
     <target name="test.compile.webcontainer" depends="dist.app, dist.webcontainer">
-        <mkdir dir="${dir.build.test.webcontainer}"/>
-        <javac srcdir="${dir.src.test.webcontainer}" destdir="${dir.build.test.webcontainer}" debug="${debug}" deprecation="yes">
+        <mkdir dir="${dir.build.webcontainer-test}"/>
+        <javac srcdir="${dir.src.server-java.webcontainer-test}" destdir="${dir.build.webcontainer-test}" debug="${debug}" deprecation="yes">
             <classpath>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
                 <pathelement path="${servlet.lib.jar}"/>
             </classpath>
         </javac>
-        <copy todir="${dir.build.test.webcontainer}">
-            <fileset dir="${dir.src.test.webcontainer}">
+        <copy todir="${dir.build.webcontainer-test}">
+            <fileset dir="${dir.src.server-java.webcontainer-test}">
                 <patternset refid="fileset.resources"/>
             </fileset>
         </copy>
     </target>
 
     <target name="test.webcontainer" depends="test.compile.webcontainer" description="Test Web Application Container">
-        <mkdir dir="${dir.testoutput.webcontainer}"/>
+        <mkdir dir="${dir.testoutput.webcontainer-test}"/>
         <junit printsummary="yes" haltonfailure="yes">
             <classpath>
                 <pathelement path="${dir.build.webcontainer-test}"/>
@@ -208,7 +208,7 @@
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
             </classpath>
             <formatter type="plain"/>
-            <batchtest fork="yes" todir="${dir.testoutput.webcontainer}">
+            <batchtest fork="yes" todir="${dir.testoutput.webcontainer-test}">
                 <fileset dir="${dir.src.server-java.webcontainer-test}">
                    <include name="**/*Test*.java"/>
                 </fileset>
