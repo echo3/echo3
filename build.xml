@@ -81,29 +81,29 @@
     </target>
     
     <target name="test.compile.app" depends="dist.app">
-        <mkdir dir="${dir.build.test.app}"/>
-        <javac srcdir="${dir.src.test.app}" destdir="${dir.build.test.app}" debug="${debug}" deprecation="yes">
+        <mkdir dir="${dir.build.app-test}"/>
+        <javac srcdir="${dir.src.server-java.app-test}" destdir="${dir.build.app-test}" debug="${debug}" deprecation="yes">
             <classpath>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
             </classpath>
         </javac>
-        <copy todir="${dir.build.test.app}">
-            <fileset dir="${dir.src.test.app}">
+        <copy todir="${dir.build.app-test}">
+            <fileset dir="${dir.src.server-java.app-test}">
                 <patternset refid="fileset.resources"/>
             </fileset>
         </copy>
     </target>
 
     <target name="test.app" depends="test.compile.app" description="Test Echo app Framework">
-        <mkdir dir="${dir.testoutput.app}"/>
+        <mkdir dir="${dir.testoutput.app-test}"/>
         <junit printsummary="yes" haltonfailure="no">
             <classpath>
-                <pathelement path="${dir.build.test.app}"/>
+                <pathelement path="${dir.build.app-test}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
             </classpath>
             <formatter type="plain"/>
-            <batchtest fork="yes" todir="${dir.testoutput.app}">
-                <fileset dir="${dir.src.test.app}">
+            <batchtest fork="yes" todir="${dir.testoutput.app-test}">
+                <fileset dir="${dir.src.server-java.app-test}">
                    <include name="**/*Test*.java"/>
                 </fileset>
             </batchtest>
@@ -202,14 +202,14 @@
         <mkdir dir="${dir.testoutput.webcontainer}"/>
         <junit printsummary="yes" haltonfailure="yes">
             <classpath>
-                <pathelement path="${dir.build.test.webcontainer}"/>
+                <pathelement path="${dir.build.webcontainer-test}"/>
                 <pathelement path="${servlet.lib.jar}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
             </classpath>
             <formatter type="plain"/>
             <batchtest fork="yes" todir="${dir.testoutput.webcontainer}">
-                <fileset dir="${dir.src.test.webcontainer}">
+                <fileset dir="${dir.src.server-java.webcontainer-test}">
                    <include name="**/*Test*.java"/>
                 </fileset>
             </batchtest>
