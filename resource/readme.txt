@@ -1,31 +1,35 @@
-----------------------------------------------------------------------
+------------------------------------------------------------------------------
 Echo Web Application Framework, version 3.0
-Copyright (C) 2002-2005 NextApp, Inc.
+Copyright (C) 2002-2008 NextApp, Inc.
 
-http://www.nextapp.com/products/echo3
+http://echo.nxtapp.com/
 
-----------------------------------------------------------------------
+------------------------------------------------------------------------------
 Echo is licensed under the Mozilla Public License.
 Please see the "licensing.txt" file in the /Licensing folder for more
 information.
 
-----------------------------------------------------------------------
+------------------------------------------------------------------------------
 This archive/package contains the following directory structure:
 
-/SourceCode         - Provides the source code of the framework.  
+/SourceCode          - Provides the source code of the framework.  
 
-/BinaryLibraries    - Provides binary versions of the Echo libraries.
+/JavaLibraries       - Contains the pre-built JAR files required for
+                       server-side Echo development. 
 
-/BinaryApplications - Contains binary test and example applications,
-                      packages as Web Archives (WAR files).
-
-/Licensing          - Contains licensing information.
+/JavaWebArchives     - Contains example Java Web Archive (WAR) files that may
+                       be deployed to a Java Servlet Container.
                       
-----------------------------------------------------------------------
+/JavaScriptLibraries - Contains JavaScript modules that are used for
+                       stand-alone client-side Echo development.
+
+/Licensing           - Contains licensing information.
+                      
+------------------------------------------------------------------------------
 Please feel free to contact NextApp with any questions regarding Echo:
 
 NextApp, Inc.                  http://www.nextapp.com       
-2549-B Eastbluff Drive #201    echo@nextapp.com
+2549-B Eastbluff Drive #201    http://forum.nextapp.com (Developer forums)
 Newport Beach, CA 92660
 USA        
 
