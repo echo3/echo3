@@ -367,9 +367,13 @@
         <copy todir="${dir.build.release.root}/Documentation">
             <fileset dir="${dir.resource}/Documentation"/>
         </copy>
-        <copy todir="${dir.build.release.root}/Documentation/jsapi/public">
+    	
+    	<!-- JSDOC Temporarily Disabled -->
+        <!--
+    	<copy todir="${dir.build.release.root}/Documentation/jsapi/public">
             <fileset dir="${dir.jsdoc.public}"/>
         </copy>
+        -->
         
         <!-- Licensing -->
         <copy todir="${dir.build.release.root}/Licensing">
