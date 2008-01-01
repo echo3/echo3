@@ -113,24 +113,24 @@
     <target name="doc.app"
             description="Create public/protected JavaDoc Document for Echo Application Framework">
         <mkdir dir="${dir.javadoc.app.public}"/>
-        <javadoc sourcepath="${dir.src.app}" packagenames="nextapp.echo.app.*" 
+        <javadoc sourcepath="${dir.src.server-java.app}" packagenames="nextapp.echo.app.*" 
                 stylesheetfile="${javadoc.cssfile}"
                 destdir="${dir.javadoc.app.public}" 
                 WindowTitle="${javadoc.windowtitle}"
                 DocTitle="${javadoc.doctitle.app}"
-                Overview="${dir.src.app}/overview.html"
+                Overview="${dir.src.server-java.app}/overview.html"
                 Header="${javadoc.header}"/>
     </target>
     
     <target name="doc.app.private"
             description="Create private JavaDoc Document for Echo Application Framework">
         <mkdir dir="${dir.javadoc.app.private}"/>
-        <javadoc sourcepath="${dir.src.app}" packagenames="nextapp.echo.app.*" 
+        <javadoc sourcepath="${dir.src.server-java.app}" packagenames="nextapp.echo.app.*" 
                 stylesheetfile="${javadoc.cssfile}"
                 destdir="${dir.javadoc.app.private}" 
                 WindowTitle="${javadoc.windowtitle}"
                 DocTitle="${javadoc.doctitle.app}"
-                Overview="${dir.src.app}/overview.html"
+                Overview="${dir.src.server-java.app}/overview.html"
                 Header="${javadoc.header}"
                 Private="true"/>
     </target>
@@ -184,7 +184,8 @@
     
     <target name="test.compile.webcontainer" depends="dist.app, dist.webcontainer">
         <mkdir dir="${dir.build.webcontainer-test}"/>
-        <javac srcdir="${dir.src.server-java.webcontainer-test}" destdir="${dir.build.webcontainer-test}" debug="${debug}" deprecation="yes">
+        <javac srcdir="${dir.src.server-java.webcontainer-test}" destdir="${dir.build.webcontainer-test}" 
+        	    debug="${debug}" deprecation="yes">
             <classpath>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
@@ -219,12 +220,13 @@
     <target name="doc.webcontainer"
             description="Create public/protected JavaDoc Document for Echo Web Application Container">
         <mkdir dir="${dir.javadoc.webcontainer.public}"/>
-        <javadoc sourcepath="${dir.src.app};${dir.src.webcontainer}" packagenames="nextapp.echo.webcontainer.*" 
+        <javadoc sourcepath="${dir.src.server-java.app};${dir.src.server-java.webcontainer}" 
+    	        packagenames="nextapp.echo.webcontainer.*" 
                 stylesheetfile="${javadoc.cssfile}"
                 destdir="${dir.javadoc.webcontainer.public}" 
                 WindowTitle="${javadoc.windowtitle}"
                 DocTitle="${javadoc.doctitle.webcontainer}"
-                Overview="${dir.src.webcontainer}/overview.html"
+                Overview="${dir.src.server-java.webcontainer}/overview.html"
                 Header="${javadoc.header}">
             <classpath>
                 <pathelement path="${servlet.lib.jar}"/>
@@ -235,12 +237,13 @@
     <target name="doc.webcontainer.private"
             description="Create private JavaDoc Document for Echo Web Application Container">
         <mkdir dir="${dir.javadoc.webcontainer.private}"/>
-        <javadoc sourcepath="${dir.src.app};${dir.src.webcontainer}" packagenames="nextapp.echo.webcontainer.*" 
+        <javadoc sourcepath="${dir.src.server-java.app};${dir.src.server-java.webcontainer}" 
+        	    packagenames="nextapp.echo.webcontainer.*" 
                 stylesheetfile="${javadoc.cssfile}"
                 destdir="${dir.javadoc.webcontainer.private}" 
                 WindowTitle="${javadoc.windowtitle}"
                 DocTitle="${javadoc.doctitle.webcontainer}"
-                Overview="${dir.src.webcontainer}/overview.html"
+                Overview="${dir.src.server-java.webcontainer}/overview.html"
                 Header="${javadoc.header}"
                 Private="true">
             <classpath>
@@ -261,7 +264,7 @@
              <arg value="--project-name ${jsdoc.projectname}"/>
              <arg value="--package-naming"/>
              <arg value="--directory ${dir.jsdoc.public}"/>
-             <arg value="${dir.src.webcontainer.js}"/>
+             <arg value="${dir.src.server-java.webcontainer.js}"/>
         </exec>
     </target>
     
@@ -274,7 +277,7 @@
              <arg value="--package-naming"/>
              <arg value="--private"/>
              <arg value="--directory ${dir.jsdoc.private}"/>
-             <arg value="${dir.src.webcontainer.js}"/>
+             <arg value="${dir.src.server-java.webcontainer.js}"/>
         </exec>
     </target>
     
