@@ -65,6 +65,16 @@
         </delete>
     </target>
     
+    <target name="dist.client.testapp" depends="clean">
+        <mkdir dir="${dir.dist.client.testapp}"/>
+        <copy todir="${dir.dist.client.testapp}">
+            <fileset dir="${dir.src.client.corejs}"/>
+            <fileset dir="${dir.src.client.echo}"/>
+            <fileset dir="${dir.src.client.test-ia}"/>
+        </copy>
+        
+    </target>
+    
     <target name="compile.app" description="Compile Echo Application Framework">
         <mkdir dir="${dir.build.server-java.app}"/>
         <javac srcdir="${dir.src.server-java.app}" destdir="${dir.build.server-java.app}" debug="${debug}" deprecation="yes"/>
