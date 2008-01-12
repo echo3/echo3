@@ -5,15 +5,15 @@ NumberGuessApp = Core.extend(EchoApp.Application, {
 
     $construct: function() {
         EchoApp.Application.call(this);
-        this.rootComponent.add(new NumberGuessApp.Game());
+        this.startNewGame();
     },
     
     /**
-     * Displays a congratulatory message to the user when s/he has guessed
-     * the correct number.
+     * Displays a congratulatory message to the user when s/he 
+     * has guessed the correct number.
      * 
-     * @param numberOfTries the number of tries it took the user to 
-     *        guess the correct answer.
+     * @param numberOfTries the number of tries it took the 
+     *        user to guess the correct answer.
      */
     congratulate: function(numberOfTries) {
         this.rootComponent.removeAll();
@@ -40,10 +40,16 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
     /** Randomly generated number between 1 and 100 inclusive. */
     _randomNumber: null,
 
-    /** The current lowest sensible guess, based on previous guesses. */
+    /** 
+      * The current lowest sensible guess, based on previous 
+      * guesses.
+      */
     _lowerBound: 1,
 
-    /** The current highest sensible guess, based on previous guesses. */
+    /**
+     * The current highest sensible guess, based on previous
+     * guesses. 
+     */
     _upperBound: 100,
 
     /** The number of guesses made in the current game. */
@@ -53,9 +59,10 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
     _guessEntryField: null,
 
     /** 
-     * <code>Label</code> displaying the current "status".  Initially blank, 
-     * this label will inform the user whether his/her last guess was too 
-     * high, too low, or simply invalid.
+     * <code>Label</code> displaying the current "status".  
+     * Initially blank, this label will inform the user whether
+     * his/her last guess was too  high, too low, or simply 
+     * invalid.
      */ 
     _statuslabel: null,
 
@@ -65,9 +72,9 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
     _countLabel: null,
 
     /**
-     * Label prompting the user to enter a new guess.  The text of
-     * this label will change as the user makes guesses to reflect the updated
-     * "sensible" range of possible guesses.
+     * Label prompting the user to enter a new guess.  The text 
+     * of this label will change as the user makes guesses to 
+     * reflect the updated "sensible" range of possible guesses.
      */
     _promptLabel: null,
 
@@ -79,7 +86,8 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
             cellSpacing: new EchoApp.Extent(10),
             children: [
                 new EchoApp.Label({
-                    icon: new EchoApp.ImageReference("TitleBanner.png")
+                    icon: new EchoApp.ImageReference(
+                            "TitleBanner.png")
                 }),
 
                 this._statusLabel = new EchoApp.Label(),
@@ -93,7 +101,8 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                         insets: new EchoApp.Insets(0, 20)
                     }),
                     events: {
-                        action: Core.method(this, this._processGuess)
+                        action: Core.method(
+                                this, this._processGuess)
                     }
                 }),
 
@@ -105,7 +114,8 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                     insets: new EchoApp.Insets(3, 10),
                     width: new EchoApp.Extent(200),
                     events: {
-                        action: Core.method(this, this._processGuess)
+                        action: Core.method(this, 
+                                this._processGuess)
                     }
                 }),
 
@@ -116,7 +126,8 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                     insets: new EchoApp.Insets(3, 10),
                     width: new EchoApp.Extent(200),
                     events: {
-                        action: Core.method(this, this._startNewGame)
+                        action: Core.method(this, 
+                                this._startNewGame)
                     }
                 })
             ]
@@ -127,9 +138,11 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
      * Processes a user's guess.
      */
     _processGuess: function(e) {
-        var guess = parseInt(this._guessEntryField.getProperty("text"));
+        var guess = parseInt(
+                this._guessEntryField.getProperty("text"));
         if (isNaN(guess)) {
-            this._statusLabel.setProperty("text", "Your guess was not valid.");
+            this._statusLabel.setProperty("text", 
+                    "Your guess was not valid.");
             return;
         }
         
@@ -141,17 +154,17 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
         }
         
         if (guess < 1 || guess > 100) {
-            this._statusLabel.setProperty("text", "Your guess, " + guess
-                    + " was not between 1 and 100.");
+            this._statusLabel.setProperty("text", "Your guess, "
+                    + guess + " was not between 1 and 100.");
         } else if (guess < this._randomNumber) {
             if (guess >= this._lowerBound) {
                 this._lowerBound = guess + 1;
             }
-            this._statusLabel.setProperty("text", "Your guess, " + guess 
-                    + " was too low.  Try again:");
+            this._statusLabel.setProperty("text", "Your guess, "
+                    + guess + " was too low.  Try again:");
         } else if (guess > this._randomNumber) {
-            this._statusLabel.setProperty("text", "Your guess, " + guess 
-                    + " was too high.  Try again:");
+            this._statusLabel.setProperty("text", "Your guess, " 
+                    + guess + " was too high.  Try again:");
             if (guess <= this._upperBound) {
                 this._upperBound = guess - 1;
             }
@@ -159,15 +172,18 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
 
         // Update number of tries label.
         if (this._numberOfTries == 1) {
-            this._countLabel.setProperty("text", "You have made 1 guess.");
+            this._countLabel.setProperty("text", 
+                    "You have made 1 guess.");
         } else {
             this._countLabel.setProperty("text", "You have made "
                     + this._numberOfTries + " guesses.");
         }
         
-        // Update the prompt label to reflect the new sensible range of numbers.
-        this._promptLabel.setProperty("text", "Guess a number between " 
-                + this._lowerBound + " and " + this._upperBound + ": ");
+        // Update the prompt label to reflect the new sensible 
+        // range of numbers.
+        this._promptLabel.setProperty("text", 
+                "Guess a number between " + this._lowerBound 
+                + " and " + this._upperBound + ": ");
 
     },
     
@@ -196,8 +212,9 @@ NumberGuessApp.Congratulator = Core.extend(EchoApp.Column, {
                             "CongratulationsBanner.png")
                 }),
                 new EchoApp.Label({
-                    text: "You got the correct answer in " + numberOfTries 
-                            + (numberOfTries == 1 ? "try." : " tries.")
+                    text: "You got the correct answer in " 
+                            + numberOfTries + (numberOfTries == 1
+                            ? "try." : " tries.")
                 }),
                 new EchoApp.Button({
                     text: "Play Again",
@@ -205,7 +222,8 @@ NumberGuessApp.Congratulator = Core.extend(EchoApp.Column, {
                     background: new EchoApp.Color("#8f0000"),
                     width: new EchoApp.Extent(200),
                     events: {
-                        action: Core.method(this, this._startNewGame)
+                        action: Core.method(
+                                this, this._startNewGame)
                     }
                 })
             ]
@@ -220,6 +238,7 @@ NumberGuessApp.Congratulator = Core.extend(EchoApp.Column, {
 init = function() {
     WebCore.init();
     var app = new NumberGuessApp();
-    var client = new EchoFreeClient(app, document.getElementById("rootArea"));
+    var client = new EchoFreeClient(app, 
+            document.getElementById("rootArea"));
     client.init();
 };

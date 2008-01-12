@@ -613,7 +613,12 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                     = "filter:alpha(opacity=0);zIndex:1;position:absolute;left:0,right:0,top:0,bottom:0,borderWidth: 0;";
             var maskIFrameElement = document.createElement("iframe");
             maskIFrameElement.style.cssText = "width:100%;height:100%;";
-            // FIXME set 'src' element if possible using client to get URL of blank document.
+            
+            var blankUrl = this.client.getServiceUrl("Echo.BlankDocument");
+            if (blankUrl) {
+                maskIFrameElement.src = blankUrl;
+            }
+            
             this._maskDivElement.appendChild(maskIFrameElement);
     	    this._windowPaneDivElement.appendChild(this._maskDivElement);
         }

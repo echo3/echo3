@@ -34,6 +34,7 @@ import nextapp.echo.webcontainer.service.AsyncMonitorService;
 import nextapp.echo.webcontainer.service.BootService;
 import nextapp.echo.webcontainer.service.NewInstanceService;
 import nextapp.echo.webcontainer.service.SessionExpiredService;
+import nextapp.echo.webcontainer.service.StaticTextService;
 import nextapp.echo.webcontainer.service.SynchronizeService;
 import nextapp.echo.webcontainer.service.WindowHtmlService;
 
@@ -103,6 +104,11 @@ public abstract class WebContainerServlet extends HttpServlet {
     public static final String SERVICE_ID_DEFAULT = "Echo.Default";
     
     /**
+     * <code>Service</code> identifier of the blank document service.
+     */
+    public static final String SERVICE_ID_BLANK_DOCUMENT = "Echo.BlankDocument";
+    
+    /**
      * <code>Service</code> identifier of the 'new instance' service. 
      * The 'new instance' service is rendered when a client makes a request
      * without a service identifier and a session DOES NOT exist..
@@ -131,6 +137,7 @@ public abstract class WebContainerServlet extends HttpServlet {
 
     static {
         BootService.install(services);
+        services.add(new StaticTextService(SERVICE_ID_BLANK_DOCUMENT, "text/html", "<html></html>"));
     }
     
     /**
