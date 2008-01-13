@@ -5,10 +5,12 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
 
     $abstract: true,
 
+    _hasRenderedSelectedItems: false,
+
     _processChange: function(e) {
         if (!this.client.verifyInput(this.component)) {
             WebCore.DOM.preventEventDefault(e);
-            this._renderSelection(true);
+            this._renderSelection();
             return;
         }
         var selectElement = e.registeredTarget;
@@ -72,7 +74,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             }
         }
         
-        this._renderSelection(false);
+        this._renderSelection();
         
         if (this._enabled) {
 	        WebCore.EventProcessor.add(this._selectElement, "change", Core.method(this, this._processChange), false);
@@ -99,7 +101,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderDisplay: function() {
-        this._renderSelection(false);
+        this._renderSelection();
     },
     
     renderDispose: function(update) { 
@@ -108,11 +110,11 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         this._tableElement = null;
     },
     
-    _renderSelection: function(clearSelection) {
+    _renderSelection: function() {
         // Set selection.
         var selection = this.component.getProperty("selection");
         if (selection) {
-            if (clearSelection) {
+            if (this._hasRenderedSelectedItems) {
                 for (var i = 0; i < this._selectElement.options.length; ++i) {
                     this._selectElement.options[i].selected = false;
                 }
@@ -129,6 +131,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
                 this._selectElement.selectedIndex = 0;
             }
         }
+        this._hasRenderedSelectedItems = true;
     },
     
     renderUpdate: function(update) {
