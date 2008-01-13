@@ -78,8 +78,6 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             }
         }
         
-        this._renderSelection();
-        
         if (this._enabled) {
 	        WebCore.EventProcessor.add(this._selectElement, "change", Core.method(this, this._processChange), false);
         }
