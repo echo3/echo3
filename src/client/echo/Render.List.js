@@ -98,6 +98,10 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         }
     },
     
+    renderDisplay: function() {
+        this._renderSelection(false);
+    },
+    
     renderDispose: function(update) { 
         WebCore.EventProcessor.removeAll(this._selectElement);
         this._selectElement = null;
@@ -110,17 +114,17 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         if (selection) {
             if (clearSelection) {
                 for (var i = 0; i < this._selectElement.options.length; ++i) {
-                    this._selectElement.options[i].selected = "";
+                    this._selectElement.options[i].selected = false;
                 }
             }
             for (var i = 0; i < selection.length; ++i) {
                 if (selection[i] >= 0 && selection[i] < this._selectElement.options.length) {
-                    this._selectElement.options[selection[i]].selected = "selected";
+                    this._selectElement.options[selection[i]].selected = true;
                 }
             }
         } else {
             if (this._selectElement.multiple) {
-                this._selectElement.selectedIndex = null;
+                this._selectElement.selectedIndex = -1;
             } else {
                 this._selectElement.selectedIndex = 0;
             }
