@@ -6,6 +6,8 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     $abstract: true,
 
     _hasRenderedSelectedItems: false,
+    
+    _multipleSelect: false,
 
     _processChange: function(e) {
         if (!this.client.verifyInput(this.component)) {
@@ -15,7 +17,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         }
         var selectElement = e.registeredTarget;
         var selection = [];
-        if (this.component.getProperty("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION) {
+        if (this._multipleSelect) {
             for (var i = 0; i < selectElement.options.length; ++i) {
                 if (selectElement.options[i].selected) {
                     selection.push(i);
@@ -32,11 +34,13 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _renderMain: function(update, parentElement, size) {
+        this._multipleSelect = this.component.getProperty("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION;
+    
         this._enabled = this.component.isRenderEnabled();
         this._selectElement = document.createElement("select");
         this._selectElement.id = this.component.renderId;
         this._selectElement.size = size;
-        if (this.component.getProperty("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION) {
+        if (this._multipleSelect) {
             this._selectElement.multiple = "multiple";
         }
         if (!this._enabled) {
@@ -125,7 +129,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
                 }
             }
         } else {
-            if (this._selectElement.multiple) {
+            if (this._multipleSelect) {
                 this._selectElement.selectedIndex = -1;
             } else {
                 this._selectElement.selectedIndex = 0;
