@@ -39,7 +39,6 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             return;
         }
         
-        var selection = [];
         var child = this._divElement.firstChild;
         var i = 0;
         while (child) {
@@ -53,14 +52,30 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             return;
         }
         
-        selection.push(i);
+        if (this._multipleSelect && e.ctrlKey) {
+            // Multiple selection and user has pressed ctrl key to select multiple items.
+            var selection = this.component.getProperty("selection");
+            if (!selection) {
+                selection = [];
+            }
+            var arrayIndex = Core.Arrays.indexOf(selection, i); 
+            if (arrayIndex == -1) {
+                // Add item to selection if not present.
+                selection.push(i);
+            } else {
+                // Remove item from selection if already present.
+                selection.splice(arrayIndex, 1);
+            }
+        } else {
+            selection = [i];
+        }
         
         this.component.setProperty("selection", selection);
         this.component.doAction();
 
         this._renderSelection();
     },
-
+    
     _processChange: function(e) {
         if (!this.client.verifyInput(this.component)) {
             WebCore.DOM.preventEventDefault(e);
@@ -85,6 +100,10 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         this.component.doAction();
     },
     
+    _processSelectStart: function(e) {
+        WebCore.DOM.preventEventDefault(e);
+    },
+
     _renderMainAsSelect: function(update, parentElement, size) {
         this._mainElement = document.createElement("select");
         this._mainElement.id = this.component.renderId;
@@ -188,6 +207,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         
         if (this._enabled) {
             WebCore.EventProcessor.add(this._divElement, "click", Core.method(this, this._processClick), false);
+            WebCore.EventProcessor.add(this._divElement, "selectstart", Core.method(this, this._processSelectStart), false);
         }
         
         parentElement.appendChild(this._mainElement);
