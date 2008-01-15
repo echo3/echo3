@@ -239,6 +239,10 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     _renderSelection: function() {
         // Set selection.
         var selection = this.component.getProperty("selection");
+        
+        if (!selection) {
+            selection = this._multipleSelect ? [] : [0];
+        }
 
         if (this._alternateRender) {
             if (this._hasRenderedSelectedItems) {
@@ -249,38 +253,25 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
                             "backgroundColor");
                 }
             }
-            if (selection) {
-                for (var i = 0; i < selection.length; ++i) {
-                    if (selection[i] >= 0 && selection[i] < this._divElement.childNodes.length) {
-                        EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_FOREGROUND,
-                                this._divElement.childNodes[selection[i]], "color");
-                        EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_BACKGROUND,
-                                this._divElement.childNodes[selection[i]], "backgroundColor");
-                    }
+            for (var i = 0; i < selection.length; ++i) {
+                if (selection[i] >= 0 && selection[i] < this._divElement.childNodes.length) {
+                    EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_FOREGROUND,
+                            this._divElement.childNodes[selection[i]], "color");
+                    EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_BACKGROUND,
+                            this._divElement.childNodes[selection[i]], "backgroundColor");
                 }
-                this._hasRenderedSelectedItems = true;
             }
         } else {
-            if (selection) {
-                if (this._hasRenderedSelectedItems) {
-                    for (var i = 0; i < this._mainElement.options.length; ++i) {
-                        this._mainElement.options[i].selected = false;
-                    }
-                }
-                for (var i = 0; i < selection.length; ++i) {
-                    if (selection[i] >= 0 && selection[i] < this._mainElement.options.length) {
-                        this._mainElement.options[selection[i]].selected = true;
-                    }
-                }
-            } else {
-                if (this._multipleSelect) {
-                    this._mainElement.selectedIndex = -1;
-                } else {
-                    this._mainElement.selectedIndex = 0;
+            if (this._hasRenderedSelectedItems) {
+                this._mainElement.selectedIndex = -1;
+            }
+            for (var i = 0; i < selection.length; ++i) {
+                if (selection[i] >= 0 && selection[i] < this._mainElement.options.length) {
+                    this._mainElement.options[selection[i]].selected = true;
                 }
             }
-            this._hasRenderedSelectedItems = true;
         }
+        this._hasRenderedSelectedItems = true;
     },
     
     renderUpdate: function(update) {
