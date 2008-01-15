@@ -10,13 +10,14 @@
 
 EchoAppRender = { 
 
-    getEffectProperty: function(component, defaultPropertyName, effectPropertyName, effectState) {
+    getEffectProperty: function(component, defaultPropertyName, effectPropertyName, effectState,
+            defaultDefaultPropertyValue, effectDefaultPropertyValue) {
         var property;
         if (effectState) {
-            property = component.getRenderProperty(effectPropertyName);
+            property = component.getRenderProperty(effectPropertyName, effectDefaultPropertyValue);
         }
         if (!property) {
-            property = component.getRenderProperty(defaultPropertyName);
+            property = component.getRenderProperty(defaultPropertyName, defaultDefaultPropertyValue);
         }
         return property;
     }

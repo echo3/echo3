@@ -3,11 +3,63 @@
  */
 EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
 
+    $static: {
+        DEFAULT_DIV_HEIGHT: new EchoApp.Extent("6em"),
+        DEFAULT_DIV_BORDER: new EchoApp.Border(new EchoApp.Extent(1), "solid", null),
+        DEFAULT_SELECTED_BACKGROUND: new EchoApp.Color("#0a246a"),
+        DEFAULT_SELECTED_FOREGROUND: new EchoApp.Color("#ffffff")
+    },
+
     $abstract: true,
 
     _hasRenderedSelectedItems: false,
     
     _multipleSelect: false,
+
+    /**
+     * Flag indicating that component will be rendered as a DHTML-based ListBox.
+     * This form of rendering is necessary on Internet Explorer 6 browsers due to unstable
+     * code in this web browser when using listbox-style SELECT elements.
+     */
+    _alternateRender: false,
+    
+    _mainElement: null,
+    
+    _divElement: null,
+    
+    /**
+     * Processes a click event.
+     * This event handler is registered only in the case of the "alternate" DHTML-based rendered
+     * listbox for IE6, i.e., the _alternateRender flag will be true. 
+     */
+    _processClick: function(e) {
+        if (!this.client.verifyInput(this.component)) {
+            WebCore.DOM.preventEventDefault(e);
+            this._renderSelection();
+            return;
+        }
+        
+        var selection = [];
+        var child = this._divElement.firstChild;
+        var i = 0;
+        while (child) {
+            if (child == e.target) {
+                break;
+            }
+            child = child.nextSibling;
+            ++i;
+        }
+        if (child == null) {
+            return;
+        }
+        
+        selection.push(i);
+        
+        this.component.setProperty("selection", selection);
+        this.component.doAction();
+
+        this._renderSelection();
+    },
 
     _processChange: function(e) {
         if (!this.client.verifyInput(this.component)) {
@@ -15,17 +67,17 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             this._renderSelection();
             return;
         }
-        var selectElement = e.registeredTarget;
+        
         var selection = [];
         if (this._multipleSelect) {
-            for (var i = 0; i < selectElement.options.length; ++i) {
-                if (selectElement.options[i].selected) {
+            for (var i = 0; i < this._mainElement.options.length; ++i) {
+                if (this._mainElement.options[i].selected) {
                     selection.push(i);
                 }
             }
         } else {
-            if (selectElement.selectedIndex != -1) {
-                selection.push(selectElement.selectedIndex);
+            if (this._mainElement.selectedIndex != -1) {
+                selection.push(this._mainElement.selectedIndex);
             }
         }
     
@@ -33,34 +85,32 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         this.component.doAction();
     },
     
-    _renderMain: function(update, parentElement, size) {
-        this._multipleSelect = this.component.getProperty("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION;
-    
-        this._enabled = this.component.isRenderEnabled();
-        this._selectElement = document.createElement("select");
-        this._selectElement.id = this.component.renderId;
-        this._selectElement.size = size;
-        if (this._multipleSelect) {
-            this._selectElement.multiple = "multiple";
-        }
+    _renderMainAsSelect: function(update, parentElement, size) {
+        this._mainElement = document.createElement("select");
+        this._mainElement.id = this.component.renderId;
+        this._mainElement.size = size;
+
         if (!this._enabled) {
-        	this._selectElement.disabled = true;
+            this._mainElement.disabled = true;
         }
-        
+        if (this._multipleSelect) {
+            this._mainElement.multiple = "multiple";
+        }
+
         EchoAppRender.Border.render(
                 EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
-                this._selectElement);
+                this._mainElement);
         EchoAppRender.Color.render(
                 EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
-                this._selectElement, "color");
+                this._mainElement, "color");
         EchoAppRender.Color.render(
                 EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
-                this._selectElement, "backgroundColor");
+                this._mainElement, "backgroundColor");
         EchoAppRender.Font.render(
                 EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
-                this._selectElement);
-        EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._selectElement, "padding");
-    
+                this._mainElement);
+        EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._mainElement, "padding");
+
         if (this.component.items) {
             for (var i = 0; i < this.component.items.length; ++i) {
                 var optionElement = document.createElement("option");
@@ -74,31 +124,86 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
                 if (this.component.items[i].font) {
                     EchoAppRender.Font.render(this.component.items[i].font, optionElement);
                 }
-                this._selectElement.appendChild(optionElement);
+                this._mainElement.appendChild(optionElement);
+            }
+        }
+    
+        if (this._enabled) {
+            WebCore.EventProcessor.add(this._mainElement, "change", Core.method(this, this._processChange), false);
+        }
+
+        parentElement.appendChild(this._mainElement);
+    },
+
+    _renderMainAsDiv: function(update, parentElement, size) {
+        this._mainElement = document.createElement("table");
+        this._mainElement.id = this.component.renderId;
+        
+        var tbodyElement = document.createElement("tbody");
+        this._mainElement.appendChild(tbodyElement);
+        var trElement = document.createElement("tr");
+        tbodyElement.appendChild(trElement);
+        var tdElement = document.createElement("td");
+        trElement.appendChild(tdElement);
+        
+        this._divElement = document.createElement("div");
+        tdElement.appendChild(this._divElement);
+        
+        this._divElement.style.cssText = "cursor:default;overflow:auto;";
+        
+        //FIXME        
+        this._divElement.style.height = "6em";
+        
+        EchoAppRender.Border.render(
+                EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled, 
+                EchoAppRender.ListComponentSync.DEFAULT_DIV_BORDER, EchoAppRender.ListComponentSync.DEFAULT_DIV_BORDER), 
+                this._divElement);
+        EchoAppRender.Color.render(
+                EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
+                this._divElement, "color");
+        EchoAppRender.Color.render(
+                EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
+                this._divElement, "backgroundColor");
+        EchoAppRender.Font.render(
+                EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
+                this._divElement);
+        EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
+
+        if (this.component.items) {
+            for (var i = 0; i < this.component.items.length; ++i) {
+                var optionElement = document.createElement("div");
+                optionElement.appendChild(document.createTextNode(this.component.items[i].toString()));
+                if (this.component.items[i].foreground) {
+                    EchoAppRender.Color.render(this.component.items[i].foreground, optionElement, "color");
+                }
+                if (this.component.items[i].background) {
+                    EchoAppRender.Color.render(this.component.items[i].background, optionElement, "backgroundColor");
+                }
+                if (this.component.items[i].font) {
+                    EchoAppRender.Font.render(this.component.items[i].font, optionElement);
+                }
+                this._divElement.appendChild(optionElement);
             }
         }
         
         if (this._enabled) {
-	        WebCore.EventProcessor.add(this._selectElement, "change", Core.method(this, this._processChange), false);
+            WebCore.EventProcessor.add(this._divElement, "click", Core.method(this, this._processClick), false);
         }
         
-        if (size != 0 && WebCore.Environment.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
-            // Render select element inside of a table to stop crazy IE6 behavior where listboxes turn into
-            // select fields when removed and then re-added to the DOM.
-            // As ridiculous as this might seem, it does appear necessary.  It is unknown why a table is required,
-            // but a div does not cure the problem. 
-            this._tableElement = document.createElement("table");
-            var tbodyElement = document.createElement("tbody");
-            this._tableElement.appendChild(tbodyElement);
-            var trElement = document.createElement("tr");
-            tbodyElement.appendChild(trElement);
-            var tdElement = document.createElement("td");
-            trElement.appendChild(tdElement);
-            tdElement.appendChild(this._selectElement);
-
-            parentElement.appendChild(this._tableElement);
+        parentElement.appendChild(this._mainElement);
+    },
+    
+    _renderMain: function(update, parentElement, size) {
+        this._multipleSelect = this.component.getProperty("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION;
+        if (this.component instanceof EchoApp.ListBox && WebCore.Environment.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
+            this._alternateRender = true;
+        }
+        this._enabled = this.component.isRenderEnabled();
+        
+        if (this._alternateRender) {
+            this._renderMainAsDiv(update, parentElement, size);
         } else {
-            parentElement.appendChild(this._selectElement);
+            this._renderMainAsSelect(update, parentElement, size);
         }
     },
     
@@ -107,37 +212,59 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderDispose: function(update) { 
-        WebCore.EventProcessor.removeAll(this._selectElement);
-        this._selectElement = null;
-        this._tableElement = null;
+        WebCore.EventProcessor.removeAll(this._mainElement);
+        this._mainElement = null;
     },
     
     _renderSelection: function() {
         // Set selection.
         var selection = this.component.getProperty("selection");
-        if (selection) {
+
+        if (this._alternateRender) {
             if (this._hasRenderedSelectedItems) {
-                for (var i = 0; i < this._selectElement.options.length; ++i) {
-                    this._selectElement.options[i].selected = false;
+                for (var i = 0; i < this.component.items.length; ++i) {
+                    EchoAppRender.Color.renderClear(this.component.items[i].foreground, this._divElement.childNodes[i], 
+                            "color");
+                    EchoAppRender.Color.renderClear(this.component.items[i].background, this._divElement.childNodes[i], 
+                            "backgroundColor");
                 }
             }
-            for (var i = 0; i < selection.length; ++i) {
-                if (selection[i] >= 0 && selection[i] < this._selectElement.options.length) {
-                    this._selectElement.options[selection[i]].selected = true;
+            if (selection) {
+                for (var i = 0; i < selection.length; ++i) {
+                    if (selection[i] >= 0 && selection[i] < this._divElement.childNodes.length) {
+                        EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_FOREGROUND,
+                                this._divElement.childNodes[selection[i]], "color");
+                        EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_BACKGROUND,
+                                this._divElement.childNodes[selection[i]], "backgroundColor");
+                    }
                 }
+                this._hasRenderedSelectedItems = true;
             }
         } else {
-            if (this._multipleSelect) {
-                this._selectElement.selectedIndex = -1;
+            if (selection) {
+                if (this._hasRenderedSelectedItems) {
+                    for (var i = 0; i < this._mainElement.options.length; ++i) {
+                        this._mainElement.options[i].selected = false;
+                    }
+                }
+                for (var i = 0; i < selection.length; ++i) {
+                    if (selection[i] >= 0 && selection[i] < this._mainElement.options.length) {
+                        this._mainElement.options[selection[i]].selected = true;
+                    }
+                }
             } else {
-                this._selectElement.selectedIndex = 0;
+                if (this._multipleSelect) {
+                    this._mainElement.selectedIndex = -1;
+                } else {
+                    this._mainElement.selectedIndex = 0;
+                }
             }
+            this._hasRenderedSelectedItems = true;
         }
-        this._hasRenderedSelectedItems = true;
     },
     
     renderUpdate: function(update) {
-        var element = this._tableElement ? this._tableElement : this._selectElement;
+        var element = this._mainElement;
         var containerElement = element.parentNode;
         this.renderDispose(update);
         containerElement.removeChild(element);
@@ -159,7 +286,6 @@ EchoAppRender.ListBoxSync = Core.extend(EchoAppRender.ListComponentSync, {
         this._renderMain(update, parentElement, 6);
     }
 });
-
 
 /**
  * Component rendering peer: SelectField
