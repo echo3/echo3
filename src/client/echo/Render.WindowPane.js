@@ -321,6 +321,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             // Render top left corner
             if (this._borderInsets.left > 0) {
                 this._borderDivElements[0] = document.createElement("div");
+                this._borderDivElements[0].style.zIndex = 2;
     		    this._borderDivElements[0].style.fontSize = "1px";
                 this._borderDivElements[0].style.position = "absolute";
                 this._borderDivElements[0].style.left = "0px";
@@ -341,6 +342,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             
             // Render top side
             this._borderDivElements[1] = document.createElement("div");
+            this._borderDivElements[1].style.zIndex = 2;                
     	    this._borderDivElements[1].style.fontSize = "1px";
             this._borderDivElements[1].style.position = "absolute";
             this._borderDivElements[1].style.left = this._borderInsets.left + "px";
@@ -361,6 +363,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             // Render top right corner
             if (this._borderInsets.right > 0) {
                 this._borderDivElements[2] = document.createElement("div");
+                this._borderDivElements[2].style.zIndex = 2;                
     		    this._borderDivElements[2].style.fontSize = "1px";
                 this._borderDivElements[2].style.position = "absolute";
                 this._borderDivElements[2].style.right = "0px";
@@ -383,6 +386,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         // Render left side
         if (this._borderInsets.left > 0) {
             this._borderDivElements[3] = document.createElement("div");
+            this._borderDivElements[3].style.zIndex = 2;                
     	    this._borderDivElements[3].style.fontSize = "1px";
             this._borderDivElements[3].style.position = "absolute";
             this._borderDivElements[3].style.left = "0px";
@@ -404,6 +408,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         // Render right side
         if (this._borderInsets.right > 0) {
             this._borderDivElements[4] = document.createElement("div");
+            this._borderDivElements[4].style.zIndex = 2;                
     	    this._borderDivElements[4].style.fontSize = "1px";
             this._borderDivElements[4].style.position = "absolute";
             this._borderDivElements[4].style.right = "0px";
@@ -427,6 +432,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             // Render bottom left corner
             if (this._borderInsets.left > 0) {
                 this._borderDivElements[5] = document.createElement("div");
+                this._borderDivElements[5].style.zIndex = 2;                
     		    this._borderDivElements[5].style.fontSize = "1px";
                 this._borderDivElements[5].style.position = "absolute";
                 this._borderDivElements[5].style.left = "0px";
@@ -447,6 +453,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             
             // Render bottom side
             this._borderDivElements[6] = document.createElement("div");
+            this._borderDivElements[6].style.zIndex = 2;                
     	    this._borderDivElements[6].style.fontSize = "1px";
             this._borderDivElements[6].style.position = "absolute";
             this._borderDivElements[6].style.left = this._borderInsets.left + "px";
@@ -467,6 +474,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             // Render bottom right corner
             if (this._borderInsets.right > 0) {
                 this._borderDivElements[7] = document.createElement("div");
+                this._borderDivElements[7].style.zIndex = 2;                
     		    this._borderDivElements[7].style.fontSize = "1px";
                 this._borderDivElements[7].style.position = "absolute";
                 this._borderDivElements[7].style.right = "0px";
@@ -610,7 +618,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             // Render Select Field Masking Transparent IFRAME.
             this._maskDivElement = document.createElement("div");
             this._maskDivElement.style.cssText 
-                    = "filter:alpha(opacity=0);zIndex:1;position:absolute;left:0,right:0,top:0,bottom:0,borderWidth: 0;";
+                    = "filter:alpha(opacity=0);z-index:1;position:absolute;left:0,right:0,top:0,bottom:0,borderWidth: 0;";
             var maskIFrameElement = document.createElement("iframe");
             maskIFrameElement.style.cssText = "width:100%;height:100%;";
             
