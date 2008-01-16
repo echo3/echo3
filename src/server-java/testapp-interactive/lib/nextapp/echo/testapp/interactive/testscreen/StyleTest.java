@@ -71,5 +71,17 @@ public class StyleTest extends SplitPane {
                 testButton.setStyle(null);
             }
         });
+        
+        controlsColumn.addButton("Set Test Button StyleName", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testButton.setStyleName("Default");
+            }
+        });
+        
+        controlsColumn.addButton("Clear Test Button StyleName", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testButton.setStyleName(null);
+            }
+        });
     }
 }
