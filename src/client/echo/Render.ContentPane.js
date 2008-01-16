@@ -2,6 +2,11 @@
  * Component rendering peer: ContentPane
  */
 EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
+
+    $static: {
+        DEFAULT_BACKGROUND: new EchoApp.Color("#ffffff")
+    },
+
     $load: function() {
         EchoRender.registerPeer("ContentPane", this);
     },
@@ -40,7 +45,10 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._divElement.style.overflow = "hidden";
         this._divElement.style.zIndex = "0";
         EchoAppRender.Font.renderDefault(this.component, this._divElement);
-        EchoAppRender.Color.renderFB(this.component, this._divElement);
+        EchoAppRender.Color.renderComponentProperty(this.component, "background", EchoAppRender.ContentPaneSync.DEFAULT_BACKGROUND,
+                this._divElement, "backgroundColor");
+        EchoAppRender.Color.renderComponentProperty(this.component, "foreground", null, this._divElement, "color");
+        
         EchoAppRender.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._divElement); 
     
         this._childIdToElementMap = {};
