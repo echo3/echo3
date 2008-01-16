@@ -585,7 +585,7 @@ class OutputProcessor {
         
         componentPeer.init(context);
 
-        renderComponentStyleAttributes(cElement, c);
+        renderComponentStyleAttributes(cElement, c, false);
         
         if (!c.isEnabled()) {
             cElement.setAttribute("en", "false");
@@ -629,13 +629,15 @@ class OutputProcessor {
      * 
      * @param element the element to append the style attributes to
      * @param c the rendering component
+     * @param required require attribute to be rendered, even if style is null
+     *        (used when updating style)
      */ 
-    private void renderComponentStyleAttributes(Element element, Component c) 
+    private void renderComponentStyleAttributes(Element element, Component c, boolean required) 
     throws SerialException {
         StyleSheet styleSheet = c.getApplicationInstance().getStyleSheet();
         String styleName = c.getStyleName();
         
-        if (styleSheet == null || styleName  == null) {
+        if (!required && (styleSheet == null || styleName == null)) {
             return;
         }
         
@@ -687,7 +689,7 @@ class OutputProcessor {
         
         if (update.hasUpdatedProperties()) {
             if (update.hasUpdatedProperty(Component.STYLE_NAME_CHANGED_PROPERTY)) {
-                renderComponentStyleAttributes(upElement, c);
+                renderComponentStyleAttributes(upElement, c, true);
             }
             
             // Render enabled state.
