@@ -152,6 +152,9 @@ public class StyleSheetTest extends Column {
         genericComponent.setText("This button has a style set using 'Component'.  It should be red.");
         genericComponent.setStyleName("Test.GenericStyle");
         add(genericComponent);
+        
+        Button genericButton = new Button("This button has no style.");
+        add(genericButton);
     }
     
     private void displayCustomStyleError(Exception exception) {
