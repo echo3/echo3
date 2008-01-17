@@ -624,12 +624,13 @@ WebCore.EventProcessor = {
             WebCore.EventProcessor._lastListenerList = listenerList;
         }
     
+        // Register event listener on DOM element.
+        if (!listenerList.hasListeners(eventType)) {
+            WebCore.DOM.addEventListener(element, eventType, WebCore.EventProcessor._processEvent, false);
+        }
+
         // Add event handler to the ListenerList.
         listenerList.addListener(eventType, eventTarget);
-    
-        // Register event listener on DOM element.
-        // FIXME...not handling multiple listeners of same type!
-        WebCore.DOM.addEventListener(element, eventType, WebCore.EventProcessor._processEvent, false);
     },
     
     /**
@@ -718,10 +719,6 @@ WebCore.EventProcessor = {
             return;
         }
     
-        // Unregister event listener on DOM element.
-        // FIXME...not handling multiple listeners of same type!
-        WebCore.DOM.removeEventListener(element, eventType, WebCore.EventProcessor._processEvent, false);
-    
         // Obtain correct id->ListenerList mapping based on capture parameter.
         var listenerMap = capture ? WebCore.EventProcessor._capturingListenerMap 
                                   : WebCore.EventProcessor._bubblingListenerMap;
@@ -734,6 +731,11 @@ WebCore.EventProcessor = {
             
             if (listenerList.isEmpty()) {
                 listenerMap.remove(element.__eventProcessorId);
+            }
+
+            // Unregister event listener on DOM element if all listeners have been removed.
+            if (!listenerList.hasListeners(eventType)) {
+                WebCore.DOM.removeEventListener(element, eventType, WebCore.EventProcessor._processEvent, false);
             }
         }
     },
