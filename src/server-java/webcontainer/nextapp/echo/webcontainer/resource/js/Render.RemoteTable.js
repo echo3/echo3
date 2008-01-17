@@ -1,5 +1,3 @@
-// FIXME handle enabled/disabled state
-
 /**
  * @class Remote Table implementation.
  */
@@ -330,11 +328,9 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
      * Adds event listeners.
      */
     _addEventListeners: function() {
-        /*
-        if (!this.component.getRenderProperty("enabled")) {
-        	return;
+        if (!this.component.isRenderEnabled()) {
+            return;
         }
-        */
         
         if (this._selectionEnabled || this._rolloverEnabled) {
             if (this._rowCount == 0) {
@@ -359,7 +355,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
                     WebCore.EventProcessor.Selection.disable(trElement);
                 }
             }
-        }    
+        }
     },
     
     _doAction: function() {
