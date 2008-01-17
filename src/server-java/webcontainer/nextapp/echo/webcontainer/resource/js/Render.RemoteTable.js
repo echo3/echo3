@@ -145,25 +145,33 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         }
         var selected = this._selectionEnabled && this.selectionModel.isSelectedIndex(rowIndex);
         var trElement = this._tbodyElement.childNodes[tableRowIndex];
-        
         var tdElement = trElement.firstChild;
+        
+        var columnIndex = 0;
+        
         while (tdElement) {
             if (selected) {
-                // FIXME
-                //EchoCssUtil.restoreOriginalStyle(cell);
-                //EchoCssUtil.applyTemporaryStyle(cell, this.selectionStyle);
                 EchoAppRender.Font.renderComponentProperty(this.component, "selectionFont", null, tdElement);
                 EchoAppRender.Color.renderComponentProperty(this.component, "selectionForeground", null, tdElement, "color");
                 EchoAppRender.Color.renderComponentProperty(this.component, "selectionBackground", null, tdElement, "background");
                 EchoAppRender.FillImage.renderComponentProperty(this.component, "selectionBackgroundImage", null, tdElement);
             } else {
-                // FIXME
-                //EchoCssUtil.restoreOriginalStyle(cell);
                 tdElement.style.color = "";
                 tdElement.style.backgroundColor = "";
                 tdElement.style.backgroundImage = "";
+                
+                var child = this.component.getComponent((rowIndex + (this._headerVisible ? 1 : 0)) 
+                        * this._columnCount + columnIndex);
+                var layoutData = child.getRenderProperty("layoutData");
+
+                if (layoutData) {
+                    EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
+                    EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
+                }
+            
             }
             tdElement = tdElement.nextSibling;
+            ++columnIndex;
         }
     },
     
@@ -412,8 +420,6 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         
         for (var i = 0; i < trElement.cells.length; ++i) {
             var cell = trElement.cells[i];
-            // FIXME
-            //EchoCssUtil.applyTemporaryStyle(cell, this.rolloverStyle);
             EchoAppRender.Font.renderComponentProperty(this.component, "rolloverFont", null, cell);
             EchoAppRender.Color.renderComponentProperty(this.component, "rolloverForeground", null, cell, "color");
             EchoAppRender.Color.renderComponentProperty(this.component, "rolloverBackground", null, cell, "background");
