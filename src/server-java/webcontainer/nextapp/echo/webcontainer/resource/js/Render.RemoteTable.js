@@ -8,7 +8,17 @@ EchoAppRender.RemoteTable = Core.extend(EchoApp.Component, {
         EchoApp.ComponentFactory.registerType("RT", this);
     },
 
-    componentType: "RemoteTable"
+    componentType: "RemoteTable",
+
+    $virtual: {
+        
+        /**
+         * Programatically performs a button action.
+         */
+        doAction: function() {
+            this.fireEvent({type: "action", source: this, data: this.getProperty("actionCommand")});
+        }
+    }
 });
 
 /**
@@ -359,8 +369,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _doAction: function() {
-        //FIXME fire from component.
-        this.component.fireEvent({type: "action", source: this.component});
+        this.component.doAction();
     },
     
     _processClick: function(e) {
