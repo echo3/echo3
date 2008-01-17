@@ -695,12 +695,10 @@ WebCore.EventProcessor = {
                 }
             }
         }
-            
-        if (!propagate) {
-            //FIXME Possibly always invoke this to avoid bug #71 propagation issue.
-            // Inform DOM to stop propagation of event.
-            WebCore.DOM.stopEventPropagation(e);
-        }
+
+        // Inform DOM to stop propagation of event, in all cases.
+        // Event will otherwise be re-processed by higher-level elements registered with the event processor.
+        WebCore.DOM.stopEventPropagation(e);
     },
     
     /**
