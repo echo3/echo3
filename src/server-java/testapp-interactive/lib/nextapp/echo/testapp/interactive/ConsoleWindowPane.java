@@ -42,7 +42,6 @@ import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
-import nextapp.echo.app.layout.SplitPaneLayoutData;
 
 /**
  * A <code>WindowPane</code> which contains an event console.
@@ -73,13 +72,10 @@ public class ConsoleWindowPane extends WindowPane {
         });
         controlRow.add(button);
         
-        SplitPaneLayoutData splitPaneLayoutData;
         logPane = new ContentPane();
         logPane.setFont(new Font(Font.MONOSPACE, Font.PLAIN, new Extent(10)));
         logPane.setForeground(Color.GREEN);
-        splitPaneLayoutData = new SplitPaneLayoutData();
-        splitPaneLayoutData.setBackground(Color.BLACK);
-        logPane.setLayoutData(splitPaneLayoutData);
+        logPane.setBackground(Color.BLACK);
         splitPane.add(logPane);
         
         column = new Column();
