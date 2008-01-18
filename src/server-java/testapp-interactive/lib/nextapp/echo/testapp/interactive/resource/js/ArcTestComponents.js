@@ -49,7 +49,7 @@ ArcTest.ComponentSync.TestComponent = Core.extend(EchoArc.ComponentSync, {
 
     $construct: function() { },
 
-    createBaseComponent: function() {
+    createComponent: function() {
         var label = new EchoApp.Label();
         label.setProperty("text", "This is a freeclient label: " + this.component.getRenderProperty("text"));
         return label;
@@ -67,7 +67,7 @@ ArcTest.ComponentSync.TestContainer = Core.extend(EchoArc.ComponentSync, {
 
     $construct: function() { },
     
-    createBaseComponent: function() {
+    createComponent: function() {
         var contentPane = new EchoApp.ContentPane();
         for (var i = 0; i < this.component.children.length; ++i) {
             var windowPane = new EchoApp.WindowPane({
@@ -117,7 +117,7 @@ ArcTest.ComponentSync.TestPane = Core.extend(EchoArc.ComponentSync, {
         this._addedLabelCount = 0;
     },
 
-    createBaseComponent: function() {
+    createComponent: function() {
         var contentPane = new EchoApp.ContentPane();
         
         var windowPane = new EchoApp.WindowPane();

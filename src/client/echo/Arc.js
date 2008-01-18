@@ -33,6 +33,7 @@ EchoArc.ComponentSync = Core.extend(EchoRender.ComponentSync, {
     $construct: function() { },
 
     $abstract: {
+    
         /**
          * Creates the base component of that will be added to the root
          * of the rendering application.  This component should probably be a
@@ -41,7 +42,7 @@ EchoArc.ComponentSync = Core.extend(EchoRender.ComponentSync, {
          * 
          * @type EchoApp.Component
          */
-        createBaseComponent: function() { }
+        createComponent: function() { }
     },
     
     $virtual: {
@@ -72,7 +73,7 @@ EchoArc.ComponentSync = Core.extend(EchoRender.ComponentSync, {
          * not exist (i.e., if this method is being called for the first time after
          * renderAdd()).
          * 
-         * When the application is created, the component returned by createBaseComponent() 
+         * When the application is created, the component returned by createComponent() 
          * will be added to the root component of the application.  The application will
          * be installed in th DOM at the element returned by the getDomainElement().
          */
@@ -80,7 +81,7 @@ EchoArc.ComponentSync = Core.extend(EchoRender.ComponentSync, {
             if (!this.arcApplication) {
                 this.arcApplication = new EchoApp.Application();
                 this.arcApplication.setStyleSheet(this.client.application.getStyleSheet());
-                this.baseComponent = this.createBaseComponent();
+                this.baseComponent = this.createComponent();
                 if (this.baseComponent == null) {
                     throw new Error("Invalid base component: null");
                 }
