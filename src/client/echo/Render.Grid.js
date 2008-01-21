@@ -82,8 +82,8 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                     var child = this.grid.getComponent(i);
                     var layoutData = child.getRenderProperty("layoutData");
                     if (layoutData) {
-                        var xSpan = layoutData.getProperty(this.horizontalOrientation ? "columnSpan" : "rowSpan"); 
-                        var ySpan = layoutData.getProperty(this.horizontalOrientation ? "rowSpan" : "columnSpan"); 
+                        var xSpan = layoutData.get(this.horizontalOrientation ? "columnSpan" : "rowSpan"); 
+                        var ySpan = layoutData.get(this.horizontalOrientation ? "rowSpan" : "columnSpan"); 
                         cells.push(new EchoAppRender.GridSync.Processor.Cell(child, i, xSpan ? xSpan : 1, ySpan ? ySpan : 1));
                     } else {
                         cells.push(new EchoAppRender.GridSync.Processor.Cell(child, i, 1, 1));

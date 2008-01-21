@@ -139,9 +139,9 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
      */
     _processGuess: function(e) {
         var guess = parseInt(
-                this._guessEntryField.getProperty("text"));
+                this._guessEntryField.get("text"));
         if (isNaN(guess)) {
-            this._statusLabel.setProperty("text", 
+            this._statusLabel.set("text", 
                     "Your guess was not valid.");
             return;
         }
@@ -154,16 +154,16 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
         }
         
         if (guess < 1 || guess > 100) {
-            this._statusLabel.setProperty("text", "Your guess, "
+            this._statusLabel.set("text", "Your guess, "
                     + guess + " was not between 1 and 100.");
         } else if (guess < this._randomNumber) {
             if (guess >= this._lowerBound) {
                 this._lowerBound = guess + 1;
             }
-            this._statusLabel.setProperty("text", "Your guess, "
+            this._statusLabel.set("text", "Your guess, "
                     + guess + " was too low.  Try again:");
         } else if (guess > this._randomNumber) {
-            this._statusLabel.setProperty("text", "Your guess, " 
+            this._statusLabel.set("text", "Your guess, " 
                     + guess + " was too high.  Try again:");
             if (guess <= this._upperBound) {
                 this._upperBound = guess - 1;
@@ -172,16 +172,16 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
 
         // Update number of tries label.
         if (this._numberOfTries == 1) {
-            this._countLabel.setProperty("text", 
+            this._countLabel.set("text", 
                     "You have made 1 guess.");
         } else {
-            this._countLabel.setProperty("text", "You have made "
+            this._countLabel.set("text", "You have made "
                     + this._numberOfTries + " guesses.");
         }
         
         // Update the prompt label to reflect the new sensible 
         // range of numbers.
-        this._promptLabel.setProperty("text", 
+        this._promptLabel.set("text", 
                 "Guess a number between " + this._lowerBound 
                 + " and " + this._upperBound + ": ");
 

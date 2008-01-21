@@ -40,7 +40,7 @@ EchoAppRender.Alignment = {
     renderComponentProperty: function(component, componentProperty, defaultValue, element, renderToElement, referenceComponent) {
         referenceComponent = referenceComponent ? referenceComponent : component;
         var alignment = component.getRenderProperty ? component.getRenderProperty(componentProperty)
-                : component.getProperty(componentProperty);
+                : component.get(componentProperty);
         if (!alignment) {
             alignment = defaultValue;
         }
@@ -109,7 +109,7 @@ EchoAppRender.Border = {
     
     renderComponentProperty: function(component, componentProperty, defaultValue, element) { 
         var border = component.getRenderProperty ? component.getRenderProperty(componentProperty)
-                : component.getProperty(componentProperty);
+                : component.get(componentProperty);
         this.render(border ? border : defaultValue, element);
     },
     
@@ -134,7 +134,7 @@ EchoAppRender.Color = {
     
     renderComponentProperty: function(component, componentProperty, defaultValue, element, styleProperty) { 
         var color = component.getRenderProperty ? component.getRenderProperty(componentProperty)
-                : component.getProperty(componentProperty);
+                : component.get(componentProperty);
         this.render(color ? color : defaultValue, element, styleProperty);
     },
     
@@ -218,7 +218,7 @@ EchoAppRender.FillImage = {
     renderComponentProperty: function(component, componentProperty, defaultValue,
             element, flags) {
         var fillImage = component.getRenderProperty ? component.getRenderProperty(componentProperty)
-                : component.getProperty(componentProperty);
+                : component.get(componentProperty);
         this.render(fillImage ? fillImage : defaultValue, element, flags);
     }
 };
@@ -275,7 +275,7 @@ EchoAppRender.Font = {
     renderComponentProperty: function(component, componentProperty, defaultValue, 
             element) {
         var font = component.getRenderProperty ? component.getRenderProperty(componentProperty)
-                : component.getProperty(componentProperty);
+                : component.get(componentProperty);
         this.render(font ? font : defaultValue, element);
     },
     
@@ -289,7 +289,7 @@ EchoAppRender.Insets = {
     renderComponentProperty: function(component, componentProperty, defaultValue, 
             element, styleProperty) { 
         var insets = component.getRenderProperty ? component.getRenderProperty(componentProperty)
-                : component.getProperty(componentProperty);
+                : component.get(componentProperty);
         this.renderPixel(insets ? insets : defaultValue, element, styleProperty);
     },
     

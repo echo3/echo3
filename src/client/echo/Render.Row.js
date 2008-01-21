@@ -97,11 +97,11 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         var layoutData = child.getRenderProperty("layoutData");
         var insets;
         if (layoutData) {
-        	insets = layoutData.getProperty("insets");
+        	insets = layoutData.get("insets");
             EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
             EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
     		EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
-    	    var width = layoutData.getProperty("width");
+    	    var width = layoutData.get("width");
     	    if (width) {
     	        if (width.units == "%") {
     		    	tdElement.style.width = width.toString();

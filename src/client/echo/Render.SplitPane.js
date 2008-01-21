@@ -26,10 +26,10 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                 this.layoutData = component.getRenderProperty("layoutData");
                 if (this.layoutData) {
                     var extent;
-                    extent = this.layoutData.getProperty("minimumSize");
+                    extent = this.layoutData.get("minimumSize");
                     this.minimumSize = extent ? WebCore.Measure.extentToPixels(extent.value, extent.units, 
                             !splitPanePeer._orientationVertical) : 0;
-                    extent = this.layoutData.getProperty("maximumSize");
+                    extent = this.layoutData.get("maximumSize");
                     this.maximumSize = extent ? WebCore.Measure.extentToPixels(extent.value, extent.units, 
                             !splitPanePeer._orientationVertical) : null;
                 } else {
@@ -239,7 +239,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         WebCore.dragInProgress = false;
     
         this._removeSeparatorListeners();
-        this.component.setProperty("separatorPosition", new EchoApp.Extent(this._separatorPosition));
+        this.component.set("separatorPosition", new EchoApp.Extent(this._separatorPosition));
         
         // inform renderer that separatorposition is currently drawn as this._separatorPosition
         
@@ -256,10 +256,10 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _getInsetsSizeAdjustment: function(layoutData) {
-        if (!layoutData || !layoutData.getProperty("insets")) {
+        if (!layoutData || !layoutData.get("insets")) {
             return 0;
         }
-        var layoutDataInsets = EchoAppRender.Insets.toPixels(layoutData.getProperty("insets"));
+        var layoutDataInsets = EchoAppRender.Insets.toPixels(layoutData.get("insets"));
         var adjustment;
         if (this._orientationVertical) {
             adjustment = layoutDataInsets.top + layoutDataInsets.bottom;
@@ -430,7 +430,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             if (!child.pane) {
     	        EchoAppRender.Insets.renderComponentProperty(layoutData, "insets", null, paneDivElement, "padding");
             }
-            switch (layoutData.getProperty("overflow")) {
+            switch (layoutData.get("overflow")) {
             case EchoApp.SplitPane.OVERFLOW_HIDDEN:
                 paneDivElement.style.overflow = "hidden";
                 break;

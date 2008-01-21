@@ -58,7 +58,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
             return;
         }
         this.sanitizeInput();
-        this.component.setProperty("text", e.registeredTarget.value);
+        this.component.set("text", e.registeredTarget.value);
     },
     
     _processClick: function(e) {
@@ -87,7 +87,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
         // typed between repaints.
         this._text = e.registeredTarget.value;
         
-        this.component.setProperty("text", this._text);
+        this.component.set("text", this._text);
         if (e.keyCode == 13) {
             //FIXME fire from component.
     	    this.component.fireEvent({type: "action", source: this.component});
@@ -137,8 +137,8 @@ EchoAppRender.TextAreaSync = Core.extend(EchoAppRender.TextComponentSync, {
         this._renderStyle(this._textComponentElement);
         this._textComponentElement.style.overflow = "auto";
         this._addEventHandlers(this._textComponentElement);
-        if (this.component.getProperty("text")) {
-            this._textComponentElement.appendChild(document.createTextNode(this.component.getProperty("text")));
+        if (this.component.get("text")) {
+            this._textComponentElement.appendChild(document.createTextNode(this.component.get("text")));
         } else {
             this._textComponentElement.appendChild(document.createTextNode(""));
         }
@@ -174,8 +174,8 @@ EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
         }
         this._renderStyle(this._textComponentElement);
         this._addEventHandlers(this._textComponentElement);
-        if (this.component.getProperty("text")) {
-            this._textComponentElement.value = this.component.getProperty("text");
+        if (this.component.get("text")) {
+            this._textComponentElement.value = this.component.get("text");
         }
         parentElement.appendChild(this._textComponentElement);
     },

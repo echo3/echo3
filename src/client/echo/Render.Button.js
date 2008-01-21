@@ -492,7 +492,7 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
             return;
         }
         this._selected = newState;
-        this.component.setProperty("selected", newState);
+        this.component.set("selected", newState);
         
         this.updateStateElement();
     }

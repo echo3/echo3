@@ -54,7 +54,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         
         if (this._multipleSelect && e.ctrlKey) {
             // Multiple selection and user has pressed ctrl key to select multiple items.
-            var selection = this.component.getProperty("selection");
+            var selection = this.component.get("selection");
             if (!selection) {
                 selection = [];
             }
@@ -70,7 +70,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             selection = [i];
         }
         
-        this.component.setProperty("selection", selection);
+        this.component.set("selection", selection);
         this.component.doAction();
 
         this._renderSelection();
@@ -96,7 +96,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             }
         }
     
-        this.component.setProperty("selection", selection);
+        this.component.set("selection", selection);
         this.component.doAction();
     },
     
@@ -214,7 +214,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _renderMain: function(update, parentElement, size) {
-        this._multipleSelect = this.component.getProperty("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION;
+        this._multipleSelect = this.component.get("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION;
         if (this.component instanceof EchoApp.ListBox && WebCore.Environment.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
             this._alternateRender = true;
         }
@@ -238,7 +238,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     
     _renderSelection: function() {
         // Set selection.
-        var selection = this.component.getProperty("selection");
+        var selection = this.component.get("selection");
         
         if (!selection) {
             selection = this._multipleSelect ? [] : [0];

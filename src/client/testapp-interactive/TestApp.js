@@ -63,7 +63,7 @@ TestApp.TestScreen = Core.extend(EchoApp.ContentPane, {
         while (this.testSelectSplitPane.children.length > 1) {
             this.testSelectSplitPane.remove(1);
         }
-        var testName = e.source.getProperty("text");
+        var testName = e.source.get("text");
         var test = TestApp.Tests[testName];
         if (!test) {
             alert("Test not found: " + testName);
@@ -145,23 +145,23 @@ TestApp.Tests.Column = Core.extend(TestApp.TestPane, {
     },
 
     _cellSpacing0: function() {
-        this.column.setProperty("cellSpacing", new EchoApp.Extent(0));
+        this.column.set("cellSpacing", new EchoApp.Extent(0));
     },
 
     _cellSpacing1: function() {
-        this.column.setProperty("cellSpacing", new EchoApp.Extent(1));
+        this.column.set("cellSpacing", new EchoApp.Extent(1));
     },
 
     _cellSpacing5: function() {
-       this.column.setProperty("cellSpacing", new EchoApp.Extent(5));
+       this.column.set("cellSpacing", new EchoApp.Extent(5));
     },
 
     _cellSpacing25: function() {
-        this.column.setProperty("cellSpacing", new EchoApp.Extent(25));
+        this.column.set("cellSpacing", new EchoApp.Extent(25));
     },
 
     _cellSpacingNull: function() {
-        this.column.setProperty("cellSpacing", null);
+        this.column.set("cellSpacing", null);
     },
 
     _addChild0: function() {
@@ -213,7 +213,7 @@ TestApp.Tests.Column = Core.extend(TestApp.TestPane, {
     _setChildBackground: function() {
         var length = this.column.children.length;
         for (var i = 0; i < length; ++i) {
-            this.column.children[i].setProperty("background", TestApp.randomColor());
+            this.column.children[i].set("background", TestApp.randomColor());
         }
     },
 
@@ -222,8 +222,8 @@ TestApp.Tests.Column = Core.extend(TestApp.TestPane, {
             return;
         }
         layoutData = new EchoApp.LayoutData();
-        layoutData.setProperty("background", TestApp.randomColor());
-        this.column.children[0].setProperty("layoutData", layoutData);
+        layoutData.set("background", TestApp.randomColor());
+        this.column.children[0].set("layoutData", layoutData);
     },
 
     _setLayoutDataInsets: function() {
@@ -231,8 +231,8 @@ TestApp.Tests.Column = Core.extend(TestApp.TestPane, {
             return;
         }
         layoutData = new EchoApp.LayoutData();
-        layoutData.setProperty("insets", new EchoApp.Insets(parseInt(Math.random() * 20)));
-        this.column.children[0].setProperty("layoutData", layoutData);
+        layoutData.set("insets", new EchoApp.Insets(parseInt(Math.random() * 20)));
+        this.column.children[0].set("layoutData", layoutData);
     }
 });
 
@@ -299,21 +299,21 @@ TestApp.Tests.SplitPane = Core.extend(TestApp.TestPane, {
         if (this.splitPane.children.length < 1) {
             return;
         }
-        this.splitPane.children[0].setProperty("layoutData", null);
+        this.splitPane.children[0].set("layoutData", null);
     },
 
     _clearLayoutData2: function(e) {
         if (this.splitPane.children.length < 2) {
             return;
         }
-        this.splitPane.children[1].setProperty("layoutData", null);
+        this.splitPane.children[1].set("layoutData", null);
     },
 
     _setLayoutData1: function(e) {
         if (this.splitPane.children.length < 1) {
             return;
         }
-        this.splitPane.children[0].setProperty("layoutData", new EchoApp.LayoutData({
+        this.splitPane.children[0].set("layoutData", new EchoApp.LayoutData({
             background: new EchoApp.Color("#3fffaf"),
             insets: new EchoApp.Insets(5)
         }));
@@ -323,26 +323,26 @@ TestApp.Tests.SplitPane = Core.extend(TestApp.TestPane, {
         if (this.splitPane.children.length < 2) {
             return;
         }
-        this.splitPane.children[1].setProperty("layoutData", new EchoApp.LayoutData({
+        this.splitPane.children[1].set("layoutData", new EchoApp.LayoutData({
             background: new EchoApp.Color("#afff3f"),
             insets: new EchoApp.Insets(5)
         }));
     },
 
     _setOrientationLR: function(e) {
-        this.splitPane.setProperty("orientation", EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEFT_RIGHT);
+        this.splitPane.set("orientation", EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEFT_RIGHT);
     },
 
     _setOrientationRL: function(e) {
-        this.splitPane.setProperty("orientation", EchoApp.SplitPane.ORIENTATION_HORIZONTAL_RIGHT_LEFT);
+        this.splitPane.set("orientation", EchoApp.SplitPane.ORIENTATION_HORIZONTAL_RIGHT_LEFT);
     },
 
     _setOrientationTB: function(e) {
-        this.splitPane.setProperty("orientation", EchoApp.SplitPane.ORIENTATION_VERTICAL_TOP_BOTTOM);
+        this.splitPane.set("orientation", EchoApp.SplitPane.ORIENTATION_VERTICAL_TOP_BOTTOM);
     },
 
     _setOrientationBT: function(e) {
-        this.splitPane.setProperty("orientation", EchoApp.SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP);
+        this.splitPane.set("orientation", EchoApp.SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP);
     }
 });
 
@@ -364,15 +364,15 @@ TestApp.Tests.TextComponent = Core.extend(TestApp.TestPane, {
     },
 
     _setText: function() {
-        this.textField.setProperty("text", "Hello, world");
+        this.textField.set("text", "Hello, world");
     },
 
     _setTextEmpty: function() {
-        this.textField.setProperty("text", "");
+        this.textField.set("text", "");
     },
 
     _setTextNull: function() {
-        this.textField.setProperty("text", null);
+        this.textField.set("text", null);
     }
 });
 
@@ -392,15 +392,15 @@ TestApp.Tests.WindowPane = Core.extend(TestApp.TestPane, {
     },
 
     _setTitle: function() {
-        this.windowPane.setProperty("title", "Hello, world");
+        this.windowPane.set("title", "Hello, world");
     },
 
     _setTitleEmpty: function() {
-        this.windowPane.setProperty("title", "");
+        this.windowPane.set("title", "");
     },
 
     _setTitleNull: function() {
-        this.windowPane.setProperty("title", null);
+        this.windowPane.set("title", null);
     }
 });
 

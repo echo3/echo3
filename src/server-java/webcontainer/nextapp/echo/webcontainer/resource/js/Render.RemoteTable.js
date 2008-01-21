@@ -16,7 +16,7 @@ EchoAppRender.RemoteTable = Core.extend(EchoApp.Component, {
          * Programatically performs a button action.
          */
         doAction: function() {
-            this.fireEvent({type: "action", source: this, data: this.getProperty("actionCommand")});
+            this.fireEvent({type: "action", source: this, data: this.get("actionCommand")});
         }
     }
 });
@@ -56,11 +56,11 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         }
         this._defaultCellPadding = EchoAppRender.Insets.toCssValue(this._defaultInsets);
         
-        this._headerVisible = this.component.getProperty("headerVisible");
+        this._headerVisible = this.component.get("headerVisible");
     
         if (this._selectionEnabled) {
             this.selectionModel = new EchoAppRender.RemoteTableSync.ListSelectionModel(
-                    parseInt(this.component.getProperty("selectionMode")));
+                    parseInt(this.component.get("selectionMode")));
         }
         
         this._tableElement = document.createElement("table");
@@ -135,7 +135,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         }
         
         if (this._selectionEnabled) {
-            this._setSelectedFromProperty(this.component.getProperty("selection"), false);
+            this._setSelectedFromProperty(this.component.get("selection"), false);
         }
         
         this._addEventListeners();
@@ -408,7 +408,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             this._setSelected(rowIndex, !this.selectionModel.isSelectedIndex(rowIndex));
         }
         
-        this.component.setProperty("selection", this.selectionModel.getSelectionString());
+        this.component.set("selection", this.selectionModel.getSelectionString());
         
         this._doAction();
     },

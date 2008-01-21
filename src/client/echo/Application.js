@@ -133,7 +133,7 @@ EchoApp.Application = Core.extend({
             }
         }
         
-        if (searchComponent.modalSupport && searchComponent.getProperty("modal")) {
+        if (searchComponent.modalSupport && searchComponent.get("modal")) {
             return searchComponent;
         }
         
@@ -254,7 +254,7 @@ EchoApp.Application = Core.extend({
             throw new Error("Component already exists with id: " + component.renderId);
         }
         this._idToComponentMap.map[component.renderId] = component;
-        if (component.modalSupport && component.getProperty("modal")) {
+        if (component.modalSupport && component.get("modal")) {
             this._setModal(component, true);
         }
     },
@@ -729,8 +729,8 @@ EchoApp.Component = Core.extend({
      * @param {String} name the name of the property
      * @return the property value
      */
-    getProperty: function(name) {
-        return this._localStyle.getProperty(name);
+    get: function(name) {
+        return this._localStyle.get(name);
     },
     
     /**
@@ -792,15 +792,15 @@ EchoApp.Component = Core.extend({
      * @return the property value
      */
     getRenderProperty: function(name, defaultValue) {
-        var value = this.getProperty(name);
+        var value = this.get(name);
         if (value == null) {
             if (this._style != null) {
-                value = this._style.getProperty(name);
+                value = this._style.get(name);
             }
             if (value == null && this._styleName && this.application && this.application._styleSheet) {
                 var style = this.application._styleSheet.getRenderStyle(this._styleName, this.componentType);
                 if (style) {
-                    value = style.getProperty(name);
+                    value = style.get(name);
                 }
             }
         }
@@ -1076,9 +1076,9 @@ EchoApp.Component = Core.extend({
      * @param {String} name the name of the property
      * @param value the new value of the property
      */
-    setProperty: function(name, newValue) {
-        var oldValue = this._localStyle.getProperty(name);
-        this._localStyle.setProperty(name, newValue);
+    set: function(name, newValue) {
+        var oldValue = this._localStyle.get(name);
+        this._localStyle.set(name, newValue);
         if (this._listenerList && this._listenerList.hasListeners("property")) {
             this._listenerList.fireEvent({type: "property", source: this, propertyName: name, 
                     oldValue: oldValue, newValue: newValue});
@@ -1338,8 +1338,8 @@ EchoApp.LayoutData = Core.extend({
      * @param {String} name the name of the property
      * @return the property value
      */
-    getProperty: function(name) {
-        return this._localStyle.getProperty(name);
+    get: function(name) {
+        return this._localStyle.get(name);
     },
     
     /**
@@ -1359,8 +1359,8 @@ EchoApp.LayoutData = Core.extend({
      * @param {String} name the name of the property
      * @param value the new property value
      */
-    setProperty: function(name, newValue) {
-        this._localStyle.setProperty(name, newValue);
+    set: function(name, newValue) {
+        this._localStyle.set(name, newValue);
     }
 });
 
@@ -2419,7 +2419,7 @@ EchoApp.Style = Core.extend({
      * @param {String} name the name of the property
      * @return the property value  
      */
-    getProperty: function(name) {
+    get: function(name) {
         return this._properties[name];
     },
     
@@ -2445,7 +2445,7 @@ EchoApp.Style = Core.extend({
      * @param {String} name the name of the property
      * @param value the new value of the property 
      */
-    setProperty: function(name, newValue) {
+    set: function(name, newValue) {
         this._properties[name] = newValue;
     },
     
@@ -3301,7 +3301,7 @@ EchoApp.AbstractButton = Core.extend(EchoApp.Component, {
          * Programatically performs a button action.
          */
         doAction: function() {
-            this.fireEvent({type: "action", source: this, data: this.getProperty("actionCommand")});
+            this.fireEvent({type: "action", source: this, data: this.get("actionCommand")});
         }
     }
 });
@@ -3385,7 +3385,7 @@ EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
          * Programatically performs a list select action.
          */
         doAction: function() {
-            this.fireEvent({type: "action", source: this, data: this.getProperty("actionCommand")});
+            this.fireEvent({type: "action", source: this, data: this.get("actionCommand")});
         }
     }
 });

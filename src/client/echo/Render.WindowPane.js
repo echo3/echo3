@@ -100,10 +100,10 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
         this._removeBorderListeners();
         
-    	this.component.setProperty("positionX", new EchoApp.Extent(this._windowX, "px"));
-    	this.component.setProperty("positionY", new EchoApp.Extent(this._windowY, "px"));
-    	this.component.setProperty("width", new EchoApp.Extent(this._windowWidth, "px"));
-    	this.component.setProperty("height", new EchoApp.Extent(this._windowHeight, "px"));
+    	this.component.set("positionX", new EchoApp.Extent(this._windowX, "px"));
+    	this.component.set("positionY", new EchoApp.Extent(this._windowY, "px"));
+    	this.component.set("width", new EchoApp.Extent(this._windowWidth, "px"));
+    	this.component.set("height", new EchoApp.Extent(this._windowHeight, "px"));
     	
     	this._userWindowX = this._windowX;
     	this._userWindowY = this._windowY;
@@ -182,8 +182,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._windowPaneDivElement.style.opacity = 1;
         
         this._removeTitleBarListeners();
-    	this.component.setProperty("positionX", new EchoApp.Extent(this._windowX, "px"));
-    	this.component.setProperty("positionY", new EchoApp.Extent(this._windowY, "px"));
+    	this.component.set("positionX", new EchoApp.Extent(this._windowX, "px"));
+    	this.component.set("positionY", new EchoApp.Extent(this._windowY, "px"));
     
     	this._userWindowX = this._windowX;
     	this._userWindowY = this._windowY;

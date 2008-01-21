@@ -1,7 +1,7 @@
 EchoAppRender._ListComponentMixins = {
     
     getSelectionString: function() {
-        var selection = this.getProperty("selection");
+        var selection = this.get("selection");
         if (selection) {
             return selection.join(",");
         } else {
@@ -10,7 +10,7 @@ EchoAppRender._ListComponentMixins = {
     },
     
     setSelectionString: function(selectionString) {
-        this.setProperty("selection", selectionString ? selectionString.split(",") : null);
+        this.set("selection", selectionString ? selectionString.split(",") : null);
     },
     
     updateListData: function(listData) {
