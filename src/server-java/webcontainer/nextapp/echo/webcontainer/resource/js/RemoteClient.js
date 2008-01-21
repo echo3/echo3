@@ -108,7 +108,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
     
     /**
      * Runnable that will trigger initialization of wait indicator.
-     * @type Core.Scheduler.Runnable
+     * @type WebCore.Scheduler.Runnable
      * @private
      */
     _waitIndicatorRunnable: null,
@@ -137,7 +137,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
         this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
         this._asyncManager = new EchoRemoteClient.AsyncManager(this);
         this._waitIndicator = new EchoRemoteClient.DefaultWaitIndicator();
-        this._waitIndicatorRunnable = new Core.Scheduler.MethodRunnable(Core.method(this, this._waitIndicatorActivate), 
+        this._waitIndicatorRunnable = new WebCore.Scheduler.MethodRunnable(Core.method(this, this._waitIndicatorActivate), 
                 this._preWaitIndicatorDelay, false);
     },
     
@@ -360,7 +360,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
      */
     _processSyncResponse: function(e) {
         // Remove wait indicator from scheduling (if wait indicator has not been presented yet, it will not be).
-        Core.Scheduler.remove(this._waitIndicatorRunnable);
+        WebCore.Scheduler.remove(this._waitIndicatorRunnable);
         
         // Retrieve response document.
         var responseDocument = e.source.getResponseXml();
@@ -435,7 +435,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
         if (this._transactionInProgress) {
             throw new Error("Attempt to invoke client/server synchronization while another transaction is in progress."); 
         }
-        Core.Scheduler.add(this._waitIndicatorRunnable);
+        WebCore.Scheduler.add(this._waitIndicatorRunnable);
     
         this._transactionInProgress = true;
         this._inputRestrictionId = this.createInputRestriction(true);
@@ -478,7 +478,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
     /**
      * The repeating runnable used for server polling.
      *
-     * @type Core.Scheduler.Runnable
+     * @type WebCore.Scheduler.Runnable
      * @private 
      */
     _runnable: null,
@@ -490,7 +490,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
      */
     $construct: function(client) {
         this._client = client;
-        this._runnable = new Core.Scheduler.MethodRunnable(Core.method(this, this._pollServerForUpdates), 1000, false);
+        this._runnable = new WebCore.Scheduler.MethodRunnable(Core.method(this, this._pollServerForUpdates), 1000, false);
     },
     
     /**
@@ -530,7 +530,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
         if (responseDocument.documentElement.getAttribute("request-sync") == "true") {
             this._client.sync();
         } else {
-            Core.Scheduler.add(this._runnable);
+            WebCore.Scheduler.add(this._runnable);
         }
     },
     
@@ -547,14 +547,14 @@ EchoRemoteClient.AsyncManager = Core.extend({
      * Starts server polling for asynchronous tasks.
      */
     _start: function() {
-        Core.Scheduler.add(this._runnable);
+        WebCore.Scheduler.add(this._runnable);
     },
     
     /**
      * Stops server polling for asynchronous tasks.
      */
     _stop: function() {
-        Core.Scheduler.remove(this._runnable);
+        WebCore.Scheduler.remove(this._runnable);
     }
 });
 
@@ -1206,19 +1206,19 @@ EchoRemoteClient.DefaultWaitIndicator = Core.extend(EchoRemoteClient.WaitIndicat
         this._divElement.style.cssText = "display: none; z-index: 32767; position: absolute; top: 30px; right: 30px; width: 200px;"
                  + " padding: 20px; border: 1px outset #abcdef; background-color: #abcdef; color: #000000; text-align: center;";
         this._divElement.appendChild(document.createTextNode("Please wait..."));
-        this._fadeRunnable = new Core.Scheduler.MethodRunnable(Core.method(this, this._tick), 50, true);
+        this._fadeRunnable = new WebCore.Scheduler.MethodRunnable(Core.method(this, this._tick), 50, true);
         document.body.appendChild(this._divElement);
     },
     
     activate: function() {
         this._divElement.style.display = "block";
-        Core.Scheduler.add(this._fadeRunnable);
+        WebCore.Scheduler.add(this._fadeRunnable);
         this._opacity = 0;
     },
     
     deactivate: function() {
         this._divElement.style.display = "none";
-        Core.Scheduler.remove(this._fadeRunnable);
+        WebCore.Scheduler.remove(this._fadeRunnable);
     },
     
     _tick: function() {

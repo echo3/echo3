@@ -32,7 +32,7 @@ EchoFreeClient = Core.extend(EchoClient, {
      * This method must be invoked when the client will no longer be used, in order to clean up resources.
      */
     dispose: function() {
-        Core.Scheduler.remove(this._autoUpdate);
+        WebCore.Scheduler.remove(this._autoUpdate);
         this.application.updateManager.removeUpdateListener(this._processUpdateRef);
         this._autoUpdate = null;
         EchoRender.renderComponentDispose(null, this.application.rootComponent);
@@ -51,7 +51,7 @@ EchoFreeClient = Core.extend(EchoClient, {
         WebCore.init();
         this._autoUpdate = new EchoFreeClient.AutoUpdate(this);
         this.application.updateManager.addUpdateListener(this._processUpdateRef);
-        Core.Scheduler.add(this._autoUpdate);
+        WebCore.Scheduler.add(this._autoUpdate);
     },
     
     //FIXME This method is asynchronous, first autoupdate might want to wait on it being completed.
@@ -85,9 +85,9 @@ EchoFreeClient = Core.extend(EchoClient, {
 });
 
 /**
- * @class Core.Scheduler.Runnable to automatically update client when application state has changed.
+ * @class WebCore.Scheduler.Runnable to automatically update client when application state has changed.
  */
-EchoFreeClient.AutoUpdate = Core.extend(Core.Scheduler.Runnable, {
+EchoFreeClient.AutoUpdate = Core.extend(WebCore.Scheduler.Runnable, {
 
     timeInterval: 10,
     

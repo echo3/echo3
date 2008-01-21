@@ -146,7 +146,7 @@ WebCore.DOM = {
     focusElement: function(element) {
         if (WebCore.Environment.QUIRK_DELAYED_FOCUS_REQUIRED) {
             WebCore.DOM._focusPendingElement = element;
-            Core.Scheduler.run(Core.method(window, this._focusElementImpl));
+            WebCore.Scheduler.run(Core.method(window, this._focusElementImpl));
         } else {
             this._focusElementImpl(element);
         }
@@ -1388,6 +1388,195 @@ WebCore.Measure = {
         }
     })
 };
+
+/**
+ * Scheduler namespace.  Non-instantiable object.
+ * Provides capability to invoke code at regular intervals, after a delay, 
+ * or after the current JavaScript execution context has completed.
+ * Provides an object-oriented means of accomplishing this task.
+ */
+WebCore.Scheduler = {
+
+    /**
+     * Interval at which the scheduler should wake to check for queued tasks.
+     * @type Number
+     */
+    INTERVAL: 20,
+    
+    /**
+     * Collection of runnables to execute.
+     * @private
+     */
+    _runnables: [],
+    
+    /**
+     * Executes the scheduler, running any runnables that are due.
+     * This method is invoked by the interval/thread.
+     */
+    _execute: function() {
+        var time = new Date().getTime();
+        
+        for (var i = 0; i < WebCore.Scheduler._runnables.length; ++i) {
+            var runnable = WebCore.Scheduler._runnables[i];
+            if (!runnable._nextExecution) {
+                continue;
+            }
+            if (runnable._nextExecution < time) {
+                try {
+                    runnable.run();
+                } catch (ex) {
+                    runnable._nextExecution = null;
+                    throw(ex);
+                }
+                if (!runnable._nextExecution) {
+                    continue;
+                }
+                if (runnable.timeInterval && runnable.repeat) {
+                    runnable._nextExecution = runnable.timeInterval + time;
+                } else {
+                    runnable._nextExecution = null;
+                }
+            }
+        }
+    
+        var newRunnables = [];
+        for (var i = 0; i < WebCore.Scheduler._runnables.length; ++i) {
+            var runnable = WebCore.Scheduler._runnables[i];
+            if (runnable._nextExecution) {
+                newRunnables.push(runnable);
+            }
+        }
+        WebCore.Scheduler._runnables = newRunnables;
+        
+        if (WebCore.Scheduler._runnables.length == 0) {
+            WebCore.Scheduler._stop();
+        }
+    },
+    
+    /**
+     * Enqueues a Runnable to be executed by the scheduler.
+     * 
+     * @param {WebCore.Scheduler.Runnable} the runnable to enqueue
+     */
+    add: function(runnable) {
+        var currentTime = new Date().getTime();
+        runnable._nextExecution = runnable.timeInterval ? runnable.timeInterval + currentTime : currentTime;
+        WebCore.Scheduler._runnables.push(runnable);
+        WebCore.Scheduler._start();
+    },
+    
+    /**
+     * Dequeues a Runnable so it will no longer be executed by the scheduler.
+     * 
+     * @param {WebCore.Scheduler.Runnable} the runnable to dequeue
+     */
+    remove: function(runnable) {
+        runnable._nextExecution = null;
+    },
+    
+    /**
+     * Creates a new Runnable that executes the specified method and enqueues it into the scheduler.
+     * 
+     * @param {Number} time the time interval, in milleseconds, after which the Runnable should be executed
+     *        (may be null/undefined to execute task immediately, in such cases repeat must be false)
+     * @param {Boolean} repeat a flag indicating whether the task should be repeated
+     * @param f a function to invoke, may be null/undefined
+     * @return the created Runnable.
+     * @type WebCore.Scheduler.Runnable 
+     */
+    run: function(f, timeInterval, repeat) {
+        var runnable = new WebCore.Scheduler.MethodRunnable(f, timeInterval, repeat);
+        this.add(runnable);
+        return runnable;
+    },
+    
+    /**
+     * Starts the scheduler "thread".
+     * If the scheduler is already running, no action is taken.
+     * @private
+     */
+    _start: function() {
+        if (WebCore.Scheduler._interval != null) {
+            return;
+        }
+        WebCore.Scheduler._interval = window.setInterval(WebCore.Scheduler._execute, WebCore.Scheduler.INTERVAL);
+    },
+    
+    /**
+     * Stops the scheduler "thread".
+     * If the scheduler is not running, no action is taken.
+     * @private
+     */
+    _stop: function() {
+        if (WebCore.Scheduler._interval == null) {
+            return;
+        }
+        window.clearInterval(WebCore.Scheduler._interval);
+        WebCore.Scheduler._interval = null;
+    }
+};
+
+/**
+ * @class A runnable task that may be scheduled with the Scheduler.
+ */
+WebCore.Scheduler.Runnable = Core.extend({
+    
+    $virtual: {
+
+        /** 
+         * Time interval, in milleseconds after which the Runnable should be executed.
+         * @type Number
+         */
+        timeInterval: null,
+        
+        /**
+         * Flag indicating whether task should be repeated.
+         * @type Boolean
+         */
+        repeat: false
+    },
+
+    $abstract: {
+        
+        run: function() { }
+    }
+});
+
+/**
+ * @class A runnable task implemenation that invokes a function at regular intervals.
+ */
+WebCore.Scheduler.MethodRunnable = Core.extend(WebCore.Scheduler.Runnable, {
+
+    f: null,
+
+    /**
+     * Creates a new Runnable.
+     *
+     * @constructor
+     * @param {Number} time the time interval, in milleseconds, after which the Runnable should be executed
+     *        (may be null/undefined to execute task immediately, in such cases repeat must be false)
+     * @param {Boolean} repeat a flag indicating whether the task should be repeated
+     * @param {Function} f a function to invoke, may be null/undefined
+     */
+    $construct: function(f, timeInterval, repeat) {
+        if (!timeInterval && repeat) {
+            throw new Error("Cannot create repeating runnable without time delay:" + f);
+        }
+        this.f = f;
+        this.timeInterval = timeInterval;
+        this.repeat = !!repeat;
+    },
+
+    $virtual: {
+        
+        /**
+         * Default run() implementation. Should be overidden by subclasses.
+         */
+        run: function() {
+            this.f();
+        }
+    }
+});
 
 /**
  * @class
