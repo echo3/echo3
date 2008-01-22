@@ -131,7 +131,7 @@ EchoSerial = {
      * @param client the containing client
      * @param {Element} propertyElement the property element to parse
      * @param object the object on which the properties should be set (this object
-     *        must contain set() and setIndexedProperty() methods
+     *        must contain set() and setIndex() methods
      * @param styleData (optional) an associative array on which properties can
      *        be directly set
      * @param referenceMap (optional) an associative array containing previously
@@ -180,7 +180,7 @@ EchoSerial = {
                 if (propertyIndex == null) {
                     object.set(propertyName, propertyValue);
                 } else {
-                    object.setIndexedProperty(propertyName, propertyIndex, propertyValue);
+                    object.setIndex(propertyName, propertyIndex, propertyValue);
                 }
             }
         } else {

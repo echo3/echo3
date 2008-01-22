@@ -696,8 +696,8 @@ EchoApp.Component = Core.extend({
      * @param {Number} index the index to return
      * @return the property value
      */
-    getIndexedProperty: function(name, index) {
-        return this._localStyle.getIndexedProperty(name, index);
+    getIndex: function(name, index) {
+        return this._localStyle.getIndex(name, index);
     },
     
     /**
@@ -744,15 +744,15 @@ EchoApp.Component = Core.extend({
      *        specified in an internal property, style, or stylesheet
      */
     getRenderIndexedProperty: function(name, index, defaultValue) {
-        var value = this.getIndexedProperty(name, index);
+        var value = this.getIndex(name, index);
         if (value == null) {
             if (this._style != null) {
-                value = this._style.getIndexedProperty(name, index);
+                value = this._style.getIndex(name, index);
             }
             if (value == null && this._styleName && this.application && this.application._styleSheet) {
                 var style = this.application._styleSheet.getRenderStyle(this._styleName, this.componentType);
                 if (style) {
-                    value = style.getIndexedProperty(name, index);
+                    value = style.getIndex(name, index);
                 }
             }
         }
@@ -1053,9 +1053,9 @@ EchoApp.Component = Core.extend({
      * @param {Number} index the index of the property
      * @param newValue the new value of the property
      */
-    setIndexedProperty: function(name, index, newValue) {
-        var oldValue = this._localStyle.getIndexedProperty(name, index);
-        this._localStyle.setIndexedProperty(name, index, newValue);
+    setIndex: function(name, index, newValue) {
+        var oldValue = this._localStyle.getIndex(name, index);
+        this._localStyle.setIndex(name, index, newValue);
         if (this.application) {
             this.application.notifyComponentUpdate(this, name, oldValue, newValue);
         }
@@ -1328,8 +1328,8 @@ EchoApp.LayoutData = Core.extend({
      * @param {String} name the name of the property
      * @param {Number} the (integer) property index
      */
-    getIndexedProperty: function(name, index) {
-        return this._localStyle.getIndexedProperty(name, index);
+    getIndex: function(name, index) {
+        return this._localStyle.getIndex(name, index);
     },
     
     /**
@@ -1349,8 +1349,8 @@ EchoApp.LayoutData = Core.extend({
      * @param {Number} the (integer) property index
      * @param newValue the new property value
      */
-    setIndexedProperty: function(name, index, newValue) {
-        this._localStyle.setIndexedProperty(name, index, newValue);
+    setIndex: function(name, index, newValue) {
+        this._localStyle.setIndex(name, index, newValue);
     },
     
     /**
@@ -2405,7 +2405,7 @@ EchoApp.Style = Core.extend({
      * @param {Number} the (integer) index of the property
      * @return the property value  
      */
-    getIndexedProperty: function(name, index) {
+    getIndex: function(name, index) {
         var indexValues = this._properties[name];
         if (!indexValues) {
             return null;
@@ -2430,7 +2430,7 @@ EchoApp.Style = Core.extend({
      * @param {Number} the (integer) index of the property
      * @param value the new value of the property 
      */
-    setIndexedProperty: function(name, index, value) {
+    setIndex: function(name, index, value) {
         var indexValues = this._properties[name];
         if (!indexValues) {
             indexValues = [];

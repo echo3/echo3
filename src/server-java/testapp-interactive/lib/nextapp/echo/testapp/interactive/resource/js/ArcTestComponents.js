@@ -51,7 +51,7 @@ ArcTest.ComponentSync.TestComponent = Core.extend(EchoArc.ComponentSync, {
 
     createComponent: function() {
         var label = new EchoApp.Label();
-        label.setProperty("text", "This is a freeclient label: " + this.component.getRenderProperty("text"));
+        label.set("text", "This is a freeclient label: " + this.component.getRenderProperty("text"));
         return label;
     }
 });
@@ -121,27 +121,27 @@ ArcTest.ComponentSync.TestPane = Core.extend(EchoArc.ComponentSync, {
         var contentPane = new EchoApp.ContentPane();
         
         var windowPane = new EchoApp.WindowPane();
-        windowPane.setProperty("title", "A FreeClient WindowPane");
+        windowPane.set("title", "A FreeClient WindowPane");
         contentPane.add(windowPane);
         
         var mainColumn = new EchoApp.Column();
-        mainColumn.setProperty("cellSpacing", new EchoApp.Extent("5px"));
-        mainColumn.setProperty("insets", new EchoApp.Insets("10px"));
+        mainColumn.set("cellSpacing", new EchoApp.Extent("5px"));
+        mainColumn.set("insets", new EchoApp.Insets("10px"));
         windowPane.add(mainColumn);
         
         var controlsRow = new EchoApp.Row();
-        controlsRow.setProperty("cellSpacing", new EchoApp.Extent("10px"));
+        controlsRow.set("cellSpacing", new EchoApp.Extent("10px"));
         mainColumn.add(controlsRow);
         
         var addButton = new EchoApp.Button();
-        addButton.setProperty("text", "Add Label");
-        addButton.setProperty("background", new EchoApp.Color("#00ff00"));
+        addButton.set("text", "Add Label");
+        addButton.set("background", new EchoApp.Color("#00ff00"));
         addButton.addListener("action", Core.method(this, this._processAddButton));
         controlsRow.add(addButton);
     
         var removeButton = new EchoApp.Button();
-        removeButton.setProperty("text", "Remove Label");
-        removeButton.setProperty("background", new EchoApp.Color("#ff0000"));
+        removeButton.set("text", "Remove Label");
+        removeButton.set("background", new EchoApp.Color("#ff0000"));
         removeButton.addListener("action", Core.method(this, this._processRemoveButton));
         controlsRow.add(removeButton);
         
@@ -157,7 +157,7 @@ ArcTest.ComponentSync.TestPane = Core.extend(EchoArc.ComponentSync, {
     
     _processAddButton: function(e) {
         var label = new EchoApp.Label();
-        label.setProperty("text", "Added Label " + ++this._addedLabelCount);
+        label.set("text", "Added Label " + ++this._addedLabelCount);
         this._testColumn.add(label);
     },
     
