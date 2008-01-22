@@ -546,7 +546,7 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
         _nextNameId: 0,
         
         /**
-         * Contains mappings from RadioButton render ids to EchoApp.ButtonGroup objects.
+         * Contains mappings from RadioButton render ids to EchoAppRender.RadioButtonSync.Group objects.
          * 
          * @type Core.Arrays.LargeMap
          */
@@ -557,15 +557,15 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
         EchoRender.registerPeer("RadioButton", this);;
     },
     
-    _buttonGroup: null,
+    _group: null,
 
     $construct: function() {
         EchoAppRender.ToggleButtonSync.call(this);
     },
 
     doAction: function() {
-        if (this._buttonGroup) {
-            this._buttonGroup.deselect();
+        if (this._group) {
+            this._group.deselect();
         }
         EchoAppRender.ToggleButtonSync.prototype.doAction.call(this);
     },
@@ -575,11 +575,11 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
         if (groupId) {
             var group = EchoAppRender.RadioButtonSync._groups.map[groupId];
             if (!group) {
-                group = new EchoApp.ButtonGroup(groupId);
+                group = new EchoAppRender.RadioButtonSync.Group(groupId);
                 EchoAppRender.RadioButtonSync._groups.map[groupId] = group;
             }
             group.add(this);
-            this._buttonGroup = group;
+            this._group = group;
         }
         EchoAppRender.ToggleButtonSync.prototype.renderAdd.call(this, update, parentElement);
     },
@@ -606,12 +606,12 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
     
     renderDispose: function(update) {
         EchoAppRender.ToggleButtonSync.prototype.renderDispose.call(this, update);
-        if (this._buttonGroup) {
-            this._buttonGroup.remove(this);
-            if (this._buttonGroup.size() == 0) {
-                EchoAppRender.RadioButtonSync._groups.remove(this._buttonGroup.getId());
+        if (this._group) {
+            this._group.remove(this);
+            if (this._group.size() == 0) {
+                EchoAppRender.RadioButtonSync._groups.remove(this._group.id);
             }
-            this._buttonGroup = null;
+            this._group = null;
         }
     },
     
@@ -625,3 +625,77 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
     }
 });
 
+EchoAppRender.RadioButtonSync.Group = Core.extend({
+
+    id: null,
+    
+    _buttons: null,
+
+    /**
+     * Creates a RadioButton group.
+     * 
+     * @param id {String} the id
+     */
+    $construct: function(id) {
+        this.id = id;
+        this._buttons = [];
+    },
+    
+    /**
+     * Adds the specified button to this button group.
+     *
+     * @param button {EchoRender.ComponentSync.ToggleButton} the button
+     */
+    add: function(button) {
+        this._buttons.push(button);
+    },
+    
+    /**
+     * Deselects all buttons in this button group.
+     */
+    deselect: function() {
+        for (var i = 0; i < this._buttons.length; ++i) {
+            this._buttons[i].setSelected(false);
+        }
+    },
+    
+    /**
+     * Removes the specified button from this button group.
+     * 
+     * @param button {EchoRender.ComponentSync.ToggleButton} the button
+     */
+    remove: function(button) {
+        // Find index of button in array.
+        var buttonIndex = -1;
+        for (var i = 0; i < this._buttons.length; ++i) {
+            if (this._buttons[i] == button) {
+                buttonIndex = i;
+                break;
+            }
+        }
+        
+        if (buttonIndex == -1) {
+            // Button does not exist in group.
+            throw new Error("No such button: " + button.component.renderId);
+        }
+        
+        if (this._buttons.length == 1) {
+            // Array will now be empty.
+            this._buttons = [];
+        } else {
+            // Buttons remain, remove button from button group.
+            this._buttons[buttonIndex] = this._buttons[this._buttons.length - 1];
+            this._buttons.length = this._buttons.length - 1;
+        }
+    },
+
+    /**
+     * Gets the amount of buttons contained by this button group.
+     * 
+     * @return the number of buttons.
+     * @type {Number}
+     */
+    size: function() {
+        return this._buttons.length;
+    }
+});
