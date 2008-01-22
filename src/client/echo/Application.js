@@ -19,7 +19,7 @@ EchoApp = {
      */
     generateUid: function() {
         return this._nextUid++;
-    },
+    }
 };
 
 /**
