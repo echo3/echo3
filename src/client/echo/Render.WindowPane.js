@@ -264,27 +264,27 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderAdd: function(update, parentElement) {
-        var positionX = this.component.getRenderProperty("positionX");
-        var positionY = this.component.getRenderProperty("positionY");
+        var positionX = this.component.render("positionX");
+        var positionY = this.component.render("positionY");
         this._userWindowX = this._windowX = positionX == null ? null : EchoAppRender.Extent.toPixels(positionX, true); 
         this._userWindowY = this._windowY = positionY == null ? null :EchoAppRender.Extent.toPixels(positionY, false);
         this._userWindowWidth = this._windowWidth = EchoAppRender.Extent.toPixels(
-                this.component.getRenderProperty("width", EchoApp.WindowPane.DEFAULT_WIDTH), true);
+                this.component.render("width", EchoApp.WindowPane.DEFAULT_WIDTH), true);
         this._userWindowHeight = this._windowHeight = EchoAppRender.Extent.toPixels(
-                this.component.getRenderProperty("height", EchoApp.WindowPane.DEFAULT_HEIGHT), false);
+                this.component.render("height", EchoApp.WindowPane.DEFAULT_HEIGHT), false);
                 
         this._minimumWidth = EchoAppRender.Extent.toPixels(
-                this.component.getRenderProperty("minimumWidth", EchoApp.WindowPane.DEFAULT_MINIMUM_WIDTH), true);
+                this.component.render("minimumWidth", EchoApp.WindowPane.DEFAULT_MINIMUM_WIDTH), true);
         this._minimumHeight = EchoAppRender.Extent.toPixels(
-                this.component.getRenderProperty("minimumHeight", EchoApp.WindowPane.DEFAULT_MINIMUM_HEIGHT), false);
+                this.component.render("minimumHeight", EchoApp.WindowPane.DEFAULT_MINIMUM_HEIGHT), false);
     
-        var border = this.component.getRenderProperty("border", EchoApp.WindowPane.DEFAULT_BORDER);
+        var border = this.component.render("border", EchoApp.WindowPane.DEFAULT_BORDER);
         this._borderInsets = EchoAppRender.Insets.toPixels(border.borderInsets);
         this._contentInsets = EchoAppRender.Insets.toPixels(border.contentInsets);
     
-        var movable = this.component.getRenderProperty("movable", true);
-        var resizable = this.component.getRenderProperty("resizable", true);
-        var closable = this.component.getRenderProperty("closable", true);
+        var movable = this.component.render("movable", true);
+        var resizable = this.component.render("resizable", true);
+        var closable = this.component.render("closable", true);
     
         this._windowPaneDivElement = document.createElement("div");
         this._windowPaneDivElement.id = this.component.renderId;
@@ -313,7 +313,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         this._borderDivElements = new Array(8);
         
-        var fillImageFlags = this.component.getRenderProperty("ieAlphaRenderBorder") 
+        var fillImageFlags = this.component.render("ieAlphaRenderBorder") 
                 ? EchoAppRender.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER : 0;
         
         // Render top row
@@ -500,7 +500,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._titleBarDivElement.style.position = "absolute";
         this._titleBarDivElement.style.zIndex = 3;
         
-        var icon = this.component.getRenderProperty("icon");
+        var icon = this.component.render("icon");
         if (icon) {
             var titleIconDivElement = document.createElement("div");
             titleIconDivElement.style[WebCore.Environment.CSS_FLOAT] = "left";
@@ -512,7 +512,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             titleIconDivElement.appendChild(imgElement);
         }
     
-        var title = this.component.getRenderProperty("title");
+        var title = this.component.render("title");
         if (title) {
             var titleTextDivElement = document.createElement("div");
             if (icon) {
@@ -526,7 +526,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._titleBarDivElement.appendChild(titleTextDivElement);
         }
         
-        var titleBarHeight = this.component.getRenderProperty("titleHeight");
+        var titleBarHeight = this.component.render("titleHeight");
         if (titleBarHeight) {
             this._titleBarHeight = EchoAppRender.Extent.toPixels(titleBarHeight);
         } else {
@@ -549,8 +549,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
         EchoAppRender.Color.renderComponentProperty(this.component, "titleForeground", null, this._titleBarDivElement, "color");
     
-        var titleBackground = this.component.getRenderProperty("titleBackground");
-        var titleBackgroundImage = this.component.getRenderProperty("titleBackgroundImage");
+        var titleBackground = this.component.render("titleBackground");
+        var titleBackgroundImage = this.component.render("titleBackgroundImage");
     
         if (titleBackground) {
             this._titleBarDivElement.style.backgroundColor = titleBackground.value;
@@ -573,7 +573,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._closeDivElement.style.cursor = "pointer";
             EchoAppRender.Insets.renderComponentProperty(this.component, "closeIconInsets", 
                     EchoApp.WindowPane.DEFAULT_CLOSE_ICON_INSETS, this._closeDivElement, "padding");
-            var closeIcon = this.component.getRenderProperty("closeIcon", this.client.getDefaultImage("Echo.WindowPane.closeIcon")); 
+            var closeIcon = this.component.render("closeIcon", this.client.getDefaultImage("Echo.WindowPane.closeIcon")); 
             if (closeIcon) {
                 var imgElement = document.createElement("img");
                 imgElement.src = closeIcon.url;

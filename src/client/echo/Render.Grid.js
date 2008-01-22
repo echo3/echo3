@@ -37,7 +37,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
             $construct: function(grid) {
                 this.grid = grid;
                 this.cellArrays = [];
-                this.horizontalOrientation = grid.getRenderProperty("orientation") != EchoApp.Grid.ORIENTATION_VERTICAL;
+                this.horizontalOrientation = grid.render("orientation") != EchoApp.Grid.ORIENTATION_VERTICAL;
                 
                 var cells = this.createCells();
                 if (cells == null) {
@@ -61,12 +61,12 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                 
                 this.xExtents = [];
                 for (var i = 0; i < this.gridXSize; ++i) {
-                    this.xExtents.push(this.grid.getRenderIndexedProperty(xProperty, i));
+                    this.xExtents.push(this.grid.renderIndex(xProperty, i));
                 }
             
                 this.yExtents = [];
                 for (var i = 0; i < this.gridYSize; ++i) {
-                    this.yExtents.push(this.grid.getRenderIndexedProperty(yProperty, i));
+                    this.yExtents.push(this.grid.renderIndex(yProperty, i));
                 }
             },
             
@@ -80,7 +80,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                 var cells = [];
                 for (var i = 0; i < childCount; ++i) {
                     var child = this.grid.getComponent(i);
-                    var layoutData = child.getRenderProperty("layoutData");
+                    var layoutData = child.render("layoutData");
                     if (layoutData) {
                         var xSpan = layoutData.get(this.horizontalOrientation ? "columnSpan" : "rowSpan"); 
                         var ySpan = layoutData.get(this.horizontalOrientation ? "rowSpan" : "columnSpan"); 
@@ -263,7 +263,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
             },
             
             renderCellMatrix: function(cells) {
-                this.gridXSize = parseInt(this.grid.getRenderProperty("size", 2));
+                this.gridXSize = parseInt(this.grid.render("size", 2));
                 var x = 0, y = 0;
                 var yCells = this._getCellArray(y);
                 
@@ -384,8 +384,8 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         this._columnCount = gridProcessor.getColumnCount();
         this._rowCount = gridProcessor.getRowCount();
         
-        var defaultInsets = this.component.getRenderProperty("insets", "0");
-        var defaultBorder = this.component.getRenderProperty("border", "");
+        var defaultInsets = this.component.render("insets", "0");
+        var defaultBorder = this.component.render("border", "");
     
         this._tableElement = EchoAppRender.GridSync._prototypeTable.cloneNode(true);
         this._tableElement.id = this.component.renderId;
@@ -395,7 +395,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Font.renderDefault(this.component, this._tableElement);
         EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._tableElement, "padding");
     
-        var width = this.component.getRenderProperty("width");
+        var width = this.component.render("width");
         if (width && WebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.units == "%") {
             this._renderPercentWidthByMeasure = width.value;
             width = null;
@@ -409,7 +409,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
             }
         }
         
-        var height = this.component.getRenderProperty("height");
+        var height = this.component.render("height");
         if (height) {
             if (height.units == "%") {
                 this._tableElement.style.height = height.toString();
@@ -434,7 +434,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         
         var tbodyElement = colGroupElement.nextSibling;
         
-        var size = parseInt(this.component.getRenderProperty("size", 2));
+        var size = parseInt(this.component.render("size", 2));
         
         var trElement;
         var height;
@@ -484,7 +484,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                     tdElement.setAttribute(ySpan, cell.ySpan);
                 }
                 
-                var layoutData = cell.component.getRenderProperty("layoutData");
+                var layoutData = cell.component.render("layoutData");
                 if (layoutData) {
                     EchoAppRender.Insets.renderComponentProperty(layoutData, "insets", null, tdElement, "padding");
                     EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);

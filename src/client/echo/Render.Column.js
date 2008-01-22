@@ -36,12 +36,12 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
         this._divElement.style.outlineStyle = "none";
         this._divElement.tabIndex = "-1";
     
-        EchoAppRender.Border.render(this.component.getRenderProperty("border"), this._divElement);
+        EchoAppRender.Border.render(this.component.render("border"), this._divElement);
         EchoAppRender.Color.renderFB(this.component, this._divElement);
         EchoAppRender.Font.renderDefault(this.component, this._divElement);
         EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
     
-        this._cellSpacing = EchoAppRender.Extent.toPixels(this.component.getRenderProperty("cellSpacing"), false);
+        this._cellSpacing = EchoAppRender.Extent.toPixels(this.component.render("cellSpacing"), false);
         if (this._cellSpacing) {
             this._spacingPrototype = document.createElement("div");
             this._spacingPrototype.style.height = this._cellSpacing + "px";
@@ -69,7 +69,7 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
         this._childIdToElementMap[child.renderId] = divElement;
         EchoRender.renderComponentAdd(update, child, divElement);
     
-        var layoutData = child.getRenderProperty("layoutData");
+        var layoutData = child.render("layoutData");
         if (layoutData) {
             EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, divElement, "backgroundColor");
             EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, divElement);

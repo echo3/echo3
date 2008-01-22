@@ -40,12 +40,12 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         },
         
         renderContent: function() {
-            var text = this.component.getRenderProperty("text");
+            var text = this.component.render("text");
             var icon = EchoAppRender.getEffectProperty(this.component, "icon", "disabledIcon", !this._enabled);
             if (text) {
                 if (icon) {
                     // Text and icon.
-                    var iconTextMargin = this.component.getRenderProperty("iconTextMargin", 
+                    var iconTextMargin = this.component.render("iconTextMargin", 
                             EchoAppRender.ButtonSync._defaultIconTextMargin);
                     var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
                     var tct = new EchoAppRender.TriCellTable(orientation, 
@@ -79,7 +79,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         
         WebCore.EventProcessor.add(this._divElement, "click", Core.method(this, this._processClick), false);
         WebCore.EventProcessor.add(this._divElement, "keypress", Core.method(this, this._processKeyPress), false);
-        if (this.component.getRenderProperty("rolloverEnabled")) {
+        if (this.component.render("rolloverEnabled")) {
             var mouseEnterLeaveSupport = WebCore.Environment.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
             var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
             var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
@@ -88,7 +88,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
             WebCore.EventProcessor.add(this._divElement, exitEvent, 
                     Core.method(this, this._processRolloverExit), false);
         }
-        if (this.component.getRenderProperty("pressedEnabled")) {
+        if (this.component.render("pressedEnabled")) {
             WebCore.EventProcessor.add(this._divElement, "mousedown", Core.method(this, this._processPress), false);
             WebCore.EventProcessor.add(this._divElement, "mouseup", Core.method(this, this._processRelease), false);
         }
@@ -99,8 +99,8 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _getCombinedAlignment: function() {
-        var primary = this.component.getRenderProperty("alignment");
-        var secondary = this.component.getRenderProperty("textAlignment");
+        var primary = this.component.render("alignment");
+        var secondary = this.component.render("textAlignment");
         
         if (primary == null) {
             return secondary;
@@ -157,7 +157,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
             this._processFocus(e);
             break;
         case "mouseover":
-            if (this.component.getRenderProperty("rolloverEnabled")) {
+            if (this.component.render("rolloverEnabled")) {
                 this._processRolloverEnter(e);
             }
             break;
@@ -234,15 +234,15 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
         EchoAppRender.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
         
-        var toolTipText = this.component.getRenderProperty("toolTipText");
+        var toolTipText = this.component.render("toolTipText");
         if (toolTipText) {
             this._divElement.title = toolTipText;
         }
-        var width = this.component.getRenderProperty("width");
+        var width = this.component.render("width");
         if (width) {
             this._divElement.style.width = width.toString();
         }
-        var height = this.component.getRenderProperty("height");
+        var height = this.component.render("height");
         if (height) {
             this._divElement.style.height = height.toString();
             this._divElement.style.overflow = "hidden";
@@ -263,7 +263,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
     
     _renderButtonText: function(element, text) {
         element.appendChild(document.createTextNode(text));
-        if (!this.component.getRenderProperty("lineWrap", true)) {
+        if (!this.component.render("lineWrap", true)) {
             element.style.whiteSpace = "nowrap";
         }
     },
@@ -305,9 +305,9 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _setFocusState: function(focusState) {
-        if (!this.component.getRenderProperty("focusedEnabled")) {
+        if (!this.component.render("focusedEnabled")) {
             // Render default focus aesthetic.
-            var background = this.component.getRenderProperty("background");
+            var background = this.component.render("background");
             if (background != null) {
                 var newBackground = focusState ? background.adjust(0x20, 0x20, 0x20) : background;
                 EchoAppRender.Color.render(newBackground, this._divElement, "backgroundColor");
@@ -408,7 +408,7 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
     },
     
     renderAdd: function(update, parentElement) {
-        this._selected = this.component.getRenderProperty("selected");
+        this._selected = this.component.render("selected");
         
         EchoAppRender.ButtonSync.prototype.renderAdd.call(this, update, parentElement);
     },
@@ -426,8 +426,8 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
     },
     
     renderContent: function() {
-        var text = this.component.getRenderProperty("text");
-        var icon = this.component.getRenderProperty("icon");
+        var text = this.component.render("text");
+        var icon = this.component.render("icon");
         this._stateElement = this.createStateElement();
         
         var entityCount = (text ? 1 : 0) + (icon ? 1 : 0) + (this._stateElement ? 1 : 0);
@@ -443,9 +443,9 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
             var orientation = EchoAppRender.TriCellTable.TRAILING_LEADING;;
             var margin;
             if (this._stateElement) {
-                margin = this.component.getRenderProperty("stateMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
+                margin = this.component.render("stateMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
             } else {
-                margin = this.component.getRenderProperty("iconTextMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
+                margin = this.component.render("iconTextMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
             }
             var tct = new EchoAppRender.TriCellTable(orientation, EchoAppRender.Extent.toPixels(margin));
             if (text) {
@@ -462,9 +462,9 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
             this._divElement.appendChild(tct.tableElement);
         } else if (entityCount == 3) {
             var orientation = EchoAppRender.TriCellTable.TRAILING_LEADING;
-            var margin = this.component.getRenderProperty("iconTextMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
+            var margin = this.component.render("iconTextMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
             var stateOrientation = EchoAppRender.TriCellTable.TRAILING_LEADING;
-            var stateMargin = this.component.getRenderProperty("stateMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
+            var stateMargin = this.component.render("stateMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
             var tct = new EchoAppRender.TriCellTable(orientation, 
                 EchoAppRender.Extent.toPixels(margin), stateOrientation, EchoAppRender.Extent.toPixels(stateMargin));
             this._renderButtonText(tct.tdElements[0], text);
@@ -571,7 +571,7 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
     },
     
     renderAdd: function(update, parentElement) {
-        var groupId = this.component.getRenderProperty("group");
+        var groupId = this.component.render("group");
         if (groupId) {
             var group = EchoAppRender.RadioButtonSync._groups.map[groupId];
             if (!group) {

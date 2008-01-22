@@ -12,7 +12,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     $virtual: {
         
         sanitizeInput: function() {
-            var maximumLength = this.component.getRenderProperty("maximumLength", -1);
+            var maximumLength = this.component.render("maximumLength", -1);
             if (maximumLength >= 0) {
                 if (this._textComponentElement.value && this._textComponentElement.value.length > maximumLength) {
                     this._textComponentElement.value = this._textComponentElement.value.substring(0, maximumLength);
@@ -22,20 +22,20 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _renderStyle: function() {
-        EchoAppRender.Border.render(this.component.getRenderProperty("border"), this._textComponentElement);
+        EchoAppRender.Border.render(this.component.render("border"), this._textComponentElement);
         EchoAppRender.Color.renderFB(this.component, this._textComponentElement);
         EchoAppRender.Font.renderComponentProperty(this.component, "font", null, this._textComponentElement);
         EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._textComponentElement, "padding");
         EchoAppRender.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._textComponentElement);
-        var width = this.component.getRenderProperty("width");
+        var width = this.component.render("width");
         if (width) {
         	this._textComponentElement.style.width = width.toString();
         }
-        var height = this.component.getRenderProperty("height");
+        var height = this.component.render("height");
         if (height) {
         	this._textComponentElement.style.height = height.toString();
         }
-        var toolTipText = this.component.getRenderProperty("toolTipText");
+        var toolTipText = this.component.render("toolTipText");
         if (toolTipText) {
             this._textComponentElement.title = toolTipText;
         }
@@ -168,7 +168,7 @@ EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
         this._textComponentElement = document.createElement("input");
         this._textComponentElement.id = this.component.renderId;
         this._textComponentElement.type = this._type;
-        var maximumLength = this.component.getRenderProperty("maximumLength", -1);
+        var maximumLength = this.component.render("maximumLength", -1);
         if (maximumLength >= 0) {
             this._textComponentElement.maxLength = maximumLength;
         }

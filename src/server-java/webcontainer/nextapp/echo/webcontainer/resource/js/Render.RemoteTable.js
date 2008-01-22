@@ -45,12 +45,12 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderAdd: function(update, parentElement) {
-        this._columnCount = this.component.getRenderProperty("columnCount");
-        this._rowCount = this.component.getRenderProperty("rowCount");
-        this._selectionEnabled = this.component.getRenderProperty("selectionEnabled");
-        this._rolloverEnabled = this.component.getRenderProperty("rolloverEnabled");
+        this._columnCount = this.component.render("columnCount");
+        this._rowCount = this.component.render("rowCount");
+        this._selectionEnabled = this.component.render("selectionEnabled");
+        this._rolloverEnabled = this.component.render("rolloverEnabled");
         
-        this._defaultInsets = this.component.getRenderProperty("insets");
+        this._defaultInsets = this.component.render("insets");
         if (!this._defaultInsets) {
             this._defaultInsets = new EchoApp.Insets(0);
         }
@@ -66,7 +66,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         this._tableElement = document.createElement("table");
         this._tableElement.id = this.component.renderId;
         
-        var width = this.component.getRenderProperty("width");
+        var width = this.component.render("width");
         if (width && WebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.units == "%") {
             this._renderPercentWidthByMeasure = width.value;
             width = null;
@@ -78,7 +78,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         }
         EchoAppRender.Color.renderFB(this.component, this._tableElement);
         EchoAppRender.Font.renderDefault(this.component, this._tableElement);
-        var border = this.component.getRenderProperty("border");
+        var border = this.component.render("border");
         if (border) {
             EchoAppRender.Border.render(border, this._tableElement);
             if (border.size && !WebCore.Environment.QUIRK_CSS_BORDER_COLLAPSE_INSIDE) {
@@ -91,7 +91,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         
         this._tbodyElement = document.createElement("tbody");
         
-        if (this.component.getRenderProperty("columnWidth")) {
+        if (this.component.render("columnWidth")) {
             // If any column widths are set, render colgroup.
             var columnPixelAdjustment;
             if (WebCore.Environment.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING) {
@@ -103,7 +103,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             var renderRelative = !WebCore.Environment.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS;
             for (var i = 0; i < this._columnCount; ++i) {
                 var colElement = document.createElement("col");
-                var width = this.component.getRenderIndexedProperty("columnWidth", i); 
+                var width = this.component.renderIndex("columnWidth", i); 
                 if (width != null) {
                     if (width.units == "%") {
                         colElement.width = width.value + (renderRelative ? "*" : "%");
@@ -170,7 +170,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
                 
                 var child = this.component.getComponent((rowIndex + (this._headerVisible ? 1 : 0)) 
                         * this._columnCount + columnIndex);
-                var layoutData = child.getRenderProperty("layoutData");
+                var layoutData = child.render("layoutData");
 
                 if (layoutData) {
                     EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
@@ -200,7 +200,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         
         while (columnIndex < this._columnCount) {
             var child = this.component.getComponent((rowIndex + (this._headerVisible ? 1 : 0)) * this._columnCount + columnIndex);
-            var layoutData = child.getRenderProperty("layoutData");
+            var layoutData = child.render("layoutData");
             
             if (layoutData) {
                 EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
@@ -221,7 +221,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         var trElement = document.createElement("tr");
     
         var tdPrototype = document.createElement("td");
-        EchoAppRender.Border.render(this.component.getRenderProperty("border"), tdPrototype);
+        EchoAppRender.Border.render(this.component.render("border"), tdPrototype);
         tdPrototype.style.overflow = "hidden";
         tdPrototype.style.padding = this._defaultCellPadding;
     

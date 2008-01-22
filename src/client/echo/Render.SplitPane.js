@@ -23,7 +23,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
              */
             $construct: function(splitPanePeer, component) {
                 this.component = component;
-                this.layoutData = component.getRenderProperty("layoutData");
+                this.layoutData = component.render("layoutData");
                 if (this.layoutData) {
                     var extent;
                     extent = this.layoutData.get("minimumSize");
@@ -95,7 +95,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     loadRenderData: function() {
-        var orientation = this.component.getRenderProperty("orientation", 
+        var orientation = this.component.render("orientation", 
                 EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING);
         // FIXME: RTL is hardcoded to false.
         var rtl = false;
@@ -129,7 +129,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             throw new Error("Invalid orientation: " + orientation);
         }
     
-        this._resizable = this.component.getRenderProperty("resizable");
+        this._resizable = this.component.render("resizable");
         
         /**
          * The user's desired position of the separator.  This is the last
@@ -140,10 +140,10 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
          * @type Integer
          */
         this._userSeparatorPosition = this._separatorPosition = EchoAppRender.Extent.toPixels(
-                this.component.getRenderProperty("separatorPosition",
+                this.component.render("separatorPosition",
                 EchoApp.SplitPane.DEFAULT_SEPARATOR_POSITION), this._orientationVertical);
         
-        this._separatorSize = EchoAppRender.Extent.toPixels(this.component.getRenderProperty(
+        this._separatorSize = EchoAppRender.Extent.toPixels(this.component.render(
                 this._orientationVertical ? "separatorHeight" : "separatorWidth",
                 this._resizable ? EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
                 : EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED), this._orientationVertical);
@@ -285,7 +285,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     _redraw: function() {
         var insetsAdjustment = 0;
         if (this.component.getComponentCount() > 0) {
-            var layoutData = this.component.getComponent(0).getRenderProperty("layoutData");
+            var layoutData = this.component.getComponent(0).render("layoutData");
             insetsAdjustment = this._getInsetsSizeAdjustment(layoutData);
         }
     
@@ -421,7 +421,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         paneDivElement.style.position = "absolute";
         paneDivElement.style.overflow = "auto";
         
-        var layoutData = child.getRenderProperty("layoutData");
+        var layoutData = child.render("layoutData");
         if (layoutData) {
             EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, paneDivElement, false,
                     this.component);
@@ -521,7 +521,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         
     renderDisplay: function() {
         WebCore.VirtualPosition.redraw(this._splitPaneDivElement);
-        if (this.component.getRenderProperty("resizable")) {
+        if (this.component.render("resizable")) {
             this._setSeparatorPosition(this._userSeparatorPosition);
         }
         if (this._firstPaneDivElement) {

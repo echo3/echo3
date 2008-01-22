@@ -51,7 +51,7 @@ ArcTest.ComponentSync.TestComponent = Core.extend(EchoArc.ComponentSync, {
 
     createComponent: function() {
         var label = new EchoApp.Label();
-        label.set("text", "This is a freeclient label: " + this.component.getRenderProperty("text"));
+        label.set("text", "This is a freeclient label: " + this.component.render("text"));
         return label;
     }
 });

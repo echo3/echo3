@@ -734,32 +734,6 @@ EchoApp.Component = Core.extend({
     },
     
     /**
-     * Returns the value of an indexed property that should be rendered,
-     * based on the value set on this component, in the component's
-     * specified style, and/or in the application's stylesheet.
-     * 
-     * @param {String} name the name of the property
-     * @param {Number} index the (integer) index of the property
-     * @param defaultValue the default value to return if no value is 
-     *        specified in an internal property, style, or stylesheet
-     */
-    getRenderIndexedProperty: function(name, index, defaultValue) {
-        var value = this.getIndex(name, index);
-        if (value == null) {
-            if (this._style != null) {
-                value = this._style.getIndex(name, index);
-            }
-            if (value == null && this._styleName && this.application && this.application._styleSheet) {
-                var style = this.application._styleSheet.getRenderStyle(this._styleName, this.componentType);
-                if (style) {
-                    value = style.getIndex(name, index);
-                }
-            }
-        }
-        return value == null ? defaultValue : value;
-    },
-    
-    /**
      * Returns the layout direction with which the component should be
      * rendered, based on analyzing the component's layout direction,
      * its parent's, and/or the application's.
@@ -779,32 +753,6 @@ EchoApp.Component = Core.extend({
             return this.application.getLayoutDirection();
         }
         return null;
-    },
-    
-    /**
-     * Returns the value of a property that should be rendered,
-     * based on the value set on this component, in the component's
-     * specified style, and/or in the application's stylesheet.
-     * 
-     * @param {String} name the name of the property
-     * @param defaultValue the default value to return if no value is 
-     *        specified in an internal property, style, or stylesheet
-     * @return the property value
-     */
-    getRenderProperty: function(name, defaultValue) {
-        var value = this.get(name);
-        if (value == null) {
-            if (this._style != null) {
-                value = this._style.get(name);
-            }
-            if (value == null && this._styleName && this.application && this.application._styleSheet) {
-                var style = this.application._styleSheet.getRenderStyle(this._styleName, this.componentType);
-                if (style) {
-                    value = style.get(name);
-                }
-            }
-        }
-        return value == null ? defaultValue : value;
     },
     
     /**
@@ -968,6 +916,58 @@ EchoApp.Component = Core.extend({
                 }
             }
         }
+    },
+    
+    /**
+     * Returns the value of a property that should be rendered,
+     * based on the value set on this component, in the component's
+     * specified style, and/or in the application's stylesheet.
+     * 
+     * @param {String} name the name of the property
+     * @param defaultValue the default value to return if no value is 
+     *        specified in an internal property, style, or stylesheet
+     * @return the property value
+     */
+    render: function(name, defaultValue) {
+        var value = this.get(name);
+        if (value == null) {
+            if (this._style != null) {
+                value = this._style.get(name);
+            }
+            if (value == null && this._styleName && this.application && this.application._styleSheet) {
+                var style = this.application._styleSheet.getRenderStyle(this._styleName, this.componentType);
+                if (style) {
+                    value = style.get(name);
+                }
+            }
+        }
+        return value == null ? defaultValue : value;
+    },
+    
+    /**
+     * Returns the value of an indexed property that should be rendered,
+     * based on the value set on this component, in the component's
+     * specified style, and/or in the application's stylesheet.
+     * 
+     * @param {String} name the name of the property
+     * @param {Number} index the (integer) index of the property
+     * @param defaultValue the default value to return if no value is 
+     *        specified in an internal property, style, or stylesheet
+     */
+    renderIndex: function(name, index, defaultValue) {
+        var value = this.getIndex(name, index);
+        if (value == null) {
+            if (this._style != null) {
+                value = this._style.getIndex(name, index);
+            }
+            if (value == null && this._styleName && this.application && this.application._styleSheet) {
+                var style = this.application._styleSheet.getRenderStyle(this._styleName, this.componentType);
+                if (style) {
+                    value = style.getIndex(name, index);
+                }
+            }
+        }
+        return value == null ? defaultValue : value;
     },
     
     /**

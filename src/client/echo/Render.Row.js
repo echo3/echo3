@@ -59,7 +59,7 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         this._divElement = EchoAppRender.RowSync._rowPrototype.cloneNode(true);
         this._divElement.id = this.component.renderId;
         
-        EchoAppRender.Border.render(this.component.getRenderProperty("border"), this._divElement);
+        EchoAppRender.Border.render(this.component.render("border"), this._divElement);
         EchoAppRender.Color.renderFB(this.component, this._divElement);
         EchoAppRender.Font.renderDefault(this.component, this._divElement);
         EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
@@ -68,7 +68,7 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         //                div              table      tbody      tr
         this._trElement = this._divElement.firstChild.firstChild.firstChild;
     
-        this._cellSpacing = EchoAppRender.Extent.toPixels(this.component.getRenderProperty("cellSpacing"), false);
+        this._cellSpacing = EchoAppRender.Extent.toPixels(this.component.render("cellSpacing"), false);
         if (this._cellSpacing) {
             this._spacingPrototype = document.createElement("td");
             this._spacingPrototype.style.width = this._cellSpacing + "px";
@@ -94,7 +94,7 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         this._childIdToElementMap[child.renderId] = tdElement;
         EchoRender.renderComponentAdd(update, child, tdElement);
     
-        var layoutData = child.getRenderProperty("layoutData");
+        var layoutData = child.render("layoutData");
         var insets;
         if (layoutData) {
         	insets = layoutData.get("insets");

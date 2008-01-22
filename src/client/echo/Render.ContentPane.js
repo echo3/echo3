@@ -61,8 +61,8 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
     
         // Store values of horizontal/vertical scroll such that 
         // renderDisplay() will adjust scrollbars appropriately after rendering.
-        this._pendingScrollX = this.component.getRenderProperty("horizontalScroll");
-        this._pendingScrollY = this.component.getRenderProperty("verticalScroll");
+        this._pendingScrollX = this.component.render("horizontalScroll");
+        this._pendingScrollY = this.component.render("verticalScroll");
         
         parentElement.appendChild(this._divElement);
     },
@@ -74,7 +74,7 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (child.floatingPane) {
             divElement.style.zIndex = "1";
         } else {
-            var insets = this.component.getRenderProperty("insets", new EchoApp.Insets(0));
+            var insets = this.component.render("insets", new EchoApp.Insets(0));
             var pixelInsets = EchoAppRender.Insets.toPixels(insets);
             divElement.style.zIndex = "0";
             divElement.style.left = pixelInsets.left + "px";

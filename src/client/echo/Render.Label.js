@@ -36,19 +36,19 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
     
     renderAdd: function(update, parentElement) {
         this._containerElement = parentElement;
-        var icon = this.component.getRenderProperty("icon");
-        var text = this.component.getRenderProperty("text");
-        var foreground = this.component.getRenderProperty("foreground");
-        var background = this.component.getRenderProperty("background");
+        var icon = this.component.render("icon");
+        var text = this.component.render("text");
+        var foreground = this.component.render("foreground");
+        var background = this.component.render("background");
     
         if (text) {
-            var lineWrap = this.component.getRenderProperty("lineWrap", true);
-            var formatWhitespace = this.component.getRenderProperty("formatWhitespace", false)
+            var lineWrap = this.component.render("lineWrap", true);
+            var formatWhitespace = this.component.render("formatWhitespace", false)
                     && (text.indexOf(' ') != -1 || text.indexOf('\n') != -1 || text.indexOf('\t') != -1);
             
             if (icon) {
                 // Text and icon.
-                var iconTextMargin = this.component.getRenderProperty("iconTextMargin", 
+                var iconTextMargin = this.component.render("iconTextMargin", 
                         EchoAppRender.LabelSync._defaultIconTextMargin);
                 var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
                 var tct = new EchoAppRender.TriCellTable(orientation, EchoAppRender.Extent.toPixels(iconTextMargin));
@@ -69,7 +69,7 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
                 EchoAppRender.Color.renderFB(this.component, this._labelNode);
             } else {
                 // Text without icon.
-                var font = this.component.getRenderProperty("font");
+                var font = this.component.render("font");
                 if (!font && lineWrap && !foreground && !background && !formatWhitespace) {
                     this._labelNode = document.createTextNode(text);
                 } else {

@@ -14,10 +14,10 @@ EchoAppRender = {
             defaultDefaultPropertyValue, effectDefaultPropertyValue) {
         var property;
         if (effectState) {
-            property = component.getRenderProperty(effectPropertyName, effectDefaultPropertyValue);
+            property = component.render(effectPropertyName, effectDefaultPropertyValue);
         }
         if (!property) {
-            property = component.getRenderProperty(defaultPropertyName, defaultDefaultPropertyValue);
+            property = component.render(defaultPropertyName, defaultDefaultPropertyValue);
         }
         return property;
     }
@@ -39,7 +39,7 @@ EchoAppRender.Alignment = {
 
     renderComponentProperty: function(component, componentProperty, defaultValue, element, renderToElement, referenceComponent) {
         referenceComponent = referenceComponent ? referenceComponent : component;
-        var alignment = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+        var alignment = component.render ? component.render(componentProperty)
                 : component.get(componentProperty);
         if (!alignment) {
             alignment = defaultValue;
@@ -108,7 +108,7 @@ EchoAppRender.Border = {
     },
     
     renderComponentProperty: function(component, componentProperty, defaultValue, element) { 
-        var border = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+        var border = component.render ? component.render(componentProperty)
                 : component.get(componentProperty);
         this.render(border ? border : defaultValue, element);
     },
@@ -133,17 +133,17 @@ EchoAppRender.Color = {
     },
     
     renderComponentProperty: function(component, componentProperty, defaultValue, element, styleProperty) { 
-        var color = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+        var color = component.render ? component.render(componentProperty)
                 : component.get(componentProperty);
         this.render(color ? color : defaultValue, element, styleProperty);
     },
     
     renderFB: function(component, element) { 
         var color;
-        if (color = component.getRenderProperty("foreground")) {
+        if (color = component.render("foreground")) {
             element.style.color = color.value;
         }
-        if (color = component.getRenderProperty("background")) {
+        if (color = component.render("background")) {
             element.style.backgroundColor = color.value;
         }
     }
@@ -217,7 +217,7 @@ EchoAppRender.FillImage = {
     
     renderComponentProperty: function(component, componentProperty, defaultValue,
             element, flags) {
-        var fillImage = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+        var fillImage = component.render ? component.render(componentProperty)
                 : component.get(componentProperty);
         this.render(fillImage ? fillImage : defaultValue, element, flags);
     }
@@ -274,7 +274,7 @@ EchoAppRender.Font = {
     
     renderComponentProperty: function(component, componentProperty, defaultValue, 
             element) {
-        var font = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+        var font = component.render ? component.render(componentProperty)
                 : component.get(componentProperty);
         this.render(font ? font : defaultValue, element);
     },
@@ -288,7 +288,7 @@ EchoAppRender.Insets = {
 
     renderComponentProperty: function(component, componentProperty, defaultValue, 
             element, styleProperty) { 
-        var insets = component.getRenderProperty ? component.getRenderProperty(componentProperty)
+        var insets = component.render ? component.render(componentProperty)
                 : component.get(componentProperty);
         this.renderPixel(insets ? insets : defaultValue, element, styleProperty);
     },
@@ -433,7 +433,7 @@ EchoAppRender.TriCellTable = Core.extend({
 
         //FIXME. this method will need additional information with regard to RTL settings.
         getOrientation: function(component, propertyName) {
-            var position = component.getRenderProperty(propertyName);
+            var position = component.render(propertyName);
             var orientation;
             if (position) {
                 switch (position.horizontal) {
