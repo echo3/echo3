@@ -7,7 +7,20 @@
 /**
  * @class Namespace for application framework.
  */
-EchoApp = { };
+EchoApp = { 
+
+    /**
+     * Next unique identifier.
+     */
+    _nextUid: 1,
+
+    /**
+     * Generates a unique identifier.  Identifiers are unique for the duration of the existence of this namespace.
+     */
+    generateUid: function() {
+        return this._nextUid++;
+    },
+};
 
 /**
  * @class 

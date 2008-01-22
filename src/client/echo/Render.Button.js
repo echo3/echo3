@@ -572,7 +572,7 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
     
     renderAdd: function(update, parentElement) {
         var groupId = this.component.render("group");
-        if (groupId) {
+        if (groupId != null) {
             var group = EchoAppRender.RadioButtonSync._groups.map[groupId];
             if (!group) {
                 group = new EchoAppRender.RadioButtonSync.Group(groupId);
