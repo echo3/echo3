@@ -669,6 +669,16 @@ EchoApp.Component = Core.extend({
     },
     
     /**
+     * Returns an arbitrary property value.
+     * 
+     * @param {String} name the name of the property
+     * @return the property value
+     */
+    get: function(name) {
+        return this._localStyle.get(name);
+    },
+    
+    /**
      * Retrieves the child component at the specified index.
      * 
      * @param {Number} index the (integer) index
@@ -721,16 +731,6 @@ EchoApp.Component = Core.extend({
      */
     getLocalStyleData: function() {
         return this._localStyle._properties;
-    },
-    
-    /**
-     * Returns an arbitrary property value.
-     * 
-     * @param {String} name the name of the property
-     * @return the property value
-     */
-    get: function(name) {
-        return this._localStyle.get(name);
     },
     
     /**
@@ -1033,6 +1033,24 @@ EchoApp.Component = Core.extend({
         }
     },
     
+    /** 
+     * Sets the value of a property in the internal style.
+     * 
+     * @param {String} name the name of the property
+     * @param value the new value of the property
+     */
+    set: function(name, newValue) {
+        var oldValue = this._localStyle.get(name);
+        this._localStyle.set(name, newValue);
+        if (this._listenerList && this._listenerList.hasListeners("property")) {
+            this._listenerList.fireEvent({type: "property", source: this, propertyName: name, 
+                    oldValue: oldValue, newValue: newValue});
+        }
+        if (this.application) {
+            this.application.notifyComponentUpdate(this, name, oldValue, newValue);
+        }
+    },
+    
     /**
      * Sets the enabled state of the component.
      * 
@@ -1068,24 +1086,6 @@ EchoApp.Component = Core.extend({
      */
     setLayoutDirection: function(newValue) {
         this._layoutDirection = newValue;
-    },
-    
-    /** 
-     * Sets the value of a property in the internal style.
-     * 
-     * @param {String} name the name of the property
-     * @param value the new value of the property
-     */
-    set: function(name, newValue) {
-        var oldValue = this._localStyle.get(name);
-        this._localStyle.set(name, newValue);
-        if (this._listenerList && this._listenerList.hasListeners("property")) {
-            this._listenerList.fireEvent({type: "property", source: this, propertyName: name, 
-                    oldValue: oldValue, newValue: newValue});
-        }
-        if (this.application) {
-            this.application.notifyComponentUpdate(this, name, oldValue, newValue);
-        }
     },
     
     /**
@@ -1323,6 +1323,16 @@ EchoApp.LayoutData = Core.extend({
     },
     
     /**
+     * Retrieves a property value.
+     * 
+     * @param {String} name the name of the property
+     * @return the property value
+     */
+    get: function(name) {
+        return this._localStyle.get(name);
+    },
+    
+    /**
      * Retrieves an indexed property value.
      * 
      * @param {String} name the name of the property
@@ -1333,13 +1343,13 @@ EchoApp.LayoutData = Core.extend({
     },
     
     /**
-     * Retrieves a property value.
+     * Sets a property value.
      * 
      * @param {String} name the name of the property
-     * @return the property value
+     * @param value the new property value
      */
-    get: function(name) {
-        return this._localStyle.get(name);
+    set: function(name, newValue) {
+        this._localStyle.set(name, newValue);
     },
     
     /**
@@ -1351,16 +1361,6 @@ EchoApp.LayoutData = Core.extend({
      */
     setIndex: function(name, index, newValue) {
         this._localStyle.setIndex(name, index, newValue);
-    },
-    
-    /**
-     * Sets a property value.
-     * 
-     * @param {String} name the name of the property
-     * @param value the new property value
-     */
-    set: function(name, newValue) {
-        this._localStyle.set(name, newValue);
     }
 });
 
@@ -2399,6 +2399,16 @@ EchoApp.Style = Core.extend({
     },
     
     /**
+     * Returns the value of a property.
+     * 
+     * @param {String} name the name of the property
+     * @return the property value  
+     */
+    get: function(name) {
+        return this._properties[name];
+    },
+    
+    /**
      * Returns the value of an indexed property.
      * 
      * @param {String} name the name of the property
@@ -2411,16 +2421,6 @@ EchoApp.Style = Core.extend({
             return null;
         }
         return indexValues[index];
-    },
-    
-    /**
-     * Returns the value of a property.
-     * 
-     * @param {String} name the name of the property
-     * @return the property value  
-     */
-    get: function(name) {
-        return this._properties[name];
     },
     
     /**
