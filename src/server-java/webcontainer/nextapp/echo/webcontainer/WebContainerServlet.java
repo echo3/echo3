@@ -55,12 +55,20 @@ import javax.servlet.http.HttpServletResponse;
  * deployment descriptor.
  */
 public abstract class WebContainerServlet extends HttpServlet {
-
-    // FIXME. not a permanent solution.
+    
     /**
      * Flag indicating whether client/server messages should be dumped to console.
      */
-    public static final boolean DEBUG_PRINT_MESSAGES_TO_CONSOLE = false;
+    public static final boolean DEBUG_PRINT_MESSAGES_TO_CONSOLE;
+    static {
+        boolean value;
+        try {
+            value = "true".equals(System.getProperty("echo.syncdump"));
+        } catch (SecurityException ex) {
+            value = false;
+        }
+        DEBUG_PRINT_MESSAGES_TO_CONSOLE = value;
+    }
     
     public static final String ROOT_HTML_ELEMENT_ID = "root";
     
