@@ -97,7 +97,7 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         if (layoutData) {
         	insets = layoutData.get("insets");
             EchoAppRender.Color.render(layoutData.get("background"), tdElement, "backgroundColor");
-            EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
+            EchoAppRender.FillImage.render(layoutData.get("backgroundImage"), tdElement);
             EchoAppRender.Alignment.render(layoutData.get("alignment"), tdElement, true, this.component);
     	    var width = layoutData.get("width");
     	    if (width) {

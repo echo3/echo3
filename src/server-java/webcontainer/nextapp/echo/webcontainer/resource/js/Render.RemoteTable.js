@@ -159,7 +159,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
                 EchoAppRender.Font.render(this.component.render("selectionFont"), tdElement);
                 EchoAppRender.Color.render(this.component.render("selectionForeground"), tdElement, "color");
                 EchoAppRender.Color.render(this.component.render("selectionBackground"), tdElement, "background");
-                EchoAppRender.FillImage.renderComponentProperty(this.component, "selectionBackgroundImage", null, tdElement);
+                EchoAppRender.FillImage.render(this.component.render("selectionBackgroundImage"), tdElement);
             } else {
                 tdElement.style.color = "";
                 tdElement.style.backgroundColor = "";
@@ -171,7 +171,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
 
                 if (layoutData) {
                     EchoAppRender.Color.render(layoutData.get("background"), tdElement, "backgroundColor");
-                    EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
+                    EchoAppRender.FillImage.render(layoutData.get("backgroundImage"), tdElement);
                 }
             
             }
@@ -201,7 +201,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             
             if (layoutData) {
                 EchoAppRender.Color.render(layoutData.get("background"), tdElement, "backgroundColor");
-                EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
+                EchoAppRender.FillImage.render(layoutData.get("backgroundImage"), tdElement);
                 EchoAppRender.Alignment.render(layoutData.get("alignment"), tdElement, true, this.component);
                 EchoAppRender.Insets.renderPixel(layoutData.get("insets", this._defaultInsets), tdElement, "padding");
             }
@@ -426,7 +426,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             EchoAppRender.Font.render(this.component.render("rolloverFont"), cell);
             EchoAppRender.Color.render(this.component.render("rolloverForeground"), cell, "color");
             EchoAppRender.Color.render(this.component.render("rolloverBackground"), cell, "background");
-            EchoAppRender.FillImage.renderComponentProperty(this.component, "rolloverBackgroundImage", null, cell); 
+            EchoAppRender.FillImage.render(this.component.render("rolloverBackgroundImage"), cell); 
         }
     },
     

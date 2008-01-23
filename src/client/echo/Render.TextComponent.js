@@ -26,7 +26,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Color.renderFB(this.component, this._textComponentElement);
         EchoAppRender.Font.render(this.component.render("font"), this._textComponentElement);
         EchoAppRender.Insets.renderPixel(this.component.render("insets"), this._textComponentElement, "padding");
-        EchoAppRender.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._textComponentElement);
+        EchoAppRender.FillImage.render(this.component.render("backgroundImage"), this._textComponentElement);
         var width = this.component.render("width");
         if (width) {
         	this._textComponentElement.style.width = width.toString();

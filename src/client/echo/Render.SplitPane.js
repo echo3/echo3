@@ -373,8 +373,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                 }
                 this._separatorDivElement.style.width = "100%";
                 this._separatorDivElement.style.height = this._separatorSize + "px";
-                EchoAppRender.FillImage.renderComponentProperty(this.component, "separatorVerticalImage", null, 
-                        this._separatorDivElement, 0);
+                EchoAppRender.FillImage.render(this.component.render("separatorVerticalImage"), this._separatorDivElement, 0);
             } else {
                 if (this._orientationTopLeft) {
                     this._separatorDivElement.style.left = this._separatorPosition + "px";
@@ -385,8 +384,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                 }
                 this._separatorDivElement.style.height = "100%";
                 this._separatorDivElement.style.width = this._separatorSize + "px";
-                EchoAppRender.FillImage.renderComponentProperty(this.component, "separatorHorizontalImage", null, 
-                        this._separatorDivElement, 0);
+                EchoAppRender.FillImage.render(this.component.render("separatorHorizontalImage"), this._separatorDivElement, 0);
             }
             if (this._resizable && resizeCursor) {
                 this._separatorDivElement.style.cursor = resizeCursor;
@@ -430,7 +428,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (layoutData) {
             EchoAppRender.Alignment.render(layoutData.get("alignment"), paneDivElement, false, this.component);
             EchoAppRender.Color.render(layoutData.get("background"), paneDivElement, "backgroundColor");
-            EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, paneDivElement);
+            EchoAppRender.FillImage.render(layoutData.get("backgroundImage"), paneDivElement);
             if (!child.pane) {
                 EchoAppRender.Insets.renderPixel(layoutData.get("insets"), paneDivElement, "padding");
             }

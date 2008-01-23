@@ -489,7 +489,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                 if (layoutData) {
                     EchoAppRender.Insets.renderPixel(layoutData.get("insets"), tdElement, "padding");
                     EchoAppRender.Alignment.render(layoutData.get("alignment"), tdElement, true, this.component);
-                    EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
+                    EchoAppRender.FillImage.render(layoutData.get("backgroundImage"), tdElement);
                     EchoAppRender.Color.render(layoutData.get("background"), tdElement, "backgroundColor");
                 }
                 

@@ -317,13 +317,6 @@ EchoAppRender.FillImage = {
             element.style.backgroundPosition = "";
             element.style.backgroundRepeat = "";
         }
-    },
-    
-    renderComponentProperty: function(component, componentProperty, defaultValue,
-            element, flags) {
-        var fillImage = component.render ? component.render(componentProperty)
-                : component.get(componentProperty);
-        this.render(fillImage ? fillImage : defaultValue, element, flags);
     }
 };
 

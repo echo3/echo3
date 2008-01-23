@@ -48,8 +48,7 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Color.render(this.component.render("background", EchoAppRender.ContentPaneSync.DEFAULT_BACKGROUND),
                 this._divElement, "backgroundColor");
         EchoAppRender.Color.render(this.component.render("foreground"), this._divElement, "color");
-        
-        EchoAppRender.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._divElement); 
+        EchoAppRender.FillImage.render(this.component.render("backgroundImage"), this._divElement); 
     
         this._childIdToElementMap = {};
         

@@ -72,7 +72,7 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
         var layoutData = child.render("layoutData");
         if (layoutData) {
             EchoAppRender.Color.render(layoutData.get("background"), divElement, "backgroundColor");
-            EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, divElement);
+            EchoAppRender.FillImage.render(layoutData.get("backgroundImage"), divElement);
             EchoAppRender.Insets.renderPixel(layoutData.get("insets"), divElement, "padding");
             EchoAppRender.Alignment.render(layoutData.get("alignment"), divElement, true, this.component);
             var height = layoutData.get("height");
