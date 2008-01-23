@@ -348,6 +348,12 @@ EchoAppRender.Font = {
 
 EchoAppRender.Insets = {
 
+    /**
+     * Regular expression to test extents which are entirely presented in pixels
+     * and may thus be directly added to CSS.
+     */
+    _FORMATTED_PIXEL_INSETS: /^(-?\d+px *){1,4}$/,
+
     _ZERO: { top: 0, right: 0, bottom: 0, left: 0 },
     
     /**
@@ -369,17 +375,25 @@ EchoAppRender.Insets = {
     
     renderPixel: function(insets, element, styleAttribute) {
         if (insets) {
-            var pixelInsets = this.toPixels(insets);
-            element.style[styleAttribute] = pixelInsets.top + "px " + pixelInsets.right + "px "
-                    + pixelInsets.bottom + "px " + pixelInsets.left + "px";
+            if (typeof(insets) == "string" && this._FORMATTED_PIXEL_INSETS.test(insets)) {
+                element.style[styleAttribute] = insets;
+            } else {
+                var pixelInsets = this.toPixels(insets);
+                element.style[styleAttribute] = pixelInsets.top + "px " + pixelInsets.right + "px "
+                        + pixelInsets.bottom + "px " + pixelInsets.left + "px";
+            }
         }
     },
     
     toCssValue: function(insets) {
         if (insets) {
-            var pixelInsets = this.toPixels(insets);
-            return pixelInsets.top + "px " + pixelInsets.right + "px "
-                    + pixelInsets.bottom + "px " + pixelInsets.left + "px";
+            if (typeof(insets) == "string" && this._FORMATTED_PIXEL_INSETS.test(insets)) {
+                return insets;
+            } else {
+                var pixelInsets = this.toPixels(insets);
+                return pixelInsets.top + "px " + pixelInsets.right + "px "
+                        + pixelInsets.bottom + "px " + pixelInsets.left + "px";
+            }
         } else {
             return "";
         }
