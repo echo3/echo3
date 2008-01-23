@@ -202,7 +202,7 @@ EchoAppRender.Extent = {
         if (extent == null || typeof(extent) == "number") {
             return false;
         } else {
-            var parts = this._PATTERN.exec(arguments[0]);
+            var parts = this._PARSER.exec(arguments[0]);
             if (!parts) {
                 throw new Error("Invalid Extent: " + arguments[0]);
             }
