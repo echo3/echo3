@@ -32,10 +32,10 @@ TestApp.TestScreen = Core.extend(EchoApp.ContentPane, {
                     separatorPosition: 180,
                     children: [
                         this.testSelectColumn = new EchoApp.Column({
-                            insets: [5, 10]
+                            insets: "5px 10px"
                         }),
                         new EchoApp.Column({
-                            insets: [5, 10],
+                            insets: "5px 10px",
                             children: [
                                 new EchoApp.Label({
                                     styleName: "Default",
@@ -85,7 +85,7 @@ TestApp.TestPane = Core.extend(EchoApp.ContentPane, {
                     separatorPosition: 180,
                     children: [
                         this.controlsColumn = new EchoApp.Column({
-                            insets: [5, 10]
+                            insets: "5px 10px"
                         }),
                         this.content = new EchoApp.ContentPane()
                     ]

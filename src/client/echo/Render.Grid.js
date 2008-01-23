@@ -406,7 +406,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
             if (EchoAppRender.Extent.isPercent(width)) {
                 this._tableElement.style.width = width;
             } else {
-                this._tableElement.style.width = EchoAppRender.Extent.toPixels(width, true) + "px";
+                this._tableElement.style.width = EchoAppRender.Extent.toCssValue(width, true);
             }
         }
         
@@ -415,7 +415,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
             if (EchoAppRender.Extent.isPercent(height)) {
                 this._tableElement.style.height = height;
             } else {
-                this._tableElement.style.height = EchoAppRender.Extent.toPixels(height, false) + "px";
+                this._tableElement.style.height = EchoAppRender.Extent.toCssValue(height, false);
             }
         }
         
@@ -427,7 +427,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                 if (EchoAppRender.Extent.isPercent(width)) {
                     colElement.width = width.toString();
                 } else {
-                    colElement.width = EchoAppRender.Extent.toPixels(width, true) + "px";
+                    colElement.width = EchoAppRender.Extent.toCssValue(width, true);
                 }
             }
             colGroupElement.appendChild(colElement);
@@ -459,7 +459,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
             trElement = document.createElement("tr");
             height = gridProcessor.yExtents[rowIndex];
             if (height) {
-                trElement.style.height = EchoAppRender.Extent.toPixels(height, false) + "px";
+                trElement.style.height = EchoAppRender.Extent.toCssValue(height, false);
             }
             tbodyElement.appendChild(trElement);
             

@@ -98,7 +98,7 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                     background: "#ffffff",
                     foreground: "#0000ff",
                     layoutData: new EchoApp.LayoutData({
-                        insets: [0, 20]
+                        insets: "0px 20px"
                     }),
                     events: {
                         action: Core.method(
@@ -111,7 +111,7 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                     actionCommand: "submit guess",
                     foreground: "#ffffff",
                     background: "#008f00",
-                    insets: [3, 10],
+                    insets: "3px 10px",
                     width: 200,
                     events: {
                         action: Core.method(this, 
@@ -123,7 +123,7 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                     text: "Start a New Game",
                     foreground: "#ffffff",
                     background: "#8f0000",
-                    insets: [3, 10],
+                    insets: "3px 10px",
                     width: 200,
                     events: {
                         action: Core.method(this, 

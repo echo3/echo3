@@ -96,7 +96,7 @@ EchoAppRender.Border = {
             }
         } else {
             var color = border.color ? border.color : null;
-            element.style.border = EchoAppRender.Extent.toPixels(border.size) + "px " + border.style + " " + (color ? color : "");
+            element.style.border = EchoAppRender.Extent.toCssValue(border.size) + " " + border.style + " " + (color ? color : "");
         }
     },
     
@@ -116,7 +116,7 @@ EchoAppRender.Border = {
     
     renderSide: function(borderSide, element, styleName) {
         var color = borderSide.color ? borderSide.color : null;
-        element.style[styleName] = EchoAppRender.Extent.toPixels(borderSide.size) + "px " + borderSide.style + " " 
+        element.style[styleName] = EchoAppRender.Extent.toCssValue(borderSide.size) + " " + borderSide.style + " " 
                 + (color ? color : "");
     }
 };
@@ -189,9 +189,11 @@ EchoAppRender.Color = {
 EchoAppRender.Extent = { 
 
     /**
-     * Regular expression to parse an inset value, e.g., "12px" into its value and unit components.
+     * Regular expression to parse an extent value, e.g., "12px" into its value and unit components.
      */
-    _PATTERN: /^(-?\d+(?:\.\d+)?)(.+)?$/,
+    _PARSER: /^(-?\d+(?:\.\d+)?)(.+)?$/,
+
+    _FORMATTED_PIXEL_TEST: /^(-?\d+px *)$/,
     
     isPercent: function(extent) {
         if (extent == null || typeof(extent) == "number") {
@@ -205,13 +207,29 @@ EchoAppRender.Extent = {
         }
     },
 
+    toCssValue: function(extent, horizontal) {
+        switch(typeof(extent)) {
+            case "number":
+                return extent + "px";
+                break;
+            case "string":
+                if (this._FORMATTED_PIXEL_TEST.test(extent)) {
+                    return extent;
+                } else {
+                    return this.toPixels(extent, horizontal);
+                }
+                break;
+        }
+        return "";
+    },
+
     toPixels: function(extent, horizontal) {
         if (extent == null) {
             return 0;
         } else if (typeof(extent) == "number") {
             return extent;
         } else {
-            var parts = this._PATTERN.exec(extent);
+            var parts = this._PARSER.exec(extent);
             if (!parts) {
                 throw new Error("Invalid Extent: " + extent);
             }
@@ -299,7 +317,7 @@ EchoAppRender.Font = {
             }
         }
         if (font.size) {
-            element.style.fontSize = EchoAppRender.Extent.toPixels(font.size) + "px";
+            element.style.fontSize = EchoAppRender.Extent.toCssValue(font.size);
         }
         if (font.style) {
             if (font.style & EchoApp.Font.BOLD) {
@@ -374,29 +392,38 @@ EchoAppRender.Insets = {
     },
     
     renderPixel: function(insets, element, styleAttribute) {
-        if (insets) {
-            if (typeof(insets) == "string" && this._FORMATTED_PIXEL_INSETS.test(insets)) {
-                element.style[styleAttribute] = insets;
-            } else {
-                var pixelInsets = this.toPixels(insets);
-                element.style[styleAttribute] = pixelInsets.top + "px " + pixelInsets.right + "px "
-                        + pixelInsets.bottom + "px " + pixelInsets.left + "px";
-            }
+        switch(typeof(insets)) {
+            case "number":
+                element.style[styleAttribute] = insets + "px";
+                break;
+            case "string":
+                if (this._FORMATTED_PIXEL_INSETS.test(insets)) {
+                    element.style[styleAttribute] = insets;
+                } else {
+                    var pixelInsets = this.toPixels(insets);
+                    element.style[styleAttribute] = pixelInsets.top + "px " + pixelInsets.right + "px "
+                            + pixelInsets.bottom + "px " + pixelInsets.left + "px";
+                }
+                break;
         }
     },
     
     toCssValue: function(insets) {
-        if (insets) {
-            if (typeof(insets) == "string" && this._FORMATTED_PIXEL_INSETS.test(insets)) {
-                return insets;
-            } else {
-                var pixelInsets = this.toPixels(insets);
-                return pixelInsets.top + "px " + pixelInsets.right + "px "
-                        + pixelInsets.bottom + "px " + pixelInsets.left + "px";
-            }
-        } else {
-            return "";
+        switch(typeof(insets)) {
+            case "number":
+                return insets + "px";
+                break;
+            case "string":
+                if (this._FORMATTED_PIXEL_INSETS.test(insets)) {
+                    return insets;
+                } else {
+                    var pixelInsets = this.toPixels(insets);
+                    return pixelInsets.top + "px " + pixelInsets.right + "px "
+                            + pixelInsets.bottom + "px " + pixelInsets.left + "px";
+                }
+                break;
         }
+        return "";
     },
     
     toPixels: function(insets) {
@@ -406,14 +433,7 @@ EchoAppRender.Insets = {
             return { top: insets, right: insets, bottom: insets, left: insets };
         }
         
-        if (insets instanceof Array) {
-            // Do nothing.
-        } else if (typeof(insets) == "string") {
-            insets = insets.split(" ");
-        } else {
-            throw new Error("Invalid insets: " + insets);
-        }
-        
+        insets = insets.split(" ");
         var map = this._INDEX_MAPS[insets.length];
         return {
             top: EchoAppRender.Extent.toPixels(insets[map[0]], false),
