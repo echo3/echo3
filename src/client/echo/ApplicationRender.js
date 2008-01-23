@@ -70,6 +70,8 @@ EchoAppRender.Alignment = {
 
 EchoAppRender.Border = {
 
+    //FIXME Add methods here to retrieve/manipulate individual border pieces.
+
     /**
      * @private
      */
