@@ -29,7 +29,7 @@ TestApp.TestScreen = Core.extend(EchoApp.ContentPane, {
             children: [
                 this.testSelectSplitPane = new EchoApp.SplitPane({
                     styleName: "DefaultResizable",
-                    separatorPosition: new EchoApp.Extent("180px"),
+                    separatorPosition: 180,
                     children: [
                         this.testSelectColumn = new EchoApp.Column({
                             insets: new EchoApp.Insets("5px 10px")
@@ -82,7 +82,7 @@ TestApp.TestPane = Core.extend(EchoApp.ContentPane, {
                 new EchoApp.SplitPane({
                     styleName: "DefaultResizable",
                     orientation: EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING,
-                    separatorPosition: new EchoApp.Extent(180),
+                    separatorPosition: 180,
                     children: [
                         this.controlsColumn = new EchoApp.Column({
                             insets: new EchoApp.Insets(5, 10)
@@ -145,19 +145,19 @@ TestApp.Tests.Column = Core.extend(TestApp.TestPane, {
     },
 
     _cellSpacing0: function() {
-        this.column.set("cellSpacing", new EchoApp.Extent(0));
+        this.column.set("cellSpacing", 0);
     },
 
     _cellSpacing1: function() {
-        this.column.set("cellSpacing", new EchoApp.Extent(1));
+        this.column.set("cellSpacing", 1);
     },
 
     _cellSpacing5: function() {
-       this.column.set("cellSpacing", new EchoApp.Extent(5));
+       this.column.set("cellSpacing", 5);
     },
 
     _cellSpacing25: function() {
-        this.column.set("cellSpacing", new EchoApp.Extent(25));
+        this.column.set("cellSpacing", 25);
     },
 
     _cellSpacingNull: function() {

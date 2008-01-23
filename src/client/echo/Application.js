@@ -1556,13 +1556,13 @@ EchoApp.Border = Core.extend({
             
             /** 
              * Border side size
-             * @type EchoApp.Extent
+             * @type String
              */ 
             size: null,
             
             /** 
              * Border side style
-             * @type Number
+             * @type String
              */ 
             style: null,
             
@@ -1583,7 +1583,7 @@ EchoApp.Border = Core.extend({
                         throw new Error("Invalid border string: " + arguments[0]);
                     }
                     
-                    this.size = new EchoApp.Extent(items[0]);
+                    this.size = items[0];
                     this.style = items[1];
                     this.color = items[2];
                 }
@@ -1615,7 +1615,7 @@ EchoApp.Border = Core.extend({
      * Default border size (used by components that do not support borders
      * with individually specified sides, or in the case of a border that
      * does not individually specify sides).
-     * @type EchoApp.Extent
+     * @type String
      */
     size: null,
 
@@ -1654,7 +1654,7 @@ EchoApp.Border = Core.extend({
              * Default border size (used by components that do not support borders
              * with individually specified sides, or in the case of a border that
              * does not individually specify sides).
-             * @type EchoApp.Extent
+             * @type String
              */
             this.size = this.sides[0].size;
     
@@ -1678,7 +1678,7 @@ EchoApp.Border = Core.extend({
             if (items.length != 3) {
                 throw new Error("Invalid border string: " + arguments[0]);
             }
-            this.size = new EchoApp.Extent(items[0]);
+            this.size = items[0];
             this.style = items[1];
             this.color = items[2];
         } else if (arguments.length == 3) {
@@ -1686,77 +1686,6 @@ EchoApp.Border = Core.extend({
             this.style = arguments[1];
             this.color = arguments[2];
         }
-    }
-});
-
-/**
- * @class Extent property.
- */
-EchoApp.Extent = Core.extend({
-
-    $static: {
-        
-        /**
-         * Regular expression to parse string based extents, e.g., "20px".
-         * Returned part 1 is the value, part 2 is the units (or blank).
-         */
-        _PATTERN: /^(-?\d+(?:\.\d+)?)(.+)?$/
-    },
-    
-    /**
-     * Property class name.
-     * @type String
-     * @final
-     */
-    className: "Extent",
-
-    /**
-     * The dimensionless value of the extent, e.g., 30.
-     * @type Number 
-     */
-    value: null,
-    
-    /**
-     * The dimension of the extent, e.g., "px", "%", or "in"/
-     * @type String
-     */
-    units: null,
-    
-    /**
-     * Creates a new Extent property.  
-     * This method takes multiple configurations of arguments.
-     * <p>
-     * Configuration 1: Extent (string)
-     * extentString the value of the extent as a string 
-     * <p>
-     * Configuration 2: Extent(value, units)
-     * value the numeric value portion of the extent 
-     * units the units of the extent, e.g. "%" or "px"
-     * 
-     * @constructor
-     */
-    $construct: function() {
-        if (arguments.length == 2) {
-            this.value = arguments[0];
-            this.units = arguments[1];
-        } else {
-            var parts = EchoApp.Extent._PATTERN.exec(arguments[0]);
-            if (!parts) {
-                throw new Error("Invalid Extent: " + arguments[0]);
-            }
-            this.value = parseFloat(parts[1]);
-            this.units = parts[2] ? parts[2] : "px";
-        }
-    },
-    
-    /**
-     * Returns a string representation.
-     * 
-     * @return a string representation
-     * @type String
-     */
-    toString: function() {
-        return this.value + this.units;
     }
 });
 
@@ -1823,13 +1752,11 @@ EchoApp.FillImage = Core.extend({
     
     /**
      * The horizontal aligment/position of the image.
-     * @type EchoApp.Extent
      */
     x: null,
     
     /**
      * The vertical aligment/position of the image.
-     * @type EchoApp.Extent
      */
     y: null,
 
@@ -1847,8 +1774,8 @@ EchoApp.FillImage = Core.extend({
      *         <li>EchoApp.FillImage.REPEAT</li>
      *        </ul>
      *         
-     * @param {EchoApp.Extent} the horizontal alignment/position of the image
-     * @param {EchoApp.Extent} the vertical alignment/position of the image
+     * @param the horizontal alignment/position of the image
+     * @param the vertical alignment/position of the image
      * @constructor
      */
     $construct: function(image, repeat, x, y) {
@@ -1859,16 +1786,8 @@ EchoApp.FillImage = Core.extend({
         }
 
         this.repeat = repeat;
-        if (x == null || x instanceof EchoApp.Extent) {
-            this.x = x;
-        } else {
-            this.x = new EchoApp.Extent(x);
-        }
-        if (y == null || y instanceof EchoApp.Extent) {
-            this.y = y;
-        } else {
-            this.y = new EchoApp.Extent(y);
-        }
+        this.x = x;
+        this.y = y;
     }
 });
 
@@ -2025,7 +1944,7 @@ EchoApp.Font = Core.extend({
     /**
      * The size of the font.
      * 
-     * @type EchoApp.Extent
+     * @type String
      */
     size: null,
 
@@ -2042,7 +1961,7 @@ EchoApp.Font = Core.extend({
      *         <li>EchoApp.Font.OVERLINE</li>
      *         <li>EchoApp.Font.LINE_THROUGH</li>
      *        </ul>
-     * @param {EchoApp.Extent} size the size of the font
+     * @param {String} size the size of the font
      * @constructor
      */
     $construct: function(typeface, style, size) {
@@ -2072,13 +1991,13 @@ EchoApp.ImageReference = Core.extend({
     
     /**
      * The width of the image.
-     * @type EchoApp.Extent
+     * @type String
      */
     width: null, 
     
     /**
      * The height of the image.
-     * @type EchoApp.Extent
+     * @type String
      */
     height: null,
     
@@ -2086,8 +2005,8 @@ EchoApp.ImageReference = Core.extend({
      * Creates a new Image Reference.
      * 
      * @param {String} url the URL from which the image may be obtained
-     * @param {EchoApp.Extent} width the width of the image
-     * @param {EchoApp.Extent} height the height of the image
+     * @param {String} width the width of the image
+     * @param {String} height the height of the image
      * @constructor
      */
     $construct: function(url, width, height) {
@@ -2111,25 +2030,25 @@ EchoApp.Insets = Core.extend({
     
     /**
      * The top inset size.
-     * @type EchoApp.Extent
+     * @type String
      */
     top: null,
     
     /**
      * The right inset size.
-     * @type EchoApp.Extent
+     * @type String
      */
     right: null,
     
     /**
      * The bottom inset size.
-     * @type EchoApp.Extent
+     * @type String
      */
     bottom: null,
     
     /**
      * The left inset size.
-     * @type EchoApp.Extent
+     * @type String
      */
     left: null,
  
@@ -2161,12 +2080,6 @@ EchoApp.Insets = Core.extend({
             values = arguments;
         }
     
-        for (var i = 0; i < values.length; ++i) {
-            if (!(values[i] instanceof EchoApp.Extent)) {
-                values[i] = new EchoApp.Extent(values[i]);
-            }
-        }
-        
         switch (values.length) {
         case 1:
             this.top = this.left = this.right = this.bottom = values[0];
@@ -3395,9 +3308,9 @@ EchoApp.SplitPane = Core.extend(EchoApp.Component, {
         ORIENTATION_VERTICAL_TOP_BOTTOM: 4,
         ORIENTATION_VERTICAL_BOTTOM_TOP: 5,
         
-        DEFAULT_SEPARATOR_POSITION: new EchoApp.Extent("100px"),
-        DEFAULT_SEPARATOR_SIZE_FIXED: new EchoApp.Extent("0px"),
-        DEFAULT_SEPARATOR_SIZE_RESIZABLE: new EchoApp.Extent("4px"),
+        DEFAULT_SEPARATOR_POSITION: 100,
+        DEFAULT_SEPARATOR_SIZE_FIXED: 0,
+        DEFAULT_SEPARATOR_SIZE_RESIZABLE: 4,
         DEFAULT_SEPARATOR_COLOR: "#3f3f4f",
         
         OVERFLOW_AUTO: 0,
@@ -3485,15 +3398,15 @@ EchoApp.WindowPane = Core.extend(EchoApp.Component, {
     },
 
     $static: {
-        DEFAULT_BORDER: new EchoApp.FillImageBorder("#4f4faf", new EchoApp.Insets("20px"), new EchoApp.Insets("3px")),
+        DEFAULT_BORDER: new EchoApp.FillImageBorder("#4f4faf", new EchoApp.Insets(20), new EchoApp.Insets(3)),
         DEFAULT_BACKGROUND: "#ffffff",
         DEFAULT_FOREGROUND: "#000000",
-        DEFAULT_CLOSE_ICON_INSETS: new EchoApp.Insets("4px"),
-        DEFAULT_HEIGHT: new EchoApp.Extent("200px"),
-        DEFAULT_MINIMUM_WIDTH: new EchoApp.Extent("100px"),
-        DEFAULT_MINIMUM_HEIGHT: new EchoApp.Extent("100px"),
-        DEFAULT_TITLE_HEIGHT: new EchoApp.Extent("30px"),
-        DEFAULT_WIDTH: new EchoApp.Extent("400px")
+        DEFAULT_CLOSE_ICON_INSETS: new EchoApp.Insets(4),
+        DEFAULT_HEIGHT: 200,
+        DEFAULT_MINIMUM_WIDTH: 100,
+        DEFAULT_MINIMUM_HEIGHT: 100,
+        DEFAULT_TITLE_HEIGHT: 30,
+        DEFAULT_WIDTH: 400
     },
 
     componentType: "WindowPane",

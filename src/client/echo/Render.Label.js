@@ -5,7 +5,7 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
 
     $static: {
     
-       _defaultIconTextMargin: new EchoApp.Extent(5)
+       _defaultIconTextMargin: 5
     },
     
     $load: function() {

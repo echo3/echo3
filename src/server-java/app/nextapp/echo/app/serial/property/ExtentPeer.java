@@ -77,7 +77,8 @@ implements SerialPropertyPeer {
         
         int extentUnits = suffixConstantMap.get(unitString, -1);
         if (extentUnits == -1) {
-            return null;
+            // Return pixel-based extent.
+            return new Extent(extentValue);
         }
         
         return new Extent(extentValue, extentUnits);

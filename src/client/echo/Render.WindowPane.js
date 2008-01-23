@@ -100,10 +100,10 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
         this._removeBorderListeners();
         
-    	this.component.set("positionX", new EchoApp.Extent(this._windowX, "px"));
-    	this.component.set("positionY", new EchoApp.Extent(this._windowY, "px"));
-    	this.component.set("width", new EchoApp.Extent(this._windowWidth, "px"));
-    	this.component.set("height", new EchoApp.Extent(this._windowHeight, "px"));
+    	this.component.set("positionX", this._windowX);
+    	this.component.set("positionY", this._windowY);
+    	this.component.set("width", this._windowWidth);
+    	this.component.set("height", this._windowHeight);
     	
     	this._userWindowX = this._windowX;
     	this._userWindowY = this._windowY;
@@ -182,8 +182,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._windowPaneDivElement.style.opacity = 1;
         
         this._removeTitleBarListeners();
-    	this.component.set("positionX", new EchoApp.Extent(this._windowX, "px"));
-    	this.component.set("positionY", new EchoApp.Extent(this._windowY, "px"));
+    	this.component.set("positionX", this._windowX);
+    	this.component.set("positionY", this._windowY);
     
     	this._userWindowX = this._windowX;
     	this._userWindowY = this._windowY;
@@ -267,7 +267,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         var positionX = this.component.render("positionX");
         var positionY = this.component.render("positionY");
         this._userWindowX = this._windowX = positionX == null ? null : EchoAppRender.Extent.toPixels(positionX, true); 
-        this._userWindowY = this._windowY = positionY == null ? null :EchoAppRender.Extent.toPixels(positionY, false);
+        this._userWindowY = this._windowY = positionY == null ? null : EchoAppRender.Extent.toPixels(positionY, false);
         this._userWindowWidth = this._windowWidth = EchoAppRender.Extent.toPixels(
                 this.component.render("width", EchoApp.WindowPane.DEFAULT_WIDTH), true);
         this._userWindowHeight = this._windowHeight = EchoAppRender.Extent.toPixels(
@@ -649,8 +649,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
         if (resizable) {
     	    for (var i = 0; i < this._borderDivElements.length; ++i) {
-    	        WebCore.EventProcessor.add(this._borderDivElements[i], "mousedown", 
-    	                Core.method(this, this._processBorderMouseDown), true);
+//    	        WebCore.EventProcessor.add(this._borderDivElements[i], "mousedown", 
+//    	                Core.method(this, this._processBorderMouseDown), true);
     	    }
         }
     },

@@ -17,15 +17,15 @@ EchoRemoteClient.CommandExec.BrowserOpenWindow = {
         
         var features = [];
         if (commandData.width) {
-            if (commandData.width.units == "%") {
-                features.push("width=" + screen.width * commandData.width.value / 100);
+            if (EchoAppRender.Extent.isPercent(commandData.width)) {
+                features.push("width=" + screen.width * parseInt(commandData.width) / 100);
             } else {
                 features.push("width=" + EchoAppRender.Extent.toPixels(commandData.width, true));
             }
         }
         if (commandData.height) {
-            if (commandData.height.units == "%") {
-                features.push("height=" + screen.height * commandData.height.value / 100);
+            if (EchoAppRender.Extent.isPercent(commandData.height)) {
+                features.push("height=" + screen.height * parseInt(commandData.height) / 100);
             } else {
                 features.push("height=" + EchoAppRender.Extent.toPixels(commandData.height, false));
             }

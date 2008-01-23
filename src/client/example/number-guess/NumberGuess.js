@@ -83,7 +83,7 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
     
         EchoApp.Column.call(this, {
             insets: new EchoApp.Insets(30),
-            cellSpacing: new EchoApp.Extent(10),
+            cellSpacing: 10,
             children: [
                 new EchoApp.Label({
                     icon: new EchoApp.ImageReference(
@@ -112,7 +112,7 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                     foreground: "#ffffff",
                     background: "#008f00",
                     insets: new EchoApp.Insets(3, 10),
-                    width: new EchoApp.Extent(200),
+                    width: 200,
                     events: {
                         action: Core.method(this, 
                                 this._processGuess)
@@ -124,7 +124,7 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                     foreground: "#ffffff",
                     background: "#8f0000",
                     insets: new EchoApp.Insets(3, 10),
-                    width: new EchoApp.Extent(200),
+                    width: 200,
                     events: {
                         action: Core.method(this, 
                                 this._startNewGame)
@@ -205,7 +205,7 @@ NumberGuessApp.Congratulator = Core.extend(EchoApp.Column, {
     $construct: function(numberOfTries) {
         EchoApp.Column.call(this, {
             insets: new EchoApp.Insets(30),
-            cellSpacing: new EchoApp.Extent(30),
+            cellSpacing: 30,
             children: [
                 new EchoApp.Label({
                     icon: new EchoApp.ImageReference(
@@ -220,7 +220,7 @@ NumberGuessApp.Congratulator = Core.extend(EchoApp.Column, {
                     text: "Play Again",
                     foreground: "#ffffff",
                     background: "#8f0000",
-                    width: new EchoApp.Extent(200),
+                    width: 200,
                     events: {
                         action: Core.method(
                                 this, this._startNewGame)

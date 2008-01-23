@@ -103,8 +103,8 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
     		EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
     	    var width = layoutData.get("width");
     	    if (width) {
-    	        if (width.units == "%") {
-    		    	tdElement.style.width = width.toString();
+    	        if (EchoAppRender.Extent.isPercent(width)) {
+    		    	tdElement.style.width = width;
     	        } else {
     		    	tdElement.style.width = EchoAppRender.Extent.toPixels(width, true) + "px";
     	        }

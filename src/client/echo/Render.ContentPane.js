@@ -121,11 +121,11 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
                 if (!child.floatingPane) {
                     var contentElement = this._childIdToElementMap[child.renderId];
                     if (this._pendingScrollX) {
-                        contentElement.scrollLeft = this._pendingScrollX.value < 0 ? 1000000 : this._pendingScrollX.value;
+                        contentElement.scrollLeft = parseInt(this._pendingScrollX < 0) ? 1000000 : this._pendingScrollX;
                         this._pendingScrollX = null;
                     }
                     if (this._pendingScrollY) {
-                        contentElement.scrollTop = this._pendingScrollY.value < 0 ? 1000000 : this._pendingScrollY.value;
+                        contentElement.scrollTop = parseInt(this._pendingScrollY) < 0 ? 1000000 : this._pendingScrollY;
                         this._pendingScrollY = null;
                     }
                     break;

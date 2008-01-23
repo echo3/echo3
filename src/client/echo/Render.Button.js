@@ -15,7 +15,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
             return divElement;
         },
 
-        _defaultIconTextMargin: new EchoApp.Extent(5)
+        _defaultIconTextMargin: 5
     },
     
     $load: function() {

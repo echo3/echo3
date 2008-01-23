@@ -441,13 +441,14 @@ EchoSerial.PropertyTranslator.Border = {
 EchoSerial.addPropertyTranslator("Border", EchoSerial.PropertyTranslator.Border);
 EchoSerial.addPropertyTranslator("BO", EchoSerial.PropertyTranslator.Border);
 
+//FIXME delete
 /**
  * Extent PropertyTranslator Singleton.
  */
 EchoSerial.PropertyTranslator.Extent = {
 
     toProperty: function(client, propertyElement) {
-        return new EchoApp.Extent(propertyElement.firstChild.data);
+        return  propertyElement.firstChild.data;
     },
     
     toXml: function(client, propertyElement, propertyValue) {
@@ -545,7 +546,7 @@ EchoSerial.PropertyTranslator.Font = {
             }
         }
         
-        var size = element.getAttribute("sz") ? new EchoApp.Extent(element.getAttribute("sz")) : null;
+        var size = element.getAttribute("sz") ? element.getAttribute("sz") : null;
     
         var style = 0;
         if (element.getAttribute("bo")) { style |= EchoApp.Font.BOLD         };
@@ -572,9 +573,9 @@ EchoSerial.PropertyTranslator.ImageReference = {
             url = client.decompressUrl(url);
         }
         var width = propertyElement.getAttribute("w");
-        width = width ? new EchoApp.Extent(width) : null;
+        width = width ? width : null;
         var height = propertyElement.getAttribute("h");
-        height = height ? new EchoApp.Extent(height) : null;
+        height = height ? height : null;
         
         return new EchoApp.ImageReference(url, width, height);
     }

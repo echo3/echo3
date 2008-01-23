@@ -187,11 +187,33 @@ EchoAppRender.Color = {
 
 EchoAppRender.Extent = { 
 
+    _PATTERN: /^(-?\d+(?:\.\d+)?)(.+)?$/,
+    
+    isPercent: function(extent) {
+        if (extent == null || typeof(extent) == "number") {
+            return false;
+        } else {
+            var parts = this._PATTERN.exec(arguments[0]);
+            if (!parts) {
+                throw new Error("Invalid Extent: " + arguments[0]);
+            }
+            return parts[2] == "%";
+        }
+    },
+
     toPixels: function(extent, horizontal) {
         if (extent == null) {
             return 0;
+        } else if (typeof(extent) == "number") {
+            return extent;
         } else {
-            return WebCore.Measure.extentToPixels(extent.value, extent.units, horizontal);
+            var parts = this._PATTERN.exec(extent);
+            if (!parts) {
+                throw new Error("Invalid Extent: " + extent);
+            }
+            var value = parseFloat(parts[1]);
+            var units = parts[2] ? parts[2] : "px";
+            return WebCore.Measure.extentToPixels(value, units, horizontal);
         }
     }
 };
@@ -349,10 +371,10 @@ EchoAppRender.Insets = {
     
     toPixels: function(insets) {
         return {
-            top: WebCore.Measure.extentToPixels(insets.top.value, insets.top.units, false),
-            right: WebCore.Measure.extentToPixels(insets.right.value, insets.right.units, true),
-            bottom: WebCore.Measure.extentToPixels(insets.bottom.value, insets.bottom.units, false),
-            left: WebCore.Measure.extentToPixels(insets.left.value, insets.left.units, true)
+            top: EchoAppRender.Extent.toPixels(insets.top, false),
+            right: EchoAppRender.Extent.toPixels(insets.right, true),
+            bottom: EchoAppRender.Extent.toPixels(insets.bottom, false),
+            left: EchoAppRender.Extent.toPixels(insets.left, true)
         };
     }
 };

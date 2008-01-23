@@ -7,12 +7,19 @@
 EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
 
     $static: {
-
+    
         /**    
          * @class Describes the configuration of a child pane of the SplitPane,
          *        including the child component and scroll bar positions.
          */
         ChildPane: Core.extend({
+        
+            minimumSize: 100,
+            maximumSize: null,
+            component: null,
+            layoutData: null,
+            scrollLeft: 0,
+            scrolltop: 0,
         
             /**
              * Creates a new PaneConfiguration instance
@@ -27,13 +34,13 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                 if (this.layoutData) {
                     var extent;
                     extent = this.layoutData.get("minimumSize");
-                    this.minimumSize = extent ? WebCore.Measure.extentToPixels(extent.value, extent.units, 
-                            !splitPanePeer._orientationVertical) : 0;
+                    if (extent) {
+                        this.minimumSize = EchoAppRender.Extent.toPixels(extent, !splitPanePeer._orientationVertical);
+                    }
                     extent = this.layoutData.get("maximumSize");
-                    this.maximumSize = extent ? WebCore.Measure.extentToPixels(extent.value, extent.units, 
-                            !splitPanePeer._orientationVertical) : null;
-                } else {
-                    this.minimumSize = 100;
+                    if (extent) {
+                        this.maximumSize = EchoAppRender.Extent.toPixels(extent, !splitPanePeer._orientationVertical);
+                    }
                 }
             },
             
@@ -239,7 +246,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         WebCore.dragInProgress = false;
     
         this._removeSeparatorListeners();
-        this.component.set("separatorPosition", new EchoApp.Extent(this._separatorPosition));
+        this.component.set("separatorPosition", this._separatorPosition);
         
         // inform renderer that separatorposition is currently drawn as this._separatorPosition
         
@@ -437,10 +444,9 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                 break;
             }
         }
-        var insetsAdjustment = this._getInsetsSizeAdjustment(layoutData);
         
-        var renderingTopLeft = (index == 0 && this._orientationTopLeft)
-                || (index != 0 && !this._orientationTopLeft);
+        var insetsAdjustment = this._getInsetsSizeAdjustment(layoutData);
+        var renderingTopLeft = (index == 0 && this._orientationTopLeft) || (index != 0 && !this._orientationTopLeft);
                 
         if (this._orientationVertical) {
             paneDivElement.style.left = "0px";
@@ -538,9 +544,6 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             fullRender = true;
         } else {
             var removedChildren = update.getRemovedChildren();
-            Core.Debug.consoleWrite(removedChildren 
-            + "/" + (this._childPanes[0] ? this._childPanes[0].component : null) 
-            + "/" + (this._childPanes[1] ? this._childPanes[1].component : null));
             if (removedChildren) {
                 // Remove children.
                 for (var i = 0; i < removedChildren.length; ++i) {

@@ -71,10 +71,10 @@ ArcTest.ComponentSync.TestContainer = Core.extend(EchoArc.ComponentSync, {
         var contentPane = new EchoApp.ContentPane();
         for (var i = 0; i < this.component.children.length; ++i) {
             var windowPane = new EchoApp.WindowPane({
-                positionX: new EchoApp.Extent(120 * (i % 4)),
-                positionY: new EchoApp.Extent(120 * parseInt(i / 4)),
-                width: new EchoApp.Extent(100),
-                height: new EchoApp.Extent(100)
+                positionX: 120 * (i % 4),
+                positionY: 120 * parseInt(i / 4),
+                width: 100,
+                height: 100
             });
             contentPane.add(windowPane);
             
@@ -125,12 +125,12 @@ ArcTest.ComponentSync.TestPane = Core.extend(EchoArc.ComponentSync, {
         contentPane.add(windowPane);
         
         var mainColumn = new EchoApp.Column();
-        mainColumn.set("cellSpacing", new EchoApp.Extent("5px"));
+        mainColumn.set("cellSpacing", 5);
         mainColumn.set("insets", new EchoApp.Insets("10px"));
         windowPane.add(mainColumn);
         
         var controlsRow = new EchoApp.Row();
-        controlsRow.set("cellSpacing", new EchoApp.Extent("10px"));
+        controlsRow.set("cellSpacing", 10);
         mainColumn.add(controlsRow);
         
         var addButton = new EchoApp.Button();

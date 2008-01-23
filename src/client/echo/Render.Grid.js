@@ -396,14 +396,15 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._tableElement, "padding");
     
         var width = this.component.render("width");
-        if (width && WebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.units == "%") {
-            this._renderPercentWidthByMeasure = width.value;
+        
+        if (width && WebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && EchoAppRender.Extent.isPercent(width)) {
+            this._renderPercentWidthByMeasure = parseInt(width);
             width = null;
         }
         
         if (width) {
-            if (width.units == "%") {
-                this._tableElement.style.width = width.toString();
+            if (EchoAppRender.Extent.isPercent(width)) {
+                this._tableElement.style.width = width;
             } else {
                 this._tableElement.style.width = EchoAppRender.Extent.toPixels(width, true) + "px";
             }
@@ -411,8 +412,8 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         
         var height = this.component.render("height");
         if (height) {
-            if (height.units == "%") {
-                this._tableElement.style.height = height.toString();
+            if (EchoAppRender.Extent.isPercent(height)) {
+                this._tableElement.style.height = height;
             } else {
                 this._tableElement.style.height = EchoAppRender.Extent.toPixels(height, false) + "px";
             }
@@ -423,10 +424,10 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
             var colElement = document.createElement("col");
             var width = gridProcessor.xExtents[columnIndex];
             if (width != null) {
-                if (width.units == "%") {
+                if (EchoAppRender.Extent.isPercent(width)) {
                     colElement.width = width.toString();
                 } else {
-                    colElement.width = WebCore.Measure.extentToPixels(width.value, width.units, true);
+                    colElement.width = EchoAppRender.Extent.toPixels(width, true) + "px";
                 }
             }
             colGroupElement.appendChild(colElement);

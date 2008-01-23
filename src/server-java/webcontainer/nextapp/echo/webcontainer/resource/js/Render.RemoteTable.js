@@ -67,8 +67,8 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         this._tableElement.id = this.component.renderId;
         
         var width = this.component.render("width");
-        if (width && WebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && width.units == "%") {
-            this._renderPercentWidthByMeasure = width.value;
+        if (width && WebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && EchoAppRender.Extent.isPercent(width)) {
+            this._renderPercentWidthByMeasure = parseInt(width);
             width = null;
         }
     
@@ -105,10 +105,10 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
                 var colElement = document.createElement("col");
                 var width = this.component.renderIndex("columnWidth", i); 
                 if (width != null) {
-                    if (width.units == "%") {
-                        colElement.width = width.value + (renderRelative ? "*" : "%");
+                    if (EchoAppRender.Extent.isPercent(width)) {
+                        colElement.width = parseInt(width) + (renderRelative ? "*" : "%");
                     } else {
-                        var columnPixels = WebCore.Measure.extentToPixels(width.value, width.units, true);
+                        var columnPixels = EchoAppRender.Extent.toPixels(width, true);
                         if (columnPixelAdjustment) {
                             colElement.width = columnPixels - columnPixelAdjustment;
                         } else {
