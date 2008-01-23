@@ -17,7 +17,7 @@ TestApp = Core.extend(EchoApp.Application, {
     randomColor: function() {
         var colorValue = parseInt(Math.random() * 0x1000000).toString(16);
         colorValue = "#" + "000000".substring(colorValue.length) + colorValue;
-        return new EchoApp.Color(colorValue);
+        return colorValue;
     },
 });
 
@@ -25,7 +25,7 @@ TestApp.TestScreen = Core.extend(EchoApp.ContentPane, {
 
     $construct: function() {
         EchoApp.ContentPane.call(this, {
-            background: new EchoApp.Color("#abcdef"),
+            background: "#abcdef",
             children: [
                 this.testSelectSplitPane = new EchoApp.SplitPane({
                     styleName: "DefaultResizable",
@@ -314,7 +314,7 @@ TestApp.Tests.SplitPane = Core.extend(TestApp.TestPane, {
             return;
         }
         this.splitPane.children[0].set("layoutData", new EchoApp.LayoutData({
-            background: new EchoApp.Color("#3fffaf"),
+            background: "#3fffaf",
             insets: new EchoApp.Insets(5)
         }));
     },
@@ -324,7 +324,7 @@ TestApp.Tests.SplitPane = Core.extend(TestApp.TestPane, {
             return;
         }
         this.splitPane.children[1].set("layoutData", new EchoApp.LayoutData({
-            background: new EchoApp.Color("#afff3f"),
+            background: "#afff3f",
             insets: new EchoApp.Insets(5)
         }));
     },

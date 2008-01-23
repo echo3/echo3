@@ -442,23 +442,6 @@ EchoSerial.addPropertyTranslator("Border", EchoSerial.PropertyTranslator.Border)
 EchoSerial.addPropertyTranslator("BO", EchoSerial.PropertyTranslator.Border);
 
 /**
- * Color PropertyTranslator Singleton.
- */
-EchoSerial.PropertyTranslator.Color = {
-
-    toProperty: function(client, propertyElement) {
-        return new EchoApp.Color(propertyElement.firstChild.data);
-    },
-    
-    toXml: function(client, propertyElement, propertyValue) {
-        propertyElement.appendChild(propertyElement.ownerDocument.createTextNode(propertyValue.value));
-    }
-};
-
-EchoSerial.addPropertyTranslator("Color", EchoSerial.PropertyTranslator.Color);
-EchoSerial.addPropertyTranslator("C", EchoSerial.PropertyTranslator.Color);
-
-/**
  * Extent PropertyTranslator Singleton.
  */
 EchoSerial.PropertyTranslator.Extent = {

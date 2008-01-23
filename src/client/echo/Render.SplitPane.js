@@ -326,9 +326,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     
     renderAdd: function(update, parentElement) {
         this.loadRenderData();
-        var separatorColor = new EchoApp.Color("red"); 
-        var separatorImage = null;
-        
+
         var childCount = this.component.getComponentCount();
         if (childCount > 2) {
             throw new Error("Cannot render SplitPane with more than two child components.");

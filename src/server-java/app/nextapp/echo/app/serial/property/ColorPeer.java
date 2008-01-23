@@ -71,8 +71,7 @@ implements SerialPropertyPeer {
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws SerialException {
-        return fromString(propertyElement.hasAttribute("v") 
-                ? propertyElement.getAttribute("v") : DomUtil.getElementText(propertyElement));
+        return fromString(DomUtil.getElementText(propertyElement));
     }
 
     /**
@@ -82,8 +81,6 @@ implements SerialPropertyPeer {
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue)
     throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
-        propertyElement.setAttribute("t", 
-                (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Color" : "C");
         propertyElement.appendChild(serialContext.getDocument().createTextNode(toString((Color) propertyValue)));
     }
 }

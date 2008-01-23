@@ -94,7 +94,7 @@ EchoAppRender.Border = {
                 this.renderSide(border.sides[renderStrategy[i]], element, this._SIDE_STYLE_NAMES[i]);
             }
         } else {
-            var color = border.color ? border.color.value : null;
+            var color = border.color ? border.color : null;
             element.style.border = EchoAppRender.Extent.toPixels(border.size) + "px " + border.style + " " + (color ? color : "");
         }
     },
@@ -114,7 +114,7 @@ EchoAppRender.Border = {
     },
     
     renderSide: function(borderSide, element, styleName) {
-        var color = borderSide.color ? borderSide.color.value : null;
+        var color = borderSide.color ? borderSide.color : null;
         element.style[styleName] = EchoAppRender.Extent.toPixels(borderSide.size) + "px " + borderSide.style + " " 
                 + (color ? color : "");
     }
@@ -122,14 +122,50 @@ EchoAppRender.Border = {
 
 EchoAppRender.Color = {
 
+    /**
+     * Adjusts the value of the color's RGB values by the
+     * specified amounts, returning a new Color.
+     * The original color is unchanged.
+     * 
+     * @param color the color to adjust (a 24 bit hex value, e.g., #1a2b3c)
+     * @param r the amount to adjust the red value of the color (-255 to 255)
+     * @param g the amount to adjust the green value of the color (-255 to 255)
+     * @param b the amount to adjust the blue value of the color (-255 to 255)
+     * @return the adjusted color (a 24 bit hex value)
+     */
+    adjust: function(value, r, g, b) {
+        var colorInt = parseInt(value.substring(1), 16);
+        var red = parseInt(colorInt / 0x10000) + r;
+        if (red < 0) {
+            red = 0;
+        } else if (red > 255) {
+            red = 255;
+        }
+        var green = parseInt(colorInt / 0x100) % 0x100 + g;
+        if (green < 0) {
+            green = 0;
+        } else if (green > 255) {
+            green = 255;
+        }
+        var blue = colorInt % 0x100 + b;
+        if (blue < 0) {
+            blue = 0;
+        } else if (blue > 255) {
+            blue = 255;
+        }
+        return "#" + (red < 16 ? "0" : "") + red.toString(16)
+                + (green < 16 ? "0" : "") + green.toString(16)
+                + (blue < 16 ? "0" : "") + blue.toString(16); 
+    },
+
     render: function(color, element, styleProperty) {
         if (color) {
-            element.style[styleProperty] = color.value;
+            element.style[styleProperty] = color;
         }
     },
     
     renderClear: function(color, element, styleProperty) {
-        element.style[styleProperty] = color ? color.value : "";
+        element.style[styleProperty] = color ? color : "";
     },
     
     renderComponentProperty: function(component, componentProperty, defaultValue, element, styleProperty) { 
@@ -141,10 +177,10 @@ EchoAppRender.Color = {
     renderFB: function(component, element) { 
         var color;
         if (color = component.render("foreground")) {
-            element.style.color = color.value;
+            element.style.color = color;
         }
         if (color = component.render("background")) {
-            element.style.backgroundColor = color.value;
+            element.style.backgroundColor = color;
         }
     }
 };

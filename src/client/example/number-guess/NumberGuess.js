@@ -95,8 +95,8 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                 this._promptLabel = new EchoApp.Label(),
 
                 this._guessEntryField = new EchoApp.TextField({
-                    background: new EchoApp.Color("#ffffff"),
-                    foreground: new EchoApp.Color("#0000ff"),
+                    background: "#ffffff",
+                    foreground: "#0000ff",
                     layoutData: new EchoApp.LayoutData({
                         insets: new EchoApp.Insets(0, 20)
                     }),
@@ -109,8 +109,8 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                 new EchoApp.Button({
                     text: "Submit Your Guess",
                     actionCommand: "submit guess",
-                    foreground: new EchoApp.Color("#ffffff"),
-                    background: new EchoApp.Color("#008f00"),
+                    foreground: "#ffffff",
+                    background: "#008f00",
                     insets: new EchoApp.Insets(3, 10),
                     width: new EchoApp.Extent(200),
                     events: {
@@ -121,8 +121,8 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
 
                 new EchoApp.Button({
                     text: "Start a New Game",
-                    foreground: new EchoApp.Color("#ffffff"),
-                    background: new EchoApp.Color("#8f0000"),
+                    foreground: "#ffffff",
+                    background: "#8f0000",
                     insets: new EchoApp.Insets(3, 10),
                     width: new EchoApp.Extent(200),
                     events: {
@@ -218,8 +218,8 @@ NumberGuessApp.Congratulator = Core.extend(EchoApp.Column, {
                 }),
                 new EchoApp.Button({
                     text: "Play Again",
-                    foreground: new EchoApp.Color("#ffffff"),
-                    background: new EchoApp.Color("#8f0000"),
+                    foreground: "#ffffff",
+                    background: "#8f0000",
                     width: new EchoApp.Extent(200),
                     events: {
                         action: Core.method(

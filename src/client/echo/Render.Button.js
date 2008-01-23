@@ -309,7 +309,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
             // Render default focus aesthetic.
             var background = this.component.render("background");
             if (background != null) {
-                var newBackground = focusState ? background.adjust(0x20, 0x20, 0x20) : background;
+                var newBackground = focusState ? EchoAppRender.Color.adjust(background, 0x20, 0x20, 0x20) : background;
                 EchoAppRender.Color.render(newBackground, this._divElement, "backgroundColor");
             }
             return;

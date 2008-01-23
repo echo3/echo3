@@ -1568,7 +1568,7 @@ EchoApp.Border = Core.extend({
             
             /** 
              * Border side color
-             * @type EchoApp.Color
+             * @type String
              */ 
             color: null,
             
@@ -1585,7 +1585,7 @@ EchoApp.Border = Core.extend({
                     
                     this.size = new EchoApp.Extent(items[0]);
                     this.style = items[1];
-                    this.color = new EchoApp.Color(items[2]);
+                    this.color = items[2];
                 }
             }
         })
@@ -1631,7 +1631,7 @@ EchoApp.Border = Core.extend({
      * Default border color (used by components that do not support borders
      * with individually specified sides, or in the case of a border that
      * does not individually specify sides).
-     * @type EchoApp.Color
+     * @type String
      */
     color: null,
 
@@ -1670,7 +1670,7 @@ EchoApp.Border = Core.extend({
              * Default border color (used by components that do not support borders
              * with individually specified sides, or in the case of a border that
              * does not individually specify sides).
-             * @type EchoApp.Color
+             * @type String
              */
             this.color = this.sides[0].color;
         } else if (arguments.length == 1 && typeof arguments[0] == "string") {
@@ -1680,109 +1680,12 @@ EchoApp.Border = Core.extend({
             }
             this.size = new EchoApp.Extent(items[0]);
             this.style = items[1];
-            this.color = new EchoApp.Color(items[2]);
+            this.color = items[2];
         } else if (arguments.length == 3) {
             this.size = arguments[0];
             this.style = arguments[1];
             this.color = arguments[2];
         }
-    }
-});
-
-/**
- * @class Color property.
- */
-EchoApp.Color = Core.extend({
-    
-    /**
-     * Property class name.
-     * @type String
-     * @final
-     */
-    className: "Color",
-    
-    /**
-     * The hexadecimal value of the color, e.g., #ab12c3.
-     * @type String
-     */
-    value: null,
-    
-    /**
-     * Creates a color property.
-     * @constructor
-     * @param value the color hex value
-     */
-    $construct: function(value) {
-        this.value = value;
-    },
-    
-    /**
-     * Adjusts the value of the color's RGB values by the
-     * specified amounts, returning a new Color.
-     * The original color is unchanged.
-     * 
-     * @param r the amount to adjust the red value of the color (-255 to 255)
-     * @param g the amount to adjust the green value of the color (-255 to 255)
-     * @param b the amount to adjust the blue value of the color (-255 to 255)
-     * @return a new adjusted color
-     */
-    adjust: function(r, g, b) {
-        var colorInt = parseInt(this.value.substring(1), 16);
-        var red = parseInt(colorInt / 0x10000) + r;
-        if (red < 0) {
-            red = 0;
-        } else if (red > 255) {
-            red = 255;
-        }
-        var green = parseInt(colorInt / 0x100) % 0x100 + g;
-        if (green < 0) {
-            green = 0;
-        } else if (green > 255) {
-            green = 255;
-        }
-        var blue = colorInt % 0x100 + b;
-        if (blue < 0) {
-            blue = 0;
-        } else if (blue > 255) {
-            blue = 255;
-        }
-        return new EchoApp.Color("#"
-                + (red < 16 ? "0" : "") + red.toString(16)
-                + (green < 16 ? "0" : "") + green.toString(16)
-                + (blue < 16 ? "0" : "") + blue.toString(16)); 
-    },
-    
-    /**
-     * Returns the red value of the color.
-     * 
-     * @return the red value (0-255)
-     * @type Integer
-     */
-    getRed: function() {
-        var colorInt = parseInt(this.value.substring(1), 16);
-        return parseInt(colorInt / 0x10000);
-    },
-    
-    /**
-     * Returns the green value of the color.
-     * 
-     * @return the green value (0-255)
-     * @type Integer
-     */
-    getGreen: function() {
-        var colorInt = parseInt(this.value.substring(1), 16);
-        return parseInt(colorInt / 0x100) % 0x100;
-    },
-    
-    /**
-     * Returns the blue value of the color.
-     * 
-     * @return the blue value (0-255)
-     * @type Integer
-     */
-    getBlue: function() {
-        var colorInt = parseInt(this.value.substring(1), 16);
-        return colorInt % 0x100;
     }
 });
 
@@ -1986,7 +1889,7 @@ EchoApp.FillImageBorder = Core.extend({
     
     /**
      * The border background color.
-     * @type EchoApp.Color
+     * @type String
      */
     color: null,
     
@@ -2016,7 +1919,7 @@ EchoApp.FillImageBorder = Core.extend({
     /**
      * Creates a FillImageBorder
      * 
-     * @param {EchoApp.Color} color the border background color (specify null to enable
+     * @param {String} color the border background color (specify null to enable
      *        a transparent background, such that alpha-rendered PNGs will render properlty)
      * @param {EchoApp.Insets} borderInsets describes the width and 
      *        height of the border images, i.e. the inset to which the border images
@@ -2027,11 +1930,7 @@ EchoApp.FillImageBorder = Core.extend({
      * @constructor
      */
     $construct: function(color, borderInsets, contentInsets, fillImages) {
-        if (color == null || color instanceof EchoApp.Color) {
-            this.color = color;
-        } else {
-            this.color = new EchoApp.Color(color);
-        }
+        this.color = color;
         if (borderInsets == null || borderInsets instanceof EchoApp.Insets) {
             this.borderInsets = borderInsets;
         } else {
@@ -3499,7 +3398,7 @@ EchoApp.SplitPane = Core.extend(EchoApp.Component, {
         DEFAULT_SEPARATOR_POSITION: new EchoApp.Extent("100px"),
         DEFAULT_SEPARATOR_SIZE_FIXED: new EchoApp.Extent("0px"),
         DEFAULT_SEPARATOR_SIZE_RESIZABLE: new EchoApp.Extent("4px"),
-        DEFAULT_SEPARATOR_COLOR: new EchoApp.Color("#3f3f4f"),
+        DEFAULT_SEPARATOR_COLOR: "#3f3f4f",
         
         OVERFLOW_AUTO: 0,
         OVERFLOW_HIDDEN: 1,
@@ -3587,8 +3486,8 @@ EchoApp.WindowPane = Core.extend(EchoApp.Component, {
 
     $static: {
         DEFAULT_BORDER: new EchoApp.FillImageBorder("#4f4faf", new EchoApp.Insets("20px"), new EchoApp.Insets("3px")),
-        DEFAULT_BACKGROUND: new EchoApp.Color("#ffffff"),
-        DEFAULT_FOREGROUND: new EchoApp.Color("#000000"),
+        DEFAULT_BACKGROUND: "#ffffff",
+        DEFAULT_FOREGROUND: "#000000",
         DEFAULT_CLOSE_ICON_INSETS: new EchoApp.Insets("4px"),
         DEFAULT_HEIGHT: new EchoApp.Extent("200px"),
         DEFAULT_MINIMUM_WIDTH: new EchoApp.Extent("100px"),

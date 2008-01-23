@@ -4,7 +4,7 @@
  <s n="TestPane" t="nextapp.echo.app.SplitPane">
   <p n="separatorPosition" t="Extent" v="40px"/>
   <p n="separatorHeight" t="Extent" v="1px"/>
-  <p n="separatorColor" t="Color">#1d1d1d</p>
+  <p n="separatorColor">#1d1d1d</p>
  </s>
  <s n="Default" t="nextapp.echo.app.Table">
   <p n="insets" t="Insets" v="2px 5px"/>

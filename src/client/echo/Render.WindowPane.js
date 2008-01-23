@@ -4,7 +4,7 @@
 EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
 
     $static: {
-        DEFAULT_TITLE_BACKGROUND: new EchoApp.Color("#abcdef"),
+        DEFAULT_TITLE_BACKGROUND: "#abcdef",
         DEFAULT_TITLE_INSETS: new EchoApp.Insets("5px", "10px"),
         ADJUSTMENT_OPACITY: 0.75,
         
@@ -329,7 +329,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 this._borderDivElements[0].style.width = this._borderInsets.left + "px";
                 this._borderDivElements[0].style.height = this._borderInsets.top + "px";
                 if (border.color != null) {
-                    this._borderDivElements[0].style.backgroundColor = border.color.value;
+                    this._borderDivElements[0].style.backgroundColor = border.color;
                 }
                 if (resizable) {
                     this._borderDivElements[0].style.cursor = "nw-resize";
@@ -350,7 +350,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._borderDivElements[1].style.width = borderSideWidth + "px";
             this._borderDivElements[1].style.height = this._borderInsets.top + "px";
             if (border.color != null) {
-                this._borderDivElements[1].style.backgroundColor = border.color.value;
+                this._borderDivElements[1].style.backgroundColor = border.color;
             }
             if (resizable) {
                 this._borderDivElements[1].style.cursor = "n-resize";
@@ -371,7 +371,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 this._borderDivElements[2].style.width = this._borderInsets.right + "px";
                 this._borderDivElements[2].style.height = this._borderInsets.top + "px";
                 if (border.color != null) {
-                    this._borderDivElements[2].style.backgroundColor = border.color.value;
+                    this._borderDivElements[2].style.backgroundColor = border.color;
                 }
                 if (resizable) {
                     this._borderDivElements[2].style.cursor = "ne-resize";
@@ -394,7 +394,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._borderDivElements[3].style.width = this._borderInsets.left + "px";
             this._borderDivElements[3].style.height = borderSideHeight + "px";
             if (border.color != null) {
-                this._borderDivElements[3].style.backgroundColor = border.color.value;
+                this._borderDivElements[3].style.backgroundColor = border.color;
             }
             if (resizable) {
                 this._borderDivElements[3].style.cursor = "w-resize";
@@ -416,7 +416,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._borderDivElements[4].style.width = this._borderInsets.right + "px";
             this._borderDivElements[4].style.height = borderSideHeight + "px";
             if (border.color != null) {
-                this._borderDivElements[4].style.backgroundColor = border.color.value;
+                this._borderDivElements[4].style.backgroundColor = border.color;
             }
             if (resizable) {
                 this._borderDivElements[4].style.cursor = "e-resize";
@@ -440,7 +440,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 this._borderDivElements[5].style.width = this._borderInsets.left + "px";
                 this._borderDivElements[5].style.height = this._borderInsets.bottom + "px";
                 if (border.color != null) {
-                    this._borderDivElements[5].style.backgroundColor = border.color.value;
+                    this._borderDivElements[5].style.backgroundColor = border.color;
                 }
                 if (resizable) {
                     this._borderDivElements[5].style.cursor = "sw-resize";
@@ -461,7 +461,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._borderDivElements[6].style.width = borderSideWidth + "px";
             this._borderDivElements[6].style.height = this._borderInsets.bottom + "px";
             if (border.color != null) {
-                this._borderDivElements[6].style.backgroundColor = border.color.value;
+                this._borderDivElements[6].style.backgroundColor = border.color;
             }
             if (resizable) {
                 this._borderDivElements[6].style.cursor = "s-resize";
@@ -482,7 +482,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 this._borderDivElements[7].style.width = this._borderInsets.right + "px";
                 this._borderDivElements[7].style.height = this._borderInsets.bottom + "px";
                 if (border.color != null) {
-                    this._borderDivElements[7].style.backgroundColor = border.color.value;
+                    this._borderDivElements[7].style.backgroundColor = border.color;
                 }
                 if (resizable) {
                     this._borderDivElements[7].style.cursor = "se-resize";
@@ -553,14 +553,14 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         var titleBackgroundImage = this.component.render("titleBackgroundImage");
     
         if (titleBackground) {
-            this._titleBarDivElement.style.backgroundColor = titleBackground.value;
+            this._titleBarDivElement.style.backgroundColor = titleBackground;
         }
         if (titleBackgroundImage) {
             EchoAppRender.FillImage.render(titleBackgroundImage, this._titleBarDivElement);
         }
     
         if (!titleBackground && !titleBackgroundImage) {
-            this._titleBarDivElement.style.backgroundColor = EchoAppRender.WindowPaneSync.DEFAULT_TITLE_BACKGROUND.value;
+            this._titleBarDivElement.style.backgroundColor = EchoAppRender.WindowPaneSync.DEFAULT_TITLE_BACKGROUND;
         }
         
         // Close Button

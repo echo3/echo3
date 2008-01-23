@@ -4,7 +4,7 @@
 EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
 
     $static: {
-        DEFAULT_BACKGROUND: new EchoApp.Color("#ffffff")
+        DEFAULT_BACKGROUND: "#ffffff"
     },
 
     $load: function() {

@@ -135,13 +135,13 @@ ArcTest.ComponentSync.TestPane = Core.extend(EchoArc.ComponentSync, {
         
         var addButton = new EchoApp.Button();
         addButton.set("text", "Add Label");
-        addButton.set("background", new EchoApp.Color("#00ff00"));
+        addButton.set("background", "#00ff00");
         addButton.addListener("action", Core.method(this, this._processAddButton));
         controlsRow.add(addButton);
     
         var removeButton = new EchoApp.Button();
         removeButton.set("text", "Remove Label");
-        removeButton.set("background", new EchoApp.Color("#ff0000"));
+        removeButton.set("background", "#ff0000");
         removeButton.addListener("action", Core.method(this, this._processRemoveButton));
         controlsRow.add(removeButton);
         
