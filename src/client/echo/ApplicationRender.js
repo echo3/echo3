@@ -65,40 +65,6 @@ EchoAppRender.Alignment = {
             element.style.textAlign = horizontalValue;
             element.style.verticalAlign = verticalValue;
         }
-    },
-
-    renderComponentProperty: function(component, componentProperty, defaultValue, element, renderToElement, referenceComponent) {
-        referenceComponent = referenceComponent ? referenceComponent : component;
-        var alignment = component.render ? component.render(componentProperty)
-                : component.get(componentProperty);
-        if (!alignment) {
-            alignment = defaultValue;
-        }
-        var horizontal = alignment ? EchoAppRender.Alignment.getRenderedHorizontal(alignment, referenceComponent) : null;
-        var vertical = alignment ? alignment.vertical : null;
-        
-        var horizontalValue;
-        switch (horizontal) {
-        case EchoApp.Alignment.LEFT:   horizontalValue = "left";   break;
-        case EchoApp.Alignment.CENTER: horizontalValue = "center"; break;
-        case EchoApp.Alignment.RIGHT:  horizontalValue = "right";  break;
-        default:                       horizontalValue = "";       break;
-        }
-        var verticalValue;
-        switch (vertical) {
-        case EchoApp.Alignment.TOP:    verticalValue = "top";      break;
-        case EchoApp.Alignment.CENTER: verticalValue = "middle";   break;
-        case EchoApp.Alignment.BOTTOM: verticalValue = "bottom";   break;
-        default:                       verticalValue = "";         break;
-        }
-        
-        if (renderToElement) {
-            element.align = horizontalValue;
-            element.vAlign = verticalValue;
-        } else {
-            element.style.textAlign = horizontalValue;
-            element.style.verticalAlign = verticalValue;
-        }
     }
 };
 
@@ -136,12 +102,6 @@ EchoAppRender.Border = {
         } else {
             element.style.border = "";
         }
-    },
-    
-    renderComponentProperty: function(component, componentProperty, defaultValue, element) { 
-        var border = component.render ? component.render(componentProperty)
-                : component.get(componentProperty);
-        this.render(border ? border : defaultValue, element);
     },
     
     renderSide: function(borderSide, element, styleName) {
