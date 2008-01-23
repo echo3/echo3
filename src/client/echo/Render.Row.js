@@ -60,11 +60,8 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Border.render(this.component.render("border"), this._divElement);
         EchoAppRender.Color.renderFB(this.component, this._divElement);
         EchoAppRender.Font.render(this.component.render("font"), this._divElement);
-        
         EchoAppRender.Insets.renderPixel(this.component.render("insets"), this._divElement, "padding");
-        
-        
-        EchoAppRender.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
+        EchoAppRender.Alignment.render(this.component.render("alignment"), this._divElement, true, this.component);
         
         //                div              table      tbody      tr
         this._trElement = this._divElement.firstChild.firstChild.firstChild;
@@ -101,7 +98,7 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         	insets = layoutData.get("insets");
             EchoAppRender.Color.render(layoutData.get("background"), tdElement, "backgroundColor");
             EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
-    		EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
+            EchoAppRender.Alignment.render(layoutData.get("alignment"), tdElement, true, this.component);
     	    var width = layoutData.get("width");
     	    if (width) {
     	        if (EchoAppRender.Extent.isPercent(width)) {

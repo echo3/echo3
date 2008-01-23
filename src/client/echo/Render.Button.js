@@ -232,7 +232,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
                 this._divElement);
         
         EchoAppRender.Insets.renderPixel(this.component.render("insets"), this._divElement, "padding");
-        EchoAppRender.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
+        EchoAppRender.Alignment.render(this.component.render("alignment"), this._divElement, true, this.component);
         
         var toolTipText = this.component.render("toolTipText");
         if (toolTipText) {

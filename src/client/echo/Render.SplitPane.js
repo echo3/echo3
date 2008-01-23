@@ -428,8 +428,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         var layoutData = child.render("layoutData");
         if (layoutData) {
-            EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, paneDivElement, false,
-                    this.component);
+            EchoAppRender.Alignment.render(layoutData.get("alignment"), paneDivElement, false, this.component);
             EchoAppRender.Color.render(layoutData.get("background"), paneDivElement, "backgroundColor");
             EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, paneDivElement);
             if (!child.pane) {

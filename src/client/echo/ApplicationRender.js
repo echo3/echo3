@@ -25,8 +25,9 @@ EchoAppRender = {
 
 EchoAppRender.Alignment = { 
 
-    getRenderedHorizontal: function(alignment, component) {
-        var layoutDirection = component ? component.getRenderLayoutDirection() : EchoApp.LayoutDirection.LTR;
+    getRenderedHorizontal: function(alignment, layoutDirectionProvider) {
+        var layoutDirection = layoutDirectionProvider ? 
+                layoutDirectionProvider.getRenderLayoutDirection() : EchoApp.LayoutDirection.LTR;
         switch (alignment.horizontal) {
         case EchoApp.Alignment.LEADING:
             return layoutDirection.isLeftToRight() ? EchoApp.Alignment.LEFT : EchoApp.Alignment.RIGHT;
@@ -34,6 +35,35 @@ EchoAppRender.Alignment = {
             return layoutDirection.isLeftToRight() ? EchoApp.Alignment.RIGHT : EchoApp.Alignment.LEFT;
         default:
             return alignment.horizontal;
+        }
+    },
+
+    render: function(alignment, element, renderToElement, layoutDirectionProvider) {
+    //FIXME return immediately on alignment == null?
+        var horizontal = alignment ? EchoAppRender.Alignment.getRenderedHorizontal(alignment, layoutDirectionProvider) : null;
+        var vertical = alignment ? alignment.vertical : null;
+        
+        var horizontalValue;
+        switch (horizontal) {
+        case EchoApp.Alignment.LEFT:   horizontalValue = "left";   break;
+        case EchoApp.Alignment.CENTER: horizontalValue = "center"; break;
+        case EchoApp.Alignment.RIGHT:  horizontalValue = "right";  break;
+        default:                       horizontalValue = "";       break;
+        }
+        var verticalValue;
+        switch (vertical) {
+        case EchoApp.Alignment.TOP:    verticalValue = "top";      break;
+        case EchoApp.Alignment.CENTER: verticalValue = "middle";   break;
+        case EchoApp.Alignment.BOTTOM: verticalValue = "bottom";   break;
+        default:                       verticalValue = "";         break;
+        }
+        
+        if (renderToElement) {
+            element.align = horizontalValue;
+            element.vAlign = verticalValue;
+        } else {
+            element.style.textAlign = horizontalValue;
+            element.style.verticalAlign = verticalValue;
         }
     },
 

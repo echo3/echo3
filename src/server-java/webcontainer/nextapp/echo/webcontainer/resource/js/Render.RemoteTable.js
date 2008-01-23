@@ -202,7 +202,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             if (layoutData) {
                 EchoAppRender.Color.render(layoutData.get("background"), tdElement, "backgroundColor");
                 EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
-                EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
+                EchoAppRender.Alignment.render(layoutData.get("alignment"), tdElement, true, this.component);
                 EchoAppRender.Insets.renderPixel(layoutData.get("insets", this._defaultInsets), tdElement, "padding");
             }
     
