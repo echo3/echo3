@@ -65,7 +65,7 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
                 tct.tdElements[1].appendChild(imgElement);
                 this._labelNode = tct.tableElement;
                 this._labelNode.id = this.component.renderId;
-                EchoAppRender.Font.renderComponentProperty(this.component, "font", null, this._labelNode);
+                EchoAppRender.Font.render(this.component.render("font"), this._labelNode);
                 EchoAppRender.Color.renderFB(this.component, this._labelNode);
             } else {
                 // Text without icon.
@@ -83,7 +83,7 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
                     if (!lineWrap) {
                         this._labelNode.style.whiteSpace = "nowrap";
                     }
-                    EchoAppRender.Font.renderComponentProperty(this.component, "font", null, this._labelNode);
+                    EchoAppRender.Font.render(font, this._labelNode);
                     EchoAppRender.Color.renderFB(this.component, this._labelNode);
                 }
             }

@@ -306,7 +306,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._windowPaneDivElement.style.width = this._windowWidth + "px";
         this._windowPaneDivElement.style.height = this._windowHeight + "px";
         
-        EchoAppRender.Font.renderDefault(this.component, this._windowPaneDivElement);
+        EchoAppRender.Font.render(this.component.render("font"), this._windowPaneDivElement);
         
         var borderSideWidth = this._windowWidth - this._borderInsets.left - this._borderInsets.right;
         var borderSideHeight = this._windowHeight - this._borderInsets.top - this._borderInsets.bottom;
@@ -519,7 +519,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 titleTextDivElement.style[WebCore.Environment.CSS_FLOAT] = "left";
             }
             titleTextDivElement.style.whiteSpace = "nowrap";
-            EchoAppRender.Font.renderComponentProperty(this.component, "titleFont", null, titleTextDivElement);
+            EchoAppRender.Font.render(this.component.render("titleFont"), titleTextDivElement);
             EchoAppRender.Insets.renderPixel(this.component.render("titleInsets", 
                     EchoAppRender.WindowPaneSync.DEFAULT_TITLE_INSETS), titleTextDivElement, "padding");
             titleTextDivElement.appendChild(document.createTextNode(title));

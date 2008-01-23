@@ -344,17 +344,6 @@ EchoAppRender.Font = {
             element.style.fontStyle = "";
             element.style.textDecoration = "";
         }
-    },
-    
-    renderComponentProperty: function(component, componentProperty, defaultValue, 
-            element) {
-        var font = component.render ? component.render(componentProperty)
-                : component.get(componentProperty);
-        this.render(font ? font : defaultValue, element);
-    },
-    
-    renderDefault: function(component, element, defaultValue) {
-        this.renderComponentProperty(component, "font", defaultValue, element);
     }
 };
 

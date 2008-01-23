@@ -351,7 +351,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._splitPaneDivElement.style.right = "0px"
         
         EchoAppRender.Color.renderFB(this.component, this._splitPaneDivElement);
-        EchoAppRender.Font.renderDefault(this.component, this._splitPaneDivElement);
+        EchoAppRender.Font.render(this.component.render("font"), this._splitPaneDivElement);
         
         if (this._separatorSize > 0) {
             this._separatorDivElement = document.createElement("div");

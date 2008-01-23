@@ -392,7 +392,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         
         EchoAppRender.Color.renderFB(this.component, this._tableElement);
         EchoAppRender.Border.render(defaultBorder, this._tableElement);
-        EchoAppRender.Font.renderDefault(this.component, this._tableElement);
+        EchoAppRender.Font.render(this.component.render("font"), this._tableElement);
         EchoAppRender.Insets.renderPixel(this.component.render("insets"), this._tableElement, "padding");
     
         var width = this.component.render("width");

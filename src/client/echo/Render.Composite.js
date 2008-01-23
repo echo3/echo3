@@ -10,7 +10,7 @@ EchoAppRender.CompositeSync = Core.extend(EchoRender.ComponentSync, {
     $virtual: {
         renderStyle: function(element) {
             EchoAppRender.Color.renderFB(this.component, element);
-            EchoAppRender.Font.renderDefault(this.component, element);
+            EchoAppRender.Font.render(this.component.render("font"), element);
         }
     },
     

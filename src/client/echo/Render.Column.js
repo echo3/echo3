@@ -38,7 +38,7 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
     
         EchoAppRender.Border.render(this.component.render("border"), this._divElement);
         EchoAppRender.Color.renderFB(this.component, this._divElement);
-        EchoAppRender.Font.renderDefault(this.component, this._divElement);
+        EchoAppRender.Font.render(this.component.render("font"), this._divElement);
         EchoAppRender.Insets.renderPixel(this.component.render("insets"), this._divElement, "padding");
     
         this._cellSpacing = EchoAppRender.Extent.toPixels(this.component.render("cellSpacing"), false);

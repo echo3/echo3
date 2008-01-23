@@ -74,7 +74,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             this._tableElement.style.cursor = "pointer";
         }
         EchoAppRender.Color.renderFB(this.component, this._tableElement);
-        EchoAppRender.Font.renderDefault(this.component, this._tableElement);
+        EchoAppRender.Font.render(this.component.render("font"), this._tableElement);
         var border = this.component.render("border");
         if (border) {
             EchoAppRender.Border.render(border, this._tableElement);
@@ -156,7 +156,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         
         while (tdElement) {
             if (selected) {
-                EchoAppRender.Font.renderComponentProperty(this.component, "selectionFont", null, tdElement);
+                EchoAppRender.Font.render(this.component.render("selectionFont"), tdElement);
                 EchoAppRender.Color.render(this.component.render("selectionForeground"), tdElement, "color");
                 EchoAppRender.Color.render(this.component.render("selectionBackground"), tdElement, "background");
                 EchoAppRender.FillImage.renderComponentProperty(this.component, "selectionBackgroundImage", null, tdElement);
@@ -423,7 +423,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         
         for (var i = 0; i < trElement.cells.length; ++i) {
             var cell = trElement.cells[i];
-            EchoAppRender.Font.renderComponentProperty(this.component, "rolloverFont", null, cell);
+            EchoAppRender.Font.render(this.component.render("rolloverFont"), cell);
             EchoAppRender.Color.render(this.component.render("rolloverForeground"), cell, "color");
             EchoAppRender.Color.render(this.component.render("rolloverBackground"), cell, "background");
             EchoAppRender.FillImage.renderComponentProperty(this.component, "rolloverBackgroundImage", null, cell); 
