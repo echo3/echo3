@@ -52,6 +52,6 @@ EchoRender.ComponentSync.Panel = Core.extend(EchoAppRender.CompositeSync, {
     renderStyle: function(element) {
         EchoAppRender.CompositeSync.prototype.renderStyle.call(this, element);
         EchoAppRender.Border.render(this.component.render("border"), element);
-        EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, element, "padding");
+        EchoAppRender.Insets.renderPixel(this.component.render("insets"), element, "padding");
     }
 });

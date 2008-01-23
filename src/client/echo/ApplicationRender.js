@@ -385,12 +385,6 @@ EchoAppRender.Insets = {
         4: [0, 1, 2, 3] 
     },
 
-    renderComponentProperty: function(component, componentProperty, defaultValue, 
-            element, styleProperty) { 
-        var insets = component.render ? component.render(componentProperty) : component.get(componentProperty);
-        this.renderPixel(insets ? insets : defaultValue, element, styleProperty);
-    },
-    
     renderPixel: function(insets, element, styleAttribute) {
         switch(typeof(insets)) {
             case "number":

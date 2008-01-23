@@ -128,7 +128,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Font.render(
                 EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
                 this._mainElement);
-        EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._mainElement, "padding");
+        EchoAppRender.Insets.renderPixel(this.component.render("insets"), this._mainElement, "padding");
 
         if (this.component.items) {
             for (var i = 0; i < this.component.items.length; ++i) {
@@ -186,7 +186,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Font.render(
                 EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
                 this._divElement);
-        EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
+        EchoAppRender.Insets.renderPixel(this.component.render("insets"), this._divElement, "padding");
 
         if (this.component.items) {
             for (var i = 0; i < this.component.items.length; ++i) {

@@ -60,7 +60,10 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Border.render(this.component.render("border"), this._divElement);
         EchoAppRender.Color.renderFB(this.component, this._divElement);
         EchoAppRender.Font.renderDefault(this.component, this._divElement);
-        EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
+        
+        EchoAppRender.Insets.renderPixel(this.component.render("insets"), this._divElement, "padding");
+        
+        
         EchoAppRender.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
         
         //                div              table      tbody      tr

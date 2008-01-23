@@ -231,7 +231,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
                 EchoAppRender.getEffectProperty(this.component, "backgroundImage", "disabledBackgroundImage", !this._enabled),
                 this._divElement);
         
-        EchoAppRender.Insets.renderComponentProperty(this.component, "insets", null, this._divElement, "padding");
+        EchoAppRender.Insets.renderPixel(this.component.render("insets"), this._divElement, "padding");
         EchoAppRender.Alignment.renderComponentProperty(this.component, "alignment", null, this._divElement, true);
         
         var toolTipText = this.component.render("toolTipText");

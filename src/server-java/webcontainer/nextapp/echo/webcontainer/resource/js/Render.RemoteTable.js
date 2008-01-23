@@ -203,7 +203,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
                 EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
                 EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
                 EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
-                EchoAppRender.Insets.renderComponentProperty(layoutData, "insets", this._defaultInsets, tdElement, "padding");
+                EchoAppRender.Insets.renderPixel(layoutData.get("insets", this._defaultInsets), tdElement, "padding");
             }
     
             EchoRender.renderComponentAdd(update, child, tdElement);
@@ -239,7 +239,8 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
     
     renderUpdate: function(update) {
     	if (!update.hasUpdatedLayoutDataChildren() && !update.getAddedChildren() && !update.getRemovedChildren()) {
-    		if (Core.Arrays.containsAll(EchoAppRender.RemoteTableSync._supportedPartialProperties, update.getUpdatedPropertyNames(), true)) {
+    		if (Core.Arrays.containsAll(EchoAppRender.RemoteTableSync._supportedPartialProperties, 
+    		        update.getUpdatedPropertyNames(), true)) {
     		    // partial update
     			var selectionUpdate = update.getUpdatedProperty("selection");
     			if (selectionUpdate) {

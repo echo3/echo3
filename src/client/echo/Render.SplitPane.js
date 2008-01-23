@@ -433,7 +433,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, paneDivElement, "backgroundColor");
             EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, paneDivElement);
             if (!child.pane) {
-    	        EchoAppRender.Insets.renderComponentProperty(layoutData, "insets", null, paneDivElement, "padding");
+                EchoAppRender.Insets.renderPixel(layoutData.get("insets"), paneDivElement, "padding");
             }
             switch (layoutData.get("overflow")) {
             case EchoApp.SplitPane.OVERFLOW_HIDDEN:
