@@ -169,12 +169,6 @@ EchoAppRender.Color = {
         element.style[styleProperty] = color ? color : "";
     },
     
-    renderComponentProperty: function(component, componentProperty, defaultValue, element, styleProperty) { 
-        var color = component.render ? component.render(componentProperty)
-                : component.get(componentProperty);
-        this.render(color ? color : defaultValue, element, styleProperty);
-    },
-    
     renderFB: function(component, element) { 
         var color;
         if (color = component.render("foreground")) {

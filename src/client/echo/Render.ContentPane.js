@@ -45,9 +45,9 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._divElement.style.overflow = "hidden";
         this._divElement.style.zIndex = "0";
         EchoAppRender.Font.renderDefault(this.component, this._divElement);
-        EchoAppRender.Color.renderComponentProperty(this.component, "background", EchoAppRender.ContentPaneSync.DEFAULT_BACKGROUND,
+        EchoAppRender.Color.render(this.component.render("background", EchoAppRender.ContentPaneSync.DEFAULT_BACKGROUND),
                 this._divElement, "backgroundColor");
-        EchoAppRender.Color.renderComponentProperty(this.component, "foreground", null, this._divElement, "color");
+        EchoAppRender.Color.render(this.component.render("foreground"), this._divElement, "color");
         
         EchoAppRender.FillImage.renderComponentProperty(this.component, "backgroundImage", null, this._divElement); 
     

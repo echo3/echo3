@@ -356,8 +356,8 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (this._separatorSize > 0) {
             this._separatorDivElement = document.createElement("div");
             this._separatorDivElement.style.position = "absolute";
-            EchoAppRender.Color.renderComponentProperty(this.component, "separatorColor",
-                    EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR, this._separatorDivElement, "backgroundColor");
+            EchoAppRender.Color.render(this.component.render("separatorColor", EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR), 
+                    this._separatorDivElement, "backgroundColor");
             this._separatorDivElement.style.fontSize = "1px";
             this._separatorDivElement.style.lineHeight = "0";
             this._separatorDivElement.style.zIndex = "2";
@@ -430,7 +430,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (layoutData) {
             EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, paneDivElement, false,
                     this.component);
-            EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, paneDivElement, "backgroundColor");
+            EchoAppRender.Color.render(layoutData.get("background"), paneDivElement, "backgroundColor");
             EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, paneDivElement);
             if (!child.pane) {
                 EchoAppRender.Insets.renderPixel(layoutData.get("insets"), paneDivElement, "padding");

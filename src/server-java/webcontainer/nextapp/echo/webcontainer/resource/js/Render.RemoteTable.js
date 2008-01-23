@@ -157,8 +157,8 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         while (tdElement) {
             if (selected) {
                 EchoAppRender.Font.renderComponentProperty(this.component, "selectionFont", null, tdElement);
-                EchoAppRender.Color.renderComponentProperty(this.component, "selectionForeground", null, tdElement, "color");
-                EchoAppRender.Color.renderComponentProperty(this.component, "selectionBackground", null, tdElement, "background");
+                EchoAppRender.Color.render(this.component.render("selectionForeground"), tdElement, "color");
+                EchoAppRender.Color.render(this.component.render("selectionBackground"), tdElement, "background");
                 EchoAppRender.FillImage.renderComponentProperty(this.component, "selectionBackgroundImage", null, tdElement);
             } else {
                 tdElement.style.color = "";
@@ -170,7 +170,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
                 var layoutData = child.render("layoutData");
 
                 if (layoutData) {
-                    EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
+                    EchoAppRender.Color.render(layoutData.get("background"), tdElement, "backgroundColor");
                     EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
                 }
             
@@ -200,7 +200,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             var layoutData = child.render("layoutData");
             
             if (layoutData) {
-                EchoAppRender.Color.renderComponentProperty(layoutData, "background", null, tdElement, "backgroundColor");
+                EchoAppRender.Color.render(layoutData.get("background"), tdElement, "backgroundColor");
                 EchoAppRender.FillImage.renderComponentProperty(layoutData, "backgroundImage", null, tdElement);
                 EchoAppRender.Alignment.renderComponentProperty(layoutData, "alignment", null, tdElement, true, this.component);
                 EchoAppRender.Insets.renderPixel(layoutData.get("insets", this._defaultInsets), tdElement, "padding");
@@ -424,8 +424,8 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         for (var i = 0; i < trElement.cells.length; ++i) {
             var cell = trElement.cells[i];
             EchoAppRender.Font.renderComponentProperty(this.component, "rolloverFont", null, cell);
-            EchoAppRender.Color.renderComponentProperty(this.component, "rolloverForeground", null, cell, "color");
-            EchoAppRender.Color.renderComponentProperty(this.component, "rolloverBackground", null, cell, "background");
+            EchoAppRender.Color.render(this.component.render("rolloverForeground"), cell, "color");
+            EchoAppRender.Color.render(this.component.render("rolloverBackground"), cell, "background");
             EchoAppRender.FillImage.renderComponentProperty(this.component, "rolloverBackgroundImage", null, cell); 
         }
     },

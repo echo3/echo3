@@ -547,7 +547,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._titleBarDivElement.style.cursor = "move";
         }
     
-        EchoAppRender.Color.renderComponentProperty(this.component, "titleForeground", null, this._titleBarDivElement, "color");
+        EchoAppRender.Color.render(this.component.render("titleForeground"), this._titleBarDivElement, "color");
     
         var titleBackground = this.component.render("titleBackground");
         var titleBackgroundImage = this.component.render("titleBackgroundImage");
@@ -594,9 +594,9 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._contentDivElement.style.zIndex = 2;
         this._contentDivElement.style.overflow = "auto";
         
-        EchoAppRender.Color.renderComponentProperty(this.component, "background", EchoApp.WindowPane.DEFAULT_BACKGROUND,
+        EchoAppRender.Color.render(this.component.render("background", EchoApp.WindowPane.DEFAULT_BACKGROUND),
                 this._contentDivElement, "backgroundColor");
-        EchoAppRender.Color.renderComponentProperty(this.component, "foreground", EchoApp.WindowPane.DEFAULT_FOREGROUND,
+        EchoAppRender.Color.render(this.component.render("foreground", EchoApp.WindowPane.DEFAULT_FOREGROUND),
                 this._contentDivElement, "color");
     
         this._contentDivElement.style.top = (this._contentInsets.top + this._titleBarHeight) + "px";
