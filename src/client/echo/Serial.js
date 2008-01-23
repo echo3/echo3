@@ -603,14 +603,13 @@ EchoSerial.addPropertyTranslator("N", EchoSerial.PropertyTranslator.Insets);
 EchoSerial.PropertyTranslator.LayoutData = {
 
     toProperty: function(client, propertyElement) {
-        var styleData = {};
-        var layoutData = new EchoApp.LayoutData(styleData);
+        var layoutData = {};
         var element = propertyElement.firstChild;
         while (element) {
             if (element.nodeType == 1) {
                 switch (element.nodeName) {
                 case "p":
-                    EchoSerial.loadProperty(client, element, layoutData, styleData);
+                    EchoSerial.loadProperty(client, element, null, layoutData);
                     break;
                 }
             }

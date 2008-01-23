@@ -95,21 +95,20 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         var layoutData = child.render("layoutData");
         var insets;
         if (layoutData) {
-        	insets = layoutData.get("insets");
-            EchoAppRender.Color.render(layoutData.get("background"), tdElement, "backgroundColor");
-            EchoAppRender.FillImage.render(layoutData.get("backgroundImage"), tdElement);
-            EchoAppRender.Alignment.render(layoutData.get("alignment"), tdElement, true, this.component);
-    	    var width = layoutData.get("width");
-    	    if (width) {
-    	        if (EchoAppRender.Extent.isPercent(width)) {
-    		    	tdElement.style.width = width;
+        	insets = layoutData.insets;
+            EchoAppRender.Color.render(layoutData.background, tdElement, "backgroundColor");
+            EchoAppRender.FillImage.render(layoutData.backgroundImage, tdElement);
+            EchoAppRender.Alignment.render(layoutData.alignment, tdElement, true, this.component);
+    	    if (layoutData.width) {
+    	        if (EchoAppRender.Extent.isPercent(layoutData.width)) {
+    		    	tdElement.style.width = layoutData.width;
     	        } else {
-    		    	tdElement.style.width = EchoAppRender.Extent.cssValue(width, true);
+    		    	tdElement.style.width = EchoAppRender.Extent.cssValue(layoutData.width, true);
     	        }
     	    }
         }
         if (!insets) {
-        	insets = 0;
+        	insets = "0px";
         }
         EchoAppRender.Insets.renderPixel(insets, tdElement, "padding");
         

@@ -97,9 +97,9 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                 this._guessEntryField = new EchoApp.TextField({
                     background: "#ffffff",
                     foreground: "#0000ff",
-                    layoutData: new EchoApp.LayoutData({
+                    layoutData: {
                         insets: "0px 20px"
-                    }),
+                    },
                     events: {
                         action: Core.method(
                                 this, this._processGuess)

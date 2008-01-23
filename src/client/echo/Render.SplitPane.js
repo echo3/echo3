@@ -32,14 +32,13 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                 this.component = component;
                 this.layoutData = component.render("layoutData");
                 if (this.layoutData) {
-                    var extent;
-                    extent = this.layoutData.get("minimumSize");
-                    if (extent) {
-                        this.minimumSize = EchoAppRender.Extent.toPixels(extent, !splitPanePeer._orientationVertical);
+                    if (this.layoutData.minimumSize) {
+                        this.minimumSize = EchoAppRender.Extent.toPixels(this.layoutData.minimumSize, 
+                                !splitPanePeer._orientationVertical);
                     }
-                    extent = this.layoutData.get("maximumSize");
-                    if (extent) {
-                        this.maximumSize = EchoAppRender.Extent.toPixels(extent, !splitPanePeer._orientationVertical);
+                    if (this.layoutData.maximumSize) {
+                        this.maximumSize = EchoAppRender.Extent.toPixels(this.layoutData.maximumSize, 
+                                !splitPanePeer._orientationVertical);
                     }
                 }
             },
@@ -263,10 +262,10 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _getInsetsSizeAdjustment: function(layoutData) {
-        if (!layoutData || !layoutData.get("insets")) {
+        if (!layoutData || layoutData.insets == null || layoutDataInsets == 0) {
             return 0;
         }
-        var layoutDataInsets = EchoAppRender.Insets.toPixels(layoutData.get("insets"));
+        var layoutDataInsets = EchoAppRender.Insets.toPixels(layoutData.insets);
         var adjustment;
         if (this._orientationVertical) {
             adjustment = layoutDataInsets.top + layoutDataInsets.bottom;
@@ -426,13 +425,13 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         var layoutData = child.render("layoutData");
         if (layoutData) {
-            EchoAppRender.Alignment.render(layoutData.get("alignment"), paneDivElement, false, this.component);
-            EchoAppRender.Color.render(layoutData.get("background"), paneDivElement, "backgroundColor");
-            EchoAppRender.FillImage.render(layoutData.get("backgroundImage"), paneDivElement);
+            EchoAppRender.Alignment.render(layoutData.alignment, paneDivElement, false, this.component);
+            EchoAppRender.Color.render(layoutData.background, paneDivElement, "backgroundColor");
+            EchoAppRender.FillImage.render(layoutData.backgroundImage, paneDivElement);
             if (!child.pane) {
-                EchoAppRender.Insets.renderPixel(layoutData.get("insets"), paneDivElement, "padding");
+                EchoAppRender.Insets.renderPixel(layoutData.insets, paneDivElement, "padding");
             }
-            switch (layoutData.get("overflow")) {
+            switch (layoutData.overflow) {
             case EchoApp.SplitPane.OVERFLOW_HIDDEN:
                 paneDivElement.style.overflow = "hidden";
                 break;

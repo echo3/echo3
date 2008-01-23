@@ -82,8 +82,8 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                     var child = this.grid.getComponent(i);
                     var layoutData = child.render("layoutData");
                     if (layoutData) {
-                        var xSpan = layoutData.get(this.horizontalOrientation ? "columnSpan" : "rowSpan"); 
-                        var ySpan = layoutData.get(this.horizontalOrientation ? "rowSpan" : "columnSpan"); 
+                        var xSpan = this.horizontalOrientation ? layoutData.columnSpan : layoutData.rowSpan; 
+                        var ySpan = this.horizontalOrientation ? layoutData.rowSpan : layoutData.columnSpan; 
                         cells.push(new EchoAppRender.GridSync.Processor.Cell(child, i, xSpan ? xSpan : 1, ySpan ? ySpan : 1));
                     } else {
                         cells.push(new EchoAppRender.GridSync.Processor.Cell(child, i, 1, 1));
@@ -487,10 +487,10 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                 
                 var layoutData = cell.component.render("layoutData");
                 if (layoutData) {
-                    EchoAppRender.Insets.renderPixel(layoutData.get("insets"), tdElement, "padding");
-                    EchoAppRender.Alignment.render(layoutData.get("alignment"), tdElement, true, this.component);
-                    EchoAppRender.FillImage.render(layoutData.get("backgroundImage"), tdElement);
-                    EchoAppRender.Color.render(layoutData.get("background"), tdElement, "backgroundColor");
+                    EchoAppRender.Insets.renderPixel(layoutData.insets, tdElement, "padding");
+                    EchoAppRender.Alignment.render(layoutData.alignment, tdElement, true, this.component);
+                    EchoAppRender.FillImage.render(layoutData.backgroundImage, tdElement);
+                    EchoAppRender.Color.render(layoutData.background, tdElement, "backgroundColor");
                 }
                 
                 EchoRender.renderComponentAdd(update, cell.component, tdElement);

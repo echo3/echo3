@@ -221,18 +221,14 @@ TestApp.Tests.Column = Core.extend(TestApp.TestPane, {
         if (this.column.children.length == 0) {
             return;
         }
-        layoutData = new EchoApp.LayoutData();
-        layoutData.set("background", TestApp.randomColor());
-        this.column.children[0].set("layoutData", layoutData);
+        this.column.children[0].set("layoutData", { background: TestApp.randomColor() });
     },
 
     _setLayoutDataInsets: function() {
         if (this.column.children.length == 0) {
             return;
         }
-        layoutData = new EchoApp.LayoutData();
-        layoutData.set("insets", parseInt(Math.random() * 20));
-        this.column.children[0].set("layoutData", layoutData);
+        this.column.children[0].set("layoutData", { insets: parseInt(Math.random() * 20) });
     }
 });
 
@@ -313,20 +309,20 @@ TestApp.Tests.SplitPane = Core.extend(TestApp.TestPane, {
         if (this.splitPane.children.length < 1) {
             return;
         }
-        this.splitPane.children[0].set("layoutData", new EchoApp.LayoutData({
+        this.splitPane.children[0].set("layoutData", {
             background: "#3fffaf",
             insets: 5
-        }));
+        });
     },
 
     _setLayoutData2: function(e) {
         if (this.splitPane.children.length < 2) {
             return;
         }
-        this.splitPane.children[1].set("layoutData", new EchoApp.LayoutData({
+        this.splitPane.children[1].set("layoutData", {
             background: "#afff3f",
             insets: 5
-        }));
+        });
     },
 
     _setOrientationLR: function(e) {

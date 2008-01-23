@@ -1318,66 +1318,6 @@ EchoApp.FocusManager = Core.extend({
 // Fundamental Property Types
 
 /**
- * Describes the interface between a child Component and its parent.
- */
-EchoApp.LayoutData = Core.extend({
-    
-    _localStyle: null,
-    
-    /**
-     * Layout Data Object, describing how a child component is rendered/laid out 
-     * within its parent container.
-     * 
-     * @param properties an associative array containing the initial properties of the layout data
-     * @constructor
-     */
-    $construct: function(properties) {
-        this._localStyle = new EchoApp.Style(properties);
-    },
-    
-    /**
-     * Retrieves a property value.
-     * 
-     * @param {String} name the name of the property
-     * @return the property value
-     */
-    get: function(name) {
-        return this._localStyle.get(name);
-    },
-    
-    /**
-     * Retrieves an indexed property value.
-     * 
-     * @param {String} name the name of the property
-     * @param {Number} the (integer) property index
-     */
-    getIndex: function(name, index) {
-        return this._localStyle.getIndex(name, index);
-    },
-    
-    /**
-     * Sets a property value.
-     * 
-     * @param {String} name the name of the property
-     * @param value the new property value
-     */
-    set: function(name, newValue) {
-        this._localStyle.set(name, newValue);
-    },
-    
-    /**
-     * Sets an indexed property value.
-     * 
-     * @param {String} name the name of the property
-     * @param {Number} the (integer) property index
-     * @param newValue the new property value
-     */
-    setIndex: function(name, index, newValue) {
-        this._localStyle.setIndex(name, index, newValue);
-    }
-});
-
-/**
  * Describes the layout direction of text and content to provide support 
  * for bidirectional localization.
  */

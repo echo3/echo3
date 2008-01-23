@@ -71,13 +71,12 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
     
         var layoutData = child.render("layoutData");
         if (layoutData) {
-            EchoAppRender.Color.render(layoutData.get("background"), divElement, "backgroundColor");
-            EchoAppRender.FillImage.render(layoutData.get("backgroundImage"), divElement);
-            EchoAppRender.Insets.renderPixel(layoutData.get("insets"), divElement, "padding");
-            EchoAppRender.Alignment.render(layoutData.get("alignment"), divElement, true, this.component);
-            var height = layoutData.get("height");
-            if (height) {
-                divElement.style.height = EchoAppRender.Extent.toPixels(height, false) + "px";
+            EchoAppRender.Color.render(layoutData.background, divElement, "backgroundColor");
+            EchoAppRender.FillImage.render(layoutData.backgroundImage, divElement);
+            EchoAppRender.Insets.renderPixel(layoutData.insets, divElement, "padding");
+            EchoAppRender.Alignment.render(layoutData.alignment, divElement, true, this.component);
+            if (layoutData.height) {
+                divElement.style.height = EchoAppRender.Extent.toPixels(layoutData.height, false) + "px";
             }
         }
         

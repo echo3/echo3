@@ -170,8 +170,8 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
                 var layoutData = child.render("layoutData");
 
                 if (layoutData) {
-                    EchoAppRender.Color.render(layoutData.get("background"), tdElement, "backgroundColor");
-                    EchoAppRender.FillImage.render(layoutData.get("backgroundImage"), tdElement);
+                    EchoAppRender.Color.render(layoutData.background, tdElement, "backgroundColor");
+                    EchoAppRender.FillImage.render(layoutData.backgroundImage, tdElement);
                 }
             
             }
@@ -200,10 +200,10 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             var layoutData = child.render("layoutData");
             
             if (layoutData) {
-                EchoAppRender.Color.render(layoutData.get("background"), tdElement, "backgroundColor");
-                EchoAppRender.FillImage.render(layoutData.get("backgroundImage"), tdElement);
-                EchoAppRender.Alignment.render(layoutData.get("alignment"), tdElement, true, this.component);
-                EchoAppRender.Insets.renderPixel(layoutData.get("insets", this._defaultInsets), tdElement, "padding");
+                EchoAppRender.Color.render(layoutData.background, tdElement, "backgroundColor");
+                EchoAppRender.FillImage.render(layoutData.backgroundImage, tdElement);
+                EchoAppRender.Alignment.render(layoutData.alignment, tdElement, true, this.component);
+                EchoAppRender.Insets.renderPixel(layoutData.insets, tdElement, "padding");
             }
     
             EchoRender.renderComponentAdd(update, child, tdElement);
