@@ -126,10 +126,10 @@ EchoAppRender.RemoteListDataTranslator = {
             var text = eElement.getAttribute("t");
             var item = new EchoAppRender.RemoteListDataItem(text);
             if (eElement.getAttribute("f")) {
-                item.foreground = new EchoApp.Color(eElement.getAttribute("f"));
+                item.foreground = eElement.getAttribute("f");
             }
             if (eElement.getAttribute("b")) {
-                item.background = new EchoApp.Color(eElement.getAttribute("b"));
+                item.background = eElement.getAttribute("b");
             }
             if (eElement.firstChild) {
                 var childElement = eElement.firstChild;

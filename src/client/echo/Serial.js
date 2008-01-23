@@ -505,7 +505,6 @@ EchoSerial.PropertyTranslator.FillImageBorder = {
         var borderInsets = fibElement.getAttribute("bi");
         borderInsets = borderInsets ? new EchoApp.Insets(borderInsets) : null;
         var borderColor = fibElement.getAttribute("bc");
-        borderColor = borderColor ? new EchoApp.Color(borderColor) : null;
         var fillImages = [];
         
         var element = fibElement.firstChild;
