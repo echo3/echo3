@@ -74,7 +74,7 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (child.floatingPane) {
             divElement.style.zIndex = "1";
         } else {
-            var insets = this.component.render("insets", new EchoApp.Insets(0));
+            var insets = this.component.render("insets", 0);
             var pixelInsets = EchoAppRender.Insets.toPixels(insets);
             divElement.style.zIndex = "0";
             divElement.style.left = pixelInsets.left + "px";

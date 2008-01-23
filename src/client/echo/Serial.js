@@ -502,9 +502,9 @@ EchoSerial.PropertyTranslator.FillImageBorder = {
     
     _parseElement: function(client, fibElement) {
         var contentInsets = fibElement.getAttribute("ci");
-        contentInsets = contentInsets ? new EchoApp.Insets(contentInsets) : null;
+        contentInsets = contentInsets == "" ? null : contentInsets;
         var borderInsets = fibElement.getAttribute("bi");
-        borderInsets = borderInsets ? new EchoApp.Insets(borderInsets) : null;
+        borderInsets = borderInsets == "" ? null : borderInsets;
         var borderColor = fibElement.getAttribute("bc");
         var fillImages = [];
         
@@ -590,7 +590,7 @@ EchoSerial.addPropertyTranslator("I", EchoSerial.PropertyTranslator.ImageReferen
 EchoSerial.PropertyTranslator.Insets = {
 
     toProperty: function(client, propertyElement) {
-        return new EchoApp.Insets(propertyElement.firstChild.data);
+        return propertyElement.firstChild.data;
     }
 };
 

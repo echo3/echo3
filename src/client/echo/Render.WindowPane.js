@@ -5,7 +5,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
 
     $static: {
         DEFAULT_TITLE_BACKGROUND: "#abcdef",
-        DEFAULT_TITLE_INSETS: new EchoApp.Insets("5px", "10px"),
+        DEFAULT_TITLE_INSETS: [5, 10],
         ADJUSTMENT_OPACITY: 0.75,
         
         adjustOpacity: false

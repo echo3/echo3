@@ -126,7 +126,7 @@ ArcTest.ComponentSync.TestPane = Core.extend(EchoArc.ComponentSync, {
         
         var mainColumn = new EchoApp.Column();
         mainColumn.set("cellSpacing", 5);
-        mainColumn.set("insets", new EchoApp.Insets("10px"));
+        mainColumn.set("insets", 10);
         windowPane.add(mainColumn);
         
         var controlsRow = new EchoApp.Row();

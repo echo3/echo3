@@ -32,10 +32,10 @@ TestApp.TestScreen = Core.extend(EchoApp.ContentPane, {
                     separatorPosition: 180,
                     children: [
                         this.testSelectColumn = new EchoApp.Column({
-                            insets: new EchoApp.Insets("5px 10px")
+                            insets: [5, 10]
                         }),
                         new EchoApp.Column({
-                            insets: new EchoApp.Insets("5px 10px"),
+                            insets: [5, 10],
                             children: [
                                 new EchoApp.Label({
                                     styleName: "Default",
@@ -85,7 +85,7 @@ TestApp.TestPane = Core.extend(EchoApp.ContentPane, {
                     separatorPosition: 180,
                     children: [
                         this.controlsColumn = new EchoApp.Column({
-                            insets: new EchoApp.Insets(5, 10)
+                            insets: [5, 10]
                         }),
                         this.content = new EchoApp.ContentPane()
                     ]
@@ -231,7 +231,7 @@ TestApp.Tests.Column = Core.extend(TestApp.TestPane, {
             return;
         }
         layoutData = new EchoApp.LayoutData();
-        layoutData.set("insets", new EchoApp.Insets(parseInt(Math.random() * 20)));
+        layoutData.set("insets", parseInt(Math.random() * 20));
         this.column.children[0].set("layoutData", layoutData);
     }
 });
@@ -315,7 +315,7 @@ TestApp.Tests.SplitPane = Core.extend(TestApp.TestPane, {
         }
         this.splitPane.children[0].set("layoutData", new EchoApp.LayoutData({
             background: "#3fffaf",
-            insets: new EchoApp.Insets(5)
+            insets: 5
         }));
     },
 
@@ -325,7 +325,7 @@ TestApp.Tests.SplitPane = Core.extend(TestApp.TestPane, {
         }
         this.splitPane.children[1].set("layoutData", new EchoApp.LayoutData({
             background: "#afff3f",
-            insets: new EchoApp.Insets(5)
+            insets: 5
         }));
     },
 

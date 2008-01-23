@@ -1816,14 +1816,14 @@ EchoApp.FillImageBorder = Core.extend({
      * The content insets (defines the content area inside of the border, if smaller than the
      * border insets, the content will overlap the border).
      * 
-     * @type EchoApp.Insets 
+     * @type String 
      */
     contentInsets: null,
     
     /**
      * The border insets 
      * (effectively defines the sizes of the cells where the border FillImages are rendered).
-     * @type EchoApp.Insets 
+     * @type String 
      */
     borderInsets: null,
     
@@ -1840,27 +1840,18 @@ EchoApp.FillImageBorder = Core.extend({
      * 
      * @param {String} color the border background color (specify null to enable
      *        a transparent background, such that alpha-rendered PNGs will render properlty)
-     * @param {EchoApp.Insets} borderInsets describes the width and 
+     * @param {String} borderInsets describes the width and 
      *        height of the border images, i.e. the inset to which the border images
      *        extend inward from the outer edges of the box
-     * @param {EchoApp.Insets} contentInsets describes the inset of
+     * @param {String} contentInsets describes the inset of
      *        the content displayed within the border  (if the content inset is less
      *        than the border inset, the content will be drawn above the border)    
      * @constructor
      */
     $construct: function(color, borderInsets, contentInsets, fillImages) {
         this.color = color;
-        if (borderInsets == null || borderInsets instanceof EchoApp.Insets) {
-            this.borderInsets = borderInsets;
-        } else {
-            this.borderInsets = new EchoApp.Insets(borderInsets);
-        }
-        if (contentInsets == null || contentInsets instanceof EchoApp.Insets) {
-            this.contentInsets = contentInsets;
-        } else {
-            this.contentInsets = new EchoApp.Insets(contentInsets);
-        }
-        
+        this.borderInsets = borderInsets;
+        this.contentInsets = contentInsets;
         this.fillImages = fillImages ? fillImages : new Array(8);
     }
 });
@@ -2013,105 +2004,6 @@ EchoApp.ImageReference = Core.extend({
         this.url = url;
         this.width = width;
         this.height = height;
-    }
-});
-
-/**
- * @class Insets property.  Describes inset margins within a box.
- */
-EchoApp.Insets = Core.extend({
-    
-    /**
-     * Property class name.
-     * @type String
-     * @final
-     */
-    className: "Insets",
-    
-    /**
-     * The top inset size.
-     * @type String
-     */
-    top: null,
-    
-    /**
-     * The right inset size.
-     * @type String
-     */
-    right: null,
-    
-    /**
-     * The bottom inset size.
-     * @type String
-     */
-    bottom: null,
-    
-    /**
-     * The left inset size.
-     * @type String
-     */
-    left: null,
- 
-    /**
-     * Creates a new Insets Property.
-     * 
-     * This method takes multiple parameter configurations:
-     * <ul>
-     *  <li>A string may be passed providing extent values for 1-4 sides of the inset,
-     *   in the following order: top, right, bottom, left.  Any values not specified will
-     *   be derived from the value representing the opposite side inset.</li>
-     *  <li>Additionally, 1-4 values may be provided in the form of Extents or String,
-     *   representing each side of the Insets.</li>
-     * </ul> 
-     * 
-     * @constructor
-     */
-    $construct: function() {
-        var values;
-        if (arguments.length == 1) {
-            if (typeof arguments[0] == "string") {
-                values = arguments[0].split(" ");
-            } else if (arguments[0] instanceof Array) {
-                values = arguments[0];
-            } else {
-                values = arguments;
-            }
-        } else {
-            values = arguments;
-        }
-    
-        switch (values.length) {
-        case 1:
-            this.top = this.left = this.right = this.bottom = values[0];
-            break;
-        case 2:
-            this.top = this.bottom = values[0];
-            this.right = this.left = values[1];
-            break;
-        case 3:
-            this.top = values[0];
-            this.right = this.left = values[1];
-            this.bottom = values[2];
-            break;
-        case 4:
-            this.top = values[0];
-            this.right = values[1];
-            this.bottom = values[2];
-            this.left = values[3];
-            break;
-        default:
-            throw new Error("Invalid Insets construction parameters: " + values);
-        }
-    },
-    
-    /**
-     * Returns a string representation.
-     * 
-     * @return a string representation
-     * @type String
-     */
-    toString: function() {
-        return this.top + " " + this.right + " " + this.bottom + " " + this.left;
     }
 });
 
@@ -3398,10 +3290,10 @@ EchoApp.WindowPane = Core.extend(EchoApp.Component, {
     },
 
     $static: {
-        DEFAULT_BORDER: new EchoApp.FillImageBorder("#4f4faf", new EchoApp.Insets(20), new EchoApp.Insets(3)),
+        DEFAULT_BORDER: new EchoApp.FillImageBorder("#4f4faf", 20, 3),
         DEFAULT_BACKGROUND: "#ffffff",
         DEFAULT_FOREGROUND: "#000000",
-        DEFAULT_CLOSE_ICON_INSETS: new EchoApp.Insets(4),
+        DEFAULT_CLOSE_ICON_INSETS: 4,
         DEFAULT_HEIGHT: 200,
         DEFAULT_MINIMUM_WIDTH: 100,
         DEFAULT_MINIMUM_HEIGHT: 100,

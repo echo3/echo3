@@ -79,6 +79,7 @@ EchoAppRender.Border = {
      */
     _SIDE_STYLE_NAMES: ["borderTop", "borderRight", "borderBottom", "borderLeft"],
     
+    //FIXME. Make this work like similar insets algorithm, bit cleaner.
     /**
      * @private
      */
@@ -187,6 +188,9 @@ EchoAppRender.Color = {
 
 EchoAppRender.Extent = { 
 
+    /**
+     * Regular expression to parse an inset value, e.g., "12px" into its value and unit components.
+     */
     _PATTERN: /^(-?\d+(?:\.\d+)?)(.+)?$/,
     
     isPercent: function(extent) {
@@ -342,12 +346,24 @@ EchoAppRender.Font = {
     }
 };
 
-EchoAppRender.Insets = { 
+EchoAppRender.Insets = {
+
+    _ZERO: { top: 0, right: 0, bottom: 0, left: 0 },
+    
+    /**
+     * Mapping between number of inset values provided and arrays which represent the
+     * inset value index for the top, right, bottom, and left value. 
+     */
+    _INDEX_MAPS: {
+        1: [0, 0, 0, 0], 
+        2: [0, 1, 0, 1], 
+        3: [0, 1, 2, 1], 
+        4: [0, 1, 2, 3] 
+    },
 
     renderComponentProperty: function(component, componentProperty, defaultValue, 
             element, styleProperty) { 
-        var insets = component.render ? component.render(componentProperty)
-                : component.get(componentProperty);
+        var insets = component.render ? component.render(componentProperty) : component.get(componentProperty);
         this.renderPixel(insets ? insets : defaultValue, element, styleProperty);
     },
     
@@ -370,11 +386,26 @@ EchoAppRender.Insets = {
     },
     
     toPixels: function(insets) {
+        if (insets == null) {
+            return this._ZERO;
+        } else if (typeof(insets) == "number") {
+            return { top: insets, right: insets, bottom: insets, left: insets };
+        }
+        
+        if (insets instanceof Array) {
+            // Do nothing.
+        } else if (typeof(insets) == "string") {
+            insets = insets.split(" ");
+        } else {
+            throw new Error("Invalid insets: " + insets);
+        }
+        
+        var map = this._INDEX_MAPS[insets.length];
         return {
-            top: EchoAppRender.Extent.toPixels(insets.top, false),
-            right: EchoAppRender.Extent.toPixels(insets.right, true),
-            bottom: EchoAppRender.Extent.toPixels(insets.bottom, false),
-            left: EchoAppRender.Extent.toPixels(insets.left, true)
+            top: EchoAppRender.Extent.toPixels(insets[map[0]], false),
+            right: EchoAppRender.Extent.toPixels(insets[map[1]], true),
+            bottom: EchoAppRender.Extent.toPixels(insets[map[2]], false),
+            left: EchoAppRender.Extent.toPixels(insets[map[3]], true)
         };
     }
 };

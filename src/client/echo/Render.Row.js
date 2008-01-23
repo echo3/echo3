@@ -5,8 +5,6 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
     
     $static: {
     
-        _defaultCellInsets: new EchoApp.Insets(0),
-        
         _createRowPrototype: function() {
             var divElement = document.createElement("div");
             divElement.style.outlineStyle = "none";
@@ -111,7 +109,7 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
     	    }
         }
         if (!insets) {
-        	insets = EchoAppRender.RowSync._defaultCellInsets;
+        	insets = 0;
         }
         EchoAppRender.Insets.renderPixel(insets, tdElement, "padding");
         

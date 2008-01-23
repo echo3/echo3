@@ -82,7 +82,7 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
         this._randomNumber = Math.floor(Math.random() * 100) + 1;
     
         EchoApp.Column.call(this, {
-            insets: new EchoApp.Insets(30),
+            insets: 30,
             cellSpacing: 10,
             children: [
                 new EchoApp.Label({
@@ -98,7 +98,7 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                     background: "#ffffff",
                     foreground: "#0000ff",
                     layoutData: new EchoApp.LayoutData({
-                        insets: new EchoApp.Insets(0, 20)
+                        insets: [0, 20]
                     }),
                     events: {
                         action: Core.method(
@@ -111,7 +111,7 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                     actionCommand: "submit guess",
                     foreground: "#ffffff",
                     background: "#008f00",
-                    insets: new EchoApp.Insets(3, 10),
+                    insets: [3, 10],
                     width: 200,
                     events: {
                         action: Core.method(this, 
@@ -123,7 +123,7 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                     text: "Start a New Game",
                     foreground: "#ffffff",
                     background: "#8f0000",
-                    insets: new EchoApp.Insets(3, 10),
+                    insets: [3, 10],
                     width: 200,
                     events: {
                         action: Core.method(this, 
@@ -204,7 +204,7 @@ NumberGuessApp.Congratulator = Core.extend(EchoApp.Column, {
      */
     $construct: function(numberOfTries) {
         EchoApp.Column.call(this, {
-            insets: new EchoApp.Insets(30),
+            insets: 30,
             cellSpacing: 30,
             children: [
                 new EchoApp.Label({

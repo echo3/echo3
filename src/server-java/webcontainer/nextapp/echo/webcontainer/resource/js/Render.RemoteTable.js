@@ -50,10 +50,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         this._selectionEnabled = this.component.render("selectionEnabled");
         this._rolloverEnabled = this.component.render("rolloverEnabled");
         
-        this._defaultInsets = this.component.render("insets");
-        if (!this._defaultInsets) {
-            this._defaultInsets = new EchoApp.Insets(0);
-        }
+        this._defaultInsets = this.component.render("insets", 0);
         this._defaultCellPadding = EchoAppRender.Insets.toCssValue(this._defaultInsets);
         
         this._headerVisible = this.component.get("headerVisible");
