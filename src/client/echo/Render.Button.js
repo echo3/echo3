@@ -215,21 +215,24 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         this._divElement = EchoAppRender.ButtonSync._prototypeButton.cloneNode(false); 
         this._divElement.id = this.component.renderId;
     
-        EchoAppRender.Color.render(
-                EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
-                this._divElement, "color");
-        EchoAppRender.Color.render(
-                EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
-                this._divElement, "backgroundColor");
-        EchoAppRender.Border.render(
-                EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
-                this._divElement);
-        EchoAppRender.Font.render(
-                EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
-                this._divElement);
-        EchoAppRender.FillImage.render(
-                EchoAppRender.getEffectProperty(this.component, "backgroundImage", "disabledBackgroundImage", !this._enabled),
-                this._divElement);
+        if (this._enabled) {
+            EchoAppRender.Color.render(this.component.render("foreground"), this._divElement, "color");
+            EchoAppRender.Color.render(this.component.render("background"), this._divElement, "backgroundColor");
+            EchoAppRender.Border.render(this.component.render("border"), this._divElement);
+            EchoAppRender.Font.render(this.component.render("font"), this._divElement);
+            EchoAppRender.FillImage.render(this.component.render("backgroundImage"), this._divElement);
+        } else {
+            EchoAppRender.Color.render(EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
+                    this._divElement, "color");
+            EchoAppRender.Color.render(EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", true), 
+                    this._divElement, "backgroundColor");
+            EchoAppRender.Border.render(EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", true), 
+                    this._divElement);
+            EchoAppRender.Font.render(EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", true), 
+                    this._divElement);
+            EchoAppRender.FillImage.render(EchoAppRender.getEffectProperty(this.component, 
+                    "backgroundImage", "disabledBackgroundImage", true), this._divElement);
+        }
         
         EchoAppRender.Insets.renderPixel(this.component.render("insets"), this._divElement, "padding");
         EchoAppRender.Alignment.render(this.component.render("alignment"), this._divElement, true, this.component);
