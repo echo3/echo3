@@ -108,6 +108,23 @@ EchoAppRender.Border = {
         var color = borderSide.color ? borderSide.color : null;
         element.style[styleName] = EchoAppRender.Extent.toCssValue(borderSide.size) + " " + borderSide.style + " " 
                 + (color ? color : "");
+    },
+    
+    getPixelSize: function(border, side) {
+        if (!border) {
+            return 0;
+        }
+        
+        if (border.multisided) {
+            switch (side) {
+                case "right":  return EchoAppRender.Extent.toPixels(border.sides[1]);
+                case "bottom": return EchoAppRender.Extent.toPixels(border.sides[2]);
+                case "left":   return EchoAppRender.Extent.toPixels(border.sides[3]);
+                default:       return EchoAppRender.Extent.toPixels(border.sides[0]);
+            }
+        } else {
+            return EchoAppRender.Extent.toPixels(border.size);
+        }
     }
 };
 
