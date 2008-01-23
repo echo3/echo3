@@ -504,7 +504,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (icon) {
             var titleIconDivElement = document.createElement("div");
             titleIconDivElement.style[WebCore.Environment.CSS_FLOAT] = "left";
-            EchoAppRender.Insets.renderPixel(this.component.render("iconInsets"), titleIconDivElement, "padding");
+            EchoAppRender.Insets.render(this.component.render("iconInsets"), titleIconDivElement, "padding");
             this._titleBarDivElement.appendChild(titleIconDivElement);
             
             var imgElement = document.createElement("img");
@@ -520,7 +520,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             }
             titleTextDivElement.style.whiteSpace = "nowrap";
             EchoAppRender.Font.render(this.component.render("titleFont"), titleTextDivElement);
-            EchoAppRender.Insets.renderPixel(this.component.render("titleInsets", 
+            EchoAppRender.Insets.render(this.component.render("titleInsets", 
                     EchoAppRender.WindowPaneSync.DEFAULT_TITLE_INSETS), titleTextDivElement, "padding");
             titleTextDivElement.appendChild(document.createTextNode(title));
             this._titleBarDivElement.appendChild(titleTextDivElement);
@@ -571,7 +571,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._closeDivElement.style.right = "0px";
             this._closeDivElement.style.top = "0px";
             this._closeDivElement.style.cursor = "pointer";
-            EchoAppRender.Insets.renderPixel(this.component.render("closeIconInsets", 
+            EchoAppRender.Insets.render(this.component.render("closeIconInsets", 
                     EchoApp.WindowPane.DEFAULT_CLOSE_ICON_INSETS), this._closeDivElement, "padding");
             var closeIcon = this.component.render("closeIcon", this.client.getDefaultImage("Echo.WindowPane.closeIcon")); 
             if (closeIcon) {
@@ -659,7 +659,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (child.pane) {
             this._contentDivElement.style.padding = "0";
         } else {
-            EchoAppRender.Insets.renderPixel(this.component.render("insets"), this._contentDivElement, "padding");
+            EchoAppRender.Insets.render(this.component.render("insets"), this._contentDivElement, "padding");
         }
         EchoRender.renderComponentAdd(update, child, parentElement);
     },

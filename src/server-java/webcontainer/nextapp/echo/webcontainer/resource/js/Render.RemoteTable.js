@@ -203,7 +203,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
                 EchoAppRender.Color.render(layoutData.background, tdElement, "backgroundColor");
                 EchoAppRender.FillImage.render(layoutData.backgroundImage, tdElement);
                 EchoAppRender.Alignment.render(layoutData.alignment, tdElement, true, this.component);
-                EchoAppRender.Insets.renderPixel(layoutData.insets, tdElement, "padding");
+                EchoAppRender.Insets.render(layoutData.insets, tdElement, "padding");
             }
     
             EchoRender.renderComponentAdd(update, child, tdElement);

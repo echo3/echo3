@@ -60,7 +60,7 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Border.render(this.component.render("border"), this._divElement);
         EchoAppRender.Color.renderFB(this.component, this._divElement);
         EchoAppRender.Font.render(this.component.render("font"), this._divElement);
-        EchoAppRender.Insets.renderPixel(this.component.render("insets"), this._divElement, "padding");
+        EchoAppRender.Insets.render(this.component.render("insets"), this._divElement, "padding");
         EchoAppRender.Alignment.render(this.component.render("alignment"), this._divElement, true, this.component);
         
         //                div              table      tbody      tr
@@ -110,7 +110,7 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         if (!insets) {
         	insets = "0px";
         }
-        EchoAppRender.Insets.renderPixel(insets, tdElement, "padding");
+        EchoAppRender.Insets.render(insets, tdElement, "padding");
         
         if (index != null) {
         	var currentChildCount;

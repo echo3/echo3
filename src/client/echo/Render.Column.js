@@ -39,7 +39,7 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Border.render(this.component.render("border"), this._divElement);
         EchoAppRender.Color.renderFB(this.component, this._divElement);
         EchoAppRender.Font.render(this.component.render("font"), this._divElement);
-        EchoAppRender.Insets.renderPixel(this.component.render("insets"), this._divElement, "padding");
+        EchoAppRender.Insets.render(this.component.render("insets"), this._divElement, "padding");
     
         this._cellSpacing = EchoAppRender.Extent.toPixels(this.component.render("cellSpacing"), false);
         if (this._cellSpacing) {
@@ -73,7 +73,7 @@ EchoAppRender.ColumnSync = Core.extend(EchoRender.ComponentSync, {
         if (layoutData) {
             EchoAppRender.Color.render(layoutData.background, divElement, "backgroundColor");
             EchoAppRender.FillImage.render(layoutData.backgroundImage, divElement);
-            EchoAppRender.Insets.renderPixel(layoutData.insets, divElement, "padding");
+            EchoAppRender.Insets.render(layoutData.insets, divElement, "padding");
             EchoAppRender.Alignment.render(layoutData.alignment, divElement, true, this.component);
             if (layoutData.height) {
                 divElement.style.height = EchoAppRender.Extent.toPixels(layoutData.height, false) + "px";

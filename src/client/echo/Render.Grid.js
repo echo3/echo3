@@ -393,7 +393,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Color.renderFB(this.component, this._tableElement);
         EchoAppRender.Border.render(defaultBorder, this._tableElement);
         EchoAppRender.Font.render(this.component.render("font"), this._tableElement);
-        EchoAppRender.Insets.renderPixel(this.component.render("insets"), this._tableElement, "padding");
+        EchoAppRender.Insets.render(this.component.render("insets"), this._tableElement, "padding");
     
         var width = this.component.render("width");
         
@@ -487,7 +487,7 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                 
                 var layoutData = cell.component.render("layoutData");
                 if (layoutData) {
-                    EchoAppRender.Insets.renderPixel(layoutData.insets, tdElement, "padding");
+                    EchoAppRender.Insets.render(layoutData.insets, tdElement, "padding");
                     EchoAppRender.Alignment.render(layoutData.alignment, tdElement, true, this.component);
                     EchoAppRender.FillImage.render(layoutData.backgroundImage, tdElement);
                     EchoAppRender.Color.render(layoutData.background, tdElement, "backgroundColor");

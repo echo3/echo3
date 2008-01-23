@@ -351,7 +351,7 @@ EchoAppRender.Insets = {
         4: [0, 1, 2, 3] 
     },
 
-    renderPixel: function(insets, element, styleAttribute) {
+    render: function(insets, element, styleAttribute) {
         switch(typeof(insets)) {
             case "number":
                 element.style[styleAttribute] = insets + "px";
