@@ -200,7 +200,7 @@ EchoAppRender.Extent = {
                 if (this._FORMATTED_PIXEL_TEST.test(extent)) {
                     return extent;
                 } else {
-                    return this.toPixels(extent, horizontal);
+                    return this.toPixels(extent, horizontal) + "px";
                 }
                 break;
         }
