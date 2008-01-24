@@ -25,37 +25,72 @@ EchoAppRender = {
 
 EchoAppRender.Alignment = { 
 
+    _HORIZONTALS: { left: true, center: true, right: true, leading: true, trailing: true },
+    _VERTICALS: { top: true, middle: true, bottom: true },
+
     getRenderedHorizontal: function(alignment, layoutDirectionProvider) {
+        if (alignment == null) {
+            return null;
+        }
+    
         var layoutDirection = layoutDirectionProvider ? 
                 layoutDirectionProvider.getRenderLayoutDirection() : EchoApp.LayoutDirection.LTR;
-        switch (alignment.horizontal) {
-        case EchoApp.Alignment.LEADING:
-            return layoutDirection.isLeftToRight() ? EchoApp.Alignment.LEFT : EchoApp.Alignment.RIGHT;
-        case EchoApp.Alignment.TRAILING:
-            return layoutDirection.isLeftToRight() ? EchoApp.Alignment.RIGHT : EchoApp.Alignment.LEFT;
+         
+        var horizontal = typeof(alignment) == "object" ? alignment.horizontal : alignment; 
+                
+        switch (horizontal) {
+        case "leading":
+            return layoutDirection.isLeftToRight() ? "left" : "right";
+        case "trailing":
+            return layoutDirection.isLeftToRight() ? "right" : "left";
         default:
+            return horizontal in this._HORIZONTALS ? horizontal : null;
+        }
+    },
+    
+    getHorizontal: function(alignment) {
+        if (alignment == null) {
+            return null;
+        }
+        if (typeof(alignment == "string")) {
+            return alignment.horizontal in this._HORIZONTALS ? alignment.horizontal : null;
+        } else {
             return alignment.horizontal;
         }
     },
 
+    getVertical: function(alignment) {
+        if (alignment == null) {
+            return null;
+        }
+        if (typeof(alignment == "string")) {
+            return alignment.vertical in this._VERTICALS ? alignment.vertical : null;
+        } else {
+            return alignment.vertical;
+        }
+    },
+
     render: function(alignment, element, renderToElement, layoutDirectionProvider) {
-    //FIXME return immediately on alignment == null?
-        var horizontal = alignment ? EchoAppRender.Alignment.getRenderedHorizontal(alignment, layoutDirectionProvider) : null;
-        var vertical = alignment ? alignment.vertical : null;
+        if (alignment == null) {
+            return;
+        }
         
+        var horizontal = EchoAppRender.Alignment.getRenderedHorizontal(alignment, layoutDirectionProvider);
+        var vertical = typeof(alignment) == "object" ? alignment.vertical : alignment;
+    
         var horizontalValue;
         switch (horizontal) {
-        case EchoApp.Alignment.LEFT:   horizontalValue = "left";   break;
-        case EchoApp.Alignment.CENTER: horizontalValue = "center"; break;
-        case EchoApp.Alignment.RIGHT:  horizontalValue = "right";  break;
-        default:                       horizontalValue = "";       break;
+        case "left":   horizontalValue = "left";   break;
+        case "center": horizontalValue = "center"; break;
+        case "right":  horizontalValue = "right";  break;
+        default:       horizontalValue = "";       break;
         }
         var verticalValue;
         switch (vertical) {
-        case EchoApp.Alignment.TOP:    verticalValue = "top";      break;
-        case EchoApp.Alignment.CENTER: verticalValue = "middle";   break;
-        case EchoApp.Alignment.BOTTOM: verticalValue = "bottom";   break;
-        default:                       verticalValue = "";         break;
+        case "top":    verticalValue = "top";      break;
+        case "middle": verticalValue = "middle";   break;
+        case "bottom": verticalValue = "bottom";   break;
+        default:       verticalValue = "";         break;
         }
         
         if (renderToElement) {
@@ -375,24 +410,19 @@ EchoAppRender.Font = {
         if (font.size) {
             element.style.fontSize = EchoAppRender.Extent.toCssValue(font.size);
         }
-        if (font.style) {
-            if (font.style & EchoApp.Font.BOLD) {
-                element.style.fontWeight = "bold";
-            }
-            if (font.style & EchoApp.Font.ITALIC) {
-                element.style.fontStyle = "italic";
-            }
-            if (font.style & EchoApp.Font.UNDERLINE) {
-                element.style.textDecoration = "underline";
-            } else if (font.style & EchoApp.Font.OVERLINE) {
-                element.style.textDecoration = "overline";
-            } else if (font.style & EchoApp.Font.LINE_THROUGH) {
-                element.style.textDecoration = "line-through";
-            }
-        } else if (font.style == EchoApp.Font.PLAIN) {
-            element.style.fontWeight = "";
-            element.style.fontStyle = "";
-            element.style.textDecoration = "";
+
+        if (font.bold) {
+            element.style.fontWeight = "bold";
+        }
+        if (font.italic) {
+            element.style.fontStyle = "italic";
+        }
+        if (font.underline) {
+            element.style.textDecoration = "underline";
+        } else if (font.overline) {
+            element.style.textDecoration = "overline";
+        } else if (font.lineThrough) {
+            element.style.textDecoration = "line-through";
         }
     },
     
@@ -618,21 +648,22 @@ EchoAppRender.TriCellTable = Core.extend({
         TOP_BOTTOM: 2,       // VERTICAL
         BOTTOM_TOP: 3,       // VERTICAL | INVERTED
 
-        //FIXME. this method will need additional information with regard to RTL settings.
+        //FIXME. verify this method will work with  RTL settings (not tested)
         getOrientation: function(component, propertyName) {
             var position = component.render(propertyName);
             var orientation;
+            
             if (position) {
-                switch (position.horizontal) {
-                case EchoApp.Alignment.LEADING:  orientation = this.LEADING_TRAILING; break;
-                case EchoApp.Alignment.TRAILING: orientation = this.TRAILING_LEADING; break;
-                case EchoApp.Alignment.LEFT:     orientation = this.LEADING_TRAILING; break;
-                case EchoApp.Alignment.RIGHT:    orientation = this.TRAILING_LEADING; break;
+                switch (EchoAppRender.Alignment.getRenderedHorizontal(position, component)) {
+                case "leading":  orientation = this.LEADING_TRAILING; break;
+                case "trailing": orientation = this.TRAILING_LEADING; break;
+                case "left":     orientation = this.LEADING_TRAILING; break;
+                case "right":    orientation = this.TRAILING_LEADING; break;
                 default:
                     switch (position.vertical) {
-                    case EchoApp.Alignment.TOP:    orientation = this.TOP_BOTTOM;       break;
-                    case EchoApp.Alignment.BOTTOM: orientation = this.BOTTOM_TOP;       break;
-                    default:                       orientation = this.TRAILING_LEADING; break;
+                    case "top":    orientation = this.TOP_BOTTOM;       break;
+                    case "bottom": orientation = this.BOTTOM_TOP;       break;
+                    default:       orientation = this.TRAILING_LEADING; break;
                     }
                 }
             } else {

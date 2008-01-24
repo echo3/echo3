@@ -377,24 +377,35 @@ EchoSerial.addPropertyTranslator("m", EchoSerial.PropertyTranslator.Map);
  */
 EchoSerial.PropertyTranslator.Alignment = {
 
+    _HORIZONTAL_MAP: {
+        "leading": "leading",
+        "trailing": "trailing",
+        "left": "left",
+        "center": "center",
+        "right": "right"
+    },
+    
+    _VERTICAL_MAP: {
+        "top": "top",
+        "center": "middle",
+        "bottom": "bottom"
+    },
+
     toProperty: function(client, propertyElement) {
         var element = WebCore.DOM.getChildElementByTagName(propertyElement, "a");
-        var h, v;
-        switch (element.getAttribute("h")) {
-        case "leading":  h = EchoApp.Alignment.LEADING;  break;
-        case "trailing": h = EchoApp.Alignment.TRAILING; break;
-        case "left":     h = EchoApp.Alignment.LEFT;     break;
-        case "center":   h = EchoApp.Alignment.CENTER;   break;
-        case "right":    h = EchoApp.Alignment.RIGHT;    break;
-        default:         h = EchoApp.Alignment.DEFAULT;
+        var h = this._HORIZONTAL_MAP[element.getAttribute("h")];
+        var v = this._VERTICAL_MAP[element.getAttribute("v")];
+        
+        if (h) {
+            if (v) {
+                return { horizontal: h, vertical: v };
+            }
+            return h;
         }
-        switch (element.getAttribute("v")) {
-        case "top":      v = EchoApp.Alignment.TOP;      break;
-        case "center":   v = EchoApp.Alignment.CENTER;   break;
-        case "bottom":   v = EchoApp.Alignment.BOTTOM;   break;
-        default:         v = EchoApp.Alignment.DEFAULT;  
+        if (v) {
+            return v;
         }
-        return new EchoApp.Alignment(h, v);
+        return null;
     }
 };
 
@@ -537,24 +548,30 @@ EchoSerial.PropertyTranslator.Font = {
     toProperty: function(client, propertyElement) {
         var element = WebCore.DOM.getChildElementByTagName(propertyElement, "f");
         var tfElements = WebCore.DOM.getChildElementsByTagName(element, "tf");
-        var typefaces = null;
-        if (tfElements.length > 0) {
-            typefaces = new Array(tfElements.length);
+        
+        var font = { };
+        
+        if (tfElements.length > 1) {
+            font.typeface = new Array(tfElements.length);
             for (var i = 0; i < tfElements.length; ++i) {
-                typefaces[i] = tfElements[i].getAttribute("n");
+                font.typeface[i] = tfElements[i].getAttribute("n");
             }
+        } else if (tfElements.length == 1) {
+            font.typeface = tfElements[0].getAttribute("n");
         }
         
-        var size = element.getAttribute("sz") ? element.getAttribute("sz") : null;
-    
-        var style = 0;
-        if (element.getAttribute("bo")) { style |= EchoApp.Font.BOLD         };
-        if (element.getAttribute("it")) { style |= EchoApp.Font.ITALIC       };
-        if (element.getAttribute("un")) { style |= EchoApp.Font.UNDERLINE    };
-        if (element.getAttribute("ov")) { style |= EchoApp.Font.OVERLINE     };
-        if (element.getAttribute("lt")) { style |= EchoApp.Font.LINE_THROUGH };
+        var size = element.getAttribute("sz");
+        if (size) {
+            font.size = size;
+        }
         
-        return new EchoApp.Font(typefaces, style, size);
+        if (element.getAttribute("bo")) { font.bold        = true; }
+        if (element.getAttribute("it")) { font.italic      = true; }
+        if (element.getAttribute("un")) { font.underline   = true; }
+        if (element.getAttribute("ov")) { font.overline    = true; }
+        if (element.getAttribute("lt")) { font.lineThrough = true; }
+        
+        return font;
     }
 };
 

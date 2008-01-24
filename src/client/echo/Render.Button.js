@@ -98,27 +98,6 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         WebCore.EventProcessor.Selection.disable(this._divElement);
     },
     
-    _getCombinedAlignment: function() {
-        var primary = this.component.render("alignment");
-        var secondary = this.component.render("textAlignment");
-        
-        if (primary == null) {
-            return secondary;
-        } else if (secondary == null) {
-            return primary;
-        }
-        
-        var horizontal = primary.horizontal;
-        if (horizontal == EchoApp.Alignment.DEFAULT) {
-            horizontal = secondary.horizontal;
-        }
-        var vertical = primary.vertical;
-        if (vertical == EchoApp.Alignment.DEFAULT) {
-            vertical = secondary.vertical;
-        }
-        return new EchoApp.Alignment(horizontal, vertical);
-    },
-    
     getFocusFlags: function() {
         return EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_ALL;
     },
