@@ -205,14 +205,13 @@ EchoSerial = {
         while (ssChild) {
             if (ssChild.nodeType == 1) {
                 if (ssChild.nodeName == "s") {
-                    var styleData = {};
-                    var style = new EchoApp.Style(styleData);
+                    var style = {};
                     var sChild = ssChild.firstChild;
                     while (sChild) {
                         if (sChild.nodeType == 1) {
                             switch (sChild.nodeName) {
                             case "p":
-                                this.loadProperty(client, sChild, style, styleData, referenceMap);
+                                this.loadProperty(client, sChild, null, style, referenceMap);
                                 break;
                             }
                         }

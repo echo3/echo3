@@ -538,7 +538,7 @@ EchoApp.Component = Core.extend({
     /**
      * Referenced external style
      * @private
-     * @type EchoApp.Style
+     * @type Object
      */
     _style: null,
     
@@ -566,7 +566,7 @@ EchoApp.Component = Core.extend({
     /**
      * Internal style used to store properties set directly on component.
      * @private
-     * @type EchoApp.Style
+     * @type Object
      */
     _localStyle: null,
     
@@ -584,10 +584,9 @@ EchoApp.Component = Core.extend({
      * @constructor
      */
     $construct: function(properties) {
-        
         this.children = [];
+        this._localStyle = { };
         
-        var localStyleProperties = null;
         if (properties) {
             for (var name in properties) {
                 switch (name) {
@@ -605,16 +604,11 @@ EchoApp.Component = Core.extend({
                     }
                     break;
                 default:
-                    if (localStyleProperties == null) {
-                        localStyleProperties = { };
-                    }
-                    localStyleProperties[name] = properties[name];
+                    _localStyle[name] = properties[name];
                     break;
                 }
             }
         }
-        
-        this._localStyle = new EchoApp.Style(localStyleProperties);
     },
 
     /**
@@ -688,7 +682,7 @@ EchoApp.Component = Core.extend({
      * @return the property value
      */
     get: function(name) {
-        return this._localStyle.get(name);
+        return this._localStyle[name];
     },
     
     /**
@@ -720,7 +714,8 @@ EchoApp.Component = Core.extend({
      * @return the property value
      */
     getIndex: function(name, index) {
-        return this._localStyle.getIndex(name, index);
+        var valueArray = this._localStyle[name];
+        return valueArray ? valueArray[index] : null;
     },
     
     /**
@@ -743,7 +738,7 @@ EchoApp.Component = Core.extend({
      *         (an associative array).
      */
     getLocalStyleData: function() {
-        return this._localStyle._properties;
+        return this._localStyle;
     },
     
     /**
@@ -772,7 +767,7 @@ EchoApp.Component = Core.extend({
      * Returns the style assigned to this component, if any.
      * 
      * @return the assigned style
-     * @type EchoApp.Style
+     * @type Object
      */
     getStyle: function() {
         return this._style;
@@ -942,15 +937,15 @@ EchoApp.Component = Core.extend({
      * @return the property value
      */
     render: function(name, defaultValue) {
-        var value = this.get(name);
+        var value = this._localStyle[name];
         if (value == null) {
             if (this._style != null) {
-                value = this._style.get(name);
+                value = this._style[name];
             }
             if (value == null && this._styleName && this.application && this.application._styleSheet) {
                 var style = this.application._styleSheet.getRenderStyle(this._styleName, this.componentType);
                 if (style) {
-                    value = style.get(name);
+                    value = style[name];
                 }
             }
         }
@@ -968,15 +963,18 @@ EchoApp.Component = Core.extend({
      *        specified in an internal property, style, or stylesheet
      */
     renderIndex: function(name, index, defaultValue) {
-        var value = this.getIndex(name, index);
+        var valueArray = this._localStyle[name];
+        var value = valueArray ? valueArray[index] : null;
         if (value == null) {
             if (this._style != null) {
-                value = this._style.getIndex(name, index);
+                valueArray = this._style[name];
+                value = valueArray ? valueArray[index] : null;
             }
             if (value == null && this._styleName && this.application && this.application._styleSheet) {
                 var style = this.application._styleSheet.getRenderStyle(this._styleName, this.componentType);
                 if (style) {
-                    value = style.getIndex(name, index);
+                    valueArray = this.style[name];
+                    value = valueArray ? valueArray[index] : null;
                 }
             }
         }
@@ -1053,8 +1051,8 @@ EchoApp.Component = Core.extend({
      * @param value the new value of the property
      */
     set: function(name, newValue) {
-        var oldValue = this._localStyle.get(name);
-        this._localStyle.set(name, newValue);
+        var oldValue = this._localStyle[name];
+        this._localStyle[name] = newValue;
         if (this._listenerList && this._listenerList.hasListeners("property")) {
             this._listenerList.fireEvent({type: "property", source: this, propertyName: name, 
                     oldValue: oldValue, newValue: newValue});
@@ -1085,10 +1083,21 @@ EchoApp.Component = Core.extend({
      * @param newValue the new value of the property
      */
     setIndex: function(name, index, newValue) {
-        var oldValue = this._localStyle.getIndex(name, index);
-        this._localStyle.setIndex(name, index, newValue);
+        var valueArray = this._localStyle[name];
+        var oldValue = null;
+        if (valueArray) {
+            oldValue = valueArray[index];
+        } else {
+            valueArray = [];
+            this._localStyle[name] = valueArray;
+        }
+        valueArray[index] = newValue;
         if (this.application) {
             this.application.notifyComponentUpdate(this, name, oldValue, newValue);
+        }
+        if (this._listenerList && this._listenerList.hasListeners("property")) {
+            this._listenerList.fireEvent({type: "property", source: this, propertyName: name, index: index,
+                    oldValue: oldValue, newValue: newValue});
         }
     },
     
@@ -1104,7 +1113,7 @@ EchoApp.Component = Core.extend({
     /**
      * Sets the style of the component.
      * 
-     * @param {EchoApp.Style} newValue the new style
+     * @param {Object} newValue the new style
      */
     setStyle: function(newValue) {
         var oldValue = this._style;
@@ -1584,90 +1593,7 @@ EchoApp.Font = Core.extend({
     }
 });
 
-// Styles and StyleSheets
-
-/**
- * @class Component Style.
- */
-EchoApp.Style = Core.extend({ 
-
-    _properties: null, 
-
-    /**
-     * Creates a new Component Syle.
-     *
-     * @param properties (optional) the initial property mapping as an associative array
-     * @constructor
-     */
-    $construct: function(properties) {
-        this._properties = properties ? properties : { };
-    },
-    
-    /**
-     * Returns the value of a property.
-     * 
-     * @param {String} name the name of the property
-     * @return the property value  
-     */
-    get: function(name) {
-        return this._properties[name];
-    },
-    
-    /**
-     * Returns the value of an indexed property.
-     * 
-     * @param {String} name the name of the property
-     * @param {Number} the (integer) index of the property
-     * @return the property value  
-     */
-    getIndex: function(name, index) {
-        var indexValues = this._properties[name];
-        if (!indexValues) {
-            return null;
-        }
-        return indexValues[index];
-    },
-    
-    /**
-     * Sets the value of an indexed property.
-     * 
-     * @param {String} name the name of the property
-     * @param {Number} the (integer) index of the property
-     * @param value the new value of the property 
-     */
-    setIndex: function(name, index, value) {
-        var indexValues = this._properties[name];
-        if (!indexValues) {
-            indexValues = [];
-            this._properties[name] = indexValues;
-        }
-        indexValues[index] = value;
-    },
-    
-    /**
-     * Sets the value of a property.
-     * 
-     * @param {String} name the name of the property
-     * @param value the new value of the property 
-     */
-    set: function(name, newValue) {
-        this._properties[name] = newValue;
-    },
-    
-    /**
-     * Returns a string representation.
-     * 
-     * @return a string representation
-     * @type String
-     */
-    toString: function() {
-        var outArray = [];
-        for (var x in this._properties) {
-            outArray.push(x + "=" + this._properties[x]);
-        }
-        return outArray.toString();
-    }
-});
+// StyleSheets
 
 /**
  * @class
@@ -1693,7 +1619,7 @@ EchoApp.StyleSheet = Core.extend({
      *  @param {String} name the component's style name
      *  @param {String} componentType the type of the component
      *  @return the style
-     *  @type EchoApp.Style
+     *  @type Object
      */
     getRenderStyle: function(name, componentType) {
         // Retrieve style from cache.
@@ -1740,7 +1666,7 @@ EchoApp.StyleSheet = Core.extend({
      * @param {String} name the style name
      * @param {String} componentType the component type
      * @return the style
-     * @type EchoApp.Style
+     * @type Object
      */
     getStyle: function(name, componentType) {
         var typeToStyleMap = this._nameToStyleMap[name];
@@ -1755,7 +1681,7 @@ EchoApp.StyleSheet = Core.extend({
      * 
      * @param {String} name the style name
      * @param {String} componentType the component type
-     * @param {EchoApp.Style} the style
+     * @param {Object} the style
      */
     setStyle: function(name, componentType, style) {
         // Create or clear cache entry for name.
