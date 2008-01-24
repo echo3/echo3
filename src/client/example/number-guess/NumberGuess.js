@@ -86,8 +86,7 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
             cellSpacing: 10,
             children: [
                 new EchoApp.Label({
-                    icon: new EchoApp.ImageReference(
-                            "TitleBanner.png")
+                    icon: "TitleBanner.png"
                 }),
 
                 this._statusLabel = new EchoApp.Label(),
@@ -208,8 +207,7 @@ NumberGuessApp.Congratulator = Core.extend(EchoApp.Column, {
             cellSpacing: 30,
             children: [
                 new EchoApp.Label({
-                    icon: new EchoApp.ImageReference(
-                            "CongratulationsBanner.png")
+                    icon: "CongratulationsBanner.png"
                 }),
                 new EchoApp.Label({
                     text: "You got the correct answer in " 

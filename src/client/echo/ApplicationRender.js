@@ -287,16 +287,28 @@ EchoAppRender.Extent = {
 
 EchoAppRender.FillImage = { 
 
+    _REPEAT_VALUES: {
+        "0": "no-repeat",
+        "x": "repeat-x",
+        "y": "repeat-y",
+        "xy": "repeat",
+        "no-repeat": "no-repeat",
+        "repeat-x": "repeat-x",
+        "repeat-y": "repeat-y",
+        "repeat": "repeat"
+    },
+
     FLAG_ENABLE_IE_PNG_ALPHA_FILTER: 0x1,
     
     render: function(fillImage, element, flags) {
-        if (!fillImage) {
+        if (fillImage == null) {
             // No image specified, do nothing.
             return;
         }
         
-        var url = fillImage.image ? fillImage.image.url : "";
-        
+        var isObject = typeof(fillImage) == "object";
+        var url = isObject ? fillImage.url : fillImage;
+
         if (WebCore.Environment.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED &&
                 flags && (flags & this.FLAG_ENABLE_IE_PNG_ALPHA_FILTER)) {
             // IE6 PNG workaround required.
@@ -307,27 +319,33 @@ EchoAppRender.FillImage = {
             element.style.backgroundImage = "url(" + url + ")";
         }
         
-        if (fillImage.repeat || fillImage.repeat == EchoApp.FillImage.NO_REPEAT) {
-            var repeat;
-            switch (fillImage.repeat) {
-            case EchoApp.FillImage.NO_REPEAT:
-                repeat = "no-repeat";
-                break;
-            case EchoApp.FillImage.REPEAT_HORIZONTAL:
-                repeat = "repeat-x";
-                break;
-            case EchoApp.FillImage.REPEAT_VERTICAL:
-                repeat = "repeat-y";
-                break;
-            default:
-                repeat = "repeat";
+        if (isObject) {
+            if (this._REPEAT_VALUES[fillImage.repeat]) {
+                element.style.backgroundRepeat = this._REPEAT_VALUES[fillImage.repeat]; 
             }
-            element.style.backgroundRepeat = repeat;
+            
+            if (fillImage.x || fillImage.y) {
+                var x, y;
+                if (EchoAppRender.Extent.isPercent(fillImage.x)) {
+                    x = fillImage.x;
+                } else {
+                    x = EchoAppRender.Extent.toPixels(fillImage.x, false);
+                    if (x = "") {
+                        x = "0px";
+                    }
+                }
+                if (EchoAppRender.Extent.isPercent(fillImage.y)) {
+                    y = fillImage.y;
+                } else {
+                    y = EchoAppRender.Extent.toPixels(fillImage.y, false);
+                    if (y = "") {
+                        y = "0px";
+                    }
+                }
+                element.style.backgroundPosition = x + " " + y;
+            }
         }
         
-        if (fillImage.x || fillImage.y) {
-            element.style.backgroundPosition = (fillImage.x ? fillImage.x : "0px") + " " + (fillImage.y ? fillImage.y : "0px");
-        }
     },
     
     renderClear: function(fillImage, element, flags) {
@@ -387,6 +405,31 @@ EchoAppRender.Font = {
             element.style.fontWeight = "";
             element.style.fontStyle = "";
             element.style.textDecoration = "";
+        }
+    }
+};
+
+EchoAppRender.ImageReference = {
+
+    getUrl: function(imageReference) {
+        return imageReference ? (typeof(imageReference) == "string" ? imageReference : imageReference.url) : null;
+    },
+
+    renderImg: function(imageReference, imgElement) {
+        if (!imageReference) {
+            return;
+        }
+        
+        if (typeof(imageReference) == "string") {
+            imgElement.src = imageReference;
+        } else {
+            imgElement.src = imageReference.url;
+            if (imageReference.width) {
+                imgElement.style.width = EchoAppRender.Extent.toCssValue(imageReference.width, true);
+            }
+            if (imageReference.height) {
+                imgElement.style.height = EchoAppRender.Extent.toCssValue(imageReference.height, false);
+            }
         }
     }
 };

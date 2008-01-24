@@ -217,7 +217,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
      * @see EchoClient#getDefaultImage
      */
     getDefaultImage: function(imageName) {
-        return new EchoApp.ImageReference(this._serverUrl + "?sid=Echo.Image&iid=" + imageName);
+        return this._serverUrl + "?sid=Echo.Image&iid=" + imageName;
     },
     
     /**

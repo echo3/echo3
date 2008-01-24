@@ -53,7 +53,7 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
                 var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
                 var tct = new EchoAppRender.TriCellTable(orientation, EchoAppRender.Extent.toPixels(iconTextMargin));
                 var imgElement = document.createElement("img");
-                imgElement.src = icon.url;
+                EchoAppRender.ImageReference.renderImg(icon, imgElement);
                 if (formatWhitespace) {
                     this._formatWhitespace(text, tct.tdElements[0]);
                 } else {
@@ -89,7 +89,7 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
             }
         } else if (icon) {
             var imgElement = document.createElement("img");
-            imgElement.src = icon.url;
+            EchoAppRender.ImageReference.renderImg(icon, imgElement);
             this._labelNode = document.createElement("span");
             this._labelNode.id = this.component.renderId;
             this._labelNode.appendChild(imgElement);

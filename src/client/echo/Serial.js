@@ -474,16 +474,15 @@ EchoSerial.PropertyTranslator.FillImage = {
         if (client.decompressUrl) {
             url = client.decompressUrl(url);
         }
-        var repeat;
-        switch (fiElement.getAttribute("r")) {
-        case "0": repeat = EchoApp.FillImage.NO_REPEAT; break;
-        case "xy": repeat = EchoApp.FillImage.REPEAT; break;
-        case "x": repeat = EchoApp.FillImage.REPEAT_HORIZONTAL; break;
-        case "y": repeat = EchoApp.FillImage.REPEAT_VERTICAL; break;
-        }
+        repeat = fiElement.getAttribute("r");
         var x = fiElement.getAttribute("x");
         var y = fiElement.getAttribute("y");
-        return new EchoApp.FillImage(url, repeat, x, y);
+        
+        if (repeat || x || y) {
+            return { url: url, repeat: repeat, x: x, y: y };
+        } else {
+            return url;
+        }
     }
 };
 
@@ -495,35 +494,36 @@ EchoSerial.addPropertyTranslator("FI", EchoSerial.PropertyTranslator.FillImage);
  */
 EchoSerial.PropertyTranslator.FillImageBorder = {
 
+    _NAMES: [ "topLeft", "top", "topRight", "left", "right", "bottomLeft", "bottom", "bottomRight" ],
+
     toProperty: function(client, propertyElement) {
         var element = WebCore.DOM.getChildElementByTagName(propertyElement, "fib");
         return EchoSerial.PropertyTranslator.FillImageBorder._parseElement(client, element);
     },
     
     _parseElement: function(client, fibElement) {
-        var contentInsets = fibElement.getAttribute("ci");
-        contentInsets = contentInsets == "" ? null : contentInsets;
-        var borderInsets = fibElement.getAttribute("bi");
-        borderInsets = borderInsets == "" ? null : borderInsets;
-        var borderColor = fibElement.getAttribute("bc");
-        var fillImages = [];
+        var fillImageBorder = { 
+            contentInsets: fibElement.getAttribute("ci") == "" ? null : fibElement.getAttribute("ci"),
+            borderInsets: fibElement.getAttribute("bi") == "" ? null : fibElement.getAttribute("bi"),
+            borderColor: fibElement.getAttribute("bc")
+        };
         
         var element = fibElement.firstChild;
+        var i = 0;
         while(element) {
             if (element.nodeType == 1) {
                 if (element.nodeName == "fi") {
-                    fillImages.push(EchoSerial.PropertyTranslator.FillImage._parseElement(client, element));
-                } else if (element.nodeName == "null-fi") {
-                    fillImages.push(null);
+                    fillImageBorder[this._NAMES[i]] = EchoSerial.PropertyTranslator.FillImage._parseElement(client, element);
                 }
             }
+            ++i;
             element = element.nextSibling;
         }
-        if (fillImages.length != 8) {
+        if (i != 8) {
     	    throw new Error("Invalid FillImageBorder image count: " + fillImages.length);
         }
     
-        return new EchoApp.FillImageBorder(borderColor, borderInsets, contentInsets, fillImages);
+        return fillImageBorder;
     }
 };
 
@@ -577,7 +577,11 @@ EchoSerial.PropertyTranslator.ImageReference = {
         var height = propertyElement.getAttribute("h");
         height = height ? height : null;
         
-        return new EchoApp.ImageReference(url, width, height);
+        if (width || height) {
+            return { url: url, width: width, height: height };
+        } else {
+            return url;
+        }
     }
 };
 

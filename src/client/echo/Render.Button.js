@@ -273,14 +273,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
     
     _renderButtonIcon: function(element, icon) {
         var imgElement = document.createElement("img");
-        imgElement.src = icon.url ? icon.url : icon;
-        imgElement.alt = "";
-        if (icon.width) {
-            imgElement.style.width = icon.width.toString();
-        }
-        if (icon.height) {
-            imgElement.style.height = icon.height.toString();
-        }
+        EchoAppRender.ImageReference.renderImg(icon, imgElement);
         element.appendChild(imgElement);
         return imgElement;
     },
@@ -331,9 +324,10 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
             EchoAppRender.Border.renderClear(border, this._divElement);
         
             if (this._iconElement) {
-                var icon = EchoAppRender.getEffectProperty(this.component, "icon", "focusedIcon", focusState);
-                if (icon && icon.url != this._iconElement.src) {
-                    this._iconElement.src = icon.url;
+                var iconUrl = EchoAppRender.ImageReference.getUrl(
+                        EchoAppRender.getEffectProperty(this.component, "icon", "focusedIcon", focusState));
+                if (iconUrl != this._iconElement.src) {
+                    this._iconElement.src = iconUrl;
                 }
             }
         }
@@ -354,9 +348,10 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Border.renderClear(border, this._divElement);
         
         if (this._iconElement) {
-            var icon = EchoAppRender.getEffectProperty(this.component, "icon", "pressedIcon", pressedState);
-            if (icon && icon.url != this._iconElement.src) {
-                this._iconElement.src = icon.url;
+            var iconUrl = EchoAppRender.ImageReference.getUrl(
+                    EchoAppRender.getEffectProperty(this.component, "icon", "pressedIcon", pressedState));
+            if (iconUrl != this._iconElement.src) {
+                this._iconElement.src = iconUrl;
             }
         }
     },
@@ -376,9 +371,10 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Border.renderClear(border, this._divElement);
     
         if (this._iconElement) {
-            var icon = EchoAppRender.getEffectProperty(this.component, "icon", "rolloverIcon", rolloverState);
-            if (icon && icon.url != this._iconElement.src) {
-                this._iconElement.src = icon.url;
+            var iconUrl = EchoAppRender.ImageReference.getUrl(
+                    EchoAppRender.getEffectProperty(this.component, "icon", "rolloverIcon", rolloverState));
+            if (iconUrl != this._iconElement.src) {
+                this._iconElement.src = iconUrl;
             }
         }
     }
@@ -515,7 +511,7 @@ EchoAppRender.CheckBoxSync = Core.extend(EchoAppRender.ToggleButtonSync, {
         var stateElement;
         if (stateIcon) {
             stateElement = document.createElement("img");
-            stateElement.src = stateIcon.url;
+            EchoAppRender.ImageReference.renderImg(stateIcon, stateElement);
         } else {
             stateElement = document.createElement("input");
             stateElement.type = "checkbox";
@@ -532,7 +528,7 @@ EchoAppRender.CheckBoxSync = Core.extend(EchoAppRender.ToggleButtonSync, {
     updateStateElement: function() {
         var stateIcon = this.getStateIcon();
         if (stateIcon) {
-            this._stateElement.src = stateIcon.url;
+            this._stateElement.src = EchoAppRender.ImageReference.getUrl(stateIcon);
         } else {
             this._stateElement.checked = this._selected ? true : false;
         }
@@ -592,7 +588,7 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
         var stateElement;
         if (stateIcon) {
             stateElement = document.createElement("img");
-            stateElement.src = stateIcon.url;
+            EchoAppRender.ImageReference.renderImg(stateIcon, stateElement);
         } else {
             stateElement = document.createElement("input");
             stateElement.type = "radio";
@@ -621,7 +617,7 @@ EchoAppRender.RadioButtonSync = Core.extend(EchoAppRender.ToggleButtonSync, {
     updateStateElement: function() {
         var stateIcon = this.getStateIcon();
         if (stateIcon) {
-            this._stateElement.src = stateIcon.url;
+            this._stateElement.src = EchoAppRender.ImageReference.getUrl(stateIcon);
         } else {
             this._stateElement.checked = this._selected ? true : false;
         }

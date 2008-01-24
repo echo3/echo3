@@ -334,8 +334,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 if (resizable) {
                     this._borderDivElements[0].style.cursor = "nw-resize";
                 }
-                if (border.fillImages[0]) {
-                    EchoAppRender.FillImage.render(border.fillImages[0], this._borderDivElements[0], fillImageFlags);
+                if (border.topLeft) {
+                    EchoAppRender.FillImage.render(border.topLeft, this._borderDivElements[0], fillImageFlags);
                 }
                 this._windowPaneDivElement.appendChild(this._borderDivElements[0]);
             }
@@ -355,8 +355,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             if (resizable) {
                 this._borderDivElements[1].style.cursor = "n-resize";
             }
-            if (border.fillImages[1]) {
-                EchoAppRender.FillImage.render(border.fillImages[1], this._borderDivElements[1], fillImageFlags);
+            if (border.top) {
+                EchoAppRender.FillImage.render(border.top, this._borderDivElements[1], fillImageFlags);
             }
             this._windowPaneDivElement.appendChild(this._borderDivElements[1]);
     
@@ -376,8 +376,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 if (resizable) {
                     this._borderDivElements[2].style.cursor = "ne-resize";
                 }
-                if (border.fillImages[2]) {
-                    EchoAppRender.FillImage.render(border.fillImages[2], this._borderDivElements[2], fillImageFlags);
+                if (border.topRight) {
+                    EchoAppRender.FillImage.render(border.topRight, this._borderDivElements[2], fillImageFlags);
                 }
                 this._windowPaneDivElement.appendChild(this._borderDivElements[2]);
             }
@@ -399,8 +399,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             if (resizable) {
                 this._borderDivElements[3].style.cursor = "w-resize";
             }
-            if (border.fillImages[3]) {
-                EchoAppRender.FillImage.render(border.fillImages[3], this._borderDivElements[3], fillImageFlags);
+            if (border.left) {
+                EchoAppRender.FillImage.render(border.left, this._borderDivElements[3], fillImageFlags);
             }
             this._windowPaneDivElement.appendChild(this._borderDivElements[3]);
         }
@@ -421,8 +421,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             if (resizable) {
                 this._borderDivElements[4].style.cursor = "e-resize";
             }
-            if (border.fillImages[4]) {
-                EchoAppRender.FillImage.render(border.fillImages[4], this._borderDivElements[4], fillImageFlags);
+            if (border.right) {
+                EchoAppRender.FillImage.render(border.right, this._borderDivElements[4], fillImageFlags);
             }
             this._windowPaneDivElement.appendChild(this._borderDivElements[4]);
         }
@@ -445,8 +445,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 if (resizable) {
                     this._borderDivElements[5].style.cursor = "sw-resize";
                 }
-                if (border.fillImages[5]) {
-                    EchoAppRender.FillImage.render(border.fillImages[5], this._borderDivElements[5], fillImageFlags);
+                if (border.bottomLeft) {
+                    EchoAppRender.FillImage.render(border.bottomLeft, this._borderDivElements[5], fillImageFlags);
                 }
                 this._windowPaneDivElement.appendChild(this._borderDivElements[5]);
             }
@@ -466,8 +466,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             if (resizable) {
                 this._borderDivElements[6].style.cursor = "s-resize";
             }
-            if (border.fillImages[6]) {
-                EchoAppRender.FillImage.render(border.fillImages[6], this._borderDivElements[6], fillImageFlags);
+            if (border.bottom) {
+                EchoAppRender.FillImage.render(border.bottom, this._borderDivElements[6], fillImageFlags);
             }
             this._windowPaneDivElement.appendChild(this._borderDivElements[6]);
     
@@ -487,8 +487,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 if (resizable) {
                     this._borderDivElements[7].style.cursor = "se-resize";
                 }
-                if (border.fillImages[7]) {
-                    EchoAppRender.FillImage.render(border.fillImages[7], this._borderDivElements[7], fillImageFlags);
+                if (border.bottomRight) {
+                    EchoAppRender.FillImage.render(border.bottomRight, this._borderDivElements[7], fillImageFlags);
                 }
                 this._windowPaneDivElement.appendChild(this._borderDivElements[7]);
             }
@@ -508,7 +508,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._titleBarDivElement.appendChild(titleIconDivElement);
             
             var imgElement = document.createElement("img");
-            imgElement.src = icon.url;
+            EchoAppRender.ImageReference.renderImg(icon, imgElement);
             titleIconDivElement.appendChild(imgElement);
         }
     
@@ -576,7 +576,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             var closeIcon = this.component.render("closeIcon", this.client.getDefaultImage("Echo.WindowPane.closeIcon")); 
             if (closeIcon) {
                 var imgElement = document.createElement("img");
-                imgElement.src = closeIcon.url;
+                EchoAppRender.ImageReference.renderImg(closeIcon, imgElement);
                 this._closeDivElement.appendChild(imgElement);
             } else {
                 this._closeDivElement.appendChild(document.createTextNode("[X]"));
