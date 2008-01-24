@@ -5,7 +5,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
 
     $static: {
         DEFAULT_DIV_HEIGHT: "6em",
-        DEFAULT_DIV_BORDER: new EchoApp.Border(1, "solid", null),
+        DEFAULT_DIV_BORDER: "1px solid",
         DEFAULT_SELECTED_BACKGROUND: "#0a246a",
         DEFAULT_SELECTED_FOREGROUND: "#ffffff"
     },

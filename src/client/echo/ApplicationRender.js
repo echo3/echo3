@@ -70,44 +70,76 @@ EchoAppRender.Alignment = {
 
 EchoAppRender.Border = {
 
-    //FIXME Add methods here to retrieve/manipulate individual border pieces.
-
     /**
      * Regular expression to validate/parse a CSS border expression, e.g., "1px solid #abcdef".
      * Supports omission of any term, or empty strings.
      */
-    _PARSER: new RegExp("^(-?\d+px *)? ?(none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)? ?(#[0-9a-fA-F]{6})?$"),
+    _PARSER: new RegExp("^(-?\\d+px)?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|" 
+            + "double|groove|ridge|inset|outset)?(?:^|$|(?= )) ?(#[0-9a-fA-F]{6})?$"),
 
     /**
      * Regular expression to validate/parse a pixel-based CSS border expression, e.g., "1px solid #abcdef".
      * Supports omission of any term, or empty strings.
      */
-    _PARSER_PX: new RegExp("^(-?\d+(?:px|pt|pc|cm|mm|in|em|ex|%))?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|"
+    _PARSER_PX: new RegExp("^(-?\\d+(?:px|pt|pc|cm|mm|in|em|ex))?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|"
             + "double|groove|ridge|inset|outset)?(?:^|$|(?= )) ?(#[0-9a-fA-F]{6})?$"),
+            
+    _TEST_EXTENT_PX: /^(-?\d+px*)$/,
+    
+    compose: function(size, style, color) {
+        if (typeof size == "number") {
+            size += "px";
+        }
+        var out = [];
+        if (size) {
+            out.push(size);
+        }
+        if (style) {
+            out.push(style);
+        }
+        if (color) {
+            out.push(color);
+        }
+        return out.join(" ");
+    },
+    
+    parse: function(border) {
+        if (!border) {
+            return { };
+        }
+        if (typeof(border) == "string") {
+            var parts = this._PARSER.exec(border);
+            return { size: parts[1], style: parts[2], color: parts[3] } 
+        } else {
+            // FIXME support multisided borders.
+            return { }
+        }
+    },
 
-    /**
-     * @private
-     */
-    _SIDE_STYLE_NAMES: ["borderTop", "borderRight", "borderBottom", "borderLeft"],
-    
-    //FIXME. Make this work like similar insets algorithm, bit cleaner.
-    /**
-     * @private
-     */
-    _SIDE_RENDER_STRATEGIES: [[0, 1, 2, 3], [0, 1, 2, 1], [0, 1, 0, 1], [0, 0, 0, 0]],
-    
-    render: function(border, element) {
+    render: function(border, element, styleName) {
         if (!border) {
             return;
         }
-        if (border.multisided) {
-            var renderStrategy = this._SIDE_RENDER_STRATEGIES[4 - border.sides.length];
-            for (var i = 0; i < 4; ++i) {
-                this.renderSide(border.sides[renderStrategy[i]], element, this._SIDE_STYLE_NAMES[i]);
+        styleName = styleName ? styleName : "border";
+        if (typeof(border) == "string") {
+            if (this._PARSER_PX.test(border)) {
+                element.style[styleName] = border;
+            } else {
+                var elements = this._PARSER.exec(border);
+                if (elements == null) {
+                    throw new Error("Invalid border: \"" + border + "\"");
+                }
             }
         } else {
-            var color = border.color ? border.color : null;
-            element.style.border = EchoAppRender.Extent.toCssValue(border.size) + " " + border.style + " " + (color ? color : "");
+            // FIXME. impl multisided rendering.
+            if (border.top) {
+                if (border.right) {
+                    if (border.bottom) {
+                        if (border.left) {
+                        }
+                    }
+                }
+            }
         }
     },
     
@@ -118,27 +150,24 @@ EchoAppRender.Border = {
             element.style.border = "";
         }
     },
-    
-    renderSide: function(borderSide, element, styleName) {
-        var color = borderSide.color ? borderSide.color : null;
-        element.style[styleName] = EchoAppRender.Extent.toCssValue(borderSide.size) + " " + borderSide.style + " " 
-                + (color ? color : "");
-    },
-    
+
     getPixelSize: function(border, side) {
         if (!border) {
             return 0;
         }
         
-        if (border.multisided) {
-            switch (side) {
-                case "right":  return EchoAppRender.Extent.toPixels(border.sides[1]);
-                case "bottom": return EchoAppRender.Extent.toPixels(border.sides[2]);
-                case "left":   return EchoAppRender.Extent.toPixels(border.sides[3]);
-                default:       return EchoAppRender.Extent.toPixels(border.sides[0]);
+        if (typeof(border) == "string") {
+            var extent = this._PARSER.exec(border)[1];
+            if (extent == null) {
+                return 0;
+            } else if (this._TEST_EXTENT_PX.test(extent)) {
+                return parseInt(extent);
+            } else {
+                return EchoAppRender.Extent.toPixels(extent);
             }
-        } else {
-            return EchoAppRender.Extent.toPixels(border.size);
+        } else if (typeof(border) == "object") {
+            // FIXME. impl multisided rendering.
+            return 0;
         }
     }
 };

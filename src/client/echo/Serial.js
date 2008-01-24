@@ -410,30 +410,30 @@ EchoSerial.PropertyTranslator.Border = {
     toProperty: function(client, propertyElement) {
         var value = propertyElement.getAttribute("v");
         if (value) {
-            return new EchoApp.Border(value);
+            return value;
         } else {
             var element = WebCore.DOM.getChildElementByTagName(propertyElement, "b");
-            var sides = [];
+            var border = {};
             
             value = element.getAttribute("t");
             if (value) {
-                sides.push(new EchoApp.Border.Side(value));
+                border.top = value;
                 value = element.getAttribute("r");
                 if (value) {
-                    sides.push(new EchoApp.Border.Side(value));
+                    border.right = value;
                     value = element.getAttribute("b");
                     if (value) {
-                        sides.push(new EchoApp.Border.Side(value));
+                        border.bottom = value;
                         value = element.getAttribute("l");
                         if (value) {
-                            sides.push(new EchoApp.Border.Side(value));
+                            border.left = value;
                         }
                     }
                 }
             } else {
                 throw new Error("Invalid multi-sided border: no sides set.");
             }
-            return new EchoApp.Border(sides);
+            return border;
         }
     }
 };
