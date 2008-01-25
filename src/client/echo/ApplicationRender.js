@@ -109,14 +109,14 @@ EchoAppRender.Border = {
      * Regular expression to validate/parse a CSS border expression, e.g., "1px solid #abcdef".
      * Supports omission of any term, or empty strings.
      */
-    _PARSER: new RegExp("^(-?\\d+px)?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|" 
+    _PARSER_PX: new RegExp("^(-?\\d+px)?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|" 
             + "double|groove|ridge|inset|outset)?(?:^|$|(?= )) ?(#[0-9a-fA-F]{6})?$"),
 
     /**
      * Regular expression to validate/parse a pixel-based CSS border expression, e.g., "1px solid #abcdef".
      * Supports omission of any term, or empty strings.
      */
-    _PARSER_PX: new RegExp("^(-?\\d+(?:px|pt|pc|cm|mm|in|em|ex))?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|"
+    _PARSER: new RegExp("^(-?\\d+(?:px|pt|pc|cm|mm|in|em|ex))?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|"
             + "double|groove|ridge|inset|outset)?(?:^|$|(?= )) ?(#[0-9a-fA-F]{6})?$"),
             
     _TEST_EXTENT_PX: /^(-?\d+px*)$/,

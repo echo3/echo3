@@ -524,13 +524,13 @@ EchoSerial.PropertyTranslator.FillImageBorder = {
             if (element.nodeType == 1) {
                 if (element.nodeName == "fi") {
                     fillImageBorder[this._NAMES[i]] = EchoSerial.PropertyTranslator.FillImage._parseElement(client, element);
+                    ++i;
                 }
             }
-            ++i;
             element = element.nextSibling;
         }
         if (i != 8) {
-    	    throw new Error("Invalid FillImageBorder image count: " + fillImages.length);
+    	    throw new Error("Invalid FillImageBorder image count: " + i);
         }
     
         return fillImageBorder;
