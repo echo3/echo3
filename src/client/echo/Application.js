@@ -604,7 +604,7 @@ EchoApp.Component = Core.extend({
                     }
                     break;
                 default:
-                    _localStyle[name] = properties[name];
+                    this._localStyle[name] = properties[name];
                     break;
                 }
             }
