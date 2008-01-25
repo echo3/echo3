@@ -222,11 +222,11 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         }
         var width = this.component.render("width");
         if (width) {
-            this._divElement.style.width = width.toString();
+            this._divElement.style.width = EchoAppRender.Extent.toCssValue(width);
         }
         var height = this.component.render("height");
         if (height) {
-            this._divElement.style.height = height.toString();
+            this._divElement.style.height = EchoAppRender.Extent.toCssValue(height);
             this._divElement.style.overflow = "hidden";
         }
         
