@@ -364,8 +364,8 @@ EchoAppRender.FillImage = {
                 if (EchoAppRender.Extent.isPercent(fillImage.x)) {
                     x = fillImage.x;
                 } else {
-                    x = EchoAppRender.Extent.toPixels(fillImage.x, false);
-                    if (x = "") {
+                    x = EchoAppRender.Extent.toPixels(fillImage.x, true);
+                    if (x == "") {
                         x = "0px";
                     }
                 }
@@ -373,10 +373,11 @@ EchoAppRender.FillImage = {
                     y = fillImage.y;
                 } else {
                     y = EchoAppRender.Extent.toPixels(fillImage.y, false);
-                    if (y = "") {
+                    if (y == "") {
                         y = "0px";
                     }
                 }
+                Core.Debug.consoleWrite("x:" + x + " y:" + y);
                 element.style.backgroundPosition = x + " " + y;
             }
         }
