@@ -377,7 +377,6 @@ EchoAppRender.FillImage = {
                         y = "0px";
                     }
                 }
-                Core.Debug.consoleWrite("x:" + x + " y:" + y);
                 element.style.backgroundPosition = x + " " + y;
             }
         }
