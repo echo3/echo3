@@ -255,6 +255,10 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _renderButtonIcon: function(element, icon) {
+        var alignment = this.component.render("alignment") 
+        if (alignment) {
+            EchoAppRender.Alignment.render(alignment, element, true, this.component);
+        }
         var imgElement = document.createElement("img");
         EchoAppRender.ImageReference.renderImg(icon, imgElement);
         element.appendChild(imgElement);
