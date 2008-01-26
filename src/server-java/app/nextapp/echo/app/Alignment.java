@@ -181,4 +181,29 @@ implements Serializable {
     public int getVertical() {
         return vertical;
     }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        StringBuffer out = new StringBuffer("h:");
+        switch (horizontal) {
+        case DEFAULT: out.append("default"); break;
+        case LEADING: out.append("leading"); break;
+        case TRAILING: out.append("trailing"); break;
+        case LEFT: out.append("left"); break;
+        case CENTER: out.append("center"); break;
+        case RIGHT: out.append("right"); break;
+        default: out.append("(invalid)"); break;
+        }
+        out.append(",v:");
+        switch(vertical) {
+        case DEFAULT: out.append("default"); break;
+        case TOP: out.append("top"); break;
+        case CENTER: out.append("center"); break;
+        case BOTTOM: out.append("bottom"); break;
+        default: out.append("(invalid)"); break;
+        }
+        return out.toString();
+    }
 }
