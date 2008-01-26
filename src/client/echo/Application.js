@@ -1401,7 +1401,11 @@ EchoApp.StyleSheet = Core.extend({
      */
     getRenderStyle: function(name, componentType) {
         // Retrieve style from cache.
-        var style = this._renderCache[name][componentType];
+        var typeToStyleMap = this._renderCache[name];
+        if (!typeToStyleMap) {
+            return null;
+        }
+        var style = typeToStyleMap[componentType];
         if (style !== undefined) {
             // If style found in cache, return immediately.
             return style;
