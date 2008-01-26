@@ -244,6 +244,10 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _renderButtonText: function(element, text) {
+        var textAlignment = this.component.render("textAlignment") 
+        if (textAlignment) {
+            EchoAppRender.Alignment.render(textAlignment, element, true, this.component);
+        }
         element.appendChild(document.createTextNode(text));
         if (!this.component.render("lineWrap", true)) {
             element.style.whiteSpace = "nowrap";
