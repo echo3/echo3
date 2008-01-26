@@ -2225,7 +2225,7 @@ EchoApp.AbstractButton = Core.extend(EchoApp.Component, {
          * Programatically performs a button action.
          */
         doAction: function() {
-            this.fireEvent({type: "action", source: this, data: this.get("actionCommand")});
+            this.fireEvent({type: "action", source: this, actionCommand: this.get("actionCommand")});
         }
     }
 });
@@ -2309,7 +2309,7 @@ EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
          * Programatically performs a list select action.
          */
         doAction: function() {
-            this.fireEvent({type: "action", source: this, data: this.get("actionCommand")});
+            this.fireEvent({type: "action", source: this, actionCommand: this.get("actionCommand")});
         }
     }
 });
