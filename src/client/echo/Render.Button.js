@@ -418,7 +418,7 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
                 this._divElement.appendChild(this._stateElement);
             }
         } else if (entityCount == 2) {
-            var orientation = EchoAppRender.TriCellTable.TRAILING_LEADING;;
+            var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
             var margin;
             if (this._stateElement) {
                 margin = this.component.render("stateMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
@@ -439,7 +439,7 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
             }
             this._divElement.appendChild(tct.tableElement);
         } else if (entityCount == 3) {
-            var orientation = EchoAppRender.TriCellTable.TRAILING_LEADING;
+            var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
             var margin = this.component.render("iconTextMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
             var stateOrientation = EchoAppRender.TriCellTable.TRAILING_LEADING;
             var stateMargin = this.component.render("stateMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);

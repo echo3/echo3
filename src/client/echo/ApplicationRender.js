@@ -53,7 +53,7 @@ EchoAppRender.Alignment = {
             return null;
         }
         if (typeof(alignment == "string")) {
-            return alignment.horizontal in this._HORIZONTALS ? alignment.horizontal : null;
+            return alignment in this._HORIZONTALS ? alignment : null;
         } else {
             return alignment.horizontal;
         }
@@ -64,7 +64,7 @@ EchoAppRender.Alignment = {
             return null;
         }
         if (typeof(alignment == "string")) {
-            return alignment.vertical in this._VERTICALS ? alignment.vertical : null;
+            return alignment in this._VERTICALS ? alignment : null;
         } else {
             return alignment.vertical;
         }
@@ -646,7 +646,6 @@ EchoAppRender.TriCellTable = Core.extend({
         getOrientation: function(component, propertyName) {
             var position = component.render(propertyName);
             var orientation;
-            
             if (position) {
                 switch (EchoAppRender.Alignment.getRenderedHorizontal(position, component)) {
                 case "leading":  orientation = this.LEADING_TRAILING; break;
@@ -654,7 +653,7 @@ EchoAppRender.TriCellTable = Core.extend({
                 case "left":     orientation = this.LEADING_TRAILING; break;
                 case "right":    orientation = this.TRAILING_LEADING; break;
                 default:
-                    switch (position.vertical) {
+                    switch (EchoAppRender.Alignment.getVertical(position, component)) {
                     case "top":    orientation = this.TOP_BOTTOM;       break;
                     case "bottom": orientation = this.BOTTOM_TOP;       break;
                     default:       orientation = this.TRAILING_LEADING; break;
