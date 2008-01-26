@@ -1385,10 +1385,21 @@ EchoApp.StyleSheet = Core.extend({
     
     /**
      * Creates a new style sheet.
+     *
+     * @param initialValues an optional mapping between style names 
+     *        and maps between component types and styles
      */
-    $construct: function() {
+    $construct: function(initialValues) {
+        this._renderCache = { };
         this._nameToStyleMap = { };
-        this._renderCache = {};
+        
+        if (initialValues) {
+            for (var styleName in initialValues) {
+                for (var componentType in initialValues[styleName]) {
+                     this.setStyle(styleName, componentType, initialValues[styleName][componentType]);
+                }
+            }
+        }
     },
     
     /**
