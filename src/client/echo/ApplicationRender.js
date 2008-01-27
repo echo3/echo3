@@ -186,7 +186,7 @@ EchoAppRender.Border = {
         }
     },
 
-    getPixelSize: function(border, side) {
+    getPixelSize: function(border, sideName) {
         if (!border) {
             return 0;
         }
@@ -201,8 +201,25 @@ EchoAppRender.Border = {
                 return EchoAppRender.Extent.toPixels(extent);
             }
         } else if (typeof(border) == "object") {
-            // FIXME. impl multisided rendering.
-            return 0;
+            // Retrieve value for indivudal side.
+            // Specified side is queried first, followed by alternatives.
+            while (true) {
+                var side = this.getPixelSize(border[sideName]);
+                if (side == null) {
+                    switch (sideName) {
+                    case "left": 
+                        // If left side specified but value null, try again with right.
+                        sideName = "right"; 
+                        continue;
+                    case "right":
+                    case "bottom": 
+                        // If bottom or right side specified, try again with top.
+                        sideName = "top";
+                        continue; 
+                    }
+                }
+                return side;
+            }
         }
     }
 };
