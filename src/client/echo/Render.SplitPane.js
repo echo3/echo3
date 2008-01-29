@@ -413,8 +413,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
            this._secondPaneDivElement = paneDivElement;
         }
         
-        paneDivElement.style.position = "absolute";
-        paneDivElement.style.overflow = "auto";
+        paneDivElement.style.cssText = "position: absolute; overflow: auto; z-index: 1;";
         
         var layoutData = child.render("layoutData");
         if (layoutData) {
