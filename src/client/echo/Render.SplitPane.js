@@ -342,24 +342,17 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     
         this._splitPaneDivElement = document.createElement("div");
         this._splitPaneDivElement.id = this.component.renderId;
-        this._splitPaneDivElement.style.position = "absolute";
-        this._splitPaneDivElement.style.overflow = "hidden";
-        this._splitPaneDivElement.style.top = "0px"
-        this._splitPaneDivElement.style.bottom = "0px"
-        this._splitPaneDivElement.style.left = "0px"
-        this._splitPaneDivElement.style.right = "0px"
+        this._splitPaneDivElement.style.cssText = "position: absolute; overflow: hidden; " 
+                + "top: 0px; left: 0px; right: 0px; bottom: 0px;";
         
         EchoAppRender.Color.renderFB(this.component, this._splitPaneDivElement);
         EchoAppRender.Font.render(this.component.render("font"), this._splitPaneDivElement);
         
         if (this._separatorSize > 0) {
             this._separatorDivElement = document.createElement("div");
-            this._separatorDivElement.style.position = "absolute";
+            this._separatorDivElement.style.cssText = "position: absolute; font-size: 1px; line-height: 0; z-index: 2;";
             EchoAppRender.Color.render(this.component.render("separatorColor", EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR), 
                     this._separatorDivElement, "backgroundColor");
-            this._separatorDivElement.style.fontSize = "1px";
-            this._separatorDivElement.style.lineHeight = "0";
-            this._separatorDivElement.style.zIndex = "2";
     
             var resizeCursor = null;
             if (this._orientationVertical) {
