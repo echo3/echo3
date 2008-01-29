@@ -620,7 +620,8 @@ EchoApp.Component = Core.extend({
      */
     add: function(component, index) {
         if (!(component instanceof EchoApp.Component)) {
-            throw new Error("Cannot add child: specified component object is not derived from EchoApp.Component.");
+            throw new Error("Cannot add child: specified component object is not derived from EchoApp.Component. "
+                    + "Parent: " + this + ", Child: " + component);
         }
         if (!component.componentType) {
             throw new Error("Cannot add child: specified component object does not have a componentType property. "
