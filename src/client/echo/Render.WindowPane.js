@@ -649,8 +649,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
         if (resizable) {
             for (var i = 0; i < this._borderDivElements.length; ++i) {
-//       	        WebCore.EventProcessor.add(this._borderDivElements[i], "mousedown", 
-//       	                Core.method(this, this._processBorderMouseDown), true);
+       	        WebCore.EventProcessor.add(this._borderDivElements[i], "mousedown", 
+       	                Core.method(this, this._processBorderMouseDown), true);
        	    }
         }
     },
