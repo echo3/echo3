@@ -405,7 +405,7 @@ EchoApp.ComponentFactory = {
     newInstance: function(typeName, renderId) {
         var typeConstructor = this._typeToConstructorMap[typeName];
         if (!typeConstructor) {
-        	throw new Error("Type not registered: " + typeName);
+            throw new Error("Type not registered: " + typeName);
         }
         var component = new typeConstructor();
         component.renderId = renderId;
@@ -449,9 +449,9 @@ EchoApp.ComponentFactory = {
      * @param typeConstructor the constructor
      */
     registerType: function(typeName, typeConstructor) {
-    	if (this._typeToConstructorMap[typeName]) {
-    		throw new Error("Type already registered: " + typeName);
-    	}
+        if (this._typeToConstructorMap[typeName]) {
+            throw new Error("Type already registered: " + typeName);
+        }
         this._typeToConstructorMap[typeName] = typeConstructor;
     }
 };
@@ -1638,7 +1638,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
         }
         
         if (this._removedDescendantIds != null) {
-    	    Core.Arrays.removeDuplicates(this._removedDescendantIds);
+            Core.Arrays.removeDuplicates(this._removedDescendantIds);
         }
     },
     
@@ -1765,7 +1765,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      */
     getUpdatedProperty: function(name) {
         if (this._propertyUpdates == null) {
-        	return null;
+            return null;
         }
         return this._propertyUpdates[name];
     },
@@ -1774,16 +1774,16 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      * Returns the names of all properties being updated in this update.
      * 
      * @return the names of all updated properties, if no properties are updated an
-     * 		empty array is returned
+     *         empty array is returned
      * @type Array
      */
     getUpdatedPropertyNames: function() {
         if (this._propertyUpdates == null) {
-        	return [];
+            return [];
         }
         var updatedPropertyNames = [];
         for (var i in this._propertyUpdates) {
-        	updatedPropertyNames.push(i);
+            updatedPropertyNames.push(i);
         }
         return updatedPropertyNames;
     },
@@ -1864,10 +1864,10 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      */
     _updateLayoutData: function(child) {
         this._manager._idMap[child.renderId] = child;
-    	if (this._updatedLayoutDataChildIds == null) {
-    		this._updatedLayoutDataChildIds = [];
-    	}
-    	this._updatedLayoutDataChildIds.push(child.renderId);
+        if (this._updatedLayoutDataChildIds == null) {
+            this._updatedLayoutDataChildIds = [];
+        }
+        this._updatedLayoutDataChildIds.push(child.renderId);
     },
     
     /**
@@ -1882,8 +1882,8 @@ EchoApp.Update.ComponentUpdate = Core.extend({
         if (this._propertyUpdates == null) {
             this._propertyUpdates = { };
         }
-    	var propertyUpdate = new EchoApp.Update.ComponentUpdate.PropertyUpdate(oldValue, newValue);
-    	this._propertyUpdates[propertyName] = propertyUpdate;
+        var propertyUpdate = new EchoApp.Update.ComponentUpdate.PropertyUpdate(oldValue, newValue);
+        this._propertyUpdates[propertyName] = propertyUpdate;
     }
 });
 
@@ -2137,14 +2137,14 @@ EchoApp.Update.Manager = Core.extend({
      * @newValue the new value of the property
      */
     _processComponentPropertyUpdate: function(component, propertyName, oldValue, newValue) {
-    	if (this.fullRefreshRequired) {
-    		return;
-    	}
-    	if (this._isAncestorBeingAdded(component)) {
-    		return;
-    	}
-    	var update = this._createComponentUpdate(component);
-    	update._updateProperty(propertyName, oldValue, newValue);
+        if (this.fullRefreshRequired) {
+            return;
+        }
+        if (this._isAncestorBeingAdded(component)) {
+            return;
+        }
+        var update = this._createComponentUpdate(component);
+        update._updateProperty(propertyName, oldValue, newValue);
     },
     
     /**
@@ -2198,9 +2198,9 @@ EchoApp.Update.Manager = Core.extend({
         if (this.fullRefreshRequired) {
             s += "fullRefresh";
         } else {
-    		for (var key in this._componentUpdateMap) {
-    			s += this._componentUpdateMap[key];
-    		}
+            for (var key in this._componentUpdateMap) {
+                s += this._componentUpdateMap[key];
+            }
         }
         return s;
     }

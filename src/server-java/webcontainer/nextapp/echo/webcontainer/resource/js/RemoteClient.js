@@ -334,7 +334,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
         
         // Register component update listener 
         this.application.addComponentUpdateListener(this._processClientUpdateRef);
-    	EchoRender.processUpdates(this);
+        EchoRender.processUpdates(this);
         
         this._executeCommands();
         
@@ -371,9 +371,9 @@ EchoRemoteClient = Core.extend(EchoClient, {
             //FIXME Shut down further client input with secondary "you're beating a dead horse" error message. 
             var msg = "An invalid response was received from the server";
             if (e.exception) {
-            	msg += ": " + e.exception;
+                msg += ": " + e.exception;
             } else if (e.source.getResponseText()) {
-            	msg += ": \"" + e.source.getResponseText() + "\"";
+                msg += ": \"" + e.source.getResponseText() + "\"";
             }
             msg += ". Press the browser reload or refresh button.";
             alert(msg);
@@ -845,7 +845,7 @@ EchoRemoteClient.CommandExecProcessor = Core.extend({
             var type = cmdElement.getAttribute("t");
             var commandPeer = EchoRemoteClient.CommandExecProcessor._typeToPeerMap[type];
             if (!commandPeer) {
-    	        throw new Error("Peer not found for: " + type);
+                throw new Error("Peer not found for: " + type);
             }
             var commandData = {};
             var pElement = cmdElement.firstChild;
@@ -1231,7 +1231,7 @@ EchoRemoteClient.DefaultWaitIndicator = Core.extend(EchoRemoteClient.WaitIndicat
         // Subtract that value from 1, so the range goes from 1/3 to 1 and back.
         var opacityValue = 1 - ((Math.abs((this._opacity % 40) - 20)) / 30);
         if (!WebCore.Environment.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
-    	    this._divElement.style.opacity = opacityValue;
+            this._divElement.style.opacity = opacityValue;
         }
     }
 });

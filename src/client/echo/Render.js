@@ -305,9 +305,9 @@ EchoRender = {
      * @param {Function} peerObject the peer class object
      */
     registerPeer: function(componentName, peerObject) {
-    	if (this._peers[componentName]) {
-    		throw new Error("Peer already registered: " + componentName);
-    	}
+        if (this._peers[componentName]) {
+            throw new Error("Peer already registered: " + componentName);
+        }
         this._peers[componentName] = peerObject;
     },
     

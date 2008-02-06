@@ -95,32 +95,32 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
         var layoutData = child.render("layoutData");
         var insets;
         if (layoutData) {
-        	insets = layoutData.insets;
+            insets = layoutData.insets;
             EchoAppRender.Color.render(layoutData.background, tdElement, "backgroundColor");
             EchoAppRender.FillImage.render(layoutData.backgroundImage, tdElement);
             EchoAppRender.Alignment.render(layoutData.alignment, tdElement, true, this.component);
-    	    if (layoutData.width) {
-    	        if (EchoAppRender.Extent.isPercent(layoutData.width)) {
-    		    	tdElement.style.width = layoutData.width;
-    	        } else {
-    		    	tdElement.style.width = EchoAppRender.Extent.cssValue(layoutData.width, true);
-    	        }
-    	    }
+            if (layoutData.width) {
+                if (EchoAppRender.Extent.isPercent(layoutData.width)) {
+                    tdElement.style.width = layoutData.width;
+                } else {
+                    tdElement.style.width = EchoAppRender.Extent.cssValue(layoutData.width, true);
+                }
+            }
         }
         if (!insets) {
-        	insets = "0px";
+            insets = "0px";
         }
         EchoAppRender.Insets.render(insets, tdElement, "padding");
         
         if (index != null) {
-        	var currentChildCount;
+            var currentChildCount;
             if (this._trElement.childNodes.length >= 3 && this._cellSpacing) {
-            	currentChildCount = (this._trElement.childNodes.length + 1) / 2;
+                currentChildCount = (this._trElement.childNodes.length + 1) / 2;
             } else {
-            	currentChildCount = this._trElement.childNodes.length;
+                currentChildCount = this._trElement.childNodes.length;
             }
             if (index == currentChildCount) {
-    	        index = null;
+                index = null;
             }
         }
         if (index == null) {

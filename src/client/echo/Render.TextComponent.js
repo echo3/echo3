@@ -29,11 +29,11 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.FillImage.render(this.component.render("backgroundImage"), this._textComponentElement);
         var width = this.component.render("width");
         if (width) {
-        	this._textComponentElement.style.width = width.toString();
+            this._textComponentElement.style.width = width.toString();
         }
         var height = this.component.render("height");
         if (height) {
-        	this._textComponentElement.style.height = height.toString();
+            this._textComponentElement.style.height = height.toString();
         }
         var toolTipText = this.component.render("toolTipText");
         if (toolTipText) {
@@ -70,14 +70,14 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
 
     _processKeyPress: function(e) {
         if (!this.client.verifyInput(this.component, EchoClient.FLAG_INPUT_PROPERTY)) {
-    		WebCore.DOM.preventEventDefault(e);
+            WebCore.DOM.preventEventDefault(e);
             return true;
         }
     },
     
     _processKeyUp: function(e) {
         if (!this.client.verifyInput(this.component, EchoClient.FLAG_INPUT_PROPERTY)) {
-    		WebCore.DOM.preventEventDefault(e);
+            WebCore.DOM.preventEventDefault(e);
             return true;
         }
         this.sanitizeInput();
@@ -90,7 +90,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
         this.component.set("text", this._text);
         if (e.keyCode == 13) {
             //FIXME fire from component.
-    	    this.component.fireEvent({type: "action", source: this.component});
+            this.component.fireEvent({type: "action", source: this.component});
         }
         return true;
     },

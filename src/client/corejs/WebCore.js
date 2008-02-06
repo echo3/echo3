@@ -939,8 +939,8 @@ WebCore.HttpConnection = Core.extend({
                 responseEvent = {type: "response", source: this, valid: false, exception: ex};
             }
             
-    		this._listenerList.fireEvent(responseEvent);
-    		this.dispose();
+            this._listenerList.fireEvent(responseEvent);
+            this.dispose();
         }
     },
     

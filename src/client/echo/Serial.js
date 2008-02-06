@@ -319,7 +319,7 @@ EchoSerial.PropertyTranslator.String = {
             textNode = textNode.nextSibling;
             text += textNode.data;
         }
-    	return text;
+        return text;
     }
 };
 
@@ -530,7 +530,7 @@ EchoSerial.PropertyTranslator.FillImageBorder = {
             element = element.nextSibling;
         }
         if (i != 8) {
-    	    throw new Error("Invalid FillImageBorder image count: " + i);
+            throw new Error("Invalid FillImageBorder image count: " + i);
         }
     
         return fillImageBorder;

@@ -100,15 +100,15 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
         this._removeBorderListeners();
         
-    	this.component.set("positionX", this._windowX);
-    	this.component.set("positionY", this._windowY);
-    	this.component.set("width", this._windowWidth);
-    	this.component.set("height", this._windowHeight);
-    	
-    	this._userWindowX = this._windowX;
-    	this._userWindowY = this._windowY;
-    	this._userWindowWidth = this._windowWidth;
-    	this._userWindowHeight = this._windowHeight;
+        this.component.set("positionX", this._windowX);
+        this.component.set("positionY", this._windowY);
+        this.component.set("width", this._windowWidth);
+        this.component.set("height", this._windowHeight);
+        
+        this._userWindowX = this._windowX;
+        this._userWindowY = this._windowY;
+        this._userWindowWidth = this._windowWidth;
+        this._userWindowHeight = this._windowHeight;
         
         WebCore.VirtualPosition.redraw(this._contentDivElement);
         WebCore.VirtualPosition.redraw(this._maskDivElement);
@@ -182,11 +182,11 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._windowPaneDivElement.style.opacity = 1;
         
         this._removeTitleBarListeners();
-    	this.component.set("positionX", this._windowX);
-    	this.component.set("positionY", this._windowY);
+        this.component.set("positionX", this._windowX);
+        this.component.set("positionY", this._windowY);
     
-    	this._userWindowX = this._windowX;
-    	this._userWindowY = this._windowY;
+        this._userWindowX = this._windowX;
+        this._userWindowY = this._windowY;
     },
     
     setPosition: function(x, y, width, height) {
@@ -322,7 +322,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             if (this._borderInsets.left > 0) {
                 this._borderDivElements[0] = document.createElement("div");
                 this._borderDivElements[0].style.zIndex = 2;
-    		    this._borderDivElements[0].style.fontSize = "1px";
+                this._borderDivElements[0].style.fontSize = "1px";
                 this._borderDivElements[0].style.position = "absolute";
                 this._borderDivElements[0].style.left = "0px";
                 this._borderDivElements[0].style.top = "0px";
@@ -343,7 +343,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             // Render top side
             this._borderDivElements[1] = document.createElement("div");
             this._borderDivElements[1].style.zIndex = 2;                
-    	    this._borderDivElements[1].style.fontSize = "1px";
+            this._borderDivElements[1].style.fontSize = "1px";
             this._borderDivElements[1].style.position = "absolute";
             this._borderDivElements[1].style.left = this._borderInsets.left + "px";
             this._borderDivElements[1].style.top = "0px";
@@ -364,7 +364,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             if (this._borderInsets.right > 0) {
                 this._borderDivElements[2] = document.createElement("div");
                 this._borderDivElements[2].style.zIndex = 2;                
-    		    this._borderDivElements[2].style.fontSize = "1px";
+                this._borderDivElements[2].style.fontSize = "1px";
                 this._borderDivElements[2].style.position = "absolute";
                 this._borderDivElements[2].style.right = "0px";
                 this._borderDivElements[2].style.top = "0px";
@@ -387,7 +387,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (this._borderInsets.left > 0) {
             this._borderDivElements[3] = document.createElement("div");
             this._borderDivElements[3].style.zIndex = 2;                
-    	    this._borderDivElements[3].style.fontSize = "1px";
+            this._borderDivElements[3].style.fontSize = "1px";
             this._borderDivElements[3].style.position = "absolute";
             this._borderDivElements[3].style.left = "0px";
             this._borderDivElements[3].style.top = this._borderInsets.top + "px";
@@ -409,7 +409,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (this._borderInsets.right > 0) {
             this._borderDivElements[4] = document.createElement("div");
             this._borderDivElements[4].style.zIndex = 2;                
-    	    this._borderDivElements[4].style.fontSize = "1px";
+            this._borderDivElements[4].style.fontSize = "1px";
             this._borderDivElements[4].style.position = "absolute";
             this._borderDivElements[4].style.right = "0px";
             this._borderDivElements[4].style.top = this._borderInsets.top + "px";
@@ -433,7 +433,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             if (this._borderInsets.left > 0) {
                 this._borderDivElements[5] = document.createElement("div");
                 this._borderDivElements[5].style.zIndex = 2;                
-    		    this._borderDivElements[5].style.fontSize = "1px";
+                this._borderDivElements[5].style.fontSize = "1px";
                 this._borderDivElements[5].style.position = "absolute";
                 this._borderDivElements[5].style.left = "0px";
                 this._borderDivElements[5].style.bottom = "0px";
@@ -454,7 +454,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             // Render bottom side
             this._borderDivElements[6] = document.createElement("div");
             this._borderDivElements[6].style.zIndex = 2;                
-    	    this._borderDivElements[6].style.fontSize = "1px";
+            this._borderDivElements[6].style.fontSize = "1px";
             this._borderDivElements[6].style.position = "absolute";
             this._borderDivElements[6].style.left = this._borderInsets.left + "px";
             this._borderDivElements[6].style.bottom = "0px";
@@ -475,7 +475,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             if (this._borderInsets.right > 0) {
                 this._borderDivElements[7] = document.createElement("div");
                 this._borderDivElements[7].style.zIndex = 2;                
-    		    this._borderDivElements[7].style.fontSize = "1px";
+                this._borderDivElements[7].style.fontSize = "1px";
                 this._borderDivElements[7].style.position = "absolute";
                 this._borderDivElements[7].style.right = "0px";
                 this._borderDivElements[7].style.bottom = "0px";
@@ -628,7 +628,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             }
             
             this._maskDivElement.appendChild(maskIFrameElement);
-    	    this._windowPaneDivElement.appendChild(this._maskDivElement);
+            this._windowPaneDivElement.appendChild(this._maskDivElement);
         }
     
         parentElement.appendChild(this._windowPaneDivElement);
@@ -640,18 +640,18 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                     Core.method(this, this._processKeyDown), false);
             WebCore.EventProcessor.add(this._windowPaneDivElement, "keypress", 
                     Core.method(this, this._processKeyPress), false);
-    	    WebCore.EventProcessor.add(this._closeDivElement, "click", 
-    	            Core.method(this, this._processCloseClick), false);
+            WebCore.EventProcessor.add(this._closeDivElement, "click", 
+                    Core.method(this, this._processCloseClick), false);
         }
         if (movable) {
-    	    WebCore.EventProcessor.add(this._titleBarDivElement, "mousedown", 
-    	            Core.method(this, this._processTitleBarMouseDown), true);
+            WebCore.EventProcessor.add(this._titleBarDivElement, "mousedown", 
+                    Core.method(this, this._processTitleBarMouseDown), true);
         }
         if (resizable) {
-    	    for (var i = 0; i < this._borderDivElements.length; ++i) {
-//    	        WebCore.EventProcessor.add(this._borderDivElements[i], "mousedown", 
-//    	                Core.method(this, this._processBorderMouseDown), true);
-    	    }
+            for (var i = 0; i < this._borderDivElements.length; ++i) {
+//       	        WebCore.EventProcessor.add(this._borderDivElements[i], "mousedown", 
+//       	                Core.method(this, this._processBorderMouseDown), true);
+       	    }
         }
     },
     

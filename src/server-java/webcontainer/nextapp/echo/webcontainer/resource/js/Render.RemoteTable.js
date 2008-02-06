@@ -238,17 +238,17 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderUpdate: function(update) {
-    	if (!update.hasUpdatedLayoutDataChildren() && !update.getAddedChildren() && !update.getRemovedChildren()) {
-    		if (Core.Arrays.containsAll(EchoAppRender.RemoteTableSync._supportedPartialProperties, 
-    		        update.getUpdatedPropertyNames(), true)) {
-    		    // partial update
-    			var selectionUpdate = update.getUpdatedProperty("selection");
-    			if (selectionUpdate) {
-    				this._setSelectedFromProperty(selectionUpdate.newValue, true);
-    			}
-    		    return false;
-    		}
-    	}
+        if (!update.hasUpdatedLayoutDataChildren() && !update.getAddedChildren() && !update.getRemovedChildren()) {
+            if (Core.Arrays.containsAll(EchoAppRender.RemoteTableSync._supportedPartialProperties, 
+                    update.getUpdatedPropertyNames(), true)) {
+                // partial update
+                var selectionUpdate = update.getUpdatedProperty("selection");
+                if (selectionUpdate) {
+                    this._setSelectedFromProperty(selectionUpdate.newValue, true);
+                }
+                return false;
+            }
+        }
         // full update
         var element = this._tableElement;
         var containerElement = element.parentNode;
@@ -293,12 +293,12 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
      * @param {Boolean} clearPrevious if the previous selection state should be overwritten
      */
     _setSelectedFromProperty: function(value, clearPrevious) {
-    	if (value == this.selectionModel.getSelectionString()) {
-    		return;
-    	}
-    	if (clearPrevious) {
-    		this._clearSelected();
-    	}
+        if (value == this.selectionModel.getSelectionString()) {
+            return;
+        }
+        if (clearPrevious) {
+            this._clearSelected();
+        }
         var selectedIndices = value.split(",");
         for (var i = 0; i < selectedIndices.length; i++) {
             if (selectedIndices[i] == "") {
