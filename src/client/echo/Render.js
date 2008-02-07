@@ -470,6 +470,12 @@ EchoRender.ComponentSync = Core.extend({
          * might be using an animated transition effect to remove the component.
          * The supplied update will refer to a ancestor component of the supported component
          * being updated.
+         *
+         * A component may be re-added to the screen after being disposed, e.g., in the case
+         * where a parent component does not possess a 'partial update' capability and removes
+         * a child component hierarchy and then re-renders it.  A synchronization peer should
+         * allow for the fact that its renderAdd() method may be invoked at some point in time
+         * after renderDispose() has been invoked.
          *        
          * @param {EchoApp.Update.ComponentUpdate} update the update being rendered
          */
