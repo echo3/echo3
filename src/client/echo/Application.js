@@ -1787,6 +1787,22 @@ EchoApp.Update.ComponentUpdate = Core.extend({
         }
         return updatedPropertyNames;
     },
+
+    /**
+     * Determines if the set of updated property names is contained
+     * within the specified set.  The provided object should have
+     * have keys for the desired property names and  values that evaluate 
+     * to true, e.g. to determine if no properties other than "text" and "icon"
+     * changed, specify {text: true, icon: true}. 
+     */
+    isUpdatedPropertySetIn: function(updatedPropertySet) {
+        for (var x in this._propertyUpdates) {
+            if (!updatedPropertySet[x]) {
+                return false;
+            }
+        }
+        return true;
+    },
     
     /**
      * Records the removal of a child from the parent component.
