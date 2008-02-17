@@ -65,6 +65,27 @@
         </delete>
     </target>
     
+    <target name="dist.client.echo" depends="clean">
+        <concat destfile="${dir.dist.client.echo}/Echo.js" fixlastline="yes">
+            <filelist dir="${dir.src.client.corejs}">
+                <file name="Core.js"/>
+                <file name="WebCore.js"/>
+            </filelist>
+            <filelist dir="${dir.src.client.echo}">
+                <file name="Application.js"/>
+                <file name="Render.js"/>
+                <file name="ApplicationRender.js"/>
+                <file name="Serial.js"/>
+                <file name="Client.js"/>
+                <file name="FreeClient.js"/>
+                <file name="Arc.js"/>
+            </filelist>
+            <fileset dir="${dir.src.client.echo}">
+                <include name="**/Render.*.js"/>
+            </fileset>
+        </concat>
+    </target>
+
     <target name="dist.client.testapp" depends="clean">
         <mkdir dir="${dir.dist.client.testapp}"/>
         <copy todir="${dir.dist.client.testapp}">
