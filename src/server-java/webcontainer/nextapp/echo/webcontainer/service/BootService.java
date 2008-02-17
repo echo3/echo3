@@ -42,11 +42,11 @@ import nextapp.echo.webcontainer.WebContainerServlet;
 public class BootService {
 
     /** Root path to core service <code>CLASSPATH</code> script resources. */
-    private static final String JS_RESOURCE_PATH = "/nextapp/echo/webcontainer/resource/js/";
+    private static final String JS_RESOURCE_PATH = "/nextapp/echo/webcontainer/resource/";
     
     public static final Service SERVICE;
     static {
-        List resourceList= new ArrayList();
+        List resourceList = new ArrayList();
         resourceList.add(JS_RESOURCE_PATH + "Core.js");
         resourceList.add(JS_RESOURCE_PATH + "WebCore.js");
         resourceList.add(JS_RESOURCE_PATH + "Application.js"); 

@@ -31,15 +31,14 @@ package nextapp.echo.webcontainer.sync.component;
 
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
-import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
+import nextapp.echo.webcontainer.ContentType;
 import nextapp.echo.webcontainer.ServerMessage;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
-import nextapp.echo.webcontainer.service.ImageService;
 import nextapp.echo.webcontainer.service.JavaScriptService;
 
 /**
@@ -48,12 +47,11 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class WindowPanePeer extends AbstractComponentSynchronizePeer {
 
     private static final Service WINDOW_PANE_SERVICE = JavaScriptService.forResource("Echo.WindowPane", 
-            "/nextapp/echo/webcontainer/resource/js/Render.WindowPane.js");
+            "/nextapp/echo/webcontainer/resource/Render.WindowPane.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(WINDOW_PANE_SERVICE);
-        ImageService.addGlobalImage("Echo.WindowPane.closeIcon", 
-                new ResourceImageReference("/nextapp/echo/webcontainer/resource/image/DefaultCloseButton.gif"));
+        WebContainerServlet.getResourceRegistry().add("Echo", "image/WindowPaneClose.gif", ContentType.IMAGE_GIF);
     }
     
     /**

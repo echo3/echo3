@@ -33,6 +33,7 @@ import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.webcontainer.service.AsyncMonitorService;
 import nextapp.echo.webcontainer.service.BootService;
 import nextapp.echo.webcontainer.service.NewInstanceService;
+import nextapp.echo.webcontainer.service.ResourceService;
 import nextapp.echo.webcontainer.service.SessionExpiredService;
 import nextapp.echo.webcontainer.service.StaticTextService;
 import nextapp.echo.webcontainer.service.SynchronizeService;
@@ -139,12 +140,21 @@ public abstract class WebContainerServlet extends HttpServlet {
     private static final long startupTime = System.currentTimeMillis();
     
     /**
+     * Global <code>ResourceRegistry</code>.
+     */
+    private static final ResourceRegistry resources = new ResourceRegistry();
+    
+    /**
      * Global <code>ServiceRegistry</code>.
      */
     private static final ServiceRegistry services = new ServiceRegistry();
 
     static {
         BootService.install(services);
+        
+        resources.addPackage("Echo", "nextapp/echo/webcontainer/resource/");
+        
+        services.add(ResourceService.INSTANCE);
         services.add(new StaticTextService(SERVICE_ID_BLANK_DOCUMENT, "text/html", "<html></html>"));
     }
     
@@ -188,6 +198,15 @@ public abstract class WebContainerServlet extends HttpServlet {
      */
     public static MultipartRequestWrapper getMultipartRequestWrapper() {
         return multipartRequestWrapper;
+    }
+    
+    /**
+     * Retrieves the global <code>ResourceRegistry</code>.
+     * 
+     * @return the global <code>ResourceRegistry</code> 
+     */
+    public static ResourceRegistry getResourceRegistry() {
+        return resources;
     }
     
     /**

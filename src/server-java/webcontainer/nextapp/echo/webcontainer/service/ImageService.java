@@ -59,10 +59,6 @@ implements Service {
     
     private static final Map globalImages = new HashMap();
     
-    public static final void addGlobalImage(String imageId, ImageReference imageReference) {
-        globalImages.put(imageId, imageReference);
-    }
-    
     public static void install() { }
     
     /**

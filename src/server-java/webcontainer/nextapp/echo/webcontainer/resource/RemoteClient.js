@@ -214,13 +214,6 @@ EchoRemoteClient = Core.extend(EchoClient, {
     },
     
     /**
-     * @see EchoClient#getDefaultImage
-     */
-    getDefaultImage: function(imageName) {
-        return this._serverUrl + "?sid=Echo.Image&iid=" + imageName;
-    },
-    
-    /**
      * Returns the URL of a library service based on the serviceId.
      * 
      * @param serviceId the serviceId
@@ -236,9 +229,19 @@ EchoRemoteClient = Core.extend(EchoClient, {
     },
     
     /**
-     * @see EchoClient#getServiceUrl
+     * @see EchoClient#getResoruceUrl
      */
-    getServiceUrl: function(serviceId) {
+    getResourceUrl: function(packageName, resourceName) {
+        return this._getServiceUrl("Echo.Resource") + "&pkg=" + packageName + "&res=" + resourceName;
+    },
+    
+    /**
+     * Returns the URL of a remote server-side service.
+     *
+     * @param serviceId the service id
+     * @return the URL
+     */
+    _getServiceUrl: function(serviceId) {
         return this._serverUrl + "?sid=" + serviceId;
     },
     
@@ -442,7 +445,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
     
         this._asyncManager._stop();    
         this._syncInitTime = new Date().getTime();
-        var conn = new WebCore.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST", 
+        var conn = new WebCore.HttpConnection(this._getServiceUrl("Echo.Sync"), "POST", 
                 this._clientMessage._renderXml(), "text/xml");
         
         // Create new client message.
@@ -498,7 +501,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
      * it has any updates that need to be pushed to the client.
      */
     _pollServerForUpdates: function() {
-        var conn = new WebCore.HttpConnection(this._client.getServiceUrl("Echo.AsyncMonitor"), "GET");
+        var conn = new WebCore.HttpConnection(this._client._getServiceUrl("Echo.AsyncMonitor"), "GET");
         conn.addResponseListener(Core.method(this, this._processPollResponse));
         conn.connect();
     },

@@ -45,7 +45,7 @@ public class BrowserOpenWindowCommandPeer
 extends AbstractCommandSynchronizePeer {
     
     private static final Service BROWSER_OPEN_WINDOW_SERVICE = JavaScriptService.forResource("Echo.BrowserOpenWindow", 
-            "/nextapp/echo/webcontainer/resource/js/RemoteClient.BrowserOpenWindow.js");
+            "/nextapp/echo/webcontainer/resource/RemoteClient.BrowserOpenWindow.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(BROWSER_OPEN_WINDOW_SERVICE);

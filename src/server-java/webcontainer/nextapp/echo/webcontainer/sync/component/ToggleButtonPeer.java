@@ -60,14 +60,6 @@ public class ToggleButtonPeer extends AbstractButtonPeer {
     private static final ImageReference DEFAULT_ICON_RADIOBUTTON_ON 
             = new ResourceImageReference(IMAGE_PREFIX + "RadioButtonOn.gif");
 
-    static {
-        ImageService.install();
-        ImageService.addGlobalImage(IMAGE_ID_CHECKBOX_OFF, DEFAULT_ICON_CHECKBOX_OFF);
-        ImageService.addGlobalImage(IMAGE_ID_CHECKBOX_ON, DEFAULT_ICON_CHECKBOX_ON);
-        ImageService.addGlobalImage(IMAGE_ID_RADIOBUTTON_OFF, DEFAULT_ICON_RADIOBUTTON_OFF);
-        ImageService.addGlobalImage(IMAGE_ID_RADIOBUTTON_ON, DEFAULT_ICON_RADIOBUTTON_ON);
-    }
-    
     public ToggleButtonPeer() {
         super();
         addOutputProperty(ToggleButton.SELECTED_CHANGED_PROPERTY);

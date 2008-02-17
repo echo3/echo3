@@ -111,33 +111,19 @@ EchoClient = Core.extend({
     $virtual: {
 
         /**
-         * Returns a default named image.
-         * May return null if the client does not provide a default image for the specified name.
+         * Returns the URL of a resource based on package name / 
+         * resource name information.
          * Default implementation delegates to parent client
          * (if one is present) or otherwise returns null.
          * 
-         * @param {String} imageName the image name 
-         */
-        getDefaultImage: function(imageName) {
-            if (this.parent) {
-                return this.parent.getDefaultImage(imageName);
-            } else {
-                return null;
-            }
-        },
-        
-        /**
-         * Returns the URL of a service based on the serviceId.
-         * Default implementation delegates to parent client
-         * (if one is present) or otherwise returns null.
-         * 
-         * @param {String} serviceId the serviceId
+         * @param {String} packageName the package name in which the resource is contained
+         * @param {String} resourceName the resource name
          * @return the full URL
          * @type String
          */
-        getServiceUrl: function(serviceId) {
+        getResourceUrl: function(packageName, resourceName) {
             if (this.parent) {
-                return this.parent.getServiceUrl(serviceId);
+                return this.parent.getResourceUrl(packageName, resourceName);
             } else {
                 return null;
             }

@@ -43,7 +43,7 @@ public class JavaScriptServiceTest extends TestCase {
      */
     public void testForResource() {
         JavaScriptService clientEngineService = JavaScriptService.forResource("Echo.RemoteClient", 
-                        "/nextapp/echo/webcontainer/resource/js/RemoteClient.js");
+                        "/nextapp/echo/webcontainer/resource/RemoteClient.js");
         assertEquals("Echo.RemoteClient", clientEngineService.getId());
     }
 }

@@ -14,6 +14,7 @@
 EchoFreeClient = Core.extend(EchoClient, {
 
     _processUpdateRef: null,
+    _resourcePaths: null,
 
     /**
      * Creates a new FreeClient.
@@ -25,6 +26,13 @@ EchoFreeClient = Core.extend(EchoClient, {
         EchoClient.call(this);
         this._processUpdateRef = Core.method(this, this._processUpdate);;
         this.configure(application, domainElement);
+    },
+    
+    addResourcePath: function(packageName, baseUrl) {
+        if (!this._resourcePaths) {
+            this._resourcePaths = { };
+        }
+        this._resourcePaths[packageName] = baseUrl;
     },
 
     /**
@@ -39,8 +47,12 @@ EchoFreeClient = Core.extend(EchoClient, {
         EchoClient.prototype.dispose.call(this);
     },
     
-    _processUpdate: function(e) {
-        //FIXME implement or remove
+    getResourceUrl: function(packageName, resourceName) {
+        if (this._resourcePaths && this._resourcePaths[packageName]) {
+            return this._resourcePaths[packageName] + resourceName;
+        } else {
+            return EchoClient.prototype.getResourceUrl.call(this, packageName, resourceName);
+        }
     },
     
     /**
@@ -81,6 +93,10 @@ EchoFreeClient = Core.extend(EchoClient, {
         var ssElement =  e.source.getResponseXml().documentElement;
         var styleSheet = EchoSerial.loadStyleSheet(this, ssElement);
         this.application.setStyleSheet(styleSheet);
+    },
+
+    _processUpdate: function(e) {
+        //FIXME implement or remove
     }
 });
 

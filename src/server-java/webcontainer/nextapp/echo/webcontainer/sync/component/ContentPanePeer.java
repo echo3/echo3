@@ -43,7 +43,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class ContentPanePeer extends AbstractComponentSynchronizePeer {
 
     private static final Service CONTENT_PANE_SERVICE = JavaScriptService.forResource("Echo.ContentPane", 
-            "/nextapp/echo/webcontainer/resource/js/Render.ContentPane.js");
+            "/nextapp/echo/webcontainer/resource/Render.ContentPane.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(CONTENT_PANE_SERVICE);

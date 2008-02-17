@@ -43,7 +43,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class RowPeer extends AbstractComponentSynchronizePeer {
 
     private static final Service ROW_SERVICE = JavaScriptService.forResource("Echo.Row", 
-            "/nextapp/echo/webcontainer/resource/js/Render.Row.js");
+            "/nextapp/echo/webcontainer/resource/Render.Row.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(ROW_SERVICE);

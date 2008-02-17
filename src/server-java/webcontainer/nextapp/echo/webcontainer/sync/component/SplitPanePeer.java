@@ -46,7 +46,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class SplitPanePeer extends AbstractComponentSynchronizePeer {
 
     private static final Service SPLIT_PANE_SERVICE = JavaScriptService.forResource("Echo.SplitPane", 
-            "/nextapp/echo/webcontainer/resource/js/Render.SplitPane.js");
+            "/nextapp/echo/webcontainer/resource/Render.SplitPane.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(SPLIT_PANE_SERVICE);

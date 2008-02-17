@@ -55,7 +55,7 @@ import nextapp.echo.webcontainer.util.MultiIterator;
 public class TablePeer extends AbstractComponentSynchronizePeer {
 
     private static final Service TABLE_SERVICE = JavaScriptService.forResource("Echo.RemoteTable", 
-            "/nextapp/echo/webcontainer/resource/js/Render.RemoteTable.js");
+            "/nextapp/echo/webcontainer/resource/Render.RemoteTable.js");
     
     private static final String PROPERTY_COLUMN_COUNT = "columnCount";
     private static final String PROPERTY_COLUMN_WIDTH = "columnWidth";

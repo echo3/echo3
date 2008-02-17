@@ -45,7 +45,7 @@ public class BrowserRedirectCommandPeer
 extends AbstractCommandSynchronizePeer {
     
     private static final Service BROWSER_REDIRECT_SERVICE = JavaScriptService.forResource("Echo.BrowserRedirect", 
-            "/nextapp/echo/webcontainer/resource/js/RemoteClient.BrowserRedirect.js");
+            "/nextapp/echo/webcontainer/resource/RemoteClient.BrowserRedirect.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(BROWSER_REDIRECT_SERVICE);

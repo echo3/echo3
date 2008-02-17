@@ -43,7 +43,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class ColumnPeer extends AbstractComponentSynchronizePeer {
 
     private static final Service COLUMN_SERVICE = JavaScriptService.forResource("Echo.Column", 
-            "/nextapp/echo/webcontainer/resource/js/Render.Column.js");
+            "/nextapp/echo/webcontainer/resource/Render.Column.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(COLUMN_SERVICE);

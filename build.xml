@@ -198,7 +198,7 @@
                 <patternset refid="fileset.resources"/>
             </fileset>
         </copy>
-        <copy todir="${dir.build.server-java.webcontainer.js}">
+        <copy todir="${dir.build.server-java.webcontainer.res}">
             <fileset dir="${dir.src.client.corejs}">
                 <patternset refid="fileset.resources"/>
             </fileset>
@@ -295,7 +295,7 @@
              <arg value="--project-name ${jsdoc.projectname}"/>
              <arg value="--package-naming"/>
              <arg value="--directory ${dir.jsdoc.public}"/>
-             <arg value="${dir.src.server-java.webcontainer.js}"/>
+             <arg value="${dir.src.server-java.webcontainer.res}"/>
         </exec>
     </target>
     
@@ -308,7 +308,7 @@
              <arg value="--package-naming"/>
              <arg value="--private"/>
              <arg value="--directory ${dir.jsdoc.private}"/>
-             <arg value="${dir.src.server-java.webcontainer.js}"/>
+             <arg value="${dir.src.server-java.webcontainer.res}"/>
         </exec>
     </target>
     
