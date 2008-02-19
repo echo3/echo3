@@ -33,7 +33,7 @@ WebCore = {
     dragInProgress: false,
     
     /**
-     * Initializes the web core.  This method must be executed prior to using any Web Core capabilities.
+     * Initializes the Web Core.  This method must be executed prior to using any Web Core capabilities.
      */
     init: function() { 
         if (WebCore.initialized) {
