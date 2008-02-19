@@ -573,7 +573,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._closeDivElement.style.cursor = "pointer";
             EchoAppRender.Insets.render(this.component.render("closeIconInsets", 
                     EchoApp.WindowPane.DEFAULT_CLOSE_ICON_INSETS), this._closeDivElement, "padding");
-            var closeIcon = this.component.render("closeIcon", this.client.getResourceUrl("Echo", "image/WindowPaneClose.gif")); 
+            var closeIcon = this.component.render("closeIcon", this.client.getResourceUrl("Echo", "resource/WindowPaneClose.gif")); 
             if (closeIcon) {
                 var imgElement = document.createElement("img");
                 EchoAppRender.ImageReference.renderImg(closeIcon, imgElement);
@@ -622,7 +622,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             var maskIFrameElement = document.createElement("iframe");
             maskIFrameElement.style.cssText = "width:100%;height:100%;";
             
-            var blankUrl = this.client.getResourceUrl("Echo.BlankDocument");
+            var blankUrl = this.client.getResourceUrl("Echo", "resource/Blank.html");
             if (blankUrl) {
                 maskIFrameElement.src = blankUrl;
             }
