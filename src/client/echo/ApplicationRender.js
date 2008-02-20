@@ -166,13 +166,28 @@ EchoAppRender.Border = {
                 }
             }
         } else {
-            // FIXME. impl multisided rendering.
             if (border.top) {
                 if (border.right) {
+                    // Top and right specified: render top and right directly.
+                    this.render(border.top, element, styleName + "Top");
+                    this.render(border.right, element, styleName + "Right");
                     if (border.bottom) {
-                        if (border.left) {
-                        }
+                        // Bottom specified: render.
+                        this.render(border.bottom, element, styleName + "Bottom");
+                    } else {
+                        // Bottom not specified: render top as bottom.
+                        this.render(border.top, element, styleName + "Bottom");
                     }
+                    if (border.left) {
+                        // Left specified: render.
+                        this.render(border.left, element, styleName + "Left");
+                    } else {
+                        // Left not specified: render right as left.
+                        this.render(border.right, element, styleName + "Left");
+                    }
+                } else {
+                    // Right not specified: just render entire border using top.
+                    this.render(border.top, element, styleName);
                 }
             }
         }
