@@ -43,7 +43,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         renderContent: function() {
             var text = this.component.render("text");
             var icon = EchoAppRender.getEffectProperty(this.component, "icon", "disabledIcon", !this._enabled);
-            if (text) {
+            if (text != null) {
                 if (icon) {
                     // Text and icon.
                     var iconTextMargin = this.component.render("iconTextMargin", 
@@ -419,7 +419,7 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
         
         var entityCount = (text ? 1 : 0) + (icon ? 1 : 0) + (this._stateElement ? 1 : 0);
         if (entityCount == 1) {
-            if (text) {
+            if (text != null) {
                 this._renderButtonText(this._divElement, text);
             } else if (icon) {
                 this._iconElement = this._renderButtonIcon(this._divElement, icon);
@@ -435,7 +435,7 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
                 margin = this.component.render("iconTextMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
             }
             var tct = new EchoAppRender.TriCellTable(orientation, EchoAppRender.Extent.toPixels(margin));
-            if (text) {
+            if (text != null) {
                 this._renderButtonText(tct.tdElements[0], text);
                 if (icon) {
                     this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);

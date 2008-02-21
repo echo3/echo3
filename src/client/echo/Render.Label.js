@@ -41,7 +41,7 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
         var foreground = this.component.render("foreground");
         var background = this.component.render("background");
     
-        if (text) {
+        if (text != null) {
             var lineWrap = this.component.render("lineWrap", true);
             var formatWhitespace = this.component.render("formatWhitespace", false)
                     && (text.indexOf(' ') != -1 || text.indexOf('\n') != -1 || text.indexOf('\t') != -1);
