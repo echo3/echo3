@@ -54,8 +54,8 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         
         if (this._multipleSelect && e.ctrlKey) {
             // Multiple selection and user has pressed ctrl key to select multiple items.
-            var selection = this.component.get("selection");
-            if (!selection) {
+            var selection = this._getSelection();
+            if (selection == null) {
                 selection = [];
             }
             var arrayIndex = Core.Arrays.indexOf(selection, i); 
@@ -67,15 +67,17 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
                 selection.splice(arrayIndex, 1);
             }
         } else {
-            selection = [i];
+            selection = i;
         }
         
-        this.component.set("selection", selection);
+        this._setSelection(selection);
         this.component.doAction();
-
         this._renderSelection();
     },
     
+    /**
+     * This event handler is registered only for traditional SELECT elements, i.e., the _alternateRender flag will be false.
+     */
     _processChange: function(e) {
         if (!this.client.verifyInput(this.component)) {
             WebCore.DOM.preventEventDefault(e);
@@ -83,8 +85,9 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             return;
         }
         
-        var selection = [];
+        var selection;
         if (this._multipleSelect) {
+            selection = [];
             for (var i = 0; i < this._mainElement.options.length; ++i) {
                 if (this._mainElement.options[i].selected) {
                     selection.push(i);
@@ -92,18 +95,29 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             }
         } else {
             if (this._mainElement.selectedIndex != -1) {
-                selection.push(this._mainElement.selectedIndex);
+                selection = this._mainElement.selectedIndex;
             }
         }
     
-        this.component.set("selection", selection);
+        this._setSelection(selection);
         this.component.doAction();
     },
     
+    /**
+     * IE-specific event handler to prevent mouse-selection of text in DOM-rendered listbox component.
+     */
     _processSelectStart: function(e) {
         WebCore.DOM.preventEventDefault(e);
     },
 
+    /**
+     * Renders the list selection component as a standard SELECT element.
+     * This strategy is always used in all browsers except IE6, and is used in IE6
+     * for drop-down select fields.  IE6 cannot use this strategy for listboxes
+     * do to major bugs in this browser (listboxes randomly change back into selectfields
+     * when rendered by DOM manipulation).
+     * This strategy is used when the _alternateRender flag is false.
+     */
     _renderMainAsSelect: function(update, parentElement, size) {
         this._mainElement = document.createElement("select");
         this._mainElement.id = this.component.renderId;
@@ -130,18 +144,23 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
                 this._mainElement);
         EchoAppRender.Insets.render(this.component.render("insets"), this._mainElement, "padding");
 
-        if (this.component.items) {
-            for (var i = 0; i < this.component.items.length; ++i) {
+        var items = this.component.get("items");
+        if (items) {
+            for (var i = 0; i < items.length; ++i) {
                 var optionElement = document.createElement("option");
-                optionElement.appendChild(document.createTextNode(this.component.items[i].toString()));
-                if (this.component.items[i].foreground) {
-                    EchoAppRender.Color.render(this.component.items[i].foreground, optionElement, "color");
+                if (items[i].text) {
+                    optionElement.appendChild(document.createTextNode(items[i].text));
+                } else {
+                    optionElement.appendChild(document.createTextNode(items[i].toString()));
                 }
-                if (this.component.items[i].background) {
-                    EchoAppRender.Color.render(this.component.items[i].background, optionElement, "backgroundColor");
+                if (items[i].foreground) {
+                    EchoAppRender.Color.render(items[i].foreground, optionElement, "color");
                 }
-                if (this.component.items[i].font) {
-                    EchoAppRender.Font.render(this.component.items[i].font, optionElement);
+                if (items[i].background) {
+                    EchoAppRender.Color.render(items[i].background, optionElement, "backgroundColor");
+                }
+                if (items[i].font) {
+                    EchoAppRender.Font.render(items[i].font, optionElement);
                 }
                 this._mainElement.appendChild(optionElement);
             }
@@ -154,6 +173,11 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         parentElement.appendChild(this._mainElement);
     },
 
+    /**
+     * Renders a list box as a DIV element containing DIV elements of selectable items.
+     * This strategy is used on IE6 due to bugs in this browser's rendering engine.
+     * This strategy is used when the _alternateRender flag is true.
+     */
     _renderMainAsDiv: function(update, parentElement, size) {
         this._mainElement = document.createElement("table");
         this._mainElement.id = this.component.renderId;
@@ -188,18 +212,23 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
                 this._divElement);
         EchoAppRender.Insets.render(this.component.render("insets"), this._divElement, "padding");
 
-        if (this.component.items) {
-            for (var i = 0; i < this.component.items.length; ++i) {
+        var items = this.component.get("items");
+        if (items) {
+            for (var i = 0; i < items.length; ++i) {
                 var optionElement = document.createElement("div");
-                optionElement.appendChild(document.createTextNode(this.component.items[i].toString()));
-                if (this.component.items[i].foreground) {
-                    EchoAppRender.Color.render(this.component.items[i].foreground, optionElement, "color");
+                if (items[i].text) {
+                    optionElement.appendChild(document.createTextNode(items[i].text));
+                } else {
+                    optionElement.appendChild(document.createTextNode(items[i].toString()));
                 }
-                if (this.component.items[i].background) {
-                    EchoAppRender.Color.render(this.component.items[i].background, optionElement, "backgroundColor");
+                if (items[i].foreground) {
+                    EchoAppRender.Color.render(items[i].foreground, optionElement, "color");
                 }
-                if (this.component.items[i].font) {
-                    EchoAppRender.Font.render(this.component.items[i].font, optionElement);
+                if (items[i].background) {
+                    EchoAppRender.Color.render(items[i].background, optionElement, "backgroundColor");
+                }
+                if (items[i].font) {
+                    EchoAppRender.Font.render(items[i].font, optionElement);
                 }
                 this._divElement.appendChild(optionElement);
             }
@@ -213,6 +242,9 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         parentElement.appendChild(this._mainElement);
     },
     
+    /**
+     * Delegates to _renderMainAsSelect() or _renderMainAsDiv() depending on type of list selection component and browser bugs.
+     */
     _renderMain: function(update, parentElement, size) {
         this._multipleSelect = this.component.get("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION;
         if (this.component instanceof EchoApp.ListBox && WebCore.Environment.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
@@ -236,39 +268,76 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         this._mainElement = null;
     },
     
-    _renderSelection: function() {
-        // Set selection.
+    _getSelection: function() {
+        // Retrieve selection from "selection" property.
         var selection = this.component.get("selection");
         
-        if (!selection) {
-            selection = this._multipleSelect ? [] : [0];
-        }
+        if (selection == null) {
+            // If selection is now in "selection" property, query "selectedId" property.
+            var selectedId = this.component.get("selectedId");
 
+            if (selectedId) {
+                // If selectedId property is set, find item with corresponding id.
+                var items = this.component.get("items");
+
+                for (var i = 0; i < items.length; ++i) {
+                    if (items[i].id == selectedId) {
+                        selection = i;
+                    }
+                }
+            }
+            
+            // If selection is null (selectedId not set, or not corresponding item not found),
+            // set selection to null/default value.
+            if (selection == null) {
+                selection = this._multipleSelect ? [] : 0;
+            }
+        }
+        
+        return selection;
+    },
+    
+    _renderSelection: function() {
+        // Set selection.
+        var selection = this._getSelection();
+        
         if (this._alternateRender) {
             if (this._hasRenderedSelectedItems) {
-                for (var i = 0; i < this.component.items.length; ++i) {
-                    EchoAppRender.Color.renderClear(this.component.items[i].foreground, this._divElement.childNodes[i], 
+                var items = this.component.get("items");
+                for (var i = 0; i < items.length; ++i) {
+                    EchoAppRender.Color.renderClear(items[i].foreground, this._divElement.childNodes[i], 
                             "color");
-                    EchoAppRender.Color.renderClear(this.component.items[i].background, this._divElement.childNodes[i], 
+                    EchoAppRender.Color.renderClear(items[i].background, this._divElement.childNodes[i], 
                             "backgroundColor");
                 }
             }
-            for (var i = 0; i < selection.length; ++i) {
-                if (selection[i] >= 0 && selection[i] < this._divElement.childNodes.length) {
-                    EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_FOREGROUND,
-                            this._divElement.childNodes[selection[i]], "color");
-                    EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_BACKGROUND,
-                            this._divElement.childNodes[selection[i]], "backgroundColor");
+            if (selection instanceof Array) {
+                for (var i = 0; i < selection.length; ++i) {
+                    if (selection[i] >= 0 && selection[i] < this._divElement.childNodes.length) {
+                        EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_FOREGROUND,
+                                this._divElement.childNodes[selection[i]], "color");
+                        EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_BACKGROUND,
+                                this._divElement.childNodes[selection[i]], "backgroundColor");
+                    }
                 }
+            } else if (selection >= 0 && selection < this._divElement.childNodes.length) {
+                EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_FOREGROUND,
+                        this._divElement.childNodes[selection], "color");
+                EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_BACKGROUND,
+                        this._divElement.childNodes[selection], "backgroundColor");
             }
         } else {
             if (this._hasRenderedSelectedItems) {
                 this._mainElement.selectedIndex = -1;
             }
-            for (var i = 0; i < selection.length; ++i) {
-                if (selection[i] >= 0 && selection[i] < this._mainElement.options.length) {
-                    this._mainElement.options[selection[i]].selected = true;
+            if (selection instanceof Array) {
+                for (var i = 0; i < selection.length; ++i) {
+                    if (selection[i] >= 0 && selection[i] < this._mainElement.options.length) {
+                        this._mainElement.options[selection[i]].selected = true;
+                    }
                 }
+            } else if (selection >= 0 && selection < this._mainElement.options.length) {
+                this._mainElement.options[selection].selected = true;
             }
         }
         this._hasRenderedSelectedItems = true;
@@ -281,6 +350,36 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         containerElement.removeChild(element);
         this.renderAdd(update, containerElement);
         return false; // Child elements not supported: safe to return false.
+    },
+    
+    _setSelection: function(selection) {
+        var selectedId = null;
+        
+        if (selection instanceof Array && selection.length == 1) {
+            selection = selection[0];
+        }
+        
+        var items = this.component.get("items");
+        if (selection instanceof Array) {
+            selectedId = [];
+            for (var i = 0; i < selection.length; ++i) {
+                var selectedIndex = selection[i];
+                if (selectedIndex < items.length) {
+                    if (items[selectedIndex].id != null) {
+                        selectedId.push(items[selectedIndex].id);
+                    }
+                }
+            }
+        } else {
+            if (selection < items.length) {
+                if (items[selection].id != null) {
+                    selectedId = items[selection].id;
+                }
+            }
+        }
+
+        this.component.set("selection", selection);
+        this.component.set("selectedId", selectedId);
     }
 });
 

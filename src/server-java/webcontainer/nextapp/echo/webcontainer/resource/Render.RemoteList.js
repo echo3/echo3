@@ -3,22 +3,33 @@ EchoAppRender._ListComponentMixins = {
     getSelectionString: function() {
         var selection = this.get("selection");
         if (selection) {
-            return selection.join(",");
+            if (selection instanceof Array) {
+                return selection.join(",");
+            } else {
+                return selection.toString();
+            }
         } else {
             return null;
         }
     },
     
     setSelectionString: function(selectionString) {
-        this.set("selection", selectionString ? selectionString.split(",") : null);
+        var selection;
+        if (selectionString == null) {
+            selection = null;
+        } else {
+            selection = selectionString.split(",");
+            if (selection.length == 0) {
+                selection = null;
+            } else if (selection.length == 1) {
+                selection = selection == "" ? null : selection[0];
+            }
+        }
+        this.set("selection", selection);
     },
     
     updateListData: function(listData) {
-        var oldValue = this.items;
-        this.items = listData.items;
-        if (this.application) {
-            this.application.notifyComponentUpdate(this, "items", oldValue, this.items);
-        }
+        this.set("items", listData.items);
     }
 };
 
@@ -101,18 +112,6 @@ EchoAppRender.RemoteListData = Core.extend({
         return this.items.toString();
     }
 });
-
-    
-EchoAppRender.RemoteListDataItem = Core.extend({
-
-    $construct: function(text) {
-        this.text = text;
-    },
-    
-    toString: function() {
-        return this.text;
-    }
-});
     
 /**
  * Property Translator for List Data (rendered model elements).
@@ -123,8 +122,7 @@ EchoAppRender.RemoteListDataTranslator = {
         var items = [];
         var eElement = propertyElement.firstChild;
         while (eElement) {
-            var text = eElement.getAttribute("t");
-            var item = new EchoAppRender.RemoteListDataItem(text);
+            var item = { text: eElement.getAttribute("t") };
             if (eElement.getAttribute("f")) {
                 item.foreground = eElement.getAttribute("f");
             }

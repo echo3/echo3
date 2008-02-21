@@ -229,7 +229,9 @@ EchoSerial = {
      * Serializes a property value into an XML representation.
      */
     storeProperty: function(client, propertyElement, propertyValue) {
-        if (typeof (propertyValue) == "object") {
+        if (propertyValue == null) {
+            //FIXME.  Send nulled values.
+        } else if (typeof (propertyValue) == "object") {
             var translator = null;
             if (propertyValue.className) {
                 translator = this._propertyTranslatorMap[propertyValue.className];
@@ -238,15 +240,14 @@ EchoSerial = {
             }
             
             if (!translator || !translator.toXml) {
-                throw new Error("No to-XML translator available for class name: " + propertyValue.className);
-                //FIXME. silently ignore and return may be desired behavior.
+                // If appropriate translator does not exist, or translator does not support to-XML translation,
+                // simply ignore the property.
+                return;
             }
             translator.toXml(client, propertyElement, propertyValue);
         } else {
             // call toString here, IE will otherwise convert boolean values to integers
-            if (propertyValue != null) {
-                propertyElement.appendChild(propertyElement.ownerDocument.createTextNode(propertyValue.toString()));
-            }
+            propertyElement.appendChild(propertyElement.ownerDocument.createTextNode(propertyValue.toString()));
         }
     }
 };
