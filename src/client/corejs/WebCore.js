@@ -1396,12 +1396,6 @@ WebCore.Measure = {
  * Provides an object-oriented means of accomplishing this task.
  */
 WebCore.Scheduler = {
-
-    /**
-     * Interval at which the scheduler should wake to check for queued tasks.
-     * @type Number
-     */
-    INTERVAL: 20,
     
     /**
      * Collection of runnables to execute.
@@ -1410,48 +1404,16 @@ WebCore.Scheduler = {
     _runnables: [],
     
     /**
-     * Executes the scheduler, running any runnables that are due.
-     * This method is invoked by the interval/thread.
-     */
-    _execute: function() {
-        var time = new Date().getTime();
-        
-        for (var i = 0; i < WebCore.Scheduler._runnables.length; ++i) {
-            var runnable = WebCore.Scheduler._runnables[i];
-            if (!runnable._nextExecution) {
-                continue;
-            }
-            if (runnable._nextExecution < time) {
-                try {
-                    runnable.run();
-                } catch (ex) {
-                    runnable._nextExecution = null;
-                    throw(ex);
-                }
-                if (!runnable._nextExecution) {
-                    continue;
-                }
-                if (runnable.timeInterval && runnable.repeat) {
-                    runnable._nextExecution = runnable.timeInterval + time;
-                } else {
-                    runnable._nextExecution = null;
-                }
-            }
-        }
+     * The thread handle returned by setTimeout().
+     */ 
+    _threadHandle: null,
     
-        var newRunnables = [];
-        for (var i = 0; i < WebCore.Scheduler._runnables.length; ++i) {
-            var runnable = WebCore.Scheduler._runnables[i];
-            if (runnable._nextExecution) {
-                newRunnables.push(runnable);
-            }
-        }
-        WebCore.Scheduler._runnables = newRunnables;
-        
-        if (WebCore.Scheduler._runnables.length == 0) {
-            WebCore.Scheduler._stop();
-        }
-    },
+    /**
+     * Time at which next execution of the scheduler should occur.
+     * When this field is not null, the _threadHandle field contains a
+     * timeout scheduled to occur at this time.
+     */
+    _nextExecution: null,
     
     /**
      * Enqueues a Runnable to be executed by the scheduler.
@@ -1460,9 +1422,77 @@ WebCore.Scheduler = {
      */
     add: function(runnable) {
         var currentTime = new Date().getTime();
-        runnable._nextExecution = runnable.timeInterval ? runnable.timeInterval + currentTime : currentTime;
+        var timeInterval = runnable.timeInterval ? runnable.timeInterval : 0;
+        runnable._enabled = true;
+        runnable._nextExecution = currentTime + timeInterval;
         WebCore.Scheduler._runnables.push(runnable);
-        WebCore.Scheduler._start();
+        WebCore.Scheduler._start(runnable._nextExecution);
+    },
+
+    /**
+     * Executes the scheduler, running any runnables that are due.
+     * This method is invoked by the interval/thread.
+     */
+    _execute: function() {
+        var currentTime = new Date().getTime();
+        var nextInterval = Number.MAX_VALUE;
+        
+        // Execute pending runnables.
+        for (var i = 0; i < WebCore.Scheduler._runnables.length; ++i) {
+            var runnable = WebCore.Scheduler._runnables[i];
+            if (runnable._nextExecution && runnable._nextExecution <= currentTime) {
+                runnable._nextExecution = null;
+                try {
+                    runnable.run();
+                } catch (ex) {
+                    throw(ex);
+                }
+            }
+        }
+
+        var newRunnables = [];
+        for (var i = 0; i < WebCore.Scheduler._runnables.length; ++i) {
+            var runnable = WebCore.Scheduler._runnables[i];
+            if (!runnable._enabled) {
+                continue;
+            }
+
+            if (runnable._nextExecution) {
+                // Runnable is scheduled for execution: add it to new queue.
+                newRunnables.push(runnable);
+                
+                // Determine time interval of this runnable, if it is the soonest to be executed, use its execution time
+                // as the setTimeout delay.
+                var interval = runnable._nextExecution - currentTime;
+                if (interval < nextInterval) {
+                    nextInterval = interval;
+                }
+                
+                // Done processing this runnable.
+                continue;
+            }
+            
+            if (runnable.timeInterval && runnable.repeat) {
+                // Runnable is executed at a repeating interval but is not scheduled: schedule it for execution.
+                runnable._nextExecution = currentTime + runnable.timeInterval;
+                newRunnables.push(runnable);
+                
+                // If this is the next runnable to be executed, use its execution time as the setTimeout delay.
+                if (runnable.timeInterval < nextInterval) {
+                    nextInterval = runnable.timeInterval;
+                }
+            }
+        }
+    
+        // Store new runnable queue.
+        WebCore.Scheduler._runnables = newRunnables;
+        
+        if (nextInterval < Number.MAX_VALUE) {
+            this._nextExecution = currentTime + nextInterval;
+            WebCore.Scheduler._threadHandle = window.setTimeout(WebCore.Scheduler._execute, nextInterval);
+        } else {
+            WebCore.Scheduler._threadHandle = null;
+        }
     },
     
     /**
@@ -1471,6 +1501,7 @@ WebCore.Scheduler = {
      * @param {WebCore.Scheduler.Runnable} the runnable to dequeue
      */
     remove: function(runnable) {
+        runnable._enabled = false;
         runnable._nextExecution = null;
     },
     
@@ -1495,11 +1526,17 @@ WebCore.Scheduler = {
      * If the scheduler is already running, no action is taken.
      * @private
      */
-    _start: function() {
-        if (WebCore.Scheduler._interval != null) {
-            return;
+    _start: function(nextExecution) {
+        if (WebCore.Scheduler._threadHandle == null) {
+            var currentTime = new Date().getTime();
+            this._nextExecution = nextExecution;
+            WebCore.Scheduler._threadHandle = window.setTimeout(WebCore.Scheduler._execute, nextExecution - currentTime);
+        } else if (this._nextExecution > nextExecution) {
+            // Cancel current timeout, start new timeout.
+            window.clearTimeout(WebCore.Scheduler._threadHandle);
+            this._nextExecution = nextExecution;
+            WebCore.Scheduler._threadHandle = window.setTimeout(WebCore.Scheduler._execute, nextExecution - currentTime);
         }
-        WebCore.Scheduler._interval = window.setInterval(WebCore.Scheduler._execute, WebCore.Scheduler.INTERVAL);
     },
     
     /**
@@ -1508,11 +1545,12 @@ WebCore.Scheduler = {
      * @private
      */
     _stop: function() {
-        if (WebCore.Scheduler._interval == null) {
+        if (WebCore.Scheduler._threadHandle == null) {
             return;
         }
-        window.clearInterval(WebCore.Scheduler._interval);
-        WebCore.Scheduler._interval = null;
+        window.clearTimeout(WebCore.Scheduler._threadHandle);
+        WebCore.Scheduler._threadHandle = null;
+        WebCore.Scheduler._nextExecution = null;
     }
 };
 
@@ -1520,6 +1558,10 @@ WebCore.Scheduler = {
  * @class A runnable task that may be scheduled with the Scheduler.
  */
 WebCore.Scheduler.Runnable = Core.extend({
+    
+    _enabled: null,
+    
+    _nextExecution: null,
     
     $virtual: {
 
