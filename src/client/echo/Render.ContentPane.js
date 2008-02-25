@@ -80,7 +80,21 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
             divElement.style.top = pixelInsets.top + "px";
             divElement.style.bottom = pixelInsets.bottom + "px";
             divElement.style.right = pixelInsets.right + "px";
-            divElement.style.overflow = "auto";
+            if (child.pane) {
+                divElement.style.overflow = "auto";
+            } else {
+                switch (this.component.render("overflow")) {
+                case EchoApp.ContentPane.OVERFLOW_HIDDEN:
+                    divElement.style.overflow = "hidden";
+                    break;
+                case EchoApp.ContentPane.OVERFLOW_SCROLL:
+                    divElement.style.overflow = "scroll";
+                    break;
+                default:
+                    divElement.style.overflow = "auto";
+                    break;
+                }
+            }
         }
         EchoRender.renderComponentAdd(update, child, divElement);
         this._divElement.appendChild(divElement);

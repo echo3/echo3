@@ -2420,6 +2420,12 @@ EchoApp.Panel = Core.extend(EchoApp.Composite, {
  */
 EchoApp.ContentPane = Core.extend(EchoApp.Component, {
 
+    $static: {
+        OVERFLOW_AUTO: 0,
+        OVERFLOW_HIDDEN: 1,
+        OVERFLOW_SCROLL: 2
+    },
+
     $load: function() {
         EchoApp.ComponentFactory.registerType("ContentPane", this);
         EchoApp.ComponentFactory.registerType("CP", this);

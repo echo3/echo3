@@ -52,7 +52,12 @@ implements Pane, PaneContainer {
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
     public static final String PROPERTY_HORIZONTAL_SCROLL = "horizontalScroll";
     public static final String PROPERTY_INSETS = "insets";
+    public static final String PROPERTY_OVERFLOW = "overflow";
     public static final String PROPERTY_VERTICAL_SCROLL = "verticalScroll";
+    
+    public static final int OVERFLOW_AUTO = 0;
+    public static final int OVERFLOW_HIDDEN = 1;
+    public static final int OVERFLOW_SCROLL = 2;
     
     /**
      * Creates a new <code>ContentPane</code>.
@@ -77,6 +82,22 @@ implements Pane, PaneContainer {
      */
     public Extent getHorizontalScroll() {
         return (Extent) getProperty(PROPERTY_HORIZONTAL_SCROLL);
+    }
+    
+    /**
+     * Returns the overflow state, describing how the pane will behave when
+     * the content is larger than display area.
+     * 
+     * @return the overflow state, one of the following values:
+     *         <ul>
+     *          <li><code>OVERFLOW_AUTO</code>: provide scrollbars as necessary</li>
+     *          <li><code>OVERFLOW_HIDDEN</code>: never display scrollbars, hide overflow content</li>
+     *          <li><code>OVERFLOW_SCROLL</code>: always display scrollbars</li>
+     *         </ul>
+     */
+    public int getOverflow() {
+        Integer overflow = (Integer) getProperty(PROPERTY_OVERFLOW); 
+        return overflow == null ? OVERFLOW_AUTO : overflow.intValue();
     }
 
     /**
@@ -171,6 +192,21 @@ implements Pane, PaneContainer {
      */
     public void setInsets(Insets newValue) {
         setProperty(PROPERTY_INSETS, newValue);
+    }
+
+    /**
+     * Sets the overflow state, describing how the pane will behave when
+     * the content is larger than display area.
+     * 
+     * @param newValue the overflow state, one of the following values:
+     *        <ul>
+     *         <li><code>OVERFLOW_AUTO</code>: provide scrollbars as necessary</li>
+     *         <li><code>OVERFLOW_HIDDEN</code>: never display scrollbars, hide overflow content</li>
+     *         <li><code>OVERFLOW_SCROLL</code>: always display scrollbars</li>
+     *        </ul>
+     */
+    public void setOverflow(int newValue) {
+        setProperty(PROPERTY_OVERFLOW, new Integer(newValue));
     }
 
     /**

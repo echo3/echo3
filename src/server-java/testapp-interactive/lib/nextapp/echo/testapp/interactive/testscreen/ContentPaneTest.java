@@ -55,7 +55,6 @@ public class ContentPaneTest extends SplitPane {
         setStyleName("DefaultResizable");
         
         final ContentPane rootContentPane = InteractiveApp.getApp().getDefaultWindow().getContent();
-        final Label contentLabel = new Label(StyleUtil.QUASI_LATIN_TEXT_1 + StyleUtil.QUASI_LATIN_TEXT_1);
         
         ButtonColumn controlsColumn = new ButtonColumn();
         controlsColumn.setStyleName("TestControlsColumn");
@@ -113,11 +112,16 @@ public class ContentPaneTest extends SplitPane {
                 testContentPane.setFont(StyleUtil.randomFont());
             }
         });
-        
-        controlsColumn.addButton("Add Label", new ActionListener() {
+        controlsColumn.addButton("Add Short Label", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 removeAllContent(testContentPane);
-                testContentPane.add(contentLabel);
+                testContentPane.add(new Label("Hello, world!"));
+            }
+        });
+        controlsColumn.addButton("Add Long Label", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                removeAllContent(testContentPane);
+                testContentPane.add(new Label(StyleUtil.QUASI_LATIN_TEXT_1 + StyleUtil.QUASI_LATIN_TEXT_1));
             }
         });
         controlsColumn.addButton("Add SplitPane", new ActionListener() {
@@ -169,7 +173,6 @@ public class ContentPaneTest extends SplitPane {
                 ContentPane subContentPane3 = new ContentPane();
                 splitPane2.add(subContentPane3); 
                 
-                
                 final Button button = new Button("Alpha");
                 button.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
@@ -191,6 +194,21 @@ public class ContentPaneTest extends SplitPane {
         controlsColumn.addButton("Add WindowPane", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testContentPane.add(new WindowPane());
+            }
+        });
+        controlsColumn.addButton("Set Overflow = Auto", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testContentPane.setOverflow(ContentPane.OVERFLOW_AUTO);
+            }
+        });
+        controlsColumn.addButton("Set Overflow = Hidden", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testContentPane.setOverflow(ContentPane.OVERFLOW_HIDDEN);
+            }
+        });
+        controlsColumn.addButton("Set Overflow = Scroll", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testContentPane.setOverflow(ContentPane.OVERFLOW_SCROLL);
             }
         });
         controlsColumn.addButton("Set Horizontal Scroll = null", new ActionListener() {
