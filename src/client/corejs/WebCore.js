@@ -213,6 +213,23 @@ WebCore.DOM = {
     },
     
     /**
+     * Returns x/y coordinates of mouse relative to the element which fired an event.
+     * 
+     * @param {Event} e the event
+     * @return object containing 'x' and 'y' properties specifying the numeric pixel
+     *         coordinates of the mouse relative to the element, with {x: 0, y: 0}
+     *         indicating its upper-left cornet 
+     */
+    getEventOffset: function(e) {
+        if (typeof(e.offsetX) == "number") {
+            return { x: e.offsetX, y: e.offsetY };
+        } else {
+            var bounds = new WebCore.Measure.Bounds(this.getEventTarget(e));
+            return { x: e.clientX - bounds.left, y: e.clientY - bounds.top };
+        }
+    },
+    
+    /**
      * Returns the target of an event, using the client's supported event model.
      * On clients which support the W3C DOM Level 2 event specification,
      * the <code>target</code> property of the event is returned.
