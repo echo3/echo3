@@ -218,7 +218,7 @@ WebCore.DOM = {
      * @param {Event} e the event
      * @return object containing 'x' and 'y' properties specifying the numeric pixel
      *         coordinates of the mouse relative to the element, with {x: 0, y: 0}
-     *         indicating its upper-left cornet 
+     *         indicating its upper-left corner
      */
     getEventOffset: function(e) {
         if (typeof(e.offsetX) == "number") {
