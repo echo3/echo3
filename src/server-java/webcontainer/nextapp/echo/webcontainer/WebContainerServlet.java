@@ -153,6 +153,8 @@ public abstract class WebContainerServlet extends HttpServlet {
         BootService.install(services);
         
         resources.addPackage("Echo", "nextapp/echo/webcontainer/resource/");
+        resources.add("Echo", "resource/Transparent.gif", ContentType.IMAGE_GIF);
+        resources.add("Echo", "resource/Blank.html", ContentType.TEXT_HTML);
         
         services.add(ResourceService.INSTANCE);
         services.add(new StaticTextService(SERVICE_ID_BLANK_DOCUMENT, "text/html", "<html></html>"));
