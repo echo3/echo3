@@ -1544,8 +1544,8 @@ WebCore.Scheduler = {
      * @private
      */
     _start: function(nextExecution) {
+        var currentTime = new Date().getTime();
         if (WebCore.Scheduler._threadHandle == null) {
-            var currentTime = new Date().getTime();
             this._nextExecution = nextExecution;
             WebCore.Scheduler._threadHandle = window.setTimeout(WebCore.Scheduler._execute, nextExecution - currentTime);
         } else if (this._nextExecution > nextExecution) {
