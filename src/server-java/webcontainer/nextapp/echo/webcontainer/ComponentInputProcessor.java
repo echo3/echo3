@@ -113,8 +113,7 @@ implements ClientMessage.Processor {
 
                 Class propertyClass = componentPeer.getInputPropertyClass(propertyName);
                 if (propertyClass == null) {
-                    //FIXME. add ex handling.
-                    System.err.println("Could not determine class of property: " + propertyName);
+                    // Ignore property.
                     continue;
                 }
                 
