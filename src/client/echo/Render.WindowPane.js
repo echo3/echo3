@@ -649,9 +649,9 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
         if (resizable) {
             for (var i = 0; i < this._borderDivElements.length; ++i) {
-       	        WebCore.EventProcessor.add(this._borderDivElements[i], "mousedown", 
-       	                Core.method(this, this._processBorderMouseDown), true);
-       	    }
+                WebCore.EventProcessor.add(this._borderDivElements[i], "mousedown", 
+                        Core.method(this, this._processBorderMouseDown), true);
+            }
         }
     },
     
@@ -706,6 +706,26 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
 
     renderUpdate: function(update) {
+        if (update.hasAddedChildren() || update.hasRemovedChildren()) {
+            // Children added/removed: full render.
+        } else if (update.isUpdatedPropertySetIn({ positionX: true, positionY: true, width: true, height: true })) {
+            // Only x/y/width/height properties changed, determine if they were changed by window drag or by programmatic setting.
+            // Do not render if they match current position/size.
+            var changed = false;
+            var positionX = update.getUpdatedProperty("positionX");
+            var positionY = update.getUpdatedProperty("positionY");
+            var width = update.getUpdatedProperty("width");
+            var height = update.getUpdatedProperty("height");
+
+            changed = (positionX != null && EchoAppRender.Extent.toPixels(positionX.newValue) != this._userWindowX)
+                    || (!changed && positionY != null && EchoAppRender.Extent.toPixels(positionY.newValue) != this._userWindowY)
+                    || (!changed && width != null && EchoAppRender.Extent.toPixels(width.newValue) != this._userWindowWidth)
+                    || (!changed && height != null && EchoAppRender.Extent.toPixels(height.newValue) != this._userWindowHeight);
+            if (!changed) {
+                return;
+            }
+        }
+
         var element = this._windowPaneDivElement;
         var containerElement = element.parentNode;
         EchoRender.renderComponentDispose(update, update.parent);
