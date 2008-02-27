@@ -85,7 +85,6 @@ class ListSelectionUtil {
      */
     static int[] toIntArray(String selectionString) {
         int[] selection;
-        
         int selectionStringLength  = selectionString.length();
         if (selectionStringLength == 0) {
             selection = new int[0];
@@ -101,8 +100,7 @@ class ListSelectionUtil {
         StringTokenizer st = new StringTokenizer(selectionString, ",");
         for (int i = 0; i < selection.length; ++i) {
             selection[i] = Integer.parseInt(st.nextToken());
-        }
-        
+        }        
         return selection;
     }
     

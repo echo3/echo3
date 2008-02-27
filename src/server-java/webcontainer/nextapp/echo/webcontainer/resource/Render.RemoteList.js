@@ -2,7 +2,7 @@ EchoAppRender._ListComponentMixins = {
     
     getSelectionString: function() {
         var selection = this.get("selection");
-        if (selection) {
+        if (selection != null) {
             if (selection instanceof Array) {
                 return selection.join(",");
             } else {
