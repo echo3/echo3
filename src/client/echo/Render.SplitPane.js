@@ -473,7 +473,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                     paneDivElement.style.right = "0px";
                 } else {
                     paneDivElement.style.left = "0px";
-                    paneDivElement.style.right = this._separatorPosition + "px";
+                    paneDivElement.style.right = (this._separatorPosition + this._separatorSize) + "px";
                 }
             }
         }
