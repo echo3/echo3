@@ -27,6 +27,17 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._processTitleBarMouseUpRef = Core.method(this, this._processTitleBarMouseUp);
     },
 
+    _loadPositionAndSize: function() {
+        var positionX = this.component.render("positionX");
+        var positionY = this.component.render("positionY");
+        this._userWindowX = this._windowX = positionX == null ? null : EchoAppRender.Extent.toPixels(positionX, true); 
+        this._userWindowY = this._windowY = positionY == null ? null : EchoAppRender.Extent.toPixels(positionY, false);
+        this._userWindowWidth = this._windowWidth = EchoAppRender.Extent.toPixels(
+                this.component.render("width", EchoApp.WindowPane.DEFAULT_WIDTH), true);
+        this._userWindowHeight = this._windowHeight = EchoAppRender.Extent.toPixels(
+                this.component.render("height", EchoApp.WindowPane.DEFAULT_HEIGHT), false);
+    },
+
     _loadContainerSize: function() {
         //FIXME. the "parentnode.parentnode" business needs to go.
         this._containerSize = new WebCore.Measure.Bounds(this._windowPaneDivElement.parentNode.parentNode);
@@ -264,14 +275,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderAdd: function(update, parentElement) {
-        var positionX = this.component.render("positionX");
-        var positionY = this.component.render("positionY");
-        this._userWindowX = this._windowX = positionX == null ? null : EchoAppRender.Extent.toPixels(positionX, true); 
-        this._userWindowY = this._windowY = positionY == null ? null : EchoAppRender.Extent.toPixels(positionY, false);
-        this._userWindowWidth = this._windowWidth = EchoAppRender.Extent.toPixels(
-                this.component.render("width", EchoApp.WindowPane.DEFAULT_WIDTH), true);
-        this._userWindowHeight = this._windowHeight = EchoAppRender.Extent.toPixels(
-                this.component.render("height", EchoApp.WindowPane.DEFAULT_HEIGHT), false);
+        this._loadPositionAndSize();
                 
         this._minimumWidth = EchoAppRender.Extent.toPixels(
                 this.component.render("minimumWidth", EchoApp.WindowPane.DEFAULT_MINIMUM_WIDTH), true);
@@ -709,21 +713,10 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (update.hasAddedChildren() || update.hasRemovedChildren()) {
             // Children added/removed: full render.
         } else if (update.isUpdatedPropertySetIn({ positionX: true, positionY: true, width: true, height: true })) {
-            // Only x/y/width/height properties changed, determine if they were changed by window drag or by programmatic setting.
-            // Do not render if they match current position/size.
-            var changed = false;
-            var positionX = update.getUpdatedProperty("positionX");
-            var positionY = update.getUpdatedProperty("positionY");
-            var width = update.getUpdatedProperty("width");
-            var height = update.getUpdatedProperty("height");
-
-            changed = (positionX != null && EchoAppRender.Extent.toPixels(positionX.newValue) != this._userWindowX)
-                    || (!changed && positionY != null && EchoAppRender.Extent.toPixels(positionY.newValue) != this._userWindowY)
-                    || (!changed && width != null && EchoAppRender.Extent.toPixels(width.newValue) != this._userWindowWidth)
-                    || (!changed && height != null && EchoAppRender.Extent.toPixels(height.newValue) != this._userWindowHeight);
-            if (!changed) {
-                return;
-            }
+            // Only x/y/width/height properties changed: reset window position/size.
+            this._loadPositionAndSize();
+            this.setPosition(this._userWindowX, this._userWindowY, this._userWindowWidth, this._userWindowHeight);
+            return;
         }
 
         var element = this._windowPaneDivElement;
