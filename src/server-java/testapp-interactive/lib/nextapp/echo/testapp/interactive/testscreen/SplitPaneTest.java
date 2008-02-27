@@ -364,6 +364,14 @@ public class SplitPaneTest extends SplitPane {
                 testPane.setSeparatorPosition(new Extent(300));
             }
         });
+        controlsColumn.addButton("Set Separator Position = 250px, Add Content", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testPane.setSeparatorPosition(new Extent(250));
+                if (testPane.getComponentCount() < 2) {
+                    testPane.add(createPaneLabel("Added at end after setting separator position."));
+                }
+            }
+        });
         controlsColumn.addButton("Set Orientation = Leading/Trailing", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testPane.setOrientation(SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING);

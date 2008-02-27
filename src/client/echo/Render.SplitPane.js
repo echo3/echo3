@@ -528,9 +528,16 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         var fullRender = false;
         if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()
                 || this._hasRelocatedChildren()) {
-            // Full render
-            fullRender = true;
-        } else {
+            if (update.isUpdatedPropertySetIn({ separatorPosition: true })) {
+                this._userSeparatorPosition =  EchoAppRender.Extent.toPixels(this.component.render("separatorPosition",
+                        EchoApp.SplitPane.DEFAULT_SEPARATOR_POSITION), this._orientationVertical);
+                this._setSeparatorPosition(this._userSeparatorPosition);
+            } else {
+                fullRender = true;
+            }
+        }
+        
+        if (!fullRender && (update.hasAddedChildren() || update.hasRemovedChildren())) {
             var removedChildren = update.getRemovedChildren();
             if (removedChildren) {
                 // Remove children.
