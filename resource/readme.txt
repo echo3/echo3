@@ -2,7 +2,7 @@
 Echo Web Application Framework, version 3.0
 Copyright (C) 2002-2008 NextApp, Inc.
 
-http://echo.nxtapp.com/
+http://echo.nextapp.com/
 
 ------------------------------------------------------------------------------
 Echo is licensed under the Mozilla Public License.
