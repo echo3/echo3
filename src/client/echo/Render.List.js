@@ -15,6 +15,13 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     _hasRenderedSelectedItems: false,
     
     _multipleSelect: false,
+    
+    /**
+     * Flag indicating that selection should be determined based on "selectedId"
+     * property rather than "selection" property.  this flag is enabled when
+     * "selectedId" is updated and disabled when an item is selected by the user.
+     */
+    _selectedIdPriority: false,
 
     /**
      * Flag indicating that component will be rendered as a DHTML-based ListBox.
@@ -270,7 +277,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     
     _getSelection: function() {
         // Retrieve selection from "selection" property.
-        var selection = this.component.get("selection");
+        var selection = this._selectedIdPriority ? null : this.component.get("selection");
         
         if (selection == null) {
             // If selection is now in "selection" property, query "selectedId" property.
@@ -344,6 +351,10 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderUpdate: function(update) {
+        if (update.getUpdatedProperty("selectedId") && !update.getUpdatedProperty("selection")) {
+            this._selectedIdPriority = true;
+        }
+    
         var element = this._mainElement;
         var containerElement = element.parentNode;
         this.renderDispose(update);
@@ -353,6 +364,8 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _setSelection: function(selection) {
+        this._selectedIdPriority = false;
+    
         var selectedId = null;
         
         if (selection instanceof Array && selection.length == 1) {
