@@ -47,7 +47,7 @@
 
     <!-- Minimize -->
     <target name="minimize" depends="clean" 
-    	    description="Removes all non-essential files, including Eclipse temporary/build output files">
+            description="Removes all non-essential files, including Eclipse temporary/build output files">
         <delete dir="${dir.temp}"/>
     </target>
     
@@ -183,7 +183,7 @@
     </target>
     
     <target name="compile.webcontainer" depends="verify.servlet.api,compile.webcontainer.impl" 
-    	description="Compile Echo Web Application Container"/>
+        description="Compile Echo Web Application Container"/>
     
     <target name="compile.webcontainer.impl" depends="verify.servlet.api, compile.app">
         <mkdir dir="${dir.build.server-java.webcontainer}"/>
@@ -216,7 +216,7 @@
     <target name="test.compile.webcontainer" depends="dist.app, dist.webcontainer">
         <mkdir dir="${dir.build.server-java.webcontainer-test}"/>
         <javac srcdir="${dir.src.server-java.webcontainer-test}" destdir="${dir.build.server-java.webcontainer-test}" 
-        	    debug="${debug}" deprecation="yes">
+                debug="${debug}" deprecation="yes">
             <classpath>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
@@ -252,7 +252,7 @@
             description="Create public/protected JavaDoc Document for Echo Web Application Container">
         <mkdir dir="${dir.javadoc.webcontainer.public}"/>
         <javadoc sourcepath="${dir.src.server-java.app};${dir.src.server-java.webcontainer}" 
-    	        packagenames="nextapp.echo.webcontainer.*" 
+                packagenames="nextapp.echo.webcontainer.*" 
                 stylesheetfile="${javadoc.cssfile}"
                 destdir="${dir.javadoc.webcontainer.public}" 
                 WindowTitle="${javadoc.windowtitle}"
@@ -269,7 +269,7 @@
             description="Create private JavaDoc Document for Echo Web Application Container">
         <mkdir dir="${dir.javadoc.webcontainer.private}"/>
         <javadoc sourcepath="${dir.src.server-java.app};${dir.src.server-java.webcontainer}" 
-        	    packagenames="nextapp.echo.webcontainer.*" 
+                packagenames="nextapp.echo.webcontainer.*" 
                 stylesheetfile="${javadoc.cssfile}"
                 destdir="${dir.javadoc.webcontainer.private}" 
                 WindowTitle="${javadoc.windowtitle}"
@@ -336,7 +336,7 @@
             <fileset dir="${dir.src.server-java.test-ia.htdocs}"/>
         </copy>
         <javac srcdir="${dir.src.server-java.test-ia.lib}" destdir="${dir.build.server-java.testapp}/WEB-INF/classes" 
-        	    debug="${debug}" deprecation="yes">
+                debug="${debug}" deprecation="yes">
             <classpath>
                 <pathelement path="${servlet.lib.jar}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
@@ -405,10 +405,10 @@
         <copy todir="${dir.build.server-java.release.root}/Documentation">
             <fileset dir="${dir.resource}/Documentation"/>
         </copy>
-    	
-    	<!-- JSDOC Temporarily Disabled -->
+        
+        <!-- JSDOC Temporarily Disabled -->
         <!--
-    	<copy todir="${dir.build.server-java.release.root}/Documentation/jsapi/public">
+        <copy todir="${dir.build.server-java.release.root}/Documentation/jsapi/public">
             <fileset dir="${dir.jsdoc.public}"/>
         </copy>
         -->

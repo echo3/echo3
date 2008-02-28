@@ -102,14 +102,14 @@ public class PeerFactory {
                 return peer;
             }
             if (searchSuperClasses) {
-	            Class[] interfaces = objectClass.getInterfaces();
-	            for (int i = 0; i < interfaces.length; i++) {
-	            	peer = getPeerForObject(interfaces[i], true);
-	            	if (peer != null) {
-	            		return peer;
-	            	}
-	            }
-	            objectClass = objectClass.getSuperclass();
+                Class[] interfaces = objectClass.getInterfaces();
+                for (int i = 0; i < interfaces.length; i++) {
+                    peer = getPeerForObject(interfaces[i], true);
+                    if (peer != null) {
+                        return peer;
+                    }
+                }
+                objectClass = objectClass.getSuperclass();
             }
         } while (searchSuperClasses && objectClass != null);
         return null;

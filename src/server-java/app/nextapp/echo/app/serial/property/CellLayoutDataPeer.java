@@ -50,7 +50,7 @@ extends LayoutDataPeer {
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
-    	CellLayoutData layoutData = (CellLayoutData) propertyValue;
+        CellLayoutData layoutData = (CellLayoutData) propertyValue;
         propertyElement.setAttribute("t", 
                 (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "LayoutData" : "L");
         SerialUtil.toXml(context, CellLayoutData.class, propertyElement, "alignment", layoutData.getAlignment());

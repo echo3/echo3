@@ -49,7 +49,7 @@ extends CellLayoutDataPeer {
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
         super.toXml(context, objectClass, propertyElement, propertyValue);
-    	GridLayoutData layoutData = (GridLayoutData) propertyValue;
+        GridLayoutData layoutData = (GridLayoutData) propertyValue;
         if (layoutData.getColumnSpan() > 1) {
             SerialUtil.toXml(context, GridLayoutData.class, propertyElement, "columnSpan", new Integer(layoutData.getColumnSpan()));
         }
