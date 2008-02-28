@@ -1,6 +1,6 @@
 /* 
  * This file is part of the Echo Web Application Framework (hereinafter "Echo").
- * Copyright (C) 2002-2007 NextApp, Inc.
+ * Copyright (C) 2002-2008 NextApp, Inc.
  *
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -26,6 +26,8 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
+ 
+//FIXME. Stylesheet converter does not currently convert styles to latest Echo3 format.
 
 package nextapp.echo.app.serial;
 
@@ -97,6 +99,10 @@ public class Echo2StyleSheetConverter {
     }
     
     public static void main(String[] args) {
+        if (true) {
+            throw new RuntimeException("FIXME. Stylesheet converter does not currently convert styles to latest Echo3 format.");
+        }
+    
         if (args == null || args.length != 2) {
             System.out.println("Usage: Echo2StyleSheetConverter [inputFileName] [outputFileName]");
             return;
