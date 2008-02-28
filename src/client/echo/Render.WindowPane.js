@@ -202,6 +202,12 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
     setPosition: function(x, y, width, height) {
         if (width != null) {
+            if (this._maximumWidth && width > this._maximumWidth) {
+                if (x != null) {
+                    x += (width - this._maximumWidth);
+                }
+                width = this._maximumWidth;
+            }
             if (width < this._minimumWidth) {
                 if (x != null) {
                     x += (width - this._minimumWidth);
@@ -212,6 +218,12 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
         
         if (height != null) {
+            if (this._maximumHeight && height > this._maximumHeight) {
+                if (y != null) {
+                    y += (height - this._maximumHeight);
+                }
+                height = this._maximumHeight;
+            }
             if (height < this._minimumHeight) {
                 if (y != null) {
                     y += (height - this._minimumHeight);
@@ -281,6 +293,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 this.component.render("minimumWidth", EchoApp.WindowPane.DEFAULT_MINIMUM_WIDTH), true);
         this._minimumHeight = EchoAppRender.Extent.toPixels(
                 this.component.render("minimumHeight", EchoApp.WindowPane.DEFAULT_MINIMUM_HEIGHT), false);
+        this._maximumWidth = EchoAppRender.Extent.toPixels(this.component.render("maximumWidth"), true);
+        this._maximumHeight = EchoAppRender.Extent.toPixels(this.component.render("maximumHeight"), false);
     
         var border = this.component.render("border", EchoApp.WindowPane.DEFAULT_BORDER);
         this._borderInsets = EchoAppRender.Insets.toPixels(border.borderInsets);
