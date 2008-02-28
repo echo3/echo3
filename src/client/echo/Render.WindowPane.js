@@ -152,6 +152,14 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this.component.doWindowClosing();
     },
     
+    _processFocusClick: function(e) { 
+        if (!this.client.verifyInput(this.component)) {
+            return;
+        }
+        this.component.parent.peer.raise(this.component);
+        return true;
+    },
+    
     _processTitleBarMouseDown: function(e) {
         if (!this.client.verifyInput(this.component)) {
             return;
@@ -652,6 +660,9 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         parentElement.appendChild(this._windowPaneDivElement);
         
         // Register event listeners.
+        
+        WebCore.EventProcessor.add(this._windowPaneDivElement, "click", 
+                Core.method(this, this._processFocusClick), true);
         
         if (closable) {
             WebCore.EventProcessor.add(this._windowPaneDivElement, "keydown", 
