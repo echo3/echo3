@@ -16,9 +16,15 @@ EchoArc = function() { }
  * ArcClient component synchronization peer.
  */
 EchoArc.Client = Core.extend(EchoFreeClient, {
-
-    //FIXME This class has been created with the intention that methods will be added to it.  
-    // If not, remove and use freeclient?
+    
+    arcSync: null,
+    
+    verifyInput: function(component, flags) {
+        if (!this.arcSync.client.verifyInput(this.arcSync.component, flags)) {
+            return false;
+        }
+        return EchoFreeClient.prototype.verifyInput.call(this, component, flags);
+    }
 });
 
 /**
@@ -87,6 +93,7 @@ EchoArc.ComponentSync = Core.extend(EchoRender.ComponentSync, {
                 }
                 this.arcApplication.rootComponent.add(this.baseComponent);
                 this.arcClient = new EchoArc.Client(this.arcApplication, this.getDomainElement());
+                this.arcClient.arcSync = this;
                 this.arcClient.parent = this.client;
                 this.arcClient.init();
             }

@@ -229,6 +229,12 @@ public class ArcTest extends SplitPane {
             }
         });
 
+        controlsColumn.addButton("Toggle Container Enabled State", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testColumn.setEnabled(!testColumn.isEnabled());
+            }
+        });
+
         testColumn = new Column();
         testColumn.setCellSpacing(new Extent(15));
         splitPaneLayoutData = new SplitPaneLayoutData();
