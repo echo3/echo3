@@ -1489,7 +1489,7 @@ WebCore.Scheduler = {
                 continue;
             }
             
-            if (runnable.timeInterval && runnable.repeat) {
+            if (runnable.timeInterval != null && runnable.repeat) {
                 // Runnable is executed at a repeating interval but is not scheduled: schedule it for execution.
                 runnable._nextExecution = currentTime + runnable.timeInterval;
                 newRunnables.push(runnable);
