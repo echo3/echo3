@@ -1185,6 +1185,8 @@ WebCore.Library = {
  */
 WebCore.Measure = { 
 
+    _scrollElements: ["div", "body"],
+
     /** Size of one inch in horizontal pixels. */
     _hInch: 96,
     
@@ -1274,8 +1276,10 @@ WebCore.Measure = {
     _getScrollOffset: function(element) {
         var valueT = 0, valueL = 0;
         do {
-            valueT += element.scrollTop  || 0;
-            valueL += element.scrollLeft || 0; 
+            if ((element.scrollLeft || element.scrollTop) && element.nodeName.toLowerCase() in this._scrollElements) {
+                valueT += element.scrollTop  || 0;
+                valueL += element.scrollLeft || 0; 
+            }
             element = element.parentNode;
         } while (element);
         return { left: valueL, top: valueT };
