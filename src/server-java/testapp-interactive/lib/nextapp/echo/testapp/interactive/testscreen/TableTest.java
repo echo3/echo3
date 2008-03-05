@@ -308,18 +308,6 @@ public class TableTest extends SplitPane {
             }
         });
         
-        controlsColumn.addButton("DefaultTableModel: Delete Row 0", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (!(testTable.getModel() instanceof DefaultTableModel)) {
-                    return;
-                }
-                DefaultTableModel model = (DefaultTableModel) testTable.getModel();
-                if (model.getRowCount() > 0) {
-                    model.deleteRow(0);
-                }
-            }
-        });
-        
         controlsColumn.addButton("Multiplication Model: Increase RowCount", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!(testTable.getModel() instanceof MultiplicationTableModel)) {
@@ -338,6 +326,18 @@ public class TableTest extends SplitPane {
                 MultiplicationTableModel model = (MultiplicationTableModel) testTable.getModel();
                 if (model.getRowCount() > 0) {
                     model.setRowCount(model.getRowCount() - 1);
+                }
+            }
+        });
+        
+        controlsColumn.addButton("DefaultTableModel: Delete Row 0", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!(testTable.getModel() instanceof DefaultTableModel)) {
+                    return;
+                }
+                DefaultTableModel model = (DefaultTableModel) testTable.getModel();
+                if (model.getRowCount() > 0) {
+                    model.deleteRow(0);
                 }
             }
         });
@@ -368,7 +368,7 @@ public class TableTest extends SplitPane {
                 for (int i = 0; i < columns; ++i) {
                     data[i] = model.getValueAt(i, 0);
                 }
-                model.insertRow(2, data);
+                model.insertRow(0, data);
             }
         });
         

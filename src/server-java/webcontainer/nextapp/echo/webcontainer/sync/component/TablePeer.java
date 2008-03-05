@@ -171,7 +171,8 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
             ServerComponentUpdate update) {
         Iterator normalPropertyIterator = super.getUpdatedOutputPropertyNames(context, component, update);
         
-        if (update.hasUpdatedProperty(Table.MODEL_CHANGED_PROPERTY)) {
+        if (update.hasUpdatedProperty(Table.MODEL_CHANGED_PROPERTY)
+                || update.hasAddedChildren() || update.hasRemovedChildren()) {
             return new MultiIterator(
                     new Iterator[]{ normalPropertyIterator, new ArrayIterator(MODEL_CHANGED_UPDATE_PROPERTIES) });
         } else {
