@@ -974,7 +974,7 @@ EchoApp.Component = Core.extend({
             if (value == null && this._styleName && this.application && this.application._styleSheet) {
                 var style = this.application._styleSheet.getRenderStyle(this._styleName, this.componentType);
                 if (style) {
-                    valueArray = this.style[name];
+                    valueArray = style[name];
                     value = valueArray ? valueArray[index] : null;
                 }
             }
