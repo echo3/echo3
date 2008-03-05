@@ -103,7 +103,7 @@ EchoAppRender.RowSync = Core.extend(EchoRender.ComponentSync, {
                 if (EchoAppRender.Extent.isPercent(layoutData.width)) {
                     tdElement.style.width = layoutData.width;
                 } else {
-                    tdElement.style.width = EchoAppRender.Extent.cssValue(layoutData.width, true);
+                    tdElement.style.width = EchoAppRender.Extent.toCssValue(layoutData.width, true);
                 }
             }
         }
