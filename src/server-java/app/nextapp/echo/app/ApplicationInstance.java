@@ -261,6 +261,8 @@ implements Serializable {
      * Implementations must invoke <code>super.dispose()</code>.
      */
     public void dispose() {
+        defaultWindow.doDispose();
+        defaultWindow.register(null);
     }
 
     /**

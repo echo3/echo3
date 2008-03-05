@@ -63,7 +63,8 @@ public class TestAppRun {
         }
         
         Server server = new Server(PORT);
-        Context testContext = new Context(server, CONTEXT_PATH, Context.SESSIONS);
+        
+        final Context testContext = new Context(server, CONTEXT_PATH, Context.SESSIONS);
         testContext.addServlet(new ServletHolder(SERVLET_CLASS), PATH_SPEC);
         
         Context shutdownContext = new Context(server, "/__SHUTDOWN__");
@@ -73,8 +74,14 @@ public class TestAppRun {
 
             protected void service(HttpServletRequest req, HttpServletResponse resp) 
             throws ServletException, IOException {
-                System.out.println("Shutdown request received: terminating.");
-                System.exit(0);
+                try {
+                    // Manually stopping session handler to test Application.dispose().
+                    testContext.getSessionHandler().stop();
+                    System.out.println("Shutdown request received: terminating.");
+                    System.exit(0);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
             
         }), "/");
