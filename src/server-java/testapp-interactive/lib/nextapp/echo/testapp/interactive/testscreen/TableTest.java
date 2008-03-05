@@ -97,6 +97,8 @@ public class TableTest extends SplitPane {
     
     private class MultiplicationTableModel extends AbstractTableModel {
 
+        private int rowCount =12;
+        
         /**
          * @see nextapp.echo.app.table.TableModel#getColumnCount()
          */
@@ -108,7 +110,12 @@ public class TableTest extends SplitPane {
          * @see nextapp.echo.app.table.TableModel#getRowCount()
          */
         public int getRowCount() {
-            return 12;
+            return rowCount;
+        }
+        
+        public void setRowCount(int rowCount) {
+            this.rowCount = rowCount;
+            fireTableStructureChanged();
         }
         
         /**
@@ -301,7 +308,7 @@ public class TableTest extends SplitPane {
             }
         });
         
-        controlsColumn.addButton("Delete Row 0", new ActionListener() {
+        controlsColumn.addButton("DefaultTableModel: Delete Row 0", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!(testTable.getModel() instanceof DefaultTableModel)) {
                     return;
@@ -313,7 +320,29 @@ public class TableTest extends SplitPane {
             }
         });
         
-        controlsColumn.addButton("Delete Row 2", new ActionListener() {
+        controlsColumn.addButton("Multiplication Model: Increase RowCount", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!(testTable.getModel() instanceof MultiplicationTableModel)) {
+                    return;
+                }
+                MultiplicationTableModel model = (MultiplicationTableModel) testTable.getModel();
+                model.setRowCount(model.getRowCount() + 1);
+            }
+        });
+        
+        controlsColumn.addButton("Multiplication Model: Decrease RowCount", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!(testTable.getModel() instanceof MultiplicationTableModel)) {
+                    return;
+                }
+                MultiplicationTableModel model = (MultiplicationTableModel) testTable.getModel();
+                if (model.getRowCount() > 0) {
+                    model.setRowCount(model.getRowCount() - 1);
+                }
+            }
+        });
+        
+        controlsColumn.addButton("DefaultTableModel: Delete Row 2", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!(testTable.getModel() instanceof DefaultTableModel)) {
                     return;
@@ -325,7 +354,7 @@ public class TableTest extends SplitPane {
             }
         });
         
-        controlsColumn.addButton("Duplicate Row 0", new ActionListener() {
+        controlsColumn.addButton("DefaultTableModel: Duplicate Row 0", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!(testTable.getModel() instanceof DefaultTableModel)) {
                     return;
@@ -343,7 +372,7 @@ public class TableTest extends SplitPane {
             }
         });
         
-        controlsColumn.addButton("Duplicate Row 2", new ActionListener() {
+        controlsColumn.addButton("DefaultTableModel: Duplicate Row 2", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!(testTable.getModel() instanceof DefaultTableModel)) {
                     return;
