@@ -176,6 +176,15 @@ implements Serializable {
     }
     
     /**
+     * Determines if the border has any fill images configured.
+     * 
+     * @return true if the border has any fill images
+     */
+    public boolean hasFillImages() {
+        return fillImages != null;
+    }
+    
+    /**
      * Sets the inset of the border images, thus defining the width and 
      * height of the border images.
      * The provided <code>Insets</code> value must only contain margins defined
@@ -238,5 +247,18 @@ implements Serializable {
             fillImages = new FillImage[8];
         }
         fillImages[position] = fillImage;
+        if (fillImage == null) {
+            // Set fillImages property to null in the event that no fill images exist.
+            boolean hasFillImages = false;
+            for (int i = 0 ; i < fillImages.length; ++i) {
+                if (fillImages[i] != null) {
+                    hasFillImages = true;
+                    break;
+                }
+            }
+            if (!hasFillImages) {
+                fillImages = null;
+            }
+        }
     }
 }

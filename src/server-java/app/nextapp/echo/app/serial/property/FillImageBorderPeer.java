@@ -105,15 +105,16 @@ implements SerialPropertyPeer {
             fibElement.setAttribute("bc", ColorPeer.toString(border.getColor()));
         }
         
-        for (int i = 0; i < 8; ++i) {
-            FillImage fillImage = border.getFillImage(i);
-            if (fillImage == null) {
-                fibElement.appendChild(serialContext.getDocument().createElement("null-fi"));
-            } else {
-                fibElement.appendChild(fillImagePeer.createFillImageElement(context, fillImage));
+        if (border.hasFillImages()) {
+            for (int i = 0; i < 8; ++i) {
+                FillImage fillImage = border.getFillImage(i);
+                if (fillImage == null) {
+                    fibElement.appendChild(serialContext.getDocument().createElement("null-fi"));
+                } else {
+                    fibElement.appendChild(fillImagePeer.createFillImageElement(context, fillImage));
+                }
             }
         }
-        
         propertyElement.appendChild(fibElement);
     }
 }

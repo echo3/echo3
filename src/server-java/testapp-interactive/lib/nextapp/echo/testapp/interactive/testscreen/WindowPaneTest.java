@@ -29,9 +29,11 @@
 
 package nextapp.echo.testapp.interactive.testscreen;
 
+import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
+import nextapp.echo.app.FillImageBorder;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.SplitPane;
@@ -127,6 +129,22 @@ public class WindowPaneTest extends SplitPane {
             }
         });
 
+        controlsColumn.addButton("Set Border = Blue Fade", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setBorder((FillImageBorder) InteractiveApp.getApp().getStyleSheet().getStyle("Default", 
+                        WindowPane.class, false).getProperty(WindowPane.PROPERTY_BORDER));
+            }
+        });
+        controlsColumn.addButton("Set Border = Solid Color", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setBorder(new FillImageBorder(Color.GREEN, new Insets(30), new Insets(15)));
+            }
+        });
+        controlsColumn.addButton("Set Border = Null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setBorder(null);
+            }
+        });
         controlsColumn.addButton("Set Foreground", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.setForeground(StyleUtil.randomColor());

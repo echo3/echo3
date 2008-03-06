@@ -516,7 +516,7 @@ EchoSerial.PropertyTranslator.FillImageBorder = {
         var fillImageBorder = { 
             contentInsets: fibElement.getAttribute("ci") == "" ? null : fibElement.getAttribute("ci"),
             borderInsets: fibElement.getAttribute("bi") == "" ? null : fibElement.getAttribute("bi"),
-            borderColor: fibElement.getAttribute("bc")
+            color: fibElement.getAttribute("bc")
         };
         
         var element = fibElement.firstChild;
@@ -526,11 +526,13 @@ EchoSerial.PropertyTranslator.FillImageBorder = {
                 if (element.nodeName == "fi") {
                     fillImageBorder[this._NAMES[i]] = EchoSerial.PropertyTranslator.FillImage._parseElement(client, element);
                     ++i;
+                } else if (element.nodeName == "null-fi") {
+                    ++i;
                 }
             }
             element = element.nextSibling;
         }
-        if (i != 8) {
+        if (!(i == 0 || i == 8)) {
             throw new Error("Invalid FillImageBorder image count: " + i);
         }
     
