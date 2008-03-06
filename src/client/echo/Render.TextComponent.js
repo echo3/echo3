@@ -151,9 +151,7 @@ EchoAppRender.TextAreaSync = Core.extend(EchoAppRender.TextComponentSync, {
         this._textComponentElement.style.overflow = "auto";
         this._addEventHandlers(this._textComponentElement);
         if (this.component.get("text")) {
-            this._textComponentElement.appendChild(document.createTextNode(this.component.get("text")));
-        } else {
-            this._textComponentElement.appendChild(document.createTextNode(""));
+            this._textComponentElement.value = this.component.get("text");
         }
         parentElement.appendChild(this._textComponentElement);
     }
