@@ -1360,11 +1360,11 @@ WebCore.Measure = {
                 WebCore.Measure.Bounds._offscreenDiv = document.createElement("div");
                 WebCore.Measure.Bounds._offscreenDiv.style.cssText 
                         = "position: absolute; top: -1700px; left: -1300px; width: 1600px; height: 1200px;";
-                document.body.appendChild(WebCore.Measure.Bounds._offscreenDiv);
             }
         
             var parentNode, nextSibling;
             if (!rendered) {
+                document.body.appendChild(WebCore.Measure.Bounds._offscreenDiv);
                 // Element must be added to off-screen element for measuring.
                 
                 // Store parent node and next sibling such that element may be replaced into proper position
@@ -1381,7 +1381,7 @@ WebCore.Measure = {
                 WebCore.Measure.Bounds._offscreenDiv.appendChild(element);
             }
             
-            // Store  width and height of element.
+            // Store width and height of element.
         
             this.width = element.offsetWidth;
             this.height = element.offsetHeight;
@@ -1392,6 +1392,7 @@ WebCore.Measure = {
                 if (parentNode) {
                     parentNode.insertBefore(element, nextSibling);
                 }
+                document.body.removeChild(WebCore.Measure.Bounds._offscreenDiv);
             }
             
             // Determine top and left positions of element if rendered on-screen.
