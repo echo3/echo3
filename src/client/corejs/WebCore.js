@@ -429,37 +429,43 @@ WebCore.Environment = {
         }
     
         //FIXME Quirk flags not refined yet, some quirk flags from Echo 2.0/1 will/may be deprecated/removed.
-        
+                
         // Set IE Quirk Flags
         if (this.BROWSER_INTERNET_EXPLORER) {
-            this.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING = true;
-            this.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
-            this.QUIRK_IE_REPAINT = true;
-            this.QUIRK_TEXTAREA_CONTENT = true;
-            this.QUIRK_IE_TEXTAREA_NEWLINE_OBLITERATION = true;
-            this.QUIRK_IE_SELECT_LIST_DOM_UPDATE = true;
-            this.QUIRK_CSS_BORDER_COLLAPSE_INSIDE = true;
-            this.QUIRK_CSS_BORDER_COLLAPSE_FOR_0_PADDING = true;
-            this.NOT_SUPPORTED_CSS_OPACITY = true;
+            //FIXME IE8 quirks have not been properly analyzed yet.
+            // Internet Explorer Flags (all versions).
             this.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED = true;
-            this.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED = true;
             this.PROPRIETARY_EVENT_SELECT_START_SUPPORTED = true;
-            this.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR = true;
-            this.QUIRK_IE_SELECT_PERCENT_WIDTH = true;
             this.QUIRK_IE_KEY_DOWN_EVENT_REPEAT = true;
             this.CSS_FLOAT = "styleFloat";
             
-            if (this.BROWSER_MAJOR_VERSION < 7) {
-                // Internet Explorer 6 Flags.
-                this.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY = true;
-                this.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED = true;
-                this.QUIRK_CSS_BACKGROUND_ATTACHMENT_USE_FIXED = true;
-                this.QUIRK_IE_SELECT_Z_INDEX = true;
-                this.NOT_SUPPORTED_CSS_MAX_HEIGHT = true;
-                this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
+            if (this.BROWSER_MAJOR_VERSION < 8) {
+                // Internet Explorer 6 and 7 Flags.
+                this.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING = true;
+                this.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
+                this.QUIRK_IE_REPAINT = true;
+                this.QUIRK_TEXTAREA_CONTENT = true;
+                this.QUIRK_IE_TEXTAREA_NEWLINE_OBLITERATION = true;
+                this.QUIRK_IE_SELECT_LIST_DOM_UPDATE = true;
+                this.QUIRK_CSS_BORDER_COLLAPSE_INSIDE = true;
+                this.QUIRK_CSS_BORDER_COLLAPSE_FOR_0_PADDING = true;
+                this.NOT_SUPPORTED_CSS_OPACITY = true;
+                this.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED = true;
+                this.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR = true;
+                this.QUIRK_IE_SELECT_PERCENT_WIDTH = true;
                 
-                // Enable 'garbage collection' on large associative arrays to avoid memory leak.
-                Core.Arrays.LargeMap.garbageCollectEnabled = true;
+                if (this.BROWSER_MAJOR_VERSION < 7) {
+                    // Internet Explorer 6 Flags.
+                    this.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY = true;
+                    this.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED = true;
+                    this.QUIRK_CSS_BACKGROUND_ATTACHMENT_USE_FIXED = true;
+                    this.QUIRK_IE_SELECT_Z_INDEX = true;
+                    this.NOT_SUPPORTED_CSS_MAX_HEIGHT = true;
+                    this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
+                    
+                    // Enable 'garbage collection' on large associative arrays to avoid memory leak.
+                    Core.Arrays.LargeMap.garbageCollectEnabled = true;
+                }
             }
         } else if (this.BROWSER_MOZILLA) {
             if (this.BROWSER_FIREFOX) {
