@@ -131,16 +131,14 @@ implements Service {
         bodyElement.setAttribute("id", "body");
         bodyElement.setAttribute("onload", "EchoBoot.boot('" + userInstance.getServletUri() + "', " + debug + ");");
         bodyElement.setAttribute("style",
-                "position: absolute; font-family: verdana, arial, helvetica, sans-serif; "
-                + "font-size: 10pt; height: 100%; width: 100%; padding: 0px; margin: 0px; overflow: hidden;");
+                "height:100%;width:100%;margin:0px;padding: 0px;overflow:auto;" +
+                "font-family:verdana, arial, helvetica, sans-serif;font-size:10pt");
         htmlElement.appendChild(bodyElement);
-        
-        Element formElement = document.createElement("form");
-        formElement.setAttribute("style", "padding:0px;margin:0px;");
-        formElement.setAttribute("action", "#");
-        formElement.setAttribute("id", userInstance.getRootHtmlElementId());
-        formElement.setAttribute("onsubmit", "return false;");
-        bodyElement.appendChild(formElement);
+
+        Element rootDivElement = document.createElement("div");
+        rootDivElement.setAttribute("style", "position:absolute;width:100%;height:100%;");
+        rootDivElement.setAttribute("id", userInstance.getRootHtmlElementId());
+        bodyElement.appendChild(rootDivElement);
         
         return document;
     }
