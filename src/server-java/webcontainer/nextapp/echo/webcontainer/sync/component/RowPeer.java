@@ -30,24 +30,11 @@
 package nextapp.echo.webcontainer.sync.component;
 
 import nextapp.echo.app.Row;
-import nextapp.echo.app.util.Context;
-import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
-import nextapp.echo.webcontainer.ServerMessage;
-import nextapp.echo.webcontainer.Service;
-import nextapp.echo.webcontainer.WebContainerServlet;
-import nextapp.echo.webcontainer.service.JavaScriptService;
 
 /**
  * Synchronization peer for <code>Row</code>s.
  */
-public class RowPeer extends AbstractComponentSynchronizePeer {
-
-    private static final Service ROW_SERVICE = JavaScriptService.forResource("Echo.Row", 
-            "/nextapp/echo/webcontainer/resource/Render.Row.js");
-    
-    static {
-        WebContainerServlet.getServiceRegistry().add(ROW_SERVICE);
-    }
+public class RowPeer extends AbstractArrayContainerSynchronizePeer {
     
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
@@ -61,14 +48,5 @@ public class RowPeer extends AbstractComponentSynchronizePeer {
      */
     public Class getComponentClass() {
         return Row.class;
-    }
-
-    /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
-     */
-    public void init(Context context) {
-        super.init(context);
-        ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
-        serverMessage.addLibrary(ROW_SERVICE.getId());
     }
 }

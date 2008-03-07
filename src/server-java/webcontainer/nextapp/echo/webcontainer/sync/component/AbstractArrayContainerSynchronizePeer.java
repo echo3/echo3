@@ -29,24 +29,31 @@
 
 package nextapp.echo.webcontainer.sync.component;
 
-import nextapp.echo.app.Column;
+import nextapp.echo.app.util.Context;
+import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
+import nextapp.echo.webcontainer.ServerMessage;
+import nextapp.echo.webcontainer.Service;
+import nextapp.echo.webcontainer.WebContainerServlet;
+import nextapp.echo.webcontainer.service.JavaScriptService;
 
 /**
- * Synchronization peer for <code>Column</code>s.
+ * Abstract Base Synchronization peer for <code>Column</code>s and <code>Row</code>s.
  */
-public class ColumnPeer extends AbstractArrayContainerSynchronizePeer {
-    
-    /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
-     */
-    public String getClientComponentType(boolean shortType) {
-        return shortType ? "C" : "Column";
+abstract class AbstractArrayContainerSynchronizePeer extends AbstractComponentSynchronizePeer {
+
+    private static final Service ARRAY_CONTAINER_SERVICE = JavaScriptService.forResource("Echo.ArrayContainer", 
+            "/nextapp/echo/webcontainer/resource/Render.ArrayContainer.js");
+
+    static {
+        WebContainerServlet.getServiceRegistry().add(ARRAY_CONTAINER_SERVICE);
     }
-    
+
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getComponentClass()
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
      */
-    public Class getComponentClass() {
-        return Column.class;
+    public void init(Context context) {
+        super.init(context);
+        ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
+        serverMessage.addLibrary(ARRAY_CONTAINER_SERVICE.getId());
     }
 }
