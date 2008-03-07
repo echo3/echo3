@@ -12,6 +12,8 @@ EchoAppRender.ArrayContainerSync = Core.extend(EchoRender.ComponentSync, {
     element: null,
     containerElement: null,
     spacingPrototype: null,
+    cellSpacing: null,
+    _childIdToElementMap: null,
 
     processKeyPress: function(e) {
         switch (e.keyCode) {
@@ -44,7 +46,7 @@ EchoAppRender.ArrayContainerSync = Core.extend(EchoRender.ComponentSync, {
 
         if (index != null) {
             var currentChildCount;
-            if (this.containerElement.childNodes.length >= 3 && this._cellSpacing) {
+            if (this.containerElement.childNodes.length >= 3 && this.cellSpacing) {
                 currentChildCount = (this.containerElement.childNodes.length + 1) / 2;
             } else {
                 currentChildCount = this.containerElement.childNodes.length;
@@ -57,7 +59,7 @@ EchoAppRender.ArrayContainerSync = Core.extend(EchoRender.ComponentSync, {
             // Full render or append-at-end scenario
             
             // Render spacing cell first if index != 0 and cell spacing enabled.
-            if (this._cellSpacing && this.containerElement.firstChild) {
+            if (this.cellSpacing && this.containerElement.firstChild) {
                 this.containerElement.appendChild(this.spacingPrototype.cloneNode(false));
             }
     
@@ -65,23 +67,45 @@ EchoAppRender.ArrayContainerSync = Core.extend(EchoRender.ComponentSync, {
             this.containerElement.appendChild(cellElement);
         } else {
             // Partial render insert at arbitrary location scenario (but not at end)
-            var insertionIndex = this._cellSpacing ? index * 2 : index;
+            var insertionIndex = this.cellSpacing ? index * 2 : index;
             var beforeElement = this.containerElement.childNodes[insertionIndex];
             
             // Render child cell first.
             this.containerElement.insertBefore(cellElement, beforeElement);
             
             // Then render spacing cell if required.
-            if (this._cellSpacing) {
+            if (this.cellSpacing) {
                 this.containerElement.insertBefore(this.spacingPrototype.cloneNode(false), beforeElement);
             }
         }
+    },
+    
+    renderAddChildren: function(update) {
+        this._childIdToElementMap = {};
+    
+        var componentCount = this.component.getComponentCount();
+        for (var i = 0; i < componentCount; ++i) {
+            var child = this.component.getComponent(i);
+            this.renderAddChild(update, child);
+        }
+        
+        WebCore.EventProcessor.add(this.element, 
+                WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
+                Core.method(this, this.processKeyPress), false);
+    },
+
+    renderDispose: function(update) { 
+        WebCore.EventProcessor.removeAll(this.element);
+        this.element = null;
+        this.containerElement = null;
+        this._childIdToElementMap = null;
+        this.spacingPrototype = null;
     },
 
     renderRemoveChild: function(update, child) {
         var childElement = this._childIdToElementMap[child.renderId];
         
-        if (this._cellSpacing) {
+        if (this.cellSpacing) {
             // If cell spacing is enabled, remove a spacing element, either before or after the removed child.
             // In the case of a single child existing in the Row, no spacing element will be removed.
             if (childElement.previousSibling) {
@@ -154,26 +178,16 @@ EchoAppRender.ColumnSync = Core.extend(EchoAppRender.ArrayContainerSync, {
         EchoAppRender.Font.render(this.component.render("font"), this.element);
         EchoAppRender.Insets.render(this.component.render("insets"), this.element, "padding");
     
-        this._cellSpacing = EchoAppRender.Extent.toPixels(this.component.render("cellSpacing"), false);
-        if (this._cellSpacing) {
+        this.cellSpacing = EchoAppRender.Extent.toPixels(this.component.render("cellSpacing"), false);
+        if (this.cellSpacing) {
             this.spacingPrototype = document.createElement("div");
-            this.spacingPrototype.style.height = this._cellSpacing + "px";
+            this.spacingPrototype.style.height = this.cellSpacing + "px";
             this.spacingPrototype.style.fontSize = "1px";
             this.spacingPrototype.style.lineHeight = "0px";
         }
         
-        this._childIdToElementMap = {};
-        
-        var componentCount = this.component.getComponentCount();
-        for (var i = 0; i < componentCount; ++i) {
-            var child = this.component.getComponent(i);
-            this.renderAddChild(update, child);
-        }
-        
-        WebCore.EventProcessor.add(this.element, 
-                WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
-                Core.method(this, this._processKeyPress), false);
-        
+        this.renderAddChildren(update);
+
         parentElement.appendChild(this.element);
     },
     
@@ -197,14 +211,6 @@ EchoAppRender.ColumnSync = Core.extend(EchoAppRender.ArrayContainerSync, {
             insets = "0px";
         }
         EchoAppRender.Insets.render(insets, cellElement, "padding");
-    },
-
-    renderDispose: function(update) {
-        WebCore.EventProcessor.removeAll(this.element);
-        this.containerElement = null;
-        this.element = null;
-        this._childIdToElementMap = null;
-        this.spacingPrototype = null;
     }
 });
 
@@ -259,24 +265,14 @@ EchoAppRender.RowSync = Core.extend(EchoAppRender.ArrayContainerSync, {
         //                      div          table      tbody      tr
         this.containerElement = this.element.firstChild.firstChild.firstChild;
     
-        this._cellSpacing = EchoAppRender.Extent.toPixels(this.component.render("cellSpacing"), false);
-        if (this._cellSpacing) {
+        this.cellSpacing = EchoAppRender.Extent.toPixels(this.component.render("cellSpacing"), false);
+        if (this.cellSpacing) {
             this.spacingPrototype = document.createElement("td");
-            this.spacingPrototype.style.width = this._cellSpacing + "px";
+            this.spacingPrototype.style.width = this.cellSpacing + "px";
         }
         
-        this._childIdToElementMap = {};
-    
-        var componentCount = this.component.getComponentCount();
-        for (var i = 0; i < componentCount; ++i) {
-            var child = this.component.getComponent(i);
-            this.renderAddChild(update, child);
-        }
-        
-        WebCore.EventProcessor.add(this.element, 
-                WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
-                Core.method(this, this._processKeyPress), false);
-        
+        this.renderAddChildren(update);
+
         parentElement.appendChild(this.element);
     },
 
@@ -291,13 +287,5 @@ EchoAppRender.RowSync = Core.extend(EchoAppRender.ArrayContainerSync, {
                 cellElement.style.height = EchoAppRender.Extent.toPixels(layoutData.height, false) + "px";
             }
         }
-    },
-
-    renderDispose: function(update) { 
-        WebCore.EventProcessor.removeAll(this.element);
-        this.element = null;
-        this.containerElement = null;
-        this._childIdToElementMap = null;
-        this.spacingPrototype = null;
     }
 });
