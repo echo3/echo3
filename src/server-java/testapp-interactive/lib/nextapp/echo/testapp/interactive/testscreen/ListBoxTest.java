@@ -159,7 +159,7 @@ public class ListBoxTest extends SplitPane {
                 }
                 
                 public String toString() {
-                    return value == null ? null : value.toString();
+                    return value == null ? null : "Styled:" + value.toString();
                 }
             };
         }

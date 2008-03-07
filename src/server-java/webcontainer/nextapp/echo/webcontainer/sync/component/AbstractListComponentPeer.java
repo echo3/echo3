@@ -139,10 +139,10 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
             for (int i = 0; i < size; ++i) {
                 Element eElement = document.createElement("e");
                 Object value = listData.model.get(i);
-                eElement.setAttribute("t", value.toString());
-                propertyElement.appendChild(eElement);
-
                 Object cell = listData.renderer.getListCellRendererComponent(listData.listComponent, value, i);
+
+                eElement.setAttribute("t", String.valueOf(cell));
+                propertyElement.appendChild(eElement);
 
                 if (cell instanceof StyledListCell) {
                     StyledListCell styledCell = (StyledListCell) cell;
