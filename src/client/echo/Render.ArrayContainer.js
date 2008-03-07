@@ -193,24 +193,15 @@ EchoAppRender.ColumnSync = Core.extend(EchoAppRender.ArrayContainerSync, {
     
     renderChildLayoutData: function(child, cellElement) {
         var layoutData = child.render("layoutData");
-        var insets;
         if (layoutData) {
-            insets = layoutData.insets;
             EchoAppRender.Color.render(layoutData.background, cellElement, "backgroundColor");
             EchoAppRender.FillImage.render(layoutData.backgroundImage, cellElement);
+            EchoAppRender.Insets.render(layoutData.insets, cellElement, "padding");
             EchoAppRender.Alignment.render(layoutData.alignment, cellElement, true, this.component);
-            if (layoutData.width) {
-                if (EchoAppRender.Extent.isPercent(layoutData.width)) {
-                    cellElement.style.width = layoutData.width;
-                } else {
-                    cellElement.style.width = EchoAppRender.Extent.toCssValue(layoutData.width, true);
-                }
+            if (layoutData.height) {
+                cellElement.style.height = EchoAppRender.Extent.toPixels(layoutData.height, false) + "px";
             }
         }
-        if (!insets) {
-            insets = "0px";
-        }
-        EchoAppRender.Insets.render(insets, cellElement, "padding");
     }
 });
 
@@ -278,14 +269,23 @@ EchoAppRender.RowSync = Core.extend(EchoAppRender.ArrayContainerSync, {
 
     renderChildLayoutData: function(child, cellElement) {
         var layoutData = child.render("layoutData");
+        var insets;
         if (layoutData) {
+            insets = layoutData.insets;
             EchoAppRender.Color.render(layoutData.background, cellElement, "backgroundColor");
             EchoAppRender.FillImage.render(layoutData.backgroundImage, cellElement);
-            EchoAppRender.Insets.render(layoutData.insets, cellElement, "padding");
             EchoAppRender.Alignment.render(layoutData.alignment, cellElement, true, this.component);
-            if (layoutData.height) {
-                cellElement.style.height = EchoAppRender.Extent.toPixels(layoutData.height, false) + "px";
+            if (layoutData.width) {
+                if (EchoAppRender.Extent.isPercent(layoutData.width)) {
+                    cellElement.style.width = layoutData.width;
+                } else {
+                    cellElement.style.width = EchoAppRender.Extent.toCssValue(layoutData.width, true);
+                }
             }
         }
+        if (!insets) {
+            insets = "0px";
+        }
+        EchoAppRender.Insets.render(insets, cellElement, "padding");
     }
 });
