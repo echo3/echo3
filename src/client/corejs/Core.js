@@ -815,7 +815,7 @@ Core.ResourceBundle = Core.extend({
          *         or null if none can be determined
          * @type String 
          */
-        getParentLanguageCode : function(languageCode) {
+        getParentLanguageCode: function(languageCode) {
             if (languageCode.indexOf("-") == -1) {
                 return null;
             } else {
