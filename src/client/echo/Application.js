@@ -181,7 +181,7 @@ EchoApp.Application = Core.extend({
      * Returns the focused component.
      * 
      * @return the focused component
-     * @type {EchoApp.Component}
+     * @type EchoApp.Component
      */
     getFocusedComponent: function() {
         return this._focusedComponent;
@@ -723,7 +723,7 @@ EchoApp.Component = Core.extend({
      * Returns the component layout direction.
      * 
      * @return the component layout direction
-     * @type {EchoApp.LayoutDirection}
+     * @type EchoApp.LayoutDirection
      */
     getLayoutDirection: function() {
         return this._layoutDirection;
