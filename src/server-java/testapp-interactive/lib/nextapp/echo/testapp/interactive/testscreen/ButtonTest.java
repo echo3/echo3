@@ -222,6 +222,21 @@ extends SplitPane {
                 }
             }
         });
+        controlsColumn.addButton("Container Width = Null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testGrid.setWidth(null);
+            }
+        });
+        controlsColumn.addButton("Container Width = 500px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testGrid.setWidth(new Extent(500));
+            }
+        });
+        controlsColumn.addButton("Container Width = 100%", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testGrid.setWidth(new Extent(100, Extent.PERCENT));
+            }
+        });
         controlsColumn.addButton("Add ActionListener", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator() {

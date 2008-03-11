@@ -319,7 +319,7 @@ EchoAppRender.Extent = {
         }
     },
 
-    toCssValue: function(extent, horizontal) {
+    toCssValue: function(extent, horizontal, allowPercent) {
         switch(typeof(extent)) {
             case "number":
                 return extent + "px";
@@ -328,7 +328,12 @@ EchoAppRender.Extent = {
                 if (this._FORMATTED_PIXEL_TEST.test(extent)) {
                     return extent;
                 } else {
-                    return this.toPixels(extent, horizontal) + "px";
+                    if (allowPercent && this.isPercent(extent)) {
+                        return extent;
+                    } else {
+                        var pixels = this.toPixels(extent, horizontal);
+                        return pixels == null ? "" : this.toPixels(extent, horizontal) + "px";
+                    }
                 }
                 break;
         }

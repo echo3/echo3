@@ -1225,7 +1225,7 @@ WebCore.Measure = {
         }
         var dpi = horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch;
         switch (units) {
-        case "%":  return 0;
+        case "%":  return null;
         case "in": return value * (horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch);
         case "cm": return value * (horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch) / 2.54;
         case "mm": return value * (horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch) / 25.4;
