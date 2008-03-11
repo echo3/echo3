@@ -163,5 +163,9 @@ public class ModalTest extends TestCase {
         c1.setModal(false);
         
         assertEquals(c, app.getModalContextRoot());
+
+        c.setVisible(false);
+        
+        assertEquals(b1, app.getModalContextRoot());
     }
 }

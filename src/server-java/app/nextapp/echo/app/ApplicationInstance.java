@@ -85,8 +85,9 @@ implements Serializable {
                 return foundComponent;
             }
         }
-        
-        if (searchComponent instanceof ModalSupport && ((ModalSupport) searchComponent).isModal()) {
+
+        if (searchComponent instanceof ModalSupport && ((ModalSupport) searchComponent).isModal()
+                 && visibleModalComponents.contains(searchComponent)) {
             return searchComponent;
         }
         
