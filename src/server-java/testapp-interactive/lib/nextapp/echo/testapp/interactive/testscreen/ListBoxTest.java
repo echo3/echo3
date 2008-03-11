@@ -64,6 +64,7 @@ public class ListBoxTest extends SplitPane {
     
     public static final String[] NUMBERS = new String[] { "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight",
                 "Nine", "Ten" };
+    public static final String[] PEOPLE = new String[] { "", "Xander Crews", "Wendell Stamps", "Grace Ryan", "Arthur Watley" };
 
     /**
      * Interface used to apply style information to all test components.
@@ -578,6 +579,17 @@ public class ListBoxTest extends SplitPane {
                 });
             }
         });
+
+        controlsColumn.addButton("Set ListModel = People", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator(){
+                    public void apply(AbstractListComponent listComponent) {
+                        listComponent.setModel(new DefaultListModel(PEOPLE));
+                    }
+                });
+            }
+        });
+
         controlsColumn.addButton("Focus SelectField1", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().setFocusedComponent(selectField1);

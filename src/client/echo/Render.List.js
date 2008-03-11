@@ -155,10 +155,10 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         if (items) {
             for (var i = 0; i < items.length; ++i) {
                 var optionElement = document.createElement("option");
-                if (items[i].text) {
-                    optionElement.appendChild(document.createTextNode(items[i].text));
-                } else {
+                if (items[i].text == null) {
                     optionElement.appendChild(document.createTextNode(items[i].toString()));
+                } else {
+                    optionElement.appendChild(document.createTextNode(items[i].text));
                 }
                 if (items[i].foreground) {
                     EchoAppRender.Color.render(items[i].foreground, optionElement, "color");
