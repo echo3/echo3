@@ -246,7 +246,7 @@ EchoAppRender.RowSync = Core.extend(EchoAppRender.ArrayContainerSync, {
     renderAdd: function(update, parentElement) {
         this.element = EchoAppRender.RowSync._rowPrototype.cloneNode(true);
         this.element.id = this.component.renderId;
-        
+
         EchoAppRender.Border.render(this.component.render("border"), this.element);
         EchoAppRender.Color.renderFB(this.component, this.element);
         EchoAppRender.Font.render(this.component.render("font"), this.element);
@@ -278,8 +278,11 @@ EchoAppRender.RowSync = Core.extend(EchoAppRender.ArrayContainerSync, {
             if (layoutData.width) {
                 if (EchoAppRender.Extent.isPercent(layoutData.width)) {
                     cellElement.style.width = layoutData.width;
+                    if (this.element.firstChild.style.width != "100%") {
+                        this.element.firstChild.style.width = "100%";
+                    }
                 } else {
-                    cellElement.style.width = EchoAppRender.Extent.toCssValue(layoutData.width, true);
+                    cellElement.style.width = EchoAppRender.Extent.toPixels(layoutData.width, true) + "px";
                 }
             }
         }
