@@ -34,7 +34,7 @@ import nextapp.echo.app.list.DefaultListModel;
 import nextapp.echo.app.list.ListModel;
 
 /**
- * A drop-down select field.
+ * A drop-down selection field.
  */
 public class SelectField extends AbstractListComponent {
 
@@ -79,6 +79,8 @@ public class SelectField extends AbstractListComponent {
     
     /**
      * Returns the currently selected item.
+     * This is a convenience method that returns the item from the model
+     * whose index is selected.
      *
      * @return the currently selected item
      */
@@ -99,4 +101,26 @@ public class SelectField extends AbstractListComponent {
             getSelectionModel().setSelectedIndex(index, true);
         }
     }
+
+    /**
+     * Sets the selected item.
+     * This is a convenience method.  It iterates the model and sets the
+     * selected index to that of the first item that is found to test equal 
+     * (using Object.equals()) to the specified item.
+     *
+     * @param item the new selected item, or null, to select nothing
+     */
+    public void setSelectedItem(Object item) {
+        if (item != null) {
+            ListModel model = getModel();
+            int size = model.size();
+            for (int i = 0; i < size; i++) {
+                if (item.equals(model.get(i))) {
+                    setSelectedIndex(i);
+                    return;
+                }
+            }
+        }
+        setSelectedIndex(-1);
+    } 
 }
