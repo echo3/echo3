@@ -40,6 +40,7 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
         var text = this.component.render("text");
         var foreground = this.component.render("foreground");
         var background = this.component.render("background");
+        var toolTip = this.component.render("toolTipText");
     
         if (text != null) {
             var lineWrap = this.component.render("lineWrap", true);
@@ -70,7 +71,7 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
             } else {
                 // Text without icon.
                 var font = this.component.render("font");
-                if (!font && lineWrap && !foreground && !background && !formatWhitespace) {
+                if (!toolTip && !font && lineWrap && !foreground && !background && !formatWhitespace) {
                     this._labelNode = document.createTextNode(text);
                 } else {
                     this._labelNode = document.createElement("span");
@@ -97,6 +98,10 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
         } else {
             // Neither icon nor text, render blank.
             this._labelNode = null;
+        }
+        
+        if (toolTip) {
+            this._labelNode.title = toolTip;
         }
     
         if (this._labelNode) {
