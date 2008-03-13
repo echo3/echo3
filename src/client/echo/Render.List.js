@@ -273,6 +273,10 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     renderDispose: function(update) { 
         WebCore.EventProcessor.removeAll(this._mainElement);
         this._mainElement = null;
+        if (this._divElement) {
+            WebCore.EventProcessor.removeAll(this._divElement);
+            this._divElement = null;
+        }
     },
     
     _getSelection: function() {
