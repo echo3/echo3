@@ -25,12 +25,26 @@ This archive/package contains the following directory structure:
 
 /Licensing           - Contains licensing information.
                       
-------------------------------------------------------------------------------
+Please report any bugs or feature requests at http://bugs.nextapp.com.
 Please feel free to contact NextApp with any questions regarding Echo:
 
-NextApp, Inc.                  http://www.nextapp.com       
-2549-B Eastbluff Drive #201    http://forum.nextapp.com (Developer forums)
+------------------------------------------------------------------------------
+The following developer resources are available for the Echo platform:
+
+http://echo.nextapp.com       - Echo Home Page
+http://forum.nextapp.com      - Developer Forums: Use this site to ask
+                                questions about the framework and receive
+                                (or provide) community support.
+http://bugs.nextapp.com       - Issue Tracking System: Please report any bugs
+                                in the framework and make any feature requests
+                                using this site.
+
+------------------------------------------------------------------------------
+NextApp, Inc.                  
+2549-B Eastbluff Drive #201
 Newport Beach, CA 92660
 USA        
 
 TEL: +1.949.340.2097
+
+http://www.nextapp.com
