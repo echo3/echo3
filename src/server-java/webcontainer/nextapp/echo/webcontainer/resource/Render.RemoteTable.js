@@ -242,9 +242,11 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             if (Core.Arrays.containsAll(EchoAppRender.RemoteTableSync._supportedPartialProperties, 
                     update.getUpdatedPropertyNames(), true)) {
                 // partial update
-                var selectionUpdate = update.getUpdatedProperty("selection");
-                if (selectionUpdate) {
-                    this._setSelectedFromProperty(selectionUpdate.newValue, true);
+                if (this._selectionEnabled) {
+                    var selectionUpdate = update.getUpdatedProperty("selection");
+                    if (selectionUpdate) {
+                        this._setSelectedFromProperty(selectionUpdate.newValue, true);
+                    }
                 }
                 return false;
             }
