@@ -57,7 +57,7 @@ implements ContainerContext, Serializable {
     /**
      * Creates a new <code>ContainerContextImpl</code>
      * 
-     * @param containerInstance the relevant <code>ContainerInstance</code>
+     * @param userInstance the relevant <code>UserInstance</code>
      */
     ContainerContextImpl(UserInstance userInstance) {
         super();
@@ -103,7 +103,7 @@ implements ContainerContext, Serializable {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.ContainerContext#getServiceUri(nextapp.echo.webrender.Service)
+     * @see nextapp.echo.webcontainer.ContainerContext#getServiceUri(nextapp.echo.webcontainer.Service)
      */
     public String getServiceUri(Service service) {
         return userInstance.getServiceUri(service);
@@ -148,7 +148,7 @@ implements ContainerContext, Serializable {
     }
     
     /**
-     * @see nextapp.echo.webcontainer.ContainerContext#setClientConfiguration(nextapp.echo.webrender.ClientConfiguration)
+     * @see nextapp.echo.webcontainer.ContainerContext#setClientConfiguration(nextapp.echo.webcontainer.ClientConfiguration)
      */
     public void setClientConfiguration(ClientConfiguration clientConfiguration) {
         userInstance.setClientConfiguration(clientConfiguration);
