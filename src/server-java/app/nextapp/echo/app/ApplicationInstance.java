@@ -73,9 +73,9 @@ implements Serializable {
      * Determines the current modal component by searching the entire hierarchy for modal components.
      * This operation is only performed when multiple visibly rendered components are registered as modal.
      * 
-     * @param searchComponent
-     * @param visibleModalComponents
-     * @return
+     * @param searchComponent the root <code>Component</code> at which to start the search.
+     * @param visibleModalComponents the set of visible modal components
+     * @return the current modal component
      */
     private static Component findCurrentModalComponent(Component searchComponent, Set visibleModalComponents) {
         int count = searchComponent.getComponentCount();
