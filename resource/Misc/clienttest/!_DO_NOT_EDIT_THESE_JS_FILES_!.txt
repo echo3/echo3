@@ -1,1 +1,0 @@
-These JS files are automatically over-written by the build script.
