@@ -364,7 +364,7 @@
         <mkdir dir="${dir.build.server-java.release.root}/JavaLibraries"/>
         <mkdir dir="${dir.build.server-java.release.root}/JavaWebArchives"/>
         <mkdir dir="${dir.build.server-java.release.root}/Licensing"/>
-        <copy todir="${dir.build.server-java.release.root}" file="${dir.resource}/readme.txt"/>
+        <copy todir="${dir.build.server-java.release.root}" file="${dir.resource}/ReadMe.txt"/>
         
         <!-- Source Code -->
         <copy todir="${dir.build.server-java.release.root}/SourceCode/src">
