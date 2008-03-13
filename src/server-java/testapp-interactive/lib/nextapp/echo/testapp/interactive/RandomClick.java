@@ -83,6 +83,10 @@ public class RandomClick {
         // Text Sync has delay buttons.
         blacklist.add("Text Sync");
         
+        // Don't run performance-related test.
+        blacklist.add("Table (Performance)");
+        blacklist.add("ListBox (Large Quantity)");
+        
         // Do not add modal windows.
         blacklist.add("Add Modal Window");
         blacklist.add("Add Three Modal Windows");
