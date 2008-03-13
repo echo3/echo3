@@ -465,6 +465,8 @@ public class ComponentTest extends TestCase {
             fail("Did not throw IllegalStateException as expected.");
         } catch (IllegalStateException ex) {
             // Expected.
+        } finally {
+            ApplicationInstance.setActive(null);
         }
     }
     
@@ -493,6 +495,8 @@ public class ComponentTest extends TestCase {
             fail("Did not throw IllegalStateException as expected.");
         } catch (IllegalStateException ex) {
             // Expected.
+        } finally {
+            ApplicationInstance.setActive(null);
         }
     }
     
@@ -639,6 +643,7 @@ public class ComponentTest extends TestCase {
         assertTrue(app.getContentPane().isRenderEnabled());
         assertTrue(app.getColumn().isRenderEnabled());
         assertTrue(app.getLabel().isRenderEnabled());
+        ApplicationInstance.setActive(null);
     }
     
     /**
@@ -667,6 +672,7 @@ public class ComponentTest extends TestCase {
         assertTrue(app.getContentPane().isRenderVisible());
         assertTrue(app.getColumn().isRenderVisible());
         assertTrue(app.getLabel().isRenderVisible());
+        ApplicationInstance.setActive(null);
     }
     
     /**
