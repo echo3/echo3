@@ -688,7 +688,11 @@ public class TableTest extends SplitPane {
         });
         controlsColumn.addButton("Visibility Checker Cell Renderer", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                testTable.setDefaultRenderer(Object.class, visibilityCheckerCellRenderer);
+                //FIXME Re-enable visibilty checker cell renderer when bug 39 is corrected.
+                InteractiveApp.getApp().consoleWrite("Visibility Checker disabled, known issue (bug #39).");
+                if (false) {
+                    testTable.setDefaultRenderer(Object.class, visibilityCheckerCellRenderer);
+                }
             }
         });
         controlsColumn.addButton("Editing Cell Renderer (not bound to model)", new ActionListener() {
