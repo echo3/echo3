@@ -2237,6 +2237,8 @@ EchoApp.Update.Manager = Core.extend({
 /**
  * Base class from which button components are derived.
  *
+ * @sp actionCommand the action command fired in action events 
+ *     when the buttton is pushed
  * @sp backgroundImage the background image
  * @sp border the default button border
  * @sp disabledBackground the disabled background color
@@ -2517,7 +2519,20 @@ EchoApp.Panel = Core.extend(EchoApp.Composite, {
 });
 
 /**
- * ContentPane component.
+ * A content pane is a high-level container/layout object which provides
+ * layout for a content region and floating WindowPanes.
+ *
+ * @sp backgroundImage the background image
+ * @sp horizontalScroll the horizontal scroll position
+ * @sp insets the inset margin of the content
+ * @sp overflow the scrollbar behavior used when content overflows
+ *     the boundaries of the pane, one of the following values:
+ *     <ul>
+ *      <li>OVERFLOW_AUTO (the default)</li>
+ *      <li>OVERFLOW_HIDDEN</li>
+ *      <li>OVERFLOW_SCROLL</li>
+ *     </ul>
+ * @sp verticalScroll the vertical scroll position
  */
 EchoApp.ContentPane = Core.extend(EchoApp.Component, {
 
@@ -2695,7 +2710,7 @@ EchoApp.Row = Core.extend(EchoApp.Component, {
  *       <li>OVERFLOW_AUTO (the default)</li>
  *       <li>OVERFLOW_HIDDEN</li>
  *       <li>OVERFLOW_SCROLL</li>
- *     < /ul>
+ *     </ul>
  */
 EchoApp.SplitPane = Core.extend(EchoApp.Component, {
 
@@ -2728,6 +2743,24 @@ EchoApp.SplitPane = Core.extend(EchoApp.Component, {
 
 /**
  * Abstract base class for text components.
+ *
+ * @sp actionCommand the action command fired when the enter key is pressed
+ *     within the text component
+ * @sp alignment an alignment setting describing the alignment of the text
+ * @sp backgroundImage the background image to display in the component
+ * @sp border the border to display around the component
+ * @sp disabledBackground the disabled background color
+ * @sp disabledBackgroundImage the disabled background image
+ * @sp disabledBorder the disabled border
+ * @sp disabledFont the disabled font
+ * @sp disabledForeground the disabled foreground color
+ * @sp height the height of the component
+ * @sp horizontalScroll the horizontal scrollbar position
+ * @sp insets the inset margin between the border and the text content
+ * @sp maximumLength the maximum number of characters which may be entered 
+ * @sp toolTipText the tool tip text
+ * @sp verticalScroll the vertical scrollbar position
+ * @sp width the width of the component
  */
 EchoApp.TextComponent = Core.extend(EchoApp.Component, {
 
@@ -2783,6 +2816,32 @@ EchoApp.PasswordField = Core.extend(EchoApp.TextField, {
 
 /**
  * WindowPane component.
+ *
+ * @sp backgroundImage the background image to display within the content area
+ * @sp border the FillImageBorder containing thw WindowPane
+ * @sp closable a boolean flag indicating whether the window is closable
+ * @sp closeIcon the close button icon
+ * @sp closeIconInsets the inset margin around the close button icon
+ * @sp height the outside height of the window, including its border
+ * @sp icon the icon to display adjacent the window title
+ * @sp iconInsets the inset margin around the icon
+ * @sp insets the inset margin around the window content
+ * @sp maximumHeight the maximum height of the window
+ * @sp maximumWidth the maximum width of the window
+ * @sp minimumHeight the minimum height of the window
+ * @sp minimumWidth the minimum width of the window
+ * @sp movable a boolean flag indicating whether the window is movable
+ * @sp positionX the horizontal (x) position of the window
+ * @sp positionY the vertical (y) position of the window
+ * @sp resizable a boolean flag indicating whether the window is resizable
+ * @sp title the title of the window
+ * @sp titleBackground the background color to display in the title bar
+ * @sp titleBackgroundImage the background image to display in the title bar
+ * @sp titleFont the font in which to display the title text
+ * @sp titleForeground the foreground color of the title text
+ * @sp titleHeight the height of the title bar
+ * @sp titleInsets the inset margin of the title text
+ * @sp width the outside width of the window, including its border 
  */
 EchoApp.WindowPane = Core.extend(EchoApp.Component, {
 
