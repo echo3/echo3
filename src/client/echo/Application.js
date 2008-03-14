@@ -2370,7 +2370,28 @@ EchoApp.RadioButton = Core.extend(EchoApp.ToggleButton, {
 });
 
 /**
- * AbstractListComponent base component.
+ * Base class for list components (i.e., SelectFields and ListBoxes).
+ *
+ * @cp {Array} items the array of items contained in the list component.
+ *     The value of the 'text' property or toString() value of the item
+ *     will be displayed in the selection component.
+ * @cp selectedId the values of the id property of the selected item,
+ *     or an array of the id values when multiple items are selected
+ * @cp selection the index of the selcted item, or an array of the 
+ *     indices of selected items when multiple items are selected
+ *
+ * @sp border the default border
+ * @sp disabledBackground the disabled background color
+ * @sp disabledBorder the disabled border
+ * @sp disabledFont the disabled font
+ * @sp disabledForeground the disabled foreground color
+ * @sp height the component height
+ * @sp insets the inset margin between the border and the items of the list component
+ * @sp rolloverBackground the rollover background color
+ * @sp rolloverBorder the rollover border
+ * @sp rolloverFont the rollover font
+ * @sp rolloverForeground the rollover foreground color
+ * @sp width the component width 
  */
 EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
 
@@ -2397,6 +2418,12 @@ EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
 
 /**
  * ListBox component.
+ *
+ * @sp selectionMode a value indicating the selection mode, one of the following values:
+ *     <ul>
+ *      <li>EchoApp.ListBox.SINGLE_SELECTION (the default)</li>
+ *      <li>EchoApp.ListBox.MULTIPLE_SELECTION</li>
+ *     </ul>
  */
 EchoApp.ListBox = Core.extend(EchoApp.AbstractListComponent, {
 
@@ -2435,7 +2462,18 @@ EchoApp.SelectField = Core.extend(EchoApp.AbstractListComponent, {
 });
 
 /**
- * Column component.
+ * A container component which displays cells in a column in vertical order.
+ *
+ * @sp border the border dispalyed around the entire column
+ * @sp cellSpacing the extent margin between cells of the column
+ * @sp insets the inset margin between the column border and its cells
+ *
+ * @ldp alignment the alignment of the child component within its cell
+ * @ldp background the background of the child component's cell
+ * @ldp backrgoundImage the background image of the child component's cell
+ * @ldp height the height of the child component's cell
+ * @ldp insets the insets margin of the child component's cell 
+ *      (this inset is added to any inset set on the container component)
  */
 EchoApp.Column = Core.extend(EchoApp.Component, {
 
@@ -2494,7 +2532,40 @@ EchoApp.ContentPane = Core.extend(EchoApp.Component, {
 });
 
 /**
- * Grid component.
+ * A container component which displays children in a grid.
+ * Cells may be configured to span multiple rows and/or columns.
+ *
+ * @sp border the border dispalyed around the grid, and between cells
+ * @sp columnWidth an indexed property whose indices represent the width 
+ *     of each column of the grid
+ * @sp height the overall height of the grid
+ * @sp insets the default inset margin displayed in each cell
+ * @sp orientation a value indicating whether the grid will be laid out
+ *     horizontally and then vertically or vice-versa, one of the
+ *     following values:
+ *     <ul>
+ *      <li>ORIENTATION_HORIZONTAL (the default)</li> 
+ *      <li>ORIENTATION_VERTICAL</li> 
+ *     </ul>
+ * @sp rowWidth an indexed property whose indices represent the height 
+ *     of each row of the grid
+ * @sp size the number of cells to render before wrapping to the next
+ *     column/row (default 2)
+ * @sp width the overall width of the grid
+ *
+ * @ldp alignment the alignment of the child component within its cell
+ * @ldp background the background of the child component's cell
+ * @ldp backrgoundImage the background image of the child component's cell
+ * @ldp columnSpan the number of column the containing cell should span
+ *      (a value of SPAN_FILL indicates that cell should fill all columns until
+ *      the end of the grid is reached; this value may only be used in
+ *      this property for hoirzontally oriented grids)
+ * @ldp insets the insets margin of the child component's cell 
+ *      (this inset is added to any inset set on the container component)
+ * @ldp rowSpan the number of rows the containing cell should span
+ *      (a value of SPAN_FILL indicates that cell should fill all rows until
+ *      the end of the grid is reached; this value may only be used in
+ *      this property for vertically oriented grids)
  */
 EchoApp.Grid = Core.extend(EchoApp.Component, {
 
@@ -2548,7 +2619,18 @@ EchoApp.Label = Core.extend(EchoApp.Component, {
 });
 
 /**
- * Row component.
+ * A container component which displays cells in a row in horizontal order.
+ *
+ * @sp border the border dispalyed around the entire column
+ * @sp cellSpacing the extent margin between cells of the column
+ * @sp insets the inset margin between the column border and its cells
+ *
+ * @ldp alignment the alignment of the child component within its cell
+ * @ldp background the background of the child component's cell
+ * @ldp backrgoundImage the background image of the child component's cell
+ * @ldp insets the insets margin of the child component's cell 
+ *      (this inset is added to any inset set on the container component)
+ * @ldp width the width of the child component's cell
  */
 EchoApp.Row = Core.extend(EchoApp.Component, {
 
