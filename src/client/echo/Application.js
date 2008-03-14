@@ -5,7 +5,7 @@
  */
 
 /**
- * @class Namespace for application framework.
+ * Namespace for application framework.
  */
 EchoApp = { 
 
@@ -23,7 +23,6 @@ EchoApp = {
 };
 
 /**
- * @class 
  * Representation of a single application instance.
  * Derived objects must invoke construtor with root component id.
  */
@@ -378,7 +377,6 @@ EchoApp.Application = Core.extend({
 });
 
 /**
- * @class
  * Factory to create new instances of arbitrary components.  This object is 
  * used to instantiate new components during XML deserialization.
  * This is a namespace object, do not instantiate.
@@ -457,7 +455,6 @@ EchoApp.ComponentFactory = {
 };
 
 /**
- * @class 
  * Base class for components.
  * Derived classes should always take renderId as the first parameter and pass it to the super-constructor.
  * A component MUST have its componentType property set before it is used in a hierarchy.  Failing to do so
@@ -1380,7 +1377,6 @@ EchoApp.LayoutDirection.RTL = new EchoApp.LayoutDirection(false);
 // StyleSheets
 
 /**
- * @class
  * An application style sheet.
  */
 EchoApp.StyleSheet = Core.extend({
@@ -1505,8 +1501,7 @@ EchoApp.StyleSheet = Core.extend({
 EchoApp.Update = { };
 
 /**
- * @class Representation of an update to a single existing component 
- *        which is currently rendered on the screen.
+ * Representation of an update to a single existing component which is currently rendered on the screen.
  */
 EchoApp.Update.ComponentUpdate = Core.extend({
 
@@ -1909,9 +1904,9 @@ EchoApp.Update.ComponentUpdate = Core.extend({
 });
 
 /**
- * @class Monitors and records updates made to the application between repaints.
- *        Provides API to determine changes to component hierarchy since last update
- *        in order to efficiently repaint the screen.
+ * Monitors and records updates made to the application between repaints.
+ * Provides API to determine changes to component hierarchy since last update
+ * in order to efficiently repaint the screen.
  */
 EchoApp.Update.Manager = Core.extend({
     
@@ -1928,6 +1923,10 @@ EchoApp.Update.Manager = Core.extend({
      */
     _fullRefreshRequired: false,
     
+    /**
+     * The application whose updates are being manged.
+     * @type EchoApp.Application
+     */
     application: null,
     
     /**
@@ -1936,6 +1935,10 @@ EchoApp.Update.Manager = Core.extend({
      */
     _hasUpdates: true,
     
+    /**
+     * Internal listener list for update listeners.
+     * @type Core.ListenerList
+     */
     _listenerList: null,
     
     /**
@@ -1944,6 +1947,9 @@ EchoApp.Update.Manager = Core.extend({
      */
     _idMap: null,
     
+    /**
+     * Associative mapping from the ids of components which are to be removed in this update to the components themselves.
+     */
     _removedIdMap: null,
     
     /** 
@@ -1957,7 +1963,6 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Creates a new Update Manager.
      *
-     * @constructor
      * @param {EchoApp.Application} application the supported application
      */
     $construct: function(application) {
@@ -2365,8 +2370,7 @@ EchoApp.RadioButton = Core.extend(EchoApp.ToggleButton, {
 });
 
 /**
- * @class AbstractListComponent base component.
- * @base EchoApp.Component
+ * AbstractListComponent base component.
  */
 EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
 
@@ -2392,8 +2396,7 @@ EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
 });
 
 /**
- * @class ListBox component.
- * @base EchoApp.AbstractListComponent
+ * ListBox component.
  */
 EchoApp.ListBox = Core.extend(EchoApp.AbstractListComponent, {
 
@@ -2419,8 +2422,7 @@ EchoApp.ListBox = Core.extend(EchoApp.AbstractListComponent, {
 });
 
 /**
- * @class SelectField component.
- * @base EchoApp.AbstractListComponent
+ * SelectField component.
  */
 EchoApp.SelectField = Core.extend(EchoApp.AbstractListComponent, {
 
@@ -2433,8 +2435,7 @@ EchoApp.SelectField = Core.extend(EchoApp.AbstractListComponent, {
 });
 
 /**
- * @class Column component.
- * @base EchoApp.Component
+ * Column component.
  */
 EchoApp.Column = Core.extend(EchoApp.Component, {
 
@@ -2447,8 +2448,7 @@ EchoApp.Column = Core.extend(EchoApp.Component, {
 });
 
 /**
- * @class Composite component.
- * @base EchoApp.Component
+ * Composite component.
  */
 EchoApp.Composite = Core.extend(EchoApp.Component, {
 
@@ -2461,8 +2461,7 @@ EchoApp.Composite = Core.extend(EchoApp.Component, {
 });
 
 /**
- * @class Panel component.
- * @base EchoApp.Composite
+ * Panel component.
  */
 EchoApp.Panel = Core.extend(EchoApp.Composite, {
 
@@ -2475,8 +2474,7 @@ EchoApp.Panel = Core.extend(EchoApp.Composite, {
 });
 
 /**
- * @class ContentPane component.
- * @base EchoApp.Component
+ * ContentPane component.
  */
 EchoApp.ContentPane = Core.extend(EchoApp.Component, {
 
@@ -2496,8 +2494,7 @@ EchoApp.ContentPane = Core.extend(EchoApp.Component, {
 });
 
 /**
- * @class Grid component.
- * @base EchoApp.Component
+ * Grid component.
  */
 EchoApp.Grid = Core.extend(EchoApp.Component, {
 
@@ -2538,8 +2535,7 @@ EchoApp.Grid = Core.extend(EchoApp.Component, {
 });
 
 /**
- * @class Label component.
- * @base EchoApp.Component
+ * Label component.
  */
 EchoApp.Label = Core.extend(EchoApp.Component, {
 
@@ -2552,8 +2548,7 @@ EchoApp.Label = Core.extend(EchoApp.Component, {
 });
 
 /**
- * @class Row component.
- * @base EchoApp.Component
+ * Row component.
  */
 EchoApp.Row = Core.extend(EchoApp.Component, {
 
@@ -2566,8 +2561,7 @@ EchoApp.Row = Core.extend(EchoApp.Component, {
 });
 
 /**
- * @class SplitPane component.
- * @base EchoApp.Component
+ * SplitPane component.
  */
 EchoApp.SplitPane = Core.extend(EchoApp.Component, {
 
@@ -2599,8 +2593,7 @@ EchoApp.SplitPane = Core.extend(EchoApp.Component, {
 });
 
 /**
- * @class Abstract base class for text components.
- * @base EchoApp.Component
+ * Abstract base class for text components.
  */
 EchoApp.TextComponent = Core.extend(EchoApp.Component, {
 
@@ -2616,8 +2609,7 @@ EchoApp.TextComponent = Core.extend(EchoApp.Component, {
 });
 
 /**
- * @class TextArea component.
- * @base EchoApp.Component
+ * TextArea component.
  */
 EchoApp.TextArea = Core.extend(EchoApp.TextComponent, {
 
@@ -2630,8 +2622,7 @@ EchoApp.TextArea = Core.extend(EchoApp.TextComponent, {
 });
 
 /**
- * @class TextField component.
- * @base EchoApp.Component
+ * TextField component.
  */
 EchoApp.TextField = Core.extend(EchoApp.TextComponent, {
 
@@ -2644,8 +2635,7 @@ EchoApp.TextField = Core.extend(EchoApp.TextComponent, {
 });
 
 /**
- * @class PasswordField component.
- * @base EchoApp.Component
+ * PasswordField component.
  */
 EchoApp.PasswordField = Core.extend(EchoApp.TextField, {
 
@@ -2658,8 +2648,7 @@ EchoApp.PasswordField = Core.extend(EchoApp.TextField, {
 });
 
 /**
- * @class WindowPane component.
- * @base EchoApp.Component
+ * WindowPane component.
  */
 EchoApp.WindowPane = Core.extend(EchoApp.Component, {
 
