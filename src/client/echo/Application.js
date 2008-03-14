@@ -2612,6 +2612,19 @@ EchoApp.Grid = Core.extend(EchoApp.Component, {
 
 /**
  * Label component.
+ *
+ * @sp formatWhitespace a boolean flag indicating whether whitespace 
+ *     formatting should be applied to the label
+ * @sp lineWrap a boolean flag indicating whether long lines should
+ *     be wrapped
+ * @sp icon the icon/image to display in the label
+ * @sp iconTextMargin an extent setting describing the distance between
+ *     the label and icon
+ * @sp text the text to display in the label
+ * @sp textAlignment an alignment setting describing the alignment of 
+ *     the label's text
+ * @sp textPosition an alignment setting describing the position of the
+ *     label's text relative to the icon
  */
 EchoApp.Label = Core.extend(EchoApp.Component, {
 
@@ -2668,7 +2681,21 @@ EchoApp.Row = Core.extend(EchoApp.Component, {
  * @sp separatorPosition an extent specifying the position of the separator
  * @sp separatorVerticalImage a FillImage used to paint the separator for vertical orientations
  * @sp separatorWidth the width of the separator (this property is used to determine the size
- *     of the separator in horizontal orientations 
+ *     of the separator in horizontal orientations
+ *
+ * @ldp alignment the alignment of the child component within its subpane
+ * @ldp background the background of the child component's subpane
+ * @ldp backrgoundImage the background image of the child component's subpane
+ * @ldp insets the insets margin of the child component's subpane
+ * @ldp maximumSize the maximum size of the child component's subpane
+ * @ldp minimumSize the minimum size of the child component's subpane
+ * @ldp overflow the layout behavior to use when the child component is larger than 
+ *      its containing subpane, one of the following values:
+ *      <ul>
+ *       <li>OVERFLOW_AUTO (the default)</li>
+ *       <li>OVERFLOW_HIDDEN</li>
+ *       <li>OVERFLOW_SCROLL</li>
+ *     < /ul>
  */
 EchoApp.SplitPane = Core.extend(EchoApp.Component, {
 
