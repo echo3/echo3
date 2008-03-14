@@ -462,6 +462,11 @@ EchoApp.ComponentFactory = {
  * Derived classes should always take renderId as the first parameter and pass it to the super-constructor.
  * A component MUST have its componentType property set before it is used in a hierarchy.  Failing to do so
  * will throw an exception and/or result in indeterminate behavior.
+ *
+ * @sp background the background color
+ * @sp font the component font
+ * @sp foreground the foreground color
+ * @sp layoutData layout data information, describng how the component should be rendered by its container 
  */
 EchoApp.Component = Core.extend({
     
@@ -2224,6 +2229,50 @@ EchoApp.Update.Manager = Core.extend({
 
 // Built-in Component Object Definitions
 
+/**
+ * Base class from which button components are derived.
+ *
+ * @sp backgroundImage the background image
+ * @sp border the default button border
+ * @sp disabledBackground the disabled background color
+ * @sp disabledBackgroundImage the disabled background image
+ * @sp disabledBorder the disabled border
+ * @sp disabledFont the disabled font
+ * @sp disabledForeground the disabled foreground color
+ * @sp disabledIcon the disabled  icon
+ * @sp focusedBackground the focused background
+ * @sp focusedBackgroundImage the focused background image
+ * @sp focusedBorder the focused border
+ * @sp focusedEnabled boolean flag indicating whether focus effects are enabled 
+ * @sp focusedFont the focused font
+ * @sp focusedForeground the focused foreground color
+ * @sp focusedIcon the focused icon
+ * @sp height the button height
+ * @sp icon the button icon
+ * @sp alignment the alignment of the button's content
+ * @sp iconTextMargin the extent margin between the button's icon and text
+ * @sp insets the inset padding margin between the button's border and its content
+ * @sp lineWrap boolean flag indicating whether text within the button may be wrapped
+ * @sp pressedBackground the pressed background color
+ * @sp pressedBackgroundImage the pressed background image
+ * @sp pressedBorder the pressed border
+ * @sp pressedEnabled boolean flag indicating whether pressed effects are enabled 
+ * @sp pressedFont the pressed font
+ * @sp pressedForeground the pressed foreground color
+ * @sp pressedIcon the pressed icon
+ * @sp rolloverBackground the rollover background color
+ * @sp rolloverBackgroundImage the rollover background image
+ * @sp rolloverBorder the rollover border
+ * @sp rolloverEnabled boolean flag indicating whether rollover effects are enabled
+ * @sp rolloverFont the rollover font
+ * @sp rolloverForeground the rollover foreground
+ * @sp rolloverIcon the rollover icon
+ * @sp text the text of the button
+ * @sp textAlignment the alignment of the text
+ * @sp textPosition the position of the text relative to the icon
+ * @sp toolTipText the tool tip text
+ * @sp width the width of the button
+ */
 EchoApp.AbstractButton = Core.extend(EchoApp.Component, {
 
     $abstract: true,
@@ -2248,8 +2297,7 @@ EchoApp.AbstractButton = Core.extend(EchoApp.Component, {
 });
 
 /**
- * @class Button component.
- * @base EchoApp.Component
+ * Button component.
  */ 
 EchoApp.Button = Core.extend(EchoApp.AbstractButton, {
 
@@ -2262,8 +2310,19 @@ EchoApp.Button = Core.extend(EchoApp.AbstractButton, {
 });
 
 /**
- * @class ToggleButton component.
- * @base EchoApp.Button
+ * Abstract base class for toggle button component.
+ *
+ * @sp disabledStateIcon the disabled state icon to display when the toggle state is deselected
+ * @sp disabledSelectedStateIcon the disabled state icon to display when thetoggle  state is selected
+ * @sp pressedStateIcon the pressed state icon to display when the toggle state is deselected
+ * @sp pressedSelectedStateIcon the pressed state icon to display when the toggle state is selected
+ * @sp rolloverStateIcon the rollover state icon to display when the toggle state is deselected
+ * @sp rolloverSelectedStateIcon the rollover state icon to display when the toggle state is selected
+ * @sp selectedStateIcon the default state icon to display when the toggle state is deselected
+ * @sp stateAlignment the alignment of the state icon relative to the button's icon/text
+ * @sp statePosition the position (an alignment value) of the state icon relative to the button's icon/text
+ * @sp stateIcon the default state icon to display when the toggle state is selected
+ * @sp stateMargin the margin between the state icon and the button's icon/text
  */
 EchoApp.ToggleButton = Core.extend(EchoApp.AbstractButton, {
 
@@ -2277,8 +2336,7 @@ EchoApp.ToggleButton = Core.extend(EchoApp.AbstractButton, {
 });
 
 /**
- * @class CheckBox component.
- * @base EchoApp.ToggleButton
+ * CheckBox component.
  */
 EchoApp.CheckBox = Core.extend(EchoApp.ToggleButton, {
 
@@ -2291,8 +2349,10 @@ EchoApp.CheckBox = Core.extend(EchoApp.ToggleButton, {
 });
 
 /**
- * @class RadioButton component.
- * @base EchoApp.ToggleButton
+ * RadioButton component.
+ *
+ * @sp group a unique identifier used to group radio buttons together (set this property to a value generated by 
+ *     EchoApp.generateUid() to guarantee uniqueness)
  */
 EchoApp.RadioButton = Core.extend(EchoApp.ToggleButton, {
 
