@@ -2487,6 +2487,7 @@ EchoApp.Column = Core.extend(EchoApp.Component, {
 
 /**
  * Composite component.
+ * A single-child container that provides no rendering properties.
  */
 EchoApp.Composite = Core.extend(EchoApp.Component, {
 
@@ -2500,6 +2501,10 @@ EchoApp.Composite = Core.extend(EchoApp.Component, {
 
 /**
  * Panel component.
+ * A single-child container that provides a configurable border and margin.
+ *
+ * @sp border the panel border surrounding the child component
+ * @sp insets the inset padding margin between the panel border and its content
  */
 EchoApp.Panel = Core.extend(EchoApp.Composite, {
 
@@ -2644,6 +2649,26 @@ EchoApp.Row = Core.extend(EchoApp.Component, {
 
 /**
  * SplitPane component.
+ * Splits a pane into two regions.  A maximum of two components may be added as children.
+ *
+ * @sp orientation the orientation of the SplitPane, one of the following values:
+ *     <ul>
+ *      <li>ORIENTATION_HORIZONTAL_LEADING_TRAILING (the default)</li>
+ *      <li>ORIENTATION_HORIZONTAL_TRAILING_LEADING</li>
+ *      <li>ORIENTATION_HORIZONTAL_LEFT_RIGHT</li>
+ *      <li>ORIENTATION_HORIZONTAL_RIGHT_LEFT</li>
+ *      <li>ORIENTATION_VERTICAL_TOP_BOTTOM</li>
+ *      <li>ORIENTATION_VERTICAL_BOTTOM_TOP</li>
+ *     </ul>
+ * @sp resizable a boolean flag indicating whether the pane separator can be moved
+ * @sp separatorColor the separator color
+ * @sp separatorHeight the height of the separator (this property is used to determine the size
+ *     of the separator in vertical orientations 
+ * @sp separatorHorizontalImage a FillImage used to paint the separator for horizontal orientations
+ * @sp separatorPosition an extent specifying the position of the separator
+ * @sp separatorVerticalImage a FillImage used to paint the separator for vertical orientations
+ * @sp separatorWidth the width of the separator (this property is used to determine the size
+ *     of the separator in horizontal orientations 
  */
 EchoApp.SplitPane = Core.extend(EchoApp.Component, {
 
