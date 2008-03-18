@@ -141,7 +141,7 @@ WebCore.DOM = {
      * operation to be performed outside of current JavaScript context (i.e., in the case
      * where the element to be focused was just rendered in this context).
      * 
-     * @param {Element} the DOM element to focus
+     * @param {Element} element the DOM element to focus
      */
     focusElement: function(element) {
         if (WebCore.Environment.QUIRK_DELAYED_FOCUS_REQUIRED) {
@@ -155,7 +155,7 @@ WebCore.DOM = {
     /**
      * Focus element implementation.
      * 
-     * @param {Element} the DOM element to focus
+     * @param {Element} element the DOM element to focus
      * @private
      */
     _focusElementImpl: function(element) {
@@ -766,7 +766,7 @@ WebCore.EventProcessor = {
      * Use of this operation is recommended when disposing of components, it is
      * more efficient than removing listenerse individually and guarantees proper clean-up.
      * 
-     * @param {Element} the element
+     * @param {Element} element the element
      */
     removeAll: function(element) {
         if (!element.__eventProcessorId) {
@@ -780,8 +780,8 @@ WebCore.EventProcessor = {
      * Implementation method for removeAll().
      * Removes all capturing or bubbling listeners from a specific element
      * 
-     * @param {Element} the element
-     * @param {Core.Arrays.LargeMap} the map from which the listeners should be removed, either
+     * @param {Element} element the element
+     * @param {Core.Arrays.LargeMap} listenerMap the map from which the listeners should be removed, either
      *        WebCore.EventProcessor._capturingListenerMap or WebCore.EventProcessor._bubblingListenerMap
      * @private
      */
@@ -1215,7 +1215,8 @@ WebCore.Measure = {
      * Converts any non-relative extent value to pixels.
      * 
      * @param {Number} value the value to convert
-     * @param {String} the units, one of the following values: in, cm, mm, pt, pc, em, ex
+     * @param {String} units units, one of the following values: in, cm, mm, pt, pc, em, ex
+     * @param {Boolean} horizontal a flag indicating whether the extent is horizontal (true) or vertical (false)
      * @return the pixel value (may have a fractional part)
      * @type Number
      */
@@ -1446,7 +1447,7 @@ WebCore.Scheduler = {
     /**
      * Enqueues a Runnable to be executed by the scheduler.
      * 
-     * @param {WebCore.Scheduler.Runnable} the runnable to enqueue
+     * @param {WebCore.Scheduler.Runnable} runnable the runnable to enqueue
      */
     add: function(runnable) {
         var currentTime = new Date().getTime();
@@ -1526,7 +1527,7 @@ WebCore.Scheduler = {
     /**
      * Dequeues a Runnable so it will no longer be executed by the scheduler.
      * 
-     * @param {WebCore.Scheduler.Runnable} the runnable to dequeue
+     * @param {WebCore.Scheduler.Runnable} runnable the runnable to dequeue
      */
     remove: function(runnable) {
         runnable._enabled = false;
