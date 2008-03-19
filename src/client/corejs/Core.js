@@ -22,6 +22,7 @@
  */
 
 /**
+ * @namespace
  * Namespace for core functionality.
  */
 Core = {
@@ -405,6 +406,7 @@ Core = {
 
 /**
  * @class 
+ * @namespace
  * Namespace for debugging related utilities.
  */
 Core.Debug = { 
@@ -460,7 +462,7 @@ Core.Debug = {
 };
 
 /**
- * @class 
+ * @namespace
  * Arrays namespace.  
  * Non-instantiable object.
  */

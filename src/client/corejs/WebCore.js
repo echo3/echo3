@@ -18,7 +18,7 @@
  */
 
 /**
- * @class
+ * @namespace
  * Namespace for Web Core.  Non-instantiable object.
  */
 WebCore = { 
@@ -73,7 +73,7 @@ WebCore = {
 };
 
 /**
- * @class
+ * @namespace
  * DOM manipulation utility method namespace.
  * Do not instantiate.
  */
@@ -386,7 +386,7 @@ WebCore.DOM = {
 };
 
 /**
- * @class
+ * @namespace
  * Provides information about the web browser environment.
  * Non-instantiable class.
  */
@@ -523,7 +523,7 @@ WebCore.Environment = {
 };
 
 /**
- * @class
+ * @namespace
  * EventProcessor namespace.  Non-instantiable object.
  * The static methods in this object provide a standard framework for handling
  * DOM events across incompatible browser platforms.

@@ -5,6 +5,7 @@
  */
 
 /**
+ * @namespace
  * Namespace for application framework.
  */
 EchoApp = { 
@@ -1494,6 +1495,7 @@ EchoApp.StyleSheet = Core.extend({
 // Update Management
 
 /**
+ * @namespace
  * Namespace for update management.  Non-instantiable object.
  * Provides capabilities for storing property changes made to applications and components
  * such that display redraws may be performed efficiently. 
