@@ -94,7 +94,7 @@ public class Resource {
         int bytesRead = 0;
         
         try {
-            in = Resource.class.getResourceAsStream(resourceName);
+            in = Resource.class.getClassLoader().getResourceAsStream(resourceName);
             if (in == null) {
                 throw new ResourceException("Resource does not exist: \"" + resourceName + "\"");
             }

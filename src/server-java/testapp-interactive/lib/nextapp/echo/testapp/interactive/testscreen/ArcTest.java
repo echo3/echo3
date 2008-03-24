@@ -54,7 +54,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class ArcTest extends SplitPane {
 
     private static final Service ARC_TEST_COMPONENT_SERVICE = JavaScriptService.forResource("Test.Arc", 
-            "/nextapp/echo/testapp/interactive/resource/js/ArcTestComponents.js");
+            "nextapp/echo/testapp/interactive/resource/js/ArcTestComponents.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(ARC_TEST_COMPONENT_SERVICE);

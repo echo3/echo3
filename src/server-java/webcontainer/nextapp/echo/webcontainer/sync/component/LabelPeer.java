@@ -43,7 +43,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class LabelPeer extends AbstractComponentSynchronizePeer {
 
     private static final Service LABEL_SERVICE = JavaScriptService.forResource("Echo.Label", 
-            "/nextapp/echo/webcontainer/resource/Render.Label.js");
+            "nextapp/echo/webcontainer/resource/Render.Label.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(LABEL_SERVICE);

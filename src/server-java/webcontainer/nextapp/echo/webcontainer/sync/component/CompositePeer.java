@@ -45,7 +45,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class CompositePeer extends AbstractComponentSynchronizePeer {
 
     private static final Service COMPOSITE_SERVICE = JavaScriptService.forResource("Echo.Composite", 
-            "/nextapp/echo/webcontainer/resource/Render.Composite.js");
+            "nextapp/echo/webcontainer/resource/Render.Composite.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(COMPOSITE_SERVICE);

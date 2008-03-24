@@ -50,7 +50,7 @@ public class AlignmentPeerTest extends TestCase {
      */
     public void setUp()
     throws Exception {
-        InputStream in = AlignmentPeerTest.class.getResourceAsStream("AlignmentPeerTest.stylesheet.xml");
+        InputStream in = AlignmentPeerTest.class.getClassLoader().getResourceAsStream("AlignmentPeerTest.stylesheet.xml");
         styleSheet = StyleSheetLoader.load(in, StyleSheetLoaderTest.class.getClassLoader());
         in.close();
     }

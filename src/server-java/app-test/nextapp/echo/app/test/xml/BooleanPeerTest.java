@@ -51,7 +51,7 @@ public class BooleanPeerTest extends TestCase {
      */
     public void setUp()
     throws Exception {
-        InputStream in = BooleanPeerTest.class.getResourceAsStream("BooleanPeerTest.stylesheet.xml");
+        InputStream in = BooleanPeerTest.class.getClassLoader().getResourceAsStream("BooleanPeerTest.stylesheet.xml");
         styleSheet = StyleSheetLoader.load(in, StyleSheetLoaderTest.class.getClassLoader());
         in.close();
     }

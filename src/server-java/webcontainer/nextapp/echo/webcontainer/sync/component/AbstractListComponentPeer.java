@@ -168,8 +168,8 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
     }
 
     private static final Service LIST_COMPONENT_SERVICE = JavaScriptService.forResources("Echo.ListComponent",
-            new String[] { "/nextapp/echo/webcontainer/resource/Render.List.js",
-                           "/nextapp/echo/webcontainer/resource/Render.RemoteList.js" });
+            new String[] { "nextapp/echo/webcontainer/resource/Render.List.js",
+                           "nextapp/echo/webcontainer/resource/Render.RemoteList.js" });
 
     private static final String PROPERTY_DATA = "data";
     private static final String PROPERTY_SELECTION = "selection";

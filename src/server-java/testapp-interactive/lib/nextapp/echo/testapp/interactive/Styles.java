@@ -44,13 +44,13 @@ public class Styles {
     public static final String STYLE_PATH = "nextapp/echo/testapp/interactive/resource/style/";
 
     public static final ImageReference ICON_64_ERROR
-            = new ResourceImageReference("/nextapp/echo/testapp/interactive/resource/image/Icon64Error.gif");
+            = new ResourceImageReference("nextapp/echo/testapp/interactive/resource/image/Icon64Error.gif");
     public static final ImageReference ICON_64_INFORMATION
-            = new ResourceImageReference("/nextapp/echo/testapp/interactive/resource/image/Icon64Information.gif");
+            = new ResourceImageReference("nextapp/echo/testapp/interactive/resource/image/Icon64Information.gif");
     public static final ImageReference ICON_64_QUESTION
-            = new ResourceImageReference("/nextapp/echo/testapp/interactive/resource/image/Icon64Question.gif");
+            = new ResourceImageReference("nextapp/echo/testapp/interactive/resource/image/Icon64Question.gif");
     public static final ImageReference ICON_64_WARNING
-            = new ResourceImageReference("/nextapp/echo/testapp/interactive/resource/image/Icon64Warning.gif");
+            = new ResourceImageReference("nextapp/echo/testapp/interactive/resource/image/Icon64Warning.gif");
     
 
     public static final ImageReference ICON_24_MAIL_COMPOSE = new ResourceImageReference(IMAGE_PATH + "Icon24MailCompose.gif"); 
