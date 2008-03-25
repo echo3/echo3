@@ -472,9 +472,10 @@ Core.Arrays = {
      * Returns <tt>true</tt> if the first array contains all of the elements
      * in the second array.
      *
-     * @param {Array} array1 array to be checked for containment
-     * @param {Array} array2 array to be checked for containment in the first array
-     * @param {Boolean} optional flag indicating that all elements in array2 are unique
+     * @param {Array} array1 the array to be analyzed
+     * @param {Array} array2 an array whose elements must all be present in <code>array1</code>
+     *        for this method to return <code>true</code>
+     * @param {Boolean} unique optional flag indicating that all elements in array2 are unique
      * @return <tt>true</tt> if the first array contains all of the elements
      *         in the second array
      * @type Boolean
