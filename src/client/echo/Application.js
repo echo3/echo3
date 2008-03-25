@@ -2856,7 +2856,7 @@ EchoApp.WindowPane = Core.extend(EchoApp.Component, {
         DEFAULT_BORDER: { color: "#4f4faf", borderInsets: 20, contentInsets: 3 },
         DEFAULT_BACKGROUND: "#ffffff",
         DEFAULT_FOREGROUND: "#000000",
-        DEFAULT_CLOSE_ICON_INSETS: 4,
+        DEFAULT_CONTROLS_INSETS: 4,
         DEFAULT_HEIGHT: 200,
         DEFAULT_MINIMUM_WIDTH: 100,
         DEFAULT_MINIMUM_HEIGHT: 100,
@@ -2875,5 +2875,19 @@ EchoApp.WindowPane = Core.extend(EchoApp.Component, {
      */
     doWindowClosing: function() {
         this.fireEvent({type: "close", source: this});
+    },
+    
+    /**
+     * Programmatically perform a window maximizing operation.
+     */
+    doWindowMaximizing: function() {
+        this.fireEvent({type: "maximize", source: this});
+    },
+    
+    /**
+     * Programmatically perform a window minimizing operation.
+     */
+    doWindowMinimizing: function() {
+        this.fireEvent({type: "minimize", source: this});
     }
 });

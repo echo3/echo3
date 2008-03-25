@@ -19,6 +19,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     _processBorderMouseUpRef: null,
     _processTitleBarMouseMoveRef: null,
     _processTitleBarMouseUpRef: null,
+    _controlIcons: null,
 
     $construct: function() {
         this._processBorderMouseMoveRef = Core.method(this, this._processBorderMouseMove);
@@ -158,6 +159,20 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
         this.component.parent.peer.raise(this.component);
         return true;
+    },
+    
+    _processMaximizeClick: function(e) { 
+        if (!this.client.verifyInput(this.component)) {
+            return;
+        }
+        this.component.doWindowMaximizing();
+    },
+    
+    _processMinimizeClick: function(e) { 
+        if (!this.client.verifyInput(this.component)) {
+            return;
+        }
+        this.component.doWindowMinimizing();
     },
     
     _processTitleBarMouseDown: function(e) {
@@ -311,6 +326,10 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         var movable = this.component.render("movable", true);
         var resizable = this.component.render("resizable", true);
         var closable = this.component.render("closable", true);
+        var maximizeEnabled = this.component.render("maximizeEnabled", false);
+        var minimizeEnabled = this.component.render("minimizeEnabled", false);
+        
+        var hasControlIcons = closable || maximizeEnabled || minimizeEnabled;
     
         this._windowPaneDivElement = document.createElement("div");
         this._windowPaneDivElement.id = this.component.renderId;
@@ -589,25 +608,34 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._titleBarDivElement.style.backgroundColor = EchoAppRender.WindowPaneSync.DEFAULT_TITLE_BACKGROUND;
         }
         
-        // Close Button
-      
-        if (closable) {
-            this._closeDivElement = document.createElement("div");
-            this._closeDivElement.style.position = "absolute";
-            this._closeDivElement.style.right = "0px";
-            this._closeDivElement.style.top = "0px";
-            this._closeDivElement.style.cursor = "pointer";
+        if (hasControlIcons) {
+            this._controlContainerDivElement = document.createElement("div");
+            this._controlContainerDivElement.style.cssText = "position:absolute;top:0;right:0;";
             EchoAppRender.Insets.render(this.component.render("closeIconInsets", 
-                    EchoApp.WindowPane.DEFAULT_CLOSE_ICON_INSETS), this._closeDivElement, "padding");
-            var closeIcon = this.component.render("closeIcon", this.client.getResourceUrl("Echo", "resource/WindowPaneClose.gif")); 
-            if (closeIcon) {
-                var imgElement = document.createElement("img");
-                EchoAppRender.ImageReference.renderImg(closeIcon, imgElement);
-                this._closeDivElement.appendChild(imgElement);
-            } else {
-                this._closeDivElement.appendChild(document.createTextNode("[X]"));
+                    EchoApp.WindowPane.DEFAULT_CONTROLS_INSETS), this._controlContainerDivElement, "padding");
+            this._titleBarDivElement.appendChild(this._controlContainerDivElement);
+
+            // Close Button
+            if (closable) {
+                this._renderControlIcon(this.component.render("closeIcon", 
+                        this.client.getResourceUrl("Echo", "resource/WindowPaneClose.gif")),
+                        null, null, "[X]", this.component.render("closeIconInsets"),
+                        Core.method(this, this._processCloseClick));
             }
-            this._titleBarDivElement.appendChild(this._closeDivElement);
+            
+            if (maximizeEnabled) {
+                this._renderControlIcon(this.component.render("maximizeIcon", 
+                        this.client.getResourceUrl("Echo", "resource/WindowPaneMaximize.gif")),
+                        null, null, "[+]", this.component.render("maximizeIconInsets"),
+                        Core.method(this, this._processMaximizeClick));
+            }
+
+            if (minimizeEnabled) {
+                this._renderControlIcon(this.component.render("minimizeIcon", 
+                        this.client.getResourceUrl("Echo", "resource/WindowPaneMinimize.gif")),
+                        null, null, "[-]", this.component.render("minimizeIconInsets"),
+                        Core.method(this, this._processMaximizeClick));
+            }
         }
         
         this._windowPaneDivElement.appendChild(this._titleBarDivElement);
@@ -669,8 +697,6 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                     Core.method(this, this._processKeyDown), false);
             WebCore.EventProcessor.add(this._windowPaneDivElement, "keypress", 
                     Core.method(this, this._processKeyPress), false);
-            WebCore.EventProcessor.add(this._closeDivElement, "click", 
-                    Core.method(this, this._processCloseClick), false);
         }
         if (movable) {
             WebCore.EventProcessor.add(this._titleBarDivElement, "mousedown", 
@@ -693,12 +719,42 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         EchoRender.renderComponentAdd(update, child, parentElement);
     },
     
+    _renderControlIcon: function(icon, rolloverIcon, pressedIcon, altText, insets, eventMethod) {
+        var controlIcon = document.createElement("div");
+        controlIcon.style.cssText = "float:right;cursor:pointer;margin-left:5px;";
+        EchoAppRender.Insets.render(insets, controlIcon, "padding");
+        if (icon) {
+            var imgElement = document.createElement("img");
+            EchoAppRender.ImageReference.renderImg(icon, imgElement);
+            controlIcon.appendChild(imgElement);
+        } else {
+            controlIcon.appendChild(document.createTextNode(altText));
+        }
+        
+        if (eventMethod) {
+            WebCore.EventProcessor.add(controlIcon, "click", eventMethod, false);
+        }
+        
+        this._controlContainerDivElement.appendChild(controlIcon);
+        if (this._controlIcons == null) {
+            this._controlIcons = [];
+        }
+        this._controlIcons.push(controlIcon);
+    },
+    
     renderDispose: function(update) { 
         for (var i = 0; i < this._borderDivElements.length; ++i) {
             WebCore.EventProcessor.removeAll(this._borderDivElements[i]);
-            this._borderDivElements[i] = null;
         }
-    
+        this._borderDivElements = null;
+        
+        if (this._controlIcons != null) {
+            for (var i = 0; i < this._controlIcons.length; ++i) {
+                WebCore.EventProcessor.removeAll(this._controlIcons[i]);
+            }
+            this._controlIcons = null;
+        }
+        
         WebCore.EventProcessor.removeAll(this._titleBarDivElement);
         this._titleBarDivElement = null;
         
