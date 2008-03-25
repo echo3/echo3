@@ -54,11 +54,18 @@ implements FloatingPane, ModalSupport, PaneContainer {
     public static final String PROPERTY_CLOSABLE = "closable";
     public static final String PROPERTY_CLOSE_ICON = "closeIcon";
     public static final String PROPERTY_CLOSE_ICON_INSETS = "closeIconInsets";
+    public static final String PROPERTY_CONTROLS_INSETS = "controlsInsets";
     public static final String PROPERTY_DEFAULT_CLOSE_OPERATION = "defaultCloseOperation";
     public static final String PROPERTY_HEIGHT = "height";
     public static final String PROPERTY_ICON = "icon";
     public static final String PROPERTY_ICON_INSETS = "iconInsets";
     public static final String PROPERTY_INSETS = "insets";
+    public static final String PROPERTY_MAXIMIZE_ENABLED = "maximizeEnabled";
+    public static final String PROPERTY_MAXIMIZE_ICON = "maximizeIcon";
+    public static final String PROPERTY_MAXIMIZE_ICON_INSETS = "maximizeIconInsets";
+    public static final String PROPERTY_MINIMIZE_ENABLED = "minimizeEnabled";
+    public static final String PROPERTY_MINIMIZE_ICON = "minimizeIcon";
+    public static final String PROPERTY_MINIMIZE_ICON_INSETS = "minimizeIconInsets";
     public static final String PROPERTY_MAXIMUM_HEIGHT = "maximumHeight";
     public static final String PROPERTY_MAXIMUM_WIDTH = "maximumWidth";
     public static final String PROPERTY_MINIMUM_HEIGHT = "minimumHeight";
@@ -194,6 +201,16 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
+     * Returns the inset margin around the window controls 
+     * (e.g., close, minimize, and maximize buttons)
+     * 
+     * @return the inset margin
+     */
+    public Insets getControlsInsets() {
+        return (Insets) getProperty(PROPERTY_CONTROLS_INSETS);
+    }
+    
+    /**
      * Returns the default close operation.
      * 
      * @return the default close operation, one of the following values:
@@ -247,6 +264,24 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
+     * Returns the maximize button icon.
+     * 
+     * @return the icon
+     */
+    public ImageReference getMaximizeIcon() {
+        return (ImageReference) getProperty(PROPERTY_MAXIMIZE_ICON);
+    }
+    
+    /**
+     * Returns the inset margin around the maximize button icon.
+     * 
+     * @return the inset margin
+     */
+    public Insets getMaximizeIconInsets() {
+        return (Insets) getProperty(PROPERTY_MAXIMIZE_ICON_INSETS);
+    }
+    
+    /**
      * Returns the maximum height of the content region of the 
      * <code>WindowPane</code>.
      * 
@@ -264,6 +299,24 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public Extent getMaximumWidth() {
         return (Extent) getProperty(PROPERTY_MAXIMUM_WIDTH);
+    }
+    
+    /**
+     * Returns the minimize button icon.
+     * 
+     * @return the icon
+     */
+    public ImageReference getMinimizeIcon() {
+        return (ImageReference) getProperty(PROPERTY_MINIMIZE_ICON);
+    }
+    
+    /**
+     * Returns the inset margin around the minimize button icon.
+     * 
+     * @return the inset margin
+     */
+    public Insets getMinimizeIconInsets() {
+        return (Insets) getProperty(PROPERTY_MINIMIZE_ICON_INSETS);
     }
     
     /**
@@ -401,6 +454,28 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
+     * Determines if the window can be maximized via a provided close button in
+     * the title bar.
+     * 
+     * @return true if the window can be maximized
+     */
+    public boolean isMaximizeEnabled() {
+        Boolean value = (Boolean) getProperty(PROPERTY_MAXIMIZE_ENABLED);
+        return value == null ? true: value.booleanValue();
+    }
+    
+    /**
+     * Determines if the window can be minimized via a provided close button in
+     * the title bar.
+     * 
+     * @return true if the window can be minimized
+     */
+    public boolean isMinimizeEnabled() {
+        Boolean value = (Boolean) getProperty(PROPERTY_MINIMIZE_ENABLED);
+        return value == null ? true: value.booleanValue();
+    }
+    
+    /**
      * @see nextapp.echo.app.ModalSupport#isModal()
      */
     public boolean isModal() {
@@ -511,6 +586,16 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
+     * Sets the inset margin around the window controls 
+     * (e.g., close, minimize, and maximize buttons)
+     * 
+     * @param newValue the new inset margin
+     */
+    public void setControlsInsets(Extent newValue) {
+        setProperty(PROPERTY_CONTROLS_INSETS, newValue);
+    }
+    
+    /**
      * Sets the default close operation.
      * 
      * @param newValue the new default close operation, one of the following 
@@ -566,6 +651,34 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
+     * Sets whether the window can be maximized via a provided button in
+     * the title bar.
+     * 
+     * @param newValue true if the window can be maximized
+     */
+    public void setMaximizeEnabled(boolean newValue) {
+        setProperty(PROPERTY_MAXIMIZE_ENABLED, new Boolean(newValue));
+    }
+    
+    /**
+     * Sets the maximize button icon.
+     * 
+     * @param newValue the new icon
+     */
+    public void setMaximizeIcon(ImageReference newValue) {
+        setProperty(PROPERTY_MAXIMIZE_ICON, newValue);
+    }
+    
+    /**
+     * Sets the inset margin around the maximize button icon.
+     * 
+     * @param newValue the new inset margin
+     */
+    public void setMaximizeIconInsets(Insets newValue) {
+        setProperty(PROPERTY_MAXIMIZE_ICON_INSETS, newValue);
+    }
+    
+    /**
      * Sets the maximum height of the content region of the 
      * <code>WindowPane</code>.
      * Values must be in pixel units.
@@ -587,6 +700,34 @@ implements FloatingPane, ModalSupport, PaneContainer {
     public void setMaximumWidth(Extent newValue) {
         Extent.validate(newValue, Extent.PX);
         setProperty(PROPERTY_MAXIMUM_WIDTH, newValue);
+    }
+    
+    /**
+     * Sets whether the window can be minimized via a provided button in
+     * the title bar.
+     * 
+     * @param newValue true if the window can be minimized
+     */
+    public void setMinimizeEnabled(boolean newValue) {
+        setProperty(PROPERTY_MINIMIZE_ENABLED, new Boolean(newValue));
+    }
+    
+    /**
+     * Sets the minimize button icon.
+     * 
+     * @param newValue the new icon
+     */
+    public void setMinimizeIcon(ImageReference newValue) {
+        setProperty(PROPERTY_MINIMIZE_ICON, newValue);
+    }
+    
+    /**
+     * Sets the inset margin around the minimize button icon.
+     * 
+     * @param newValue the new inset margin
+     */
+    public void setMinimizeIconInsets(Insets newValue) {
+        setProperty(PROPERTY_MINIMIZE_ICON_INSETS, newValue);
     }
     
     /**
