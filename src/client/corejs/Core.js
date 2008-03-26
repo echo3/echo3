@@ -57,26 +57,27 @@ Core = {
      * Creates a new class, optionally extending an existing class.
      * This method may be called with one or two parameters as follows:
      * <p>
-     * Core.extend(definition)
-     * Core.extend(baseClass, definition)
+     * <code>Core.extend(definition)</code>
+     * <code>Core.extend(baseClass, definition)</code>
      * <p>
      * Each property of the definition object will be added to the prototype of the returned defined class.
-     * Properties that begin with a dollar-sign ($) will be processed specially:
+     * Properties that begin with a dollar-sign (<code>$</code>) will be processed specially:
      * <p>
      * <ul>
-     * <li>The $construct property, which must be a function, will be used as the constructor.
-     * The $load property, which must be a function, f provided, will be used as a static initializer,
+     * <li>The <code>$construct</code> property, which must be a function, will be used as the constructor.
+     * The <code>$load</code> property, which must be a function, f provided, will be used as a static initializer,
      * executed once when the class is *defined*.  The this pointer will be set to the class when
      * this method is executed.</li>
-     * <li>The $static property, an object, if provided, will have its properties installed as class variables.</li>
-     * <li>The $abstract property, an object or 'true', if provided, will define methods that must be implemented
-     * by derivative classes.  If the value is simply true, the object will be marked as abstract (such that
-     * it does not necessarily need to provide implementations of abstract methods defined in its base class.</li>
-     * <li>The $virtual property, an object, if provided, defines methods that will be placed into the prototype
+     * <li>The <code>$static</code> property, an object, if provided, will have its properties installed as class variables.</li>
+     * <li>The <code>$abstract</code> property, an object or <code>true</code>, if provided, will define methods that
+     * must be implemented by derivative classes.  If the value is simply <code>true</code>, the object will be marked as
+     * abstract (such that it does not necessarily need to provide implementations of abstract methods defined in its 
+     * base class.)</li>
+     * <li>The <code>$virtual</code> property, an object, if provided, defines methods that will be placed into the prototype
      * that may be overridden by subclasses.  Attempting to override a property/method of the superclass that
      * is not defined in the virtual block will result in an exception.  Having the default behavior NOT allow
      * for overriding ensures that namespacing between super- and sub-types if all internal variables are instance
-     * during Core.extend().</li>
+     * during <code>Core.extend()</code>.</li>
      * </ul>
      * <p>
      * Use of this method enables a class to be derived WITHOUT executing the constructor of the base class
@@ -250,13 +251,15 @@ Core = {
      * Retrieves a value from an object hierarchy.
      *
      * Examples: 
-     * Given the following object 'o': { a: { b: 4, c: 2 }}
-     * Core.get(o, ["a", "b"]) will return 4.
-     * Core.get(o, ["a", "c"]) will return 2.
-     * Core.get(o, ["a", "d"]) will return null.
-     * Core.get(o, ["a"]) will return { b: 4, c: 2 }.
-     * Core.get(o, ["b"]) will return null.
-     * Core.get(o, ["d"]) will return null.
+     * Given the following object 'o': <code>{ a: { b: 4, c: 2 }}</code>
+     * <ul>
+     * <li><code>Core.get(o, ["a", "b"]) will return <code>4</code>.</li>
+     * <li><code>Core.get(o, ["a", "c"]) will return <code>2</code>.</li>
+     * <li><code>Core.get(o, ["a", "d"]) will return <code>null</code>.</li>
+     * <li><code>Core.get(o, ["a"]) will return <code>{ b: 4, c: 2 }</code>.</li>
+     * <li><code>Core.get(o, ["b"]) will return <code>null</code>.</li>
+     * <li><code>Core.get(o, ["d"]) will return <code>null</code>.</li>
+     * </ul>
      *
      * @param object an arbitrary object from which the value should be retrieved
      * @param {Array} path an array of object property names describing the path to retrieve
@@ -317,12 +320,12 @@ Core = {
      * Any arguments passed to the returned function will be passed to the method.
      * The return value of the method will be returned by the function.
      *
-     * CAUTION: When adding and removing methods as listeners, not that two seperately
+     * CAUTION: When adding and removing methods as listeners, note that two seperately
      * constructed methods will not be treated as equal, even if their instance and method
      * properties are the same.  Failing to heed this warning can result in a memory leak,
      * as listeners would never be removed.
      *
-     * @param the object instance
+     * @param instance the object instance
      * @param {Function} method the method to be invoked on the instance
      * @return the return value provided by the method
      */
@@ -338,7 +341,7 @@ Core = {
      * present in the destination object will not be overridden.
      *
      * @param destination the destination object
-     * @param {Array} the mixin objects to add 
+     * @param {Array} mixins the mixin objects to add 
      */
     _processMixins: function(destination, mixins) {
         for (var i = 0; i < mixins.length; ++i) {
@@ -353,15 +356,19 @@ Core = {
     },
     
     /**
-     * Retrieves a value from an object hierarchy.
+     * Sets a value in an object hierarchy.
      *
      * Examples: 
-     * Given the following object 'o': { a: { b: 4, c: 2 } }
-     * Core.set(o, ["a", "b"], 5) will update the value of 'o' to be: { a: { b: 5, c: 2 } }
-     * Core.set(o, ["a", "d"], 7) will update the value of 'o' to be: { a: { b: 4, c: 2, d: 7 } }
-     * Core.set(o, ["e"], 9) will update the value of 'o' to be: { a: { b: 4, c: 2 }, e: 9 }
-     * Core.set(o, ["f", "g"], 8) will update the value of 'o' to be: { a: { b: 4, c: 2 }, f: { g: 8 } }
-     * Core.set(o, ["a"], 10) will update the value of 'o' to be: { a: 10 }
+     * Given the following object 'o': <code>{ a: { b: 4, c: 2 } }</code>
+     * <ul>
+     * <li><code>Core.set(o, ["a", "b"], 5)</code> will update the value of 'o' to be: <code>{ a: { b: 5, c: 2 } }</code></li>
+     * <li><code>Core.set(o, ["a", "d"], 7)</code> will update the value of 'o' to be:
+     * <code>{ a: { b: 4, c: 2, d: 7 } }</code></li>
+     * <li><code>Core.set(o, ["e"], 9)</code> will update the value of 'o' to be: <code>{ a: { b: 4, c: 2 }, e: 9 }</code></li>
+     * <li><code>Core.set(o, ["f", "g"], 8)</code> will update the value of 'o' to be: 
+     * <code>{ a: { b: 4, c: 2 }, f: { g: 8 } }</code></li>
+     * <li><code>Core.set(o, ["a"], 10)</code> will update the value of 'o' to be: <code>{ a: 10 }</code></li>
+     * </ul>
      *
      * @param object an arbitrary object from which the value should be retrieved
      * @param {Array} path an array of object property names describing the path to retrieve
