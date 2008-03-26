@@ -898,7 +898,7 @@ Core.ResourceBundle = Core.extend({
     },
 
     /**
-     * Adds a new locale-specific map to the 
+     * Adds a new locale-specific map to the bundle. 
      */
     set: function(languageCode, map) {
         this._generatedBundles = {};
