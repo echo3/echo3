@@ -264,7 +264,7 @@ WebCore.DOM = {
      * <code>descendantNode</code>.
      *
      * @param {Node} ancestorNode the potential ancestor node
-     * @param {Npde} descendantNode the potential descendant node
+     * @param {Node} descendantNode the potential descendant node
      * @return true if <code>ancestorNode</code> is or is an ancestor of
      *         <code>descendantNode</code>
      * @type Boolean
@@ -916,7 +916,7 @@ WebCore.HttpConnection = Core.extend({
     /**
      * Returns the response status code of the HTTP connection, if available.
      * 
-     * @return {Integer} the response status code
+     * @return Integer the response status code
      */
     getStatus: function() {
         return this._xmlHttpRequest ? this._xmlHttpRequest.status : null;
@@ -927,6 +927,7 @@ WebCore.HttpConnection = Core.extend({
      * This method may only be invoked from a response handler.
      *
      * @return the response, as text
+     * @type String
      */
     getResponseText: function() {
         return this._xmlHttpRequest ? this._xmlHttpRequest.responseText : null;
@@ -937,6 +938,7 @@ WebCore.HttpConnection = Core.extend({
      * This method may only be invoked from a response handler.
      *
      * @return the response, as an XML DOM
+     * @type Document
      */
     getResponseXml: function() {
         return this._xmlHttpRequest ? this._xmlHttpRequest.responseXML : null;
