@@ -457,7 +457,9 @@ EchoApp.ComponentFactory = {
 
 /**
  * Base class for components.
- * Derived classes should always take renderId as the first parameter and pass it to the super-constructor.
+ * Derived classes should wishing to support hierarchal construction should provide constructors
+ * with a first parameter name of 'properties' which is passed to the super-constructor.
+ * In any case, the super-constructor must be invoked.
  * A component MUST have its componentType property set before it is used in a hierarchy.  Failing to do so
  * will throw an exception and/or result in indeterminate behavior.
  *
