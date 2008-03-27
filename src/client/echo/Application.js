@@ -381,6 +381,7 @@ EchoApp.Application = Core.extend({
  * Factory to create new instances of arbitrary components.  This object is 
  * used to instantiate new components during XML deserialization.
  * This is a namespace object, do not instantiate.
+ * @class
  */
 EchoApp.ComponentFactory = {
     
@@ -578,13 +579,14 @@ EchoApp.Component = Core.extend({
     /**
      * Creates a new Component.
      *  
-     * @param {String} renderId the render id
-     * @param {Object} associative mapping of initial property values (may be null)
+     * @param {Object} properties associative mapping of initial property values (may be null)
      *        By default, all properties will be placed into the local style, except for the following:
      *        <ul>
      *         <li><code>styleName</code> specifies the component stylesheet style name</li>
      *         <li><code>style</code> specifies the referenced component style</li>
      *         <li><code>renderId</code> specifies the render id</li>
+     *         <li><code>children</code> an array specifying the initial children of the component</li>
+     *         <li><code>events</code> an associative mapping between event names and listener methdos</li>
      *        </ul>
      * @constructor
      */

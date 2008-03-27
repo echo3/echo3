@@ -617,7 +617,6 @@ EchoAppRender.FloatingPaneManager = Core.extend({
     
     /**
      * Notifies listeners of a z-index change.
-     * @private
      */
     _fireZIndexEvent: function() {
         if (this._listeners) {
@@ -702,9 +701,6 @@ EchoAppRender.TriCellTable = Core.extend({
             return orientation;
         },
         
-        /**
-         * @private
-         */
         _createTablePrototype: function() {
             var tableElement = document.createElement("table");
             tableElement.style.borderCollapse = "collapse";
@@ -738,7 +734,6 @@ EchoAppRender.TriCellTable = Core.extend({
      * 
      * @param orientation0_1 the orientation of element 0 with respect to element 1, one of 
      *        the following values:
-     *        <ul>
      *        <ul>
      *        <li>LEADING_TRAILING (element 0 is leading element 1)</li>
      *        <li>TRAILING_LEADING (element 1 is leading element 0)</li>
@@ -792,9 +787,6 @@ EchoAppRender.TriCellTable = Core.extend({
         parentElement.appendChild(divElement);
     },
     
-    /**
-     * @param id the id of 
-     */
     configure2: function(orientation0_1, margin0_1) {
         this.tdElements = [document.createElement("td"), document.createElement("td")];
         this.tdElements[0].style.padding = "0px";
