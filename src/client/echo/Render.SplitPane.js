@@ -43,14 +43,14 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                 }
             },
             
-            loadScrollPositions: function(paneDivElement) {
-                paneDivElement.scrollLeft = this.scrollLeft;
-                paneDivElement.scrollTop = this.scrollTop;
+            loadScrollPositions: function(paneDiv) {
+                paneDiv.scrollLeft = this.scrollLeft;
+                paneDiv.scrollTop = this.scrollTop;
             },
             
-            storeScrollPositions: function(paneDivElement) {
-                this.scrollLeft = paneDivElement.scrollLeft;
-                this.scrollTop = paneDivElement.scrollTop;
+            storeScrollPositions: function(paneDiv) {
+                this.scrollLeft = paneDiv.scrollLeft;
+                this.scrollTop = paneDiv.scrollTop;
             }
         })
     },
@@ -64,8 +64,8 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
      * @type Array
      */
     _childPanes: null,
-    _paneDivElements: null,
-    _separatorDivElement: null,
+    _paneDivs: null,
+    _separatorDiv: null,
 
     _processSeparatorMouseMoveRef: null,
     
@@ -73,29 +73,29 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
 
     $construct: function() {
         this._childPanes = new Array(2);
-        this._paneDivElements = new Array(2);
+        this._paneDivs = new Array(2);
         this._processSeparatorMouseMoveRef = Core.method(this, this._processSeparatorMouseMove);
         this._processSeparatorMouseUpRef = Core.method(this, this._processSeparatorMouseUp);
     },
 
     renderDispose: function(update) {
         for (var i = 0; i < 2; ++i) {
-            if (this._paneDivElements[i]) {
+            if (this._paneDivs[i]) {
                 if (this._childPanes[i]) {
-                    this._childPanes[i].storeScrollPositions(this._paneDivElements[i]);
+                    this._childPanes[i].storeScrollPositions(this._paneDivs[i]);
                 }
-                this._paneDivElements[i] = null;
+                this._paneDivs[i] = null;
             }
         }
         
-        if (this._separatorDivElement) {
-            WebCore.EventProcessor.removeAll(this._separatorDivElement);
-            this._separatorDivElement = null;
+        if (this._separatorDiv) {
+            WebCore.EventProcessor.removeAll(this._separatorDiv);
+            this._separatorDiv = null;
         }
 
-        WebCore.EventProcessor.removeAll(this._splitPaneDivElement);
+        WebCore.EventProcessor.removeAll(this._splitPaneDiv);
     
-        this._splitPaneDivElement = null;
+        this._splitPaneDiv = null;
     },
     
     loadRenderData: function() {
@@ -213,9 +213,8 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._dragInitMouseOffset = e.clientX;
         }
         
-        var bodyElement = document.getElementsByTagName("body")[0];
-        WebCore.EventProcessor.add(bodyElement, "mousemove", this._processSeparatorMouseMoveRef, true);
-        WebCore.EventProcessor.add(bodyElement, "mouseup", this._processSeparatorMouseUpRef, true);
+        WebCore.EventProcessor.add(document.body, "mousemove", this._processSeparatorMouseMoveRef, true);
+        WebCore.EventProcessor.add(document.body, "mouseup", this._processSeparatorMouseUpRef, true);
     },
     
     _processSeparatorMouseMove: function(e) {
@@ -237,11 +236,11 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         this._userSeparatorPosition = this._separatorPosition;
     
-        if (this._paneDivElements[0]) {
-            WebCore.VirtualPosition.redraw(this._paneDivElements[0]);
+        if (this._paneDivs[0]) {
+            WebCore.VirtualPosition.redraw(this._paneDivs[0]);
         }
-        if (this._paneDivElements[1]) {
-            WebCore.VirtualPosition.redraw(this._paneDivElements[1]);
+        if (this._paneDivs[1]) {
+            WebCore.VirtualPosition.redraw(this._paneDivs[1]);
         }
     
         EchoRender.notifyResize(this.component);
@@ -285,9 +284,9 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         var positionAttr = this._orientationVertical
                 ? (this._orientationTopLeft ? "top" : "bottom")
                 : (this._orientationTopLeft ? "left" : "right");
-        this._redrawItem(this._paneDivElements[0], sizeAttr, (this._separatorPosition - insetsAdjustment) + "px");
-        this._redrawItem(this._paneDivElements[1], positionAttr, (this._separatorPosition + this._separatorSize) + "px");
-        this._redrawItem(this._separatorDivElement, positionAttr, this._separatorPosition + "px");
+        this._redrawItem(this._paneDivs[0], sizeAttr, (this._separatorPosition - insetsAdjustment) + "px");
+        this._redrawItem(this._paneDivs[1], positionAttr, (this._separatorPosition + this._separatorSize) + "px");
+        this._redrawItem(this._separatorDiv, positionAttr, this._separatorPosition + "px");
     },
     
     _redrawItem: function(element, styleProperty, newValue) {
@@ -297,9 +296,8 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _removeSeparatorListeners: function() {
-        var bodyElement = document.getElementsByTagName("body")[0];
-        WebCore.EventProcessor.remove(bodyElement, "mousemove", this._processSeparatorMouseMoveRef, true);
-        WebCore.EventProcessor.remove(bodyElement, "mouseup", this._processSeparatorMouseUpRef, true);
+        WebCore.EventProcessor.remove(document.body, "mousemove", this._processSeparatorMouseMoveRef, true);
+        WebCore.EventProcessor.remove(document.body, "mouseup", this._processSeparatorMouseUpRef, true);
     },
     
     renderAdd: function(update, parentElement) {
@@ -312,50 +310,50 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         var child0 = childCount < 1 ? null : this.component.getComponent(0);
         var child1 = childCount < 2 ? null : this.component.getComponent(1);
     
-        this._splitPaneDivElement = document.createElement("div");
-        this._splitPaneDivElement.id = this.component.renderId;
-        this._splitPaneDivElement.style.cssText = "position: absolute; overflow: hidden; " 
+        this._splitPaneDiv = document.createElement("div");
+        this._splitPaneDiv.id = this.component.renderId;
+        this._splitPaneDiv.style.cssText = "position: absolute; overflow: hidden; " 
                 + "top: 0px; left: 0px; right: 0px; bottom: 0px;";
         
-        EchoAppRender.Color.renderFB(this.component, this._splitPaneDivElement);
-        EchoAppRender.Font.render(this.component.render("font"), this._splitPaneDivElement);
+        EchoAppRender.Color.renderFB(this.component, this._splitPaneDiv);
+        EchoAppRender.Font.render(this.component.render("font"), this._splitPaneDiv);
         
         if (this._separatorSize > 0) {
-            this._separatorDivElement = document.createElement("div");
-            this._separatorDivElement.style.cssText = "position: absolute; font-size: 1px; line-height: 0; z-index: 2;";
+            this._separatorDiv = document.createElement("div");
+            this._separatorDiv.style.cssText = "position: absolute; font-size: 1px; line-height: 0; z-index: 2;";
             EchoAppRender.Color.render(this.component.render("separatorColor", EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR), 
-                    this._separatorDivElement, "backgroundColor");
+                    this._separatorDiv, "backgroundColor");
     
             var resizeCursor = null;
             if (this._orientationVertical) {
                 if (this._orientationTopLeft) {
-                    this._separatorDivElement.style.top = this._separatorPosition + "px";
+                    this._separatorDiv.style.top = this._separatorPosition + "px";
                     resizeCursor = "s-resize";
                 } else {
-                    this._separatorDivElement.style.bottom = this._separatorPosition + "px";
+                    this._separatorDiv.style.bottom = this._separatorPosition + "px";
                     resizeCursor = "n-resize";
                 }
-                this._separatorDivElement.style.width = "100%";
-                this._separatorDivElement.style.height = this._separatorSize + "px";
-                EchoAppRender.FillImage.render(this.component.render("separatorVerticalImage"), this._separatorDivElement, 0);
+                this._separatorDiv.style.width = "100%";
+                this._separatorDiv.style.height = this._separatorSize + "px";
+                EchoAppRender.FillImage.render(this.component.render("separatorVerticalImage"), this._separatorDiv, 0);
             } else {
                 if (this._orientationTopLeft) {
-                    this._separatorDivElement.style.left = this._separatorPosition + "px";
+                    this._separatorDiv.style.left = this._separatorPosition + "px";
                     resizeCursor = "e-resize";
                 } else {
-                    this._separatorDivElement.style.right = this._separatorPosition + "px";
+                    this._separatorDiv.style.right = this._separatorPosition + "px";
                     resizeCursor = "w-resize";
                 }
-                this._separatorDivElement.style.height = "100%";
-                this._separatorDivElement.style.width = this._separatorSize + "px";
-                EchoAppRender.FillImage.render(this.component.render("separatorHorizontalImage"), this._separatorDivElement, 0);
+                this._separatorDiv.style.height = "100%";
+                this._separatorDiv.style.width = this._separatorSize + "px";
+                EchoAppRender.FillImage.render(this.component.render("separatorHorizontalImage"), this._separatorDiv, 0);
             }
             if (this._resizable && resizeCursor) {
-                this._separatorDivElement.style.cursor = resizeCursor;
+                this._separatorDiv.style.cursor = resizeCursor;
             }
-            this._splitPaneDivElement.appendChild(this._separatorDivElement);
+            this._splitPaneDiv.appendChild(this._separatorDiv);
         } else {
-            this._separatorDivElement = null;
+            this._separatorDiv = null;
         }
         
         for (var i = 0; i < childCount && i < 2; ++i) {
@@ -363,39 +361,39 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._renderAddChild(update, child, i);
         }
         
-        parentElement.appendChild(this._splitPaneDivElement);
+        parentElement.appendChild(this._splitPaneDiv);
         
-        WebCore.EventProcessor.add(this._splitPaneDivElement, 
+        WebCore.EventProcessor.add(this._splitPaneDiv, 
                 WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", 
                 Core.method(this, this._processKeyPress), false);
                 
         if (this._resizable) {
-            WebCore.EventProcessor.add(this._separatorDivElement, "mousedown", 
+            WebCore.EventProcessor.add(this._separatorDiv, "mousedown", 
                     Core.method(this, this._processSeparatorMouseDown), false);
         }
     },
     
     _renderAddChild: function(update, child, index) {
         var childIndex = this.component.indexOf(child);
-        var paneDivElement = document.createElement("div");
-        this._paneDivElements[index] = paneDivElement;
+        var paneDiv = document.createElement("div");
+        this._paneDivs[index] = paneDiv;
         
-        paneDivElement.style.cssText = "position: absolute; overflow: auto; z-index: 1;";
+        paneDiv.style.cssText = "position: absolute; overflow: auto; z-index: 1;";
         
         var layoutData = child.render("layoutData");
         if (layoutData) {
-            EchoAppRender.Alignment.render(layoutData.alignment, paneDivElement, false, this.component);
-            EchoAppRender.Color.render(layoutData.background, paneDivElement, "backgroundColor");
-            EchoAppRender.FillImage.render(layoutData.backgroundImage, paneDivElement);
+            EchoAppRender.Alignment.render(layoutData.alignment, paneDiv, false, this.component);
+            EchoAppRender.Color.render(layoutData.background, paneDiv, "backgroundColor");
+            EchoAppRender.FillImage.render(layoutData.backgroundImage, paneDiv);
             if (!child.pane) {
-                EchoAppRender.Insets.render(layoutData.insets, paneDivElement, "padding");
+                EchoAppRender.Insets.render(layoutData.insets, paneDiv, "padding");
             }
             switch (layoutData.overflow) {
             case EchoApp.SplitPane.OVERFLOW_HIDDEN:
-                paneDivElement.style.overflow = "hidden";
+                paneDiv.style.overflow = "hidden";
                 break;
             case EchoApp.SplitPane.OVERFLOW_SCROLL:
-                paneDivElement.style.overflow = "scroll";
+                paneDiv.style.overflow = "scroll";
                 break;
             }
         }
@@ -404,52 +402,52 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         var renderingTopLeft = (index == 0 && this._orientationTopLeft) || (index != 0 && !this._orientationTopLeft);
                 
         if (this._orientationVertical) {
-            paneDivElement.style.left = "0px";
-            paneDivElement.style.right = "0px";
+            paneDiv.style.left = "0px";
+            paneDiv.style.right = "0px";
             if (this._orientationTopLeft) {
                 if (index == 0) {
-                    paneDivElement.style.top = "0px";
-                    paneDivElement.style.height = (this._separatorPosition - insetsAdjustment) + "px";
+                    paneDiv.style.top = "0px";
+                    paneDiv.style.height = (this._separatorPosition - insetsAdjustment) + "px";
                 } else {
-                    paneDivElement.style.top = (this._separatorPosition + this._separatorSize) + "px";
-                    paneDivElement.style.bottom = "0px";
+                    paneDiv.style.top = (this._separatorPosition + this._separatorSize) + "px";
+                    paneDiv.style.bottom = "0px";
                 }
             } else {
                 if (index == 0) {
-                    paneDivElement.style.bottom = "0px";
-                    paneDivElement.style.height = (this._separatorPosition - insetsAdjustment) + "px";
+                    paneDiv.style.bottom = "0px";
+                    paneDiv.style.height = (this._separatorPosition - insetsAdjustment) + "px";
                 } else {
-                    paneDivElement.style.top = "0px";
-                    paneDivElement.style.bottom = (this._separatorPosition + this._separatorSize) + "px";
+                    paneDiv.style.top = "0px";
+                    paneDiv.style.bottom = (this._separatorPosition + this._separatorSize) + "px";
                 }
             }
         } else {
-            paneDivElement.style.top = "0px";
-            paneDivElement.style.bottom = "0px";
+            paneDiv.style.top = "0px";
+            paneDiv.style.bottom = "0px";
             if (this._orientationTopLeft) {
                 if (index == 0) {
-                    paneDivElement.style.left = "0px";
-                    paneDivElement.style.width = (this._separatorPosition - insetsAdjustment) + "px";
+                    paneDiv.style.left = "0px";
+                    paneDiv.style.width = (this._separatorPosition - insetsAdjustment) + "px";
                 } else {
-                    paneDivElement.style.left = (this._separatorPosition + this._separatorSize) + "px";
-                    paneDivElement.style.right = "0px";
+                    paneDiv.style.left = (this._separatorPosition + this._separatorSize) + "px";
+                    paneDiv.style.right = "0px";
                 }
             } else {
                 if (index == 0) {
-                    paneDivElement.style.width = (this._separatorPosition - insetsAdjustment) + "px";
-                    paneDivElement.style.right = "0px";
+                    paneDiv.style.width = (this._separatorPosition - insetsAdjustment) + "px";
+                    paneDiv.style.right = "0px";
                 } else {
-                    paneDivElement.style.left = "0px";
-                    paneDivElement.style.right = (this._separatorPosition + this._separatorSize) + "px";
+                    paneDiv.style.left = "0px";
+                    paneDiv.style.right = (this._separatorPosition + this._separatorSize) + "px";
                 }
             }
         }
         
-        EchoRender.renderComponentAdd(update, child, paneDivElement);
-        this._splitPaneDivElement.appendChild(paneDivElement);
+        EchoRender.renderComponentAdd(update, child, paneDiv);
+        this._splitPaneDiv.appendChild(paneDiv);
     
         if (this._childPanes[index] && this._childPanes[index].component == child) {
-            this._childPanes[index].loadScrollPositions(paneDivElement);
+            this._childPanes[index].loadScrollPositions(paneDiv);
         } else {
             this._childPanes[index] = new EchoAppRender.SplitPaneSync.ChildPane(this, child);
         }
@@ -467,20 +465,20 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
 
         this._childPanes[index] = null;
         
-        WebCore.DOM.removeNode(this._paneDivElements[index]);
-        this._paneDivElements[index] = null;
+        WebCore.DOM.removeNode(this._paneDivs[index]);
+        this._paneDivs[index] = null;
     },
         
     renderDisplay: function() {
-        WebCore.VirtualPosition.redraw(this._splitPaneDivElement);
+        WebCore.VirtualPosition.redraw(this._splitPaneDiv);
         if (this.component.render("resizable")) {
             this._setSeparatorPosition(this._userSeparatorPosition);
         }
-        if (this._paneDivElements[0]) {
-            WebCore.VirtualPosition.redraw(this._paneDivElements[0]);
+        if (this._paneDivs[0]) {
+            WebCore.VirtualPosition.redraw(this._paneDivs[0]);
         }
-        if (this._paneDivElements[1]) {
-            WebCore.VirtualPosition.redraw(this._paneDivElements[1]);
+        if (this._paneDivs[1]) {
+            WebCore.VirtualPosition.redraw(this._paneDivs[1]);
         }
     },
     
@@ -514,7 +512,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             }
         }
         if (fullRender) {
-            var element = this._splitPaneDivElement;
+            var element = this._splitPaneDiv;
             var containerElement = element.parentNode;
             EchoRender.renderComponentDispose(update, update.parent);
             containerElement.removeChild(element);
@@ -529,7 +527,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     
         if (this._childPanes[1]) {
             var totalSize = this._orientationVertical ? 
-                    this._splitPaneDivElement.offsetHeight : this._splitPaneDivElement.offsetWidth;
+                    this._splitPaneDiv.offsetHeight : this._splitPaneDiv.offsetWidth;
             if (newValue > totalSize - this._childPanes[1].minimumSize - this._separatorSize) {
                 newValue = totalSize - this._childPanes[1].minimumSize - this._separatorSize;
             } else if (this._childPanes[1].maximumSize != null
