@@ -7,8 +7,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         DEFAULT_TITLE_BACKGROUND: "#abcdef",
         DEFAULT_TITLE_INSETS: "5px 10px",
         ADJUSTMENT_OPACITY: 0.75,
-        
-        adjustOpacity: false
+        CURSORS: ["nw-resize", "n-resize", "ne-resize", "w-resize", "e-resize", "sw-resize", "s-resize", "se-resize"],
+        adjustOpacity: false,
     },
     
     $load: function() {
@@ -142,7 +142,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._dragInitHeight = this._windowHeight;
         this._dragOriginX = e.clientX;
         this._dragOriginY = e.clientY;
-    
+        
         switch (e.target) {
         case this._borderDivs[0]: this._resizeX = -1; this._resizeY = -1; break;
         case this._borderDivs[1]: this._resizeX =  0; this._resizeY = -1; break;
@@ -385,19 +385,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             // Render top left corner
             if (this._borderInsets.left > 0) {
                 this._borderDivs[0] = document.createElement("div");
-                this._borderDivs[0].style.zIndex = 2;
-                this._borderDivs[0].style.fontSize = "1px";
-                this._borderDivs[0].style.position = "absolute";
-                this._borderDivs[0].style.left = "0px";
-                this._borderDivs[0].style.top = "0px";
-                this._borderDivs[0].style.width = this._borderInsets.left + "px";
-                this._borderDivs[0].style.height = this._borderInsets.top + "px";
-                if (border.color != null) {
-                    this._borderDivs[0].style.backgroundColor = border.color;
-                }
-                if (resizable) {
-                    this._borderDivs[0].style.cursor = "nw-resize";
-                }
+                this._borderDivs[0].style.cssText = "z-index:2;font-size:1px;position:absolute;left:0;top:0;"
+                        + "width:" + this._borderInsets.left + "px;height:" + this._borderInsets.top + "px;";
                 if (border.topLeft) {
                     EchoAppRender.FillImage.render(border.topLeft, this._borderDivs[0], fillImageFlags);
                 }
@@ -406,18 +395,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             
             // Render top side
             this._borderDivs[1] = document.createElement("div");
-            this._borderDivs[1].style.zIndex = 2;                
-            this._borderDivs[1].style.fontSize = "1px";
-            this._borderDivs[1].style.position = "absolute";
-            this._borderDivs[1].style.left = this._borderInsets.left + "px";
-            this._borderDivs[1].style.top = "0px";
-            this._borderDivs[1].style.height = this._borderInsets.top + "px";
-            if (border.color != null) {
-                this._borderDivs[1].style.backgroundColor = border.color;
-            }
-            if (resizable) {
-                this._borderDivs[1].style.cursor = "n-resize";
-            }
+            this._borderDivs[1].style.cssText = "z-index:2;font-size:1px;position:absolute;top:0;"
+                    + "left:" + this._borderInsets.left + "px;height:" + this._borderInsets.top + "px;";
             if (border.top) {
                 EchoAppRender.FillImage.render(border.top, this._borderDivs[1], fillImageFlags);
             }
@@ -426,19 +405,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             // Render top right corner
             if (this._borderInsets.right > 0) {
                 this._borderDivs[2] = document.createElement("div");
-                this._borderDivs[2].style.zIndex = 2;                
-                this._borderDivs[2].style.fontSize = "1px";
-                this._borderDivs[2].style.position = "absolute";
-                this._borderDivs[2].style.right = "0px";
-                this._borderDivs[2].style.top = "0px";
-                this._borderDivs[2].style.width = this._borderInsets.right + "px";
-                this._borderDivs[2].style.height = this._borderInsets.top + "px";
-                if (border.color != null) {
-                    this._borderDivs[2].style.backgroundColor = border.color;
-                }
-                if (resizable) {
-                    this._borderDivs[2].style.cursor = "ne-resize";
-                }
+                this._borderDivs[2].style.cssText = "z-index:2;font-size:1px;position:absolute;right:0;top:0;"
+                        + "width:" + this._borderInsets.right + "px;height:" + this._borderInsets.top + "px;";
                 if (border.topRight) {
                     EchoAppRender.FillImage.render(border.topRight, this._borderDivs[2], fillImageFlags);
                 }
@@ -449,18 +417,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         // Render left side
         if (this._borderInsets.left > 0) {
             this._borderDivs[3] = document.createElement("div");
-            this._borderDivs[3].style.zIndex = 2;                
-            this._borderDivs[3].style.fontSize = "1px";
-            this._borderDivs[3].style.position = "absolute";
-            this._borderDivs[3].style.left = "0px";
-            this._borderDivs[3].style.top = this._borderInsets.top + "px";
-            this._borderDivs[3].style.width = this._borderInsets.left + "px";
-            if (border.color != null) {
-                this._borderDivs[3].style.backgroundColor = border.color;
-            }
-            if (resizable) {
-                this._borderDivs[3].style.cursor = "w-resize";
-            }
+            this._borderDivs[3].style.cssText = "z-index:2;font-size:1px;position:absolute;left:0;"
+                    + "top:" + this._borderInsets.top + "px;width:" + this._borderInsets.left + "px;";
             if (border.left) {
                 EchoAppRender.FillImage.render(border.left, this._borderDivs[3], fillImageFlags);
             }
@@ -470,18 +428,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         // Render right side
         if (this._borderInsets.right > 0) {
             this._borderDivs[4] = document.createElement("div");
-            this._borderDivs[4].style.zIndex = 2;                
-            this._borderDivs[4].style.fontSize = "1px";
-            this._borderDivs[4].style.position = "absolute";
-            this._borderDivs[4].style.right = "0px";
-            this._borderDivs[4].style.top = this._borderInsets.top + "px";
-            this._borderDivs[4].style.width = this._borderInsets.right + "px";
-            if (border.color != null) {
-                this._borderDivs[4].style.backgroundColor = border.color;
-            }
-            if (resizable) {
-                this._borderDivs[4].style.cursor = "e-resize";
-            }
+            this._borderDivs[4].style.cssText = "z-index:2;font-size:1px;position:absolute;right:0;"
+                    + "top:" + this._borderInsets.top + "px;width:" + this._borderInsets.right + "px;";
             if (border.right) {
                 EchoAppRender.FillImage.render(border.right, this._borderDivs[4], fillImageFlags);
             }
@@ -493,19 +441,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             // Render bottom left corner
             if (this._borderInsets.left > 0) {
                 this._borderDivs[5] = document.createElement("div");
-                this._borderDivs[5].style.zIndex = 2;                
-                this._borderDivs[5].style.fontSize = "1px";
-                this._borderDivs[5].style.position = "absolute";
-                this._borderDivs[5].style.left = "0px";
-                this._borderDivs[5].style.bottom = "0px";
-                this._borderDivs[5].style.width = this._borderInsets.left + "px";
-                this._borderDivs[5].style.height = this._borderInsets.bottom + "px";
-                if (border.color != null) {
-                    this._borderDivs[5].style.backgroundColor = border.color;
-                }
-                if (resizable) {
-                    this._borderDivs[5].style.cursor = "sw-resize";
-                }
+                this._borderDivs[5].style.cssText = "z-index:2;font-size:1px;position:absolute;left:0;bottom:0;"
+                        + "width:" + this._borderInsets.left + "px;height:" + this._borderInsets.bottom + "px;";
                 if (border.bottomLeft) {
                     EchoAppRender.FillImage.render(border.bottomLeft, this._borderDivs[5], fillImageFlags);
                 }
@@ -514,18 +451,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             
             // Render bottom side
             this._borderDivs[6] = document.createElement("div");
-            this._borderDivs[6].style.zIndex = 2;                
-            this._borderDivs[6].style.fontSize = "1px";
-            this._borderDivs[6].style.position = "absolute";
-            this._borderDivs[6].style.left = this._borderInsets.left + "px";
-            this._borderDivs[6].style.bottom = "0px";
-            this._borderDivs[6].style.height = this._borderInsets.bottom + "px";
-            if (border.color != null) {
-                this._borderDivs[6].style.backgroundColor = border.color;
-            }
-            if (resizable) {
-                this._borderDivs[6].style.cursor = "s-resize";
-            }
+            this._borderDivs[6].style.cssText = "z-index:2;font-size:1px;position:absolute;bottom:0;"
+                    + "left:" + this._borderInsets.left + "px;height:" + this._borderInsets.bottom + "px;";
             if (border.bottom) {
                 EchoAppRender.FillImage.render(border.bottom, this._borderDivs[6], fillImageFlags);
             }
@@ -534,23 +461,23 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             // Render bottom right corner
             if (this._borderInsets.right > 0) {
                 this._borderDivs[7] = document.createElement("div");
-                this._borderDivs[7].style.zIndex = 2;                
-                this._borderDivs[7].style.fontSize = "1px";
-                this._borderDivs[7].style.position = "absolute";
-                this._borderDivs[7].style.right = "0px";
-                this._borderDivs[7].style.bottom = "0px";
-                this._borderDivs[7].style.width = this._borderInsets.right + "px";
-                this._borderDivs[7].style.height = this._borderInsets.bottom + "px";
-                if (border.color != null) {
-                    this._borderDivs[7].style.backgroundColor = border.color;
-                }
-                if (resizable) {
-                    this._borderDivs[7].style.cursor = "se-resize";
-                }
+                this._borderDivs[7].style.cssText = "z-index:2;font-size:1px;position:absolute;right:0;bottom:0;"
+                        + "width:" + this._borderInsets.right + "px;height:" + this._borderInsets.bottom + "px;";
                 if (border.bottomRight) {
                     EchoAppRender.FillImage.render(border.bottomRight, this._borderDivs[7], fillImageFlags);
                 }
                 this._div.appendChild(this._borderDivs[7]);
+            }
+        }
+        
+        for (var i = 0; i < 8; ++i) {
+            if (this._borderDivs[i]) {
+                if (border.color != null) {
+                    this._borderDivs[i].style.backgroundColor = border.color;
+                }
+                if (resizable) {
+                    this._borderDivs[i].style.cursor = EchoAppRender.WindowPaneSync.CURSORS[i];
+                }
             }
         }
         
