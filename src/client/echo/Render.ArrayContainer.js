@@ -213,22 +213,21 @@ EchoAppRender.RowSync = Core.extend(EchoAppRender.ArrayContainerSync, {
     $static: {
     
         _createRowPrototype: function() {
-            var divElement = document.createElement("div");
-            divElement.style.outlineStyle = "none";
-            divElement.style.overflow = "hidden";
-            divElement.tabIndex = "-1";
+            var div = document.createElement("div");
+            div.style.outlineStyle = "none";
+            div.style.overflow = "hidden";
+            div.tabIndex = "-1";
         
-            var tableElement = document.createElement("table");
-            tableElement.style.borderCollapse = "collapse";
-            divElement.appendChild(tableElement);
+            var table = document.createElement("table");
+            table.style.borderCollapse = "collapse";
+            div.appendChild(table);
         
-            var tbodyElement = document.createElement("tbody");
-            tableElement.appendChild(tbodyElement);
+            var tbody = document.createElement("tbody");
+            table.appendChild(tbody);
             
-            var trElement = document.createElement("tr");
-            tbodyElement.appendChild(trElement);
+            tbody.appendChild(document.createElement("tr"));
         
-            return divElement;
+            return div;
         }
     },
     
