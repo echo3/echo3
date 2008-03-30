@@ -617,7 +617,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new height
      */
     public void setHeight(Extent newValue) {
-        Extent.validate(newValue, Extent.PX);
         setProperty(PROPERTY_HEIGHT, newValue);
     }
     
@@ -775,24 +774,20 @@ implements FloatingPane, ModalSupport, PaneContainer {
     /**
      * Sets the horizontal (X) position of the <code>WindowPane</code> with
      * respect to its container.
-     * Values must be in pixel units.
      * 
      * @param newValue the new position
      */
     public void setPositionX(Extent newValue) {
-        Extent.validate(newValue, Extent.PX);
         setProperty(PROPERTY_POSITION_X, newValue);
     }
     
     /**
      * Sets the vertical (Y) position of the <code>WindowPane</code> with
      * respect to its container.
-     * Values must be in pixel units.
      * 
      * @param newValue the new position
      */
     public void setPositionY(Extent newValue) {
-        Extent.validate(newValue, Extent.PX);
         setProperty(PROPERTY_POSITION_Y, newValue);
     }
 
@@ -872,12 +867,10 @@ implements FloatingPane, ModalSupport, PaneContainer {
     
     /**
      * Sets the width of the content region of the window.
-     * Values must be in pixel units.
      * 
      * @param newValue the new width
      */
     public void setWidth(Extent newValue) {
-        Extent.validate(newValue, Extent.PX);
         setProperty(PROPERTY_WIDTH, newValue);
     }
     
