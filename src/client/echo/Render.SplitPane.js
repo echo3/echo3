@@ -221,22 +221,10 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _processSeparatorMouseMove: function(e) {
-    //FIXME. Refactor for size.
-        var position;
-        if (this._orientationVertical) {
-            if (this._orientationTopLeft) {
-                position = this._dragInitPosition + e.clientY - this._dragInitMouseOffset;
-            } else {
-                position = this._dragInitPosition - e.clientY + this._dragInitMouseOffset;
-            }
-        } else {
-            if (this._orientationTopLeft) {
-                position = this._dragInitPosition + e.clientX - this._dragInitMouseOffset;
-            } else {
-                position = this._dragInitPosition - e.clientX + this._dragInitMouseOffset;
-            }
-        }
-        this._setSeparatorPosition(position);
+        var mousePosition = this._orientationVertical ? e.clientY : e.clientX;
+        this._setSeparatorPosition(this._orientationTopLeft
+                ? this._dragInitPosition + mousePosition - this._dragInitMouseOffset
+                : this._dragInitPosition - mousePosition + this._dragInitMouseOffset);
     },
     
     _processSeparatorMouseUp: function(e) {
@@ -590,8 +578,5 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (oldValue != newValue) {
             this._redraw();
         }
-        
-        //FIXME.
-        return oldValue != newValue;
     }
 });
