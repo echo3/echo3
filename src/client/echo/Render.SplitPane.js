@@ -64,6 +64,8 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
      * @type Array
      */
     _childPanes: null,
+    _paneDivElements: null,
+    _separatorDivElement: null,
 
     _processSeparatorMouseMoveRef: null,
     
@@ -71,23 +73,19 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
 
     $construct: function() {
         this._childPanes = new Array(2);
-        
+        this._paneDivElements = new Array(2);
         this._processSeparatorMouseMoveRef = Core.method(this, this._processSeparatorMouseMove);
         this._processSeparatorMouseUpRef = Core.method(this, this._processSeparatorMouseUp);
     },
 
     renderDispose: function(update) {
-        if (this._firstPaneDivElement) {
-            if (this._childPanes[0]) {
-                this._childPanes[0].storeScrollPositions(this._firstPaneDivElement);
+        for (var i = 0; i < 2; ++i) {
+            if (this._paneDivElements[i]) {
+                if (this._childPanes[i]) {
+                    this._childPanes[i].storeScrollPositions(this._paneDivElements[i]);
+                }
+                this._paneDivElements[i] = null;
             }
-            this._firstPaneDivElement = null;
-        }
-        if (this._secondPaneDivElement) {
-            if (this._childPanes[1]) {
-                this._childPanes[1].storeScrollPositions(this._secondPaneDivElement);
-            }
-            this._secondPaneDivElement = null;
         }
         
         if (this._separatorDivElement) {
@@ -239,11 +237,11 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         this._userSeparatorPosition = this._separatorPosition;
     
-        if (this._firstPaneDivElement) {
-            WebCore.VirtualPosition.redraw(this._firstPaneDivElement);
+        if (this._paneDivElements[0]) {
+            WebCore.VirtualPosition.redraw(this._paneDivElements[0]);
         }
-        if (this._secondPaneDivElement) {
-            WebCore.VirtualPosition.redraw(this._secondPaneDivElement);
+        if (this._paneDivElements[1]) {
+            WebCore.VirtualPosition.redraw(this._paneDivElements[1]);
         }
     
         EchoRender.notifyResize(this.component);
@@ -287,8 +285,8 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         var positionAttr = this._orientationVertical
                 ? (this._orientationTopLeft ? "top" : "bottom")
                 : (this._orientationTopLeft ? "left" : "right");
-        this._redrawItem(this._firstPaneDivElement, sizeAttr, (this._separatorPosition - insetsAdjustment) + "px");
-        this._redrawItem(this._secondPaneDivElement, positionAttr, (this._separatorPosition + this._separatorSize) + "px");
+        this._redrawItem(this._paneDivElements[0], sizeAttr, (this._separatorPosition - insetsAdjustment) + "px");
+        this._redrawItem(this._paneDivElements[1], positionAttr, (this._separatorPosition + this._separatorSize) + "px");
         this._redrawItem(this._separatorDivElement, positionAttr, this._separatorPosition + "px");
     },
     
@@ -380,12 +378,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     _renderAddChild: function(update, child, index) {
         var childIndex = this.component.indexOf(child);
         var paneDivElement = document.createElement("div");
-        
-        if (index == 0) {
-           this._firstPaneDivElement = paneDivElement;
-        } else {
-           this._secondPaneDivElement = paneDivElement;
-        }
+        this._paneDivElements[index] = paneDivElement;
         
         paneDivElement.style.cssText = "position: absolute; overflow: auto; z-index: 1;";
         
@@ -473,16 +466,9 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
 
         this._childPanes[index] = null;
-        switch (index) {
-        case 0:
-            WebCore.DOM.removeNode(this._firstPaneDivElement);
-            this._firstPaneDivElement = null;
-            break;
-        case 1:
-            WebCore.DOM.removeNode(this._secondPaneDivElement);
-            this._secondPaneDivElement = null;
-            break;
-        }
+        
+        WebCore.DOM.removeNode(this._paneDivElements[index]);
+        this._paneDivElements[index] = null;
     },
         
     renderDisplay: function() {
@@ -490,11 +476,11 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (this.component.render("resizable")) {
             this._setSeparatorPosition(this._userSeparatorPosition);
         }
-        if (this._firstPaneDivElement) {
-            WebCore.VirtualPosition.redraw(this._firstPaneDivElement);
+        if (this._paneDivElements[0]) {
+            WebCore.VirtualPosition.redraw(this._paneDivElements[0]);
         }
-        if (this._secondPaneDivElement) {
-            WebCore.VirtualPosition.redraw(this._secondPaneDivElement);
+        if (this._paneDivElements[1]) {
+            WebCore.VirtualPosition.redraw(this._paneDivElements[1]);
         }
     },
     
