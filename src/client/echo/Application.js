@@ -2873,6 +2873,7 @@ EchoApp.WindowPane = Core.extend(EchoApp.Component, {
     floatingPane: true,
     pane: true,
     focusable: true,
+    _preMaximizedState: null,
     
     /**
      * Programmatically perform a window closing operation.
@@ -2885,6 +2886,20 @@ EchoApp.WindowPane = Core.extend(EchoApp.Component, {
      * Programmatically perform a window maximizing operation.
      */
     doWindowMaximizing: function() {
+        if (this.render("width") == "100%" && this.render("height") == "100%") {
+            if (this._preMaximizedState) {
+                this.set("width", this._preMaximizedState.width);
+                this.set("height", this._preMaximizedState.height);
+                this.set("positionX", this._preMaximizedState.x);
+                this.set("positionY", this._preMaximizedState.y);
+            }
+        } else {
+            this._preMaximizedState = { 
+                    x: this.get("positionX"), y: this.get("positionY"),
+                    width: this.get("width"), height: this.get("height") };
+            this.set("width", "100%");
+            this.set("height", "100%");
+        }
         this.fireEvent({type: "maximize", source: this});
     },
     
