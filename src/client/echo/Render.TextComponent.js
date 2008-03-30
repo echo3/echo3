@@ -14,56 +14,61 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
         sanitizeInput: function() {
             var maximumLength = this.component.render("maximumLength", -1);
             if (maximumLength >= 0) {
-                if (this._textComponentElement.value && this._textComponentElement.value.length > maximumLength) {
-                    this._textComponentElement.value = this._textComponentElement.value.substring(0, maximumLength);
+                if (this._input.value && this._input.value.length > maximumLength) {
+                    this._input.value = this._input.value.substring(0, maximumLength);
                 }
             }
         }
     },
     
+    /**
+     * The rendered "input" element (may be a textarea).
+     */
+    _input: null,
+    
     _renderStyle: function() {
         if (this.component.isRenderEnabled()) {
-            EchoAppRender.Border.render(this.component.render("border"), this._textComponentElement);
-            EchoAppRender.Color.renderFB(this.component, this._textComponentElement);
-            EchoAppRender.Font.render(this.component.render("font"), this._textComponentElement);
-            EchoAppRender.FillImage.render(this.component.render("backgroundImage"), this._textComponentElement);
+            EchoAppRender.Border.render(this.component.render("border"), this._input);
+            EchoAppRender.Color.renderFB(this.component, this._input);
+            EchoAppRender.Font.render(this.component.render("font"), this._input);
+            EchoAppRender.FillImage.render(this.component.render("backgroundImage"), this._input);
         } else {
             EchoAppRender.Color.render(EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
-                    this._textComponentElement, "color");
+                    this._input, "color");
             EchoAppRender.Color.render(EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", true), 
-                    this._textComponentElement, "backgroundColor");
+                    this._input, "backgroundColor");
             EchoAppRender.Border.render(EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", true), 
-                    this._textComponentElement);
+                    this._input);
             EchoAppRender.Font.render(EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", true), 
-                    this._textComponentElement);
+                    this._input);
             EchoAppRender.FillImage.render(EchoAppRender.getEffectProperty(this.component, 
-                    "backgroundImage", "disabledBackgroundImage", true), this._textComponentElement);
+                    "backgroundImage", "disabledBackgroundImage", true), this._input);
         }
-        EchoAppRender.Insets.render(this.component.render("insets"), this._textComponentElement, "padding");
+        EchoAppRender.Insets.render(this.component.render("insets"), this._input, "padding");
         var width = this.component.render("width");
         if (width) {
-            this._textComponentElement.style.width = width.toString();
+            this._input.style.width = width.toString();
         }
         var height = this.component.render("height");
         if (height) {
-            this._textComponentElement.style.height = height.toString();
+            this._input.style.height = height.toString();
         }
         var toolTipText = this.component.render("toolTipText");
         if (toolTipText) {
-            this._textComponentElement.title = toolTipText;
+            this._input.title = toolTipText;
         }
     },
     
     _addEventHandlers: function() {
-        WebCore.EventProcessor.add(this._textComponentElement, "click", Core.method(this, this._processClick), false);
-        WebCore.EventProcessor.add(this._textComponentElement, "blur", Core.method(this, this._processBlur), false);
-        WebCore.EventProcessor.add(this._textComponentElement, "keypress", Core.method(this, this._processKeyPress), false);
-        WebCore.EventProcessor.add(this._textComponentElement, "keyup", Core.method(this, this._processKeyUp), false);
+        WebCore.EventProcessor.add(this._input, "click", Core.method(this, this._processClick), false);
+        WebCore.EventProcessor.add(this._input, "blur", Core.method(this, this._processBlur), false);
+        WebCore.EventProcessor.add(this._input, "keypress", Core.method(this, this._processKeyPress), false);
+        WebCore.EventProcessor.add(this._input, "keyup", Core.method(this, this._processKeyUp), false);
     },
     
     renderDispose: function(update) {
-        WebCore.EventProcessor.removeAll(this._textComponentElement);
-        this._textComponentElement = null;
+        WebCore.EventProcessor.removeAll(this._input);
+        this._input = null;
     },
     
     _processBlur: function(e) {
@@ -109,7 +114,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderFocus: function() {
-        WebCore.DOM.focusElement(this._textComponentElement);
+        WebCore.DOM.focusElement(this._input);
     },
     
     renderUpdate: function(update) {
@@ -117,7 +122,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
                     update.getUpdatedPropertyNames(), true);
     
         if (fullRender) {
-            var element = this._textComponentElement;
+            var element = this._input;
             var containerElement = element.parentNode;
             this.renderDispose(update);
             containerElement.removeChild(element);
@@ -126,7 +131,7 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
             if (update.hasUpdatedProperties()) {
                 var textUpdate = update.getUpdatedProperty("text");
                 if (textUpdate && textUpdate.newValue != this._text) {
-                    this._textComponentElement.value = textUpdate.newValue;
+                    this._input.value = textUpdate.newValue;
                 }
             }
         }
@@ -145,15 +150,15 @@ EchoAppRender.TextAreaSync = Core.extend(EchoAppRender.TextComponentSync, {
     },
 
     renderAdd: function(update, parentElement) {
-        this._textComponentElement = document.createElement("textarea");
-        this._textComponentElement.id = this.component.renderId;
-        this._renderStyle(this._textComponentElement);
-        this._textComponentElement.style.overflow = "auto";
-        this._addEventHandlers(this._textComponentElement);
+        this._input = document.createElement("textarea");
+        this._input.id = this.component.renderId;
+        this._renderStyle(this._input);
+        this._input.style.overflow = "auto";
+        this._addEventHandlers(this._input);
         if (this.component.get("text")) {
-            this._textComponentElement.value = this.component.get("text");
+            this._input.value = this.component.get("text");
         }
-        parentElement.appendChild(this._textComponentElement);
+        parentElement.appendChild(this._input);
     }
 });
 
@@ -176,19 +181,19 @@ EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
     },
 
     renderAdd: function(update, parentElement) {
-        this._textComponentElement = document.createElement("input");
-        this._textComponentElement.id = this.component.renderId;
-        this._textComponentElement.type = this._type;
+        this._input = document.createElement("input");
+        this._input.id = this.component.renderId;
+        this._input.type = this._type;
         var maximumLength = this.component.render("maximumLength", -1);
         if (maximumLength >= 0) {
-            this._textComponentElement.maxLength = maximumLength;
+            this._input.maxLength = maximumLength;
         }
-        this._renderStyle(this._textComponentElement);
-        this._addEventHandlers(this._textComponentElement);
+        this._renderStyle(this._input);
+        this._addEventHandlers(this._input);
         if (this.component.get("text")) {
-            this._textComponentElement.value = this.component.get("text");
+            this._input.value = this.component.get("text");
         }
-        parentElement.appendChild(this._textComponentElement);
+        parentElement.appendChild(this._input);
     },
 
     sanitizeInput: function() {
