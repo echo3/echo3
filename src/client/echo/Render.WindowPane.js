@@ -15,6 +15,60 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         EchoRender.registerPeer("WindowPane", this);
     },
 
+    /**
+     * The user-requested x position of the window.  The value may or may not be rendered exactly depending on other constraints,
+     * e.g., available space.
+     */
+    _userX: null,
+
+    /**
+     * The user-requested y position of the window.  The value may or may not be rendered exactly depending on other constraints,
+     * e.g., available space.
+     */
+    _userY: null,
+
+    /**
+     * The user-requested width of the window.  The value may or may not be rendered exactly depending on other constraints,
+     * e.g., available space.
+     */
+    _userWidth: null,
+
+    /**
+     * The user-requested height of the window.  The value may or may not be rendered exactly depending on other constraints,
+     * e.g., available space.
+     */
+    _userHeight: null,
+    
+    /**
+     * Actual x position of window.
+     * @type Integer
+     */
+    _windowX: null,
+    
+    /**
+     * Actual y position of window.
+     * @type Integer
+     */
+    _windowY: null,
+    
+    /**
+     * Actual width of window.
+     * @type Integer
+     */
+    _windowWidth: null,
+    
+    /**
+     * Actual height of window.
+     * @type Integer
+     */
+    _windowHeight: null,
+    
+    /**
+     * The size of the region containing the window.
+     * @type WebCore.Measure.Bounds
+     */
+    _containerSize: null,
+
     _processBorderMouseMoveRef: null,
     _processBorderMouseUpRef: null,
     _processTitleBarMouseMoveRef: null,
@@ -28,15 +82,59 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._processTitleBarMouseUpRef = Core.method(this, this._processTitleBarMouseUp);
     },
 
+    /**
+     * Converts the x/y/width/height coordinates of a window pane to pixel values.
+     * The _containerSize instance property is used to calculate percent-based values.
+
+
+
+
+        
+        // Center window if user x/y coordinates are not specified.
+        if (c.x == null) {
+            c.x = parseInt((this._containerSize.width - this._windowWidth) / 2);
+        }
+        if (c.y == null) {
+            c.y = parseInt((this._containerSize.height - this._windowHeight) / 2); 
+        }
+
+
+
+
+     */
+    _coordinatesToPixels: function(x, y, width, height) {
+        var c = {};
+        if (width != null) {
+            c.width = EchoAppRender.Extent.isPercent(width)
+                    ? (parseInt(width) / 100) * this._containerSize.width
+                    : EchoAppRender.Extent.toPixels(width, true);
+        }
+        if (height != null) {
+            c.height = EchoAppRender.Extent.isPercent(height)
+                    ? (parseInt(height) / 100) * this._containerSize.height
+                    : EchoAppRender.Extent.toPixels(height, false);
+        }
+        if (x != null) {
+            c.x = EchoAppRender.Extent.isPercent(x)
+                    ? (this._containerSize.width - c.width) * (parseInt(x) / 100)
+                    : EchoAppRender.Extent.toPixels(x, true);
+        }
+        if (y != null) {
+            c.y = EchoAppRender.Extent.isPercent(y)
+                    ? (this._containerSize.height - c.height) * (parseInt(y) / 100)
+                    : EchoAppRender.Extent.toPixels(y, false);
+        }
+        return c;
+    },
+    
+    /**
+     * Updates the _userX/Y/Width/Height variables based on values from the component object.
+     */
     _loadPositionAndSize: function() {
-        var positionX = this.component.render("positionX");
-        var positionY = this.component.render("positionY");
-        this._userWindowX = this._windowX = positionX == null ? null : EchoAppRender.Extent.toPixels(positionX, true); 
-        this._userWindowY = this._windowY = positionY == null ? null : EchoAppRender.Extent.toPixels(positionY, false);
-        this._userWindowWidth = this._windowWidth = EchoAppRender.Extent.toPixels(
-                this.component.render("width", EchoApp.WindowPane.DEFAULT_WIDTH), true);
-        this._userWindowHeight = this._windowHeight = EchoAppRender.Extent.toPixels(
-                this.component.render("height", EchoApp.WindowPane.DEFAULT_HEIGHT), false);
+        this._userX = this.component.render("positionX", "50%");
+        this._userY = this.component.render("positionY", "50%");
+        this._userWidth = this.component.render("width", EchoApp.WindowPane.DEFAULT_WIDTH);
+        this._userHeight = this.component.render("height", EchoApp.WindowPane.DEFAULT_HEIGHT);
     },
 
     _loadContainerSize: function() {
@@ -117,10 +215,10 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this.component.set("width", this._windowWidth);
         this.component.set("height", this._windowHeight);
         
-        this._userWindowX = this._windowX;
-        this._userWindowY = this._windowY;
-        this._userWindowWidth = this._windowWidth;
-        this._userWindowHeight = this._windowHeight;
+        this._userX = this._windowX;
+        this._userY = this._windowY;
+        this._userWidth = this._windowWidth;
+        this._userHeight = this._windowHeight;
         
         WebCore.VirtualPosition.redraw(this._contentDivElement);
         WebCore.VirtualPosition.redraw(this._maskDivElement);
@@ -219,64 +317,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this.component.set("positionX", this._windowX);
         this.component.set("positionY", this._windowY);
     
-        this._userWindowX = this._windowX;
-        this._userWindowY = this._windowY;
-    },
-    
-    setPosition: function(x, y, width, height) {
-        if (width != null) {
-            if (this._maximumWidth && width > this._maximumWidth) {
-                if (x != null) {
-                    x += (width - this._maximumWidth);
-                }
-                width = this._maximumWidth;
-            }
-            if (width < this._minimumWidth) {
-                if (x != null) {
-                    x += (width - this._minimumWidth);
-                }
-                width = this._minimumWidth;
-            }
-            this._windowWidth = width;
-        }
-        
-        if (height != null) {
-            if (this._maximumHeight && height > this._maximumHeight) {
-                if (y != null) {
-                    y += (height - this._maximumHeight);
-                }
-                height = this._maximumHeight;
-            }
-            if (height < this._minimumHeight) {
-                if (y != null) {
-                    y += (height - this._minimumHeight);
-                }
-                height = this._minimumHeight;
-            }
-            this._windowHeight = height;
-        }
-    
-        if (x != null) {
-            if (this._containerSize.width > 0 && x > this._containerSize.width - this._windowWidth) {
-                x = this._containerSize.width - this._windowWidth;
-            }
-            if (x < 0) {
-                x = 0;
-            }
-            this._windowX = x;
-        }
-    
-        if (y != null) { 
-            if (this._containerSize.height > 0 && y > this._containerSize.height - this._windowHeight) {
-                y = this._containerSize.height - this._windowHeight;
-            }
-            if (y < 0) {
-                y = 0;
-            }
-            this._windowY = y;
-        }
-        
-        this.redraw();
+        this._userX = this._windowX;
+        this._userY = this._windowY;
     },
     
     redraw: function() {
@@ -341,20 +383,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._windowPaneDivElement.style.zIndex = 1;
         
         this._windowPaneDivElement.style.overflow = "hidden";
-        
-        if (this._windowX != null) {
-            this._windowPaneDivElement.style.left = this._windowX + "px";
-        }
-        if (this._windowY != null) {
-            this._windowPaneDivElement.style.top = this._windowY + "px";
-        }
-        this._windowPaneDivElement.style.width = this._windowWidth + "px";
-        this._windowPaneDivElement.style.height = this._windowHeight + "px";
-        
+
         EchoAppRender.Font.render(this.component.render("font"), this._windowPaneDivElement);
-        
-        var borderSideWidth = this._windowWidth - this._borderInsets.left - this._borderInsets.right;
-        var borderSideHeight = this._windowHeight - this._borderInsets.top - this._borderInsets.bottom;
         
         this._borderDivElements = new Array(8);
         
@@ -392,7 +422,6 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._borderDivElements[1].style.position = "absolute";
             this._borderDivElements[1].style.left = this._borderInsets.left + "px";
             this._borderDivElements[1].style.top = "0px";
-            this._borderDivElements[1].style.width = borderSideWidth + "px";
             this._borderDivElements[1].style.height = this._borderInsets.top + "px";
             if (border.color != null) {
                 this._borderDivElements[1].style.backgroundColor = border.color;
@@ -437,7 +466,6 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._borderDivElements[3].style.left = "0px";
             this._borderDivElements[3].style.top = this._borderInsets.top + "px";
             this._borderDivElements[3].style.width = this._borderInsets.left + "px";
-            this._borderDivElements[3].style.height = borderSideHeight + "px";
             if (border.color != null) {
                 this._borderDivElements[3].style.backgroundColor = border.color;
             }
@@ -459,7 +487,6 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._borderDivElements[4].style.right = "0px";
             this._borderDivElements[4].style.top = this._borderInsets.top + "px";
             this._borderDivElements[4].style.width = this._borderInsets.right + "px";
-            this._borderDivElements[4].style.height = borderSideHeight + "px";
             if (border.color != null) {
                 this._borderDivElements[4].style.backgroundColor = border.color;
             }
@@ -503,7 +530,6 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._borderDivElements[6].style.position = "absolute";
             this._borderDivElements[6].style.left = this._borderInsets.left + "px";
             this._borderDivElements[6].style.bottom = "0px";
-            this._borderDivElements[6].style.width = borderSideWidth + "px";
             this._borderDivElements[6].style.height = this._borderInsets.bottom + "px";
             if (border.color != null) {
                 this._borderDivElements[6].style.backgroundColor = border.color;
@@ -585,7 +611,6 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
         this._titleBarDivElement.style.top = this._contentInsets.top + "px";
         this._titleBarDivElement.style.left = this._contentInsets.left + "px";
-        this._titleBarDivElement.style.width = (this._windowWidth - this._contentInsets.left - this._contentInsets.right) + "px";
         this._titleBarDivElement.style.height = this._titleBarHeight + "px";
         this._titleBarDivElement.style.overflow = "hidden";
         if (movable) {
@@ -772,16 +797,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
     renderDisplay: function() {
         this._loadContainerSize();
-        
-        // Center window if user x/y coordinates are not specified.
-        if (this._userWindowX == null) {
-            this._userWindowX = parseInt((this._containerSize.width - this._windowWidth) / 2);
-        }
-        if (this._userWindowY == null) {
-            this._userWindowY = parseInt((this._containerSize.height - this._windowHeight) / 2); 
-        }
-            
-        this.setPosition(this._userWindowX, this._userWindowY, this._userWindowWidth, this._userWindowHeight);
+        this.setPosition(this._userX, this._userY, this._userWidth, this._userHeight);
         WebCore.VirtualPosition.redraw(this._contentDivElement);
         WebCore.VirtualPosition.redraw(this._maskDivElement);
     },
@@ -796,7 +812,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         } else if (update.isUpdatedPropertySetIn({ positionX: true, positionY: true, width: true, height: true })) {
             // Only x/y/width/height properties changed: reset window position/size.
             this._loadPositionAndSize();
-            this.setPosition(this._userWindowX, this._userWindowY, this._userWindowWidth, this._userWindowHeight);
+            this.setPosition(this._userX, this._userY, this._userWidth, this._userHeight);
             return;
         }
 
@@ -806,5 +822,63 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         containerElement.removeChild(element);
         this.renderAdd(update, containerElement);
         return true;
+    },
+    
+    setPosition: function(x, y, width, height) {
+        var c = this._coordinatesToPixels(x, y, width, height);
+
+        if (c.width != null) {
+            if (this._maximumWidth && c.width > this._maximumWidth) {
+                if (c.x != null) {
+                    c.x += (c.width - this._maximumWidth);
+                }
+                c.width = this._maximumWidth;
+            }
+            if (width < this._minimumWidth) {
+                if (c.x != null) {
+                    c.x += (c.width - this._minimumWidth);
+                }
+                c.width = this._minimumWidth;
+            }
+            this._windowWidth = c.width;
+        }
+        
+        if (c.height != null) {
+            if (this._maximumHeight && c.height > this._maximumHeight) {
+                if (c.y != null) {
+                    c.y += (c.height - this._maximumHeight);
+                }
+                c.height = this._maximumHeight;
+            }
+            if (height < this._minimumHeight) {
+                if (c.y != null) {
+                    c.y += (c.height - this._minimumHeight);
+                }
+                c.height = this._minimumHeight;
+            }
+            this._windowHeight = c.height;
+        }
+    
+        if (c.x != null) {
+            if (this._containerSize.width > 0 && c.x > this._containerSize.width - this._windowWidth) {
+                c.x = this._containerSize.width - this._windowWidth;
+            }
+            if (c.x < 0) {
+                c.x = 0;
+            }
+            this._windowX = c.x;
+        }
+    
+        if (c.y != null) {
+            if (this._containerSize.height > 0 && c.y > this._containerSize.height - this._windowHeight) {
+                c.y = this._containerSize.height - this._windowHeight;
+            }
+            if (c.y < 0) {
+                c.y = 0;
+            }
+            this._windowY = c.y;
+        }
+        
+        this.redraw();
     }
 });
