@@ -305,7 +305,12 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._userY = this._windowY;
     },
     
-    redraw: function() {
+    redraw: function() {    
+        if (this._windowWidth <= 0 || this._windowHeight <= 0) {
+            // Do not render if window does not have set dimensions.
+            return;
+        }
+
         var borderSideWidth = this._windowWidth - this._borderInsets.left - this._borderInsets.right;
         var borderSideHeight = this._windowHeight - this._borderInsets.top - this._borderInsets.bottom;
     
@@ -796,7 +801,6 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         } else if (update.isUpdatedPropertySetIn({ positionX: true, positionY: true, width: true, height: true })) {
             // Only x/y/width/height properties changed: reset window position/size.
             this._loadPositionAndSize();
-            this.setPosition(this._userX, this._userY, this._userWidth, this._userHeight);
             return;
         }
 
