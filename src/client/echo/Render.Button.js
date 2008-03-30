@@ -8,12 +8,12 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
 
     $static: {
         _createPrototypeButton: function() {
-            var divElement = document.createElement("div");
-            divElement.tabIndex = "0";
-            divElement.style.outlineStyle = "none";
-            divElement.style.cursor = "pointer";
-            divElement.style.overflow = "hidden";
-            return divElement;
+            var div = document.createElement("div");
+            div.tabIndex = "0";
+            div.style.outlineStyle = "none";
+            div.style.cursor = "pointer";
+            div.style.overflow = "hidden";
+            return div;
         },
 
         _defaultIconTextMargin: 5
@@ -52,15 +52,15 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
                     var tct = new EchoAppRender.TriCellTable(orientation, 
                             EchoAppRender.Extent.toPixels(iconTextMargin));
                     this._renderButtonText(tct.tdElements[0], text);
-                    this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
-                    this._divElement.appendChild(tct.tableElement);
+                    this._iconImg = this._renderButtonIcon(tct.tdElements[1], icon);
+                    this._div.appendChild(tct.tableElement);
                 } else {
                     // Text only.
-                    this._renderButtonText(this._divElement, text);
+                    this._renderButtonText(this._div, text);
                 }
             } else if (icon) {
                 // Icon only.
-                this._iconElement = this._renderButtonIcon(this._divElement, icon);
+                this._iconImg = this._renderButtonIcon(this._div, icon);
             }
         }
     },
@@ -75,28 +75,28 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         this._processRolloverExitRef = Core.method(this, this._processRolloverExit);
     
         // Remove initialization listeners.
-        WebCore.EventProcessor.remove(this._divElement, "focus", this._processInitEventRef);
-        WebCore.EventProcessor.remove(this._divElement, "mouseover", this._processInitEventRef);
+        WebCore.EventProcessor.remove(this._div, "focus", this._processInitEventRef);
+        WebCore.EventProcessor.remove(this._div, "mouseover", this._processInitEventRef);
         
-        WebCore.EventProcessor.add(this._divElement, "click", Core.method(this, this._processClick), false);
-        WebCore.EventProcessor.add(this._divElement, "keypress", Core.method(this, this._processKeyPress), false);
+        WebCore.EventProcessor.add(this._div, "click", Core.method(this, this._processClick), false);
+        WebCore.EventProcessor.add(this._div, "keypress", Core.method(this, this._processKeyPress), false);
         if (this.component.render("rolloverEnabled")) {
             var mouseEnterLeaveSupport = WebCore.Environment.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
             var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
             var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
-            WebCore.EventProcessor.add(this._divElement, enterEvent, 
+            WebCore.EventProcessor.add(this._div, enterEvent, 
                     Core.method(this, this._processRolloverEnter), false);
-            WebCore.EventProcessor.add(this._divElement, exitEvent, 
+            WebCore.EventProcessor.add(this._div, exitEvent, 
                     Core.method(this, this._processRolloverExit), false);
         }
         if (this.component.render("pressedEnabled")) {
-            WebCore.EventProcessor.add(this._divElement, "mousedown", Core.method(this, this._processPress), false);
-            WebCore.EventProcessor.add(this._divElement, "mouseup", Core.method(this, this._processRelease), false);
+            WebCore.EventProcessor.add(this._div, "mousedown", Core.method(this, this._processPress), false);
+            WebCore.EventProcessor.add(this._div, "mouseup", Core.method(this, this._processRelease), false);
         }
-        WebCore.EventProcessor.add(this._divElement, "focus", Core.method(this, this._processFocus), false);
-        WebCore.EventProcessor.add(this._divElement, "blur", Core.method(this, this._processBlur), false);
+        WebCore.EventProcessor.add(this._div, "focus", Core.method(this, this._processFocus), false);
+        WebCore.EventProcessor.add(this._div, "blur", Core.method(this, this._processBlur), false);
         
-        WebCore.EventProcessor.Selection.disable(this._divElement);
+        WebCore.EventProcessor.Selection.disable(this._div);
     },
     
     getFocusFlags: function() {
@@ -192,43 +192,43 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
     renderAdd: function(update, parentElement) {
         this._enabled = this.component.isRenderEnabled();
         
-        this._divElement = EchoAppRender.ButtonSync._prototypeButton.cloneNode(false); 
-        this._divElement.id = this.component.renderId;
+        this._div = EchoAppRender.ButtonSync._prototypeButton.cloneNode(false); 
+        this._div.id = this.component.renderId;
     
         if (this._enabled) {
-            EchoAppRender.Color.render(this.component.render("foreground"), this._divElement, "color");
-            EchoAppRender.Color.render(this.component.render("background"), this._divElement, "backgroundColor");
-            EchoAppRender.Border.render(this.component.render("border"), this._divElement);
-            EchoAppRender.Font.render(this.component.render("font"), this._divElement);
-            EchoAppRender.FillImage.render(this.component.render("backgroundImage"), this._divElement);
+            EchoAppRender.Color.render(this.component.render("foreground"), this._div, "color");
+            EchoAppRender.Color.render(this.component.render("background"), this._div, "backgroundColor");
+            EchoAppRender.Border.render(this.component.render("border"), this._div);
+            EchoAppRender.Font.render(this.component.render("font"), this._div);
+            EchoAppRender.FillImage.render(this.component.render("backgroundImage"), this._div);
         } else {
             EchoAppRender.Color.render(EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
-                    this._divElement, "color");
+                    this._div, "color");
             EchoAppRender.Color.render(EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", true), 
-                    this._divElement, "backgroundColor");
+                    this._div, "backgroundColor");
             EchoAppRender.Border.render(EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", true), 
-                    this._divElement);
+                    this._div);
             EchoAppRender.Font.render(EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", true), 
-                    this._divElement);
+                    this._div);
             EchoAppRender.FillImage.render(EchoAppRender.getEffectProperty(this.component, 
-                    "backgroundImage", "disabledBackgroundImage", true), this._divElement);
+                    "backgroundImage", "disabledBackgroundImage", true), this._div);
         }
         
-        EchoAppRender.Insets.render(this.component.render("insets"), this._divElement, "padding");
-        EchoAppRender.Alignment.render(this.component.render("alignment"), this._divElement, true, this.component);
+        EchoAppRender.Insets.render(this.component.render("insets"), this._div, "padding");
+        EchoAppRender.Alignment.render(this.component.render("alignment"), this._div, true, this.component);
         
         var toolTipText = this.component.render("toolTipText");
         if (toolTipText) {
-            this._divElement.title = toolTipText;
+            this._div.title = toolTipText;
         }
         var width = this.component.render("width");
         if (width) {
-            this._divElement.style.width = EchoAppRender.Extent.toCssValue(width, true, true);
+            this._div.style.width = EchoAppRender.Extent.toCssValue(width, true, true);
         }
         var height = this.component.render("height");
         if (height) {
-            this._divElement.style.height = EchoAppRender.Extent.toCssValue(height, false);
-            this._divElement.style.overflow = "hidden";
+            this._div.style.height = EchoAppRender.Extent.toCssValue(height, false);
+            this._div.style.overflow = "hidden";
         }
         
         this.renderContent();
@@ -237,11 +237,11 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
             // Add event listeners for focus and mouseover.  When invoked, these listeners will register the full gamut
             // of button event listeners.  There may be a large number of such listeners depending on how many effects
             // are enabled, and as such we do this lazily for performance reasons.
-            WebCore.EventProcessor.add(this._divElement, "focus", this._processInitEventRef, false);
-            WebCore.EventProcessor.add(this._divElement, "mouseover", this._processInitEventRef, false);
+            WebCore.EventProcessor.add(this._div, "focus", this._processInitEventRef, false);
+            WebCore.EventProcessor.add(this._div, "mouseover", this._processInitEventRef, false);
         }
     
-        parentElement.appendChild(this._divElement);
+        parentElement.appendChild(this._div);
     },
     
     _renderButtonText: function(element, text) {
@@ -270,17 +270,17 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         if (this._processRolloverExitRef) {
             this.client.application.removeFocusListener(this._processRolloverExitRef);
         }
-        WebCore.EventProcessor.removeAll(this._divElement);
-        this._iconElement = null;
+        WebCore.EventProcessor.removeAll(this._div);
+        this._iconImg = null;
     },
 
     renderFocus: function() {
-        WebCore.DOM.focusElement(this._divElement);
+        WebCore.DOM.focusElement(this._div);
         this._setFocusState(true);
     },
     
     renderUpdate: function(update) {
-        var element = this._divElement;
+        var element = this._div;
         var containerElement = element.parentNode;
         this.renderDispose(update);
         containerElement.removeChild(element);
@@ -294,7 +294,7 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
             var background = this.component.render("background");
             if (background != null) {
                 var newBackground = focusState ? EchoAppRender.Color.adjust(background, 0x20, 0x20, 0x20) : background;
-                EchoAppRender.Color.render(newBackground, this._divElement, "backgroundColor");
+                EchoAppRender.Color.render(newBackground, this._div, "backgroundColor");
             }
             return;
         } else {
@@ -305,17 +305,17 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
             var font = EchoAppRender.getEffectProperty(this.component, "font", "focusedFont", focusState);
             var border = EchoAppRender.getEffectProperty(this.component, "border", "focusedBorder", focusState);
             
-            EchoAppRender.Color.renderClear(foreground, this._divElement, "color");
-            EchoAppRender.Color.renderClear(background, this._divElement, "backgroundColor");
-            EchoAppRender.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
-            EchoAppRender.Font.renderClear(font, this._divElement);
-            EchoAppRender.Border.renderClear(border, this._divElement);
+            EchoAppRender.Color.renderClear(foreground, this._div, "color");
+            EchoAppRender.Color.renderClear(background, this._div, "backgroundColor");
+            EchoAppRender.FillImage.renderClear(backgroundImage, this._div, "backgroundColor");
+            EchoAppRender.Font.renderClear(font, this._div);
+            EchoAppRender.Border.renderClear(border, this._div);
         
-            if (this._iconElement) {
+            if (this._iconImg) {
                 var iconUrl = EchoAppRender.ImageReference.getUrl(
                         EchoAppRender.getEffectProperty(this.component, "icon", "focusedIcon", focusState));
-                if (iconUrl != this._iconElement.src) {
-                    this._iconElement.src = iconUrl;
+                if (iconUrl != this._iconImg.src) {
+                    this._iconImg.src = iconUrl;
                 }
             }
         }
@@ -329,17 +329,17 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         var font = EchoAppRender.getEffectProperty(this.component, "font", "pressedFont", pressedState);
         var border = EchoAppRender.getEffectProperty(this.component, "border", "pressedBorder", pressedState);
         
-        EchoAppRender.Color.renderClear(foreground, this._divElement, "color");
-        EchoAppRender.Color.renderClear(background, this._divElement, "backgroundColor");
-        EchoAppRender.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
-        EchoAppRender.Font.renderClear(font, this._divElement);
-        EchoAppRender.Border.renderClear(border, this._divElement);
+        EchoAppRender.Color.renderClear(foreground, this._div, "color");
+        EchoAppRender.Color.renderClear(background, this._div, "backgroundColor");
+        EchoAppRender.FillImage.renderClear(backgroundImage, this._div, "backgroundColor");
+        EchoAppRender.Font.renderClear(font, this._div);
+        EchoAppRender.Border.renderClear(border, this._div);
         
-        if (this._iconElement) {
+        if (this._iconImg) {
             var iconUrl = EchoAppRender.ImageReference.getUrl(
                     EchoAppRender.getEffectProperty(this.component, "icon", "pressedIcon", pressedState));
-            if (iconUrl != this._iconElement.src) {
-                this._iconElement.src = iconUrl;
+            if (iconUrl != this._iconImg.src) {
+                this._iconImg.src = iconUrl;
             }
         }
     },
@@ -352,17 +352,17 @@ EchoAppRender.ButtonSync = Core.extend(EchoRender.ComponentSync, {
         var font = EchoAppRender.getEffectProperty(this.component, "font", "rolloverFont", rolloverState);
         var border = EchoAppRender.getEffectProperty(this.component, "border", "rolloverBorder", rolloverState);
         
-        EchoAppRender.Color.renderClear(foreground, this._divElement, "color");
-        EchoAppRender.Color.renderClear(background, this._divElement, "backgroundColor");
-        EchoAppRender.FillImage.renderClear(backgroundImage, this._divElement, "backgroundColor");
-        EchoAppRender.Font.renderClear(font, this._divElement);
-        EchoAppRender.Border.renderClear(border, this._divElement);
+        EchoAppRender.Color.renderClear(foreground, this._div, "color");
+        EchoAppRender.Color.renderClear(background, this._div, "backgroundColor");
+        EchoAppRender.FillImage.renderClear(backgroundImage, this._div, "backgroundColor");
+        EchoAppRender.Font.renderClear(font, this._div);
+        EchoAppRender.Border.renderClear(border, this._div);
     
-        if (this._iconElement) {
+        if (this._iconImg) {
             var iconUrl = EchoAppRender.ImageReference.getUrl(
                     EchoAppRender.getEffectProperty(this.component, "icon", "rolloverIcon", rolloverState));
-            if (iconUrl != this._iconElement.src) {
-                this._iconElement.src = iconUrl;
+            if (iconUrl != this._iconImg.src) {
+                this._iconImg.src = iconUrl;
             }
         }
     }
@@ -420,11 +420,11 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
         var entityCount = (text ? 1 : 0) + (icon ? 1 : 0) + (this._stateElement ? 1 : 0);
         if (entityCount == 1) {
             if (text != null) {
-                this._renderButtonText(this._divElement, text);
+                this._renderButtonText(this._div, text);
             } else if (icon) {
-                this._iconElement = this._renderButtonIcon(this._divElement, icon);
+                this._iconImg = this._renderButtonIcon(this._div, icon);
             } else {
-                this._divElement.appendChild(this._stateElement);
+                this._div.appendChild(this._stateElement);
             }
         } else if (entityCount == 2) {
             var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
@@ -438,15 +438,15 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
             if (text != null) {
                 this._renderButtonText(tct.tdElements[0], text);
                 if (icon) {
-                    this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
+                    this._iconImg = this._renderButtonIcon(tct.tdElements[1], icon);
                 } else {
                     tct.tdElements[1].appendChild(this._stateElement);
                 }
             } else {
-                this._iconElement = this._renderButtonIcon(tct.tdElements[0], icon);
+                this._iconImg = this._renderButtonIcon(tct.tdElements[0], icon);
                 tct.tdElements[1].appendChild(this._stateElement);
             }
-            this._divElement.appendChild(tct.tableElement);
+            this._div.appendChild(tct.tableElement);
         } else if (entityCount == 3) {
             var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
             var margin = this.component.render("iconTextMargin", EchoAppRender.ButtonSync._defaultIconTextMargin);
@@ -455,9 +455,9 @@ EchoAppRender.ToggleButtonSync = Core.extend(EchoAppRender.ButtonSync, {
             var tct = new EchoAppRender.TriCellTable(orientation, 
                 EchoAppRender.Extent.toPixels(margin), stateOrientation, EchoAppRender.Extent.toPixels(stateMargin));
             this._renderButtonText(tct.tdElements[0], text);
-            this._iconElement = this._renderButtonIcon(tct.tdElements[1], icon);
+            this._iconImg = this._renderButtonIcon(tct.tdElements[1], icon);
             tct.tdElements[2].appendChild(this._stateElement);
-            this._divElement.appendChild(tct.tableElement);
+            this._div.appendChild(tct.tableElement);
         }
     },
     
