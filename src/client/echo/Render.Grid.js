@@ -6,18 +6,17 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
     $static: {
 
         _createPrototypeTable: function() {
-            var tableElement = document.createElement("table");
-            tableElement.style.outlineStyle = "none";
-            tableElement.tabIndex = "-1";
-            tableElement.style.borderCollapse = "collapse";
+            var table = document.createElement("table");
+            table.style.outlineStyle = "none";
+            table.tabIndex = "-1";
+            table.style.borderCollapse = "collapse";
             
-            var colGroupElement = document.createElement("colgroup");
-            tableElement.appendChild(colGroupElement);
+            var colGroup = document.createElement("colgroup");
+            table.appendChild(colGroup);
         
-            var tbodyElement = document.createElement("tbody");
-            tableElement.appendChild(tbodyElement);
+            table.appendChild(document.createElement("tbody"));
             
-            return tableElement;
+            return table;
         },
         
         Processor: Core.extend({
@@ -387,13 +386,13 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         var defaultInsets = this.component.render("insets", "0");
         var defaultBorder = this.component.render("border", "");
     
-        this._tableElement = EchoAppRender.GridSync._prototypeTable.cloneNode(true);
-        this._tableElement.id = this.component.renderId;
+        this._table = EchoAppRender.GridSync._prototypeTable.cloneNode(true);
+        this._table.id = this.component.renderId;
         
-        EchoAppRender.Color.renderFB(this.component, this._tableElement);
-        EchoAppRender.Border.render(defaultBorder, this._tableElement);
-        EchoAppRender.Font.render(this.component.render("font"), this._tableElement);
-        EchoAppRender.Insets.render(this.component.render("insets"), this._tableElement, "padding");
+        EchoAppRender.Color.renderFB(this.component, this._table);
+        EchoAppRender.Border.render(defaultBorder, this._table);
+        EchoAppRender.Font.render(this.component.render("font"), this._table);
+        EchoAppRender.Insets.render(this.component.render("insets"), this._table, "padding");
     
         var width = this.component.render("width");
         
@@ -404,40 +403,40 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         
         if (width) {
             if (EchoAppRender.Extent.isPercent(width)) {
-                this._tableElement.style.width = width;
+                this._table.style.width = width;
             } else {
-                this._tableElement.style.width = EchoAppRender.Extent.toCssValue(width, true);
+                this._table.style.width = EchoAppRender.Extent.toCssValue(width, true);
             }
         }
         
         var height = this.component.render("height");
         if (height) {
             if (EchoAppRender.Extent.isPercent(height)) {
-                this._tableElement.style.height = height;
+                this._table.style.height = height;
             } else {
-                this._tableElement.style.height = EchoAppRender.Extent.toCssValue(height, false);
+                this._table.style.height = EchoAppRender.Extent.toCssValue(height, false);
             }
         }
         
-        var colGroupElement = this._tableElement.firstChild;
+        var colGroup = this._table.firstChild;
         for (var columnIndex = 0; columnIndex < this._columnCount; ++columnIndex) {
-            var colElement = document.createElement("col");
+            var col = document.createElement("col");
             var width = gridProcessor.xExtents[columnIndex];
             if (width != null) {
                 if (EchoAppRender.Extent.isPercent(width)) {
-                    colElement.width = width.toString();
+                    col.width = width.toString();
                 } else {
-                    colElement.width = EchoAppRender.Extent.toCssValue(width, true);
+                    col.width = EchoAppRender.Extent.toCssValue(width, true);
                 }
             }
-            colGroupElement.appendChild(colElement);
+            colGroup.appendChild(col);
         }
         
-        var tbodyElement = colGroupElement.nextSibling;
+        var tbody = colGroup.nextSibling;
         
         var size = parseInt(this.component.render("size", 2));
         
-        var trElement;
+        var tr;
         var height;
         var renderedComponentIds = {};
         
@@ -456,18 +455,18 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
         tdPrototype.style.overflow = "hidden";
         
         for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
-            trElement = document.createElement("tr");
+            tr = document.createElement("tr");
             height = gridProcessor.yExtents[rowIndex];
             if (height) {
-                trElement.style.height = EchoAppRender.Extent.toCssValue(height, false);
+                tr.style.height = EchoAppRender.Extent.toCssValue(height, false);
             }
-            tbodyElement.appendChild(trElement);
+            tbody.appendChild(tr);
             
             for (var columnIndex = 0; columnIndex < this._columnCount; ++columnIndex) {
                 var cell = gridProcessor.getCell(columnIndex, rowIndex);
                 if (cell == null) {
-                    var tdElement = document.createElement("td");
-                    trElement.appendChild(tdElement);
+                    var td = document.createElement("td");
+                    tr.appendChild(td);
                     continue;
                 }
                 if (renderedComponentIds[cell.component.renderId]) {
@@ -476,51 +475,51 @@ EchoAppRender.GridSync = Core.extend(EchoRender.ComponentSync, {
                 }
                 renderedComponentIds[cell.component.renderId] = true;
                 
-                var tdElement = tdPrototype.cloneNode(false);
+                var td = tdPrototype.cloneNode(false);
                 
                 if (cell.xSpan > 1) {
-                    tdElement.setAttribute(xSpan, cell.xSpan);
+                    td.setAttribute(xSpan, cell.xSpan);
                 }
                 if (cell.ySpan > 1) {
-                    tdElement.setAttribute(ySpan, cell.ySpan);
+                    td.setAttribute(ySpan, cell.ySpan);
                 }
                 
                 var layoutData = cell.component.render("layoutData");
                 if (layoutData) {
-                    EchoAppRender.Insets.render(layoutData.insets, tdElement, "padding");
-                    EchoAppRender.Alignment.render(layoutData.alignment, tdElement, true, this.component);
-                    EchoAppRender.FillImage.render(layoutData.backgroundImage, tdElement);
-                    EchoAppRender.Color.render(layoutData.background, tdElement, "backgroundColor");
+                    EchoAppRender.Insets.render(layoutData.insets, td, "padding");
+                    EchoAppRender.Alignment.render(layoutData.alignment, td, true, this.component);
+                    EchoAppRender.FillImage.render(layoutData.backgroundImage, td);
+                    EchoAppRender.Color.render(layoutData.background, td, "backgroundColor");
                 }
                 
-                EchoRender.renderComponentAdd(update, cell.component, tdElement);
+                EchoRender.renderComponentAdd(update, cell.component, td);
     
-                trElement.appendChild(tdElement);
+                tr.appendChild(td);
             }
         }
         
-        WebCore.EventProcessor.add(this._tableElement, 
+        WebCore.EventProcessor.add(this._table, 
                 WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
                 Core.method(this, this._processKeyPress), false);
 
-        parentElement.appendChild(this._tableElement);
+        parentElement.appendChild(this._table);
     },
     
     renderDispose: function(update) {
-        WebCore.EventProcessor.removeAll(this._tableElement);
-        this._tableElement = null;
+        WebCore.EventProcessor.removeAll(this._table);
+        this._table = null;
     },
     
     renderDisplay: function() {
         if (this._renderPercentWidthByMeasure) {
-            this._tableElement.style.width = "";
-            var percentWidth = (this._tableElement.parentNode.offsetWidth * this._renderPercentWidthByMeasure) / 100;
-            this._tableElement.style.width = percentWidth + "px";
+            this._table.style.width = "";
+            var percentWidth = (this._table.parentNode.offsetWidth * this._renderPercentWidthByMeasure) / 100;
+            this._table.style.width = percentWidth + "px";
         }
     },
     
     renderUpdate: function(update) {
-        var element = this._tableElement;
+        var element = this._table;
         var containerElement = element.parentNode;
         EchoRender.renderComponentDispose(update, update.parent);
         containerElement.removeChild(element);
