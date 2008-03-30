@@ -85,22 +85,6 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     /**
      * Converts the x/y/width/height coordinates of a window pane to pixel values.
      * The _containerSize instance property is used to calculate percent-based values.
-
-
-
-
-        
-        // Center window if user x/y coordinates are not specified.
-        if (c.x == null) {
-            c.x = parseInt((this._containerSize.width - this._windowWidth) / 2);
-        }
-        if (c.y == null) {
-            c.y = parseInt((this._containerSize.height - this._windowHeight) / 2); 
-        }
-
-
-
-
      */
     _coordinatesToPixels: function(x, y, width, height) {
         var c = {};
