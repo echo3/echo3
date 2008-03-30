@@ -8,6 +8,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         DEFAULT_TITLE_INSETS: "5px 10px",
         ADJUSTMENT_OPACITY: 0.75,
         CURSORS: ["nw-resize", "n-resize", "ne-resize", "w-resize", "e-resize", "sw-resize", "s-resize", "se-resize"],
+        FIB_POSITIONS: ["topLeft", "top", "topRight", "left", "right", "bottomLeft", "bottom", "bottomRight"],
         adjustOpacity: false,
     },
     
@@ -349,91 +350,61 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 this.component.render("minimumHeight", EchoApp.WindowPane.DEFAULT_MINIMUM_HEIGHT), false);
         this._maximumWidth = EchoAppRender.Extent.toPixels(this.component.render("maximumWidth"), true);
         this._maximumHeight = EchoAppRender.Extent.toPixels(this.component.render("maximumHeight"), false);
-    
         var border = this.component.render("border", EchoApp.WindowPane.DEFAULT_BORDER);
         this._borderInsets = EchoAppRender.Insets.toPixels(border.borderInsets);
         this._contentInsets = EchoAppRender.Insets.toPixels(border.contentInsets);
-    
         var movable = this.component.render("movable", true);
         var resizable = this.component.render("resizable", true);
         var closable = this.component.render("closable", true);
         var maximizeEnabled = this.component.render("maximizeEnabled", false);
         var minimizeEnabled = this.component.render("minimizeEnabled", false);
-        
         var hasControlIcons = closable || maximizeEnabled || minimizeEnabled;
+        var fillImageFlags = this.component.render("ieAlphaRenderBorder") 
+                ? EchoAppRender.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER : 0;
     
         this._div = document.createElement("div");
         this._div.id = this.component.renderId;
         this._div.tabIndex = "0";
-    
-        this._div.style.outlineStyle = "none";
-    
-        this._div.style.position = "absolute";
-        this._div.style.zIndex = 1;
-        
-        this._div.style.overflow = "hidden";
-
+        this._div.style.cssText = "outline-style:none;position:absolute;z-index:1;overflow:hidden;";
         EchoAppRender.Font.render(this.component.render("font"), this._div);
         
         this._borderDivs = new Array(8);
         
-        var fillImageFlags = this.component.render("ieAlphaRenderBorder") 
-                ? EchoAppRender.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER : 0;
-        
+        var borderBaseCss = "z-index:2;font-size:1px;position:absolute;";
         // Render top row
         if (this._borderInsets.top > 0) {
             // Render top left corner
             if (this._borderInsets.left > 0) {
                 this._borderDivs[0] = document.createElement("div");
-                this._borderDivs[0].style.cssText = "z-index:2;font-size:1px;position:absolute;left:0;top:0;"
+                this._borderDivs[0].style.cssText = borderBaseCss + "left:0;top:0;"
                         + "width:" + this._borderInsets.left + "px;height:" + this._borderInsets.top + "px;";
-                if (border.topLeft) {
-                    EchoAppRender.FillImage.render(border.topLeft, this._borderDivs[0], fillImageFlags);
-                }
-                this._div.appendChild(this._borderDivs[0]);
             }
             
             // Render top side
             this._borderDivs[1] = document.createElement("div");
-            this._borderDivs[1].style.cssText = "z-index:2;font-size:1px;position:absolute;top:0;"
+            this._borderDivs[1].style.cssText = borderBaseCss + "top:0;"
                     + "left:" + this._borderInsets.left + "px;height:" + this._borderInsets.top + "px;";
-            if (border.top) {
-                EchoAppRender.FillImage.render(border.top, this._borderDivs[1], fillImageFlags);
-            }
-            this._div.appendChild(this._borderDivs[1]);
     
             // Render top right corner
             if (this._borderInsets.right > 0) {
                 this._borderDivs[2] = document.createElement("div");
-                this._borderDivs[2].style.cssText = "z-index:2;font-size:1px;position:absolute;right:0;top:0;"
+                this._borderDivs[2].style.cssText = borderBaseCss + "right:0;top:0;"
                         + "width:" + this._borderInsets.right + "px;height:" + this._borderInsets.top + "px;";
-                if (border.topRight) {
-                    EchoAppRender.FillImage.render(border.topRight, this._borderDivs[2], fillImageFlags);
-                }
-                this._div.appendChild(this._borderDivs[2]);
             }
         }
     
         // Render left side
         if (this._borderInsets.left > 0) {
             this._borderDivs[3] = document.createElement("div");
-            this._borderDivs[3].style.cssText = "z-index:2;font-size:1px;position:absolute;left:0;"
+            this._borderDivs[3].style.cssText = borderBaseCss + "left:0;"
                     + "top:" + this._borderInsets.top + "px;width:" + this._borderInsets.left + "px;";
-            if (border.left) {
-                EchoAppRender.FillImage.render(border.left, this._borderDivs[3], fillImageFlags);
-            }
-            this._div.appendChild(this._borderDivs[3]);
         }
         
         // Render right side
         if (this._borderInsets.right > 0) {
             this._borderDivs[4] = document.createElement("div");
-            this._borderDivs[4].style.cssText = "z-index:2;font-size:1px;position:absolute;right:0;"
+            this._borderDivs[4].style.cssText = borderBaseCss + "right:0;"
                     + "top:" + this._borderInsets.top + "px;width:" + this._borderInsets.right + "px;";
-            if (border.right) {
-                EchoAppRender.FillImage.render(border.right, this._borderDivs[4], fillImageFlags);
-            }
-            this._div.appendChild(this._borderDivs[4]);
         }
         
         // Render bottom row
@@ -441,32 +412,20 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             // Render bottom left corner
             if (this._borderInsets.left > 0) {
                 this._borderDivs[5] = document.createElement("div");
-                this._borderDivs[5].style.cssText = "z-index:2;font-size:1px;position:absolute;left:0;bottom:0;"
+                this._borderDivs[5].style.cssText = borderBaseCss + "left:0;bottom:0;"
                         + "width:" + this._borderInsets.left + "px;height:" + this._borderInsets.bottom + "px;";
-                if (border.bottomLeft) {
-                    EchoAppRender.FillImage.render(border.bottomLeft, this._borderDivs[5], fillImageFlags);
-                }
-                this._div.appendChild(this._borderDivs[5]);
             }
             
             // Render bottom side
             this._borderDivs[6] = document.createElement("div");
-            this._borderDivs[6].style.cssText = "z-index:2;font-size:1px;position:absolute;bottom:0;"
+            this._borderDivs[6].style.cssText = borderBaseCss + "bottom:0;"
                     + "left:" + this._borderInsets.left + "px;height:" + this._borderInsets.bottom + "px;";
-            if (border.bottom) {
-                EchoAppRender.FillImage.render(border.bottom, this._borderDivs[6], fillImageFlags);
-            }
-            this._div.appendChild(this._borderDivs[6]);
     
             // Render bottom right corner
             if (this._borderInsets.right > 0) {
                 this._borderDivs[7] = document.createElement("div");
-                this._borderDivs[7].style.cssText = "z-index:2;font-size:1px;position:absolute;right:0;bottom:0;"
+                this._borderDivs[7].style.cssText = borderBaseCss + "right:0;bottom:0;"
                         + "width:" + this._borderInsets.right + "px;height:" + this._borderInsets.bottom + "px;";
-                if (border.bottomRight) {
-                    EchoAppRender.FillImage.render(border.bottomRight, this._borderDivs[7], fillImageFlags);
-                }
-                this._div.appendChild(this._borderDivs[7]);
             }
         }
         
@@ -478,6 +437,11 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 if (resizable) {
                     this._borderDivs[i].style.cursor = EchoAppRender.WindowPaneSync.CURSORS[i];
                 }
+                var borderImage = border[EchoAppRender.WindowPaneSync.FIB_POSITIONS[i]];
+                if (borderImage) {
+                    EchoAppRender.FillImage.render(borderImage, this._borderDivs[i], fillImageFlags);
+                }
+                this._div.appendChild(this._borderDivs[i]);
             }
         }
         
@@ -634,19 +598,15 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 Core.method(this, this._processFocusClick), true);
         
         if (closable) {
-            WebCore.EventProcessor.add(this._div, "keydown", 
-                    Core.method(this, this._processKeyDown), false);
-            WebCore.EventProcessor.add(this._div, "keypress", 
-                    Core.method(this, this._processKeyPress), false);
+            WebCore.EventProcessor.add(this._div, "keydown", Core.method(this, this._processKeyDown), false);
+            WebCore.EventProcessor.add(this._div, "keypress", Core.method(this, this._processKeyPress), false);
         }
         if (movable) {
-            WebCore.EventProcessor.add(this._titleBarDiv, "mousedown", 
-                    Core.method(this, this._processTitleBarMouseDown), true);
+            WebCore.EventProcessor.add(this._titleBarDiv, "mousedown", Core.method(this, this._processTitleBarMouseDown), true);
         }
         if (resizable) {
             for (var i = 0; i < this._borderDivs.length; ++i) {
-                WebCore.EventProcessor.add(this._borderDivs[i], "mousedown", 
-                        Core.method(this, this._processBorderMouseDown), true);
+                WebCore.EventProcessor.add(this._borderDivs[i], "mousedown", Core.method(this, this._processBorderMouseDown), true);
             }
         }
     },
