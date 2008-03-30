@@ -37,18 +37,18 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderAdd: function(update, parentElement) {
-        this._divElement = document.createElement("div");
-        this._divElement.id = this.component.renderId;
-        this._divElement.style.position = "absolute";
-        this._divElement.style.width = "100%";
-        this._divElement.style.height = "100%";
-        this._divElement.style.overflow = "hidden";
-        this._divElement.style.zIndex = "0";
-        EchoAppRender.Font.render(this.component.render("font"), this._divElement);
+        this._div = document.createElement("div");
+        this._div.id = this.component.renderId;
+        this._div.style.position = "absolute";
+        this._div.style.width = "100%";
+        this._div.style.height = "100%";
+        this._div.style.overflow = "hidden";
+        this._div.style.zIndex = "0";
+        EchoAppRender.Font.render(this.component.render("font"), this._div);
         EchoAppRender.Color.render(this.component.render("background", EchoAppRender.ContentPaneSync.DEFAULT_BACKGROUND),
-                this._divElement, "backgroundColor");
-        EchoAppRender.Color.render(this.component.render("foreground"), this._divElement, "color");
-        EchoAppRender.FillImage.render(this.component.render("backgroundImage"), this._divElement); 
+                this._div, "backgroundColor");
+        EchoAppRender.Color.render(this.component.render("foreground"), this._div, "color");
+        EchoAppRender.FillImage.render(this.component.render("backgroundImage"), this._div); 
     
         this._childIdToElementMap = {};
         
@@ -63,41 +63,41 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._pendingScrollX = this.component.render("horizontalScroll");
         this._pendingScrollY = this.component.render("verticalScroll");
         
-        parentElement.appendChild(this._divElement);
+        parentElement.appendChild(this._div);
     },
     
     _renderAddChild: function(update, child) {
-        var divElement = document.createElement("div");
-        this._childIdToElementMap[child.renderId] = divElement;
-        divElement.style.position = "absolute";
+        var childDiv = document.createElement("div");
+        this._childIdToElementMap[child.renderId] = childDiv;
+        childDiv.style.position = "absolute";
         if (child.floatingPane) {
-            divElement.style.zIndex = "1";
+            childDiv.style.zIndex = "1";
         } else {
             var insets = this.component.render("insets", 0);
             var pixelInsets = EchoAppRender.Insets.toPixels(insets);
-            divElement.style.zIndex = "0";
-            divElement.style.left = pixelInsets.left + "px";
-            divElement.style.top = pixelInsets.top + "px";
-            divElement.style.bottom = pixelInsets.bottom + "px";
-            divElement.style.right = pixelInsets.right + "px";
+            childDiv.style.zIndex = "0";
+            childDiv.style.left = pixelInsets.left + "px";
+            childDiv.style.top = pixelInsets.top + "px";
+            childDiv.style.bottom = pixelInsets.bottom + "px";
+            childDiv.style.right = pixelInsets.right + "px";
             if (child.pane) {
-                divElement.style.overflow = "auto";
+                childDiv.style.overflow = "auto";
             } else {
                 switch (this.component.render("overflow")) {
                 case EchoApp.ContentPane.OVERFLOW_HIDDEN:
-                    divElement.style.overflow = "hidden";
+                    childDiv.style.overflow = "hidden";
                     break;
                 case EchoApp.ContentPane.OVERFLOW_SCROLL:
-                    divElement.style.overflow = "scroll";
+                    childDiv.style.overflow = "scroll";
                     break;
                 default:
-                    divElement.style.overflow = "auto";
+                    childDiv.style.overflow = "auto";
                     break;
                 }
             }
         }
-        EchoRender.renderComponentAdd(update, child, divElement);
-        this._divElement.appendChild(divElement);
+        EchoRender.renderComponentAdd(update, child, childDiv);
+        this._div.appendChild(childDiv);
         
         if (child.floatingPane) {
             this.raise(child);
@@ -106,7 +106,7 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
     
     renderDispose: function(update) { 
         this._childIdToElementMap = null;
-        this._divElement = null;
+        this._div = null;
     },
     
     _renderRemoveChild: function(update, child) {
@@ -114,13 +114,13 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._floatingPaneManager.remove(child.renderId);
         }
         
-        var divElement = this._childIdToElementMap[child.renderId];
-        divElement.parentNode.removeChild(divElement);
+        var childDiv = this._childIdToElementMap[child.renderId];
+        childDiv.parentNode.removeChild(childDiv);
         delete this._childIdToElementMap[child.renderId];
     },
     
     renderDisplay: function() {
-        var child = this._divElement.firstChild;
+        var child = this._div.firstChild;
         while (child) {
             WebCore.VirtualPosition.redraw(child);
             child = child.nextSibling;
@@ -174,7 +174,7 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
             }
         }
         if (fullRender) {
-            var element = this._divElement;
+            var element = this._div;
             var containerElement = element.parentNode;
             EchoRender.renderComponentDispose(update, update.parent);
             containerElement.removeChild(element);
