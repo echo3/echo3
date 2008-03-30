@@ -41,28 +41,28 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     _userHeight: null,
     
     /**
-     * Actual x position of window.
+     * Rendered x position of window.
      * @type Integer
      */
-    _windowX: null,
+    _renderX: null,
     
     /**
-     * Actual y position of window.
+     * Rendered y position of window.
      * @type Integer
      */
-    _windowY: null,
+    _renderY: null,
     
     /**
-     * Actual width of window.
+     * Rendered width of window.
      * @type Integer
      */
-    _windowWidth: null,
+    _renderWidth: null,
     
     /**
-     * Actual height of window.
+     * Rendered height of window.
      * @type Integer
      */
-    _windowHeight: null,
+    _renderHeight: null,
     
     /**
      * The size of the region containing the window.
@@ -137,10 +137,10 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         WebCore.DOM.preventEventDefault(e);
     
         this._loadContainerSize();
-        this._dragInitX = this._windowX;
-        this._dragInitY = this._windowY;
-        this._dragInitWidth = this._windowWidth;
-        this._dragInitHeight = this._windowHeight;
+        this._dragInitX = this._renderX;
+        this._dragInitY = this._renderY;
+        this._dragInitWidth = this._renderWidth;
+        this._dragInitHeight = this._renderHeight;
         this._dragOriginX = e.clientX;
         this._dragOriginY = e.clientY;
         
@@ -195,15 +195,15 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
         this._removeBorderListeners();
         
-        this.component.set("positionX", this._windowX);
-        this.component.set("positionY", this._windowY);
-        this.component.set("width", this._windowWidth);
-        this.component.set("height", this._windowHeight);
+        this.component.set("positionX", this._renderX);
+        this.component.set("positionY", this._renderY);
+        this.component.set("width", this._renderWidth);
+        this.component.set("height", this._renderHeight);
         
-        this._userX = this._windowX;
-        this._userY = this._windowY;
-        this._userWidth = this._windowWidth;
-        this._userHeight = this._windowHeight;
+        this._userX = this._renderX;
+        this._userY = this._renderY;
+        this._userWidth = this._renderWidth;
+        this._userHeight = this._renderHeight;
         
         WebCore.VirtualPosition.redraw(this._contentDiv);
         WebCore.VirtualPosition.redraw(this._maskDiv);
@@ -271,8 +271,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         WebCore.DOM.preventEventDefault(e);
     
         this._loadContainerSize();
-        this._dragInitX = this._windowX;
-        this._dragInitY = this._windowY;
+        this._dragInitX = this._renderX;
+        this._dragInitY = this._renderY;
         this._dragOriginX = e.clientX;
         this._dragOriginY = e.clientY;
     
@@ -299,28 +299,28 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._div.style.opacity = 1;
         
         this._removeTitleBarListeners();
-        this.component.set("positionX", this._windowX);
-        this.component.set("positionY", this._windowY);
+        this.component.set("positionX", this._renderX);
+        this.component.set("positionY", this._renderY);
     
-        this._userX = this._windowX;
-        this._userY = this._windowY;
+        this._userX = this._renderX;
+        this._userY = this._renderY;
     },
     
     redraw: function() {    
-        if (this._windowWidth <= 0 || this._windowHeight <= 0) {
+        if (this._renderWidth <= 0 || this._renderHeight <= 0) {
             // Do not render if window does not have set dimensions.
             return;
         }
 
-        var borderSideWidth = this._windowWidth - this._borderInsets.left - this._borderInsets.right;
-        var borderSideHeight = this._windowHeight - this._borderInsets.top - this._borderInsets.bottom;
+        var borderSideWidth = this._renderWidth - this._borderInsets.left - this._borderInsets.right;
+        var borderSideHeight = this._renderHeight - this._borderInsets.top - this._borderInsets.bottom;
     
-        this._div.style.left = this._windowX + "px";
-        this._div.style.top = this._windowY + "px";
-        this._div.style.width = this._windowWidth + "px";
-        this._div.style.height = this._windowHeight + "px";
+        this._div.style.left = this._renderX + "px";
+        this._div.style.top = this._renderY + "px";
+        this._div.style.width = this._renderWidth + "px";
+        this._div.style.height = this._renderHeight + "px";
     
-        this._titleBarDiv.style.width = (this._windowWidth - this._contentInsets.left - this._contentInsets.right) + "px";
+        this._titleBarDiv.style.width = (this._renderWidth - this._contentInsets.left - this._contentInsets.right) + "px";
         
         this._borderDivs[1].style.width = borderSideWidth + "px";
         this._borderDivs[6].style.width = borderSideWidth + "px";
@@ -715,7 +715,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 }
                 c.width = this._minimumWidth;
             }
-            this._windowWidth = c.width;
+            this._renderWidth = c.width;
         }
         
         if (c.height != null) {
@@ -731,27 +731,27 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 }
                 c.height = this._minimumHeight;
             }
-            this._windowHeight = c.height;
+            this._renderHeight = c.height;
         }
     
         if (c.x != null) {
-            if (this._containerSize.width > 0 && c.x > this._containerSize.width - this._windowWidth) {
-                c.x = this._containerSize.width - this._windowWidth;
+            if (this._containerSize.width > 0 && c.x > this._containerSize.width - this._renderWidth) {
+                c.x = this._containerSize.width - this._renderWidth;
             }
             if (c.x < 0) {
                 c.x = 0;
             }
-            this._windowX = c.x;
+            this._renderX = c.x;
         }
     
         if (c.y != null) {
-            if (this._containerSize.height > 0 && c.y > this._containerSize.height - this._windowHeight) {
-                c.y = this._containerSize.height - this._windowHeight;
+            if (this._containerSize.height > 0 && c.y > this._containerSize.height - this._renderHeight) {
+                c.y = this._containerSize.height - this._renderHeight;
             }
             if (c.y < 0) {
                 c.y = 0;
             }
-            this._windowY = c.y;
+            this._renderY = c.y;
         }
         
         this.redraw();
