@@ -52,6 +52,8 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
     static {
         WebContainerServlet.getServiceRegistry().add(WINDOW_PANE_SERVICE);
         WebContainerServlet.getResourceRegistry().add("Echo", "resource/WindowPaneClose.gif", ContentType.IMAGE_GIF);
+        WebContainerServlet.getResourceRegistry().add("Echo", "resource/WindowPaneMaximize.gif", ContentType.IMAGE_GIF);
+        WebContainerServlet.getResourceRegistry().add("Echo", "resource/WindowPaneMinimize.gif", ContentType.IMAGE_GIF);
     }
     
     /**
