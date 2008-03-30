@@ -13,6 +13,11 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     /**
+     * The text node or element representing the label.
+     */
+    _node: null,
+    
+    /**
      * Formats the whitespace in the given text for use in HTML.
      * 
      * @param text {String} the text to format
@@ -53,8 +58,8 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
                         EchoAppRender.LabelSync._defaultIconTextMargin);
                 var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
                 var tct = new EchoAppRender.TriCellTable(orientation, EchoAppRender.Extent.toPixels(iconTextMargin));
-                var imgElement = document.createElement("img");
-                EchoAppRender.ImageReference.renderImg(icon, imgElement);
+                var img = document.createElement("img");
+                EchoAppRender.ImageReference.renderImg(icon, img);
                 if (formatWhitespace) {
                     this._formatWhitespace(text, tct.tdElements[0]);
                 } else {
@@ -63,60 +68,60 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
                 if (!lineWrap) {
                     tct.tdElements[0].style.whiteSpace = "nowrap";
                 }
-                tct.tdElements[1].appendChild(imgElement);
-                this._labelNode = tct.tableElement;
-                this._labelNode.id = this.component.renderId;
-                EchoAppRender.Font.render(this.component.render("font"), this._labelNode);
-                EchoAppRender.Color.renderFB(this.component, this._labelNode);
+                tct.tdElements[1].appendChild(img);
+                this._node = tct.tableElement;
+                this._node.id = this.component.renderId;
+                EchoAppRender.Font.render(this.component.render("font"), this._node);
+                EchoAppRender.Color.renderFB(this.component, this._node);
             } else {
                 // Text without icon.
                 var font = this.component.render("font");
                 if (!toolTip && !font && lineWrap && !foreground && !background && !formatWhitespace) {
-                    this._labelNode = document.createTextNode(text);
+                    this._node = document.createTextNode(text);
                 } else {
-                    this._labelNode = document.createElement("span");
-                    this._labelNode.id = this.component.renderId;
+                    this._node = document.createElement("span");
+                    this._node.id = this.component.renderId;
                     if (formatWhitespace) {
-                        this._formatWhitespace(text, this._labelNode);
+                        this._formatWhitespace(text, this._node);
                     } else {
-                        this._labelNode.appendChild(document.createTextNode(text));
+                        this._node.appendChild(document.createTextNode(text));
                     }
                     if (!lineWrap) {
-                        this._labelNode.style.whiteSpace = "nowrap";
+                        this._node.style.whiteSpace = "nowrap";
                     }
-                    EchoAppRender.Font.render(font, this._labelNode);
-                    EchoAppRender.Color.renderFB(this.component, this._labelNode);
+                    EchoAppRender.Font.render(font, this._node);
+                    EchoAppRender.Color.renderFB(this.component, this._node);
                 }
             }
         } else if (icon) {
-            var imgElement = document.createElement("img");
-            EchoAppRender.ImageReference.renderImg(icon, imgElement);
-            this._labelNode = document.createElement("span");
-            this._labelNode.id = this.component.renderId;
-            this._labelNode.appendChild(imgElement);
-            EchoAppRender.Color.renderFB(this.component, this._labelNode); // should be BG only.
+            var img = document.createElement("img");
+            EchoAppRender.ImageReference.renderImg(icon, img);
+            this._node = document.createElement("span");
+            this._node.id = this.component.renderId;
+            this._node.appendChild(img);
+            EchoAppRender.Color.renderFB(this.component, this._node); // should be BG only.
         } else {
             // Neither icon nor text, render blank.
-            this._labelNode = null;
+            this._node = null;
         }
         
         if (toolTip) {
-            this._labelNode.title = toolTip;
+            this._node.title = toolTip;
         }
     
-        if (this._labelNode) {
-            parentElement.appendChild(this._labelNode);
+        if (this._node) {
+            parentElement.appendChild(this._node);
         }
     },
     
     renderDispose: function(update) {
         this._containerElement = null;
-        this._labelNode = null;
+        this._node = null;
     },
     
     renderUpdate: function(update) {
-        if (this._labelNode) {
-            this._labelNode.parentNode.removeChild(this._labelNode);
+        if (this._node) {
+            this._node.parentNode.removeChild(this._node);
         }
         // Note: this.renderDispose() is not invoked (it does nothing).
         this.renderAdd(update, this._containerElement);
