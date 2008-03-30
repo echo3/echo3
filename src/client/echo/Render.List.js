@@ -30,9 +30,9 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
      */
     _alternateRender: false,
     
-    _mainElement: null,
+    _element: null,
     
-    _divElement: null,
+    _div: null,
     
     /**
      * Processes a click event.
@@ -46,7 +46,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             return;
         }
         
-        var child = this._divElement.firstChild;
+        var child = this._div.firstChild;
         var i = 0;
         while (child) {
             if (child == e.target) {
@@ -95,14 +95,14 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         var selection;
         if (this._multipleSelect) {
             selection = [];
-            for (var i = 0; i < this._mainElement.options.length; ++i) {
-                if (this._mainElement.options[i].selected) {
+            for (var i = 0; i < this._element.options.length; ++i) {
+                if (this._element.options[i].selected) {
                     selection.push(i);
                 }
             }
         } else {
-            if (this._mainElement.selectedIndex != -1) {
-                selection = this._mainElement.selectedIndex;
+            if (this._element.selectedIndex != -1) {
+                selection = this._element.selectedIndex;
             }
         }
     
@@ -126,30 +126,30 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
      * This strategy is used when the _alternateRender flag is false.
      */
     _renderMainAsSelect: function(update, parentElement, size) {
-        this._mainElement = document.createElement("select");
-        this._mainElement.id = this.component.renderId;
-        this._mainElement.size = size;
+        this._element = document.createElement("select");
+        this._element.id = this.component.renderId;
+        this._element.size = size;
 
         if (!this._enabled) {
-            this._mainElement.disabled = true;
+            this._element.disabled = true;
         }
         if (this._multipleSelect) {
-            this._mainElement.multiple = "multiple";
+            this._element.multiple = "multiple";
         }
 
         EchoAppRender.Border.render(
                 EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
-                this._mainElement);
+                this._element);
         EchoAppRender.Color.render(
                 EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
-                this._mainElement, "color");
+                this._element, "color");
         EchoAppRender.Color.render(
                 EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
-                this._mainElement, "backgroundColor");
+                this._element, "backgroundColor");
         EchoAppRender.Font.render(
                 EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
-                this._mainElement);
-        EchoAppRender.Insets.render(this.component.render("insets"), this._mainElement, "padding");
+                this._element);
+        EchoAppRender.Insets.render(this.component.render("insets"), this._element, "padding");
 
         var items = this.component.get("items");
         if (items) {
@@ -169,15 +169,15 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
                 if (items[i].font) {
                     EchoAppRender.Font.render(items[i].font, optionElement);
                 }
-                this._mainElement.appendChild(optionElement);
+                this._element.appendChild(optionElement);
             }
         }
     
         if (this._enabled) {
-            WebCore.EventProcessor.add(this._mainElement, "change", Core.method(this, this._processChange), false);
+            WebCore.EventProcessor.add(this._element, "change", Core.method(this, this._processChange), false);
         }
 
-        parentElement.appendChild(this._mainElement);
+        parentElement.appendChild(this._element);
     },
 
     /**
@@ -186,38 +186,38 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
      * This strategy is used when the _alternateRender flag is true.
      */
     _renderMainAsDiv: function(update, parentElement, size) {
-        this._mainElement = document.createElement("table");
-        this._mainElement.id = this.component.renderId;
+        this._element = document.createElement("table");
+        this._element.id = this.component.renderId;
         
         var tbodyElement = document.createElement("tbody");
-        this._mainElement.appendChild(tbodyElement);
+        this._element.appendChild(tbodyElement);
         var trElement = document.createElement("tr");
         tbodyElement.appendChild(trElement);
         var tdElement = document.createElement("td");
         trElement.appendChild(tdElement);
         
-        this._divElement = document.createElement("div");
-        tdElement.appendChild(this._divElement);
+        this._div = document.createElement("div");
+        tdElement.appendChild(this._div);
         
-        this._divElement.style.cssText = "cursor:default;overflow:auto;";
+        this._div.style.cssText = "cursor:default;overflow:auto;";
         
         //FIXME        
-        this._divElement.style.height = "6em";
+        this._div.style.height = "6em";
         
         EchoAppRender.Border.render(
                 EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled, 
                 EchoAppRender.ListComponentSync.DEFAULT_DIV_BORDER, EchoAppRender.ListComponentSync.DEFAULT_DIV_BORDER), 
-                this._divElement);
+                this._div);
         EchoAppRender.Color.render(
                 EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
-                this._divElement, "color");
+                this._div, "color");
         EchoAppRender.Color.render(
                 EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
-                this._divElement, "backgroundColor");
+                this._div, "backgroundColor");
         EchoAppRender.Font.render(
                 EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
-                this._divElement);
-        EchoAppRender.Insets.render(this.component.render("insets"), this._divElement, "padding");
+                this._div);
+        EchoAppRender.Insets.render(this.component.render("insets"), this._div, "padding");
 
         var items = this.component.get("items");
         if (items) {
@@ -237,16 +237,16 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
                 if (items[i].font) {
                     EchoAppRender.Font.render(items[i].font, optionElement);
                 }
-                this._divElement.appendChild(optionElement);
+                this._div.appendChild(optionElement);
             }
         }
         
         if (this._enabled) {
-            WebCore.EventProcessor.add(this._divElement, "click", Core.method(this, this._processClick), false);
-            WebCore.EventProcessor.add(this._divElement, "selectstart", Core.method(this, this._processSelectStart), false);
+            WebCore.EventProcessor.add(this._div, "click", Core.method(this, this._processClick), false);
+            WebCore.EventProcessor.add(this._div, "selectstart", Core.method(this, this._processSelectStart), false);
         }
         
-        parentElement.appendChild(this._mainElement);
+        parentElement.appendChild(this._element);
     },
     
     /**
@@ -271,11 +271,11 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderDispose: function(update) { 
-        WebCore.EventProcessor.removeAll(this._mainElement);
-        this._mainElement = null;
-        if (this._divElement) {
-            WebCore.EventProcessor.removeAll(this._divElement);
-            this._divElement = null;
+        WebCore.EventProcessor.removeAll(this._element);
+        this._element = null;
+        if (this._div) {
+            WebCore.EventProcessor.removeAll(this._div);
+            this._div = null;
         }
     },
     
@@ -316,39 +316,39 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             if (this._hasRenderedSelectedItems) {
                 var items = this.component.get("items");
                 for (var i = 0; i < items.length; ++i) {
-                    EchoAppRender.Color.renderClear(items[i].foreground, this._divElement.childNodes[i], 
+                    EchoAppRender.Color.renderClear(items[i].foreground, this._div.childNodes[i], 
                             "color");
-                    EchoAppRender.Color.renderClear(items[i].background, this._divElement.childNodes[i], 
+                    EchoAppRender.Color.renderClear(items[i].background, this._div.childNodes[i], 
                             "backgroundColor");
                 }
             }
             if (selection instanceof Array) {
                 for (var i = 0; i < selection.length; ++i) {
-                    if (selection[i] >= 0 && selection[i] < this._divElement.childNodes.length) {
+                    if (selection[i] >= 0 && selection[i] < this._div.childNodes.length) {
                         EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_FOREGROUND,
-                                this._divElement.childNodes[selection[i]], "color");
+                                this._div.childNodes[selection[i]], "color");
                         EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_BACKGROUND,
-                                this._divElement.childNodes[selection[i]], "backgroundColor");
+                                this._div.childNodes[selection[i]], "backgroundColor");
                     }
                 }
-            } else if (selection >= 0 && selection < this._divElement.childNodes.length) {
+            } else if (selection >= 0 && selection < this._div.childNodes.length) {
                 EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_FOREGROUND,
-                        this._divElement.childNodes[selection], "color");
+                        this._div.childNodes[selection], "color");
                 EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_BACKGROUND,
-                        this._divElement.childNodes[selection], "backgroundColor");
+                        this._div.childNodes[selection], "backgroundColor");
             }
         } else {
             if (this._hasRenderedSelectedItems) {
-                this._mainElement.selectedIndex = -1;
+                this._element.selectedIndex = -1;
             }
             if (selection instanceof Array) {
                 for (var i = 0; i < selection.length; ++i) {
-                    if (selection[i] >= 0 && selection[i] < this._mainElement.options.length) {
-                        this._mainElement.options[selection[i]].selected = true;
+                    if (selection[i] >= 0 && selection[i] < this._element.options.length) {
+                        this._element.options[selection[i]].selected = true;
                     }
                 }
-            } else if (selection >= 0 && selection < this._mainElement.options.length) {
-                this._mainElement.options[selection].selected = true;
+            } else if (selection >= 0 && selection < this._element.options.length) {
+                this._element.options[selection].selected = true;
             }
         }
         this._hasRenderedSelectedItems = true;
@@ -359,7 +359,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             this._selectedIdPriority = true;
         }
     
-        var element = this._mainElement;
+        var element = this._element;
         var containerElement = element.parentNode;
         this.renderDispose(update);
         containerElement.removeChild(element);
