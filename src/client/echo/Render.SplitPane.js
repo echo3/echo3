@@ -282,28 +282,14 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             var layoutData = this.component.getComponent(0).render("layoutData");
             insetsAdjustment = this._getInsetsSizeAdjustment(layoutData);
         }
-    
-        if (this._orientationVertical) {
-            if (this._orientationTopLeft) {
-                this._redrawItem(this._firstPaneDivElement, "height", (this._separatorPosition - insetsAdjustment) + "px");
-                this._redrawItem(this._secondPaneDivElement, "top", (this._separatorPosition + this._separatorSize) + "px");
-                this._redrawItem(this._separatorDivElement, "top", this._separatorPosition + "px");
-            } else {
-                this._redrawItem(this._firstPaneDivElement, "height", (this._separatorPosition - insetsAdjustment) + "px");
-                this._redrawItem(this._secondPaneDivElement, "bottom", (this._separatorPosition + this._separatorSize) + "px"); 
-                this._redrawItem(this._separatorDivElement, "bottom", this._separatorPosition + "px");
-            }
-        } else {
-            if (this._orientationTopLeft) {
-                this._redrawItem(this._firstPaneDivElement, "width", (this._separatorPosition - insetsAdjustment) + "px");
-                this._redrawItem(this._secondPaneDivElement, "left", (this._separatorPosition + this._separatorSize) + "px");
-                this._redrawItem(this._separatorDivElement, "left", this._separatorPosition + "px");
-            } else {
-                this._redrawItem(this._firstPaneDivElement, "width", (this._separatorPosition - insetsAdjustment) + "px");
-                this._redrawItem(this._secondPaneDivElement, "right", (this._separatorPosition + this._separatorSize) + "px"); 
-                this._redrawItem(this._separatorDivElement, "right", this._separatorPosition + "px");
-            }
-        }
+
+        var sizeAttr = this._orientationVertical ? "height" : "width";
+        var positionAttr = this._orientationVertical
+                ? (this._orientationTopLeft ? "top" : "bottom")
+                : (this._orientationTopLeft ? "left" : "right");
+        this._redrawItem(this._firstPaneDivElement, sizeAttr, (this._separatorPosition - insetsAdjustment) + "px");
+        this._redrawItem(this._secondPaneDivElement, positionAttr, (this._separatorPosition + this._separatorSize) + "px");
+        this._redrawItem(this._separatorDivElement, positionAttr, this._separatorPosition + "px");
     },
     
     _redrawItem: function(element, styleProperty, newValue) {
