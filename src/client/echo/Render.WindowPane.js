@@ -188,7 +188,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     _processKeyDown: function(e) {
         switch (e.keyCode) {
         case 27:
-            this.component.doWindowClosing();
+            this.component.userClose();
             WebCore.DOM.preventEventDefault(e);
             return false;
         }
@@ -208,7 +208,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             return;
         }
-        this.component.doWindowClosing();
+        this.component.userClose();
     },
     
     _processFocusClick: function(e) { 
@@ -223,7 +223,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             return;
         }
-        this.component.doWindowMaximizing();
+        this.component.userMaximize();
         EchoRender.processUpdates(this.client);
     },
     
@@ -231,7 +231,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             return;
         }
-        this.component.doWindowMinimizing();
+        this.component.userMinimize();
     },
     
     _processTitleBarMouseDown: function(e) {

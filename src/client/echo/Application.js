@@ -2876,16 +2876,16 @@ EchoApp.WindowPane = Core.extend(EchoApp.Component, {
     _preMaximizedState: null,
     
     /**
-     * Programmatically perform a window closing operation.
+     * Processes a user request to close the window.
      */
-    doWindowClosing: function() {
+    userClose: function() {
         this.fireEvent({type: "close", source: this});
     },
     
     /**
-     * Programmatically perform a window maximizing operation.
+     * Processes a user request to maximize the window.
      */
-    doWindowMaximizing: function() {
+    userMaximize: function() {
         if (this.render("width") == "100%" && this.render("height") == "100%") {
             if (this._preMaximizedState) {
                 this.set("width", this._preMaximizedState.width);
@@ -2904,9 +2904,9 @@ EchoApp.WindowPane = Core.extend(EchoApp.Component, {
     },
     
     /**
-     * Programmatically perform a window minimizing operation.
+     * Processes a user request to minimize the window.
      */
-    doWindowMinimizing: function() {
+    userMinimize: function() {
         this.fireEvent({type: "minimize", source: this});
     }
 });
