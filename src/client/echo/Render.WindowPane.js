@@ -114,7 +114,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             return;
         }
-    
+
         // Prevent selections.
         WebCore.dragInProgress = true;
         WebCore.DOM.preventEventDefault(e);
@@ -150,22 +150,12 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _processBorderMouseMove: function(e) {
-        var x, y, width, height;
-        
-        if (this._resizeIncrement.x == -1) {
-            width = this._dragInit.width - (e.clientX - this._dragOrigin.x);
-            x = this._dragInit.x + this._dragInit.width - width;
-        } else if (this._resizeIncrement.x == 1) {
-            width = this._dragInit.width + e.clientX - this._dragOrigin.x;
-        }
-        if (this._resizeIncrement.y == -1) {
-            height = this._dragInit.height - (e.clientY - this._dragOrigin.y);
-            y = this._dragInit.y + this._dragInit.height - height;
-        } else if (this._resizeIncrement.y == 1) {
-            height = this._dragInit.height + e.clientY - this._dragOrigin.y;
-        }
-        
-        this.setBounds({x: x, y: y, width: width, height: height});
+        this.setBounds({
+            x: this._resizeIncrement.x == -1 ? this._dragInit.x + e.clientX - this._dragOrigin.x : null,
+            y: this._resizeIncrement.y == -1 ? this._dragInit.y + e.clientY - this._dragOrigin.y : null,
+            width: this._dragInit.width + ((this._resizeIncrement.x) * (e.clientX - this._dragOrigin.x)),
+            height: this._dragInit.height + ((this._resizeIncrement.y) * (e.clientY - this._dragOrigin.y))
+        });
     },
 
     _processBorderMouseUp: function(e) {
@@ -270,8 +260,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
     _processTitleBarMouseMove: function(e) {
         this.setBounds({
-                x: this._dragInit.x + e.clientX - this._dragOrigin.x, 
-                y: this._dragInit.y + e.clientY - this._dragOrigin.y
+            x: this._dragInit.x + e.clientX - this._dragOrigin.x, 
+            y: this._dragInit.y + e.clientY - this._dragOrigin.y
         });
     },
     
@@ -444,9 +434,9 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             EchoAppRender.Insets.render(this.component.render("iconInsets"), titleIconDiv, "padding");
             this._titleBarDiv.appendChild(titleIconDiv);
             
-            var imgElement = document.createElement("img");
-            EchoAppRender.ImageReference.renderImg(icon, imgElement);
-            titleIconDiv.appendChild(imgElement);
+            var img = document.createElement("img");
+            EchoAppRender.ImageReference.renderImg(icon, img);
+            titleIconDiv.appendChild(img);
         }
     
         var title = this.component.render("title");
@@ -593,9 +583,9 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         controlIcon.style.cssText = "float:right;cursor:pointer;margin-left:5px;";
         EchoAppRender.Insets.render(insets, controlIcon, "padding");
         if (icon) {
-            var imgElement = document.createElement("img");
-            EchoAppRender.ImageReference.renderImg(icon, imgElement);
-            controlIcon.appendChild(imgElement);
+            var img = document.createElement("img");
+            EchoAppRender.ImageReference.renderImg(icon, img);
+            controlIcon.appendChild(img);
         } else {
             controlIcon.appendChild(document.createTextNode(altText));
         }
