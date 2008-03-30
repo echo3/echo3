@@ -15,27 +15,27 @@ EchoAppRender.CompositeSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderAdd: function(update, parentElement) {
-        this._divElement = document.createElement("div");
-        this._divElement.id = this.component.renderId;
+        this._div = document.createElement("div");
+        this._div.id = this.component.renderId;
         
         var componentCount = this.component.getComponentCount();
         if (componentCount > 0) {
-            this.renderStyle(this._divElement);
+            this.renderStyle(this._div);
             for (var i = 0; i < componentCount; ++i) {
                 var child = this.component.getComponent(i);
-                EchoRender.renderComponentAdd(update, child, this._divElement);
+                EchoRender.renderComponentAdd(update, child, this._div);
             }
         }
         
-        parentElement.appendChild(this._divElement);
+        parentElement.appendChild(this._div);
     },
     
     renderDispose: function(update) { 
-        this._divElement = null;
+        this._div = null;
     },
     
     renderUpdate: function(update) {
-        var element = this._divElement;
+        var element = this._div;
         var containerElement = element.parentNode;
         EchoRender.renderComponentDispose(update, update.parent);
         containerElement.removeChild(element);
