@@ -643,7 +643,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                 this._renderControlIcon(this.component.render("minimizeIcon", 
                         this.client.getResourceUrl("Echo", "resource/WindowPaneMinimize.gif")),
                         null, null, "[-]", this.component.render("minimizeIconInsets"),
-                        Core.method(this, this._processMaximizeClick));
+                        Core.method(this, this._processMinimizeClick));
             }
         }
         
