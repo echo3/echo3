@@ -76,6 +76,7 @@ public class WelcomePane extends ContentPane {
         column.add(label);
         
         WindowPane loginWindow = new WindowPane();
+        loginWindow.setMaximizeEnabled(true);
         loginWindow.setTitle("Welcome to the NextApp Echo Test Application");
         loginWindow.setStyleName("WelcomePane");
         loginWindow.setClosable(false);

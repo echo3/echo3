@@ -224,6 +224,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             return;
         }
         this.component.doWindowMaximizing();
+        EchoRender.processUpdates(this.client);
     },
     
     _processMinimizeClick: function(e) { 
