@@ -14,7 +14,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
          */
         ChildPane: Core.extend({
         
-            minimumSize: 100,
+            minimumSize: null,
             maximumSize: null,
             component: null,
             layoutData: null,
@@ -68,8 +68,13 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     _separatorDiv: null,
     
     /**
-     * User requested separator position.
-     */ 
+     * The user's desired position of the separator.  This is the last
+     * position to which the user dragged the separator or the last position
+     * that the separator was explicitly set to.  This value may not be the
+     * actual separator position, in cases where other constraints have
+     * temporarily adjusted it.
+     * @type Integer
+     */
     _requested: null,
     
     /**
@@ -88,26 +93,6 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._processSeparatorMouseUpRef = Core.method(this, this._processSeparatorMouseUp);
     },
 
-    renderDispose: function(update) {
-        for (var i = 0; i < 2; ++i) {
-            if (this._paneDivs[i]) {
-                if (this._childPanes[i]) {
-                    this._childPanes[i].storeScrollPositions(this._paneDivs[i]);
-                }
-                this._paneDivs[i] = null;
-            }
-        }
-        
-        if (this._separatorDiv) {
-            WebCore.EventProcessor.removeAll(this._separatorDiv);
-            this._separatorDiv = null;
-        }
-
-        WebCore.EventProcessor.removeAll(this._splitPaneDiv);
-    
-        this._splitPaneDiv = null;
-    },
-    
     loadRenderData: function() {
         var orientation = this.component.render("orientation", 
                 EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING);
@@ -142,21 +127,9 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         default:
             throw new Error("Invalid orientation: " + orientation);
         }
-    
         this._resizable = this.component.render("resizable");
-        
-        /**
-         * The user's desired position of the separator.  This is the last
-         * position to which the user dragged the separator or the last position
-         * that the separator was explicitly set to.  This value may not be the
-         * actual separator position, in cases where other constraints have
-         * temporarily adjusted it.
-         * @type Integer
-         */
-        this._requested = this._rendered = EchoAppRender.Extent.toPixels(
-                this.component.render("separatorPosition",
-                EchoApp.SplitPane.DEFAULT_SEPARATOR_POSITION), this._orientationVertical);
-        
+        this._requested = this.component.render("separatorPosition", EchoApp.SplitPane.DEFAULT_SEPARATOR_POSITION);
+        this._separatorUpdateRequired = true;
         this._separatorSize = EchoAppRender.Extent.toPixels(this.component.render(
                 this._orientationVertical ? "separatorHeight" : "separatorWidth",
                 this._resizable ? EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
@@ -336,24 +309,12 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     
             var resizeCursor = null;
             if (this._orientationVertical) {
-                if (this._orientationTopLeft) {
-                    this._separatorDiv.style.top = this._rendered + "px";
-                    resizeCursor = "s-resize";
-                } else {
-                    this._separatorDiv.style.bottom = this._rendered + "px";
-                    resizeCursor = "n-resize";
-                }
+                resizeCursor = this._orientationTopLeft ? "s-resize" : "n-resize";
                 this._separatorDiv.style.width = "100%";
                 this._separatorDiv.style.height = this._separatorSize + "px";
                 EchoAppRender.FillImage.render(this.component.render("separatorVerticalImage"), this._separatorDiv, 0);
             } else {
-                if (this._orientationTopLeft) {
-                    this._separatorDiv.style.left = this._rendered + "px";
-                    resizeCursor = "e-resize";
-                } else {
-                    this._separatorDiv.style.right = this._rendered + "px";
-                    resizeCursor = "w-resize";
-                }
+                resizeCursor = this._orientationTopLeft ? "e-resize" : "w-resize";
                 this._separatorDiv.style.height = "100%";
                 this._separatorDiv.style.width = this._separatorSize + "px";
                 EchoAppRender.FillImage.render(this.component.render("separatorHorizontalImage"), this._separatorDiv, 0);
@@ -463,6 +424,40 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
     },
     
+    renderDisplay: function() {
+        WebCore.VirtualPosition.redraw(this._splitPaneDiv);
+        if (this._separatorUpdateRequired || this.component.render("resizable")) {
+            this._separatorUpdateRequired = false;
+            this._setSeparatorPosition(this._requested);
+        }
+        if (this._paneDivs[0]) {
+            WebCore.VirtualPosition.redraw(this._paneDivs[0]);
+        }
+        if (this._paneDivs[1]) {
+            WebCore.VirtualPosition.redraw(this._paneDivs[1]);
+        }
+    },
+    
+    renderDispose: function(update) {
+        for (var i = 0; i < 2; ++i) {
+            if (this._paneDivs[i]) {
+                if (this._childPanes[i]) {
+                    this._childPanes[i].storeScrollPositions(this._paneDivs[i]);
+                }
+                this._paneDivs[i] = null;
+            }
+        }
+        
+        if (this._separatorDiv) {
+            WebCore.EventProcessor.removeAll(this._separatorDiv);
+            this._separatorDiv = null;
+        }
+
+        WebCore.EventProcessor.removeAll(this._splitPaneDiv);
+    
+        this._splitPaneDiv = null;
+    },
+    
     _renderRemoveChild: function(update, child) {
         var index;
         if (this._childPanes[0] && this._childPanes[0].component == child) {
@@ -479,19 +474,6 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._paneDivs[index] = null;
     },
         
-    renderDisplay: function() {
-        WebCore.VirtualPosition.redraw(this._splitPaneDiv);
-        if (this.component.render("resizable")) {
-            this._setSeparatorPosition(this._requested);
-        }
-        if (this._paneDivs[0]) {
-            WebCore.VirtualPosition.redraw(this._paneDivs[0]);
-        }
-        if (this._paneDivs[1]) {
-            WebCore.VirtualPosition.redraw(this._paneDivs[1]);
-        }
-    },
-    
     renderUpdate: function(update) {
         var fullRender = false;
         if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()
@@ -534,6 +516,14 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     
     _setSeparatorPosition: function(newValue) {
         var oldValue = this._rendered;
+        
+        if (EchoAppRender.Extent.isPercent(newValue)) {
+            var totalSize = this._orientationVertical ? 
+                    this._splitPaneDiv.offsetHeight : this._splitPaneDiv.offsetWidth;
+            newValue = parseInt((parseInt(newValue) / 100) * totalSize);
+        } else {
+            newValue = EchoAppRender.Extent.toPixels(newValue, !this._orientationVertical);
+        }
     
         if (this._childPanes[1]) {
             var totalSize = this._orientationVertical ? 
