@@ -9,7 +9,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         ADJUSTMENT_OPACITY: 0.75,
         CURSORS: ["nw-resize", "n-resize", "ne-resize", "w-resize", "e-resize", "sw-resize", "s-resize", "se-resize"],
         FIB_POSITIONS: ["topLeft", "top", "topRight", "left", "right", "bottomLeft", "bottom", "bottomRight"],
-        adjustOpacity: false,
+        adjustOpacity: false
     },
     
     $load: function() {
