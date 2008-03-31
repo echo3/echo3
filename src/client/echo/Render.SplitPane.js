@@ -426,7 +426,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     
     renderDisplay: function() {
         WebCore.VirtualPosition.redraw(this._splitPaneDiv);
-        if (this._separatorUpdateRequired || this.component.render("resizable")) {
+        if (this._separatorUpdateRequired) {
             this._separatorUpdateRequired = false;
             this._setSeparatorPosition(this._requested);
         }
@@ -548,8 +548,6 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         this._rendered = newValue;
         
-        if (oldValue != newValue) {
-            this._redraw();
-        }
+        this._redraw();
     }
 });
