@@ -242,7 +242,7 @@ public class Connection {
     }
     
     /**
-     * Sets a property inthe <code>Connection</code>-persistent 
+     * Sets a property in the <code>Connection</code>-persistent 
      * property map.  (Properties are disposed of when <code>Connection</code>
      * has completed). 
      * 
