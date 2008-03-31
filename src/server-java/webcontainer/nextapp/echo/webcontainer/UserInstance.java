@@ -577,7 +577,12 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      */
     public void valueUnbound(HttpSessionBindingEvent e) {
         if (applicationInstance != null) {
-            applicationInstance.dispose();
+            try {
+                ApplicationInstance.setActive(applicationInstance);
+                applicationInstance.dispose();
+            } finally {
+                ApplicationInstance.setActive(null);
+            }
         }
         session = null;
     }
