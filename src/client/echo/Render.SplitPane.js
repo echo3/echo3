@@ -531,7 +531,8 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (this._childPanes[1]) {
             var totalSize = this._orientationVertical ? 
                     this._splitPaneDiv.offsetHeight : this._splitPaneDiv.offsetWidth;
-            if (newValue > totalSize - this._childPanes[1].minimumSize - this._separatorSize) {
+            if (this._childPanes[1].minimumSize != null
+                    && newValue > totalSize - this._childPanes[1].minimumSize - this._separatorSize) {
                 newValue = totalSize - this._childPanes[1].minimumSize - this._separatorSize;
             } else if (this._childPanes[1].maximumSize != null
                     && newValue < totalSize - this._childPanes[1].maximumSize - this._separatorSize) {
@@ -539,9 +540,9 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             }
         }
         if (this._childPanes[0]) {
-            if (newValue < this._childPanes[0].minimumSize) {
+            if (this._childPanes[0].minimumSize != null && newValue < this._childPanes[0].minimumSize) {
                 newValue = this._childPanes[0].minimumSize;
-            } else if (this._childPanes[0].maximumSize  != null && newValue > this._childPanes[0].maximumSize) {
+            } else if (this._childPanes[0].maximumSize != null && newValue > this._childPanes[0].maximumSize) {
                 newValue = this._childPanes[0].maximumSize;
             }
         }
