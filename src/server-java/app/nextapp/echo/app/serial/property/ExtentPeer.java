@@ -60,6 +60,9 @@ implements SerialPropertyPeer {
     
     public static Extent fromString(String value) 
     throws SerialException {
+        if (value == null) {
+            return null;
+        }
         int separatorPoint = -1;
         int length = value.length();
         for (int i = length - 1; i >= 0; --i) {
