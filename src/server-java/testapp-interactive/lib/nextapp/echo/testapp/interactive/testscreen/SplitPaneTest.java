@@ -364,6 +364,16 @@ public class SplitPaneTest extends SplitPane {
                 testPane.setSeparatorPosition(new Extent(300));
             }
         });
+        controlsColumn.addButton("Set Separator Position = 10%", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testPane.setSeparatorPosition(new Extent(10, Extent.PERCENT));
+            }
+        });
+        controlsColumn.addButton("Set Separator Position = 50%", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testPane.setSeparatorPosition(new Extent(50, Extent.PERCENT));
+            }
+        });
         controlsColumn.addButton("Set Separator Position = 250px, Add Content", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testPane.setSeparatorPosition(new Extent(250));

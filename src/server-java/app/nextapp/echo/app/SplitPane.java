@@ -357,7 +357,6 @@ implements Pane, PaneContainer {
      * @param newValue the new position
      */
     public void setSeparatorPosition(Extent newValue) {
-        Extent.validate(newValue, Extent.PX);
         if (newValue != null && newValue.getValue() < 0) {
             throw new IllegalArgumentException("Extent value may not be negative.");
         }
