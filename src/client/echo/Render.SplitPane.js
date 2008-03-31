@@ -476,8 +476,10 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         
     renderUpdate: function(update) {
         var fullRender = false;
-        if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()
-                || this._hasRelocatedChildren()) {
+        
+        if (this._hasRelocatedChildren()) {
+            fullRender = true;
+        } else if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()) {
             if (update.isUpdatedPropertySetIn({ separatorPosition: true })) {
                 this._requested =  EchoAppRender.Extent.toPixels(this.component.render("separatorPosition",
                         EchoApp.SplitPane.DEFAULT_SEPARATOR_POSITION), this._orientationVertical);
@@ -503,6 +505,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                 }
             }
         }
+        
         if (fullRender) {
             var element = this._splitPaneDiv;
             var containerElement = element.parentNode;
