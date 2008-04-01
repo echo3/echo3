@@ -5,8 +5,8 @@
  */
 
 /**
- * @namespace
  * Namespace for application framework.
+ * @namespace
  */
 EchoApp = { 
 
@@ -396,7 +396,6 @@ EchoApp.ComponentFactory = {
     /**
      * Creates a new instance of an arbitrary component.
      * 
-     * @constructor
      * @param {String} typeName the type name of the component
      * @param {String} renderId the component render id
      * @return a newly instantiated component
@@ -1499,10 +1498,10 @@ EchoApp.StyleSheet = Core.extend({
 // Update Management
 
 /**
- * @namespace
  * Namespace for update management.  Non-instantiable object.
  * Provides capabilities for storing property changes made to applications and components
  * such that display redraws may be performed efficiently. 
+ * @namespace
  */
 EchoApp.Update = { };
 
