@@ -18,8 +18,10 @@
  */
 
 /**
+ * Namespace for Web Core.
+ * <p>  
+ * Non-instantiable class.
  * @namespace
- * Namespace for Web Core.  Non-instantiable object.
  */
 WebCore = { 
 
@@ -73,9 +75,10 @@ WebCore = {
 };
 
 /**
- * @class
  * DOM manipulation utility method namespace.
- * Do not instantiate.
+ * <p>
+ * Non-instantiable class.
+ * @class
  */
 WebCore.DOM = {
 
@@ -386,9 +389,10 @@ WebCore.DOM = {
 };
 
 /**
- * @class
  * Provides information about the web browser environment.
+ * <p>
  * Non-instantiable class.
+ * @class
  */
 WebCore.Environment = {
 
@@ -523,7 +527,6 @@ WebCore.Environment = {
 };
 
 /**
- * @class
  * EventProcessor namespace.  Non-instantiable object.
  * The static methods in this object provide a standard framework for handling
  * DOM events across incompatible browser platforms.
@@ -533,6 +536,9 @@ WebCore.Environment = {
  * listeners that work even on Internet Explorer platforms, where they are not natively supported.
  * This implementation relies on the fact that all event listeners will be registered
  * through it.
+ * <p>
+ * Non-instantiable class.
+ * @class
  */
 WebCore.EventProcessor = {
     
@@ -979,9 +985,10 @@ WebCore.HttpConnection = Core.extend({
 });
 
 /**
- * @class
  * Utilities for dynamically loading additional script libraries.
+ * <p>
  * Non-instantiable class. 
+ * @class
  */
 WebCore.Library = {
 
@@ -1183,9 +1190,10 @@ WebCore.Library = {
 };
 
 /**
- * @class
  * Namespace for measuring-related operations.
- * Do not instantiate.  
+ * <p>
+ * Non-instantiable class. 
+ * @class
  */
 WebCore.Measure = { 
 
@@ -1309,7 +1317,6 @@ WebCore.Measure = {
     },
 
     /**
-     * @class
      * Measures the boundaries of an element,i.e., its left and top position and/or
      * width and height.  If the element is not attached to the rendered DOM hierarchy,
      * the element will be temporarily removed from its hierarchy and placed in an
@@ -1649,7 +1656,6 @@ WebCore.Scheduler.MethodRunnable = Core.extend(WebCore.Scheduler.Runnable, {
 });
 
 /**
- * @class
  * Static object/namespace which provides cross-platform CSS positioning 
  * capabilities. Do not instantiate.
  * <p>
@@ -1661,6 +1667,9 @@ WebCore.Scheduler.MethodRunnable = Core.extend(WebCore.Scheduler.Runnable, {
  * coordinates of an element and invoke redraw().  The redraw() method
  * must be invoked whenever the size of the element should be redrawn,
  * e.g., when the screen or its containing element resizes.
+ * <p>
+ * Non-instantiable class.
+ * @class
  */
 WebCore.VirtualPosition = {
 

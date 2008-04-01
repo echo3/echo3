@@ -5,11 +5,11 @@
  * Requires Core, WebCore, Application, Render, Serial, Client.
  */
  
-/** 
- * @class 
+/**
  * FreeClient implementation.
  * The init() and dispose() lifecycle methods must be called before the client is used,
  * and when the client will no longer be used, respectively.
+ * @namespace
  */ 
 EchoFreeClient = Core.extend(EchoClient, {
 
@@ -101,7 +101,7 @@ EchoFreeClient = Core.extend(EchoClient, {
 });
 
 /**
- * @class WebCore.Scheduler.Runnable to automatically update client when application state has changed.
+ * <code>WebCore.Scheduler.Runnable</code> to automatically update client when application state has changed.
  */
 EchoFreeClient.AutoUpdate = Core.extend(WebCore.Scheduler.Runnable, {
 

@@ -1,5 +1,6 @@
 /**
  * Abstract base class for Echo clients.
+ * @namespace
  */
 EchoClient = Core.extend({
     
@@ -270,7 +271,7 @@ EchoClient = Core.extend({
 });
 
 /**
- * @class Provides a tool for measuring performance of the Echo3 client engine.
+ * Provides a tool for measuring performance of the Echo3 client engine.
  */
 EchoClient.Timer = Core.extend({
 
