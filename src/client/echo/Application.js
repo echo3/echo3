@@ -464,10 +464,10 @@ EchoApp.ComponentFactory = {
  * A component MUST have its componentType property set before it is used in a hierarchy.  Failing to do so
  * will throw an exception and/or result in indeterminate behavior.
  *
- * @sp background the background color
- * @sp font the component font
- * @sp foreground the foreground color
- * @sp layoutData layout data information, describng how the component should be rendered by its container 
+ * @sp {#Color} background the background color
+ * @sp {#Font} font the component font
+ * @sp {#Color} foreground the foreground color
+ * @sp {Object} layoutData layout data information, describng how the component should be rendered by its container 
  */
 EchoApp.Component = Core.extend({
     
@@ -2243,48 +2243,48 @@ EchoApp.Update.Manager = Core.extend({
 /**
  * Base class from which button components are derived.
  *
- * @sp actionCommand the action command fired in action events 
+ * @sp {String} actionCommand the action command fired in action events 
  *     when the buttton is pushed
- * @sp backgroundImage the background image
- * @sp border the default button border
- * @sp disabledBackground the disabled background color
- * @sp disabledBackgroundImage the disabled background image
- * @sp disabledBorder the disabled border
- * @sp disabledFont the disabled font
- * @sp disabledForeground the disabled foreground color
- * @sp disabledIcon the disabled  icon
- * @sp focusedBackground the focused background
- * @sp focusedBackgroundImage the focused background image
- * @sp focusedBorder the focused border
- * @sp focusedEnabled boolean flag indicating whether focus effects are enabled 
- * @sp focusedFont the focused font
- * @sp focusedForeground the focused foreground color
- * @sp focusedIcon the focused icon
- * @sp height the button height
- * @sp icon the button icon
- * @sp alignment the alignment of the button's content
- * @sp iconTextMargin the extent margin between the button's icon and text
- * @sp insets the inset padding margin between the button's border and its content
- * @sp lineWrap boolean flag indicating whether text within the button may be wrapped
- * @sp pressedBackground the pressed background color
- * @sp pressedBackgroundImage the pressed background image
- * @sp pressedBorder the pressed border
- * @sp pressedEnabled boolean flag indicating whether pressed effects are enabled 
- * @sp pressedFont the pressed font
- * @sp pressedForeground the pressed foreground color
- * @sp pressedIcon the pressed icon
- * @sp rolloverBackground the rollover background color
- * @sp rolloverBackgroundImage the rollover background image
- * @sp rolloverBorder the rollover border
- * @sp rolloverEnabled boolean flag indicating whether rollover effects are enabled
- * @sp rolloverFont the rollover font
- * @sp rolloverForeground the rollover foreground
- * @sp rolloverIcon the rollover icon
- * @sp text the text of the button
- * @sp textAlignment the alignment of the text
- * @sp textPosition the position of the text relative to the icon
- * @sp toolTipText the tool tip text
- * @sp width the width of the button
+ * @sp {#Alignment} alignment the alignment of the button's content
+ * @sp {#FillImage} backgroundImage the background image
+ * @sp {#Border} border the default button border
+ * @sp {#Color} disabledBackground the disabled background color
+ * @sp {#FillImage} disabledBackgroundImage the disabled background image
+ * @sp {#Border} disabledBorder the disabled border
+ * @sp {#Font} disabledFont the disabled font
+ * @sp {#Color} disabledForeground the disabled foreground color
+ * @sp {#ImageReference} disabledIcon the disabled icon
+ * @sp {#Color} focusedBackground the focused background
+ * @sp {#FillImage}focusedBackgroundImage the focused background image
+ * @sp {#Border} focusedBorder the focused border
+ * @sp {Boolean} focusedEnabled boolean flag indicating whether focus effects are enabled 
+ * @sp {#Font} focusedFont the focused font
+ * @sp {#Color} focusedForeground the focused foreground color
+ * @sp {#ImageReference} focusedIcon the focused icon
+ * @sp {#Extent} height the button height
+ * @sp {#ImageReference} icon the button icon
+ * @sp {#Extent} iconTextMargin the extent margin between the button's icon and text
+ * @sp {#Insets} insets the inset padding margin between the button's border and its content
+ * @sp {Boolean} lineWrap boolean flag indicating whether text within the button may be wrapped
+ * @sp {#Color} pressedBackground the pressed background color
+ * @sp {#FillImage} pressedBackgroundImage the pressed background image
+ * @sp {#Border} pressedBorder the pressed border
+ * @sp {Boolean} pressedEnabled boolean flag indicating whether pressed effects are enabled 
+ * @sp {#Font} pressedFont the pressed font
+ * @sp {#Font} pressedForeground the pressed foreground color
+ * @sp {#ImageReference} pressedIcon the pressed icon
+ * @sp {#Color} rolloverBackground the rollover background color
+ * @sp {#FillImage} rolloverBackgroundImage the rollover background image
+ * @sp {#Border} rolloverBorder the rollover border
+ * @sp {Boolean} rolloverEnabled boolean flag indicating whether rollover effects are enabled
+ * @sp {#Font} rolloverFont the rollover font
+ * @sp {#Color} rolloverForeground the rollover foreground
+ * @sp {#ImageReference} rolloverIcon the rollover icon
+ * @sp {String} text the text of the button
+ * @sp {#Alignment} textAlignment the alignment of the text
+ * @sp {#Alignment} textPosition the position of the text relative to the icon
+ * @sp {String} toolTipText the tool tip text
+ * @sp {#Extent} width the width of the button
  */
 EchoApp.AbstractButton = Core.extend(EchoApp.Component, {
 
@@ -2325,17 +2325,17 @@ EchoApp.Button = Core.extend(EchoApp.AbstractButton, {
 /**
  * Abstract base class for toggle button component.
  *
- * @sp disabledStateIcon the disabled state icon to display when the toggle state is deselected
- * @sp disabledSelectedStateIcon the disabled state icon to display when thetoggle  state is selected
- * @sp pressedStateIcon the pressed state icon to display when the toggle state is deselected
- * @sp pressedSelectedStateIcon the pressed state icon to display when the toggle state is selected
- * @sp rolloverStateIcon the rollover state icon to display when the toggle state is deselected
- * @sp rolloverSelectedStateIcon the rollover state icon to display when the toggle state is selected
- * @sp selectedStateIcon the default state icon to display when the toggle state is deselected
- * @sp stateAlignment the alignment of the state icon relative to the button's icon/text
- * @sp statePosition the position (an alignment value) of the state icon relative to the button's icon/text
- * @sp stateIcon the default state icon to display when the toggle state is selected
- * @sp stateMargin the margin between the state icon and the button's icon/text
+ * @sp {#ImageReference} disabledStateIcon the disabled state icon to display when the toggle state is deselected
+ * @sp {#ImageReference} disabledSelectedStateIcon the disabled state icon to display when thetoggle  state is selected
+ * @sp {#ImageReference} pressedStateIcon the pressed state icon to display when the toggle state is deselected
+ * @sp {#ImageReference} pressedSelectedStateIcon the pressed state icon to display when the toggle state is selected
+ * @sp {#ImageReference} rolloverStateIcon the rollover state icon to display when the toggle state is deselected
+ * @sp {#ImageReference} rolloverSelectedStateIcon the rollover state icon to display when the toggle state is selected
+ * @sp {#ImageReference} selectedStateIcon the default state icon to display when the toggle state is deselected
+ * @sp {#Alignment} stateAlignment the alignment of the state icon relative to the button's icon/text
+ * @sp {#Alignment} statePosition the position (an alignment value) of the state icon relative to the button's icon/text
+ * @sp {#ImageReference} stateIcon the default state icon to display when the toggle state is selected
+ * @sp {Number} stateMargin the margin between the state icon and the button's icon/text
  */
 EchoApp.ToggleButton = Core.extend(EchoApp.AbstractButton, {
 
@@ -2364,7 +2364,7 @@ EchoApp.CheckBox = Core.extend(EchoApp.ToggleButton, {
 /**
  * RadioButton component.
  *
- * @sp group a unique identifier used to group radio buttons together (set this property to a value generated by 
+ * @sp {String} group a unique identifier used to group radio buttons together (set this property to a value generated by 
  *     EchoApp.generateUid() to guarantee uniqueness)
  */
 EchoApp.RadioButton = Core.extend(EchoApp.ToggleButton, {
@@ -2388,18 +2388,18 @@ EchoApp.RadioButton = Core.extend(EchoApp.ToggleButton, {
  * @cp selection the index of the selcted item, or an array of the 
  *     indices of selected items when multiple items are selected
  *
- * @sp border the default border
- * @sp disabledBackground the disabled background color
- * @sp disabledBorder the disabled border
- * @sp disabledFont the disabled font
- * @sp disabledForeground the disabled foreground color
- * @sp height the component height
- * @sp insets the inset margin between the border and the items of the list component
- * @sp rolloverBackground the rollover background color
- * @sp rolloverBorder the rollover border
- * @sp rolloverFont the rollover font
- * @sp rolloverForeground the rollover foreground color
- * @sp width the component width 
+ * @sp {#Border} border the default border
+ * @sp {#Color} disabledBackground the disabled background color
+ * @sp {#Border} disabledBorder the disabled border
+ * @sp {#Font} disabledFont the disabled font
+ * @sp {#Color} disabledForeground the disabled foreground color
+ * @sp {#Extent} height the component height
+ * @sp {#Insets} insets the inset margin between the border and the items of the list component
+ * @sp {#Color} rolloverBackground the rollover background color
+ * @sp {#Border} rolloverBorder the rollover border
+ * @sp {#Font} rolloverFont the rollover font
+ * @sp {#Color} rolloverForeground the rollover foreground color
+ * @sp {#Extent} width the component width 
  */
 EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
 
@@ -2427,7 +2427,7 @@ EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
 /**
  * ListBox component.
  *
- * @sp selectionMode a value indicating the selection mode, one of the following values:
+ * @sp {Number} selectionMode a value indicating the selection mode, one of the following values:
  *     <ul>
  *      <li>EchoApp.ListBox.SINGLE_SELECTION (the default)</li>
  *      <li>EchoApp.ListBox.MULTIPLE_SELECTION</li>
@@ -2472,15 +2472,15 @@ EchoApp.SelectField = Core.extend(EchoApp.AbstractListComponent, {
 /**
  * A container component which displays cells in a column in vertical order.
  *
- * @sp border the border dispalyed around the entire column
- * @sp cellSpacing the extent margin between cells of the column
- * @sp insets the inset margin between the column border and its cells
+ * @sp {#Border} border the border dispalyed around the entire column
+ * @sp {#Extent} cellSpacing the extent margin between cells of the column
+ * @sp {#Insets} insets the inset margin between the column border and its cells
  *
- * @ldp alignment the alignment of the child component within its cell
- * @ldp background the background of the child component's cell
- * @ldp backrgoundImage the background image of the child component's cell
- * @ldp height the height of the child component's cell
- * @ldp insets the insets margin of the child component's cell 
+ * @ldp {#Alignment} alignment the alignment of the child component within its cell
+ * @ldp {#Color} background the background of the child component's cell
+ * @ldp {#FillImage} backrgoundImage the background image of the child component's cell
+ * @ldp {#Extent} height the height of the child component's cell
+ * @ldp {#Insets} insets the insets margin of the child component's cell 
  *      (this inset is added to any inset set on the container component)
  */
 EchoApp.Column = Core.extend(EchoApp.Component, {
@@ -2511,8 +2511,8 @@ EchoApp.Composite = Core.extend(EchoApp.Component, {
  * Panel component.
  * A single-child container that provides a configurable border and margin.
  *
- * @sp border the panel border surrounding the child component
- * @sp insets the inset padding margin between the panel border and its content
+ * @sp {#Border} border the panel border surrounding the child component
+ * @sp {#Insets} insets the inset padding margin between the panel border and its content
  */
 EchoApp.Panel = Core.extend(EchoApp.Composite, {
 
@@ -2528,17 +2528,17 @@ EchoApp.Panel = Core.extend(EchoApp.Composite, {
  * A content pane is a high-level container/layout object which provides
  * layout for a content region and floating WindowPanes.
  *
- * @sp backgroundImage the background image
- * @sp horizontalScroll the horizontal scroll position
- * @sp insets the inset margin of the content
- * @sp overflow the scrollbar behavior used when content overflows
+ * @sp {#FillImage} backgroundImage the background image
+ * @sp {#Extent} horizontalScroll the horizontal scroll position
+ * @sp {#Insets} insets the inset margin of the content
+ * @sp {Number} overflow the scrollbar behavior used when content overflows
  *     the boundaries of the pane, one of the following values:
  *     <ul>
  *      <li>OVERFLOW_AUTO (the default)</li>
  *      <li>OVERFLOW_HIDDEN</li>
  *      <li>OVERFLOW_SCROLL</li>
  *     </ul>
- * @sp verticalScroll the vertical scroll position
+ * @sp {#Extent} verticalScroll the vertical scroll position
  */
 EchoApp.ContentPane = Core.extend(EchoApp.Component, {
 
@@ -2561,34 +2561,34 @@ EchoApp.ContentPane = Core.extend(EchoApp.Component, {
  * A container component which displays children in a grid.
  * Cells may be configured to span multiple rows and/or columns.
  *
- * @sp border the border dispalyed around the grid, and between cells
- * @sp columnWidth an indexed property whose indices represent the width 
+ * @sp {#Border} border the border dispalyed around the grid, and between cells
+ * @sp {#Extent} columnWidth an indexed property whose indices represent the width 
  *     of each column of the grid
- * @sp height the overall height of the grid
- * @sp insets the default inset margin displayed in each cell
- * @sp orientation a value indicating whether the grid will be laid out
+ * @sp {#Extent} height the overall height of the grid
+ * @sp {#Insets} insets the default inset margin displayed in each cell
+ * @sp {Number} orientation a value indicating whether the grid will be laid out
  *     horizontally and then vertically or vice-versa, one of the
  *     following values:
  *     <ul>
  *      <li>ORIENTATION_HORIZONTAL (the default)</li> 
  *      <li>ORIENTATION_VERTICAL</li> 
  *     </ul>
- * @sp rowWidth an indexed property whose indices represent the height 
+ * @sp {#Extent} rowWidth an indexed property whose indices represent the height 
  *     of each row of the grid
- * @sp size the number of cells to render before wrapping to the next
+ * @sp {Number} size the number of cells to render before wrapping to the next
  *     column/row (default 2)
- * @sp width the overall width of the grid
+ * @sp {#Extent} width the overall width of the grid
  *
- * @ldp alignment the alignment of the child component within its cell
- * @ldp background the background of the child component's cell
- * @ldp backrgoundImage the background image of the child component's cell
- * @ldp columnSpan the number of column the containing cell should span
+ * @ldp {#Alignment} alignment the alignment of the child component within its cell
+ * @ldp {#Color} background the background of the child component's cell
+ * @ldp {#FillImage} backrgoundImage the background image of the child component's cell
+ * @ldp {Number} columnSpan the number of column the containing cell should span
  *      (a value of SPAN_FILL indicates that cell should fill all columns until
  *      the end of the grid is reached; this value may only be used in
  *      this property for hoirzontally oriented grids)
- * @ldp insets the insets margin of the child component's cell 
+ * @ldp {#Insets} insets the insets margin of the child component's cell 
  *      (this inset is added to any inset set on the container component)
- * @ldp rowSpan the number of rows the containing cell should span
+ * @ldp {Number} rowSpan the number of rows the containing cell should span
  *      (a value of SPAN_FILL indicates that cell should fill all rows until
  *      the end of the grid is reached; this value may only be used in
  *      this property for vertically oriented grids)
@@ -2634,17 +2634,17 @@ EchoApp.Grid = Core.extend(EchoApp.Component, {
 /**
  * Label component.
  *
- * @sp formatWhitespace a boolean flag indicating whether whitespace 
+ * @sp {Boolean} formatWhitespace a boolean flag indicating whether whitespace 
  *     formatting should be applied to the label
- * @sp lineWrap a boolean flag indicating whether long lines should
+ * @sp {Boolean} lineWrap a boolean flag indicating whether long lines should
  *     be wrapped
- * @sp icon the icon/image to display in the label
- * @sp iconTextMargin an extent setting describing the distance between
+ * @sp {#ImageReference} icon the icon/image to display in the label
+ * @sp {#Extent} iconTextMargin an extent setting describing the distance between
  *     the label and icon
- * @sp text the text to display in the label
- * @sp textAlignment an alignment setting describing the alignment of 
+ * @sp {String} text the text to display in the label
+ * @sp {#Alignment} textAlignment an alignment setting describing the alignment of 
  *     the label's text
- * @sp textPosition an alignment setting describing the position of the
+ * @sp {#Alignment} textPosition an alignment setting describing the position of the
  *     label's text relative to the icon
  */
 EchoApp.Label = Core.extend(EchoApp.Component, {
@@ -2660,16 +2660,16 @@ EchoApp.Label = Core.extend(EchoApp.Component, {
 /**
  * A container component which displays cells in a row in horizontal order.
  *
- * @sp border the border dispalyed around the entire column
- * @sp cellSpacing the extent margin between cells of the column
- * @sp insets the inset margin between the column border and its cells
+ * @sp {#Border} border the border dispalyed around the entire column
+ * @sp {#Extent} cellSpacing the extent margin between cells of the column
+ * @sp {#Insets} insets the inset margin between the column border and its cells
  *
- * @ldp alignment the alignment of the child component within its cell
- * @ldp background the background of the child component's cell
- * @ldp backrgoundImage the background image of the child component's cell
- * @ldp insets the insets margin of the child component's cell 
+ * @ldp {#Alignment} alignment the alignment of the child component within its cell
+ * @ldp {#Color} background the background of the child component's cell
+ * @ldp {#FillImage} backrgoundImage the background image of the child component's cell
+ * @ldp {#Insets} insets the insets margin of the child component's cell 
  *      (this inset is added to any inset set on the container component)
- * @ldp width the width of the child component's cell
+ * @ldp {#Extent} width the width of the child component's cell
  */
 EchoApp.Row = Core.extend(EchoApp.Component, {
 
@@ -2685,7 +2685,7 @@ EchoApp.Row = Core.extend(EchoApp.Component, {
  * SplitPane component.
  * Splits a pane into two regions.  A maximum of two components may be added as children.
  *
- * @sp orientation the orientation of the SplitPane, one of the following values:
+ * @sp {Number} orientation the orientation of the SplitPane, one of the following values:
  *     <ul>
  *      <li>ORIENTATION_HORIZONTAL_LEADING_TRAILING (the default)</li>
  *      <li>ORIENTATION_HORIZONTAL_TRAILING_LEADING</li>
@@ -2694,23 +2694,23 @@ EchoApp.Row = Core.extend(EchoApp.Component, {
  *      <li>ORIENTATION_VERTICAL_TOP_BOTTOM</li>
  *      <li>ORIENTATION_VERTICAL_BOTTOM_TOP</li>
  *     </ul>
- * @sp resizable a boolean flag indicating whether the pane separator can be moved
- * @sp separatorColor the separator color
- * @sp separatorHeight the height of the separator (this property is used to determine the size
+ * @sp {Boolean} resizable flag indicating whether the pane separator can be moved
+ * @sp {#Color} separatorColor the separator color
+ * @sp {#Extent} separatorHeight the height of the separator (this property is used to determine the size
  *     of the separator in vertical orientations 
- * @sp separatorHorizontalImage a FillImage used to paint the separator for horizontal orientations
- * @sp separatorPosition an extent specifying the position of the separator
- * @sp separatorVerticalImage a FillImage used to paint the separator for vertical orientations
- * @sp separatorWidth the width of the separator (this property is used to determine the size
+ * @sp {#FillImage} separatorHorizontalImage a FillImage used to paint the separator for horizontal orientations
+ * @sp {#Extent} separatorPosition an extent specifying the position of the separator
+ * @sp {#FillImage} separatorVerticalImage a FillImage used to paint the separator for vertical orientations
+ * @sp {#Extent} separatorWidth the width of the separator (this property is used to determine the size
  *     of the separator in horizontal orientations
  *
- * @ldp alignment the alignment of the child component within its subpane
- * @ldp background the background of the child component's subpane
- * @ldp backrgoundImage the background image of the child component's subpane
- * @ldp insets the insets margin of the child component's subpane
- * @ldp maximumSize the maximum size of the child component's subpane
- * @ldp minimumSize the minimum size of the child component's subpane
- * @ldp overflow the layout behavior to use when the child component is larger than 
+ * @ldp {#Alignment} alignment the alignment of the child component within its subpane
+ * @ldp {#Color} background the background of the child component's subpane
+ * @ldp {#FillImage} backrgoundImage the background image of the child component's subpane
+ * @ldp {#Insets} insets the insets margin of the child component's subpane
+ * @ldp {#Extent} maximumSize the maximum size of the child component's subpane
+ * @ldp {#Extent} minimumSize the minimum size of the child component's subpane
+ * @ldp {Number} overflow the layout behavior to use when the child component is larger than 
  *      its containing subpane, one of the following values:
  *      <ul>
  *       <li>OVERFLOW_AUTO (the default)</li>
@@ -2750,23 +2750,23 @@ EchoApp.SplitPane = Core.extend(EchoApp.Component, {
 /**
  * Abstract base class for text components.
  *
- * @sp actionCommand the action command fired when the enter key is pressed
+ * @sp {String} actionCommand the action command fired when the enter key is pressed
  *     within the text component
- * @sp alignment an alignment setting describing the alignment of the text
- * @sp backgroundImage the background image to display in the component
- * @sp border the border to display around the component
- * @sp disabledBackground the disabled background color
- * @sp disabledBackgroundImage the disabled background image
- * @sp disabledBorder the disabled border
- * @sp disabledFont the disabled font
- * @sp disabledForeground the disabled foreground color
- * @sp height the height of the component
- * @sp horizontalScroll the horizontal scrollbar position
- * @sp insets the inset margin between the border and the text content
- * @sp maximumLength the maximum number of characters which may be entered 
- * @sp toolTipText the tool tip text
- * @sp verticalScroll the vertical scrollbar position
- * @sp width the width of the component
+ * @sp {#Alignment} alignment an alignment setting describing the alignment of the text
+ * @sp {#FillImage} backgroundImage the background image to display in the component
+ * @sp {#Border} border the border to display around the component
+ * @sp {#Color} disabledBackground the disabled background color
+ * @sp {#Color} disabledBackgroundImage the disabled background image
+ * @sp {#Border} disabledBorder the disabled border
+ * @sp {#Font} disabledFont the disabled font
+ * @sp {#Color} disabledForeground the disabled foreground color
+ * @sp {#Extent} height the height of the component
+ * @sp {#Extent} horizontalScroll the horizontal scrollbar position
+ * @sp {#Insets} insets the inset margin between the border and the text content
+ * @sp {Number} maximumLength the maximum number of characters which may be entered 
+ * @sp {String} toolTipText the tool tip text
+ * @sp {#Extent} verticalScroll the vertical scrollbar position
+ * @sp {#Extent} width the width of the component
  */
 EchoApp.TextComponent = Core.extend(EchoApp.Component, {
 
@@ -2823,31 +2823,35 @@ EchoApp.PasswordField = Core.extend(EchoApp.TextField, {
 /**
  * WindowPane component.
  *
- * @sp backgroundImage the background image to display within the content area
- * @sp border the FillImageBorder containing thw WindowPane
- * @sp closable a boolean flag indicating whether the window is closable
- * @sp closeIcon the close button icon
- * @sp closeIconInsets the inset margin around the close button icon
- * @sp height the outside height of the window, including its border
- * @sp icon the icon to display adjacent the window title
- * @sp iconInsets the inset margin around the icon
- * @sp insets the inset margin around the window content
- * @sp maximumHeight the maximum height of the window
- * @sp maximumWidth the maximum width of the window
- * @sp minimumHeight the minimum height of the window
- * @sp minimumWidth the minimum width of the window
- * @sp movable a boolean flag indicating whether the window is movable
- * @sp positionX the horizontal (x) position of the window
- * @sp positionY the vertical (y) position of the window
- * @sp resizable a boolean flag indicating whether the window is resizable
- * @sp title the title of the window
- * @sp titleBackground the background color to display in the title bar
- * @sp titleBackgroundImage the background image to display in the title bar
- * @sp titleFont the font in which to display the title text
- * @sp titleForeground the foreground color of the title text
- * @sp titleHeight the height of the title bar
- * @sp titleInsets the inset margin of the title text
- * @sp width the outside width of the window, including its border 
+ * @sp {#FillImage} backgroundImage the background image to display within the content area
+ * @sp {EchoApp.FillImageBorder} border the FillImageBorder containing thw WindowPane
+ * @sp {Boolean} closable flag indicating whether the window is closable
+ * @sp {#ImageReference} closeIcon the close button icon
+ * @sp {#Insets} closeIconInsets the inset margin around the close button icon
+ * @sp {#Extent} height the outside height of the window, including its border
+ * @sp {#ImageReference} icon the icon to display adjacent the window title
+ * @sp {#Insets} iconInsets the inset margin around the icon
+ * @sp {#Insets} insets the inset margin around the window content
+ * @sp {Boolean} maximizeEnabled flag indicating whether maximize feature should be enabled
+ * @sp {#ImageReference} maximizeIcon the minimize button icon
+ * @sp {#Extent} maximumHeight the maximum height of the window
+ * @sp {#Extent} maximumWidth the maximum width of the window
+ * @sp {Boolean} minimizeEnabled flag indicating whether maximize feature should be enabled
+ * @sp {#ImageReference} minimizeIcon the minimize button icon
+ * @sp {#Extent} minimumHeight the minimum height of the window
+ * @sp {#Extent} minimumWidth the minimum width of the window
+ * @sp {Boolean} movable flag indicating whether the window is movable
+ * @sp {#Extent} positionX the horizontal (x) position of the window
+ * @sp {#Extent} positionY the vertical (y) position of the window
+ * @sp {Boolean} resizable flag indicating whether the window is resizable
+ * @sp {String} title the title of the window
+ * @sp {#Color} titleBackground the background color to display in the title bar
+ * @sp {#FillImage} titleBackgroundImage the background image to display in the title bar
+ * @sp {#Font} titleFont the font in which to display the title text
+ * @sp {#Color} titleForeground the foreground color of the title text
+ * @sp {#Extent} titleHeight the height of the title bar
+ * @sp {#Insets} titleInsets the inset margin of the title text
+ * @sp {#Extent} width the outside width of the window, including its border 
  */
 EchoApp.WindowPane = Core.extend(EchoApp.Component, {
 
