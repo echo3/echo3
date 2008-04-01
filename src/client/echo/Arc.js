@@ -5,15 +5,16 @@
  */
 
 /**
- * @class Namespace for application-rendered component support.  Non-instantiable object.
+ * Namespace for application-rendered component support.
+ * @namespace
  */
 EchoArc = function() { }
 
 /**
- * @class 
  * Client for application-rendered components.
  * These clients are automatically created and destroyed by the
  * ArcClient component synchronization peer.
+ * @class 
  */
 EchoArc.Client = Core.extend(EchoFreeClient, {
     
@@ -28,11 +29,11 @@ EchoArc.Client = Core.extend(EchoFreeClient, {
 });
 
 /**
- * @class 
  * Component synchronization peer for application rendered components.
  * Application rendered component peers should extend this peer.
  * The super-implementations of the renderAdd(), renderDispose(),
  * renderDisplay(), and renderUpdate() methods must be invoked.
+ * @class 
  */
 EchoArc.ComponentSync = Core.extend(EchoRender.ComponentSync, {
 

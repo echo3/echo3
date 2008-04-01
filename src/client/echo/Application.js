@@ -380,7 +380,6 @@ EchoApp.Application = Core.extend({
 /**
  * Factory to create new instances of arbitrary components.  This object is 
  * used to instantiate new components during XML deserialization.
- * This is a namespace object, do not instantiate.
  * @class
  */
 EchoApp.ComponentFactory = {
@@ -1498,7 +1497,7 @@ EchoApp.StyleSheet = Core.extend({
 // Update Management
 
 /**
- * Namespace for update management.  Non-instantiable object.
+ * Namespace for update management.
  * Provides capabilities for storing property changes made to applications and components
  * such that display redraws may be performed efficiently. 
  * @namespace

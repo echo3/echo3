@@ -1,5 +1,6 @@
 /**
  * Tools for serializing components, stylesheets, and property instances to and from XML.
+ * @namespace
  */
 EchoSerial = { 
 
@@ -254,11 +255,13 @@ EchoSerial = {
 
 /**
  * Namespace for property translator implementations.
+ * @namespace
  */
 EchoSerial.PropertyTranslator = { };
 
 /**
  * Null PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.Null = {
 
@@ -271,6 +274,7 @@ EchoSerial.addPropertyTranslator("0", EchoSerial.PropertyTranslator.Null);
 
 /**
  * Boolean PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.Boolean = {
 
@@ -283,6 +287,7 @@ EchoSerial.addPropertyTranslator("b", EchoSerial.PropertyTranslator.Boolean);
 
 /**
  * Float PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.Float = {
 
@@ -295,6 +300,7 @@ EchoSerial.addPropertyTranslator("f", EchoSerial.PropertyTranslator.Float);
 
 /**
  * Integer PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.Integer = { 
 
@@ -307,6 +313,7 @@ EchoSerial.addPropertyTranslator("i", EchoSerial.PropertyTranslator.Integer);
 
 /**
  * String PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.String = {
 
@@ -328,6 +335,7 @@ EchoSerial.addPropertyTranslator("s", EchoSerial.PropertyTranslator.String);
 
 /**
  * Date PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.Date = {
 
@@ -353,6 +361,7 @@ EchoSerial.addPropertyTranslatorByType(Date, EchoSerial.PropertyTranslator.Date)
 
 /**
  * Map (Associative Array) PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.Map = {
 
@@ -375,6 +384,7 @@ EchoSerial.addPropertyTranslator("m", EchoSerial.PropertyTranslator.Map);
 
 /**
  * Alignment PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.Alignment = {
 
@@ -415,6 +425,7 @@ EchoSerial.addPropertyTranslator("AL", EchoSerial.PropertyTranslator.Alignment);
 
 /**
  * Border PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.Border = {
 
@@ -455,6 +466,7 @@ EchoSerial.addPropertyTranslator("BO", EchoSerial.PropertyTranslator.Border);
 //FIXME delete
 /**
  * Extent PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.Extent = {
 
@@ -472,6 +484,7 @@ EchoSerial.addPropertyTranslator("X", EchoSerial.PropertyTranslator.Extent);
 
 /**
  * FillImage PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.FillImage = {
 
@@ -502,6 +515,7 @@ EchoSerial.addPropertyTranslator("FI", EchoSerial.PropertyTranslator.FillImage);
 
 /**
  * FillImageBorder PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.FillImageBorder = {
 
@@ -545,6 +559,7 @@ EchoSerial.addPropertyTranslator("FIB", EchoSerial.PropertyTranslator.FillImageB
 
 /**
  * Font PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.Font = {
 
@@ -583,6 +598,7 @@ EchoSerial.addPropertyTranslator("F", EchoSerial.PropertyTranslator.Font);
 
 /**
  * ImageReference PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.ImageReference = {
 
@@ -609,6 +625,7 @@ EchoSerial.addPropertyTranslator("I", EchoSerial.PropertyTranslator.ImageReferen
 
 /**
  * Insets PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.Insets = {
 
@@ -622,6 +639,7 @@ EchoSerial.addPropertyTranslator("N", EchoSerial.PropertyTranslator.Insets);
 
 /**
  * LayoutData PropertyTranslator Singleton.
+ * @class
  */
 EchoSerial.PropertyTranslator.LayoutData = {
 
