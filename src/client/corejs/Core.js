@@ -413,7 +413,6 @@ Core = {
 
 /**
  * @class 
- * @namespace
  * Namespace for debugging related utilities.
  */
 Core.Debug = { 
@@ -641,8 +640,8 @@ Core.Arrays.LargeMap = Core.extend({
 });
 
 /**
- * @class A collection of event listeners.  Provides capability to manage listeners
- *        of multiple types, and fire events to listeners based on type.
+ * A collection of event listeners.  Provides capability to manage listeners
+ * of multiple types, and fire events to listeners based on type.
  */
 Core.ListenerList = Core.extend({
 
@@ -809,6 +808,9 @@ Core.ListenerList = Core.extend({
     }
 });
 
+/**
+ * A collection of locale-specific resources.
+ */
 Core.ResourceBundle = Core.extend({
 
     $static: {

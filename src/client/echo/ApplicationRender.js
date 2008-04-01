@@ -8,6 +8,9 @@
  * </ul>
  */
 
+/**
+ * @namespace
+ */
 EchoAppRender = { 
 
     getEffectProperty: function(component, defaultPropertyName, effectPropertyName, effectState,

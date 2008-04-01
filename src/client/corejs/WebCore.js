@@ -73,7 +73,7 @@ WebCore = {
 };
 
 /**
- * @namespace
+ * @class
  * DOM manipulation utility method namespace.
  * Do not instantiate.
  */
@@ -386,7 +386,7 @@ WebCore.DOM = {
 };
 
 /**
- * @namespace
+ * @class
  * Provides information about the web browser environment.
  * Non-instantiable class.
  */
@@ -523,7 +523,7 @@ WebCore.Environment = {
 };
 
 /**
- * @namespace
+ * @class
  * EventProcessor namespace.  Non-instantiable object.
  * The static methods in this object provide a standard framework for handling
  * DOM events across incompatible browser platforms.
@@ -813,7 +813,6 @@ WebCore.EventProcessor = {
 };
 
 /**
- * @class
  * An HTTP connection to the hosting server.  This method provides a cross
  * platform wrapper for XMLHttpRequest and additionally allows method
  * reference-based listener registration.  
@@ -1119,10 +1118,7 @@ WebCore.Library = {
     }),
 
     /**
-     * @class
      * Representation of a single library to be loaded within a group
-     * 
-     * @private 
      */    
     _Item: Core.extend({
     
@@ -1425,6 +1421,7 @@ WebCore.Measure = {
  * Provides capability to invoke code at regular intervals, after a delay, 
  * or after the current JavaScript execution context has completed.
  * Provides an object-oriented means of accomplishing this task.
+ * @namespace
  */
 WebCore.Scheduler = {
     
@@ -1586,7 +1583,7 @@ WebCore.Scheduler = {
 };
 
 /**
- * @class A runnable task that may be scheduled with the Scheduler.
+ * A runnable task that may be scheduled with the Scheduler.
  */
 WebCore.Scheduler.Runnable = Core.extend({
     
@@ -1616,7 +1613,7 @@ WebCore.Scheduler.Runnable = Core.extend({
 });
 
 /**
- * @class A runnable task implemenation that invokes a function at regular intervals.
+ * A runnable task implemenation that invokes a function at regular intervals.
  */
 WebCore.Scheduler.MethodRunnable = Core.extend(WebCore.Scheduler.Runnable, {
 
