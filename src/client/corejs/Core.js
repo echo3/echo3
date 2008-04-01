@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * Provides low-level core functionality.  Non-instantiable object.  Requires nothing.
+ * Provides low-level core functionality.  Requires nothing.
  * <p>
  * Provides core APIs for creating object-oriented and event-driven JavaScript code.  Features include:
  * <ul>
@@ -22,8 +22,8 @@
  */
 
 /**
- * @namespace
  * Namespace for core functionality.
+ * @namespace
  */
 Core = {
 
@@ -412,8 +412,8 @@ Core = {
 };
 
 /**
- * @class 
  * Namespace for debugging related utilities.
+ * @class
  */
 Core.Debug = { 
 
@@ -468,9 +468,8 @@ Core.Debug = {
 };
 
 /**
+ * Arrays namespace.
  * @namespace
- * Arrays namespace.  
- * Non-instantiable object.
  */
 Core.Arrays = {
 
@@ -572,11 +571,11 @@ Core.Arrays = {
 };
 
 /**
- * @class Associative array wrapper which periodically recreates the associative array
- *        in order to avoid memory leakage and performance problems on certain browser
- *        platforms, i.e., Internet Explorer 6.
- *        Null values are not permitted as keys.  Setting a key to a null value
- *        will result in the key being removed.
+ * Associative array wrapper which periodically recreates the associative array
+ * in order to avoid memory leakage and performance problems on certain browser
+ * platforms, i.e., Internet Explorer 6.
+ * Null values are not permitted as keys.  Setting a key to a null value
+ * will result in the key being removed.
  */
 Core.Arrays.LargeMap = Core.extend({
     

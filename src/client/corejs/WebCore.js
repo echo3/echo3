@@ -19,8 +19,6 @@
 
 /**
  * Namespace for Web Core.
- * <p>  
- * Non-instantiable class.
  * @namespace
  */
 WebCore = { 
@@ -76,8 +74,6 @@ WebCore = {
 
 /**
  * DOM manipulation utility method namespace.
- * <p>
- * Non-instantiable class.
  * @class
  */
 WebCore.DOM = {
@@ -390,8 +386,6 @@ WebCore.DOM = {
 
 /**
  * Provides information about the web browser environment.
- * <p>
- * Non-instantiable class.
  * @class
  */
 WebCore.Environment = {
@@ -527,7 +521,7 @@ WebCore.Environment = {
 };
 
 /**
- * EventProcessor namespace.  Non-instantiable object.
+ * EventProcessor namespace.
  * The static methods in this object provide a standard framework for handling
  * DOM events across incompatible browser platforms.
  * <p>
@@ -536,8 +530,6 @@ WebCore.Environment = {
  * listeners that work even on Internet Explorer platforms, where they are not natively supported.
  * This implementation relies on the fact that all event listeners will be registered
  * through it.
- * <p>
- * Non-instantiable class.
  * @class
  */
 WebCore.EventProcessor = {
@@ -986,8 +978,6 @@ WebCore.HttpConnection = Core.extend({
 
 /**
  * Utilities for dynamically loading additional script libraries.
- * <p>
- * Non-instantiable class. 
  * @class
  */
 WebCore.Library = {
@@ -1191,8 +1181,6 @@ WebCore.Library = {
 
 /**
  * Namespace for measuring-related operations.
- * <p>
- * Non-instantiable class. 
  * @class
  */
 WebCore.Measure = { 
@@ -1424,7 +1412,7 @@ WebCore.Measure = {
 };
 
 /**
- * Scheduler namespace.  Non-instantiable object.
+ * Scheduler namespace.
  * Provides capability to invoke code at regular intervals, after a delay, 
  * or after the current JavaScript execution context has completed.
  * Provides an object-oriented means of accomplishing this task.
@@ -1667,8 +1655,6 @@ WebCore.Scheduler.MethodRunnable = Core.extend(WebCore.Scheduler.Runnable, {
  * coordinates of an element and invoke redraw().  The redraw() method
  * must be invoked whenever the size of the element should be redrawn,
  * e.g., when the screen or its containing element resizes.
- * <p>
- * Non-instantiable class.
  * @class
  */
 WebCore.VirtualPosition = {
