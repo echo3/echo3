@@ -26,6 +26,10 @@ EchoAppRender = {
     }
 };
 
+/**
+ * Provides tools for rendering alignment properties.
+ * @class
+ */
 EchoAppRender.Alignment = { 
 
     _HORIZONTALS: { left: true, center: true, right: true, leading: true, trailing: true },
@@ -106,6 +110,10 @@ EchoAppRender.Alignment = {
     }
 };
 
+/**
+ * Provides tools for rendering border properties.
+ * @class
+ */
 EchoAppRender.Border = {
 
     /**
@@ -242,6 +250,10 @@ EchoAppRender.Border = {
     }
 };
 
+/**
+ * Provides tools for rendering color properties.
+ * @class
+ */
 EchoAppRender.Color = {
 
     /**
@@ -301,6 +313,10 @@ EchoAppRender.Color = {
     }
 };
 
+/**
+ * Provides tools for rendering extent (dimension) properties.
+ * @class
+ */
 EchoAppRender.Extent = { 
 
     /**
@@ -360,6 +376,10 @@ EchoAppRender.Extent = {
     }
 };
 
+/**
+ * Provides tools for rendering fill image (background image) properties.
+ * @class
+ */
 EchoAppRender.FillImage = { 
 
     _REPEAT_VALUES: {
@@ -428,6 +448,10 @@ EchoAppRender.FillImage = {
     }
 };
 
+/**
+ * Provides tools for rendering font properties.
+ * @class
+ */
 EchoAppRender.Font = { 
 
     render: function(font, element) {
@@ -473,6 +497,10 @@ EchoAppRender.Font = {
     }
 };
 
+/**
+ * Provides tools for rendering image properties.
+ * @class
+ */
 EchoAppRender.ImageReference = {
 
     getUrl: function(imageReference) {
@@ -498,6 +526,10 @@ EchoAppRender.ImageReference = {
     }
 };
 
+/**
+ * Provides tools for rendering insets/margin/padding properties.
+ * @class
+ */
 EchoAppRender.Insets = {
 
     /**
@@ -573,10 +605,11 @@ EchoAppRender.Insets = {
 };
 
 /**
- * @class Manages floating windows, e.g., window panes in a content pane.
+ * Manages floating windows, e.g., window panes in a content pane.
  * Provides listener facility to receive notifications when the panes are raised or lowered,
  * such that floating panes may adjust their z-indices appropriately for correct display.
  * Registered listeners will be notified when one or more z-indices have changed.
+ * @class
  */
 EchoAppRender.FloatingPaneManager = Core.extend({
 
@@ -669,6 +702,10 @@ EchoAppRender.FloatingPaneManager = Core.extend({
     }
 });
 
+/**
+ * Renders a table with two or three cells, suitable for laying out buttons, labels, 
+ * and similar components.
+ */
 EchoAppRender.TriCellTable = Core.extend({
 
     $static: {
