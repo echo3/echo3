@@ -1,5 +1,5 @@
 /**
- * @fileoverview
+ * @namespace
  * Module for rendering state of application to DOM.
  * <ul>
  *  <li>Provides capability to process updates in Application UpdateManager,
@@ -11,7 +11,8 @@
  */
 
 /**
- * @class Application rendering namespace.  Non-instantiable object.
+ * Application rendering namespace.
+ * @namespace
  */
 EchoRender = {
 
@@ -19,7 +20,6 @@ EchoRender = {
      * Mapping between component type names and instantiable peer classes.
      * 
      * @type Object
-     * @private
      */
     _peers: {},
     
@@ -28,7 +28,6 @@ EchoRender = {
      * Created and destroyed during each render.
      * 
      * @type Object
-     * @private
      */
     _disposedComponents: null,
     
@@ -38,7 +37,6 @@ EchoRender = {
     
     /**
      * An array sorting implemention to organize an array by component depth.
-     * @private
      */
     _componentDepthArraySort: function(a, b) {
         return EchoRender._getComponentDepth(a.parent) - EchoRender._getComponentDepth(b.parent);
@@ -52,7 +50,6 @@ EchoRender = {
      * @param the root component of the sub-hierarchy on which renderDisplay() should be invoked
      * @param includeSelf flag indicating whether renderDisplay() should be invoked on the
      *        specified component (if false, it will only be invoked on child components)
-     * @private
      */
     _doRenderDisplay: function(component, includeSelf) {
         if (includeSelf) {
@@ -68,7 +65,6 @@ EchoRender = {
      * Recursive work method for _doRenderDisplay().  
      * 
      * @param component the component on which to invoke renderDisplay()
-     * @private
      */
     _doRenderDisplayImpl: function(component) {
         if (component.peer) {
@@ -91,7 +87,6 @@ EchoRender = {
      *
      * @param component the component whose depth is to be calculated
      * @return the depth of the component
-     * @private
      */
     _getComponentDepth: function(component) {
         var depth = -1;
@@ -113,7 +108,6 @@ EchoRender = {
      * 
      * @param {EchoClient} client the relevant Client
      * @param {EchoApp.Component} component the component
-     * @private
      */
     _loadPeer: function(client, component) {
         if (component.peer) {
@@ -156,7 +150,6 @@ EchoRender = {
      * Invokes renderDispose() on all removed children and descendants found in the specified update.
      * 
      * @param {EchoApp.Update.ComponentUpdate} update the update
-     * @private
      */
     _processDispose: function(update) {
         var components = update.getRemovedDescendants();
@@ -363,7 +356,6 @@ EchoRender = {
      * 
      * @param update the <code>ComponentUpdate</code> for which this change is being performed
      * @param component the <code>Component</code> to be disposed
-     * @private
      */
     _renderComponentDisposeImpl: function(update, component) {
         if (!component.peer || component.peer.disposed) {
@@ -385,7 +377,6 @@ EchoRender = {
      * @param {EchoApp.Component} component the component
      * @param {Boolean} disposed the disposed state, true indicating the component has
      *        been disposed
-     * @private
      */
     _setPeerDisposedState: function(component, disposed) {
         if (disposed) {
@@ -405,7 +396,6 @@ EchoRender = {
      * The peer to component association will be removed.
      * 
      * @param {EchoApp.Component} component the component
-     * @private
      */
     _unloadPeer: function(component) {
         component.peer.client = null;
@@ -415,8 +405,8 @@ EchoRender = {
 };
 
 /**
- * @class
  * Component synchronization peer. 
+ * @class
  */
 EchoRender.ComponentSync = Core.extend({ 
 
@@ -443,7 +433,6 @@ EchoRender.ComponentSync = Core.extend({
 
     /**
      * Creates a new copmonent synchronization peer.
-     * @constructor
      */
     $construct: function() { },
     
@@ -514,13 +503,10 @@ EchoRender.ComponentSync = Core.extend({
 });
 
 /**
- * Creates a new root component synchronization peer.
+ * Root component synchronization peer.
  * The root component is not managed by the server, but rather is an existing
  * element within which the Echo application is rendered.
  * This is a very special case in that there is no renderAdd() method.
- * 
- * @constructor
- * @class Root component synchronization peer.
  */
 EchoRender.RootSync = Core.extend(EchoRender.ComponentSync, { 
 
@@ -552,8 +538,8 @@ EchoRender.RootSync = Core.extend(EchoRender.ComponentSync, {
 });
 
 /**
- * @class
  * Namespace for utility objects.
+ * @class
  */
 EchoRender.Util = {
     

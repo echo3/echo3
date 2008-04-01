@@ -1,8 +1,5 @@
 /**
  * Component rendering peer: SplitPane
- * 
- * @class
- * @base EchoRender.ComponentSync
  */
 EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
 
@@ -26,7 +23,6 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
              * 
              * @param {EchoAppRender.SplitPaneSync} splitPanePeer the relevant componentPeer
              * @param {EchoApp.Component} component the child component
-             * @constructor
              */
             $construct: function(splitPanePeer, component) {
                 this.component = component;
