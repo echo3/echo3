@@ -1540,7 +1540,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      * Object type and content are specified by the application container, this variable is not
      * used by the application module in any capacity.
      */
-    renderContext : null,
+    renderContext: null,
     
     /**
      * The set of child Component ids added to the <code>parent</code>.
@@ -2427,8 +2427,8 @@ EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
  *
  * @sp {Number} selectionMode a value indicating the selection mode, one of the following values:
  *     <ul>
- *      <li>EchoApp.ListBox.SINGLE_SELECTION (the default)</li>
- *      <li>EchoApp.ListBox.MULTIPLE_SELECTION</li>
+ *      <li><code>EchoApp.ListBox.SINGLE_SELECTION</code> (the default)</li>
+ *      <li><code>EchoApp.ListBox.MULTIPLE_SELECTION</code></li>
  *     </ul>
  */
 EchoApp.ListBox = Core.extend(EchoApp.AbstractListComponent, {
@@ -2436,12 +2436,12 @@ EchoApp.ListBox = Core.extend(EchoApp.AbstractListComponent, {
     $static: {
 
         /**
-         * Constant for "selectionMode" property indicating single selection.
+         * Constant for <code>selectionMode</code> property indicating single selection.
          */
         SINGLE_SELECTION: 0,
         
         /**
-         * Constant for "selectionMode" property indicating multiple selection.
+         * Constant for <code>selectionMode</code> property indicating multiple selection.
          */
         MULTIPLE_SELECTION: 2
     },
@@ -2532,17 +2532,29 @@ EchoApp.Panel = Core.extend(EchoApp.Composite, {
  * @sp {Number} overflow the scrollbar behavior used when content overflows
  *     the boundaries of the pane, one of the following values:
  *     <ul>
- *      <li>OVERFLOW_AUTO (the default)</li>
- *      <li>OVERFLOW_HIDDEN</li>
- *      <li>OVERFLOW_SCROLL</li>
+ *      <li><code>OVERFLOW_AUTO</code> (the default)</li>
+ *      <li><code>OVERFLOW_HIDDEN</code> hide content that overflows</li>
+ *      <li><code>OVERFLOW_SCROLL</code> always display scrollbars</li>
  *     </ul>
  * @sp {#Extent} verticalScroll the vertical scroll position
  */
 EchoApp.ContentPane = Core.extend(EchoApp.Component, {
 
     $static: {
+    
+        /**
+         * Setting for <code>overflow</code> property that scrollbars should be displayed when content overflows.
+         */
         OVERFLOW_AUTO: 0,
+
+        /**
+         * Setting for <code>overflow</code> property indicating that overflowing content should be hidden.
+         */
         OVERFLOW_HIDDEN: 1,
+
+        /**
+         * Setting for <code>overflow</code> property indicating that scrollbars should always be displayed.
+         */
         OVERFLOW_SCROLL: 2
     },
 
@@ -2568,8 +2580,8 @@ EchoApp.ContentPane = Core.extend(EchoApp.Component, {
  *     horizontally and then vertically or vice-versa, one of the
  *     following values:
  *     <ul>
- *      <li>ORIENTATION_HORIZONTAL (the default)</li> 
- *      <li>ORIENTATION_VERTICAL</li> 
+ *      <li><code>ORIENTATION_HORIZONTAL</code> (the default) lay children out horizontally, then vertically</li> 
+ *      <li><code>ORIENTATION_VERTICAL</code> lay children out verticall, then horizontally</li> 
  *     </ul>
  * @sp {#Extent} rowWidth an indexed property whose indices represent the height 
  *     of each row of the grid
@@ -2581,13 +2593,13 @@ EchoApp.ContentPane = Core.extend(EchoApp.Component, {
  * @ldp {#Color} background the background of the child component's cell
  * @ldp {#FillImage} backrgoundImage the background image of the child component's cell
  * @ldp {Number} columnSpan the number of column the containing cell should span
- *      (a value of SPAN_FILL indicates that cell should fill all columns until
+ *      (a value of <code>SPAN_FILL</code> indicates that cell should fill all columns until
  *      the end of the grid is reached; this value may only be used in
  *      this property for hoirzontally oriented grids)
  * @ldp {#Insets} insets the insets margin of the child component's cell 
  *      (this inset is added to any inset set on the container component)
  * @ldp {Number} rowSpan the number of rows the containing cell should span
- *      (a value of SPAN_FILL indicates that cell should fill all rows until
+ *      (a value of <code>SPAN_FILL</code> indicates that cell should fill all rows until
  *      the end of the grid is reached; this value may only be used in
  *      this property for vertically oriented grids)
  */
@@ -2685,12 +2697,12 @@ EchoApp.Row = Core.extend(EchoApp.Component, {
  *
  * @sp {Number} orientation the orientation of the SplitPane, one of the following values:
  *     <ul>
- *      <li>ORIENTATION_HORIZONTAL_LEADING_TRAILING (the default)</li>
- *      <li>ORIENTATION_HORIZONTAL_TRAILING_LEADING</li>
- *      <li>ORIENTATION_HORIZONTAL_LEFT_RIGHT</li>
- *      <li>ORIENTATION_HORIZONTAL_RIGHT_LEFT</li>
- *      <li>ORIENTATION_VERTICAL_TOP_BOTTOM</li>
- *      <li>ORIENTATION_VERTICAL_BOTTOM_TOP</li>
+ *      <li><code>ORIENTATION_HORIZONTAL_LEADING_TRAILING</code> (the default)</li>
+ *      <li><code>ORIENTATION_HORIZONTAL_TRAILING_LEADING</code></li>
+ *      <li><code>ORIENTATION_HORIZONTAL_LEFT_RIGHT</code></li>
+ *      <li><code>ORIENTATION_HORIZONTAL_RIGHT_LEFT</code></li>
+ *      <li><code>ORIENTATION_VERTICAL_TOP_BOTTOM</code></li>
+ *      <li><code>ORIENTATION_VERTICAL_BOTTOM_TOP</code></li>
  *     </ul>
  * @sp {Boolean} resizable flag indicating whether the pane separator can be moved
  * @sp {#Color} separatorColor the separator color
@@ -2711,9 +2723,9 @@ EchoApp.Row = Core.extend(EchoApp.Component, {
  * @ldp {Number} overflow the layout behavior to use when the child component is larger than 
  *      its containing subpane, one of the following values:
  *      <ul>
- *       <li>OVERFLOW_AUTO (the default)</li>
- *       <li>OVERFLOW_HIDDEN</li>
- *       <li>OVERFLOW_SCROLL</li>
+ *       <li><code>OVERFLOW_AUTO</code> (the default)</li>
+ *       <li><code>OVERFLOW_HIDDEN</code></li>
+ *       <li><code>OVERFLOW_SCROLL</code></li>
  *     </ul>
  */
 EchoApp.SplitPane = Core.extend(EchoApp.Component, {
@@ -2731,8 +2743,19 @@ EchoApp.SplitPane = Core.extend(EchoApp.Component, {
         DEFAULT_SEPARATOR_SIZE_RESIZABLE: 4,
         DEFAULT_SEPARATOR_COLOR: "#3f3f4f",
         
+        /**
+         * Setting for <code>overflow</code> property that scrollbars should be displayed when content overflows.
+         */
         OVERFLOW_AUTO: 0,
+
+        /**
+         * Setting for <code>overflow</code> property indicating that overflowing content should be hidden.
+         */
         OVERFLOW_HIDDEN: 1,
+
+        /**
+         * Setting for <code>overflow</code> property indicating that scrollbars should always be displayed.
+         */
         OVERFLOW_SCROLL: 2
     },
 
