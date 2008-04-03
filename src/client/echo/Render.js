@@ -543,8 +543,6 @@ EchoRender.RootSync = Core.extend(EchoRender.ComponentSync, {
  */
 EchoRender.Util = {
     
-    // FIXME abstract this somehow so it works with FreeClient too
-    TRANSPARENT_IMAGE: "?sid=Echo.TransparentImage"
 };
 
 EchoRender.registerPeer("Root", EchoRender.RootSync);
