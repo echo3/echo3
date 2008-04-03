@@ -45,10 +45,15 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._div.style.overflow = "hidden";
         this._div.style.zIndex = "0";
         EchoAppRender.Font.render(this.component.render("font"), this._div);
-        EchoAppRender.Color.render(this.component.render("background", EchoAppRender.ContentPaneSync.DEFAULT_BACKGROUND),
-                this._div, "backgroundColor");
         EchoAppRender.Color.render(this.component.render("foreground"), this._div, "color");
-        EchoAppRender.FillImage.render(this.component.render("backgroundImage"), this._div); 
+
+        var background = this.component.render("background");
+        var backgroundImage = this.component.render("backgroundImage");
+        EchoAppRender.Color.render(background, this._div, "backgroundColor");
+        EchoAppRender.FillImage.render(backgroundImage, this._div);
+        if (!background && !backgroundImage) {
+            EchoAppRender.FillImage.render(this.client.getResourceUrl("Echo", "resource/Transparent.gif"), this._div);  
+        }
     
         this._childIdToElementMap = {};
         
