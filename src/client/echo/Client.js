@@ -27,27 +27,6 @@ EchoClient = Core.extend({
             for (var i = 0; i < EchoClient._activeClients.length; ++i) {
                 EchoClient._activeClients[i]._windowResizeListener(e);
             }
-        },
-        
-        _resources: {},
-
-        _listeners: new Core.ListenerList(),
-        
-        addResourceChangeListener: function(l) {
-           this._listeners.addListener("resourceChange", l);
-        },
-    
-        getResource: function(path) {
-            return Core.get(this._resources, path);
-        },
-        
-        removeResourceChangeListener: function(l) {
-           this._listeners.removeListener("resourceChange", l);
-        },
-        
-        setResource: function(path, newValue) {
-            Core.set(this._resources, path, newValue); 
-            this._listeners.fireEvent({ type: "resourceChange", source: this, path: path });
         }
     },
     
