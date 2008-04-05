@@ -582,7 +582,7 @@ class OutputProcessor {
 
         cElement.setAttribute("t", componentPeer.getClientComponentType(true));
         
-        componentPeer.init(context);
+        componentPeer.init(context, c);
 
         renderComponentStyleAttributes(cElement, c, false);
         

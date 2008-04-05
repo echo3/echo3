@@ -29,6 +29,7 @@
 
 package nextapp.echo.webcontainer.sync.component;
 
+import nextapp.echo.app.Component;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
 import nextapp.echo.webcontainer.ServerMessage;
@@ -49,10 +50,10 @@ abstract class AbstractArrayContainerSynchronizePeer extends AbstractComponentSy
     }
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context, Component)
      */
-    public void init(Context context) {
-        super.init(context);
+    public void init(Context context, Component component) {
+        super.init(context, component);
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(ARRAY_CONTAINER_SERVICE.getId());
     }

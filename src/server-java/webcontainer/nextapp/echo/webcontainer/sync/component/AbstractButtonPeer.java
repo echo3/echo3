@@ -78,10 +78,10 @@ public class AbstractButtonPeer extends AbstractComponentSynchronizePeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(Context)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(Context, Component)
      */
-    public void init(Context context) {
-        super.init(context);
+    public void init(Context context, Component component) {
+        super.init(context, component);
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(BUTTON_SERVICE.getId());
     }

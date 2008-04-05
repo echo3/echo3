@@ -400,9 +400,9 @@ implements ComponentSynchronizePeer {
      * super-implementation out of convention (even if they do not presently have any
      * dependencies on other components). 
      * 
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(Context)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(Context, Component)
      */
-    public void init(Context context) {
+    public void init(Context context, Component component) {
         if (requiredComponentClasses == null) {
             return;
         }
@@ -410,7 +410,7 @@ implements ComponentSynchronizePeer {
         while (componentClassIt.hasNext()) {
             Class componentClass = (Class) componentClassIt.next();
             ComponentSynchronizePeer syncPeer = SynchronizePeerFactory.getPeerForComponent(componentClass);
-            syncPeer.init(context);
+            syncPeer.init(context, component);
         }
     }
 

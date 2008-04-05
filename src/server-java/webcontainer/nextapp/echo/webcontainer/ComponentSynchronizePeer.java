@@ -241,8 +241,9 @@ public interface ComponentSynchronizePeer {
      *        <ul>
      *         <li>ServerMessage</li>
      *        </ul>
+     * @param component the component being rendered
      */
-    public void init(Context context);
+    public void init(Context context, Component component);
     
     /**
      * Determines if the specified output property is indexed.

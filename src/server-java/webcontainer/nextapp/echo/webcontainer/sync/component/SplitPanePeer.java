@@ -75,10 +75,10 @@ public class SplitPanePeer extends AbstractComponentSynchronizePeer {
     };
 
     /**
-     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context)
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context, Component)
      */
-    public void init(Context context) {
-        super.init(context);
+    public void init(Context context, Component component) {
+        super.init(context, component);
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(SPLIT_PANE_SERVICE.getId());
     }

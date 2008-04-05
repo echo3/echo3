@@ -967,6 +967,7 @@ EchoApp.Component = Core.extend({
      * @param {Number} index the (integer) index of the property
      * @param defaultValue the default value to return if no value is 
      *        specified in an internal property, style, or stylesheet
+     * @return the property value
      */
     renderIndex: function(name, index, defaultValue) {
         var valueArray = this._localStyle[name];
