@@ -91,11 +91,16 @@ EchoClient = Core.extend({
         this._applicationFocusListener = Core.method(this, this._processApplicationFocus);
     },
     
+    $abstract: true,
+    
     $virtual: {
 
         /**
          * Returns the URL of a resource based on package name / 
          * resource name information.
+         * Derived implementations should generally override this
+         * method, and delegate to superclass if they are unable
+         * to provide a resource for a specific URL.
          * Default implementation delegates to parent client
          * (if one is present) or otherwise returns null.
          * 

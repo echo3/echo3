@@ -28,6 +28,15 @@ EchoFreeClient = Core.extend(EchoClient, {
         this.configure(application, domainElement);
     },
     
+    /**
+     * Associates a resource package name with a base URL.
+     * Later inquiries to <code>getResourceUrl()</code> with the specified package name will return
+     * URLs with the specified <code>baseUrl</code> prepended to the resource name provided in the
+     * call to <code>getResourceUrl()</code>.
+     *
+     * @param packageName the resource package name
+     * @param baseUrl the base URL to prepend to resources in the specified package
+     */
     addResourcePath: function(packageName, baseUrl) {
         if (!this._resourcePaths) {
             this._resourcePaths = { };
@@ -46,7 +55,10 @@ EchoFreeClient = Core.extend(EchoClient, {
         EchoRender.renderComponentDispose(null, this.application.rootComponent);
         EchoClient.prototype.dispose.call(this);
     },
-    
+
+    /**
+     * @override
+     */    
     getResourceUrl: function(packageName, resourceName) {
         if (this._resourcePaths && this._resourcePaths[packageName]) {
             return this._resourcePaths[packageName] + resourceName;
