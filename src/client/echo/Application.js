@@ -1200,7 +1200,6 @@ EchoApp.FocusManager = Core.extend({
      * Search order (REVERSE):
      * Last Child, previous sibling, parent
      * 
-     *
      * @return the Component which should be focused
      * @type EchoApp.Component
      */

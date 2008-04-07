@@ -82,6 +82,9 @@ EchoClient = Core.extend({
      */
     parent: null,
 
+    /**
+     * Creates a new Client instance.  Derived classes must invoke.
+     */
     $construct: function() { 
         this._inputRestrictionMap = { };
         this._keyPressListener = Core.method(this, this._processKeyPress);
@@ -116,7 +119,12 @@ EchoClient = Core.extend({
          * 
          * @param component optional parameter indicating the component to query (if omitted, only the
          *        applications readiness state will be investigated)
-         * @return true if the application/component are ready to receive inputs
+         * @param flags optional flags describing the property update, one or more of the following flags
+         *        ORed together:
+         *        <ul>
+         *         <li><code>FLAG_INPUT_PROPERTY</code></li>
+         *        </ul>
+         * @return true if the application/component are ready to receive input
          */
         verifyInput: function(component, flags) {
             // Check for input restrictions.
@@ -229,7 +237,7 @@ EchoClient = Core.extend({
     /**
      * Removes an input restriction.
      *
-     * @param id the id of the input restriction to remove
+     * @param id the id (handle) of the input restriction to remove
      */
     removeInputRestriction: function(id) {
         if (this._inputRestrictionMap[id] === undefined) {
