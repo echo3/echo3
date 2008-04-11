@@ -1791,6 +1791,22 @@ EchoApp.Update.ComponentUpdate = Core.extend({
         }
         return updatedPropertyNames;
     },
+    
+    /**
+     * Determines if any of the specified properties has been
+     * updated in this update.  The provided object should have
+     * have keys for the desired property names and  values that evaluate 
+     * to true, e.g. to determine if either the "text" and/or "icon" properties
+     * changed, specify {text: true, icon: true}. 
+     */
+    hasUpdatedPropertyIn: function(updatedPropertySet) {
+        for (var x in this._propertyUpdates) {
+            if (updatedPropertySet[x]) {
+                return true;
+            }
+        }
+        return false;
+    },
 
     /**
      * Determines if the set of updated property names is contained

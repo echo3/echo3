@@ -9,7 +9,13 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         ADJUSTMENT_OPACITY: 0.75,
         CURSORS: ["nw-resize", "n-resize", "ne-resize", "w-resize", "e-resize", "sw-resize", "s-resize", "se-resize"],
         FIB_POSITIONS: ["topLeft", "top", "topRight", "left", "right", "bottomLeft", "bottom", "bottomRight"],
-        PARTIAL_PROPERTIES: { title: true, positionX: true, positionY: true, width: true, height: true },
+        PARTIAL_PROPERTIES: {background: true, backgroundImage: true, border: true, closable: true, closeIcon: true, 
+                closeIconInsets: true, font: true, foreground: true, height: true, icon: true, iconInsets: true, insets: true, 
+                maximizeEnabled: true, maximizeIcon: true, maximumHeight: true, maximumWidth: true, minimizeEnabled: true, 
+                minimizeIcon: true, minimumHeight: true, minimumWidth: true, movable: true, positionX: true, positionY: true, 
+                resizable: true, title: true, titleBackground: true, titleBackgroundImage: true, titleFont: true, 
+                titleForeground: true, titleHeight: true, titleInsets: true, width: true },  
+        PARTIAL_PROPERTIES_POSITION_SIZE: { positionX: true, positionY: true, width: true, height: true },
         adjustOpacity: false
     },
     
@@ -653,15 +659,12 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
     renderUpdate: function(update) {
         if (update.hasAddedChildren() || update.hasRemovedChildren()) {
-            // Children added/removed: full render.
+            // Children added/removed: perform full render.
+        } else if (update.isUpdatedPropertySetIn(EchoAppRender.WindowPaneSync.PARTIAL_PROPERTIES_POSITION_SIZE)) {
+            this._loadPositionAndSize();
+            return;
         } else if (update.isUpdatedPropertySetIn(EchoAppRender.WindowPaneSync.PARTIAL_PROPERTIES)) {
-            // Only x/y/width/height properties changed: reset window position/size.
-            var title = update.getUpdatedProperty("title");
-            if (title) {
-                this._renderUpdateFrame();
-            } else {
-                this._loadPositionAndSize();
-            }
+            this._renderUpdateFrame();
             return;
         }
 
