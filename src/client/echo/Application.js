@@ -769,6 +769,10 @@ EchoApp.Component = Core.extend({
         return null;
     },
     
+    getRenderLocale: function() {
+        return null;
+    },
+    
     /**
      * Returns the style assigned to this component, if any.
      * 
