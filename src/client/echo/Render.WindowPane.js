@@ -9,6 +9,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         ADJUSTMENT_OPACITY: 0.75,
         CURSORS: ["nw-resize", "n-resize", "ne-resize", "w-resize", "e-resize", "sw-resize", "s-resize", "se-resize"],
         FIB_POSITIONS: ["topLeft", "top", "topRight", "left", "right", "bottomLeft", "bottom", "bottomRight"],
+        PARTIAL_PROPERTIES: { title: true, positionX: true, positionY: true, width: true, height: true },
         adjustOpacity: false
     },
     
@@ -317,8 +318,56 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderAdd: function(update, parentElement) {
+        // Create main component DIV.
+        this._div = document.createElement("div");
+        this._div.id = this.component.renderId;
+        this._div.tabIndex = "0";
+
+        // Create content DIV.
+        // Content DIV will be appended to main DIV by _renderAddFrame().
+        this._contentDiv = document.createElement("div");
+
+        // Render child component, add to content DIV.
+        var componentCount = this.component.getComponentCount();
+        if (componentCount == 1) {
+            this.renderAddChild(update, this.component.getComponent(0), this._contentDiv);
+        } else if (componentCount > 1) {
+            throw new Error("Too many children: " + componentCount);
+        }
+    
+        // Render Internet Explorer 6-specific windowed control-blocking IFRAME ("mask DIV").
+        // Mask DIV will be added to main DIV by _renderAddFrame().
+        if (WebCore.Environment.QUIRK_IE_SELECT_Z_INDEX) {
+            // Render Select Field Masking Transparent IFRAME.
+            this._maskDiv = document.createElement("div");
+            this._maskDiv.style.cssText 
+                    = "filter:alpha(opacity=0);z-index:1;position:absolute;left:0,right:0,top:0,bottom:0,borderWidth:0;";
+            var maskIFrameElement = document.createElement("iframe");
+            maskIFrameElement.style.cssText = "width:100%;height:100%;";
+            maskIFrameElement.src = this.client.getResourceUrl("Echo", "resource/Blank.html");
+            this._maskDiv.appendChild(maskIFrameElement);
+        }
+    
+        // Render window frame.
+        this._renderAddFrame();
+    
+        // Append main DIV to parent.
+        parentElement.appendChild(this._div);
+    },
+    
+    renderAddChild: function(update, child, parentElement) {
+        if (child.pane) {
+            this._contentDiv.style.padding = "0";
+        } else {
+            EchoAppRender.Insets.render(this.component.render("insets"), this._contentDiv, "padding");
+        }
+        EchoRender.renderComponentAdd(update, child, parentElement);
+    },
+    
+    _renderAddFrame: function() {
         this._loadPositionAndSize();
-                
+
+        // Load property states.
         this._minimumWidth = EchoAppRender.Extent.toPixels(
                 this.component.render("minimumWidth", EchoApp.WindowPane.DEFAULT_MINIMUM_WIDTH), true);
         this._minimumHeight = EchoAppRender.Extent.toPixels(
@@ -336,10 +385,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         var hasControlIcons = closable || maximizeEnabled || minimizeEnabled;
         var fillImageFlags = this.component.render("ieAlphaRenderBorder") 
                 ? EchoAppRender.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER : 0;
-    
-        this._div = document.createElement("div");
-        this._div.id = this.component.renderId;
-        this._div.tabIndex = "0";
+        
         this._div.style.cssText = "outline-style:none;position:absolute;z-index:1;overflow:hidden;";
         EchoAppRender.Font.render(this.component.render("font"), this._div);
         
@@ -525,9 +571,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         this._div.appendChild(this._titleBarDiv);
         
-        // Render Content Area
-        
-        this._contentDiv = document.createElement("div");
+        // Add content to main DIV.  
+        // The object this._contentDiv will have been created by renderAdd(). 
         this._contentDiv.style.cssText = "position:absolute;z-index:2;overflow:auto;top:" 
                 + (this._contentInsets.top + this._titleBarHeight) + "px;bottom:" + this._contentInsets.bottom + "px;left:" 
                 + this._contentInsets.left + "px;right:" + this._contentInsets.right + "px;";
@@ -536,49 +581,15 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         EchoAppRender.Color.render(this.component.render("foreground", EchoApp.WindowPane.DEFAULT_FOREGROUND),
                 this._contentDiv, "color");
         this._div.appendChild(this._contentDiv);
-    
-        var componentCount = this.component.getComponentCount();
-        if (componentCount == 1) {
-            this.renderAddChild(update, this.component.getComponent(0), this._contentDiv);
-        } else if (componentCount > 1) {
-            throw new Error("Too many children: " + componentCount);
-        }
-    
-        // Render Internet Explorer 6-specific windowed control-blocking IFRAME.
+
+        // Add Internet Explorer 6-specific windowed control-blocking IFRAME.
         if (WebCore.Environment.QUIRK_IE_SELECT_Z_INDEX) {
-            // Render Select Field Masking Transparent IFRAME.
-            this._maskDiv = document.createElement("div");
-            this._maskDiv.style.cssText 
-                    = "filter:alpha(opacity=0);z-index:1;position:absolute;left:0,right:0,top:0,bottom:0,borderWidth:0;";
-            var maskIFrameElement = document.createElement("iframe");
-            maskIFrameElement.style.cssText = "width:100%;height:100%;";
-            
-            var blankUrl = this.client.getResourceUrl("Echo", "resource/Blank.html");
-            if (blankUrl) {
-                maskIFrameElement.src = blankUrl;
-            }
-            
-            this._maskDiv.appendChild(maskIFrameElement);
             this._div.appendChild(this._maskDiv);
         }
-    
-        parentElement.appendChild(this._div);
-        
-        // Register event listeners.
-        
         WebCore.EventProcessor.add(this._div, "click", 
                 Core.method(this, this._processFocusClick), true);
     },
-    
-    renderAddChild: function(update, child, parentElement) {
-        if (child.pane) {
-            this._contentDiv.style.padding = "0";
-        } else {
-            EchoAppRender.Insets.render(this.component.render("insets"), this._contentDiv, "padding");
-        }
-        EchoRender.renderComponentAdd(update, child, parentElement);
-    },
-    
+
     _renderControlIcon: function(icon, rolloverIcon, pressedIcon, altText, insets, eventMethod) {
         var controlIcon = document.createElement("div");
         controlIcon.style.cssText = "float:right;cursor:pointer;margin-left:5px;";
@@ -602,7 +613,16 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._controlIcons.push(controlIcon);
     },
     
-    renderDispose: function(update) { 
+    renderDispose: function(update) {
+        this._renderDisposeFrame();
+        this._div = null;
+        this._maskDiv = null;
+        this._contentDiv = null;
+    },
+    
+    _renderDisposeFrame: function() {
+        WebCore.EventProcessor.removeAll(this._div);
+
         for (var i = 0; i < this._borderDivs.length; ++i) {
             WebCore.EventProcessor.removeAll(this._borderDivs[i]);
         }
@@ -618,11 +638,6 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         WebCore.EventProcessor.removeAll(this._titleBarDiv);
         this._titleBarDiv = null;
         
-        this._contentDiv = null;
-    
-        WebCore.EventProcessor.removeAll(this._div);
-        this._div = null;
-        this._maskDiv = null;
     },
     
     renderDisplay: function() {
@@ -635,13 +650,18 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     renderFocus: function() {
         WebCore.DOM.focusElement(this._div);
     },
-
+    
     renderUpdate: function(update) {
         if (update.hasAddedChildren() || update.hasRemovedChildren()) {
             // Children added/removed: full render.
-        } else if (update.isUpdatedPropertySetIn({ positionX: true, positionY: true, width: true, height: true })) {
+        } else if (update.isUpdatedPropertySetIn(EchoAppRender.WindowPaneSync.PARTIAL_PROPERTIES)) {
             // Only x/y/width/height properties changed: reset window position/size.
-            this._loadPositionAndSize();
+            var title = update.getUpdatedProperty("title");
+            if (title) {
+                this._renderUpdateFrame();
+            } else {
+                this._loadPositionAndSize();
+            }
             return;
         }
 
@@ -651,6 +671,18 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         containerElement.removeChild(element);
         this.renderAdd(update, containerElement);
         return true;
+    },
+    
+    _renderUpdateFrame: function() {
+        this._renderDisposeFrame();
+    
+        // Remove all child components from main DIV (necessary in cases where frame is being redrawn
+        // on previously rendered WindowPane in response to property update). 
+        while (this._div.childNodes.length > 0) {
+            this._div.removeChild(this._div.lastChild);
+        }
+
+        this._renderAddFrame();
     },
     
     setBounds: function(bounds) {
