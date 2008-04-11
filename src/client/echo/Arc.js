@@ -85,7 +85,9 @@ EchoArc.ComponentSync = Core.extend(EchoRender.ComponentSync, {
          * be installed in th DOM at the element returned by the getDomainElement().
          */
         renderDisplay: function() {
-            if (!this.arcApplication) {
+            if (this.arcApplication) {
+                EchoRender.renderComponentDisplay(this.baseComponent);
+            } else {
                 this.arcApplication = new EchoApp.Application();
                 this.arcApplication.setStyleSheet(this.client.application.getStyleSheet());
                 this.baseComponent = this.createComponent();
