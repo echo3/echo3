@@ -337,6 +337,15 @@ EchoApp.Application = Core.extend({
     },
     
     /**
+     * Sets the application default locale.
+     * 
+     * @param {String} newValue the new locale
+     */
+    setLocale: function(newValue) {
+        this._locale = newValue;
+    },
+    
+    /**
      * Informs the application of the modal state of a specific component.
      * When modal components are unregistered, this method must be executed
      * in order to avoid a memory leak.
@@ -741,12 +750,26 @@ EchoApp.Component = Core.extend({
     
     /**
      * Returns the component layout direction.
+     * Note that in most cases it is preferable to set the layout direction of the Application, 
+     * rather than individual components.
      * 
      * @return the component layout direction
      * @type EchoApp.LayoutDirection
      */
     getLayoutDirection: function() {
         return this._layoutDirection;
+    },
+    
+    /**
+     * Returns the component locale.
+     * Note that in most cases it is preferable to set the locale of the Application, 
+     * rather than individual components.
+     * 
+     * @return the component locale
+     * @type String
+     */
+    getLocale: function() {
+        return this._locale;
     },
     
     /**
@@ -1147,11 +1170,24 @@ EchoApp.Component = Core.extend({
     
     /**
      * Sets a component-specific layout direction.
+     * Note that in most cases it is preferable to set the layout direction of the Application, 
+     * rather than individual components.
      * 
      * @param {EchoApp.LayoutDirection} newValue the new layout direction
      */
     setLayoutDirection: function(newValue) {
         this._layoutDirection = newValue;
+    },
+    
+    /**
+     * Sets a component-specific locale.
+     * Note that in most cases it is preferable to set the locale of the Application, 
+     * rather than individual components.
+     * 
+     * @param {String} newValue the new layout direction
+     */
+    setLocale: function(newValue) {
+        this._locale = newValue;
     },
     
     /**
