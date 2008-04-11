@@ -244,6 +244,21 @@ EchoRemoteClient = Core.extend(EchoClient, {
     _getServiceUrl: function(serviceId) {
         return this._serverUrl + "?sid=" + serviceId;
     },
+
+    /**
+     * Handles an invalid response from the server.
+     * 
+     * @param e the HttpConnection response event
+     */
+    _handleInvalidResponse: function(e) {
+        var msg = "An invalid response was received from the server";
+        if (e.exception) {
+            Core.Debug.consoleWrite(msg + ": " + e.exception);
+        } else if (e.source.getResponseText()) {
+            Core.Debug.consoleWrite(msg + ": \"" + e.source.getResponseText() + "\"");
+        }
+        alert(msg + ".\nPress the browser reload or refresh button.");
+    },
     
     /**
      * Initializes the remote client.  This method will perform the following operations:
@@ -370,16 +385,8 @@ EchoRemoteClient = Core.extend(EchoClient, {
         
         // Verify that response document exists and is valid.
         if (!e.valid || !responseDocument || !responseDocument.documentElement) {
-            //FIXME Central error handling for things like this.
-            //FIXME Shut down further client input with secondary "you're beating a dead horse" error message. 
-            var msg = "An invalid response was received from the server";
-            if (e.exception) {
-                msg += ": " + e.exception;
-            } else if (e.source.getResponseText()) {
-                msg += ": \"" + e.source.getResponseText() + "\"";
-            }
-            msg += ". Press the browser reload or refresh button.";
-            alert(msg);
+            //FIXME Shut down further client input with secondary "you're beating a dead horse" error message.
+            this._handleInvalidResponse(e); 
             return;
         }
         
@@ -518,15 +525,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
         var responseDocument = e.source.getResponseXml();
         if (!e.valid || !responseDocument || !responseDocument.documentElement) {
             //FIXME Central error handling for things like this.
-            //FIXME Shut down further client input with secondary "you're beating a dead horse" error message. 
-            var msg = "An invalid response was received from the server";
-            if (e.exception) {
-                msg += ": " + e.exception;
-            } else if (e.source.getResponseText()) {
-                msg += ": \"" + e.source.getResponseText() + "\"";
-            }
-            msg += ". Press the browser reload or refresh button.";
-            alert(msg);
+            this._client._handleInvalidResponse(e); 
             return;
         }
         
