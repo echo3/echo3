@@ -767,6 +767,7 @@ WebCore.EventProcessor = {
      * @param {Element} element the element
      */
     removeAll: function(element) {
+        WebCore.EventProcessor._lastId = null;
         if (!element.__eventProcessorId) {
             return;
         }
