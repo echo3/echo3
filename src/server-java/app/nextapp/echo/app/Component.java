@@ -799,6 +799,34 @@ implements RenderIdSupport, Serializable {
     }
     
     /**
+     * Returns the rendered <code>Locale</code> of the <code>Component</code>.
+     * If this <code>Component</code> does not itself specify a locale, its
+     * ancestors will be queried recursively until a <code>Component</code>
+     * providing a <code>Locale</code> is found. If no ancestors have
+     * <code>Locale</code>s set, the <code>ApplicationInstance</code>'s
+     * locale will be returned. In the event that no locale information is
+     * available from the ancestral hierarchy of <code>Component</code>s and
+     * no <code>ApplicationInstance</code> is registered, null is returned.
+     * 
+     * @return the locale for this component
+     */
+    public final Locale getRenderLocale() {
+        if (locale == null) {
+            if (parent == null) {
+                if (applicationInstance == null) {
+                    return null;
+                } else {
+                    return applicationInstance.getLocale();
+                }
+            } else {
+                return parent.getRenderLocale();
+            }
+        } else {
+            return locale;
+        }
+    }
+
+    /**
      * Determines the &quot;rendered state&quot; of a property.
      * The rendered state is determined by first determining if the given
      * property is locally set on this <code>Component</code>, and returning

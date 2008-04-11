@@ -1051,7 +1051,12 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         if (enabledState) {
             parentComponent.setEnabled(enabledState == "true");
         }
-    
+
+        //FIXME Server not sending locale in update elements yet.
+        if (upElement.getAttribute("locale")) {
+            component.setLocale(upElement.getAttribute("locale"));
+        }
+            
         var element = upElement.firstChild;
         
         // Child insertion cursor index (if index is omitted, children are added at this position).

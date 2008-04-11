@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -66,6 +67,16 @@ import org.xml.sax.SAXException;
  * to its synchronization HTTP connection.
  */
 class OutputProcessor {
+    
+    public static String getClientLocaleString(Locale locale) {
+        String language = locale.getLanguage();
+        String country = locale.getCountry();
+        if (country.length() == 0) {
+            return language;
+        } else {
+            return language + "-" + country;
+        }
+    }
     
     /**
      * <code>Context</code> implementation.
@@ -588,6 +599,10 @@ class OutputProcessor {
         
         if (!c.isEnabled()) {
             cElement.setAttribute("en", "false");
+        }
+        
+        if (c.getLocale() != null) {
+            cElement.setAttribute("locale", getClientLocaleString(c.getLocale()));
         }
         
         // Render component properties.

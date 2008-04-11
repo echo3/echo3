@@ -90,6 +90,10 @@ EchoSerial = {
         if (componentElement.getAttribute("en") == "false") {
             component.setEnabled(false);
         }
+
+        if (componentElement.getAttribute("locale")) {
+            component.setLocale(componentElement.getAttribute("locale"));
+        }
         
         var styleName = componentElement.getAttribute("s");
         if (styleName) {
