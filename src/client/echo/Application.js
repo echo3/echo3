@@ -33,17 +33,21 @@ EchoApp.Application = Core.extend({
 
     /** 
      * Mapping between component ids and component instances.
-     * @private 
      * @type Core.Arrays.LargeMap
      */
     _idToComponentMap: null,
 
     /** 
      * ListenerList instance for application-level events.
-     * @private 
      * @type Core.ListenerList 
      */
     _listenerList: null,
+    
+    /** 
+     * Default application locale.
+     * @type String
+     */
+    _locale: null,
         
     /** 
      * Array of modal components.
@@ -55,14 +59,12 @@ EchoApp.Application = Core.extend({
     /** 
      * Displayed style sheet.
      * 
-     * @private 
      * @type EchoApp.StyleSheet
      */
     _styleSheet: null,
     
     /** 
      * Currently focused component.
-     * @private
      * @type EchoApp.Component
      */
     _focusedComponent: null,
@@ -199,6 +201,16 @@ EchoApp.Application = Core.extend({
     },
         
     /**
+     * Returns the default locale of the application.
+     *
+     * @return the default locale
+     * @type String 
+     */
+    getLocale: function() {
+        return this._locale;
+    },
+        
+    /**
      * Returns the root component of the modal context.
      *
      * @return the root component of the modal context
@@ -260,7 +272,6 @@ EchoApp.Application = Core.extend({
      * components that is registered with the application.
      * 
      * @param {EchoApp.Component} component the component to register
-     * @private
      */
     _registerComponent: function(component) {
         if (this._idToComponentMap.map[component.renderId]) {
@@ -367,7 +378,6 @@ EchoApp.Application = Core.extend({
      * components registered with the application.
      * 
      * @param {EchoApp.Component} component the component to remove
-     * @private
      */
     _unregisterComponent: function(component) {
         this._idToComponentMap.remove(component.renderId);
@@ -388,7 +398,6 @@ EchoApp.ComponentFactory = {
      * Mapping between type names and object constructors.
      * 
      * @type Object
-     * @private
      */
     _typeToConstructorMap: {},
     
@@ -473,7 +482,6 @@ EchoApp.Component = Core.extend({
 
         /**
          * The next automatically assigned client render id.
-         * @private
          * @type Number
          */
         _nextRenderId: 0
@@ -510,6 +518,18 @@ EchoApp.Component = Core.extend({
             return this.children[index];
         }
     },
+    
+    /**
+     * Component layout direction.
+     * @type EchoApp.LayoutDirection
+     */
+    _layoutDirection: null,
+    
+    /**
+     * Component locale.
+     * @type String
+     */
+    _locale: null,
 
     /**
      * The render id.
@@ -534,28 +554,24 @@ EchoApp.Component = Core.extend({
     
     /**
      * Listener list.  Lazily created.
-     * @private
      * @type Core.ListenerList
      */
     _listenerList: null,
     
     /**
      * Referenced external style
-     * @private
      * @type Object
      */
     _style: null,
     
     /**
      * Assigned style name from application-level style sheet.
-     * @private
      * @type String
      */
     _styleName: null,
 
     /**
      * Enabled state of the component (default true).
-     * @private
      * @type Boolean
      */
     _enabled: true,
@@ -569,7 +585,6 @@ EchoApp.Component = Core.extend({
     
     /**
      * Internal style used to store properties set directly on component.
-     * @private
      * @type Object
      */
     _localStyle: null,
@@ -769,7 +784,25 @@ EchoApp.Component = Core.extend({
         return null;
     },
     
+    /**
+     * Returns the locale  with which the component should be
+     * rendered, based on analyzing the component's locale,
+     * its parent's, and/or the application's.
+     * 
+     * @return the rendering locale
+     * @type String
+     */
     getRenderLocale: function() {
+        var component = this;
+        while (component) {
+            if (component._locale) {
+                return component._locale;
+            }
+            component = component.parent;
+        }
+        if (this.application) {
+            return this.application.getLocale();
+        }
         return null;
     },
     
@@ -1604,7 +1637,6 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      * Records the addition of a child to the parent component.
      * 
      * @param {EchoApp.Component} child the added child
-     * @private
      */
     _addChild: function(child) {
         if (!this._addedChildIds) {
@@ -1620,7 +1652,6 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      * This method is invoked when a component is removed that is an ancestor
      * of a component that has an update in the update manager.
      * 
-     * @private
      * @param {EchoApp.Update.CompoenntUpdate} update the update from which to pull 
      *        removed components/descendants
      */
@@ -1832,7 +1863,6 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      * Records the removal of a child from the parent component.
      * 
      * @param {EchoApp.Component} child the removed child
-     * @private
      */
     _removeChild: function(child) {
         this._manager._removedIdMap[child.renderId] = child;
@@ -1865,7 +1895,6 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      * This method will recursively invoke itself on children of
      * the specified descendant.
      * 
-     * @private
      * @param {EchoApp.Component} descendant the removed descendant 
      */
     _removeDescendant: function(descendant) {
@@ -1900,7 +1929,6 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      * Records the update of the LayoutData of a child component.
      * 
      * @param the child component whose layout data was updated
-     * @private
      */
     _updateLayoutData: function(child) {
         this._manager._idMap[child.renderId] = child;
@@ -1916,7 +1944,6 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      * @param propertyName the name of the property
      * @param oldValue the previous value of the property
      * @param newValue the new value of the property
-     * @private
      */
    _updateProperty: function(propertyName, oldValue, newValue) {
         if (this._propertyUpdates == null) {
@@ -2010,7 +2037,6 @@ EchoApp.Update.Manager = Core.extend({
      * Creates a new ComponentUpdate object (or returns an existing one) for a
      * specific parent component.
      * 
-     * @private
      * @param {EchoApp.Component} parent the parent Component
      * @return a ComponentUpdate instance for that Component
      * @type EchoApp.Update.ComponentUpdate 
@@ -2034,8 +2060,6 @@ EchoApp.Update.Manager = Core.extend({
     
     /**
      * Notifies update listeners of an event.
-     * 
-     * @private
      */
     _fireUpdate: function() {
         if (!this._listenerList.isEmpty()) {
@@ -2070,7 +2094,6 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Determines if an ancestor of the specified component is being added.
      * 
-     * @private
      * @param {EchoApp.Component} component the component to evaluate
      * @return true if the component or an ancestor of the component is being added
      * @type Boolean
@@ -2104,7 +2127,6 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Processes a child addition to a component.
      * 
-     * @private
      * @param {EchoApp.Component} parent the parent component
      * @param {EchoApp.Component} child the added child component
      */
@@ -2122,7 +2144,6 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Process a layout data update to a child component.
      * 
-     * @private
      * @param {EchoApp.Component} updatedComponent the updated component
      */
     _processComponentLayoutDataUpdate: function(updatedComponent) {
@@ -2140,7 +2161,6 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Processes a child removal from a component.
      * 
-     * @private
      * @param {EchoApp.Component} parent the parent component
      * @param {EchoApp.Component} child the removed child component
      */
@@ -2180,7 +2200,6 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Processes a property update to a component.
      * 
-     * @private
      * @component {EchoApp.Component} the updated component
      * @propertyName {String} the updated property name
      * @oldValue the previous value of the property
