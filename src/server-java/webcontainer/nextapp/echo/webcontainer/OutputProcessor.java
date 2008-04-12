@@ -598,11 +598,21 @@ class OutputProcessor {
         renderComponentStyleAttributes(cElement, c, false);
         
         if (!c.isEnabled()) {
-            cElement.setAttribute("en", "false");
+            Element enElement = document.createElement("en");
+            enElement.appendChild(document.createTextNode("false"));
+            cElement.appendChild(enElement);
         }
         
         if (c.getLocale() != null) {
-            cElement.setAttribute("locale", getClientLocaleString(c.getLocale()));
+            Element localeElement = document.createElement("locale");
+            localeElement.appendChild(document.createTextNode(getClientLocaleString(c.getLocale())));
+            cElement.appendChild(localeElement);
+        }
+        
+        if (c.getLayoutDirection() != null) {
+            Element dirElement = document.createElement("dir");
+            dirElement.appendChild(document.createTextNode(c.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl"));
+            cElement.appendChild(dirElement);
         }
         
         // Render component properties.
@@ -675,10 +685,14 @@ class OutputProcessor {
                 // Should not occur.
                 throw new SerialException("No peer available for component: " + styleClass.getName(), null);
             }
-            element.setAttribute("s", (styleName == null ? "" : styleName) + ":" + styleClass.getName());
+            Element sElement = document.createElement("s");
+            sElement.appendChild(document.createTextNode((styleName == null ? "" : styleName) + ":" + styleClass.getName()));
+            element.appendChild(sElement);
         } else {
             // A synchronize peer exists for the style class, simply render the style name.
-            element.setAttribute("s", styleName);
+            Element sElement = document.createElement("s");
+            sElement.appendChild(document.createTextNode(styleName == null ? "" : styleName));
+            element.appendChild(sElement);
         }
     }
     
@@ -706,9 +720,29 @@ class OutputProcessor {
                 renderComponentStyleAttributes(upElement, c, true);
             }
             
-            // Render enabled state.
+            // Render enabled state update.
             if (update.hasUpdatedProperty(Component.ENABLED_CHANGED_PROPERTY)) {
-                upElement.setAttribute("en", update.getParent().isEnabled() ? "true" : "false");
+                Element enElement = document.createElement("en");
+                enElement.appendChild(document.createTextNode(update.getParent().isEnabled() ? "true" : "false"));
+                upElement.appendChild(enElement);
+            }
+            
+            // Render locale update.
+            if (update.hasUpdatedProperty(Component.LOCALE_CHANGED_PROPERTY)) {
+                Element localeElement = document.createElement("locale");
+                if (c.getLocale() != null) {
+                    localeElement.appendChild(document.createTextNode(getClientLocaleString(c.getLocale())));
+                }
+                upElement.appendChild(localeElement);
+            }
+
+            // Render layout direction update.
+            if (update.hasUpdatedProperty(Component.LAYOUT_DIRECTION_CHANGED_PROPERTY)) {
+                Element dirElement = document.createElement("dir");
+                if (c.getLayoutDirection() != null) {
+                    dirElement.appendChild(document.createTextNode(c.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl"));
+                }
+                upElement.appendChild(dirElement);
             }
         }
         

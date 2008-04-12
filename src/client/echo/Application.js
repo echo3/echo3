@@ -1176,7 +1176,11 @@ EchoApp.Component = Core.extend({
      * @param {EchoApp.LayoutDirection} newValue the new layout direction
      */
     setLayoutDirection: function(newValue) {
+        var oldValue = this._layoutDirection;
         this._layoutDirection = newValue;
+        if (this.application) {
+            this.application.notifyComponentUpdate(this, "layoutDirection", oldValue, newValue);
+        }
     },
     
     /**
@@ -1187,7 +1191,11 @@ EchoApp.Component = Core.extend({
      * @param {String} newValue the new layout direction
      */
     setLocale: function(newValue) {
+        var oldValue = this._locale;
         this._locale = newValue;
+        if (this.application) {
+            this.application.notifyComponentUpdate(this, "locale", oldValue, newValue);
+        }
     },
     
     /**

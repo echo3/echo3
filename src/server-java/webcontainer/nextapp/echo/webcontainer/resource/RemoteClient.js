@@ -1042,26 +1042,10 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
             parentComponent = this._client.application.getComponentByRenderId(parentId);
         }
     
-        var styleName = upElement.getAttribute("s");
-        if (styleName != null) {
-            parentComponent.setStyleName(styleName == "" ? null : styleName); //FIXME verify this works as desired for unsets.
-        }
-    
-        var enabledState = upElement.getAttribute("en");
-        if (enabledState) {
-            parentComponent.setEnabled(enabledState == "true");
-        }
-
-        //FIXME Server not sending locale in update elements yet.
-        if (upElement.getAttribute("locale")) {
-            component.setLocale(upElement.getAttribute("locale"));
-        }
-            
-        var element = upElement.firstChild;
-        
         // Child insertion cursor index (if index is omitted, children are added at this position).
         var cursorIndex = 0;
-        
+
+        var element = upElement.firstChild;
         while (element) {
             if (element.nodeType == 1) {
                 switch (element.nodeName) {
@@ -1082,6 +1066,9 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                 case "p": // Property update.
                     EchoSerial.loadProperty(this._client, element, parentComponent, null, this._referenceMap);
                     break;
+                case "s": // Style name update.
+                    parentComponent.setStyleName(element.firstChild ? element.firstChild.nodeValue : null);
+                    break;
                 case "e": // Event update.
                     var eventType = element.getAttribute("t");
                     if (element.getAttribute("v") == "true") {
@@ -1090,6 +1077,17 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                     } else {
                         this._client.removeComponentListener(parentComponent, eventType);
                     }
+                    break;
+                case "en": // Enabled state update.
+                    parentComponent.setEnabled(element.firstChild.nodeValue == "true");
+                    break;
+                case "locale": // Locale update.
+                    parentComponent.setLocale(element.firstChild ? element.firstChild.nodeValue : null);
+                    break;
+                case "dir": // Layout direction update.
+                    parentComponent.setLayoutDirection(element.firstChild
+                            ? (element.firstChild.nodeValue == "rtl" ? EchoApp.LayoutDirection.RTL : EchoApp.LayoutDirection.RTL)
+                            : null);
                     break;
                 }
             }

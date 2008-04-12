@@ -86,20 +86,6 @@ EchoSerial = {
         var id = componentElement.getAttribute("i");
     
         var component = EchoApp.ComponentFactory.newInstance(type, id);
-    
-        if (componentElement.getAttribute("en") == "false") {
-            component.setEnabled(false);
-        }
-
-        if (componentElement.getAttribute("locale")) {
-            component.setLocale(componentElement.getAttribute("locale"));
-        }
-        
-        var styleName = componentElement.getAttribute("s");
-        if (styleName) {
-            component.setStyleName(styleName);
-        }
-        
         var styleData = component.getLocalStyleData();
         
         var element = componentElement.firstChild;
@@ -113,9 +99,22 @@ EchoSerial = {
                 case "p": // Property
                     this.loadProperty(client, element, component, styleData, referenceMap);
                     break;
+                case "s": // Style name update.
+                    component.setStyleName(element.firstChild ? element.firstChild.nodeValue : null);
+                    break;
                 case "e": // Event
                     this._loadComponentEvent(client, element, component);
                     break;
+                case "en": // Enabled state update.
+                    component.setEnabled(element.firstChild.nodeValue == "true");
+                    break;
+                case "locale": // Locale update.
+                    component.setLocale(element.firstChild ? element.firstChild.nodeValue : null);
+                    break;
+                case "dir": // Layout direction update.
+                    component.setLayoutDirection(element.firstChild
+                            ? (element.firstChild.nodeValue == "rtl" ? EchoApp.LayoutDirection.RTL : EchoApp.LayoutDirection.RTL)
+                            : null);
                 }
             }
             element = element.nextSibling;
