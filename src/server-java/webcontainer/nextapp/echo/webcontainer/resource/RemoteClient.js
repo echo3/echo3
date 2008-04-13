@@ -473,6 +473,31 @@ EchoRemoteClient = Core.extend(EchoClient, {
 });
 
 /**
+ * SerevrMessage directive processor for general application-related synchronization.
+ */
+EchoRemoteClient.ApplicationSyncProcessor = Core.extend({
+
+    $construct: function(client) { 
+        this._client = client;
+    },
+    
+    /**
+     * Directive processor process() implementation.
+     */
+    process: function(dirElement) {
+        var propertyElement = dirElement.firstChild;
+        while (propertyElement) {
+            switch(propertyElement.nodeName) {
+            case "locale":
+                this._client.application.setLocale(propertyElement.firstChild.nodeValue);
+                break;
+            }
+            propertyElement = propertyElement.nextSibling;
+        }
+    }
+});
+
+/**
  * Manages server-pushed updates to the client. 
  */
 EchoRemoteClient.AsyncManager = Core.extend({
@@ -1241,6 +1266,7 @@ EchoRemoteClient.DefaultWaitIndicator = Core.extend(EchoRemoteClient.WaitIndicat
     }
 });
 
+EchoRemoteClient.ServerMessage.addProcessor("AppSync", EchoRemoteClient.ApplicationSyncProcessor);
 EchoRemoteClient.ServerMessage.addProcessor("CFocus", EchoRemoteClient.ComponentFocusProcessor);
 EchoRemoteClient.ServerMessage.addProcessor("CSyncUp", EchoRemoteClient.ComponentSyncUpdateProcessor);
 EchoRemoteClient.ServerMessage.addProcessor("CSyncRm", EchoRemoteClient.ComponentSyncRemoveProcessor);

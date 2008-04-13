@@ -209,6 +209,7 @@ class OutputProcessor {
         try {
             // Render output to server message DOM.
             if (serverUpdateManager.isFullRefreshRequired()) {
+                renderApplicationState();
                 renderComponentFullRefresh();
             } else {
                 renderComponentUpdates();
@@ -247,6 +248,12 @@ class OutputProcessor {
              //FIXME ...not sure I want this in the root of the smsg again.
             serverMessage.setAttribute("async-interval", Integer.toString(userInstance.getCallbackInterval()));
         }
+    }
+    
+    private void renderApplicationState() {
+        Element localeElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "AppSync", "locale");
+        localeElement.appendChild(document.createTextNode(getClientLocaleString(
+                userInstance.getApplicationInstance().getLocale())));
     }
     
     /**
