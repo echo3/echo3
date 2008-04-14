@@ -113,7 +113,7 @@ EchoSerial = {
                     break;
                 case "dir": // Layout direction update.
                     component.setLayoutDirection(element.firstChild
-                            ? (element.firstChild.nodeValue == "rtl" ? EchoApp.LayoutDirection.RTL : EchoApp.LayoutDirection.RTL)
+                            ? (element.firstChild.nodeValue == "rtl" ? EchoApp.LayoutDirection.RTL : EchoApp.LayoutDirection.LTR)
                             : null);
                 }
             }
