@@ -24,7 +24,7 @@ Echo.Sync.RemoteTable = Core.extend(Echo.Component, {
 /**
  * Component rendering peer: RemoteTable
  */
-Echo.Sync.RemoteTable = Core.extend(Echo.Render.ComponentSync, {
+Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     
     //FIXME setting selection mode on existing table causes exception "this.selctionModel has no properties".
     
@@ -125,7 +125,7 @@ Echo.Sync.RemoteTable = Core.extend(Echo.Render.ComponentSync, {
         var trPrototype = this._createRowPrototype();
         
         if (this._headerVisible) {
-            this._tbodyElement.appendChild(this._renderRow(update, Echo.Sync.RemoteTable._HEADER_ROW, trPrototype));
+            this._tbodyElement.appendChild(this._renderRow(update, Echo.Sync.RemoteTableSync._HEADER_ROW, trPrototype));
         }
         for (var rowIndex = 0; rowIndex < this._rowCount; rowIndex++) {
             this._tbodyElement.appendChild(this._renderRow(update, rowIndex, trPrototype));
@@ -239,7 +239,7 @@ Echo.Sync.RemoteTable = Core.extend(Echo.Render.ComponentSync, {
     
     renderUpdate: function(update) {
         if (!update.hasUpdatedLayoutDataChildren() && !update.getAddedChildren() && !update.getRemovedChildren()) {
-            if (Core.Arrays.containsAll(Echo.Sync.RemoteTable._supportedPartialProperties, 
+            if (Core.Arrays.containsAll(Echo.Sync.RemoteTableSync._supportedPartialProperties, 
                     update.getUpdatedPropertyNames(), true)) {
                 // partial update
                 if (this._selectionEnabled) {
