@@ -1,7 +1,7 @@
 /**
  * @class Default wait indicator implementation.
  */
-CustomWaitIndicator = Core.extend(EchoRemoteClient.WaitIndicator, {
+CustomWaitIndicator = Core.extend(Echo.RemoteClient.WaitIndicator, {
 
     $static: {
     
@@ -19,19 +19,19 @@ CustomWaitIndicator = Core.extend(EchoRemoteClient.WaitIndicator, {
         this._divElement.style.cssText = "display: none; z-index: 32767; position: absolute; top: 30px; right: 30px; width: 200px;"
                  + " padding: 20px; border: 1px outset #000000; background-color: #000000; color: #00ff00; text-align: center;";
         this._divElement.appendChild(document.createTextNode("LOADING"));
-        this._fadeRunnable = new WebCore.Scheduler.MethodRunnable(Core.method(this, this._tick), 50, true);
+        this._fadeRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._tick), 50, true);
         document.body.appendChild(this._divElement);
     },
     
     activate: function() {
         this._divElement.style.display = "block";
-        WebCore.Scheduler.add(this._fadeRunnable);
+        Core.Web.Scheduler.add(this._fadeRunnable);
         this._opacity = 0;
     },
     
     deactivate: function() {
         this._divElement.style.display = "none";
-        WebCore.Scheduler.remove(this._fadeRunnable);
+        Core.Web.Scheduler.remove(this._fadeRunnable);
     },
     
     _tick: function() {
@@ -43,7 +43,7 @@ CustomWaitIndicator = Core.extend(EchoRemoteClient.WaitIndicator, {
         // Divide this value by 30, so the range goes from 2/3 to 0 to 2/3.
         // Subtract that value from 1, so the range goes from 1/3 to 1 and back.
         var opacityValue = 1 - ((Math.abs((this._opacity % 40) - 20)) / 30);
-        if (!WebCore.Environment.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
+        if (!Core.Web.Env.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
             this._divElement.style.opacity = opacityValue;
         }
     }

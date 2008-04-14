@@ -1,11 +1,11 @@
 /**
  * @class Remote Table implementation.
  */
-EchoAppRender.RemoteTable = Core.extend(EchoApp.Component, {
+Echo.Sync.RemoteTable = Core.extend(Echo.Component, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("RemoteTable", this);
-        EchoApp.ComponentFactory.registerType("RT", this);
+        Echo.ComponentFactory.registerType("RemoteTable", this);
+        Echo.ComponentFactory.registerType("RT", this);
     },
 
     componentType: "RemoteTable",
@@ -24,7 +24,7 @@ EchoAppRender.RemoteTable = Core.extend(EchoApp.Component, {
 /**
  * Component rendering peer: RemoteTable
  */
-EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
+Echo.Sync.RemoteTable = Core.extend(Echo.Render.ComponentSync, {
     
     //FIXME setting selection mode on existing table causes exception "this.selctionModel has no properties".
     
@@ -36,7 +36,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     $load: function() {
-        EchoRender.registerPeer("RemoteTable", this);
+        Echo.Render.registerPeer("RemoteTable", this);
     },
     
     $construct: function() {
@@ -51,12 +51,12 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         this._rolloverEnabled = this.component.render("rolloverEnabled");
         
         this._defaultInsets = this.component.render("insets", 0);
-        this._defaultCellPadding = EchoAppRender.Insets.toCssValue(this._defaultInsets);
+        this._defaultCellPadding = Echo.Sync.Insets.toCssValue(this._defaultInsets);
         
         this._headerVisible = this.component.get("headerVisible");
     
         if (this._selectionEnabled) {
-            this.selectionModel = new EchoAppRender.RemoteTableSync.ListSelectionModel(
+            this.selectionModel = new Echo.Sync.RemoteTable.ListSelectionModel(
                     parseInt(this.component.get("selectionMode")));
         }
         
@@ -64,7 +64,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         this._tableElement.id = this.component.renderId;
         
         var width = this.component.render("width");
-        if (width && WebCore.Environment.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && EchoAppRender.Extent.isPercent(width)) {
+        if (width && Core.Web.Env.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && Echo.Sync.Extent.isPercent(width)) {
             this._renderPercentWidthByMeasure = parseInt(width);
             width = null;
         }
@@ -73,13 +73,13 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         if (this._selectionEnabled) {
             this._tableElement.style.cursor = "pointer";
         }
-        EchoAppRender.Color.renderFB(this.component, this._tableElement);
-        EchoAppRender.Font.render(this.component.render("font"), this._tableElement);
+        Echo.Sync.Color.renderFB(this.component, this._tableElement);
+        Echo.Sync.Font.render(this.component.render("font"), this._tableElement);
         var border = this.component.render("border");
         if (border) {
-            EchoAppRender.Border.render(border, this._tableElement);
-            if (border.size && !WebCore.Environment.QUIRK_CSS_BORDER_COLLAPSE_INSIDE) {
-                this._tableElement.style.margin = (EchoAppRender.Extent.toPixels(border.size, false) / 2) + "px";
+            Echo.Sync.Border.render(border, this._tableElement);
+            if (border.size && !Core.Web.Env.QUIRK_CSS_BORDER_COLLAPSE_INSIDE) {
+                this._tableElement.style.margin = (Echo.Sync.Extent.toPixels(border.size, false) / 2) + "px";
             }
         }
         if (width) {
@@ -91,21 +91,21 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         if (this.component.render("columnWidth")) {
             // If any column widths are set, render colgroup.
             var columnPixelAdjustment;
-            if (WebCore.Environment.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING) {
-                var pixelInsets = EchoAppRender.Insets.toPixels(this._defaultInsets);
+            if (Core.Web.Env.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING) {
+                var pixelInsets = Echo.Sync.Insets.toPixels(this._defaultInsets);
                 columnPixelAdjustment = pixelInsets.left + pixelInsets.right;
             }
             
             var colGroupElement = document.createElement("colgroup");
-            var renderRelative = !WebCore.Environment.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS;
+            var renderRelative = !Core.Web.Env.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS;
             for (var i = 0; i < this._columnCount; ++i) {
                 var colElement = document.createElement("col");
                 var width = this.component.renderIndex("columnWidth", i); 
                 if (width != null) {
-                    if (EchoAppRender.Extent.isPercent(width)) {
+                    if (Echo.Sync.Extent.isPercent(width)) {
                         colElement.width = parseInt(width) + (renderRelative ? "*" : "%");
                     } else {
-                        var columnPixels = EchoAppRender.Extent.toPixels(width, true);
+                        var columnPixels = Echo.Sync.Extent.toPixels(width, true);
                         if (columnPixelAdjustment) {
                             colElement.width = columnPixels - columnPixelAdjustment;
                         } else {
@@ -125,7 +125,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         var trPrototype = this._createRowPrototype();
         
         if (this._headerVisible) {
-            this._tbodyElement.appendChild(this._renderRow(update, EchoAppRender.RemoteTableSync._HEADER_ROW, trPrototype));
+            this._tbodyElement.appendChild(this._renderRow(update, Echo.Sync.RemoteTable._HEADER_ROW, trPrototype));
         }
         for (var rowIndex = 0; rowIndex < this._rowCount; rowIndex++) {
             this._tbodyElement.appendChild(this._renderRow(update, rowIndex, trPrototype));
@@ -156,10 +156,10 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         
         while (tdElement) {
             if (selected) {
-                EchoAppRender.Font.render(this.component.render("selectionFont"), tdElement);
-                EchoAppRender.Color.render(this.component.render("selectionForeground"), tdElement, "color");
-                EchoAppRender.Color.render(this.component.render("selectionBackground"), tdElement, "background");
-                EchoAppRender.FillImage.render(this.component.render("selectionBackgroundImage"), tdElement);
+                Echo.Sync.Font.render(this.component.render("selectionFont"), tdElement);
+                Echo.Sync.Color.render(this.component.render("selectionForeground"), tdElement, "color");
+                Echo.Sync.Color.render(this.component.render("selectionBackground"), tdElement, "background");
+                Echo.Sync.FillImage.render(this.component.render("selectionBackgroundImage"), tdElement);
             } else {
                 tdElement.style.color = "";
                 tdElement.style.backgroundColor = "";
@@ -170,8 +170,8 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
                 var layoutData = child.render("layoutData");
 
                 if (layoutData) {
-                    EchoAppRender.Color.render(layoutData.background, tdElement, "backgroundColor");
-                    EchoAppRender.FillImage.render(layoutData.backgroundImage, tdElement);
+                    Echo.Sync.Color.render(layoutData.background, tdElement, "backgroundColor");
+                    Echo.Sync.FillImage.render(layoutData.backgroundImage, tdElement);
                 }
             
             }
@@ -200,13 +200,13 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             var layoutData = child.render("layoutData");
             
             if (layoutData) {
-                EchoAppRender.Color.render(layoutData.background, tdElement, "backgroundColor");
-                EchoAppRender.FillImage.render(layoutData.backgroundImage, tdElement);
-                EchoAppRender.Alignment.render(layoutData.alignment, tdElement, true, this.component);
-                EchoAppRender.Insets.render(layoutData.insets, tdElement, "padding");
+                Echo.Sync.Color.render(layoutData.background, tdElement, "backgroundColor");
+                Echo.Sync.FillImage.render(layoutData.backgroundImage, tdElement);
+                Echo.Sync.Alignment.render(layoutData.alignment, tdElement, true, this.component);
+                Echo.Sync.Insets.render(layoutData.insets, tdElement, "padding");
             }
     
-            EchoRender.renderComponentAdd(update, child, tdElement);
+            Echo.Render.renderComponentAdd(update, child, tdElement);
             
             ++columnIndex;
             tdElement = tdElement.nextSibling;
@@ -218,7 +218,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         var trElement = document.createElement("tr");
     
         var tdPrototype = document.createElement("td");
-        EchoAppRender.Border.render(this.component.render("border"), tdPrototype);
+        Echo.Sync.Border.render(this.component.render("border"), tdPrototype);
         tdPrototype.style.overflow = "hidden";
         tdPrototype.style.padding = this._defaultCellPadding;
     
@@ -239,7 +239,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
     
     renderUpdate: function(update) {
         if (!update.hasUpdatedLayoutDataChildren() && !update.getAddedChildren() && !update.getRemovedChildren()) {
-            if (Core.Arrays.containsAll(EchoAppRender.RemoteTableSync._supportedPartialProperties, 
+            if (Core.Arrays.containsAll(Echo.Sync.RemoteTable._supportedPartialProperties, 
                     update.getUpdatedPropertyNames(), true)) {
                 // partial update
                 if (this._selectionEnabled) {
@@ -254,7 +254,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         // full update
         var element = this._tableElement;
         var containerElement = element.parentNode;
-        EchoRender.renderComponentDispose(update, update.parent);
+        Echo.Render.renderComponentDispose(update, update.parent);
         containerElement.removeChild(element);
         this.renderAdd(update, containerElement);
         return true;
@@ -267,7 +267,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
                 trElement = trElement.nextSibling;
             }
             while (trElement) {
-                WebCore.EventProcessor.removeAll(trElement);
+                Core.Web.Event.removeAll(trElement);
                 trElement = trElement.nextSibling;
             }
         }
@@ -346,7 +346,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             if (this._rowCount == 0) {
                 return;
             }
-            var mouseEnterLeaveSupport = WebCore.Environment.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
+            var mouseEnterLeaveSupport = Core.Web.Env.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
             var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
             var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
             var rowOffset = (this._headerVisible ? 1 : 0);
@@ -357,12 +357,12 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
                 var trElement = this._tableElement.rows[rowIndex + rowOffset];
                 if (this._rolloverEnabled) {
-                    WebCore.EventProcessor.add(trElement, enterEvent, rolloverEnterRef, false);
-                    WebCore.EventProcessor.add(trElement, exitEvent, rolloverExitRef, false);
+                    Core.Web.Event.add(trElement, enterEvent, rolloverEnterRef, false);
+                    Core.Web.Event.add(trElement, exitEvent, rolloverExitRef, false);
                 }
                 if (this._selectionEnabled) {
-                    WebCore.EventProcessor.add(trElement, "click", clickRef, false);
-                    WebCore.EventProcessor.Selection.disable(trElement);
+                    Core.Web.Event.add(trElement, "click", clickRef, false);
+                    Core.Web.Event.Selection.disable(trElement);
                 }
             }
         }
@@ -382,14 +382,14 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
             return;
         }
         
-        WebCore.DOM.preventEventDefault(e);
+        Core.Web.DOM.preventEventDefault(e);
     
-        if (this.selectionModel.getSelectionMode() == EchoAppRender.RemoteTableSync.ListSelectionModel.SINGLE_SELECTION 
+        if (this.selectionModel.getSelectionMode() == Echo.Sync.RemoteTable.ListSelectionModel.SINGLE_SELECTION 
                 || !(e.shiftKey || e.ctrlKey || e.metaKey || e.altKey)) {
             this._clearSelected();
         }
     
-        if (!this.selectionModel.getSelectionMode() == EchoAppRender.RemoteTableSync.ListSelectionModel.SINGLE_SELECTION 
+        if (!this.selectionModel.getSelectionMode() == Echo.Sync.RemoteTable.ListSelectionModel.SINGLE_SELECTION 
                 && e.shiftKey && this.lastSelectedIndex != -1) {
             var startIndex;
             var endIndex;
@@ -425,10 +425,10 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
         
         for (var i = 0; i < trElement.cells.length; ++i) {
             var cell = trElement.cells[i];
-            EchoAppRender.Font.render(this.component.render("rolloverFont"), cell);
-            EchoAppRender.Color.render(this.component.render("rolloverForeground"), cell, "color");
-            EchoAppRender.Color.render(this.component.render("rolloverBackground"), cell, "background");
-            EchoAppRender.FillImage.render(this.component.render("rolloverBackgroundImage"), cell); 
+            Echo.Sync.Font.render(this.component.render("rolloverFont"), cell);
+            Echo.Sync.Color.render(this.component.render("rolloverForeground"), cell, "color");
+            Echo.Sync.Color.render(this.component.render("rolloverBackground"), cell, "background");
+            Echo.Sync.FillImage.render(this.component.render("rolloverBackgroundImage"), cell); 
         }
     },
     
@@ -449,7 +449,7 @@ EchoAppRender.RemoteTableSync = Core.extend(EchoRender.ComponentSync, {
 /**
  * @class Minimalistic representation of ListSelectionModel.
  */
-EchoAppRender.RemoteTableSync.ListSelectionModel = Core.extend({
+Echo.Sync.RemoteTable.ListSelectionModel = Core.extend({
 
     $static: {
     

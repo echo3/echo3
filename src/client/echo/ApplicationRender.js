@@ -11,7 +11,7 @@
 /**
  * @namespace
  */
-EchoAppRender = { 
+Echo.Sync = { 
 
     getEffectProperty: function(component, defaultPropertyName, effectPropertyName, effectState,
             defaultDefaultPropertyValue, effectDefaultPropertyValue) {
@@ -30,7 +30,7 @@ EchoAppRender = {
  * Provides tools for rendering alignment properties.
  * @class
  */
-EchoAppRender.Alignment = { 
+Echo.Sync.Alignment = { 
 
     _HORIZONTALS: { left: true, center: true, right: true, leading: true, trailing: true },
     _VERTICALS: { top: true, middle: true, bottom: true },
@@ -41,7 +41,7 @@ EchoAppRender.Alignment = {
         }
     
         var layoutDirection = layoutDirectionProvider ? 
-                layoutDirectionProvider.getRenderLayoutDirection() : EchoApp.LayoutDirection.LTR;
+                layoutDirectionProvider.getRenderLayoutDirection() : Echo.LayoutDirection.LTR;
          
         var horizontal = typeof(alignment) == "object" ? alignment.horizontal : alignment; 
                 
@@ -82,7 +82,7 @@ EchoAppRender.Alignment = {
             return;
         }
         
-        var horizontal = EchoAppRender.Alignment.getRenderedHorizontal(alignment, layoutDirectionProvider);
+        var horizontal = Echo.Sync.Alignment.getRenderedHorizontal(alignment, layoutDirectionProvider);
         var vertical = typeof(alignment) == "object" ? alignment.vertical : alignment;
     
         var horizontalValue;
@@ -114,7 +114,7 @@ EchoAppRender.Alignment = {
  * Provides tools for rendering border properties.
  * @class
  */
-EchoAppRender.Border = {
+Echo.Sync.Border = {
 
     /**
      * Regular expression to validate/parse a CSS border expression, e.g., "1px solid #abcdef".
@@ -224,7 +224,7 @@ EchoAppRender.Border = {
             } else if (this._TEST_EXTENT_PX.test(extent)) {
                 return parseInt(extent);
             } else {
-                return EchoAppRender.Extent.toPixels(extent);
+                return Echo.Sync.Extent.toPixels(extent);
             }
         } else if (typeof(border) == "object") {
             // Retrieve value for indivudal side.
@@ -254,7 +254,7 @@ EchoAppRender.Border = {
  * Provides tools for rendering color properties.
  * @class
  */
-EchoAppRender.Color = {
+Echo.Sync.Color = {
 
     /**
      * Adjusts the value of the color's RGB values by the
@@ -317,7 +317,7 @@ EchoAppRender.Color = {
  * Provides tools for rendering extent (dimension) properties.
  * @class
  */
-EchoAppRender.Extent = { 
+Echo.Sync.Extent = { 
 
     /**
      * Regular expression to parse an extent value, e.g., "12px" into its value and unit components.
@@ -371,7 +371,7 @@ EchoAppRender.Extent = {
             }
             var value = parseFloat(parts[1]);
             var units = parts[2] ? parts[2] : "px";
-            return WebCore.Measure.extentToPixels(value, units, horizontal);
+            return Core.Web.Measure.extentToPixels(value, units, horizontal);
         }
     }
 };
@@ -380,7 +380,7 @@ EchoAppRender.Extent = {
  * Provides tools for rendering fill image (background image) properties.
  * @class
  */
-EchoAppRender.FillImage = { 
+Echo.Sync.FillImage = { 
 
     _REPEAT_VALUES: {
         "0": "no-repeat",
@@ -404,7 +404,7 @@ EchoAppRender.FillImage = {
         var isObject = typeof(fillImage) == "object";
         var url = isObject ? fillImage.url : fillImage;
 
-        if (WebCore.Environment.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED &&
+        if (Core.Web.Env.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED &&
                 flags && (flags & this.FLAG_ENABLE_IE_PNG_ALPHA_FILTER)) {
             // IE6 PNG workaround required.
             element.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" 
@@ -421,15 +421,15 @@ EchoAppRender.FillImage = {
             
             if (fillImage.x || fillImage.y) {
                 var x, y;
-                if (EchoAppRender.Extent.isPercent(fillImage.x)) {
+                if (Echo.Sync.Extent.isPercent(fillImage.x)) {
                     x = fillImage.x;
                 } else {
-                    x = EchoAppRender.Extent.toPixels(fillImage.x, true) + "px";
+                    x = Echo.Sync.Extent.toPixels(fillImage.x, true) + "px";
                 }
-                if (EchoAppRender.Extent.isPercent(fillImage.y)) {
+                if (Echo.Sync.Extent.isPercent(fillImage.y)) {
                     y = fillImage.y;
                 } else {
-                    y = EchoAppRender.Extent.toPixels(fillImage.y, false) + "px";
+                    y = Echo.Sync.Extent.toPixels(fillImage.y, false) + "px";
                 }
                 element.style.backgroundPosition = x + " " + y;
             }
@@ -452,7 +452,7 @@ EchoAppRender.FillImage = {
  * Provides tools for rendering font properties.
  * @class
  */
-EchoAppRender.Font = { 
+Echo.Sync.Font = { 
 
     render: function(font, element) {
         if (!font) {
@@ -466,7 +466,7 @@ EchoAppRender.Font = {
             }
         }
         if (font.size) {
-            element.style.fontSize = EchoAppRender.Extent.toCssValue(font.size);
+            element.style.fontSize = Echo.Sync.Extent.toCssValue(font.size);
         }
 
         if (font.bold) {
@@ -501,7 +501,7 @@ EchoAppRender.Font = {
  * Provides tools for rendering image properties.
  * @class
  */
-EchoAppRender.ImageReference = {
+Echo.Sync.ImageReference = {
 
     getUrl: function(imageReference) {
         return imageReference ? (typeof(imageReference) == "string" ? imageReference : imageReference.url) : null;
@@ -517,10 +517,10 @@ EchoAppRender.ImageReference = {
         } else {
             imgElement.src = imageReference.url;
             if (imageReference.width) {
-                imgElement.style.width = EchoAppRender.Extent.toCssValue(imageReference.width, true);
+                imgElement.style.width = Echo.Sync.Extent.toCssValue(imageReference.width, true);
             }
             if (imageReference.height) {
-                imgElement.style.height = EchoAppRender.Extent.toCssValue(imageReference.height, false);
+                imgElement.style.height = Echo.Sync.Extent.toCssValue(imageReference.height, false);
             }
         }
     }
@@ -530,7 +530,7 @@ EchoAppRender.ImageReference = {
  * Provides tools for rendering insets/margin/padding properties.
  * @class
  */
-EchoAppRender.Insets = {
+Echo.Sync.Insets = {
 
     /**
      * Regular expression to test extents which are entirely presented in pixels
@@ -596,10 +596,10 @@ EchoAppRender.Insets = {
         insets = insets.split(" ");
         var map = this._INDEX_MAPS[insets.length];
         return {
-            top: EchoAppRender.Extent.toPixels(insets[map[0]], false),
-            right: EchoAppRender.Extent.toPixels(insets[map[1]], true),
-            bottom: EchoAppRender.Extent.toPixels(insets[map[2]], false),
-            left: EchoAppRender.Extent.toPixels(insets[map[3]], true)
+            top: Echo.Sync.Extent.toPixels(insets[map[0]], false),
+            right: Echo.Sync.Extent.toPixels(insets[map[1]], true),
+            bottom: Echo.Sync.Extent.toPixels(insets[map[2]], false),
+            left: Echo.Sync.Extent.toPixels(insets[map[3]], true)
         };
     }
 };
@@ -611,7 +611,7 @@ EchoAppRender.Insets = {
  * Registered listeners will be notified when one or more z-indices have changed.
  * @class
  */
-EchoAppRender.FloatingPaneManager = Core.extend({
+Echo.Sync.FloatingPaneManager = Core.extend({
 
     /**
      * Creates a new Floating Pane Manager.
@@ -706,7 +706,7 @@ EchoAppRender.FloatingPaneManager = Core.extend({
  * Renders a table with two or three cells, suitable for laying out buttons, labels, 
  * and similar components.
  */
-EchoAppRender.TriCellTable = Core.extend({
+Echo.Sync.TriCellTable = Core.extend({
 
     $static: {
         
@@ -723,13 +723,13 @@ EchoAppRender.TriCellTable = Core.extend({
             var position = component.render(propertyName);
             var orientation;
             if (position) {
-                switch (EchoAppRender.Alignment.getRenderedHorizontal(position, component)) {
+                switch (Echo.Sync.Alignment.getRenderedHorizontal(position, component)) {
                 case "leading":  orientation = this.LEADING_TRAILING; break;
                 case "trailing": orientation = this.TRAILING_LEADING; break;
                 case "left":     orientation = this.LEADING_TRAILING; break;
                 case "right":    orientation = this.TRAILING_LEADING; break;
                 default:
-                    switch (EchoAppRender.Alignment.getVertical(position, component)) {
+                    switch (Echo.Sync.Alignment.getVertical(position, component)) {
                     case "top":    orientation = this.TOP_BOTTOM;       break;
                     case "bottom": orientation = this.BOTTOM_TOP;       break;
                     default:       orientation = this.TRAILING_LEADING; break;
@@ -795,7 +795,7 @@ EchoAppRender.TriCellTable = Core.extend({
      *        of elements 0 and 1 and element 2.
      */
     $construct: function(orientation0_1, margin0_1, orientation01_2, margin01_2) {
-        this.tableElement = EchoAppRender.TriCellTable._tablePrototype.cloneNode(true);
+        this.tableElement = Echo.Sync.TriCellTable._tablePrototype.cloneNode(true);
         this.tbodyElement = this.tableElement.firstChild;
         
         if (orientation01_2 == null) {
@@ -836,7 +836,7 @@ EchoAppRender.TriCellTable = Core.extend({
         if (margin0_1) {
             this.marginTdElements[0] = document.createElement("td");
             this.marginTdElements[0].style.padding = "0px";
-            if ((orientation0_1 & EchoAppRender.TriCellTable.VERTICAL) == 0) {
+            if ((orientation0_1 & Echo.Sync.TriCellTable.VERTICAL) == 0) {
                 this.marginTdElements[0].style.width = margin0_1 + "px";
                 this.addSpacer(this.marginTdElements[0], margin0_1, false);
             } else {
@@ -845,9 +845,9 @@ EchoAppRender.TriCellTable = Core.extend({
             }
         }
         
-        if (orientation0_1 & EchoAppRender.TriCellTable.VERTICAL) {
+        if (orientation0_1 & Echo.Sync.TriCellTable.VERTICAL) {
             // Vertically oriented.
-            if (orientation0_1 & EchoAppRender.TriCellTable.INVERTED) {
+            if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
                 // Inverted (bottom to top).
                 this.addRow(this.tdElements[1]);
                 this.addRow(this.marginTdElements[0]);
@@ -861,7 +861,7 @@ EchoAppRender.TriCellTable = Core.extend({
         } else {
             // Horizontally oriented.
             var trElement = document.createElement("tr");
-            if (orientation0_1 & EchoAppRender.TriCellTable.INVERTED) {
+            if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
                 // Trailing to leading.
                 this.addColumn(trElement, this.tdElements[1]);
                 this.addColumn(trElement, this.marginTdElements[0]);
@@ -887,7 +887,7 @@ EchoAppRender.TriCellTable = Core.extend({
         if (margin0_1 || margin01_2 != null) {
             if (margin0_1 && margin0_1 > 0) {
                 this.marginTdElements[0] = document.createElement("td");
-                if (orientation0_1 & EchoAppRender.TriCellTable.VERTICAL) {
+                if (orientation0_1 & Echo.Sync.TriCellTable.VERTICAL) {
                     this.marginTdElements[0].style.height = margin0_1 + "px";
                     this.addSpacer(this.marginTdElements[0], margin0_1, true);
                 } else {
@@ -897,7 +897,7 @@ EchoAppRender.TriCellTable = Core.extend({
             }
             if (margin01_2 != null && margin01_2 > 0) {
                 this.marginTdElements[1] = document.createElement("td");
-                if (orientation0_1 & EchoAppRender.TriCellTable.VERTICAL) {
+                if (orientation0_1 & Echo.Sync.TriCellTable.VERTICAL) {
                     this.marginTdElements[1].style.height = margin01_2 + "px";
                     this.addSpacer(this.marginTdElements[1], margin01_2, true);
                 } else {
@@ -907,19 +907,19 @@ EchoAppRender.TriCellTable = Core.extend({
             }
         }
         
-        if (orientation0_1 & EchoAppRender.TriCellTable.VERTICAL) {
+        if (orientation0_1 & Echo.Sync.TriCellTable.VERTICAL) {
             // Vertically oriented 0/1.
-            if (orientation01_2 & EchoAppRender.TriCellTable.VERTICAL) {
+            if (orientation01_2 & Echo.Sync.TriCellTable.VERTICAL) {
                 // Vertically oriented 01/2
                 
-                if (orientation01_2 & EchoAppRender.TriCellTable.INVERTED) {
+                if (orientation01_2 & Echo.Sync.TriCellTable.INVERTED) {
                     // 2 before 01: render #2 and margin at beginning of TABLE.
                     this.addRow(this.tdElements[2]);
                     this.addRow(this.marginTdElements[1]);
                 }
                 
                 // Render 01
-                if (orientation0_1 & EchoAppRender.TriCellTable.INVERTED) {
+                if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
                     // Inverted (bottom to top)
                     this.addRow(this.tdElements[1]);
                     this.addRow(this.marginTdElements[0]);
@@ -931,7 +931,7 @@ EchoAppRender.TriCellTable = Core.extend({
                     this.addRow(this.tdElements[1]);
                 }
     
-                if (!(orientation01_2 & EchoAppRender.TriCellTable.INVERTED)) {
+                if (!(orientation01_2 & Echo.Sync.TriCellTable.INVERTED)) {
                     // 01 before 2: render #2 and margin at end of TABLE.
                     this.addRow(this.marginTdElements[1]);
                     this.addRow(this.tdElements[2]);
@@ -947,16 +947,16 @@ EchoAppRender.TriCellTable = Core.extend({
                 }
                 
                 var trElement = document.createElement("tr");
-                if (orientation01_2 & EchoAppRender.TriCellTable.INVERTED) {
+                if (orientation01_2 & Echo.Sync.TriCellTable.INVERTED) {
                     this.addColumn(trElement, this.tdElements[2]);
                     this.addColumn(trElement, this.marginTdElements[1]);
-                    if (orientation0_1 & EchoAppRender.TriCellTable.INVERTED) {
+                    if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
                         this.addColumn(trElement, this.tdElements[1]);
                     } else {
                         this.addColumn(trElement, this.tdElements[0]);
                     }
                 } else {
-                    if (orientation0_1 & EchoAppRender.TriCellTable.INVERTED) {
+                    if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
                         this.addColumn(trElement, this.tdElements[1]);
                     } else {
                         this.addColumn(trElement, this.tdElements[0]);
@@ -967,7 +967,7 @@ EchoAppRender.TriCellTable = Core.extend({
                 this.tbodyElement.appendChild(trElement);
                 
                 this.addRow(this.marginTdElements[0]);
-                if (orientation0_1 & EchoAppRender.TriCellTable.INVERTED) {
+                if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
                     this.addRow(this.tdElements[0]);
                 } else {
                     this.addRow(this.tdElements[1]);
@@ -975,7 +975,7 @@ EchoAppRender.TriCellTable = Core.extend({
             }
         } else {
             // horizontally oriented 0/1
-            if (orientation01_2 & EchoAppRender.TriCellTable.VERTICAL) {
+            if (orientation01_2 & Echo.Sync.TriCellTable.VERTICAL) {
                 // vertically oriented 01/2
     
                 // determine and apply column span based on presence of margin between 0 and 1
@@ -985,7 +985,7 @@ EchoAppRender.TriCellTable = Core.extend({
                     this.marginTdElements[1].setAttribute("colspan", Integer.toString(columns));
                 }
                 
-                if (orientation01_2 & EchoAppRender.TriCellTable.INVERTED) {
+                if (orientation01_2 & Echo.Sync.TriCellTable.INVERTED) {
                     // 2 before 01: render #2 and margin at beginning of TR.
                     this.addRow(this.tdElements[2]);
                     this.addRow(this.marginTdElements[1]);
@@ -993,7 +993,7 @@ EchoAppRender.TriCellTable = Core.extend({
                 
                 // Render 01
                 trElement = document.createElement("tr");
-                if ((orientation0_1 & EchoAppRender.TriCellTable.INVERTED) == 0) {
+                if ((orientation0_1 & Echo.Sync.TriCellTable.INVERTED) == 0) {
                     // normal (left to right)
                     this.addColumn(trElement, this.tdElements[0]);
                     this.addColumn(trElement, this.marginTdElements[0]);
@@ -1006,7 +1006,7 @@ EchoAppRender.TriCellTable = Core.extend({
                 }
                 this.tbodyElement.appendChild(trElement);
                 
-                if (!(orientation01_2 & EchoAppRender.TriCellTable.INVERTED)) {
+                if (!(orientation01_2 & Echo.Sync.TriCellTable.INVERTED)) {
                     // 01 before 2: render margin and #2 at end of TR.
                     this.addRow(this.marginTdElements[1]);
                     this.addRow(this.tdElements[2]);
@@ -1014,14 +1014,14 @@ EchoAppRender.TriCellTable = Core.extend({
             } else {
                 // horizontally oriented 01/2
                 trElement = document.createElement("tr");
-                if (orientation01_2 & EchoAppRender.TriCellTable.INVERTED) {
+                if (orientation01_2 & Echo.Sync.TriCellTable.INVERTED) {
                     // 2 before 01: render #2 and margin at beginning of TR.
                     this.addColumn(trElement, this.tdElements[2]);
                     this.addColumn(trElement, this.marginTdElements[1]);
                 }
                 
                 // Render 01
-                if (orientation0_1 & EchoAppRender.TriCellTable.INVERTED) {
+                if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
                     // inverted (right to left)
                     this.addColumn(trElement, this.tdElements[1]);
                     this.addColumn(trElement, this.marginTdElements[0]);
@@ -1033,7 +1033,7 @@ EchoAppRender.TriCellTable = Core.extend({
                     this.addColumn(trElement, this.tdElements[1]);
                 }
                 
-                if (!(orientation01_2 & EchoAppRender.TriCellTable.INVERTED)) {
+                if (!(orientation01_2 & Echo.Sync.TriCellTable.INVERTED)) {
                     this.addColumn(trElement, this.marginTdElements[1]);
                     this.addColumn(trElement, this.tdElements[2]);
                 }

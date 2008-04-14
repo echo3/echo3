@@ -1,8 +1,8 @@
-HelloWorldApp = Core.extend(EchoApp.Application, {
+HelloWorldApp = Core.extend(Echo.Application, {
 
     $construct: function() {
-        EchoApp.Application.call(this);
-        var label = new EchoApp.Label({
+        Echo.Application.call(this);
+        var label = new Echo.Label({
             text: "Hello, world!"
         });
         this.rootComponent.add(label);
@@ -11,6 +11,6 @@ HelloWorldApp = Core.extend(EchoApp.Application, {
 
 init = function() {
     var app = new HelloWorldApp();
-    var client = new EchoFreeClient(app, document.getElementById("rootArea"));
+    var client = new Echo.FreeClient(app, document.getElementById("rootArea"));
     client.init();
 };

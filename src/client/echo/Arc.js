@@ -1,7 +1,7 @@
 /**
  * @fileoverview
  * Application rendered component module.
- * Requires Core, WebCore, Application, Render, Serial, Client, FreeClient.
+ * Requires Core, Core.Web, Application, Render, Serial, Client, FreeClient.
  */
 
 /**
@@ -16,7 +16,7 @@ EchoArc = function() { }
  * ArcClient component synchronization peer.
  * @class 
  */
-EchoArc.Client = Core.extend(EchoFreeClient, {
+EchoArc.Client = Core.extend(Echo.FreeClient, {
     
     arcSync: null,
     
@@ -24,7 +24,7 @@ EchoArc.Client = Core.extend(EchoFreeClient, {
         if (!this.arcSync.client.verifyInput(this.arcSync.component, flags)) {
             return false;
         }
-        return EchoFreeClient.prototype.verifyInput.call(this, component, flags);
+        return Echo.FreeClient.prototype.verifyInput.call(this, component, flags);
     }
 });
 
@@ -35,7 +35,7 @@ EchoArc.Client = Core.extend(EchoFreeClient, {
  * renderDisplay(), and renderUpdate() methods must be invoked.
  * @class 
  */
-EchoArc.ComponentSync = Core.extend(EchoRender.ComponentSync, {
+EchoArc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
 
     $construct: function() { },
 
@@ -47,7 +47,7 @@ EchoArc.ComponentSync = Core.extend(EchoRender.ComponentSync, {
          * ContentPane or other container.
          * This method must be overridden by ARC implementations.
          * 
-         * @type EchoApp.Component
+         * @type Echo.Component
          */
         createComponent: function() { }
     },
@@ -86,9 +86,9 @@ EchoArc.ComponentSync = Core.extend(EchoRender.ComponentSync, {
          */
         renderDisplay: function() {
             if (this.arcApplication) {
-                EchoRender.renderComponentDisplay(this.baseComponent);
+                Echo.Render.renderComponentDisplay(this.baseComponent);
             } else {
-                this.arcApplication = new EchoApp.Application();
+                this.arcApplication = new Echo.Application();
                 this.arcApplication.setStyleSheet(this.client.application.getStyleSheet());
                 this.baseComponent = this.createComponent();
                 if (this.baseComponent == null) {
@@ -131,7 +131,7 @@ EchoArc.ComponentSync = Core.extend(EchoRender.ComponentSync, {
         renderUpdate: function(update) {
             var domainElement = this.getDomainElement();
             var containerElement = domainElement.parentNode;
-            EchoRender.renderComponentDispose(update, update.parent);
+            Echo.Render.renderComponentDispose(update, update.parent);
             containerElement.removeChild(domainElement);
             this.renderAdd(update, containerElement);
         }
@@ -142,10 +142,10 @@ EchoArc.ComponentSync = Core.extend(EchoRender.ComponentSync, {
  * A simple container in which to render children of an application rendered component.
  * This container will render as a simple DIV element.
  */
-EchoArc.ChildContainer = Core.extend(EchoApp.Component, {
+EchoArc.ChildContainer = Core.extend(Echo.Component, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("ArcChildContainer", this);
+        Echo.ComponentFactory.registerType("ArcChildContainer", this);
     },
 
     componentType: "ArcChildContainer"
@@ -154,10 +154,10 @@ EchoArc.ChildContainer = Core.extend(EchoApp.Component, {
 /**
  * Synchronization peer for ChildContainer.
  */
-EchoArc.ChildContainerPeer = Core.extend(EchoRender.ComponentSync, {
+EchoArc.ChildContainerPeer = Core.extend(Echo.Render.ComponentSync, {
 
     $load: function() {
-        EchoRender.registerPeer("ArcChildContainer", this);
+        Echo.Render.registerPeer("ArcChildContainer", this);
     },
 
     $construct: function() {
@@ -170,7 +170,7 @@ EchoArc.ChildContainerPeer = Core.extend(EchoRender.ComponentSync, {
             if (!component.parent || !component.parent.peer || !component.parent.peer.client) {
                 throw new Error("Invalid component: not part of registered hierarchy.");
             }
-            EchoRender.renderComponentAdd(null, component, this._divElement);
+            Echo.Render.renderComponentAdd(null, component, this._divElement);
         }
         parentElement.appendChild(this._divElement);
     },
@@ -178,14 +178,14 @@ EchoArc.ChildContainerPeer = Core.extend(EchoRender.ComponentSync, {
     renderDisplay: function() {
         var component = this.component.get("component");
         if (component) {
-            EchoRender.renderComponentDisplay(component);
+            Echo.Render.renderComponentDisplay(component);
         }
     },
     
     renderDispose: function(update) {
         var component = this.component.get("component");
         if (component) {
-            EchoRender.renderComponentDispose(null, component);
+            Echo.Render.renderComponentDispose(null, component);
         }
         this._divElement = null;
     },

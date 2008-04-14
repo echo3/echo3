@@ -2,7 +2,7 @@
  * Tools for serializing components, stylesheets, and property instances to and from XML.
  * @namespace
  */
-EchoSerial = { 
+Echo.Serial = { 
 
     /**
      * Map between property class names and property translators.
@@ -85,7 +85,7 @@ EchoSerial = {
         var type = componentElement.getAttribute("t");
         var id = componentElement.getAttribute("i");
     
-        var component = EchoApp.ComponentFactory.newInstance(type, id);
+        var component = Echo.ComponentFactory.newInstance(type, id);
         var styleData = component.getLocalStyleData();
         
         var element = componentElement.firstChild;
@@ -113,7 +113,7 @@ EchoSerial = {
                     break;
                 case "dir": // Layout direction update.
                     component.setLayoutDirection(element.firstChild
-                            ? (element.firstChild.nodeValue == "rtl" ? EchoApp.LayoutDirection.RTL : EchoApp.LayoutDirection.LTR)
+                            ? (element.firstChild.nodeValue == "rtl" ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR)
                             : null);
                 }
             }
@@ -149,7 +149,7 @@ EchoSerial = {
         
         if (propertyType) {
             // Invoke custom property processor.
-            var translator = EchoSerial._propertyTranslatorMap[propertyType];
+            var translator = Echo.Serial._propertyTranslatorMap[propertyType];
             if (!translator) {
                 throw new Error("Translator not available for property type: " + propertyType);
             }
@@ -160,10 +160,10 @@ EchoSerial = {
                 if (propertyReference) {
                     propertyValue = referenceMap[propertyReference];
                 } else {
-                    propertyValue = EchoSerial.PropertyTranslator.String.toProperty(client, propertyElement);
+                    propertyValue = Echo.Serial.String.toProperty(client, propertyElement);
                 }
             } else {
-                propertyValue = EchoSerial.PropertyTranslator.String.toProperty(client, propertyElement);
+                propertyValue = Echo.Serial.String.toProperty(client, propertyElement);
             }
         }
         
@@ -203,7 +203,7 @@ EchoSerial = {
      * StyleSheet instance.
      */
     loadStyleSheet: function(client, ssElement, referenceMap) {
-        var styleSheet = new EchoApp.StyleSheet();
+        var styleSheet = new Echo.StyleSheet();
         
         var ssChild = ssElement.firstChild;
         while (ssChild) {
@@ -257,68 +257,62 @@ EchoSerial = {
 };
 
 /**
- * Namespace for property translator implementations.
- * @namespace
- */
-EchoSerial.PropertyTranslator = { };
-
-/**
- * Null PropertyTranslator Singleton.
+ * Null Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.Null = {
+Echo.Serial.Null = {
 
     toProperty: function(client, propertyElement) {
         return null;
     }
 };
 
-EchoSerial.addPropertyTranslator("0", EchoSerial.PropertyTranslator.Null);
+Echo.Serial.addPropertyTranslator("0", Echo.Serial.Null);
 
 /**
- * Boolean PropertyTranslator Singleton.
+ * Boolean Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.Boolean = {
+Echo.Serial.Boolean = {
 
     toProperty: function(client, propertyElement) {
         return propertyElement.firstChild.data == "true";
     }
 };
 
-EchoSerial.addPropertyTranslator("b", EchoSerial.PropertyTranslator.Boolean);
+Echo.Serial.addPropertyTranslator("b", Echo.Serial.Boolean);
 
 /**
- * Float PropertyTranslator Singleton.
+ * Float Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.Float = {
+Echo.Serial.Float = {
 
     toProperty: function(client, propertyElement) {
         return parseFloat(propertyElement.firstChild.data);
     }
 };
 
-EchoSerial.addPropertyTranslator("f", EchoSerial.PropertyTranslator.Float);
+Echo.Serial.addPropertyTranslator("f", Echo.Serial.Float);
 
 /**
- * Integer PropertyTranslator Singleton.
+ * Integer Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.Integer = { 
+Echo.Serial.Integer = { 
 
     toProperty: function(client, propertyElement) {
         return parseInt(propertyElement.firstChild.data);
     }
 };
 
-EchoSerial.addPropertyTranslator("i", EchoSerial.PropertyTranslator.Integer);
+Echo.Serial.addPropertyTranslator("i", Echo.Serial.Integer);
 
 /**
- * String PropertyTranslator Singleton.
+ * String Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.String = {
+Echo.Serial.String = {
 
     toProperty: function(client, propertyElement) {
         var textNode = propertyElement.firstChild;
@@ -334,18 +328,18 @@ EchoSerial.PropertyTranslator.String = {
     }
 };
 
-EchoSerial.addPropertyTranslator("s", EchoSerial.PropertyTranslator.String);
+Echo.Serial.addPropertyTranslator("s", Echo.Serial.String);
 
 /**
- * Date PropertyTranslator Singleton.
+ * Date Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.Date = {
+Echo.Serial.Date = {
 
     _expr: /(\d{4})\.(\d{2}).(\d{2})/,
 
     toProperty: function(client, propertyElement) {
-        var value = EchoSerial.PropertyTranslator.String.toProperty(client, propertyElement);
+        var value = Echo.Serial.String.toProperty(client, propertyElement);
         var result = this._expr.exec(value);
         if (!result) {
             return null;
@@ -359,14 +353,14 @@ EchoSerial.PropertyTranslator.Date = {
     }
 };
 
-EchoSerial.addPropertyTranslator("d", EchoSerial.PropertyTranslator.Date);
-EchoSerial.addPropertyTranslatorByType(Date, EchoSerial.PropertyTranslator.Date);
+Echo.Serial.addPropertyTranslator("d", Echo.Serial.Date);
+Echo.Serial.addPropertyTranslatorByType(Date, Echo.Serial.Date);
 
 /**
- * Map (Associative Array) PropertyTranslator Singleton.
+ * Map (Associative Array) Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.Map = {
+Echo.Serial.Map = {
 
     toProperty: function(client, propertyElement) {
         var mapObject = {};
@@ -376,20 +370,20 @@ EchoSerial.PropertyTranslator.Map = {
                 continue;
             }
     
-            EchoSerial.loadProperty(client, element, null, mapObject, null);
+            Echo.Serial.loadProperty(client, element, null, mapObject, null);
             element = element.nextSibling;
         }
         return mapObject;
     }
 };
 
-EchoSerial.addPropertyTranslator("m", EchoSerial.PropertyTranslator.Map);
+Echo.Serial.addPropertyTranslator("m", Echo.Serial.Map);
 
 /**
- * Alignment PropertyTranslator Singleton.
+ * Alignment Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.Alignment = {
+Echo.Serial.Alignment = {
 
     _HORIZONTAL_MAP: {
         "leading": "leading",
@@ -406,7 +400,7 @@ EchoSerial.PropertyTranslator.Alignment = {
     },
 
     toProperty: function(client, propertyElement) {
-        var element = WebCore.DOM.getChildElementByTagName(propertyElement, "a");
+        var element = Core.Web.DOM.getChildElementByTagName(propertyElement, "a");
         var h = this._HORIZONTAL_MAP[element.getAttribute("h")];
         var v = this._VERTICAL_MAP[element.getAttribute("v")];
         
@@ -423,21 +417,21 @@ EchoSerial.PropertyTranslator.Alignment = {
     }
 };
 
-EchoSerial.addPropertyTranslator("Alignment", EchoSerial.PropertyTranslator.Alignment);
-EchoSerial.addPropertyTranslator("AL", EchoSerial.PropertyTranslator.Alignment);
+Echo.Serial.addPropertyTranslator("Alignment", Echo.Serial.Alignment);
+Echo.Serial.addPropertyTranslator("AL", Echo.Serial.Alignment);
 
 /**
- * Border PropertyTranslator Singleton.
+ * Border Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.Border = {
+Echo.Serial.Border = {
 
     toProperty: function(client, propertyElement) {
         var value = propertyElement.getAttribute("v");
         if (value) {
             return value;
         } else {
-            var element = WebCore.DOM.getChildElementByTagName(propertyElement, "b");
+            var element = Core.Web.DOM.getChildElementByTagName(propertyElement, "b");
             var border = {};
             
             value = element.getAttribute("t");
@@ -463,15 +457,15 @@ EchoSerial.PropertyTranslator.Border = {
     }
 };
 
-EchoSerial.addPropertyTranslator("Border", EchoSerial.PropertyTranslator.Border);
-EchoSerial.addPropertyTranslator("BO", EchoSerial.PropertyTranslator.Border);
+Echo.Serial.addPropertyTranslator("Border", Echo.Serial.Border);
+Echo.Serial.addPropertyTranslator("BO", Echo.Serial.Border);
 
 //FIXME delete
 /**
- * Extent PropertyTranslator Singleton.
+ * Extent Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.Extent = {
+Echo.Serial.Extent = {
 
     toProperty: function(client, propertyElement) {
         return  propertyElement.firstChild.data;
@@ -482,17 +476,17 @@ EchoSerial.PropertyTranslator.Extent = {
     }
 };
 
-EchoSerial.addPropertyTranslator("Extent", EchoSerial.PropertyTranslator.Extent);
-EchoSerial.addPropertyTranslator("X", EchoSerial.PropertyTranslator.Extent);
+Echo.Serial.addPropertyTranslator("Extent", Echo.Serial.Extent);
+Echo.Serial.addPropertyTranslator("X", Echo.Serial.Extent);
 
 /**
- * FillImage PropertyTranslator Singleton.
+ * FillImage Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.FillImage = {
+Echo.Serial.FillImage = {
 
     toProperty: function(client, propertyElement) {
-        var element = WebCore.DOM.getChildElementByTagName(propertyElement, "fi");
+        var element = Core.Web.DOM.getChildElementByTagName(propertyElement, "fi");
         return this._parseElement(client, element);
     },
     
@@ -513,20 +507,20 @@ EchoSerial.PropertyTranslator.FillImage = {
     }
 };
 
-EchoSerial.addPropertyTranslator("FillImage", EchoSerial.PropertyTranslator.FillImage);
-EchoSerial.addPropertyTranslator("FI", EchoSerial.PropertyTranslator.FillImage);
+Echo.Serial.addPropertyTranslator("FillImage", Echo.Serial.FillImage);
+Echo.Serial.addPropertyTranslator("FI", Echo.Serial.FillImage);
 
 /**
- * FillImageBorder PropertyTranslator Singleton.
+ * FillImageBorder Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.FillImageBorder = {
+Echo.Serial.FillImageBorder = {
 
     _NAMES: [ "topLeft", "top", "topRight", "left", "right", "bottomLeft", "bottom", "bottomRight" ],
 
     toProperty: function(client, propertyElement) {
-        var element = WebCore.DOM.getChildElementByTagName(propertyElement, "fib");
-        return EchoSerial.PropertyTranslator.FillImageBorder._parseElement(client, element);
+        var element = Core.Web.DOM.getChildElementByTagName(propertyElement, "fib");
+        return Echo.Serial.FillImageBorder._parseElement(client, element);
     },
     
     _parseElement: function(client, fibElement) {
@@ -541,7 +535,7 @@ EchoSerial.PropertyTranslator.FillImageBorder = {
         while(element) {
             if (element.nodeType == 1) {
                 if (element.nodeName == "fi") {
-                    fillImageBorder[this._NAMES[i]] = EchoSerial.PropertyTranslator.FillImage._parseElement(client, element);
+                    fillImageBorder[this._NAMES[i]] = Echo.Serial.FillImage._parseElement(client, element);
                     ++i;
                 } else if (element.nodeName == "null-fi") {
                     ++i;
@@ -557,18 +551,18 @@ EchoSerial.PropertyTranslator.FillImageBorder = {
     }
 };
 
-EchoSerial.addPropertyTranslator("FillImageBorder", EchoSerial.PropertyTranslator.FillImageBorder);
-EchoSerial.addPropertyTranslator("FIB", EchoSerial.PropertyTranslator.FillImageBorder);
+Echo.Serial.addPropertyTranslator("FillImageBorder", Echo.Serial.FillImageBorder);
+Echo.Serial.addPropertyTranslator("FIB", Echo.Serial.FillImageBorder);
 
 /**
- * Font PropertyTranslator Singleton.
+ * Font Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.Font = {
+Echo.Serial.Font = {
 
     toProperty: function(client, propertyElement) {
-        var element = WebCore.DOM.getChildElementByTagName(propertyElement, "f");
-        var tfElements = WebCore.DOM.getChildElementsByTagName(element, "tf");
+        var element = Core.Web.DOM.getChildElementByTagName(propertyElement, "f");
+        var tfElements = Core.Web.DOM.getChildElementsByTagName(element, "tf");
         
         var font = { };
         
@@ -596,14 +590,14 @@ EchoSerial.PropertyTranslator.Font = {
     }
 };
 
-EchoSerial.addPropertyTranslator("Font", EchoSerial.PropertyTranslator.Font);
-EchoSerial.addPropertyTranslator("F", EchoSerial.PropertyTranslator.Font);
+Echo.Serial.addPropertyTranslator("Font", Echo.Serial.Font);
+Echo.Serial.addPropertyTranslator("F", Echo.Serial.Font);
 
 /**
- * ImageReference PropertyTranslator Singleton.
+ * ImageReference Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.ImageReference = {
+Echo.Serial.ImageReference = {
 
     toProperty: function(client, propertyElement) {
         var url = propertyElement.firstChild.data;
@@ -623,28 +617,28 @@ EchoSerial.PropertyTranslator.ImageReference = {
     }
 };
 
-EchoSerial.addPropertyTranslator("ImageReference", EchoSerial.PropertyTranslator.ImageReference);
-EchoSerial.addPropertyTranslator("I", EchoSerial.PropertyTranslator.ImageReference);
+Echo.Serial.addPropertyTranslator("ImageReference", Echo.Serial.ImageReference);
+Echo.Serial.addPropertyTranslator("I", Echo.Serial.ImageReference);
 
 /**
- * Insets PropertyTranslator Singleton.
+ * Insets Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.Insets = {
+Echo.Serial.Insets = {
 
     toProperty: function(client, propertyElement) {
         return propertyElement.firstChild.data;
     }
 };
 
-EchoSerial.addPropertyTranslator("Insets", EchoSerial.PropertyTranslator.Insets);
-EchoSerial.addPropertyTranslator("N", EchoSerial.PropertyTranslator.Insets);
+Echo.Serial.addPropertyTranslator("Insets", Echo.Serial.Insets);
+Echo.Serial.addPropertyTranslator("N", Echo.Serial.Insets);
 
 /**
- * LayoutData PropertyTranslator Singleton.
+ * LayoutData Property Translator Singleton.
  * @class
  */
-EchoSerial.PropertyTranslator.LayoutData = {
+Echo.Serial.LayoutData = {
 
     toProperty: function(client, propertyElement) {
         var layoutData = {};
@@ -653,7 +647,7 @@ EchoSerial.PropertyTranslator.LayoutData = {
             if (element.nodeType == 1) {
                 switch (element.nodeName) {
                 case "p":
-                    EchoSerial.loadProperty(client, element, null, layoutData);
+                    Echo.Serial.loadProperty(client, element, null, layoutData);
                     break;
                 }
             }
@@ -663,5 +657,5 @@ EchoSerial.PropertyTranslator.LayoutData = {
     }
 };
 
-EchoSerial.addPropertyTranslator("LayoutData", EchoSerial.PropertyTranslator.LayoutData);
-EchoSerial.addPropertyTranslator("L", EchoSerial.PropertyTranslator.LayoutData);
+Echo.Serial.addPropertyTranslator("LayoutData", Echo.Serial.LayoutData);
+Echo.Serial.addPropertyTranslator("L", Echo.Serial.LayoutData);

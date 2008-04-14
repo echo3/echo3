@@ -1,7 +1,7 @@
 /**
  * @fileoverview
  * 
- * Requires Core, WebCore, Application, Render, Serial, Client, RemoteClient.
+ * Requires Core, Core.Web, Application, Render, Serial, Client, RemoteClient.
  */
 
 /**
@@ -27,13 +27,13 @@ EchoBoot = {
      * @param serverBaseUrl the servlet URL
      */
     boot: function(serverBaseUrl, debug) {
-        WebCore.init();
+        Core.Web.init();
         
-        if (window.EchoDebugConsole) {
-            EchoDebugConsole.install();
+        if (window.Echo.DebugConsole) {
+            Echo.DebugConsole.install();
         }
     
-        var client = new EchoRemoteClient(serverBaseUrl);
+        var client = new Echo.RemoteClient(serverBaseUrl);
         for (var i = 0; i < EchoBoot._initMethods.length; ++i) {
             EchoBoot._initMethods[i](client);
         }

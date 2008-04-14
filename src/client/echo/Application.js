@@ -5,29 +5,32 @@
  */
 
 /**
- * Namespace for application framework.
+ * Main namespace of Echo framework.
  * @namespace
  */
-EchoApp = { 
-
-    /**
-     * Next unique identifier.
-     */
-    _nextUid: 1,
-
-    /**
-     * Generates a unique identifier.  Identifiers are unique for the duration of the existence of this namespace.
-     */
-    generateUid: function() {
-        return this._nextUid++;
-    }
+Echo = {
 };
 
 /**
  * Representation of a single application instance.
  * Derived objects must invoke construtor with root component id.
  */
-EchoApp.Application = Core.extend({
+Echo.Application = Core.extend({
+    
+    $static: {
+
+        /**
+         * Next unique identifier.
+         */
+        _nextUid: 1,
+    
+        /**
+         * Generates a unique identifier.  Identifiers are unique for the duration of the existence of this namespace.
+         */
+        generateUid: function() {
+            return this._nextUid++;
+        }
+    },
     
     $abstract: true,
 
@@ -59,32 +62,32 @@ EchoApp.Application = Core.extend({
     /** 
      * Displayed style sheet.
      * 
-     * @type EchoApp.StyleSheet
+     * @type Echo.StyleSheet
      */
     _styleSheet: null,
     
     /** 
      * Currently focused component.
-     * @type EchoApp.Component
+     * @type Echo.Component
      */
     _focusedComponent: null,
     
     /** 
      * Root component instance.
      * This value is read-only.
-     * @type EchoApp.Component 
+     * @type Echo.Component 
      */
     rootComponent: null,
     
     /** 
      * UpdateManager instance monitoring changes to the application for redraws. 
-     * @type EchoApp.Update.Manager
+     * @type Echo.Update.Manager
      */
     updateManager: null,
     
     /**
      * FocusManager instance handling application focus behavior.
-     * @type EchoApp.FocusManager
+     * @type Echo.FocusManager
      */
     focusManager: null,
     
@@ -95,12 +98,12 @@ EchoApp.Application = Core.extend({
     $construct: function() {
         this._idToComponentMap = new Core.Arrays.LargeMap();
         this._listenerList = new Core.ListenerList();
-        this.rootComponent = new EchoApp.Component();
+        this.rootComponent = new Echo.Component();
         this.rootComponent.componentType = "Root";
         this.rootComponent.register(this);
         this._modalComponents = [];
-        this.updateManager = new EchoApp.Update.Manager(this);
-        this.focusManager = new EchoApp.FocusManager(this);
+        this.updateManager = new Echo.Update.Manager(this);
+        this.focusManager = new Echo.FocusManager(this);
     },
 
     /**
@@ -134,7 +137,7 @@ EchoApp.Application = Core.extend({
     /**
      * Recurisvely determines the current root component of the modal context.
      *
-     * @param {EchoApp.Component} searchComponent (optional) the component from which to search
+     * @param {Echo.Component} searchComponent (optional) the component from which to search
      *        (this paramater is provided when recursively searching, if omitted the sear
      *        will begin at the root component of the application).
      * @return the current modal context root component
@@ -173,7 +176,7 @@ EchoApp.Application = Core.extend({
      * 
      * @param {String} renderId the render id
      * @return the component
-     * @type EchoApp.Component 
+     * @type Echo.Component 
      */
     getComponentByRenderId: function(renderId) {
         return this._idToComponentMap.map[renderId];
@@ -183,7 +186,7 @@ EchoApp.Application = Core.extend({
      * Returns the focused component.
      * 
      * @return the focused component
-     * @type EchoApp.Component
+     * @type Echo.Component
      */
     getFocusedComponent: function() {
         return this._focusedComponent;
@@ -193,11 +196,11 @@ EchoApp.Application = Core.extend({
      * Returns the default layout direction of the application.
      *
      * @return the default layout direction
-     * @type EchoApp.LayoutDirection 
+     * @type Echo.LayoutDirection 
      */
     getLayoutDirection: function() {
         // FIXME ensure layout direction gets set upon application instantiation
-        return this._layoutDirection ? this._layoutDirection : EchoApp.LayoutDirection.LTR;
+        return this._layoutDirection ? this._layoutDirection : Echo.LayoutDirection.LTR;
     },
         
     /**
@@ -229,7 +232,7 @@ EchoApp.Application = Core.extend({
      * Returns the application style sheet.
      * 
      * @return the application style sheet
-     * @type EchoApp.StyleSheet
+     * @type Echo.StyleSheet
      */
     getStyleSheet: function() {
         return this._styleSheet;
@@ -250,7 +253,7 @@ EchoApp.Application = Core.extend({
     /**
      * Notifies the application of an update to a component.
      * 
-     * @param {EchoApp.Component} parent the parent component
+     * @param {Echo.Component} parent the parent component
      * @param {String} propertyName the updated property
      * @param oldValue the previous property value
      * @param newValue the new property value
@@ -271,7 +274,7 @@ EchoApp.Application = Core.extend({
      * Invoked when a component is added to a hierarchy of 
      * components that is registered with the application.
      * 
-     * @param {EchoApp.Component} component the component to register
+     * @param {Echo.Component} component the component to register
      */
     _registerComponent: function(component) {
         if (this._idToComponentMap.map[component.renderId]) {
@@ -305,7 +308,7 @@ EchoApp.Application = Core.extend({
     /**
      * Sets the focused component
      * 
-     * @param {EchoApp.Component} newValue the new focused component
+     * @param {Echo.Component} newValue the new focused component
      */
     setFocusedComponent: function(newValue) {
         // If required, find focusable parent containing 'newValue'.
@@ -330,7 +333,7 @@ EchoApp.Application = Core.extend({
     /**
      * Sets the application default layout direction.
      * 
-     * @param {EchoApp.LayoutDirection} newValue the new layout direction
+     * @param {Echo.LayoutDirection} newValue the new layout direction
      */
     setLayoutDirection: function(newValue) {
         this._layoutDirection = newValue;
@@ -372,7 +375,7 @@ EchoApp.Application = Core.extend({
     /**
      * Sets the application style sheet.
      * 
-     * @param {EchoApp.StyleSheet} newValue the new style sheet
+     * @param {Echo.StyleSheet} newValue the new style sheet
      */
     setStyleSheet: function(newValue) {
         var oldValue = this._styleSheet;
@@ -386,7 +389,7 @@ EchoApp.Application = Core.extend({
      * This method is invoked when a component is removed from a hierarchy of 
      * components registered with the application.
      * 
-     * @param {EchoApp.Component} component the component to remove
+     * @param {Echo.Component} component the component to remove
      */
     _unregisterComponent: function(component) {
         this._idToComponentMap.remove(component.renderId);
@@ -401,7 +404,7 @@ EchoApp.Application = Core.extend({
  * used to instantiate new components during XML deserialization.
  * @class
  */
-EchoApp.ComponentFactory = {
+Echo.ComponentFactory = {
     
     /**
      * Mapping between type names and object constructors.
@@ -416,7 +419,7 @@ EchoApp.ComponentFactory = {
      * @param {String} typeName the type name of the component
      * @param {String} renderId the component render id
      * @return a newly instantiated component
-     * @type EchoApp.Component
+     * @type Echo.Component
      */
     newInstance: function(typeName, renderId) {
         var typeConstructor = this._typeToConstructorMap[typeName];
@@ -485,7 +488,7 @@ EchoApp.ComponentFactory = {
  * @sp {#Color} foreground the foreground color
  * @sp {Object} layoutData layout data information, describng how the component should be rendered by its container 
  */
-EchoApp.Component = Core.extend({
+Echo.Component = Core.extend({
     
     $static: {
 
@@ -497,7 +500,7 @@ EchoApp.Component = Core.extend({
     },
     
     $load: function() {
-        EchoApp.ComponentFactory.registerType("Component", this);
+        Echo.ComponentFactory.registerType("Component", this);
     },
 
     $abstract: true,
@@ -530,7 +533,7 @@ EchoApp.Component = Core.extend({
     
     /**
      * Component layout direction.
-     * @type EchoApp.LayoutDirection
+     * @type Echo.LayoutDirection
      */
     _layoutDirection: null,
     
@@ -550,14 +553,14 @@ EchoApp.Component = Core.extend({
     /**
      * The parent component.
      * This value is read-only.
-     * @type EchoApp.Component
+     * @type Echo.Component
      */
     parent: null,
     
     /**
      * The registered application.
      * This value is read-only.
-     * @type EchoApp.Application
+     * @type Echo.Application
      */
     application: null,
     
@@ -643,13 +646,13 @@ EchoApp.Component = Core.extend({
     /**
      * Adds a component as a child.
      * 
-     * @param {EchoApp.Component} component the component to add
+     * @param {Echo.Component} component the component to add
      * @param {Number} index the (integer) index at which to add it (optional, omission
      *        will cause component to be appended to end)
      */
     add: function(component, index) {
-        if (!(component instanceof EchoApp.Component)) {
-            throw new Error("Cannot add child: specified component object is not derived from EchoApp.Component. "
+        if (!(component instanceof Echo.Component)) {
+            throw new Error("Cannot add child: specified component object is not derived from Echo.Component. "
                     + "Parent: " + this + ", Child: " + component);
         }
         if (!component.componentType) {
@@ -720,7 +723,7 @@ EchoApp.Component = Core.extend({
      * 
      * @param {Number} index the (integer) index
      * @return the child component
-     * @type EchoApp.Component
+     * @type Echo.Component
      */
     getComponent: function(index) {
         return this.children[index];
@@ -754,7 +757,7 @@ EchoApp.Component = Core.extend({
      * rather than individual components.
      * 
      * @return the component layout direction
-     * @type EchoApp.LayoutDirection
+     * @type Echo.LayoutDirection
      */
     getLayoutDirection: function() {
         return this._layoutDirection;
@@ -791,7 +794,7 @@ EchoApp.Component = Core.extend({
      * its parent's, and/or the application's.
      * 
      * @return the rendering layout direction
-     * @type EchoApp.LayoutDirection
+     * @type Echo.LayoutDirection
      */
     getRenderLayoutDirection: function() {
         var component = this;
@@ -854,7 +857,7 @@ EchoApp.Component = Core.extend({
      * Returns the index of a child component, or -1 if the component
      * is not a child.
      * 
-     * @param {EchoApp.Component} component the component
+     * @param {Echo.Component} component the component
      * @return the index
      * @type Number
      */
@@ -897,7 +900,7 @@ EchoApp.Component = Core.extend({
     /**
      * Determines if this component is or is an ancestor of another component.
      * 
-     * @param {EchoApp.Component} c the component to test
+     * @param {Echo.Component} c the component to test
      * @return true if an ancestor relationship exists
      * @type Boolean
      */
@@ -943,7 +946,7 @@ EchoApp.Component = Core.extend({
      * added/removed to/from a registered hierarchy
      * (a hierarchy that is registered to an application).
      * 
-     * @param {EchoApp.Application} application the application 
+     * @param {Echo.Application} application the application 
      *        (null to unregister the component)
      */
     register: function(application) {
@@ -977,7 +980,7 @@ EchoApp.Component = Core.extend({
         if (application) { // registering
             
             if (this.renderId == null) {
-                this.renderId = "cl_" + ++EchoApp.Component._nextRenderId;
+                this.renderId = "cl_" + ++Echo.Component._nextRenderId;
             }
     
             // Notify application.
@@ -1053,7 +1056,7 @@ EchoApp.Component = Core.extend({
      * 
      * @param componentOrIndex 
      *        the index of the component to remove, or the component to remove
-     *        (values may be of type EchoApp.Component or Number)
+     *        (values may be of type Echo.Component or Number)
      */
     remove: function(componentOrIndex) {
         var component;
@@ -1173,7 +1176,7 @@ EchoApp.Component = Core.extend({
      * Note that in most cases it is preferable to set the layout direction of the Application, 
      * rather than individual components.
      * 
-     * @param {EchoApp.LayoutDirection} newValue the new layout direction
+     * @param {Echo.LayoutDirection} newValue the new layout direction
      */
     setLayoutDirection: function(newValue) {
         var oldValue = this._layoutDirection;
@@ -1252,7 +1255,7 @@ EchoApp.Component = Core.extend({
 /**
  * Provides focus management tools for an application.
  */
-EchoApp.FocusManager = Core.extend({
+Echo.FocusManager = Core.extend({
 
     _application: null,
 
@@ -1282,7 +1285,7 @@ EchoApp.FocusManager = Core.extend({
      * Last Child, previous sibling, parent
      * 
      * @return the Component which should be focused
-     * @type EchoApp.Component
+     * @type Echo.Component
      */
     find: function(component, reverse) {
         if (!component) {
@@ -1417,7 +1420,7 @@ EchoApp.FocusManager = Core.extend({
  * Describes the layout direction of text and content to provide support 
  * for bidirectional localization.
  */
-EchoApp.LayoutDirection = Core.extend({
+Echo.LayoutDirection = Core.extend({
     
     /**
      * Flag indicating whether layout direction is left-to-right.
@@ -1446,24 +1449,24 @@ EchoApp.LayoutDirection = Core.extend({
 
 /**
  * Global instance representing a left-to-right layout direction.
- * @type EchoApp.LayoutDirection
+ * @type Echo.LayoutDirection
  * @final
  */
-EchoApp.LayoutDirection.LTR = new EchoApp.LayoutDirection(true);
+Echo.LayoutDirection.LTR = new Echo.LayoutDirection(true);
 
 /**
  * Global instance representing a right-to-left layout direction.
- * @type EchoApp.LayoutDirection
+ * @type Echo.LayoutDirection
  * @final
  */
-EchoApp.LayoutDirection.RTL = new EchoApp.LayoutDirection(false);
+Echo.LayoutDirection.RTL = new Echo.LayoutDirection(false);
 
 // StyleSheets
 
 /**
  * An application style sheet.
  */
-EchoApp.StyleSheet = Core.extend({
+Echo.StyleSheet = Core.extend({
 
     _nameToStyleMap: null,
 
@@ -1526,7 +1529,7 @@ EchoApp.StyleSheet = Core.extend({
             var testType = componentType;
             while (style == null) {
                 // Search super types of testType to find style until found.
-                testType = EchoApp.ComponentFactory.getSuperType(testType);
+                testType = Echo.ComponentFactory.getSuperType(testType);
                 if (testType == null) {
                     // No style available for component type, mark cache entry as null and return null.
                     this._renderCache[name][testType] = null;
@@ -1583,12 +1586,12 @@ EchoApp.StyleSheet = Core.extend({
  * such that display redraws may be performed efficiently. 
  * @namespace
  */
-EchoApp.Update = { };
+Echo.Update = { };
 
 /**
  * Representation of an update to a single existing component which is currently rendered on the screen.
  */
-EchoApp.Update.ComponentUpdate = Core.extend({
+Echo.Update.ComponentUpdate = Core.extend({
 
     $static: {
     
@@ -1612,7 +1615,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
     
     /**
      * The parent component represented in this <code>ServerComponentUpdate</code>.
-     * @type EchoApp.Component
+     * @type Echo.Component
      */
     parent: null,
     
@@ -1672,7 +1675,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
         
         /**
          * The parent component represented in this <code>ServerComponentUpdate</code>.
-         * @type EchoApp.Component
+         * @type Echo.Component
          */
         this.parent = parent;
     },
@@ -1680,7 +1683,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
     /**
      * Records the addition of a child to the parent component.
      * 
-     * @param {EchoApp.Component} child the added child
+     * @param {Echo.Component} child the added child
      */
     _addChild: function(child) {
         if (!this._addedChildIds) {
@@ -1696,7 +1699,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      * This method is invoked when a component is removed that is an ancestor
      * of a component that has an update in the update manager.
      * 
-     * @param {EchoApp.Update.CompoenntUpdate} update the update from which to pull 
+     * @param {Echo.Update.CompoenntUpdate} update the update from which to pull 
      *        removed components/descendants
      */
     _appendRemovedDescendants: function(update) {
@@ -1906,7 +1909,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
     /**
      * Records the removal of a child from the parent component.
      * 
-     * @param {EchoApp.Component} child the removed child
+     * @param {Echo.Component} child the removed child
      */
     _removeChild: function(child) {
         this._manager._removedIdMap[child.renderId] = child;
@@ -1939,7 +1942,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
      * This method will recursively invoke itself on children of
      * the specified descendant.
      * 
-     * @param {EchoApp.Component} descendant the removed descendant 
+     * @param {Echo.Component} descendant the removed descendant 
      */
     _removeDescendant: function(descendant) {
         this._manager._removedIdMap[descendant.renderId] = descendant;
@@ -1993,7 +1996,7 @@ EchoApp.Update.ComponentUpdate = Core.extend({
         if (this._propertyUpdates == null) {
             this._propertyUpdates = { };
         }
-        var propertyUpdate = new EchoApp.Update.ComponentUpdate.PropertyUpdate(oldValue, newValue);
+        var propertyUpdate = new Echo.Update.ComponentUpdate.PropertyUpdate(oldValue, newValue);
         this._propertyUpdates[propertyName] = propertyUpdate;
     }
 });
@@ -2003,10 +2006,10 @@ EchoApp.Update.ComponentUpdate = Core.extend({
  * Provides API to determine changes to component hierarchy since last update
  * in order to efficiently repaint the screen.
  */
-EchoApp.Update.Manager = Core.extend({
+Echo.Update.Manager = Core.extend({
     
     /**
-     * Associative mapping between component ids and EchoApp.Update.ComponentUpdate
+     * Associative mapping between component ids and Echo.Update.ComponentUpdate
      * instances.
      * @type Object
      */
@@ -2020,7 +2023,7 @@ EchoApp.Update.Manager = Core.extend({
     
     /**
      * The application whose updates are being manged.
-     * @type EchoApp.Application
+     * @type Echo.Application
      */
     application: null,
     
@@ -2058,7 +2061,7 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Creates a new Update Manager.
      *
-     * @param {EchoApp.Application} application the supported application
+     * @param {Echo.Application} application the supported application
      */
     $construct: function(application) {
         this._componentUpdateMap = { };
@@ -2081,15 +2084,15 @@ EchoApp.Update.Manager = Core.extend({
      * Creates a new ComponentUpdate object (or returns an existing one) for a
      * specific parent component.
      * 
-     * @param {EchoApp.Component} parent the parent Component
+     * @param {Echo.Component} parent the parent Component
      * @return a ComponentUpdate instance for that Component
-     * @type EchoApp.Update.ComponentUpdate 
+     * @type Echo.Update.ComponentUpdate 
      */
     _createComponentUpdate: function(parent) {
         this._hasUpdates = true;
         var update = this._componentUpdateMap[parent.renderId];
         if (!update) {
-            update = new EchoApp.Update.ComponentUpdate(this, parent);
+            update = new Echo.Update.ComponentUpdate(this, parent);
             this._componentUpdateMap[parent.renderId] = update;
         }
         return update;
@@ -2114,7 +2117,7 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Returns the current pending updates.  Returns null in the event that that no pending updates exist.
      * 
-     * @return an array containing all component updates (as EchoApp.Update.ComponentUpdates)
+     * @return an array containing all component updates (as Echo.Update.ComponentUpdates)
      * @type Array
      */
     getUpdates: function() {
@@ -2138,7 +2141,7 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Determines if an ancestor of the specified component is being added.
      * 
-     * @param {EchoApp.Component} component the component to evaluate
+     * @param {Echo.Component} component the component to evaluate
      * @return true if the component or an ancestor of the component is being added
      * @type Boolean
      */
@@ -2171,8 +2174,8 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Processes a child addition to a component.
      * 
-     * @param {EchoApp.Component} parent the parent component
-     * @param {EchoApp.Component} child the added child component
+     * @param {Echo.Component} parent the parent component
+     * @param {Echo.Component} child the added child component
      */
     _processComponentAdd: function(parent, child) {
         if (this.fullRefreshRequired) {
@@ -2188,7 +2191,7 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Process a layout data update to a child component.
      * 
-     * @param {EchoApp.Component} updatedComponent the updated component
+     * @param {Echo.Component} updatedComponent the updated component
      */
     _processComponentLayoutDataUpdate: function(updatedComponent) {
         if (this.fullRefreshRequired) {
@@ -2205,8 +2208,8 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Processes a child removal from a component.
      * 
-     * @param {EchoApp.Component} parent the parent component
-     * @param {EchoApp.Component} child the removed child component
+     * @param {Echo.Component} parent the parent component
+     * @param {Echo.Component} child the removed child component
      */
     _processComponentRemove: function(parent, child) {
         if (this.fullRefreshRequired) {
@@ -2244,7 +2247,7 @@ EchoApp.Update.Manager = Core.extend({
     /**
      * Processes a property update to a component.
      * 
-     * @component {EchoApp.Component} the updated component
+     * @component {Echo.Component} the updated component
      * @propertyName {String} the updated property name
      * @oldValue the previous value of the property
      * @newValue the new value of the property
@@ -2367,13 +2370,13 @@ EchoApp.Update.Manager = Core.extend({
  * @sp {String} toolTipText the tool tip text
  * @sp {#Extent} width the width of the button
  */
-EchoApp.AbstractButton = Core.extend(EchoApp.Component, {
+Echo.AbstractButton = Core.extend(Echo.Component, {
 
     $abstract: true,
     
     $load: function() {
-        EchoApp.ComponentFactory.registerType("AbstractButton", this);
-        EchoApp.ComponentFactory.registerType("AB", this);
+        Echo.ComponentFactory.registerType("AbstractButton", this);
+        Echo.ComponentFactory.registerType("AB", this);
     },
 
     componentType: "AbstractButton",
@@ -2393,11 +2396,11 @@ EchoApp.AbstractButton = Core.extend(EchoApp.Component, {
 /**
  * Button component.
  */ 
-EchoApp.Button = Core.extend(EchoApp.AbstractButton, {
+Echo.Button = Core.extend(Echo.AbstractButton, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("Button", this);
-        EchoApp.ComponentFactory.registerType("B", this);
+        Echo.ComponentFactory.registerType("Button", this);
+        Echo.ComponentFactory.registerType("B", this);
     },
 
     componentType: "Button"
@@ -2418,11 +2421,11 @@ EchoApp.Button = Core.extend(EchoApp.AbstractButton, {
  * @sp {#ImageReference} stateIcon the default state icon to display when the toggle state is selected
  * @sp {Number} stateMargin the margin between the state icon and the button's icon/text
  */
-EchoApp.ToggleButton = Core.extend(EchoApp.AbstractButton, {
+Echo.ToggleButton = Core.extend(Echo.AbstractButton, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("ToggleButton", this);
-        EchoApp.ComponentFactory.registerType("TB", this);
+        Echo.ComponentFactory.registerType("ToggleButton", this);
+        Echo.ComponentFactory.registerType("TB", this);
     },
 
     $abstract: true,
@@ -2432,11 +2435,11 @@ EchoApp.ToggleButton = Core.extend(EchoApp.AbstractButton, {
 /**
  * CheckBox component.
  */
-EchoApp.CheckBox = Core.extend(EchoApp.ToggleButton, {
+Echo.CheckBox = Core.extend(Echo.ToggleButton, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("CheckBox", this);
-        EchoApp.ComponentFactory.registerType("CB", this);
+        Echo.ComponentFactory.registerType("CheckBox", this);
+        Echo.ComponentFactory.registerType("CB", this);
     },
 
     componentType: "CheckBox"
@@ -2446,13 +2449,13 @@ EchoApp.CheckBox = Core.extend(EchoApp.ToggleButton, {
  * RadioButton component.
  *
  * @sp {String} group a unique identifier used to group radio buttons together (set this property to a value generated by 
- *     EchoApp.generateUid() to guarantee uniqueness)
+ *     Echo.Application.generateUid() to guarantee uniqueness)
  */
-EchoApp.RadioButton = Core.extend(EchoApp.ToggleButton, {
+Echo.RadioButton = Core.extend(Echo.ToggleButton, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("RadioButton", this);
-        EchoApp.ComponentFactory.registerType("RB", this);
+        Echo.ComponentFactory.registerType("RadioButton", this);
+        Echo.ComponentFactory.registerType("RB", this);
     },
 
     componentType: "RadioButton"
@@ -2482,13 +2485,13 @@ EchoApp.RadioButton = Core.extend(EchoApp.ToggleButton, {
  * @sp {#Color} rolloverForeground the rollover foreground color
  * @sp {#Extent} width the component width 
  */
-EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
+Echo.AbstractListComponent = Core.extend(Echo.Component, {
 
     $abstract: true,
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("AbstractListComponent", this);
-        EchoApp.ComponentFactory.registerType("LC", this);
+        Echo.ComponentFactory.registerType("AbstractListComponent", this);
+        Echo.ComponentFactory.registerType("LC", this);
     },
 
     componentType: "AbstractListComponent",
@@ -2510,11 +2513,11 @@ EchoApp.AbstractListComponent = Core.extend(EchoApp.Component, {
  *
  * @sp {Number} selectionMode a value indicating the selection mode, one of the following values:
  *     <ul>
- *      <li><code>EchoApp.ListBox.SINGLE_SELECTION</code> (the default)</li>
- *      <li><code>EchoApp.ListBox.MULTIPLE_SELECTION</code></li>
+ *      <li><code>Echo.ListBox.SINGLE_SELECTION</code> (the default)</li>
+ *      <li><code>Echo.ListBox.MULTIPLE_SELECTION</code></li>
  *     </ul>
  */
-EchoApp.ListBox = Core.extend(EchoApp.AbstractListComponent, {
+Echo.ListBox = Core.extend(Echo.AbstractListComponent, {
 
     $static: {
 
@@ -2530,8 +2533,8 @@ EchoApp.ListBox = Core.extend(EchoApp.AbstractListComponent, {
     },
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("ListBox", this);
-        EchoApp.ComponentFactory.registerType("LB", this);
+        Echo.ComponentFactory.registerType("ListBox", this);
+        Echo.ComponentFactory.registerType("LB", this);
     },
 
     componentType: "ListBox"
@@ -2540,11 +2543,11 @@ EchoApp.ListBox = Core.extend(EchoApp.AbstractListComponent, {
 /**
  * SelectField component.
  */
-EchoApp.SelectField = Core.extend(EchoApp.AbstractListComponent, {
+Echo.SelectField = Core.extend(Echo.AbstractListComponent, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("SelectField", this);
-        EchoApp.ComponentFactory.registerType("SF", this);
+        Echo.ComponentFactory.registerType("SelectField", this);
+        Echo.ComponentFactory.registerType("SF", this);
     },
 
     componentType: "SelectField"
@@ -2564,11 +2567,11 @@ EchoApp.SelectField = Core.extend(EchoApp.AbstractListComponent, {
  * @ldp {#Insets} insets the insets margin of the child component's cell 
  *      (this inset is added to any inset set on the container component)
  */
-EchoApp.Column = Core.extend(EchoApp.Component, {
+Echo.Column = Core.extend(Echo.Component, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("Column", this);
-        EchoApp.ComponentFactory.registerType("C", this);
+        Echo.ComponentFactory.registerType("Column", this);
+        Echo.ComponentFactory.registerType("C", this);
     },
 
     componentType: "Column"
@@ -2578,11 +2581,11 @@ EchoApp.Column = Core.extend(EchoApp.Component, {
  * Composite component.
  * A single-child container that provides no rendering properties.
  */
-EchoApp.Composite = Core.extend(EchoApp.Component, {
+Echo.Composite = Core.extend(Echo.Component, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("Composite", this);
-        EchoApp.ComponentFactory.registerType("CM", this);
+        Echo.ComponentFactory.registerType("Composite", this);
+        Echo.ComponentFactory.registerType("CM", this);
     },
 
     componentType: "Composite"
@@ -2595,11 +2598,11 @@ EchoApp.Composite = Core.extend(EchoApp.Component, {
  * @sp {#Border} border the panel border surrounding the child component
  * @sp {#Insets} insets the inset padding margin between the panel border and its content
  */
-EchoApp.Panel = Core.extend(EchoApp.Composite, {
+Echo.Panel = Core.extend(Echo.Composite, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("Panel", this);
-        EchoApp.ComponentFactory.registerType("P", this);
+        Echo.ComponentFactory.registerType("Panel", this);
+        Echo.ComponentFactory.registerType("P", this);
     },
 
     componentType: "Panel"
@@ -2621,7 +2624,7 @@ EchoApp.Panel = Core.extend(EchoApp.Composite, {
  *     </ul>
  * @sp {#Extent} verticalScroll the vertical scroll position
  */
-EchoApp.ContentPane = Core.extend(EchoApp.Component, {
+Echo.ContentPane = Core.extend(Echo.Component, {
 
     $static: {
     
@@ -2642,8 +2645,8 @@ EchoApp.ContentPane = Core.extend(EchoApp.Component, {
     },
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("ContentPane", this);
-        EchoApp.ComponentFactory.registerType("CP", this);
+        Echo.ComponentFactory.registerType("ContentPane", this);
+        Echo.ComponentFactory.registerType("CP", this);
     },
 
     componentType: "ContentPane",
@@ -2686,7 +2689,7 @@ EchoApp.ContentPane = Core.extend(EchoApp.Component, {
  *      the end of the grid is reached; this value may only be used in
  *      this property for vertically oriented grids)
  */
-EchoApp.Grid = Core.extend(EchoApp.Component, {
+Echo.Grid = Core.extend(Echo.Component, {
 
     $static: {
 
@@ -2717,8 +2720,8 @@ EchoApp.Grid = Core.extend(EchoApp.Component, {
     },
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("Grid", this);
-        EchoApp.ComponentFactory.registerType("G", this);
+        Echo.ComponentFactory.registerType("Grid", this);
+        Echo.ComponentFactory.registerType("G", this);
     },
 
     componentType: "Grid"
@@ -2740,11 +2743,11 @@ EchoApp.Grid = Core.extend(EchoApp.Component, {
  * @sp {#Alignment} textPosition an alignment setting describing the position of the
  *     label's text relative to the icon
  */
-EchoApp.Label = Core.extend(EchoApp.Component, {
+Echo.Label = Core.extend(Echo.Component, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("Label", this);
-        EchoApp.ComponentFactory.registerType("L", this);
+        Echo.ComponentFactory.registerType("Label", this);
+        Echo.ComponentFactory.registerType("L", this);
     },
 
     componentType: "Label"
@@ -2764,11 +2767,11 @@ EchoApp.Label = Core.extend(EchoApp.Component, {
  *      (this inset is added to any inset set on the container component)
  * @ldp {#Extent} width the width of the child component's cell
  */
-EchoApp.Row = Core.extend(EchoApp.Component, {
+Echo.Row = Core.extend(Echo.Component, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("Row", this);
-        EchoApp.ComponentFactory.registerType("R", this);
+        Echo.ComponentFactory.registerType("Row", this);
+        Echo.ComponentFactory.registerType("R", this);
     },
 
     componentType: "Row"
@@ -2811,7 +2814,7 @@ EchoApp.Row = Core.extend(EchoApp.Component, {
  *       <li><code>OVERFLOW_SCROLL</code></li>
  *     </ul>
  */
-EchoApp.SplitPane = Core.extend(EchoApp.Component, {
+Echo.SplitPane = Core.extend(Echo.Component, {
 
     $static: {
         ORIENTATION_HORIZONTAL_LEADING_TRAILING: 0,
@@ -2843,8 +2846,8 @@ EchoApp.SplitPane = Core.extend(EchoApp.Component, {
     },
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("SplitPane", this);
-        EchoApp.ComponentFactory.registerType("SP", this);
+        Echo.ComponentFactory.registerType("SplitPane", this);
+        Echo.ComponentFactory.registerType("SP", this);
     },
 
     componentType: "SplitPane",
@@ -2872,13 +2875,13 @@ EchoApp.SplitPane = Core.extend(EchoApp.Component, {
  * @sp {#Extent} verticalScroll the vertical scrollbar position
  * @sp {#Extent} width the width of the component
  */
-EchoApp.TextComponent = Core.extend(EchoApp.Component, {
+Echo.TextComponent = Core.extend(Echo.Component, {
 
     $abstract: true,
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("TextComponent", this);
-        EchoApp.ComponentFactory.registerType("TC", this);
+        Echo.ComponentFactory.registerType("TextComponent", this);
+        Echo.ComponentFactory.registerType("TC", this);
     },
 
     componentType: "TextComponent",
@@ -2888,11 +2891,11 @@ EchoApp.TextComponent = Core.extend(EchoApp.Component, {
 /**
  * TextArea component.
  */
-EchoApp.TextArea = Core.extend(EchoApp.TextComponent, {
+Echo.TextArea = Core.extend(Echo.TextComponent, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("TextArea", this);
-        EchoApp.ComponentFactory.registerType("TA", this);
+        Echo.ComponentFactory.registerType("TextArea", this);
+        Echo.ComponentFactory.registerType("TA", this);
     },
 
     componentType: "TextArea"
@@ -2901,11 +2904,11 @@ EchoApp.TextArea = Core.extend(EchoApp.TextComponent, {
 /**
  * TextField component.
  */
-EchoApp.TextField = Core.extend(EchoApp.TextComponent, {
+Echo.TextField = Core.extend(Echo.TextComponent, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("TextField", this);
-        EchoApp.ComponentFactory.registerType("TF", this);
+        Echo.ComponentFactory.registerType("TextField", this);
+        Echo.ComponentFactory.registerType("TF", this);
     },
 
     componentType: "TextField"
@@ -2914,11 +2917,11 @@ EchoApp.TextField = Core.extend(EchoApp.TextComponent, {
 /**
  * PasswordField component.
  */
-EchoApp.PasswordField = Core.extend(EchoApp.TextField, {
+Echo.PasswordField = Core.extend(Echo.TextField, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("PasswordField", this);
-        EchoApp.ComponentFactory.registerType("PF", this);
+        Echo.ComponentFactory.registerType("PasswordField", this);
+        Echo.ComponentFactory.registerType("PF", this);
     },
     
     componentType: "PasswordField"
@@ -2928,7 +2931,7 @@ EchoApp.PasswordField = Core.extend(EchoApp.TextField, {
  * WindowPane component.
  *
  * @sp {#FillImage} backgroundImage the background image to display within the content area
- * @sp {EchoApp.FillImageBorder} border the FillImageBorder containing thw WindowPane
+ * @sp {Echo.FillImageBorder} border the FillImageBorder containing thw WindowPane
  * @sp {Boolean} closable flag indicating whether the window is closable
  * @sp {#ImageReference} closeIcon the close button icon
  * @sp {#Insets} closeIconInsets the inset margin around the close button icon
@@ -2957,11 +2960,11 @@ EchoApp.PasswordField = Core.extend(EchoApp.TextField, {
  * @sp {#Insets} titleInsets the inset margin of the title text
  * @sp {#Extent} width the outside width of the window, including its border 
  */
-EchoApp.WindowPane = Core.extend(EchoApp.Component, {
+Echo.WindowPane = Core.extend(Echo.Component, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("WindowPane", this);
-        EchoApp.ComponentFactory.registerType("WP", this);
+        Echo.ComponentFactory.registerType("WindowPane", this);
+        Echo.ComponentFactory.registerType("WP", this);
     },
 
     $static: {

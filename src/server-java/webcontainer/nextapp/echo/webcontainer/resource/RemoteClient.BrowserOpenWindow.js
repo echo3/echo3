@@ -1,7 +1,7 @@
 /**
  * Command exeecution peer: Browser Open Window
  */
-EchoRemoteClient.CommandExec.BrowserOpenWindow = { 
+Echo.RemoteClient.CommandExec.BrowserOpenWindow = { 
 
     FLAG_REPLACE: 0x1,
     FLAG_MENUBAR: 0x2,
@@ -17,17 +17,17 @@ EchoRemoteClient.CommandExec.BrowserOpenWindow = {
         
         var features = [];
         if (commandData.width) {
-            if (EchoAppRender.Extent.isPercent(commandData.width)) {
+            if (Echo.Sync.Extent.isPercent(commandData.width)) {
                 features.push("width=" + screen.width * parseInt(commandData.width) / 100);
             } else {
-                features.push("width=" + EchoAppRender.Extent.toPixels(commandData.width, true));
+                features.push("width=" + Echo.Sync.Extent.toPixels(commandData.width, true));
             }
         }
         if (commandData.height) {
-            if (EchoAppRender.Extent.isPercent(commandData.height)) {
+            if (Echo.Sync.Extent.isPercent(commandData.height)) {
                 features.push("height=" + screen.height * parseInt(commandData.height) / 100);
             } else {
-                features.push("height=" + EchoAppRender.Extent.toPixels(commandData.height, false));
+                features.push("height=" + Echo.Sync.Extent.toPixels(commandData.height, false));
             }
         }
         var replace = commandData.flags & this.FLAG_REPLACE;
@@ -41,5 +41,5 @@ EchoRemoteClient.CommandExec.BrowserOpenWindow = {
     }
 };
 
-EchoRemoteClient.CommandExecProcessor.registerPeer("nextapp.echo.webcontainer.command.BrowserOpenWindowCommand", 
-        EchoRemoteClient.CommandExec.BrowserOpenWindow);
+Echo.RemoteClient.CommandExecProcessor.registerPeer("nextapp.echo.webcontainer.command.BrowserOpenWindowCommand", 
+        Echo.RemoteClient.CommandExec.BrowserOpenWindow);

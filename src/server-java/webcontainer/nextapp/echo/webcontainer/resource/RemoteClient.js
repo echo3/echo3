@@ -2,7 +2,7 @@
  * @fileoverview
  * Remote Client Implementation.
  * 
- * Requires: Core, Serial, WebCore, Application, Render.
+ * Requires: Core, Serial, Core.Web, Application, Render.
  */
 
 /**
@@ -16,7 +16,7 @@
  * provide custom property XML serialization.  This should be avoided if possible, but may
  * be necessary for serializing certain information such as the state of a model.
  */
-EchoRemoteClient = Core.extend(EchoClient, {
+Echo.RemoteClient = Core.extend(Echo.Client, {
     
     $static: {
         
@@ -80,21 +80,21 @@ EchoRemoteClient = Core.extend(EchoClient, {
     
     /**
      * Outgoing client message.
-     * @type EchoRemoteClient.ClientMessage
+     * @type Echo.RemoteClient.ClientMessage
      * @private
      */
     _clientMessage: null,
     
     /**
      * AsyncManager instance which will invoke server-pushed operations.
-     * @type EchoRemoteClient.AsyncManager
+     * @type Echo.RemoteClient.AsyncManager
      * @private
      */
     _asyncManager: null,
     
     /**
      * Wait indicator.
-     * @type EchoRemoteClient.WaitIndicator
+     * @type Echo.RemoteClient.WaitIndicator
      * @private
      */
     _waitIndicator: null,
@@ -108,7 +108,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
     
     /**
      * Runnable that will trigger initialization of wait indicator.
-     * @type WebCore.Scheduler.Runnable
+     * @type Core.Web.Scheduler.Runnable
      * @private
      */
     _waitIndicatorRunnable: null,
@@ -124,9 +124,9 @@ EchoRemoteClient = Core.extend(EchoClient, {
      * @param serverUrl the URL of the server
      */
     $construct: function(serverUrl) {
-        WebCore.init();
+        Core.Web.init();
     
-        EchoClient.call(this);
+        Echo.Client.call(this);
         
         this._serverUrl = serverUrl;
         this._processClientUpdateRef = Core.method(this, this._processClientUpdate);
@@ -134,10 +134,10 @@ EchoRemoteClient = Core.extend(EchoClient, {
         this._urlMappings = {};
         this._urlMappings.I = this._serverUrl + "?sid=Echo.Image&iid=";
         this._commandQueue = null;
-        this._clientMessage = new EchoRemoteClient.ClientMessage(this, true);
-        this._asyncManager = new EchoRemoteClient.AsyncManager(this);
-        this._waitIndicator = new EchoRemoteClient.DefaultWaitIndicator();
-        this._waitIndicatorRunnable = new WebCore.Scheduler.MethodRunnable(Core.method(this, this._waitIndicatorActivate), 
+        this._clientMessage = new Echo.RemoteClient.ClientMessage(this, true);
+        this._asyncManager = new Echo.RemoteClient.AsyncManager(this);
+        this._waitIndicator = new Echo.RemoteClient.DefaultWaitIndicator();
+        this._waitIndicatorRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._waitIndicatorActivate), 
                 this._preWaitIndicatorDelay, false);
     },
     
@@ -147,7 +147,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
      * processed during the deserialization of component synchronization
      * XML messages.
      * 
-     * @param {EchoApp.Component} component the component on which the listener should be added
+     * @param {Echo.Component} component the component on which the listener should be added
      * @param {String} eventType the type of event
      */
     addComponentListener: function(component, eventType) {
@@ -222,14 +222,14 @@ EchoRemoteClient = Core.extend(EchoClient, {
      * @private
      */
     _getLibraryServiceUrl: function(serviceId) {
-        if (!EchoRemoteClient._libraryServerUrl) {
-            EchoRemoteClient._libraryServerUrl = this._serverUrl;
+        if (!Echo.RemoteClient._libraryServerUrl) {
+            Echo.RemoteClient._libraryServerUrl = this._serverUrl;
         }
-        return EchoRemoteClient._libraryServerUrl + "?sid=" + serviceId;
+        return Echo.RemoteClient._libraryServerUrl + "?sid=" + serviceId;
     },
     
     /**
-     * @see EchoClient#getResoruceUrl
+     * @see Echo.Client#getResoruceUrl
      */
     getResourceUrl: function(packageName, resourceName) {
         return this._getServiceUrl("Echo.Resource") + "&pkg=" + packageName + "&res=" + resourceName;
@@ -265,10 +265,10 @@ EchoRemoteClient = Core.extend(EchoClient, {
      * <ul>
      *  <li>Find the domain element in which the application should exist by parsing the
      *   initial server message XML document.</li>
-     *  <li>Create a new EchoApp.Application instance,</li>
+     *  <li>Create a new Echo.Application instance,</li>
      *  <li>Register a component update listener on that application instance such that
      *   a user's input will be stored in the outgoing ClientMessage.</li>
-     *  <li>Invoke EchoClient.configure() to initialize the client.</li>
+     *  <li>Invoke Echo.Client.configure() to initialize the client.</li>
      * </ul>  
      * 
      * @param {Document} initialResponseDocument the initial ServerMessage XML document 
@@ -284,7 +284,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
         }
         
         // Create an application instance.
-        var application = new EchoApp.Application();
+        var application = new Echo.Application();
         
         // Register an update listener to receive notification of user actions such that they
         // may be remarked in the outgoing ClientMessage.
@@ -342,8 +342,8 @@ EchoRemoteClient = Core.extend(EchoClient, {
      */
     _processSyncComplete: function(e) {
         // Mark time of serialization completion with profiling timer.
-        if (EchoClient.profilingTimer) {
-            EchoClient.profilingTimer.mark("ser");
+        if (Echo.Client.profilingTimer) {
+            Echo.Client.profilingTimer.mark("ser");
         }
         
         // Flag transaction as being complete.
@@ -352,7 +352,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
         
         // Register component update listener 
         this.application.addComponentUpdateListener(this._processClientUpdateRef);
-        EchoRender.processUpdates(this);
+        Echo.Render.processUpdates(this);
         
         this._executeCommands();
         
@@ -360,9 +360,9 @@ EchoRemoteClient = Core.extend(EchoClient, {
             this.application.setFocusedComponent(this._focusedComponent);
         }
     
-        if (EchoClient.profilingTimer) {
-            Core.Debug.consoleWrite(EchoClient.profilingTimer);
-            EchoClient.profilingTimer = null;
+        if (Echo.Client.profilingTimer) {
+            Core.Debug.consoleWrite(Echo.Client.profilingTimer);
+            Echo.Client.profilingTimer = null;
         }
         
         if (this._waitIndicatorActive) {
@@ -378,7 +378,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
      */
     _processSyncResponse: function(e) {
         // Remove wait indicator from scheduling (if wait indicator has not been presented yet, it will not be).
-        WebCore.Scheduler.remove(this._waitIndicatorRunnable);
+        Core.Web.Scheduler.remove(this._waitIndicatorRunnable);
         
         // Retrieve response document.
         var responseDocument = e.source.getResponseXml();
@@ -398,14 +398,14 @@ EchoRemoteClient = Core.extend(EchoClient, {
         }
         
         // Profiling Timer (Uncomment to enable, comment to disable).
-        EchoClient.profilingTimer = new EchoClient.Timer();
+        Echo.Client.profilingTimer = new Echo.Client.Timer();
         
         // Remove component update listener from application.  This listener is listening
         // for user input.  
         this.application.removeComponentUpdateListener(this._processClientUpdateRef);
         
         // Create new ServerMessage object with response document.
-        var serverMessage = new EchoRemoteClient.ServerMessage(this, responseDocument);
+        var serverMessage = new Echo.RemoteClient.ServerMessage(this, responseDocument);
         
         // Add completion listener to invoke _processSyncComplete when message has been fully processed.
         // (Some elements of the server message are processed asynchronously). 
@@ -418,7 +418,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
     /**
      * Removes a listener for an arbitrary event type to a component.
      * 
-     * @param {EchoApp.Component} component the component from which the listener should be removed
+     * @param {Echo.Component} component the component from which the listener should be removed
      * @param {String} eventType the type of event
      */
     removeComponentListener: function(component, eventType) {
@@ -429,7 +429,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
      * Sets the wait indicator that will be displayed when a client-server action takes longer than
      * a specified period of time.
      * 
-     * @param {EchoRemoteClient.WaitIndicator} waitIndicator the new wait indicator 
+     * @param {Echo.RemoteClient.WaitIndicator} waitIndicator the new wait indicator 
      */
     setWaitIndicator: function(waitIndicator) {
         if (this._waitIndicator) {
@@ -445,18 +445,18 @@ EchoRemoteClient = Core.extend(EchoClient, {
         if (this._transactionInProgress) {
             throw new Error("Attempt to invoke client/server synchronization while another transaction is in progress."); 
         }
-        WebCore.Scheduler.add(this._waitIndicatorRunnable);
+        Core.Web.Scheduler.add(this._waitIndicatorRunnable);
     
         this._transactionInProgress = true;
         this._inputRestrictionId = this.createInputRestriction(true);
     
         this._asyncManager._stop();    
         this._syncInitTime = new Date().getTime();
-        var conn = new WebCore.HttpConnection(this._getServiceUrl("Echo.Sync"), "POST", 
+        var conn = new Core.Web.HttpConnection(this._getServiceUrl("Echo.Sync"), "POST", 
                 this._clientMessage._renderXml(), "text/xml");
         
         // Create new client message.
-        this._clientMessage = new EchoRemoteClient.ClientMessage(this, false);
+        this._clientMessage = new Echo.RemoteClient.ClientMessage(this, false);
 
         conn.addResponseListener(Core.method(this, this._processSyncResponse));
         conn.connect();
@@ -475,7 +475,7 @@ EchoRemoteClient = Core.extend(EchoClient, {
 /**
  * SerevrMessage directive processor for general application-related synchronization.
  */
-EchoRemoteClient.ApplicationSyncProcessor = Core.extend({
+Echo.RemoteClient.ApplicationSyncProcessor = Core.extend({
 
     $construct: function(client) { 
         this._client = client;
@@ -500,12 +500,12 @@ EchoRemoteClient.ApplicationSyncProcessor = Core.extend({
 /**
  * Manages server-pushed updates to the client. 
  */
-EchoRemoteClient.AsyncManager = Core.extend({
+Echo.RemoteClient.AsyncManager = Core.extend({
 
     /**
      * The supported client.
      *
-     * @type EchoRemoteClient
+     * @type Echo.RemoteClient
      * @private
      */
     _client: null,
@@ -513,7 +513,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
     /**
      * The repeating runnable used for server polling.
      *
-     * @type WebCore.Scheduler.Runnable
+     * @type Core.Web.Scheduler.Runnable
      * @private 
      */
     _runnable: null,
@@ -521,11 +521,11 @@ EchoRemoteClient.AsyncManager = Core.extend({
     /** 
      * Creates a new asynchronous manager.
      *
-     * @param {EchoRemoteClient} client the supported cilent
+     * @param {Echo.RemoteClient} client the supported cilent
      */
     $construct: function(client) {
         this._client = client;
-        this._runnable = new WebCore.Scheduler.MethodRunnable(Core.method(this, this._pollServerForUpdates), 1000, false);
+        this._runnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._pollServerForUpdates), 1000, false);
     },
     
     /**
@@ -533,7 +533,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
      * it has any updates that need to be pushed to the client.
      */
     _pollServerForUpdates: function() {
-        var conn = new WebCore.HttpConnection(this._client._getServiceUrl("Echo.AsyncMonitor"), "GET");
+        var conn = new Core.Web.HttpConnection(this._client._getServiceUrl("Echo.AsyncMonitor"), "GET");
         conn.addResponseListener(Core.method(this, this._processPollResponse));
         conn.connect();
     },
@@ -557,7 +557,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
         if (responseDocument.documentElement.getAttribute("request-sync") == "true") {
             this._client.sync();
         } else {
-            WebCore.Scheduler.add(this._runnable);
+            Core.Web.Scheduler.add(this._runnable);
         }
     },
     
@@ -574,14 +574,14 @@ EchoRemoteClient.AsyncManager = Core.extend({
      * Starts server polling for asynchronous tasks.
      */
     _start: function() {
-        WebCore.Scheduler.add(this._runnable);
+        Core.Web.Scheduler.add(this._runnable);
     },
     
     /**
      * Stops server polling for asynchronous tasks.
      */
     _stop: function() {
-        WebCore.Scheduler.remove(this._runnable);
+        Core.Web.Scheduler.remove(this._runnable);
     }
 });
 
@@ -590,7 +590,7 @@ EchoRemoteClient.AsyncManager = Core.extend({
  * This object is used to collect state changes on the client and then
  * render an XML version to be POSTed to a server-side Echo application.
  */
-EchoRemoteClient.ClientMessage = Core.extend({
+Echo.RemoteClient.ClientMessage = Core.extend({
 
     $static: {
     
@@ -625,7 +625,7 @@ EchoRemoteClient.ClientMessage = Core.extend({
             _add: function(key, value) {
                 var element = this._clientMessage._document.createElement("p");
                 element.setAttribute("n", key);
-                EchoSerial.storeProperty(this._clientMessage._client, element, value);
+                Echo.Serial.storeProperty(this._clientMessage._client, element, value);
                 this._element.appendChild(element);
             }
         })
@@ -633,7 +633,7 @@ EchoRemoteClient.ClientMessage = Core.extend({
     
     /**
      * The RemoteClient which generated this message.
-     * @type {EchoRemoteClient}
+     * @type {Echo.RemoteClient}
      * @private
      */
     _client: null,
@@ -687,7 +687,7 @@ EchoRemoteClient.ClientMessage = Core.extend({
         this._client = client;
         this._componentIdToPropertyMap = {};
         
-        this._document = WebCore.DOM.createDocument("http://www.nextapp.com/products/echo/svrmsg/clientmessage.3.0", "cmsg");
+        this._document = Core.Web.DOM.createDocument("http://www.nextapp.com/products/echo/svrmsg/clientmessage.3.0", "cmsg");
         if (initialize) {
             this._document.documentElement.setAttribute("t", "init");
             this._renderClientProperties();
@@ -731,7 +731,7 @@ EchoRemoteClient.ClientMessage = Core.extend({
             eElement.setAttribute("t", this._eventType);
             eElement.setAttribute("i", this._eventComponentId);
             if (this._eventData != null) {
-                EchoSerial.storeProperty(this._client, eElement, this._eventData);
+                Echo.Serial.storeProperty(this._client, eElement, this._eventData);
             }
             cSyncElement.appendChild(eElement);
         }
@@ -740,13 +740,13 @@ EchoRemoteClient.ClientMessage = Core.extend({
         for (var componentId in this._componentIdToPropertyMap) {
             var propertyMap = this._componentIdToPropertyMap[componentId];
             var component = this._client.application.getComponentByRenderId(componentId);
-            var peerClass = EchoRender.getPeerClass(component);
+            var peerClass = Echo.Render.getPeerClass(component);
             for (var propertyName in propertyMap) {
                 var propertyValue = propertyMap[propertyName];
                 var pElement = this._document.createElement("p");
                 pElement.setAttribute("i", componentId);
                 pElement.setAttribute("n", propertyName);
-                EchoSerial.storeProperty(this._client, pElement, propertyValue);
+                Echo.Serial.storeProperty(this._client, pElement, propertyValue);
                 cSyncElement.appendChild(pElement);
             }
         }
@@ -761,7 +761,7 @@ EchoRemoteClient.ClientMessage = Core.extend({
      * @private
      */
     _renderClientProperties: function() {
-        var cp = new EchoRemoteClient.ClientMessage._ClientProperties(this);
+        var cp = new Echo.RemoteClient.ClientMessage._ClientProperties(this);
         
         cp._add("screenWidth", screen.width);
         cp._add("screenHeight", screen.height);
@@ -777,7 +777,7 @@ EchoRemoteClient.ClientMessage = Core.extend({
         cp._add("navigatorPlatform", window.navigator.platform);
         cp._add("navigatorUserAgent", window.navigator.userAgent);
         
-        var env = WebCore.Environment;
+        var env = Core.Web.Env;
         cp._add("browserOpera", env.BROWSER_OPERA);
         cp._add("browserSafari", env.BROWSER_SAFARI);
         cp._add("browserKonqueror", env.BROWSER_KONQUEROR);
@@ -837,12 +837,12 @@ EchoRemoteClient.ClientMessage = Core.extend({
 /**
  * Namespace for built-in command execution peers.
  */
-EchoRemoteClient.CommandExec = { };
+Echo.RemoteClient.CommandExec = { };
 
 /**
  * SerevrMessage directive processor for command executions.
  */
-EchoRemoteClient.CommandExecProcessor = Core.extend({
+Echo.RemoteClient.CommandExecProcessor = Core.extend({
 
     $static: {
     
@@ -855,7 +855,7 @@ EchoRemoteClient.CommandExecProcessor = Core.extend({
          * @param commandPeer an object providing an 'execute()' method which be invoked to execute the command.
          */
         registerPeer: function(type, commandPeer) {
-            EchoRemoteClient.CommandExecProcessor._typeToPeerMap[type] = commandPeer;
+            Echo.RemoteClient.CommandExecProcessor._typeToPeerMap[type] = commandPeer;
         }
     },
 
@@ -870,14 +870,14 @@ EchoRemoteClient.CommandExecProcessor = Core.extend({
         var cmdElement = dirElement.firstChild;
         while (cmdElement) {
             var type = cmdElement.getAttribute("t");
-            var commandPeer = EchoRemoteClient.CommandExecProcessor._typeToPeerMap[type];
+            var commandPeer = Echo.RemoteClient.CommandExecProcessor._typeToPeerMap[type];
             if (!commandPeer) {
                 throw new Error("Peer not found for: " + type);
             }
             var commandData = {};
             var pElement = cmdElement.firstChild;
             while (pElement) {
-                EchoSerial.loadProperty(this._client, pElement, null, commandData, null);
+                Echo.Serial.loadProperty(this._client, pElement, null, commandData, null);
                 pElement = pElement.nextSibling;
             }
             this._client._enqueueCommand(commandPeer, commandData);
@@ -889,7 +889,7 @@ EchoRemoteClient.CommandExecProcessor = Core.extend({
 /**
  * ServerMessage directive processor for component focus.
  */
-EchoRemoteClient.ComponentFocusProcessor = Core.extend({
+Echo.RemoteClient.ComponentFocusProcessor = Core.extend({
 
     _client: null,
 
@@ -920,7 +920,7 @@ EchoRemoteClient.ComponentFocusProcessor = Core.extend({
 /**
  * ServerMessage directive processor for component synchronizations (remove phase).
  */
-EchoRemoteClient.ComponentSyncRemoveProcessor = Core.extend({
+Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend({
 
     _client: null,
 
@@ -971,7 +971,7 @@ EchoRemoteClient.ComponentSyncRemoveProcessor = Core.extend({
                     indicesToRemove.push(parseInt(index));
                 }
             }
-            indicesToRemove.sort(EchoRemoteClient.ComponentSyncUpdateProcessor._numericReverseSort);
+            indicesToRemove.sort(Echo.RemoteClient.ComponentSyncUpdateProcessor._numericReverseSort);
     
             // Remove components (last to first).
             for (var i = 0; i < indicesToRemove.length; ++i) {
@@ -991,7 +991,7 @@ EchoRemoteClient.ComponentSyncRemoveProcessor = Core.extend({
 /**
  * ServerMessage directive processor for component synchronizations (update phase).
  */
-EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
+Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
 
     $static: {
         
@@ -1037,7 +1037,7 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
             case "rp": // Referenced Property
                 var propertyId = propertyElement.getAttribute("i");
                 var propertyType = propertyElement.getAttribute("t");
-                var translator = EchoSerial.getPropertyTranslator(propertyType);
+                var translator = Echo.Serial.getPropertyTranslator(propertyType);
                 if (!translator) {
                     throw new Error("Translator not available for property type: " + propertyType);
                 }
@@ -1053,7 +1053,7 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
     },
     
     _processStyleSheet: function(ssElement) {
-        var styleSheet = EchoSerial.loadStyleSheet(this._client, ssElement);
+        var styleSheet = Echo.Serial.loadStyleSheet(this._client, ssElement);
         this._client.application.setStyleSheet(styleSheet);
     },
     
@@ -1075,7 +1075,7 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
             if (element.nodeType == 1) {
                 switch (element.nodeName) {
                 case "c": // Added child.
-                    var component = EchoSerial.loadComponent(this._client, element, this._referenceMap);
+                    var component = Echo.Serial.loadComponent(this._client, element, this._referenceMap);
                     var index = element.getAttribute("x");
                     if (index == null) {
                         // No index specified, add children at current insertion cursor position.
@@ -1089,7 +1089,7 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                     }
                     break;
                 case "p": // Property update.
-                    EchoSerial.loadProperty(this._client, element, parentComponent, null, this._referenceMap);
+                    Echo.Serial.loadProperty(this._client, element, parentComponent, null, this._referenceMap);
                     break;
                 case "s": // Style name update.
                     parentComponent.setStyleName(element.firstChild ? element.firstChild.nodeValue : null);
@@ -1111,7 +1111,7 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                     break;
                 case "dir": // Layout direction update.
                     parentComponent.setLayoutDirection(element.firstChild
-                            ? (element.firstChild.nodeValue == "rtl" ? EchoApp.LayoutDirection.RTL : EchoApp.LayoutDirection.RTL)
+                            ? (element.firstChild.nodeValue == "rtl" ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.RTL)
                             : null);
                     break;
                 }
@@ -1121,7 +1121,7 @@ EchoRemoteClient.ComponentSyncUpdateProcessor = Core.extend({
     }
 });
 
-EchoRemoteClient.ServerMessage = Core.extend({
+Echo.RemoteClient.ServerMessage = Core.extend({
 
     $static: {
     
@@ -1145,9 +1145,9 @@ EchoRemoteClient.ServerMessage = Core.extend({
     
     process: function() {
         // Processing phase 1: load libraries.
-        var libsElement = WebCore.DOM.getChildElementByTagName(this.document.documentElement, "libs");
+        var libsElement = Core.Web.DOM.getChildElementByTagName(this.document.documentElement, "libs");
         if (libsElement) {
-            var libraryGroup = new WebCore.Library.Group();
+            var libraryGroup = new Core.Web.Library.Group();
             var element = libsElement.firstChild;
             while (element) {
                 if (element.nodeType == 1) {
@@ -1170,20 +1170,20 @@ EchoRemoteClient.ServerMessage = Core.extend({
     },
     
     _processPostLibraryLoad: function() {
-        EchoClient.profilingTimer.mark("lib"); // Library Loading
+        Echo.Client.profilingTimer.mark("lib"); // Library Loading
         // Processing phase 2: invoke directives.
-        var groupElements = WebCore.DOM.getChildElementsByTagName(this.document.documentElement, "group");
+        var groupElements = Core.Web.DOM.getChildElementsByTagName(this.document.documentElement, "group");
         for (var i = 0; i < groupElements.length; ++i) {
-            var dirElements = WebCore.DOM.getChildElementsByTagName(groupElements[i], "dir");
+            var dirElements = Core.Web.DOM.getChildElementsByTagName(groupElements[i], "dir");
             for (var j = 0; j < dirElements.length; ++j) {
                 var procName = dirElements[j].getAttribute("proc");
                 var processor = this._processorInstances[procName];
                 if (!processor) {
                     // Create new processor instance.
-                    if (!EchoRemoteClient.ServerMessage._processorClasses[procName]) {
+                    if (!Echo.RemoteClient.ServerMessage._processorClasses[procName]) {
                         throw new Error("Invalid processor specified in ServerMessage: " + procName);
                     }
-                    processor = new EchoRemoteClient.ServerMessage._processorClasses[procName](this.client);
+                    processor = new Echo.RemoteClient.ServerMessage._processorClasses[procName](this.client);
                     this._processorInstances[procName] = processor;
                 }
                 processor.process(dirElements[j]);
@@ -1208,7 +1208,7 @@ EchoRemoteClient.ServerMessage = Core.extend({
 /**
  * Wait indicator base class.
  */
-EchoRemoteClient.WaitIndicator = Core.extend({
+Echo.RemoteClient.WaitIndicator = Core.extend({
 
     $construct: function() { },
 
@@ -1229,26 +1229,26 @@ EchoRemoteClient.WaitIndicator = Core.extend({
 /**
  * @class Default wait indicator implementation.
  */
-EchoRemoteClient.DefaultWaitIndicator = Core.extend(EchoRemoteClient.WaitIndicator, {
+Echo.RemoteClient.DefaultWaitIndicator = Core.extend(Echo.RemoteClient.WaitIndicator, {
 
     $construct: function() {
         this._divElement = document.createElement("div");
         this._divElement.style.cssText = "display: none; z-index: 32767; position: absolute; top: 30px; right: 30px; width: 200px;"
                  + " padding: 20px; border: 1px outset #abcdef; background-color: #abcdef; color: #000000; text-align: center;";
         this._divElement.appendChild(document.createTextNode("Please wait..."));
-        this._fadeRunnable = new WebCore.Scheduler.MethodRunnable(Core.method(this, this._tick), 50, true);
+        this._fadeRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._tick), 50, true);
         document.body.appendChild(this._divElement);
     },
     
     activate: function() {
         this._divElement.style.display = "block";
-        WebCore.Scheduler.add(this._fadeRunnable);
+        Core.Web.Scheduler.add(this._fadeRunnable);
         this._opacity = 0;
     },
     
     deactivate: function() {
         this._divElement.style.display = "none";
-        WebCore.Scheduler.remove(this._fadeRunnable);
+        Core.Web.Scheduler.remove(this._fadeRunnable);
     },
     
     _tick: function() {
@@ -1260,14 +1260,14 @@ EchoRemoteClient.DefaultWaitIndicator = Core.extend(EchoRemoteClient.WaitIndicat
         // Divide this value by 30, so the range goes from 2/3 to 0 to 2/3.
         // Subtract that value from 1, so the range goes from 1/3 to 1 and back.
         var opacityValue = 1 - ((Math.abs((this._opacity % 40) - 20)) / 30);
-        if (!WebCore.Environment.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
+        if (!Core.Web.Env.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
             this._divElement.style.opacity = opacityValue;
         }
     }
 });
 
-EchoRemoteClient.ServerMessage.addProcessor("AppSync", EchoRemoteClient.ApplicationSyncProcessor);
-EchoRemoteClient.ServerMessage.addProcessor("CFocus", EchoRemoteClient.ComponentFocusProcessor);
-EchoRemoteClient.ServerMessage.addProcessor("CSyncUp", EchoRemoteClient.ComponentSyncUpdateProcessor);
-EchoRemoteClient.ServerMessage.addProcessor("CSyncRm", EchoRemoteClient.ComponentSyncRemoveProcessor);
-EchoRemoteClient.ServerMessage.addProcessor("CmdExec", EchoRemoteClient.CommandExecProcessor);
+Echo.RemoteClient.ServerMessage.addProcessor("AppSync", Echo.RemoteClient.ApplicationSyncProcessor);
+Echo.RemoteClient.ServerMessage.addProcessor("CFocus", Echo.RemoteClient.ComponentFocusProcessor);
+Echo.RemoteClient.ServerMessage.addProcessor("CSyncUp", Echo.RemoteClient.ComponentSyncUpdateProcessor);
+Echo.RemoteClient.ServerMessage.addProcessor("CSyncRm", Echo.RemoteClient.ComponentSyncRemoveProcessor);
+Echo.RemoteClient.ServerMessage.addProcessor("CmdExec", Echo.RemoteClient.CommandExecProcessor);

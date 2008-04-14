@@ -2,7 +2,7 @@
  * Abstract base class for Echo clients.
  * @namespace
  */
-EchoClient = Core.extend({
+Echo.Client = Core.extend({
     
     $static: {
     
@@ -24,15 +24,15 @@ EchoClient = Core.extend({
          * @param e the DOM resize event
          */
         _globalWindowResizeListener: function(e) {
-            for (var i = 0; i < EchoClient._activeClients.length; ++i) {
-                EchoClient._activeClients[i]._windowResizeListener(e);
+            for (var i = 0; i < Echo.Client._activeClients.length; ++i) {
+                Echo.Client._activeClients[i]._windowResizeListener(e);
             }
         }
     },
     
     $load: function() {
         // Register resize listener on containing window one time.
-        WebCore.DOM.addEventListener(window, "resize", this._globalWindowResizeListener, false);
+        Core.Web.DOM.addEventListener(window, "resize", this._globalWindowResizeListener, false);
     },
     
     /**
@@ -134,7 +134,7 @@ EchoClient = Core.extend({
         verifyInput: function(component, flags) {
             // Check for input restrictions.
             if (this._inputRestrictionCount != 0) {
-                if (!flags & EchoClient.FLAG_INPUT_PROPERTY) {
+                if (!flags & Echo.Client.FLAG_INPUT_PROPERTY) {
                     // Input is not a property update, automatically return false if any input restrictions pressent.
                     return false;
                 }
@@ -175,9 +175,9 @@ EchoClient = Core.extend({
      */
     configure: function(application, domainElement) {
         if (this.application) {
-            Core.Arrays.remove(EchoClient._activeClients, this);
-            WebCore.EventProcessor.remove(this.domainElement, 
-                    WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._keyPressListener, false);
+            Core.Arrays.remove(Echo.Client._activeClients, this);
+            Core.Web.Event.remove(this.domainElement, 
+                    Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._keyPressListener, false);
             this.application.removeFocusListener(this._applicationFocusListener);
         }
         
@@ -186,9 +186,9 @@ EchoClient = Core.extend({
     
         if (this.application) {
             this.application.addFocusListener(this._applicationFocusListener);
-            WebCore.EventProcessor.add(this.domainElement, 
-                    WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._keyPressListener, false);
-            EchoClient._activeClients.push(this);
+            Core.Web.Event.add(this.domainElement, 
+                    Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._keyPressListener, false);
+            Echo.Client._activeClients.push(this);
         }
     },
     
@@ -233,7 +233,7 @@ EchoClient = Core.extend({
     _processKeyPress: function(e) {
         if (e.keyCode == 9) { // Tab
             this.application.focusNext(e.shiftKey);
-            WebCore.DOM.preventEventDefault(e);
+            Core.Web.DOM.preventEventDefault(e);
             return false; // Stop propagation.
         }
         return true; // Allow propagation.
@@ -258,14 +258,14 @@ EchoClient = Core.extend({
      * @param e the DOM resize event
      */
     _windowResizeListener: function(e) {
-        EchoRender.notifyResize(this.application.rootComponent);
+        Echo.Render.notifyResize(this.application.rootComponent);
     }
 });
 
 /**
  * Provides a tool for measuring performance of the Echo3 client engine.
  */
-EchoClient.Timer = Core.extend({
+Echo.Client.Timer = Core.extend({
 
     _times: null,
     

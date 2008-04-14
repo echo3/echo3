@@ -21,7 +21,7 @@
  * Namespace for Web Core.
  * @namespace
  */
-WebCore = { 
+Core.Web = { 
 
     /**
      * Flag indicating that a drag-and-drop operation is in process.
@@ -36,26 +36,26 @@ WebCore = {
      * Initializes the Web Core.  This method must be executed prior to using any Web Core capabilities.
      */
     init: function() { 
-        if (WebCore.initialized) {
+        if (Core.Web.initialized) {
             // Already initialized.
             return;
         }
     
-        WebCore.Environment._init();
-        WebCore.Measure._calculateExtentSizes();
-        if (WebCore.Environment.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY) {
+        Core.Web.Env._init();
+        Core.Web.Measure._calculateExtentSizes();
+        if (Core.Web.Env.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY) {
             // Enable virtual positioning.
-            WebCore.VirtualPosition._init();
+            Core.Web.VirtualPosition._init();
         }
     
-        if (WebCore.Environment.BROWSER_INTERNET_EXPLORER) {
-            WebCore.DOM.addEventListener(document, "selectstart", WebCore._selectStartListener, false);
+        if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
+            Core.Web.DOM.addEventListener(document, "selectstart", Core.Web._selectStartListener, false);
             // Set documentElement.style.overflow to hidden in order to hide root scrollbar in IE.
             // This is a non-standard CSS property.
             document.documentElement.style.overflow = "hidden";
         }
         
-        WebCore.initialized = true;
+        Core.Web.initialized = true;
     },
     
     /**
@@ -66,8 +66,8 @@ WebCore = {
      */
     _selectStartListener: function(e) {
         e = e ? e : window.event;
-        if (WebCore.dragInProgress) {
-            WebCore.DOM.preventEventDefault(e);
+        if (Core.Web.dragInProgress) {
+            Core.Web.DOM.preventEventDefault(e);
         }
     }
 };
@@ -76,7 +76,7 @@ WebCore = {
  * DOM manipulation utility method namespace.
  * @class
  */
-WebCore.DOM = {
+Core.Web.DOM = {
 
     /**
      * Temporary storage for the element about to be focused (for clients that require 'delayed' focusing).
@@ -143,9 +143,9 @@ WebCore.DOM = {
      * @param {Element} element the DOM element to focus
      */
     focusElement: function(element) {
-        if (WebCore.Environment.QUIRK_DELAYED_FOCUS_REQUIRED) {
-            WebCore.DOM._focusPendingElement = element;
-            WebCore.Scheduler.run(Core.method(window, this._focusElementImpl));
+        if (Core.Web.Env.QUIRK_DELAYED_FOCUS_REQUIRED) {
+            Core.Web.DOM._focusPendingElement = element;
+            Core.Web.Scheduler.run(Core.method(window, this._focusElementImpl));
         } else {
             this._focusElementImpl(element);
         }
@@ -159,8 +159,8 @@ WebCore.DOM = {
      */
     _focusElementImpl: function(element) {
         if (!element) {
-            element = WebCore.DOM._focusPendingElement;
-            WebCore.DOM._focusPendingElement = null;
+            element = Core.Web.DOM._focusPendingElement;
+            Core.Web.DOM._focusPendingElement = null;
         }
         if (element && element.focus) {
             try {
@@ -223,7 +223,7 @@ WebCore.DOM = {
         if (typeof(e.offsetX) == "number") {
             return { x: e.offsetX, y: e.offsetY };
         } else {
-            var bounds = new WebCore.Measure.Bounds(this.getEventTarget(e));
+            var bounds = new Core.Web.Measure.Bounds(this.getEventTarget(e));
             return { x: e.clientX - bounds.left, y: e.clientY - bounds.top };
         }
     },
@@ -341,7 +341,7 @@ WebCore.DOM = {
             // not in DOM tree
             return;
         }
-        if (WebCore.Environment.QUIRK_PERFORMANCE_LARGE_DOM_REMOVE) {
+        if (Core.Web.Env.QUIRK_PERFORMANCE_LARGE_DOM_REMOVE) {
             this._removeNodeRecursive(node);
         } else {
             parentNode.removeChild(node);
@@ -388,11 +388,11 @@ WebCore.DOM = {
  * Provides information about the web browser environment.
  * @class
  */
-WebCore.Environment = {
+Core.Web.Env = {
 
     /**
      * Performs initial analysis of environment.
-     * Automatically invoked when WebCore module is initialized.
+     * Automatically invoked when Core.Web module is initialized.
      */
     _init: function() {
         var ua = navigator.userAgent.toLowerCase();
@@ -521,7 +521,7 @@ WebCore.Environment = {
 };
 
 /**
- * EventProcessor namespace.
+ * Event Processing System namespace.
  * The static methods in this object provide a standard framework for handling
  * DOM events across incompatible browser platforms.
  * <p>
@@ -532,7 +532,7 @@ WebCore.Environment = {
  * through it.
  * @class
  */
-WebCore.EventProcessor = {
+Core.Web.Event = {
     
     /**
      * Provides utilities for restricting selection of DOM elements.  These are necessary as double click and drag
@@ -543,16 +543,16 @@ WebCore.EventProcessor = {
         /**
          * Adds a listener to an element that will prevent text selection / highlighting as a result of mouse clicks.
          * The disable() method should be invoked when the element is to be disposed.
-         * The event is registered using the event processor, so invoking WebCore.EventProcessor.removeAll() on its
+         * The event is registered using the event processor, so invoking Core.Web.Event.removeAll() on its
          * element will also dispose it.
          *
          * @param {Element} element the element on which to forbid text selection
-         * @see WebCore.EventProcessor.Selection#enable
+         * @see Core.Web.Event.Selection#enable
          */
         disable: function(element) {
-            WebCore.EventProcessor.add(element, "mousedown", WebCore.EventProcessor.Selection._disposeEvent, false);
-            if (WebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
-                WebCore.EventProcessor.add(element, "selectstart", WebCore.EventProcessor.Selection._disposeEvent, false);
+            Core.Web.Event.add(element, "mousedown", Core.Web.Event.Selection._disposeEvent, false);
+            if (Core.Web.Env.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
+                Core.Web.Event.add(element, "selectstart", Core.Web.Event.Selection._disposeEvent, false);
             }
         },
         
@@ -563,19 +563,19 @@ WebCore.EventProcessor = {
          * @private
          */
         _disposeEvent: function(e) {
-            WebCore.DOM.preventEventDefault(e);
+            Core.Web.DOM.preventEventDefault(e);
         },
     
         /**
          * Removes a selection denial listener.
          * 
          * @param element the element from which to remove the selection denial listener
-         * @see WebCore.EventProcessor.Selection#enable
+         * @see Core.Web.Event.Selection#enable
          */
         enable: function(element) {
-            WebCore.EventProcessor.remove(element, "mousedown", WebCore.EventProcessor.Selection._disposeEvent, false);
-            if (WebCore.Environment.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
-                WebCore.EventProcessor.remove(element, "selectstart", WebCore.EventProcessor.Selection._disposeEvent, false);
+            Core.Web.Event.remove(element, "mousedown", Core.Web.Event.Selection._disposeEvent, false);
+            if (Core.Web.Env.PROPRIETARY_EVENT_SELECT_START_SUPPORTED) {
+                Core.Web.Event.remove(element, "selectstart", Core.Web.Event.Selection._disposeEvent, false);
             }
         }
     },
@@ -613,21 +613,21 @@ WebCore.EventProcessor = {
     add: function(element, eventType, eventTarget, capture) {
         // Assign event processor element id to element if not present.
         if (!element.__eventProcessorId) {
-            element.__eventProcessorId = ++WebCore.EventProcessor._nextId;
+            element.__eventProcessorId = ++Core.Web.Event._nextId;
         }
     
         var listenerList;
         
         // Determine the Core.ListenerList to which the listener should be added.
-        if (element.__eventProcessorId == WebCore.EventProcessor._lastId 
-                && capture == WebCore.EventProcessor._lastCapture) {
+        if (element.__eventProcessorId == Core.Web.Event._lastId 
+                && capture == Core.Web.Event._lastCapture) {
             // If the 'element' and 'capture' properties are identical to those specified on the prior invocation
             // of this method, the correct listener list is stored in the '_lastListenerList' property. 
-            listenerList = WebCore.EventProcessor._lastListenerList; 
+            listenerList = Core.Web.Event._lastListenerList; 
         } else {
             // Obtain correct id->ListenerList mapping based on capture parameter.
-            var listenerMap = capture ? WebCore.EventProcessor._capturingListenerMap 
-                                      : WebCore.EventProcessor._bubblingListenerMap;
+            var listenerMap = capture ? Core.Web.Event._capturingListenerMap 
+                                      : Core.Web.Event._bubblingListenerMap;
             
             // Obtain ListenerList based on element id.                              
             listenerList = listenerMap.map[element.__eventProcessorId];
@@ -640,14 +640,14 @@ WebCore.EventProcessor = {
             // Cache element's event processor id, capture parameter value, and listener list.
             // If the same element/capture properties are provided in the next call (which commonly occurs),
             // the lookup operation will be unnecessary.
-            WebCore.EventProcessor._lastId = element.__eventProcessorId;
-            WebCore.EventProcessor._lastCapture = capture;
-            WebCore.EventProcessor._lastListenerList = listenerList;
+            Core.Web.Event._lastId = element.__eventProcessorId;
+            Core.Web.Event._lastCapture = capture;
+            Core.Web.Event._lastListenerList = listenerList;
         }
     
         // Register event listener on DOM element.
         if (!listenerList.hasListeners(eventType)) {
-            WebCore.DOM.addEventListener(element, eventType, WebCore.EventProcessor._processEvent, false);
+            Core.Web.DOM.addEventListener(element, eventType, Core.Web.Event._processEvent, false);
         }
 
         // Add event handler to the ListenerList.
@@ -685,7 +685,7 @@ WebCore.EventProcessor = {
         
         // Fire event to capturing listeners.
         for (var i = elementAncestry.length - 1; i >= 0; --i) {
-            listenerList = WebCore.EventProcessor._capturingListenerMap.map[elementAncestry[i].__eventProcessorId];
+            listenerList = Core.Web.Event._capturingListenerMap.map[elementAncestry[i].__eventProcessorId];
             if (listenerList) {
                 // Set registered target on event.
                 e.registeredTarget = elementAncestry[i];
@@ -702,7 +702,7 @@ WebCore.EventProcessor = {
         if (propagate) {
             // Fire event to bubbling listeners.
             for (var i = 0; i < elementAncestry.length; ++i) {
-                listenerList = WebCore.EventProcessor._bubblingListenerMap.map[elementAncestry[i].__eventProcessorId];
+                listenerList = Core.Web.Event._bubblingListenerMap.map[elementAncestry[i].__eventProcessorId];
                 // Set registered target on event.
                 e.registeredTarget = elementAncestry[i];
                 if (listenerList) {
@@ -719,7 +719,7 @@ WebCore.EventProcessor = {
 
         // Inform DOM to stop propagation of event, in all cases.
         // Event will otherwise be re-processed by higher-level elements registered with the event processor.
-        WebCore.DOM.stopEventPropagation(e);
+        Core.Web.DOM.stopEventPropagation(e);
     },
     
     /**
@@ -732,15 +732,15 @@ WebCore.EventProcessor = {
      *        the bubbling phase
      */
     remove: function(element, eventType, eventTarget, capture) {
-        WebCore.EventProcessor._lastId = null;
+        Core.Web.Event._lastId = null;
         
         if (!element.__eventProcessorId) {
             return;
         }
     
         // Obtain correct id->ListenerList mapping based on capture parameter.
-        var listenerMap = capture ? WebCore.EventProcessor._capturingListenerMap 
-                                  : WebCore.EventProcessor._bubblingListenerMap;
+        var listenerMap = capture ? Core.Web.Event._capturingListenerMap 
+                                  : Core.Web.Event._bubblingListenerMap;
     
         // Obtain ListenerList based on element id.                              
         var listenerList = listenerMap.map[element.__eventProcessorId];
@@ -754,7 +754,7 @@ WebCore.EventProcessor = {
 
             // Unregister event listener on DOM element if all listeners have been removed.
             if (!listenerList.hasListeners(eventType)) {
-                WebCore.DOM.removeEventListener(element, eventType, WebCore.EventProcessor._processEvent, false);
+                Core.Web.DOM.removeEventListener(element, eventType, Core.Web.Event._processEvent, false);
             }
         }
     },
@@ -767,12 +767,12 @@ WebCore.EventProcessor = {
      * @param {Element} element the element
      */
     removeAll: function(element) {
-        WebCore.EventProcessor._lastId = null;
+        Core.Web.Event._lastId = null;
         if (!element.__eventProcessorId) {
             return;
         }
-        WebCore.EventProcessor._removeAllImpl(element, WebCore.EventProcessor._capturingListenerMap);
-        WebCore.EventProcessor._removeAllImpl(element, WebCore.EventProcessor._bubblingListenerMap);
+        Core.Web.Event._removeAllImpl(element, Core.Web.Event._capturingListenerMap);
+        Core.Web.Event._removeAllImpl(element, Core.Web.Event._bubblingListenerMap);
     },
     
     /**
@@ -781,7 +781,7 @@ WebCore.EventProcessor = {
      * 
      * @param {Element} element the element
      * @param {Core.Arrays.LargeMap} listenerMap the map from which the listeners should be removed, either
-     *        WebCore.EventProcessor._capturingListenerMap or WebCore.EventProcessor._bubblingListenerMap
+     *        Core.Web.Event._capturingListenerMap or Core.Web.Event._bubblingListenerMap
      * @private
      */
     _removeAllImpl: function(element, listenerMap) {
@@ -792,7 +792,7 @@ WebCore.EventProcessor = {
     
         var types = listenerList.getListenerTypes();
         for (var i = 0; i < types.length; ++i) {
-            WebCore.DOM.removeEventListener(element, types[i], WebCore.EventProcessor._processEvent, false); 
+            Core.Web.DOM.removeEventListener(element, types[i], Core.Web.Event._processEvent, false); 
         }
         
         listenerMap.remove(element.__eventProcessorId);
@@ -806,8 +806,8 @@ WebCore.EventProcessor = {
      * @type String
      */
     toString: function() {
-        return "Capturing: " + WebCore.EventProcessor._capturingListenerMap + "\n"
-                + "Bubbling: " + WebCore.EventProcessor._bubblingListenerMap;
+        return "Capturing: " + Core.Web.Event._capturingListenerMap + "\n"
+                + "Bubbling: " + Core.Web.Event._bubblingListenerMap;
     }
 };
 
@@ -816,7 +816,7 @@ WebCore.EventProcessor = {
  * platform wrapper for XMLHttpRequest and additionally allows method
  * reference-based listener registration.  
  */
-WebCore.HttpConnection = Core.extend({
+Core.Web.HttpConnection = Core.extend({
 
     _url: null,
     
@@ -981,7 +981,7 @@ WebCore.HttpConnection = Core.extend({
  * Utilities for dynamically loading additional script libraries.
  * @class
  */
-WebCore.Library = {
+Core.Web.Library = {
 
     /**
      * Set of loaded libraries (keys are library urls, value is true when library has been loaded).
@@ -1022,12 +1022,12 @@ WebCore.Library = {
          * @param libraryUrl the URL from which to retrieve the library.
          */
         add: function(libraryUrl) {
-            if (WebCore.Library._loadedLibraries[libraryUrl]) {
+            if (Core.Web.Library._loadedLibraries[libraryUrl]) {
                 // Library already loaded: ignore.
                 return;
             }
             
-            var libraryItem = new WebCore.Library._Item(this, libraryUrl);
+            var libraryItem = new Core.Web.Library._Item(this, libraryUrl);
             this._libraries.push(libraryItem);
         },
         
@@ -1129,7 +1129,7 @@ WebCore.Library = {
         /**
          * Creates a new library item.
          * 
-         * @param {WebCore.Library.Group} group the library group in which the item is contained
+         * @param {Core.Web.Library.Group} group the library group in which the item is contained
          * @param {String} url the URL from which the library may be retrieved
          * @constructor
          */
@@ -1158,7 +1158,7 @@ WebCore.Library = {
          * @private
          */
         _install: function() {
-            WebCore.Library._loadedLibraries[this._url] = true;
+            Core.Web.Library._loadedLibraries[this._url] = true;
             if (this._content == null) {
                 throw new Error("Attempt to install library when no content has been loaded.");
             }
@@ -1173,7 +1173,7 @@ WebCore.Library = {
          * it will return before the library has been retrieved.
          */
         _retrieve: function() {
-            var conn = new WebCore.HttpConnection(this._url, "GET");
+            var conn = new Core.Web.HttpConnection(this._url, "GET");
             conn.addResponseListener(Core.method(this, this._retrieveListener));
             conn.connect();
         }
@@ -1184,7 +1184,7 @@ WebCore.Library = {
  * Namespace for measuring-related operations.
  * @class
  */
-WebCore.Measure = { 
+Core.Web.Measure = { 
 
     _scrollElements: ["div", "body"],
 
@@ -1219,23 +1219,23 @@ WebCore.Measure = {
         if (!units || units == "px") {
             return value;
         }
-        var dpi = horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch;
+        var dpi = horizontal ? Core.Web.Measure._hInch : Core.Web.Measure._vInch;
         switch (units) {
         case "%":  return null;
-        case "in": return value * (horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch);
-        case "cm": return value * (horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch) / 2.54;
-        case "mm": return value * (horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch) / 25.4;
-        case "pt": return value * (horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch) / 72;
-        case "pc": return value * (horizontal ? WebCore.Measure._hInch : WebCore.Measure._vInch) / 6;
-        case "em": return value * (horizontal ? WebCore.Measure._hEm   : WebCore.Measure._vEm);
-        case "ex": return value * (horizontal ? WebCore.Measure._hEx   : WebCore.Measure._vEx);
+        case "in": return value * (horizontal ? Core.Web.Measure._hInch : Core.Web.Measure._vInch);
+        case "cm": return value * (horizontal ? Core.Web.Measure._hInch : Core.Web.Measure._vInch) / 2.54;
+        case "mm": return value * (horizontal ? Core.Web.Measure._hInch : Core.Web.Measure._vInch) / 25.4;
+        case "pt": return value * (horizontal ? Core.Web.Measure._hInch : Core.Web.Measure._vInch) / 72;
+        case "pc": return value * (horizontal ? Core.Web.Measure._hInch : Core.Web.Measure._vInch) / 6;
+        case "em": return value * (horizontal ? Core.Web.Measure._hEm   : Core.Web.Measure._vEm);
+        case "ex": return value * (horizontal ? Core.Web.Measure._hEx   : Core.Web.Measure._vEx);
         }
     },
 
     /**
      * Updates internal measures used in converting length units 
      * (e.g., in, mm, ex, and em) to pixels.
-     * Automatically invoked when WebCore module is initialized.
+     * Automatically invoked when Core.Web module is initialized.
      * @private
      */
     _calculateExtentSizes: function() {
@@ -1245,24 +1245,24 @@ WebCore.Measure = {
         inchDiv4.style.width = "4in";
         inchDiv4.style.height = "4in";
         containerElement.appendChild(inchDiv4);
-        WebCore.Measure._hInch = inchDiv4.offsetWidth / 4;
-        WebCore.Measure._vInch = inchDiv4.offsetHeight / 4;
+        Core.Web.Measure._hInch = inchDiv4.offsetWidth / 4;
+        Core.Web.Measure._vInch = inchDiv4.offsetHeight / 4;
         containerElement.removeChild(inchDiv4);
         
         var emDiv24 = document.createElement("div");
         emDiv24.style.width = "24em";
         emDiv24.style.height = "24em";
         containerElement.appendChild(emDiv24);
-        WebCore.Measure._hEm = emDiv24.offsetWidth / 24;
-        WebCore.Measure._vEm = emDiv24.offsetHeight / 24;
+        Core.Web.Measure._hEm = emDiv24.offsetWidth / 24;
+        Core.Web.Measure._vEm = emDiv24.offsetHeight / 24;
         containerElement.removeChild(emDiv24);
         
         var exDiv24 = document.createElement("div");
         exDiv24.style.width = "24ex";
         exDiv24.style.height = "24ex";
         containerElement.appendChild(exDiv24);
-        WebCore.Measure._hEx = exDiv24.offsetWidth / 24;
-        WebCore.Measure._vEx = exDiv24.offsetHeight / 24;
+        Core.Web.Measure._hEx = exDiv24.offsetWidth / 24;
+        Core.Web.Measure._vEx = exDiv24.offsetHeight / 24;
         containerElement.removeChild(exDiv24);
     },
     
@@ -1351,15 +1351,15 @@ WebCore.Measure = {
             var rendered = testElement == document;
             
             // Create off-screen div element for evaluating sizes if necessary.
-            if (!WebCore.Measure.Bounds._offscreenDiv) {
-                WebCore.Measure.Bounds._offscreenDiv = document.createElement("div");
-                WebCore.Measure.Bounds._offscreenDiv.style.cssText 
+            if (!Core.Web.Measure.Bounds._offscreenDiv) {
+                Core.Web.Measure.Bounds._offscreenDiv = document.createElement("div");
+                Core.Web.Measure.Bounds._offscreenDiv.style.cssText 
                         = "position: absolute; top: -1700px; left: -1300px; width: 1600px; height: 1200px;";
             }
         
             var parentNode, nextSibling;
             if (!rendered) {
-                document.body.appendChild(WebCore.Measure.Bounds._offscreenDiv);
+                document.body.appendChild(Core.Web.Measure.Bounds._offscreenDiv);
                 // Element must be added to off-screen element for measuring.
                 
                 // Store parent node and next sibling such that element may be replaced into proper position
@@ -1373,7 +1373,7 @@ WebCore.Measure = {
                 }
                 
                 // Append element to measuring container DIV.
-                WebCore.Measure.Bounds._offscreenDiv.appendChild(element);
+                Core.Web.Measure.Bounds._offscreenDiv.appendChild(element);
             }
             
             // Store width and height of element.
@@ -1383,17 +1383,17 @@ WebCore.Measure = {
             
             if (!rendered) {
                 // Replace off-screen measured element in previous location.
-                WebCore.Measure.Bounds._offscreenDiv.removeChild(element);
+                Core.Web.Measure.Bounds._offscreenDiv.removeChild(element);
                 if (parentNode) {
                     parentNode.insertBefore(element, nextSibling);
                 }
-                document.body.removeChild(WebCore.Measure.Bounds._offscreenDiv);
+                document.body.removeChild(Core.Web.Measure.Bounds._offscreenDiv);
             }
             
             // Determine top and left positions of element if rendered on-screen.
             if (rendered) {
-                var cumulativeOffset = WebCore.Measure._getCumulativeOffset(element);
-                var scrollOffset = WebCore.Measure._getScrollOffset(element);
+                var cumulativeOffset = Core.Web.Measure._getCumulativeOffset(element);
+                var scrollOffset = Core.Web.Measure._getScrollOffset(element);
         
                 this.top = cumulativeOffset.top - scrollOffset.top;
                 this.left = cumulativeOffset.left - scrollOffset.left;
@@ -1417,9 +1417,8 @@ WebCore.Measure = {
  * Provides capability to invoke code at regular intervals, after a delay, 
  * or after the current JavaScript execution context has completed.
  * Provides an object-oriented means of accomplishing this task.
- * @namespace
  */
-WebCore.Scheduler = {
+Core.Web.Scheduler = {
     
     /**
      * Collection of runnables to execute.
@@ -1442,15 +1441,15 @@ WebCore.Scheduler = {
     /**
      * Enqueues a Runnable to be executed by the scheduler.
      * 
-     * @param {WebCore.Scheduler.Runnable} runnable the runnable to enqueue
+     * @param {Core.Web.Scheduler.Runnable} runnable the runnable to enqueue
      */
     add: function(runnable) {
         var currentTime = new Date().getTime();
         var timeInterval = runnable.timeInterval ? runnable.timeInterval : 0;
         runnable._enabled = true;
         runnable._nextExecution = currentTime + timeInterval;
-        WebCore.Scheduler._runnables.push(runnable);
-        WebCore.Scheduler._start(runnable._nextExecution);
+        Core.Web.Scheduler._runnables.push(runnable);
+        Core.Web.Scheduler._start(runnable._nextExecution);
     },
 
     /**
@@ -1462,8 +1461,8 @@ WebCore.Scheduler = {
         var nextInterval = Number.MAX_VALUE;
         
         // Execute pending runnables.
-        for (var i = 0; i < WebCore.Scheduler._runnables.length; ++i) {
-            var runnable = WebCore.Scheduler._runnables[i];
+        for (var i = 0; i < Core.Web.Scheduler._runnables.length; ++i) {
+            var runnable = Core.Web.Scheduler._runnables[i];
             if (runnable._nextExecution && runnable._nextExecution <= currentTime) {
                 runnable._nextExecution = null;
                 try {
@@ -1475,8 +1474,8 @@ WebCore.Scheduler = {
         }
 
         var newRunnables = [];
-        for (var i = 0; i < WebCore.Scheduler._runnables.length; ++i) {
-            var runnable = WebCore.Scheduler._runnables[i];
+        for (var i = 0; i < Core.Web.Scheduler._runnables.length; ++i) {
+            var runnable = Core.Web.Scheduler._runnables[i];
             if (!runnable._enabled) {
                 continue;
             }
@@ -1509,20 +1508,20 @@ WebCore.Scheduler = {
         }
     
         // Store new runnable queue.
-        WebCore.Scheduler._runnables = newRunnables;
+        Core.Web.Scheduler._runnables = newRunnables;
         
         if (nextInterval < Number.MAX_VALUE) {
             this._nextExecution = currentTime + nextInterval;
-            WebCore.Scheduler._threadHandle = window.setTimeout(WebCore.Scheduler._execute, nextInterval);
+            Core.Web.Scheduler._threadHandle = window.setTimeout(Core.Web.Scheduler._execute, nextInterval);
         } else {
-            WebCore.Scheduler._threadHandle = null;
+            Core.Web.Scheduler._threadHandle = null;
         }
     },
     
     /**
      * Dequeues a Runnable so it will no longer be executed by the scheduler.
      * 
-     * @param {WebCore.Scheduler.Runnable} runnable the runnable to dequeue
+     * @param {Core.Web.Scheduler.Runnable} runnable the runnable to dequeue
      */
     remove: function(runnable) {
         runnable._enabled = false;
@@ -1537,10 +1536,10 @@ WebCore.Scheduler = {
      * @param {Boolean} repeat a flag indicating whether the task should be repeated
      * @param f a function to invoke, may be null/undefined
      * @return the created Runnable.
-     * @type WebCore.Scheduler.Runnable 
+     * @type Core.Web.Scheduler.Runnable 
      */
     run: function(f, timeInterval, repeat) {
-        var runnable = new WebCore.Scheduler.MethodRunnable(f, timeInterval, repeat);
+        var runnable = new Core.Web.Scheduler.MethodRunnable(f, timeInterval, repeat);
         this.add(runnable);
         return runnable;
     },
@@ -1552,14 +1551,14 @@ WebCore.Scheduler = {
      */
     _start: function(nextExecution) {
         var currentTime = new Date().getTime();
-        if (WebCore.Scheduler._threadHandle == null) {
+        if (Core.Web.Scheduler._threadHandle == null) {
             this._nextExecution = nextExecution;
-            WebCore.Scheduler._threadHandle = window.setTimeout(WebCore.Scheduler._execute, nextExecution - currentTime);
+            Core.Web.Scheduler._threadHandle = window.setTimeout(Core.Web.Scheduler._execute, nextExecution - currentTime);
         } else if (this._nextExecution > nextExecution) {
             // Cancel current timeout, start new timeout.
-            window.clearTimeout(WebCore.Scheduler._threadHandle);
+            window.clearTimeout(Core.Web.Scheduler._threadHandle);
             this._nextExecution = nextExecution;
-            WebCore.Scheduler._threadHandle = window.setTimeout(WebCore.Scheduler._execute, nextExecution - currentTime);
+            Core.Web.Scheduler._threadHandle = window.setTimeout(Core.Web.Scheduler._execute, nextExecution - currentTime);
         }
     },
     
@@ -1569,19 +1568,19 @@ WebCore.Scheduler = {
      * @private
      */
     _stop: function() {
-        if (WebCore.Scheduler._threadHandle == null) {
+        if (Core.Web.Scheduler._threadHandle == null) {
             return;
         }
-        window.clearTimeout(WebCore.Scheduler._threadHandle);
-        WebCore.Scheduler._threadHandle = null;
-        WebCore.Scheduler._nextExecution = null;
+        window.clearTimeout(Core.Web.Scheduler._threadHandle);
+        Core.Web.Scheduler._threadHandle = null;
+        Core.Web.Scheduler._nextExecution = null;
     }
 };
 
 /**
  * A runnable task that may be scheduled with the Scheduler.
  */
-WebCore.Scheduler.Runnable = Core.extend({
+Core.Web.Scheduler.Runnable = Core.extend({
     
     _enabled: null,
     
@@ -1611,7 +1610,7 @@ WebCore.Scheduler.Runnable = Core.extend({
 /**
  * A runnable task implemenation that invokes a function at regular intervals.
  */
-WebCore.Scheduler.MethodRunnable = Core.extend(WebCore.Scheduler.Runnable, {
+Core.Web.Scheduler.MethodRunnable = Core.extend(Core.Web.Scheduler.Runnable, {
 
     f: null,
 
@@ -1658,7 +1657,7 @@ WebCore.Scheduler.MethodRunnable = Core.extend(WebCore.Scheduler.Runnable, {
  * e.g., when the screen or its containing element resizes.
  * @class
  */
-WebCore.VirtualPosition = {
+Core.Web.VirtualPosition = {
 
     _OFFSETS_VERTICAL: ["paddingTop", "paddingBottom", "marginTop", "marginBottom", "borderTopWidth", "borderBottomWidth"],
             

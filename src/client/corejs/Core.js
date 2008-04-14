@@ -469,7 +469,6 @@ Core.Debug = {
 
 /**
  * Arrays namespace.
- * @namespace
  */
 Core.Arrays = {
 

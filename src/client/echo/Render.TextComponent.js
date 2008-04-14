@@ -1,7 +1,7 @@
 /**
  * Component rendering peer: TextComponent
  */
-EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
+Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     
     $abstract: true,
     
@@ -28,23 +28,23 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     
     _renderStyle: function() {
         if (this.component.isRenderEnabled()) {
-            EchoAppRender.Border.render(this.component.render("border"), this._input);
-            EchoAppRender.Color.renderFB(this.component, this._input);
-            EchoAppRender.Font.render(this.component.render("font"), this._input);
-            EchoAppRender.FillImage.render(this.component.render("backgroundImage"), this._input);
+            Echo.Sync.Border.render(this.component.render("border"), this._input);
+            Echo.Sync.Color.renderFB(this.component, this._input);
+            Echo.Sync.Font.render(this.component.render("font"), this._input);
+            Echo.Sync.FillImage.render(this.component.render("backgroundImage"), this._input);
         } else {
-            EchoAppRender.Color.render(EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
+            Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
                     this._input, "color");
-            EchoAppRender.Color.render(EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", true), 
+            Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "background", "disabledBackground", true), 
                     this._input, "backgroundColor");
-            EchoAppRender.Border.render(EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", true), 
+            Echo.Sync.Border.render(Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", true), 
                     this._input);
-            EchoAppRender.Font.render(EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", true), 
+            Echo.Sync.Font.render(Echo.Sync.getEffectProperty(this.component, "font", "disabledFont", true), 
                     this._input);
-            EchoAppRender.FillImage.render(EchoAppRender.getEffectProperty(this.component, 
+            Echo.Sync.FillImage.render(Echo.Sync.getEffectProperty(this.component, 
                     "backgroundImage", "disabledBackgroundImage", true), this._input);
         }
-        EchoAppRender.Insets.render(this.component.render("insets"), this._input, "padding");
+        Echo.Sync.Insets.render(this.component.render("insets"), this._input, "padding");
         var width = this.component.render("width");
         if (width) {
             this._input.style.width = width.toString();
@@ -60,19 +60,19 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _addEventHandlers: function() {
-        WebCore.EventProcessor.add(this._input, "click", Core.method(this, this._processClick), false);
-        WebCore.EventProcessor.add(this._input, "blur", Core.method(this, this._processBlur), false);
-        WebCore.EventProcessor.add(this._input, "keypress", Core.method(this, this._processKeyPress), false);
-        WebCore.EventProcessor.add(this._input, "keyup", Core.method(this, this._processKeyUp), false);
+        Core.Web.Event.add(this._input, "click", Core.method(this, this._processClick), false);
+        Core.Web.Event.add(this._input, "blur", Core.method(this, this._processBlur), false);
+        Core.Web.Event.add(this._input, "keypress", Core.method(this, this._processKeyPress), false);
+        Core.Web.Event.add(this._input, "keyup", Core.method(this, this._processKeyUp), false);
     },
     
     renderDispose: function(update) {
-        WebCore.EventProcessor.removeAll(this._input);
+        Core.Web.Event.removeAll(this._input);
         this._input = null;
     },
     
     _processBlur: function(e) {
-        if (!this.client.verifyInput(this.component, EchoClient.FLAG_INPUT_PROPERTY)) {
+        if (!this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
             return;
         }
         this.sanitizeInput();
@@ -80,22 +80,22 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _processClick: function(e) {
-        if (!this.client.verifyInput(this.component, EchoClient.FLAG_INPUT_PROPERTY)) {
+        if (!this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
             return;
         }
         this.component.application.setFocusedComponent(this.component);
     },
 
     _processKeyPress: function(e) {
-        if (!this.client.verifyInput(this.component, EchoClient.FLAG_INPUT_PROPERTY)) {
-            WebCore.DOM.preventEventDefault(e);
+        if (!this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
+            Core.Web.DOM.preventEventDefault(e);
             return true;
         }
     },
     
     _processKeyUp: function(e) {
-        if (!this.client.verifyInput(this.component, EchoClient.FLAG_INPUT_PROPERTY)) {
-            WebCore.DOM.preventEventDefault(e);
+        if (!this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
+            Core.Web.DOM.preventEventDefault(e);
             return true;
         }
         this.sanitizeInput();
@@ -114,11 +114,11 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderFocus: function() {
-        WebCore.DOM.focusElement(this._input);
+        Core.Web.DOM.focusElement(this._input);
     },
     
     renderUpdate: function(update) {
-        var fullRender =  !Core.Arrays.containsAll(EchoAppRender.TextComponentSync._supportedPartialProperties, 
+        var fullRender =  !Core.Arrays.containsAll(Echo.Sync.TextComponent._supportedPartialProperties, 
                     update.getUpdatedPropertyNames(), true);
     
         if (fullRender) {
@@ -143,10 +143,10 @@ EchoAppRender.TextComponentSync = Core.extend(EchoRender.ComponentSync, {
 /**
  * Component rendering peer: TextArea
  */
-EchoAppRender.TextAreaSync = Core.extend(EchoAppRender.TextComponentSync, {
+Echo.Sync.TextArea = Core.extend(Echo.Sync.TextComponent, {
 
     $load: function() {
-        EchoRender.registerPeer("TextArea", this);
+        Echo.Render.registerPeer("TextArea", this);
     },
 
     renderAdd: function(update, parentElement) {
@@ -165,10 +165,10 @@ EchoAppRender.TextAreaSync = Core.extend(EchoAppRender.TextComponentSync, {
 /**
  * Component rendering peer: TextField
  */
-EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
+Echo.Sync.TextField = Core.extend(Echo.Sync.TextComponent, {
     
     $load: function() {
-        EchoRender.registerPeer("TextField", this);
+        Echo.Render.registerPeer("TextField", this);
     },
     
     $virtual: {
@@ -176,8 +176,8 @@ EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
     },
 
     getFocusFlags: function() {
-        return EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_UP | 
-                EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_DOWN;
+        return Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_UP | 
+                Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_DOWN;
     },
 
     renderAdd: function(update, parentElement) {
@@ -204,10 +204,10 @@ EchoAppRender.TextFieldSync = Core.extend(EchoAppRender.TextComponentSync, {
 /**
  * Component rendering peer: PasswordField
  */
-EchoAppRender.PasswordFieldSync = Core.extend(EchoAppRender.TextFieldSync, {
+Echo.Sync.PasswordField = Core.extend(Echo.Sync.TextField, {
     
     $load: function() {
-        EchoRender.registerPeer("PasswordField", this);
+        Echo.Render.registerPeer("PasswordField", this);
     },
     
     _type: "password"

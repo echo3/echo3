@@ -1,7 +1,7 @@
 /**
  * Abstract base class for column/row peers.
  */
-EchoAppRender.ArrayContainerSync = Core.extend(EchoRender.ComponentSync, {
+Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
 
     $abstract: {
         cellElementNodeName: true,
@@ -27,7 +27,7 @@ EchoAppRender.ArrayContainerSync = Core.extend(EchoRender.ComponentSync, {
                     var focusChild = this.component.application.focusManager.findInParent(this.component, focusPrevious);
                     if (focusChild) {
                         this.component.application.setFocusedComponent(focusChild);
-                        WebCore.DOM.preventEventDefault(e);
+                        Core.Web.DOM.preventEventDefault(e);
                         return false;
                     }
                 }
@@ -40,7 +40,7 @@ EchoAppRender.ArrayContainerSync = Core.extend(EchoRender.ComponentSync, {
     renderAddChild: function(update, child, index) {
         var cellElement = document.createElement(this.cellElementNodeName);
         this._childIdToElementMap[child.renderId] = cellElement;
-        EchoRender.renderComponentAdd(update, child, cellElement);
+        Echo.Render.renderComponentAdd(update, child, cellElement);
 
         this.renderChildLayoutData(child, cellElement);
 
@@ -89,13 +89,13 @@ EchoAppRender.ArrayContainerSync = Core.extend(EchoRender.ComponentSync, {
             this.renderAddChild(update, child);
         }
         
-        WebCore.EventProcessor.add(this.element, 
-                WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
+        Core.Web.Event.add(this.element, 
+                Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
                 Core.method(this, this.processKeyPress), false);
     },
 
     renderDispose: function(update) { 
-        WebCore.EventProcessor.removeAll(this.element);
+        Core.Web.Event.removeAll(this.element);
         this.element = null;
         this.containerElement = null;
         this._childIdToElementMap = null;
@@ -143,7 +143,7 @@ EchoAppRender.ArrayContainerSync = Core.extend(EchoRender.ComponentSync, {
         if (fullRender) {
             var element = this.element;
             var containerElement = element.parentNode;
-            EchoRender.renderComponentDispose(update, update.parent);
+            Echo.Render.renderComponentDispose(update, update.parent);
             containerElement.removeChild(element);
             this.renderAdd(update, containerElement);
         }
@@ -155,17 +155,17 @@ EchoAppRender.ArrayContainerSync = Core.extend(EchoRender.ComponentSync, {
 /**
  * Component rendering peer: Column
  */
-EchoAppRender.ColumnSync = Core.extend(EchoAppRender.ArrayContainerSync, {
+Echo.Sync.Column = Core.extend(Echo.Sync.ArrayContainer, {
 
     $load: function() {
-        EchoRender.registerPeer("Column", this);
+        Echo.Render.registerPeer("Column", this);
     },
 
     cellElementNodeName: "div",
     prevFocusKey: 38,
-    prevFocusFlag: EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_UP,
+    prevFocusFlag: Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_UP,
     nextFocusKey: 40,
-    nextFocusFlag: EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_DOWN,
+    nextFocusFlag: Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_DOWN,
     
     renderAdd: function(update, parentElement) {
         this.element = this.containerElement = document.createElement("div");
@@ -173,12 +173,12 @@ EchoAppRender.ColumnSync = Core.extend(EchoAppRender.ArrayContainerSync, {
         this.element.style.outlineStyle = "none";
         this.element.tabIndex = "-1";
     
-        EchoAppRender.Border.render(this.component.render("border"), this.element);
-        EchoAppRender.Color.renderFB(this.component, this.element);
-        EchoAppRender.Font.render(this.component.render("font"), this.element);
-        EchoAppRender.Insets.render(this.component.render("insets"), this.element, "padding");
+        Echo.Sync.Border.render(this.component.render("border"), this.element);
+        Echo.Sync.Color.renderFB(this.component, this.element);
+        Echo.Sync.Font.render(this.component.render("font"), this.element);
+        Echo.Sync.Insets.render(this.component.render("insets"), this.element, "padding");
     
-        this.cellSpacing = EchoAppRender.Extent.toPixels(this.component.render("cellSpacing"), false);
+        this.cellSpacing = Echo.Sync.Extent.toPixels(this.component.render("cellSpacing"), false);
         if (this.cellSpacing) {
             this.spacingPrototype = document.createElement("div");
             this.spacingPrototype.style.height = this.cellSpacing + "px";
@@ -194,12 +194,12 @@ EchoAppRender.ColumnSync = Core.extend(EchoAppRender.ArrayContainerSync, {
     renderChildLayoutData: function(child, cellElement) {
         var layoutData = child.render("layoutData");
         if (layoutData) {
-            EchoAppRender.Color.render(layoutData.background, cellElement, "backgroundColor");
-            EchoAppRender.FillImage.render(layoutData.backgroundImage, cellElement);
-            EchoAppRender.Insets.render(layoutData.insets, cellElement, "padding");
-            EchoAppRender.Alignment.render(layoutData.alignment, cellElement, true, this.component);
+            Echo.Sync.Color.render(layoutData.background, cellElement, "backgroundColor");
+            Echo.Sync.FillImage.render(layoutData.backgroundImage, cellElement);
+            Echo.Sync.Insets.render(layoutData.insets, cellElement, "padding");
+            Echo.Sync.Alignment.render(layoutData.alignment, cellElement, true, this.component);
             if (layoutData.height) {
-                cellElement.style.height = EchoAppRender.Extent.toPixels(layoutData.height, false) + "px";
+                cellElement.style.height = Echo.Sync.Extent.toPixels(layoutData.height, false) + "px";
             }
         }
     }
@@ -208,7 +208,7 @@ EchoAppRender.ColumnSync = Core.extend(EchoAppRender.ArrayContainerSync, {
 /**
  * Component rendering peer: Row
  */
-EchoAppRender.RowSync = Core.extend(EchoAppRender.ArrayContainerSync, {
+Echo.Sync.Row = Core.extend(Echo.Sync.ArrayContainer, {
 
     $static: {
     
@@ -233,29 +233,29 @@ EchoAppRender.RowSync = Core.extend(EchoAppRender.ArrayContainerSync, {
     
     $load: function() {
         this._rowPrototype = this._createRowPrototype();
-        EchoRender.registerPeer("Row", this);
+        Echo.Render.registerPeer("Row", this);
     },
 
     cellElementNodeName: "td",
     prevFocusKey: 37,
-    prevFocusFlag: EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_LEFT,
+    prevFocusFlag: Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_LEFT,
     nextFocusKey: 39,
-    nextFocusFlag: EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT,
+    nextFocusFlag: Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT,
     
     renderAdd: function(update, parentElement) {
-        this.element = EchoAppRender.RowSync._rowPrototype.cloneNode(true);
+        this.element = Echo.Sync.Row._rowPrototype.cloneNode(true);
         this.element.id = this.component.renderId;
 
-        EchoAppRender.Border.render(this.component.render("border"), this.element);
-        EchoAppRender.Color.renderFB(this.component, this.element);
-        EchoAppRender.Font.render(this.component.render("font"), this.element);
-        EchoAppRender.Insets.render(this.component.render("insets"), this.element, "padding");
-        EchoAppRender.Alignment.render(this.component.render("alignment"), this.element, true, this.component);
+        Echo.Sync.Border.render(this.component.render("border"), this.element);
+        Echo.Sync.Color.renderFB(this.component, this.element);
+        Echo.Sync.Font.render(this.component.render("font"), this.element);
+        Echo.Sync.Insets.render(this.component.render("insets"), this.element, "padding");
+        Echo.Sync.Alignment.render(this.component.render("alignment"), this.element, true, this.component);
         
         //                      div          table      tbody      tr
         this.containerElement = this.element.firstChild.firstChild.firstChild;
     
-        this.cellSpacing = EchoAppRender.Extent.toPixels(this.component.render("cellSpacing"), false);
+        this.cellSpacing = Echo.Sync.Extent.toPixels(this.component.render("cellSpacing"), false);
         if (this.cellSpacing) {
             this.spacingPrototype = document.createElement("td");
             this.spacingPrototype.style.width = this.cellSpacing + "px";
@@ -271,23 +271,23 @@ EchoAppRender.RowSync = Core.extend(EchoAppRender.ArrayContainerSync, {
         var insets;
         if (layoutData) {
             insets = layoutData.insets;
-            EchoAppRender.Color.render(layoutData.background, cellElement, "backgroundColor");
-            EchoAppRender.FillImage.render(layoutData.backgroundImage, cellElement);
-            EchoAppRender.Alignment.render(layoutData.alignment, cellElement, true, this.component);
+            Echo.Sync.Color.render(layoutData.background, cellElement, "backgroundColor");
+            Echo.Sync.FillImage.render(layoutData.backgroundImage, cellElement);
+            Echo.Sync.Alignment.render(layoutData.alignment, cellElement, true, this.component);
             if (layoutData.width) {
-                if (EchoAppRender.Extent.isPercent(layoutData.width)) {
+                if (Echo.Sync.Extent.isPercent(layoutData.width)) {
                     cellElement.style.width = layoutData.width;
                     if (this.element.firstChild.style.width != "100%") {
                         this.element.firstChild.style.width = "100%";
                     }
                 } else {
-                    cellElement.style.width = EchoAppRender.Extent.toPixels(layoutData.width, true) + "px";
+                    cellElement.style.width = Echo.Sync.Extent.toPixels(layoutData.width, true) + "px";
                 }
             }
         }
         if (!insets) {
             insets = "0px";
         }
-        EchoAppRender.Insets.render(insets, cellElement, "padding");
+        Echo.Sync.Insets.render(insets, cellElement, "padding");
     }
 });

@@ -1,11 +1,11 @@
-TestApp = Core.extend(EchoApp.Application, {
+TestApp = Core.extend(Echo.Application, {
 
     $static: {
         Tests: { }
     },
 
     $construct: function() {
-        EchoApp.Application.call(this);
+        Echo.Application.call(this);
         var testScreen = new TestApp.TestScreen();
         testScreen.addTest("Column");
         testScreen.addTest("SplitPane");
@@ -21,23 +21,23 @@ TestApp = Core.extend(EchoApp.Application, {
     },
 });
 
-TestApp.TestScreen = Core.extend(EchoApp.ContentPane, {
+TestApp.TestScreen = Core.extend(Echo.ContentPane, {
 
     $construct: function() {
-        EchoApp.ContentPane.call(this, {
+        Echo.ContentPane.call(this, {
             background: "#abcdef",
             children: [
-                this.testSelectSplitPane = new EchoApp.SplitPane({
+                this.testSelectSplitPane = new Echo.SplitPane({
                     styleName: "DefaultResizable",
                     separatorPosition: 180,
                     children: [
-                        this.testSelectColumn = new EchoApp.Column({
+                        this.testSelectColumn = new Echo.Column({
                             insets: "5px 10px"
                         }),
-                        new EchoApp.Column({
+                        new Echo.Column({
                             insets: "5px 10px",
                             children: [
-                                new EchoApp.Label({
+                                new Echo.Label({
                                     styleName: "Default",
                                     text: "Welcome to the Experimental Echo Client Test Application!"
                                 })
@@ -50,7 +50,7 @@ TestApp.TestScreen = Core.extend(EchoApp.ContentPane, {
     },
     
     addTest: function(testName) {
-        this.testSelectColumn.add(new EchoApp.Button({
+        this.testSelectColumn.add(new Echo.Button({
             styleName: "Default",
             text: testName,
             events: {
@@ -74,20 +74,20 @@ TestApp.TestScreen = Core.extend(EchoApp.ContentPane, {
     }
 });
 
-TestApp.TestPane = Core.extend(EchoApp.ContentPane, {
+TestApp.TestPane = Core.extend(Echo.ContentPane, {
 
     $construct: function() {
-        EchoApp.ContentPane.call(this, {
+        Echo.ContentPane.call(this, {
             children: [
-                new EchoApp.SplitPane({
+                new Echo.SplitPane({
                     styleName: "DefaultResizable",
-                    orientation: EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING,
+                    orientation: Echo.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING,
                     separatorPosition: 180,
                     children: [
-                        this.controlsColumn = new EchoApp.Column({
+                        this.controlsColumn = new Echo.Column({
                             insets: "5px 10px"
                         }),
-                        this.content = new EchoApp.ContentPane()
+                        this.content = new Echo.ContentPane()
                     ]
                 })
             ]
@@ -96,7 +96,7 @@ TestApp.TestPane = Core.extend(EchoApp.ContentPane, {
 
     addTestButton: function(text, action) {
         this.controlsColumn.add(
-            new EchoApp.Button({
+            new Echo.Button({
                 styleName: "Default",
                 text: text,
                 events: {
@@ -114,12 +114,12 @@ TestApp.Tests.Column = Core.extend(TestApp.TestPane, {
 
         this.childCount = 0;
 
-        this.column = new EchoApp.Column({
+        this.column = new Echo.Column({
             children: [
-                new EchoApp.Label({
+                new Echo.Label({
                     text: "Content One"
                 }),
-                new EchoApp.Label({
+                new Echo.Label({
                     text: "Content Two"
                 })
             ]
@@ -165,25 +165,25 @@ TestApp.Tests.Column = Core.extend(TestApp.TestPane, {
     },
 
     _addChild0: function() {
-        this.column.add(new EchoApp.Label({ text: "[" + ++this.childCount + "] added at 0" }), 0);
+        this.column.add(new Echo.Label({ text: "[" + ++this.childCount + "] added at 0" }), 0);
     },
 
     _addChild1: function() {
         if (this.column.children.length < 1) {
             return;
         }
-        this.column.add(new EchoApp.Label({ text: "[" + ++this.childCount + "] added at 1" }), 1);
+        this.column.add(new Echo.Label({ text: "[" + ++this.childCount + "] added at 1" }), 1);
     },
 
     _addChild2: function() {
         if (this.column.children.length < 2) {
             return;
         }
-        this.column.add(new EchoApp.Label({ text: "[" + ++this.childCount + "] added at 2" }), 2);
+        this.column.add(new Echo.Label({ text: "[" + ++this.childCount + "] added at 2" }), 2);
     },
 
     _addChildEnd: function() {
-        this.column.add(new EchoApp.Label({ text: "[" + ++this.childCount + "] added at end" }));
+        this.column.add(new Echo.Label({ text: "[" + ++this.childCount + "] added at end" }));
     },
 
     _removeChild0: function() {
@@ -237,13 +237,13 @@ TestApp.Tests.SplitPane = Core.extend(TestApp.TestPane, {
     $construct: function() {
         TestApp.TestPane.call(this);
 
-        this.content.add(this.splitPane = new EchoApp.SplitPane({
+        this.content.add(this.splitPane = new Echo.SplitPane({
             resizable: true,
             children: [
-                new EchoApp.Label({
+                new Echo.Label({
                     text: "Content One"
                 }),
-                new EchoApp.Label({
+                new Echo.Label({
                     text: "Content Two"
                 })
             ]
@@ -267,14 +267,14 @@ TestApp.Tests.SplitPane = Core.extend(TestApp.TestPane, {
         if (this.splitPane.children.length >= 2) {
             return;
         }
-        this.splitPane.add(new EchoApp.Label({ text: "Content Added" }));
+        this.splitPane.add(new Echo.Label({ text: "Content Added" }));
     },
 
     _insertComponent: function(e) {
         if (this.splitPane.children.length >= 2) {
             return;
         }
-        this.splitPane.add(new EchoApp.Label({ text: "Content Inserted" }), 0);
+        this.splitPane.add(new Echo.Label({ text: "Content Inserted" }), 0);
     },
 
     _removeFirstComponent: function(e) {
@@ -326,19 +326,19 @@ TestApp.Tests.SplitPane = Core.extend(TestApp.TestPane, {
     },
 
     _setOrientationLR: function(e) {
-        this.splitPane.set("orientation", EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEFT_RIGHT);
+        this.splitPane.set("orientation", Echo.SplitPane.ORIENTATION_HORIZONTAL_LEFT_RIGHT);
     },
 
     _setOrientationRL: function(e) {
-        this.splitPane.set("orientation", EchoApp.SplitPane.ORIENTATION_HORIZONTAL_RIGHT_LEFT);
+        this.splitPane.set("orientation", Echo.SplitPane.ORIENTATION_HORIZONTAL_RIGHT_LEFT);
     },
 
     _setOrientationTB: function(e) {
-        this.splitPane.set("orientation", EchoApp.SplitPane.ORIENTATION_VERTICAL_TOP_BOTTOM);
+        this.splitPane.set("orientation", Echo.SplitPane.ORIENTATION_VERTICAL_TOP_BOTTOM);
     },
 
     _setOrientationBT: function(e) {
-        this.splitPane.set("orientation", EchoApp.SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP);
+        this.splitPane.set("orientation", Echo.SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP);
     }
 });
 
@@ -348,9 +348,9 @@ TestApp.Tests.TextComponent = Core.extend(TestApp.TestPane, {
     $construct: function() {
         TestApp.TestPane.call(this);
 
-        this.content.add(new EchoApp.Column({
+        this.content.add(new Echo.Column({
             children: [
-                this.textField = new EchoApp.TextField()
+                this.textField = new Echo.TextField()
             ]
         }));
 
@@ -377,7 +377,7 @@ TestApp.Tests.WindowPane = Core.extend(TestApp.TestPane, {
     $construct: function() {
         TestApp.TestPane.call(this);
 
-        this.add(this.windowPane = new EchoApp.WindowPane({
+        this.add(this.windowPane = new Echo.WindowPane({
             styleName: "Default",
             title: "This is a Window"
         }));
@@ -402,10 +402,10 @@ TestApp.Tests.WindowPane = Core.extend(TestApp.TestPane, {
 
 init = function() {
     Core.Debug.consoleElement = document.getElementById("debugconsole");
-    WebCore.init();
+    Core.Web.init();
 
     var app = new TestApp();
-    var client = new EchoFreeClient(app, document.getElementById("rootArea"));
+    var client = new Echo.FreeClient(app, document.getElementById("rootArea"));
     client.loadStyleSheet("Default.stylesheet.xml");
     client.init();
 };

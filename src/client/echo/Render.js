@@ -14,7 +14,7 @@
  * Application rendering namespace.
  * @namespace
  */
-EchoRender = {
+Echo.Render = {
 
     /**
      * Mapping between component type names and instantiable peer classes.
@@ -39,7 +39,7 @@ EchoRender = {
      * An array sorting implemention to organize an array by component depth.
      */
     _componentDepthArraySort: function(a, b) {
-        return EchoRender._getComponentDepth(a.parent) - EchoRender._getComponentDepth(b.parent);
+        return Echo.Render._getComponentDepth(a.parent) - Echo.Render._getComponentDepth(b.parent);
     },
     
     /**
@@ -53,10 +53,10 @@ EchoRender = {
      */
     _doRenderDisplay: function(component, includeSelf) {
         if (includeSelf) {
-            EchoRender._doRenderDisplayImpl(component);
+            Echo.Render._doRenderDisplayImpl(component);
         } else {
             for (var i = 0; i < component.children.length; ++i) {
-                EchoRender._doRenderDisplayImpl(component.children[i]);
+                Echo.Render._doRenderDisplayImpl(component.children[i]);
             }
         }
     },
@@ -75,7 +75,7 @@ EchoRender = {
             }
             
             for (var i = 0; i < component.children.length; ++i) {
-                EchoRender._doRenderDisplayImpl(component.children[i]);
+                Echo.Render._doRenderDisplayImpl(component.children[i]);
             }
         }
     },
@@ -98,7 +98,7 @@ EchoRender = {
     },
     
     getPeerClass: function(component) {
-        return EchoRender._peers[component.componentType];
+        return Echo.Render._peers[component.componentType];
     },
     
     /**
@@ -106,8 +106,8 @@ EchoRender = {
      * The peer will be stored in the "peer" property of the component.
      * The client will be stored in the "client" property of the component.
      * 
-     * @param {EchoClient} client the relevant Client
-     * @param {EchoApp.Component} component the component
+     * @param {Echo.Client} client the relevant Client
+     * @param {Echo.Component} component the component
      */
     _loadPeer: function(client, component) {
         if (component.peer) {
@@ -116,7 +116,7 @@ EchoRender = {
     //        throw new Error("Peer already installed: " + component);
         }
         
-        var peerClass = EchoRender._peers[component.componentType];
+        var peerClass = Echo.Render._peers[component.componentType];
         
         if (!peerClass) {
             throw new Error("Peer not found for: " + component.componentType);
@@ -140,28 +140,28 @@ EchoRender = {
      * this method after informing the virtual positioning system to recalculate
      * the size of your component.
      * 
-     * @param {EchoApp.Component} parent the component whose size changed
+     * @param {Echo.Component} parent the component whose size changed
      */
     notifyResize: function(parent) {
-        EchoRender._doRenderDisplay(parent, false);
+        Echo.Render._doRenderDisplay(parent, false);
     },
     
     /**
      * Invokes renderDispose() on all removed children and descendants found in the specified update.
      * 
-     * @param {EchoApp.Update.ComponentUpdate} update the update
+     * @param {Echo.Update.ComponentUpdate} update the update
      */
     _processDispose: function(update) {
         var components = update.getRemovedDescendants();
         if (components) {
             for (var i = 0; i < components.length; ++i) {
-                EchoRender._renderComponentDisposeImpl(update, components[i]);
+                Echo.Render._renderComponentDisposeImpl(update, components[i]);
             }
         }
         components = update.getRemovedChildren();
         if (components) {
             for (var i = 0; i < components.length; ++i) {
-                EchoRender._renderComponentDisposeImpl(update, components[i]);
+                Echo.Render._renderComponentDisposeImpl(update, components[i]);
             }
         }
     },
@@ -169,7 +169,7 @@ EchoRender = {
     /**
      * Processes all pending updates in the client's application's update manager.
      * 
-     * @param {EchoClient} client the client
+     * @param {Echo.Client} client the client
      */
     processUpdates: function(client) {
         var updateManager = client.application.updateManager;
@@ -180,13 +180,13 @@ EchoRender = {
         }
         
         // Create map to contain removed components (for peer unloading).
-        EchoRender._disposedComponents = {};
+        Echo.Render._disposedComponents = {};
         
         // Retrieve updates, sorting by depth in hierarchy.  This will ensure that higher
         // level updates have a chance to execute first, in case they null out lower-level
         // updates if they require re-rendering their descendants.
         var updates = updateManager.getUpdates();
-        updates.sort(EchoRender._componentDepthArraySort);
+        updates.sort(Echo.Render._componentDepthArraySort);
     
         // Load peers for any root components being updated.
         for (var i = 0; i < updates.length; ++i) {
@@ -194,7 +194,7 @@ EchoRender = {
         
             var peers = updates[i].parent.peer;
             if (peer == null && updates[i].parent.componentType == "Root") {
-                EchoRender._loadPeer(client, updates[i].parent);
+                Echo.Render._loadPeer(client, updates[i].parent);
             }
         }
     
@@ -205,12 +205,12 @@ EchoRender = {
                 continue;
             }
             var peer = updates[i].parent.peer;
-            EchoRender._processDispose(updates[i]);
+            Echo.Render._processDispose(updates[i]);
         }
         
         // Profiling: Mark completion of remove phase. 
-        if (EchoClient.profilingTimer) {
-            EchoClient.profilingTimer.mark("rem");
+        if (Echo.Client.profilingTimer) {
+            Echo.Client.profilingTimer.mark("rem");
         }
         
         // Update Phase: Invoke renderUpdate on all updates.
@@ -238,12 +238,12 @@ EchoRender = {
     
             //FIXME ....moved after loop, ensure this is okay (evaluate use of dispose).
             // Set disposed set of peer to false.
-            EchoRender._setPeerDisposedState(updates[i].parent, false);
+            Echo.Render._setPeerDisposedState(updates[i].parent, false);
         }
         
         // Profiling: Mark completion of update phase.
-        if (EchoClient.profilingTimer) {
-            EchoClient.profilingTimer.mark("up");
+        if (Echo.Client.profilingTimer) {
+            Echo.Client.profilingTimer.mark("up");
         }
         
         // Display Phase: Invoke renderDisplay on all updates.
@@ -257,24 +257,24 @@ EchoRender = {
             if (updates[i].renderContext.displayRequired) {
                 for (var j = 0; j < updates[i].renderContext.displayRequired.length; ++j) {
                     Core.Debug.consoleWrite("PartialRenderUpdate:" + updates[i].renderContext.displayRequired[j]);
-                    EchoRender._doRenderDisplay(updates[i].renderContext.displayRequired[j], true);
+                    Echo.Render._doRenderDisplay(updates[i].renderContext.displayRequired[j], true);
                 }
             } else {
-                EchoRender._doRenderDisplay(updates[i].parent, true);
+                Echo.Render._doRenderDisplay(updates[i].parent, true);
             }
         }
     
         // Profiling: Mark completion of display phase.
-        if (EchoClient.profilingTimer) {
-            EchoClient.profilingTimer.mark("disp");
+        if (Echo.Client.profilingTimer) {
+            Echo.Client.profilingTimer.mark("disp");
         }
     
         // Unload peers for truly removed components, destroy mapping.
-        for (var componentId in EchoRender._disposedComponents) {
-            var component = EchoRender._disposedComponents[componentId];
-            EchoRender._unloadPeer(component);
+        for (var componentId in Echo.Render._disposedComponents) {
+            var component = Echo.Render._disposedComponents[componentId];
+            Echo.Render._unloadPeer(component);
         }
-        EchoRender._disposedComponents = null;
+        Echo.Render._disposedComponents = null;
         
         // Inform UpdateManager that all updates have been completed.
         updateManager.purge();
@@ -308,8 +308,8 @@ EchoRender = {
      * Renders a new component inside of a DOM element.
      * This method should be called by container components in order to render their children.
      * 
-     * @param {EchoApp.Update.ComponentUpdate} update the revelant ComponentUpdate
-     * @param {EchoApp.Component} component the component to add
+     * @param {Echo.Update.ComponentUpdate} update the revelant ComponentUpdate
+     * @param {Echo.Component} component the component to add
      * @param {Element} parentElement the DOM element to which the rendered component should be added
      */
     renderComponentAdd: function(update, component, parentElement) {
@@ -319,8 +319,8 @@ EchoRender = {
                     + "Component = " + component);
         }
     
-        EchoRender._loadPeer(component.parent.peer.client, component);
-        EchoRender._setPeerDisposedState(component, false);
+        Echo.Render._loadPeer(component.parent.peer.client, component);
+        Echo.Render._setPeerDisposedState(component, false);
         component.peer.renderAdd(update, parentElement);
     },
     
@@ -361,11 +361,11 @@ EchoRender = {
         if (!component.peer || component.peer.disposed) {
             return;
         }
-        EchoRender._setPeerDisposedState(component, true);
+        Echo.Render._setPeerDisposedState(component, true);
     
         component.peer.renderDispose(update);
         for (var i = 0; i < component.children.length; ++i) {
-            EchoRender._renderComponentDisposeImpl(update, component.children[i]);
+            Echo.Render._renderComponentDisposeImpl(update, component.children[i]);
         }
     },
     
@@ -374,17 +374,17 @@ EchoRender = {
      * The peer disposed state indicates whether the renderDispose()
      * method of the component has been executed since it was last rendered.
      * 
-     * @param {EchoApp.Component} component the component
+     * @param {Echo.Component} component the component
      * @param {Boolean} disposed the disposed state, true indicating the component has
      *        been disposed
      */
     _setPeerDisposedState: function(component, disposed) {
         if (disposed) {
             component.peer.disposed = true;
-            EchoRender._disposedComponents[component.renderId] = component;
+            Echo.Render._disposedComponents[component.renderId] = component;
         } else {
             component.peer.disposed = false;
-            delete EchoRender._disposedComponents[component.renderId];
+            delete Echo.Render._disposedComponents[component.renderId];
         }
     },
     
@@ -395,7 +395,7 @@ EchoRender = {
      * The client will be removed from the "client" property of the component.
      * The peer to component association will be removed.
      * 
-     * @param {EchoApp.Component} component the component
+     * @param {Echo.Component} component the component
      */
     _unloadPeer: function(component) {
         component.peer.client = null;
@@ -408,7 +408,7 @@ EchoRender = {
  * Component synchronization peer. 
  * @class
  */
-EchoRender.ComponentSync = Core.extend({ 
+Echo.Render.ComponentSync = Core.extend({ 
 
     $static: {
         FOCUS_PERMIT_ARROW_UP: 0x1,
@@ -420,14 +420,14 @@ EchoRender.ComponentSync = Core.extend({
 
     /**
      * The client supported by this peer.
-     * @type EchoClient
+     * @type Echo.Client
      */
     client: null,
 
     /**
      * The component instance supported by this peer.  
      * Each peer instance will support a single component instance.
-     * @type EchoApp.Component
+     * @type Echo.Component
      */
     component: null,
 
@@ -443,7 +443,7 @@ EchoRender.ComponentSync = Core.extend({
          * The supplied update will refer to a ancestor component of the supported component
          * being updated.
          *
-         * @param {EchoApp.Update.ComponentUpdate} update the update being rendered
+         * @param {Echo.Update.ComponentUpdate} update the update being rendered
          */
         renderAdd: function(update, parentElement) {
             throw new Error("Operation \"renderAdd\" not supported (Component: " + this.component + ").");
@@ -466,7 +466,7 @@ EchoRender.ComponentSync = Core.extend({
          * allow for the fact that its renderAdd() method may be invoked at some point in time
          * after renderDispose() has been invoked.
          *        
-         * @param {EchoApp.Update.ComponentUpdate} update the update being rendered
+         * @param {Echo.Update.ComponentUpdate} update the update being rendered
          */
         renderDispose: function(update) {
             throw new Error("Operation \"renderDispose\" not supported (Component: " + this.component + ").");
@@ -476,7 +476,7 @@ EchoRender.ComponentSync = Core.extend({
          * Renders an update to a component, e.g., children added/removed, properties updated.
          * The supplied update will refer specifically to an update of the supported component.
          *
-         * @param {EchoApp.Update.ComponentUpdate} update the update being rendered
+         * @param {Echo.Update.ComponentUpdate} update the update being rendered
          * @return true if this invocation has re-rendered all child components, false otherwise
          */
         renderUpdate: function(update) {
@@ -508,7 +508,7 @@ EchoRender.ComponentSync = Core.extend({
  * element within which the Echo application is rendered.
  * This is a very special case in that there is no renderAdd() method.
  */
-EchoRender.RootSync = Core.extend(EchoRender.ComponentSync, { 
+Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, { 
 
     renderAdd: function(update, parentElement) {
         throw new Error("Unsupported operation: renderAdd().");
@@ -519,9 +519,9 @@ EchoRender.RootSync = Core.extend(EchoRender.ComponentSync, {
     renderUpdate: function(update) {
         var fullRender = false;
         if (update.hasAddedChildren() || update.hasRemovedChildren()) {
-            WebCore.DOM.removeAllChildren(this.client.domainElement);
+            Core.Web.DOM.removeAllChildren(this.client.domainElement);
             for (var i = 0; i < update.parent.children.length; ++i) {
-                EchoRender.renderComponentAdd(update, update.parent.children[i], this.client.domainElement);
+                Echo.Render.renderComponentAdd(update, update.parent.children[i], this.client.domainElement);
             }
             fullRender = true;
         }
@@ -541,8 +541,8 @@ EchoRender.RootSync = Core.extend(EchoRender.ComponentSync, {
  * Namespace for utility objects.
  * @class
  */
-EchoRender.Util = {
+Echo.Render.Util = {
     
 };
 
-EchoRender.registerPeer("Root", EchoRender.RootSync);
+Echo.Render.registerPeer("Root", Echo.Render.RootSync);

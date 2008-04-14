@@ -1,7 +1,7 @@
 /**
  * Component rendering peer: Label
  */
-EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, { 
+Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, { 
 
     $static: {
     
@@ -9,7 +9,7 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     $load: function() {
-        EchoRender.registerPeer("Label", this);
+        Echo.Render.registerPeer("Label", this);
     },
     
     /**
@@ -55,11 +55,11 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
             if (icon) {
                 // Text and icon.
                 var iconTextMargin = this.component.render("iconTextMargin", 
-                        EchoAppRender.LabelSync._defaultIconTextMargin);
-                var orientation = EchoAppRender.TriCellTable.getOrientation(this.component, "textPosition");
-                var tct = new EchoAppRender.TriCellTable(orientation, EchoAppRender.Extent.toPixels(iconTextMargin));
+                        Echo.Sync.Label._defaultIconTextMargin);
+                var orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
+                var tct = new Echo.Sync.TriCellTable(orientation, Echo.Sync.Extent.toPixels(iconTextMargin));
                 var img = document.createElement("img");
-                EchoAppRender.ImageReference.renderImg(icon, img);
+                Echo.Sync.ImageReference.renderImg(icon, img);
                 if (formatWhitespace) {
                     this._formatWhitespace(text, tct.tdElements[0]);
                 } else {
@@ -71,8 +71,8 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
                 tct.tdElements[1].appendChild(img);
                 this._node = tct.tableElement;
                 this._node.id = this.component.renderId;
-                EchoAppRender.Font.render(this.component.render("font"), this._node);
-                EchoAppRender.Color.renderFB(this.component, this._node);
+                Echo.Sync.Font.render(this.component.render("font"), this._node);
+                Echo.Sync.Color.renderFB(this.component, this._node);
             } else {
                 // Text without icon.
                 var font = this.component.render("font");
@@ -89,17 +89,17 @@ EchoAppRender.LabelSync = Core.extend(EchoRender.ComponentSync, {
                     if (!lineWrap) {
                         this._node.style.whiteSpace = "nowrap";
                     }
-                    EchoAppRender.Font.render(font, this._node);
-                    EchoAppRender.Color.renderFB(this.component, this._node);
+                    Echo.Sync.Font.render(font, this._node);
+                    Echo.Sync.Color.renderFB(this.component, this._node);
                 }
             }
         } else if (icon) {
             var img = document.createElement("img");
-            EchoAppRender.ImageReference.renderImg(icon, img);
+            Echo.Sync.ImageReference.renderImg(icon, img);
             this._node = document.createElement("span");
             this._node.id = this.component.renderId;
             this._node.appendChild(img);
-            EchoAppRender.Color.renderFB(this.component, this._node); // should be BG only.
+            Echo.Sync.Color.renderFB(this.component, this._node); // should be BG only.
         } else {
             // Neither icon nor text, render blank.
             this._node = null;

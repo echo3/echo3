@@ -3,36 +3,36 @@ ArcTest = { };
 /**
  * TestComponent component.
  */
-ArcTest.TestComponent = Core.extend(EchoApp.Component, {
+ArcTest.TestComponent = Core.extend(Echo.Component, {
 
     componentType: "ArcTestComponent",
     
     $load: function() {
-        EchoApp.ComponentFactory.registerType("ArcTestComponent", this);
+        Echo.ComponentFactory.registerType("ArcTestComponent", this);
     }
 });
 
 /**
  * TestContainer component.
  */
-ArcTest.TestContainer = Core.extend(EchoApp.Component, {
+ArcTest.TestContainer = Core.extend(Echo.Component, {
 
     componentType: "ArcTestContainer",
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("ArcTestContainer", this);
+        Echo.ComponentFactory.registerType("ArcTestContainer", this);
     }
 });
 
 /**
  * TestPane component.
  */
-ArcTest.TestPane = Core.extend(EchoApp.Component, {
+ArcTest.TestPane = Core.extend(Echo.Component, {
 
     componentType: "ArcTestPane",
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("ArcTestPane", this);
+        Echo.ComponentFactory.registerType("ArcTestPane", this);
     }
 });
 
@@ -44,13 +44,13 @@ ArcTest.ComponentSync = { };
 ArcTest.ComponentSync.TestComponent = Core.extend(EchoArc.ComponentSync, {
 
     $load: function() {
-        EchoRender.registerPeer("ArcTestComponent", this);
+        Echo.Render.registerPeer("ArcTestComponent", this);
     },
 
     $construct: function() { },
 
     createComponent: function() {
-        var label = new EchoApp.Label();
+        var label = new Echo.Label();
         label.set("text", "This is a freeclient label: " + this.component.render("text"));
         return label;
     }
@@ -62,15 +62,15 @@ ArcTest.ComponentSync.TestComponent = Core.extend(EchoArc.ComponentSync, {
 ArcTest.ComponentSync.TestContainer = Core.extend(EchoArc.ComponentSync, {
 
     $load: function() {
-        EchoRender.registerPeer("ArcTestContainer", this);
+        Echo.Render.registerPeer("ArcTestContainer", this);
     },
 
     $construct: function() { },
     
     createComponent: function() {
-        var contentPane = new EchoApp.ContentPane();
+        var contentPane = new Echo.ContentPane();
         for (var i = 0; i < this.component.children.length; ++i) {
-            var windowPane = new EchoApp.WindowPane({
+            var windowPane = new Echo.WindowPane({
                 positionX: 120 * (i % 4),
                 positionY: 120 * parseInt(i / 4),
                 width: 100,
@@ -110,7 +110,7 @@ ArcTest.ComponentSync.TestContainer = Core.extend(EchoArc.ComponentSync, {
 ArcTest.ComponentSync.TestPane = Core.extend(EchoArc.ComponentSync, {
 
     $load: function() {
-        EchoRender.registerPeer("ArcTestPane", this);
+        Echo.Render.registerPeer("ArcTestPane", this);
     },
 
     $construct: function() {
@@ -118,34 +118,34 @@ ArcTest.ComponentSync.TestPane = Core.extend(EchoArc.ComponentSync, {
     },
 
     createComponent: function() {
-        var contentPane = new EchoApp.ContentPane();
+        var contentPane = new Echo.ContentPane();
         
-        var windowPane = new EchoApp.WindowPane();
+        var windowPane = new Echo.WindowPane();
         windowPane.set("title", "A FreeClient WindowPane");
         contentPane.add(windowPane);
         
-        var mainColumn = new EchoApp.Column();
+        var mainColumn = new Echo.Column();
         mainColumn.set("cellSpacing", 5);
         mainColumn.set("insets", 10);
         windowPane.add(mainColumn);
         
-        var controlsRow = new EchoApp.Row();
+        var controlsRow = new Echo.Row();
         controlsRow.set("cellSpacing", 10);
         mainColumn.add(controlsRow);
         
-        var addButton = new EchoApp.Button();
+        var addButton = new Echo.Button();
         addButton.set("text", "Add Label");
         addButton.set("background", "#00ff00");
         addButton.addListener("action", Core.method(this, this._processAddButton));
         controlsRow.add(addButton);
     
-        var removeButton = new EchoApp.Button();
+        var removeButton = new Echo.Button();
         removeButton.set("text", "Remove Label");
         removeButton.set("background", "#ff0000");
         removeButton.addListener("action", Core.method(this, this._processRemoveButton));
         controlsRow.add(removeButton);
         
-        this._testColumn = new EchoApp.Column();
+        this._testColumn = new Echo.Column();
         mainColumn.add(this._testColumn);
     
         return contentPane;
@@ -156,7 +156,7 @@ ArcTest.ComponentSync.TestPane = Core.extend(EchoArc.ComponentSync, {
     },
     
     _processAddButton: function(e) {
-        var label = new EchoApp.Label();
+        var label = new Echo.Label();
         label.set("text", "Added Label " + ++this._addedLabelCount);
         this._testColumn.add(label);
     },

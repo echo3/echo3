@@ -1,14 +1,14 @@
 /**
  * Component rendering peer: ContentPane
  */
-EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
+Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
 
     $static: {
         DEFAULT_BACKGROUND: "#ffffff"
     },
 
     $load: function() {
-        EchoRender.registerPeer("ContentPane", this);
+        Echo.Render.registerPeer("ContentPane", this);
     },
 
     $construct: function() {
@@ -30,7 +30,7 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
     
     raise: function(child) {
         if (!this._floatingPaneManager) {
-            this._floatingPaneManager = new EchoAppRender.FloatingPaneManager();
+            this._floatingPaneManager = new Echo.Sync.FloatingPaneManager();
             this._floatingPaneManager.addZIndexListener(Core.method(this, this._processZIndexChanged));
         }
         this._floatingPaneManager.add(child.renderId);
@@ -44,15 +44,15 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._div.style.height = "100%";
         this._div.style.overflow = "hidden";
         this._div.style.zIndex = "0";
-        EchoAppRender.Font.render(this.component.render("font"), this._div);
-        EchoAppRender.Color.render(this.component.render("foreground"), this._div, "color");
+        Echo.Sync.Font.render(this.component.render("font"), this._div);
+        Echo.Sync.Color.render(this.component.render("foreground"), this._div, "color");
 
         var background = this.component.render("background");
         var backgroundImage = this.component.render("backgroundImage");
-        EchoAppRender.Color.render(background, this._div, "backgroundColor");
-        EchoAppRender.FillImage.render(backgroundImage, this._div);
+        Echo.Sync.Color.render(background, this._div, "backgroundColor");
+        Echo.Sync.FillImage.render(backgroundImage, this._div);
         if (!background && !backgroundImage) {
-            EchoAppRender.FillImage.render(this.client.getResourceUrl("Echo", "resource/Transparent.gif"), this._div);  
+            Echo.Sync.FillImage.render(this.client.getResourceUrl("Echo", "resource/Transparent.gif"), this._div);  
         }
     
         this._childIdToElementMap = {};
@@ -79,7 +79,7 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
             childDiv.style.zIndex = "1";
         } else {
             var insets = this.component.render("insets", 0);
-            var pixelInsets = EchoAppRender.Insets.toPixels(insets);
+            var pixelInsets = Echo.Sync.Insets.toPixels(insets);
             childDiv.style.zIndex = "0";
             childDiv.style.left = pixelInsets.left + "px";
             childDiv.style.top = pixelInsets.top + "px";
@@ -89,10 +89,10 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
                 childDiv.style.overflow = "auto";
             } else {
                 switch (this.component.render("overflow")) {
-                case EchoApp.ContentPane.OVERFLOW_HIDDEN:
+                case Echo.ContentPane.OVERFLOW_HIDDEN:
                     childDiv.style.overflow = "hidden";
                     break;
-                case EchoApp.ContentPane.OVERFLOW_SCROLL:
+                case Echo.ContentPane.OVERFLOW_SCROLL:
                     childDiv.style.overflow = "scroll";
                     break;
                 default:
@@ -101,7 +101,7 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
                 }
             }
         }
-        EchoRender.renderComponentAdd(update, child, childDiv);
+        Echo.Render.renderComponentAdd(update, child, childDiv);
         this._div.appendChild(childDiv);
         
         if (child.floatingPane) {
@@ -127,7 +127,7 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
     renderDisplay: function() {
         var child = this._div.firstChild;
         while (child) {
-            WebCore.VirtualPosition.redraw(child);
+            Core.Web.VirtualPosition.redraw(child);
             child = child.nextSibling;
         }
     
@@ -181,7 +181,7 @@ EchoAppRender.ContentPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (fullRender) {
             var element = this._div;
             var containerElement = element.parentNode;
-            EchoRender.renderComponentDispose(update, update.parent);
+            Echo.Render.renderComponentDispose(update, update.parent);
             containerElement.removeChild(element);
             this.renderAdd(update, containerElement);
         }

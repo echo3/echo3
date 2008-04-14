@@ -1,7 +1,7 @@
 /**
  * Component rendering peer: SplitPane
  */
-EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
+Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
 
     $static: {
     
@@ -21,19 +21,19 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             /**
              * Creates a new PaneConfiguration instance
              * 
-             * @param {EchoAppRender.SplitPaneSync} splitPanePeer the relevant componentPeer
-             * @param {EchoApp.Component} component the child component
+             * @param {Echo.Sync.SplitPane} splitPanePeer the relevant componentPeer
+             * @param {Echo.Component} component the child component
              */
             $construct: function(splitPanePeer, component) {
                 this.component = component;
                 this.layoutData = component.render("layoutData");
                 if (this.layoutData) {
                     if (this.layoutData.minimumSize) {
-                        this.minimumSize = EchoAppRender.Extent.toPixels(this.layoutData.minimumSize, 
+                        this.minimumSize = Echo.Sync.Extent.toPixels(this.layoutData.minimumSize, 
                                 !splitPanePeer._orientationVertical);
                     }
                     if (this.layoutData.maximumSize) {
-                        this.maximumSize = EchoAppRender.Extent.toPixels(this.layoutData.maximumSize, 
+                        this.maximumSize = Echo.Sync.Extent.toPixels(this.layoutData.maximumSize, 
                                 !splitPanePeer._orientationVertical);
                     }
                 }
@@ -52,7 +52,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
 
     $load: function() {
-        EchoRender.registerPeer("SplitPane", this);
+        Echo.Render.registerPeer("SplitPane", this);
     },
 
     /**
@@ -91,32 +91,32 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
 
     loadRenderData: function() {
         var orientation = this.component.render("orientation", 
-                EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING);
+                Echo.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING);
         // FIXME: RTL is hardcoded to false.
         var rtl = false;
      
         switch (orientation) {
-        case EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING:
+        case Echo.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING:
             this._orientationTopLeft = !rtl;
             this._orientationVertical = false;
             break;
-        case EchoApp.SplitPane.ORIENTATION_HORIZONTAL_TRAILING_LEADING:
+        case Echo.SplitPane.ORIENTATION_HORIZONTAL_TRAILING_LEADING:
             this._orientationTopLeft = rtl;
             this._orientationVertical = false;
             break;
-        case EchoApp.SplitPane.ORIENTATION_HORIZONTAL_LEFT_RIGHT:
+        case Echo.SplitPane.ORIENTATION_HORIZONTAL_LEFT_RIGHT:
             this._orientationTopLeft = true;
             this._orientationVertical = false;
             break;
-        case EchoApp.SplitPane.ORIENTATION_HORIZONTAL_RIGHT_LEFT:
+        case Echo.SplitPane.ORIENTATION_HORIZONTAL_RIGHT_LEFT:
             this._orientationTopLeft = false;
             this._orientationVertical = false;
             break;
-        case EchoApp.SplitPane.ORIENTATION_VERTICAL_TOP_BOTTOM:
+        case Echo.SplitPane.ORIENTATION_VERTICAL_TOP_BOTTOM:
             this._orientationTopLeft = true;
             this._orientationVertical = true;
             break;
-        case EchoApp.SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP:
+        case Echo.SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP:
             this._orientationTopLeft = false;
             this._orientationVertical = true;
             break;
@@ -124,12 +124,12 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             throw new Error("Invalid orientation: " + orientation);
         }
         this._resizable = this.component.render("resizable");
-        this._requested = this.component.render("separatorPosition", EchoApp.SplitPane.DEFAULT_SEPARATOR_POSITION);
+        this._requested = this.component.render("separatorPosition", Echo.SplitPane.DEFAULT_SEPARATOR_POSITION);
         this._separatorUpdateRequired = true;
-        this._separatorSize = EchoAppRender.Extent.toPixels(this.component.render(
+        this._separatorSize = Echo.Sync.Extent.toPixels(this.component.render(
                 this._orientationVertical ? "separatorHeight" : "separatorWidth",
-                this._resizable ? EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
-                : EchoApp.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED), this._orientationVertical);
+                this._resizable ? Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
+                : Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED), this._orientationVertical);
     },
     
     _processKeyPress: function(e) {
@@ -141,12 +141,12 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                 var focusedComponent = this.component.application.getFocusedComponent();
                 if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
                     var focusFlags = focusedComponent.peer.getFocusFlags();
-                    if ((focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_LEFT)
-                            || (!focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT)) {
+                    if ((focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_LEFT)
+                            || (!focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT)) {
                         var focusChild = this.component.application.focusManager.findInParent(this.component, focusPrevious);
                         if (focusChild) {
                             this.component.application.setFocusedComponent(focusChild);
-                            WebCore.DOM.preventEventDefault(e);
+                            Core.Web.DOM.preventEventDefault(e);
                             return false;
                         }
                     }
@@ -160,12 +160,12 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                 var focusedComponent = this.component.application.getFocusedComponent();
                 if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
                     var focusFlags = focusedComponent.peer.getFocusFlags();
-                    if ((focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_UP)
-                            || (!focusPrevious && focusFlags & EchoRender.ComponentSync.FOCUS_PERMIT_ARROW_DOWN)) {
+                    if ((focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_UP)
+                            || (!focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_DOWN)) {
                         var focusChild = this.component.application.focusManager.findInParent(this.component, focusPrevious);
                         if (focusChild) {
                             this.component.application.setFocusedComponent(focusChild);
-                            WebCore.DOM.preventEventDefault(e);
+                            Core.Web.DOM.preventEventDefault(e);
                             return false;
                         }
                     }
@@ -181,9 +181,9 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             return;
         }
     
-        WebCore.DOM.preventEventDefault(e);
+        Core.Web.DOM.preventEventDefault(e);
         
-        WebCore.dragInProgress = true;
+        Core.Web.dragInProgress = true;
     
         this._dragInitPosition = this._rendered;
         if (this._orientationVertical) {
@@ -192,8 +192,8 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._dragInitMouseOffset = e.clientX;
         }
         
-        WebCore.EventProcessor.add(document.body, "mousemove", this._processSeparatorMouseMoveRef, true);
-        WebCore.EventProcessor.add(document.body, "mouseup", this._processSeparatorMouseUpRef, true);
+        Core.Web.Event.add(document.body, "mousemove", this._processSeparatorMouseMoveRef, true);
+        Core.Web.Event.add(document.body, "mouseup", this._processSeparatorMouseUpRef, true);
     },
     
     _processSeparatorMouseMove: function(e) {
@@ -204,9 +204,9 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _processSeparatorMouseUp: function(e) {
-        WebCore.DOM.preventEventDefault(e);
+        Core.Web.DOM.preventEventDefault(e);
         
-        WebCore.dragInProgress = false;
+        Core.Web.dragInProgress = false;
     
         this._removeSeparatorListeners();
         this.component.set("separatorPosition", this._rendered);
@@ -216,20 +216,20 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._requested = this._rendered;
     
         if (this._paneDivs[0]) {
-            WebCore.VirtualPosition.redraw(this._paneDivs[0]);
+            Core.Web.VirtualPosition.redraw(this._paneDivs[0]);
         }
         if (this._paneDivs[1]) {
-            WebCore.VirtualPosition.redraw(this._paneDivs[1]);
+            Core.Web.VirtualPosition.redraw(this._paneDivs[1]);
         }
     
-        EchoRender.notifyResize(this.component);
+        Echo.Render.notifyResize(this.component);
     },
     
     _getInsetsSizeAdjustment: function(layoutData) {
         if (!layoutData || layoutData.insets == null || layoutDataInsets == 0) {
             return 0;
         }
-        var layoutDataInsets = EchoAppRender.Insets.toPixels(layoutData.insets);
+        var layoutDataInsets = Echo.Sync.Insets.toPixels(layoutData.insets);
         var adjustment;
         if (this._orientationVertical) {
             adjustment = layoutDataInsets.top + layoutDataInsets.bottom;
@@ -275,8 +275,8 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _removeSeparatorListeners: function() {
-        WebCore.EventProcessor.remove(document.body, "mousemove", this._processSeparatorMouseMoveRef, true);
-        WebCore.EventProcessor.remove(document.body, "mouseup", this._processSeparatorMouseUpRef, true);
+        Core.Web.Event.remove(document.body, "mousemove", this._processSeparatorMouseMoveRef, true);
+        Core.Web.Event.remove(document.body, "mouseup", this._processSeparatorMouseUpRef, true);
     },
     
     renderAdd: function(update, parentElement) {
@@ -294,13 +294,13 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._splitPaneDiv.style.cssText = "position: absolute; overflow: hidden; " 
                 + "top: 0px; left: 0px; right: 0px; bottom: 0px;";
         
-        EchoAppRender.Color.renderFB(this.component, this._splitPaneDiv);
-        EchoAppRender.Font.render(this.component.render("font"), this._splitPaneDiv);
+        Echo.Sync.Color.renderFB(this.component, this._splitPaneDiv);
+        Echo.Sync.Font.render(this.component.render("font"), this._splitPaneDiv);
         
         if (this._separatorSize > 0) {
             this._separatorDiv = document.createElement("div");
             this._separatorDiv.style.cssText = "position: absolute; font-size: 1px; line-height: 0; z-index: 2;";
-            EchoAppRender.Color.render(this.component.render("separatorColor", EchoApp.SplitPane.DEFAULT_SEPARATOR_COLOR), 
+            Echo.Sync.Color.render(this.component.render("separatorColor", Echo.SplitPane.DEFAULT_SEPARATOR_COLOR), 
                     this._separatorDiv, "backgroundColor");
     
             var resizeCursor = null;
@@ -308,12 +308,12 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
                 resizeCursor = this._orientationTopLeft ? "s-resize" : "n-resize";
                 this._separatorDiv.style.width = "100%";
                 this._separatorDiv.style.height = this._separatorSize + "px";
-                EchoAppRender.FillImage.render(this.component.render("separatorVerticalImage"), this._separatorDiv, 0);
+                Echo.Sync.FillImage.render(this.component.render("separatorVerticalImage"), this._separatorDiv, 0);
             } else {
                 resizeCursor = this._orientationTopLeft ? "e-resize" : "w-resize";
                 this._separatorDiv.style.height = "100%";
                 this._separatorDiv.style.width = this._separatorSize + "px";
-                EchoAppRender.FillImage.render(this.component.render("separatorHorizontalImage"), this._separatorDiv, 0);
+                Echo.Sync.FillImage.render(this.component.render("separatorHorizontalImage"), this._separatorDiv, 0);
             }
             if (this._resizable && resizeCursor) {
                 this._separatorDiv.style.cursor = resizeCursor;
@@ -330,12 +330,12 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         parentElement.appendChild(this._splitPaneDiv);
         
-        WebCore.EventProcessor.add(this._splitPaneDiv, 
-                WebCore.Environment.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", 
+        Core.Web.Event.add(this._splitPaneDiv, 
+                Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", 
                 Core.method(this, this._processKeyPress), false);
                 
         if (this._resizable) {
-            WebCore.EventProcessor.add(this._separatorDiv, "mousedown", 
+            Core.Web.Event.add(this._separatorDiv, "mousedown", 
                     Core.method(this, this._processSeparatorMouseDown), false);
         }
     },
@@ -349,17 +349,17 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         
         var layoutData = child.render("layoutData");
         if (layoutData) {
-            EchoAppRender.Alignment.render(layoutData.alignment, paneDiv, false, this.component);
-            EchoAppRender.Color.render(layoutData.background, paneDiv, "backgroundColor");
-            EchoAppRender.FillImage.render(layoutData.backgroundImage, paneDiv);
+            Echo.Sync.Alignment.render(layoutData.alignment, paneDiv, false, this.component);
+            Echo.Sync.Color.render(layoutData.background, paneDiv, "backgroundColor");
+            Echo.Sync.FillImage.render(layoutData.backgroundImage, paneDiv);
             if (!child.pane) {
-                EchoAppRender.Insets.render(layoutData.insets, paneDiv, "padding");
+                Echo.Sync.Insets.render(layoutData.insets, paneDiv, "padding");
             }
             switch (layoutData.overflow) {
-            case EchoApp.SplitPane.OVERFLOW_HIDDEN:
+            case Echo.SplitPane.OVERFLOW_HIDDEN:
                 paneDiv.style.overflow = "hidden";
                 break;
-            case EchoApp.SplitPane.OVERFLOW_SCROLL:
+            case Echo.SplitPane.OVERFLOW_SCROLL:
                 paneDiv.style.overflow = "scroll";
                 break;
             }
@@ -410,27 +410,27 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             }
         }
         
-        EchoRender.renderComponentAdd(update, child, paneDiv);
+        Echo.Render.renderComponentAdd(update, child, paneDiv);
         this._splitPaneDiv.appendChild(paneDiv);
     
         if (this._childPanes[index] && this._childPanes[index].component == child) {
             this._childPanes[index].loadScrollPositions(paneDiv);
         } else {
-            this._childPanes[index] = new EchoAppRender.SplitPaneSync.ChildPane(this, child);
+            this._childPanes[index] = new Echo.Sync.SplitPane.ChildPane(this, child);
         }
     },
     
     renderDisplay: function() {
-        WebCore.VirtualPosition.redraw(this._splitPaneDiv);
+        Core.Web.VirtualPosition.redraw(this._splitPaneDiv);
         if (this._separatorUpdateRequired) {
             this._separatorUpdateRequired = false;
             this._setSeparatorPosition(this._requested);
         }
         if (this._paneDivs[0]) {
-            WebCore.VirtualPosition.redraw(this._paneDivs[0]);
+            Core.Web.VirtualPosition.redraw(this._paneDivs[0]);
         }
         if (this._paneDivs[1]) {
-            WebCore.VirtualPosition.redraw(this._paneDivs[1]);
+            Core.Web.VirtualPosition.redraw(this._paneDivs[1]);
         }
     },
     
@@ -445,11 +445,11 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
         
         if (this._separatorDiv) {
-            WebCore.EventProcessor.removeAll(this._separatorDiv);
+            Core.Web.Event.removeAll(this._separatorDiv);
             this._separatorDiv = null;
         }
 
-        WebCore.EventProcessor.removeAll(this._splitPaneDiv);
+        Core.Web.Event.removeAll(this._splitPaneDiv);
     
         this._splitPaneDiv = null;
     },
@@ -466,7 +466,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
 
         this._childPanes[index] = null;
         
-        WebCore.DOM.removeNode(this._paneDivs[index]);
+        Core.Web.DOM.removeNode(this._paneDivs[index]);
         this._paneDivs[index] = null;
     },
         
@@ -477,8 +477,8 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
             fullRender = true;
         } else if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()) {
             if (update.isUpdatedPropertySetIn({ separatorPosition: true })) {
-                this._requested =  EchoAppRender.Extent.toPixels(this.component.render("separatorPosition",
-                        EchoApp.SplitPane.DEFAULT_SEPARATOR_POSITION), this._orientationVertical);
+                this._requested =  Echo.Sync.Extent.toPixels(this.component.render("separatorPosition",
+                        Echo.SplitPane.DEFAULT_SEPARATOR_POSITION), this._orientationVertical);
                 this._setSeparatorPosition(this._requested);
             } else {
                 fullRender = true;
@@ -505,7 +505,7 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (fullRender) {
             var element = this._splitPaneDiv;
             var containerElement = element.parentNode;
-            EchoRender.renderComponentDispose(update, update.parent);
+            Echo.Render.renderComponentDispose(update, update.parent);
             containerElement.removeChild(element);
             this.renderAdd(update, containerElement);
         }
@@ -516,12 +516,12 @@ EchoAppRender.SplitPaneSync = Core.extend(EchoRender.ComponentSync, {
     _setSeparatorPosition: function(newValue) {
         var oldValue = this._rendered;
         
-        if (EchoAppRender.Extent.isPercent(newValue)) {
+        if (Echo.Sync.Extent.isPercent(newValue)) {
             var totalSize = this._orientationVertical ? 
                     this._splitPaneDiv.offsetHeight : this._splitPaneDiv.offsetWidth;
             newValue = parseInt((parseInt(newValue) / 100) * totalSize);
         } else {
-            newValue = EchoAppRender.Extent.toPixels(newValue, !this._orientationVertical);
+            newValue = Echo.Sync.Extent.toPixels(newValue, !this._orientationVertical);
         }
     
         if (this._childPanes[1]) {

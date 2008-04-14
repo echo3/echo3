@@ -1,16 +1,16 @@
 /**
  * Component rendering peer: Composite
  */
-EchoAppRender.CompositeSync = Core.extend(EchoRender.ComponentSync, {
+Echo.Sync.Composite = Core.extend(Echo.Render.ComponentSync, {
 
     $load: function() {
-        EchoRender.registerPeer("Composite", this);
+        Echo.Render.registerPeer("Composite", this);
     },
 
     $virtual: {
         renderStyle: function(element) {
-            EchoAppRender.Color.renderFB(this.component, element);
-            EchoAppRender.Font.render(this.component.render("font"), element);
+            Echo.Sync.Color.renderFB(this.component, element);
+            Echo.Sync.Font.render(this.component.render("font"), element);
         }
     },
     
@@ -23,7 +23,7 @@ EchoAppRender.CompositeSync = Core.extend(EchoRender.ComponentSync, {
             this.renderStyle(this._div);
             for (var i = 0; i < componentCount; ++i) {
                 var child = this.component.getComponent(i);
-                EchoRender.renderComponentAdd(update, child, this._div);
+                Echo.Render.renderComponentAdd(update, child, this._div);
             }
         }
         
@@ -37,21 +37,21 @@ EchoAppRender.CompositeSync = Core.extend(EchoRender.ComponentSync, {
     renderUpdate: function(update) {
         var element = this._div;
         var containerElement = element.parentNode;
-        EchoRender.renderComponentDispose(update, update.parent);
+        Echo.Render.renderComponentDispose(update, update.parent);
         containerElement.removeChild(element);
         this.renderAdd(update, containerElement);
         return true;
     }
 });
 
-EchoRender.ComponentSync.Panel = Core.extend(EchoAppRender.CompositeSync, {
+Echo.Sync.Panel = Core.extend(Echo.Sync.Composite, {
     $load: function() {
-        EchoRender.registerPeer("Panel", this);
+        Echo.Render.registerPeer("Panel", this);
     },
 
     renderStyle: function(element) {
-        EchoAppRender.CompositeSync.prototype.renderStyle.call(this, element);
-        EchoAppRender.Border.render(this.component.render("border"), element);
-        EchoAppRender.Insets.render(this.component.render("insets"), element, "padding");
+        Echo.Sync.Composite.prototype.renderStyle.call(this, element);
+        Echo.Sync.Border.render(this.component.render("border"), element);
+        Echo.Sync.Insets.render(this.component.render("insets"), element, "padding");
     }
 });

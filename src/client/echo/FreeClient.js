@@ -2,7 +2,7 @@
  * @fileoverview
  * Freestanding Client Implementation.
  * Provides capapbility to develop server-independent applications.
- * Requires Core, WebCore, Application, Render, Serial, Client.
+ * Requires Core, Core.Web, Application, Render, Serial, Client.
  */
  
 /**
@@ -11,7 +11,7 @@
  * and when the client will no longer be used, respectively.
  * @namespace
  */ 
-EchoFreeClient = Core.extend(EchoClient, {
+Echo.FreeClient = Core.extend(Echo.Client, {
 
     _processUpdateRef: null,
     _resourcePaths: null,
@@ -19,11 +19,11 @@ EchoFreeClient = Core.extend(EchoClient, {
     /**
      * Creates a new FreeClient.
      *
-     * @param {EchoApp.Application} application the application the client operate on.
+     * @param {Echo.Application} application the application the client operate on.
      * @param {Element} domainElement the HTML 
      */
     $construct: function(application, domainElement) {
-        EchoClient.call(this);
+        Echo.Client.call(this);
         this._processUpdateRef = Core.method(this, this._processUpdate);;
         this.configure(application, domainElement);
     },
@@ -49,11 +49,11 @@ EchoFreeClient = Core.extend(EchoClient, {
      * This method must be invoked when the client will no longer be used, in order to clean up resources.
      */
     dispose: function() {
-        WebCore.Scheduler.remove(this._autoUpdate);
+        Core.Web.Scheduler.remove(this._autoUpdate);
         this.application.updateManager.removeUpdateListener(this._processUpdateRef);
         this._autoUpdate = null;
-        EchoRender.renderComponentDispose(null, this.application.rootComponent);
-        EchoClient.prototype.dispose.call(this);
+        Echo.Render.renderComponentDispose(null, this.application.rootComponent);
+        Echo.Client.prototype.dispose.call(this);
     },
 
     /**
@@ -63,7 +63,7 @@ EchoFreeClient = Core.extend(EchoClient, {
         if (this._resourcePaths && this._resourcePaths[packageName]) {
             return this._resourcePaths[packageName] + resourceName;
         } else {
-            return EchoClient.prototype.getResourceUrl.call(this, packageName, resourceName);
+            return Echo.Client.prototype.getResourceUrl.call(this, packageName, resourceName);
         }
     },
     
@@ -72,10 +72,10 @@ EchoFreeClient = Core.extend(EchoClient, {
      * This method must be invoked before the client is initially used.
      */
     init: function() {
-        WebCore.init();
-        this._autoUpdate = new EchoFreeClient.AutoUpdate(this);
+        Core.Web.init();
+        this._autoUpdate = new Echo.FreeClient.AutoUpdate(this);
         this.application.updateManager.addUpdateListener(this._processUpdateRef);
-        WebCore.Scheduler.add(this._autoUpdate);
+        Core.Web.Scheduler.add(this._autoUpdate);
     },
     
     //FIXME This method is asynchronous, first autoupdate might want to wait on it being completed.
@@ -86,7 +86,7 @@ EchoFreeClient = Core.extend(EchoClient, {
      * @param url the URL from which the StyleSheet should be fetched.
      */
     loadStyleSheet: function(url) {
-        var conn = new WebCore.HttpConnection(url, "GET");
+        var conn = new Core.Web.HttpConnection(url, "GET");
         conn.addResponseListener(Core.method(this, this._processStyleSheet));
         conn.connect();
     },
@@ -103,7 +103,7 @@ EchoFreeClient = Core.extend(EchoClient, {
         }
         
         var ssElement =  e.source.getResponseXml().documentElement;
-        var styleSheet = EchoSerial.loadStyleSheet(this, ssElement);
+        var styleSheet = Echo.Serial.loadStyleSheet(this, ssElement);
         this.application.setStyleSheet(styleSheet);
     },
 
@@ -113,9 +113,9 @@ EchoFreeClient = Core.extend(EchoClient, {
 });
 
 /**
- * <code>WebCore.Scheduler.Runnable</code> to automatically update client when application state has changed.
+ * <code>Core.Web.Scheduler.Runnable</code> to automatically update client when application state has changed.
  */
-EchoFreeClient.AutoUpdate = Core.extend(WebCore.Scheduler.Runnable, {
+Echo.FreeClient.AutoUpdate = Core.extend(Core.Web.Scheduler.Runnable, {
 
     timeInterval: 10,
     
@@ -136,6 +136,6 @@ EchoFreeClient.AutoUpdate = Core.extend(WebCore.Scheduler.Runnable, {
      * Runnable run() implementation.
      */
     run: function() {
-        EchoRender.processUpdates(this._client);
+        Echo.Render.processUpdates(this._client);
     }
 });

@@ -1,7 +1,7 @@
 /**
  * Component rendering peer: WindowPane
  */
-EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
+Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
 
     $static: {
         DEFAULT_TITLE_BACKGROUND: "#abcdef",
@@ -20,7 +20,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     $load: function() {
-        EchoRender.registerPeer("WindowPane", this);
+        Echo.Render.registerPeer("WindowPane", this);
     },
 
     /**
@@ -54,7 +54,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
     /**
      * The size of the region containing the window.
-     * @type WebCore.Measure.Bounds
+     * @type Core.Web.Measure.Bounds
      */
     _containerSize: null,
 
@@ -78,24 +78,24 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     _coordinatesToPixels: function(bounds) {
         var pxBounds = {};
         if (bounds.width != null) {
-            pxBounds.width = EchoAppRender.Extent.isPercent(bounds.width)
+            pxBounds.width = Echo.Sync.Extent.isPercent(bounds.width)
                     ? parseInt((parseInt(bounds.width) / 100) * this._containerSize.width)
-                    : EchoAppRender.Extent.toPixels(bounds.width, true);
+                    : Echo.Sync.Extent.toPixels(bounds.width, true);
         }
         if (bounds.height != null) {
-            pxBounds.height = EchoAppRender.Extent.isPercent(bounds.height)
+            pxBounds.height = Echo.Sync.Extent.isPercent(bounds.height)
                     ? parseInt((parseInt(bounds.height) / 100) * this._containerSize.height)
-                    : EchoAppRender.Extent.toPixels(bounds.height, false);
+                    : Echo.Sync.Extent.toPixels(bounds.height, false);
         }
         if (bounds.x != null) {
-            pxBounds.x = EchoAppRender.Extent.isPercent(bounds.x)
+            pxBounds.x = Echo.Sync.Extent.isPercent(bounds.x)
                     ? parseInt((this._containerSize.width - pxBounds.width) * (parseInt(bounds.x) / 100))
-                    : EchoAppRender.Extent.toPixels(bounds.x, true);
+                    : Echo.Sync.Extent.toPixels(bounds.x, true);
         }
         if (bounds.y != null) {
-            pxBounds.y = EchoAppRender.Extent.isPercent(bounds.y)
+            pxBounds.y = Echo.Sync.Extent.isPercent(bounds.y)
                     ? parseInt((this._containerSize.height - pxBounds.height) * (parseInt(bounds.y) / 100))
-                    : EchoAppRender.Extent.toPixels(bounds.y, false);
+                    : Echo.Sync.Extent.toPixels(bounds.y, false);
         }
         return pxBounds;
     },
@@ -107,14 +107,14 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._requested = {
             x: this.component.render("positionX", "50%"),
             y: this.component.render("positionY", "50%"),
-            width: this.component.render("width", EchoApp.WindowPane.DEFAULT_WIDTH),
-            height: this.component.render("height", EchoApp.WindowPane.DEFAULT_HEIGHT)
+            width: this.component.render("width", Echo.WindowPane.DEFAULT_WIDTH),
+            height: this.component.render("height", Echo.WindowPane.DEFAULT_HEIGHT)
         };
     },
 
     _loadContainerSize: function() {
         //FIXME. the "parentnode.parentnode" business needs to go.
-        this._containerSize = new WebCore.Measure.Bounds(this._div.parentNode.parentNode);
+        this._containerSize = new Core.Web.Measure.Bounds(this._div.parentNode.parentNode);
     },
     
     _processBorderMouseDown: function(e) {
@@ -123,8 +123,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         }
 
         // Prevent selections.
-        WebCore.dragInProgress = true;
-        WebCore.DOM.preventEventDefault(e);
+        Core.Web.dragInProgress = true;
+        Core.Web.DOM.preventEventDefault(e);
     
         this._loadContainerSize();
         this._dragInit = {
@@ -147,12 +147,12 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         case this._borderDivs[7]: this._resizeIncrement = { x:  1, y:  1 }; break; 
         }
             
-        WebCore.EventProcessor.add(document.body, "mousemove", this._processBorderMouseMoveRef, true);
-        WebCore.EventProcessor.add(document.body, "mouseup", this._processBorderMouseUpRef, true);
+        Core.Web.Event.add(document.body, "mousemove", this._processBorderMouseMoveRef, true);
+        Core.Web.Event.add(document.body, "mouseup", this._processBorderMouseUpRef, true);
     
         // Reduce opacity.   
-        if (EchoAppRender.WindowPaneSync.adjustOpacity) {
-            this._div.style.opacity = EchoAppRender.WindowPaneSync.ADJUSTMENT_OPACITY;
+        if (Echo.Sync.WindowPane.adjustOpacity) {
+            this._div.style.opacity = Echo.Sync.WindowPane.ADJUSTMENT_OPACITY;
         }
     },
     
@@ -166,9 +166,9 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
 
     _processBorderMouseUp: function(e) {
-        WebCore.DOM.preventEventDefault(e);
+        Core.Web.DOM.preventEventDefault(e);
         
-        WebCore.dragInProgress = false;
+        Core.Web.dragInProgress = false;
     
         // Set opaque.
         this._div.style.opacity = 1;
@@ -187,16 +187,16 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             height: this._rendered.height
         };
         
-        WebCore.VirtualPosition.redraw(this._contentDiv);
-        WebCore.VirtualPosition.redraw(this._maskDiv);
-        EchoRender.notifyResize(this.component);
+        Core.Web.VirtualPosition.redraw(this._contentDiv);
+        Core.Web.VirtualPosition.redraw(this._maskDiv);
+        Echo.Render.notifyResize(this.component);
     },
     
     _processKeyDown: function(e) {
         switch (e.keyCode) {
         case 27:
             this.component.userClose();
-            WebCore.DOM.preventEventDefault(e);
+            Core.Web.DOM.preventEventDefault(e);
             return false;
         }
         return true;
@@ -205,7 +205,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     _processKeyPress: function(e) {
         switch (e.keyCode) {
         case 27:
-            WebCore.DOM.preventEventDefault(e);
+            Core.Web.DOM.preventEventDefault(e);
             return false;
         }
         return true;
@@ -231,7 +231,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             return;
         }
         this.component.userMaximize();
-        EchoRender.processUpdates(this.client);
+        Echo.Render.processUpdates(this.client);
     },
     
     _processMinimizeClick: function(e) { 
@@ -250,20 +250,20 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this.component.parent.peer.raise(this.component);
         
         // Prevent selections.
-        WebCore.dragInProgress = true;
-        WebCore.DOM.preventEventDefault(e);
+        Core.Web.dragInProgress = true;
+        Core.Web.DOM.preventEventDefault(e);
     
         this._loadContainerSize();
         this._dragInit = { x: this._rendered.x, y: this._rendered.y };
         this._dragOrigin = { x: e.clientX, y: e.clientY };
     
         // Reduce opacity.   
-        if (EchoAppRender.WindowPaneSync.adjustOpacity) {
-            this._div.style.opacity = EchoAppRender.WindowPaneSync.ADJUSTMENT_OPACITY;
+        if (Echo.Sync.WindowPane.adjustOpacity) {
+            this._div.style.opacity = Echo.Sync.WindowPane.ADJUSTMENT_OPACITY;
         }
         
-        WebCore.EventProcessor.add(document.body, "mousemove", this._processTitleBarMouseMoveRef, true);
-        WebCore.EventProcessor.add(document.body, "mouseup", this._processTitleBarMouseUpRef, true);
+        Core.Web.Event.add(document.body, "mousemove", this._processTitleBarMouseMoveRef, true);
+        Core.Web.Event.add(document.body, "mouseup", this._processTitleBarMouseUpRef, true);
     },
     
     _processTitleBarMouseMove: function(e) {
@@ -274,7 +274,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _processTitleBarMouseUp: function(e) {
-        WebCore.dragInProgress = false;
+        Core.Web.dragInProgress = false;
     
         // Set opaque.
         this._div.style.opacity = 1;
@@ -309,18 +309,18 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._borderDivs[3].style.height = borderSideHeight + "px";
         this._borderDivs[4].style.height = borderSideHeight + "px";   
         
-        WebCore.VirtualPosition.redraw(this._contentDiv);
-        WebCore.VirtualPosition.redraw(this._maskDiv);
+        Core.Web.VirtualPosition.redraw(this._contentDiv);
+        Core.Web.VirtualPosition.redraw(this._maskDiv);
     },
     
     _removeBorderListeners: function() {
-        WebCore.EventProcessor.remove(document.body, "mousemove", this._processBorderMouseMoveRef, true);
-        WebCore.EventProcessor.remove(document.body, "mouseup", this._processBorderMouseUpRef, true);
+        Core.Web.Event.remove(document.body, "mousemove", this._processBorderMouseMoveRef, true);
+        Core.Web.Event.remove(document.body, "mouseup", this._processBorderMouseUpRef, true);
     },
     
     _removeTitleBarListeners: function() {
-        WebCore.EventProcessor.remove(document.body, "mousemove", this._processTitleBarMouseMoveRef, true);
-        WebCore.EventProcessor.remove(document.body, "mouseup", this._processTitleBarMouseUpRef, true);
+        Core.Web.Event.remove(document.body, "mousemove", this._processTitleBarMouseMoveRef, true);
+        Core.Web.Event.remove(document.body, "mouseup", this._processTitleBarMouseUpRef, true);
     },
     
     renderAdd: function(update, parentElement) {
@@ -343,7 +343,7 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     
         // Render Internet Explorer 6-specific windowed control-blocking IFRAME ("mask DIV").
         // Mask DIV will be added to main DIV by _renderAddFrame().
-        if (WebCore.Environment.QUIRK_IE_SELECT_Z_INDEX) {
+        if (Core.Web.Env.QUIRK_IE_SELECT_Z_INDEX) {
             // Render Select Field Masking Transparent IFRAME.
             this._maskDiv = document.createElement("div");
             this._maskDiv.style.cssText 
@@ -365,24 +365,24 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (child.pane) {
             this._contentDiv.style.padding = "0";
         } else {
-            EchoAppRender.Insets.render(this.component.render("insets"), this._contentDiv, "padding");
+            Echo.Sync.Insets.render(this.component.render("insets"), this._contentDiv, "padding");
         }
-        EchoRender.renderComponentAdd(update, child, parentElement);
+        Echo.Render.renderComponentAdd(update, child, parentElement);
     },
     
     _renderAddFrame: function() {
         this._loadPositionAndSize();
 
         // Load property states.
-        this._minimumWidth = EchoAppRender.Extent.toPixels(
-                this.component.render("minimumWidth", EchoApp.WindowPane.DEFAULT_MINIMUM_WIDTH), true);
-        this._minimumHeight = EchoAppRender.Extent.toPixels(
-                this.component.render("minimumHeight", EchoApp.WindowPane.DEFAULT_MINIMUM_HEIGHT), false);
-        this._maximumWidth = EchoAppRender.Extent.toPixels(this.component.render("maximumWidth"), true);
-        this._maximumHeight = EchoAppRender.Extent.toPixels(this.component.render("maximumHeight"), false);
-        var border = this.component.render("border", EchoApp.WindowPane.DEFAULT_BORDER);
-        this._borderInsets = EchoAppRender.Insets.toPixels(border.borderInsets);
-        this._contentInsets = EchoAppRender.Insets.toPixels(border.contentInsets);
+        this._minimumWidth = Echo.Sync.Extent.toPixels(
+                this.component.render("minimumWidth", Echo.WindowPane.DEFAULT_MINIMUM_WIDTH), true);
+        this._minimumHeight = Echo.Sync.Extent.toPixels(
+                this.component.render("minimumHeight", Echo.WindowPane.DEFAULT_MINIMUM_HEIGHT), false);
+        this._maximumWidth = Echo.Sync.Extent.toPixels(this.component.render("maximumWidth"), true);
+        this._maximumHeight = Echo.Sync.Extent.toPixels(this.component.render("maximumHeight"), false);
+        var border = this.component.render("border", Echo.WindowPane.DEFAULT_BORDER);
+        this._borderInsets = Echo.Sync.Insets.toPixels(border.borderInsets);
+        this._contentInsets = Echo.Sync.Insets.toPixels(border.contentInsets);
         var movable = this.component.render("movable", true);
         var resizable = this.component.render("resizable", true);
         var closable = this.component.render("closable", true);
@@ -390,10 +390,10 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         var minimizeEnabled = this.component.render("minimizeEnabled", false);
         var hasControlIcons = closable || maximizeEnabled || minimizeEnabled;
         var fillImageFlags = this.component.render("ieAlphaRenderBorder") 
-                ? EchoAppRender.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER : 0;
+                ? Echo.Sync.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER : 0;
         
         this._div.style.cssText = "outline-style:none;position:absolute;z-index:1;overflow:hidden;";
-        EchoAppRender.Font.render(this.component.render("font"), this._div);
+        Echo.Sync.Font.render(this.component.render("font"), this._div);
         
         this._borderDivs = new Array(8);
         
@@ -462,13 +462,13 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                     this._borderDivs[i].style.backgroundColor = border.color;
                 }
                 if (resizable) {
-                    this._borderDivs[i].style.cursor = EchoAppRender.WindowPaneSync.CURSORS[i];
-                    WebCore.EventProcessor.add(this._borderDivs[i], "mousedown", 
+                    this._borderDivs[i].style.cursor = Echo.Sync.WindowPane.CURSORS[i];
+                    Core.Web.Event.add(this._borderDivs[i], "mousedown", 
                             Core.method(this, this._processBorderMouseDown), true);
                 }
-                var borderImage = border[EchoAppRender.WindowPaneSync.FIB_POSITIONS[i]];
+                var borderImage = border[Echo.Sync.WindowPane.FIB_POSITIONS[i]];
                 if (borderImage) {
-                    EchoAppRender.FillImage.render(borderImage, this._borderDivs[i], fillImageFlags);
+                    Echo.Sync.FillImage.render(borderImage, this._borderDivs[i], fillImageFlags);
                 }
                 this._div.appendChild(this._borderDivs[i]);
             }
@@ -483,12 +483,12 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         var icon = this.component.render("icon");
         if (icon) {
             var titleIconDiv = document.createElement("div");
-            titleIconDiv.style[WebCore.Environment.CSS_FLOAT] = "left";
-            EchoAppRender.Insets.render(this.component.render("iconInsets"), titleIconDiv, "padding");
+            titleIconDiv.style[Core.Web.Env.CSS_FLOAT] = "left";
+            Echo.Sync.Insets.render(this.component.render("iconInsets"), titleIconDiv, "padding");
             this._titleBarDiv.appendChild(titleIconDiv);
             
             var img = document.createElement("img");
-            EchoAppRender.ImageReference.renderImg(icon, img);
+            Echo.Sync.ImageReference.renderImg(icon, img);
             titleIconDiv.appendChild(img);
         }
     
@@ -496,25 +496,25 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         if (title) {
             var titleTextDiv = document.createElement("div");
             if (icon) {
-                titleTextDiv.style[WebCore.Environment.CSS_FLOAT] = "left";
+                titleTextDiv.style[Core.Web.Env.CSS_FLOAT] = "left";
             }
             titleTextDiv.style.whiteSpace = "nowrap";
-            EchoAppRender.Font.render(this.component.render("titleFont"), titleTextDiv);
-            EchoAppRender.Insets.render(this.component.render("titleInsets", 
-                    EchoAppRender.WindowPaneSync.DEFAULT_TITLE_INSETS), titleTextDiv, "padding");
+            Echo.Sync.Font.render(this.component.render("titleFont"), titleTextDiv);
+            Echo.Sync.Insets.render(this.component.render("titleInsets", 
+                    Echo.Sync.WindowPane.DEFAULT_TITLE_INSETS), titleTextDiv, "padding");
             titleTextDiv.appendChild(document.createTextNode(title));
             this._titleBarDiv.appendChild(titleTextDiv);
         }
         
         var titleBarHeight = this.component.render("titleHeight");
         if (titleBarHeight) {
-            this._titleBarHeight = EchoAppRender.Extent.toPixels(titleBarHeight);
+            this._titleBarHeight = Echo.Sync.Extent.toPixels(titleBarHeight);
         } else {
-            var titleMeasure = new WebCore.Measure.Bounds(this._titleBarDiv);
+            var titleMeasure = new Core.Web.Measure.Bounds(this._titleBarDiv);
             if (titleMeasure.height) {
                 this._titleBarHeight = titleMeasure.height;
             } else {
-                this._titleBarHeight = EchoAppRender.Extent.toPixels(EchoApp.WindowPane.DEFAULT_TITLE_HEIGHT);
+                this._titleBarHeight = Echo.Sync.Extent.toPixels(Echo.WindowPane.DEFAULT_TITLE_HEIGHT);
             }
         }
     
@@ -524,10 +524,10 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._titleBarDiv.style.overflow = "hidden";
         if (movable) {
             this._titleBarDiv.style.cursor = "move";
-            WebCore.EventProcessor.add(this._titleBarDiv, "mousedown", Core.method(this, this._processTitleBarMouseDown), true);
+            Core.Web.Event.add(this._titleBarDiv, "mousedown", Core.method(this, this._processTitleBarMouseDown), true);
         }
     
-        EchoAppRender.Color.render(this.component.render("titleForeground"), this._titleBarDiv, "color");
+        Echo.Sync.Color.render(this.component.render("titleForeground"), this._titleBarDiv, "color");
     
         var titleBackground = this.component.render("titleBackground");
         var titleBackgroundImage = this.component.render("titleBackgroundImage");
@@ -536,18 +536,18 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
             this._titleBarDiv.style.backgroundColor = titleBackground;
         }
         if (titleBackgroundImage) {
-            EchoAppRender.FillImage.render(titleBackgroundImage, this._titleBarDiv);
+            Echo.Sync.FillImage.render(titleBackgroundImage, this._titleBarDiv);
         }
     
         if (!titleBackground && !titleBackgroundImage) {
-            this._titleBarDiv.style.backgroundColor = EchoAppRender.WindowPaneSync.DEFAULT_TITLE_BACKGROUND;
+            this._titleBarDiv.style.backgroundColor = Echo.Sync.WindowPane.DEFAULT_TITLE_BACKGROUND;
         }
         
         if (hasControlIcons) {
             this._controlDiv = document.createElement("div");
             this._controlDiv.style.cssText = "position:absolute;top:0;right:0;";
-            EchoAppRender.Insets.render(this.component.render("closeIconInsets", 
-                    EchoApp.WindowPane.DEFAULT_CONTROLS_INSETS), this._controlDiv, "padding");
+            Echo.Sync.Insets.render(this.component.render("closeIconInsets", 
+                    Echo.WindowPane.DEFAULT_CONTROLS_INSETS), this._controlDiv, "padding");
             this._titleBarDiv.appendChild(this._controlDiv);
 
             // Close Button
@@ -556,8 +556,8 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
                         this.client.getResourceUrl("Echo", "resource/WindowPaneClose.gif")),
                         null, null, "[X]", this.component.render("closeIconInsets"),
                         Core.method(this, this._processCloseClick));
-                WebCore.EventProcessor.add(this._div, "keydown", Core.method(this, this._processKeyDown), false);
-                WebCore.EventProcessor.add(this._div, "keypress", Core.method(this, this._processKeyPress), false);
+                Core.Web.Event.add(this._div, "keydown", Core.method(this, this._processKeyDown), false);
+                Core.Web.Event.add(this._div, "keypress", Core.method(this, this._processKeyPress), false);
             }
             
             if (maximizeEnabled) {
@@ -582,34 +582,34 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
         this._contentDiv.style.cssText = "position:absolute;z-index:2;overflow:auto;top:" 
                 + (this._contentInsets.top + this._titleBarHeight) + "px;bottom:" + this._contentInsets.bottom + "px;left:" 
                 + this._contentInsets.left + "px;right:" + this._contentInsets.right + "px;";
-        EchoAppRender.Color.render(this.component.render("background", EchoApp.WindowPane.DEFAULT_BACKGROUND),
+        Echo.Sync.Color.render(this.component.render("background", Echo.WindowPane.DEFAULT_BACKGROUND),
                 this._contentDiv, "backgroundColor");
-        EchoAppRender.Color.render(this.component.render("foreground", EchoApp.WindowPane.DEFAULT_FOREGROUND),
+        Echo.Sync.Color.render(this.component.render("foreground", Echo.WindowPane.DEFAULT_FOREGROUND),
                 this._contentDiv, "color");
         this._div.appendChild(this._contentDiv);
 
         // Add Internet Explorer 6-specific windowed control-blocking IFRAME.
-        if (WebCore.Environment.QUIRK_IE_SELECT_Z_INDEX) {
+        if (Core.Web.Env.QUIRK_IE_SELECT_Z_INDEX) {
             this._div.appendChild(this._maskDiv);
         }
-        WebCore.EventProcessor.add(this._div, "click", 
+        Core.Web.Event.add(this._div, "click", 
                 Core.method(this, this._processFocusClick), true);
     },
 
     _renderControlIcon: function(icon, rolloverIcon, pressedIcon, altText, insets, eventMethod) {
         var controlIcon = document.createElement("div");
         controlIcon.style.cssText = "float:right;cursor:pointer;margin-left:5px;";
-        EchoAppRender.Insets.render(insets, controlIcon, "padding");
+        Echo.Sync.Insets.render(insets, controlIcon, "padding");
         if (icon) {
             var img = document.createElement("img");
-            EchoAppRender.ImageReference.renderImg(icon, img);
+            Echo.Sync.ImageReference.renderImg(icon, img);
             controlIcon.appendChild(img);
         } else {
             controlIcon.appendChild(document.createTextNode(altText));
         }
         
         if (eventMethod) {
-            WebCore.EventProcessor.add(controlIcon, "click", eventMethod, false);
+            Core.Web.Event.add(controlIcon, "click", eventMethod, false);
         }
         
         this._controlDiv.appendChild(controlIcon);
@@ -627,21 +627,21 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     _renderDisposeFrame: function() {
-        WebCore.EventProcessor.removeAll(this._div);
+        Core.Web.Event.removeAll(this._div);
 
         for (var i = 0; i < this._borderDivs.length; ++i) {
-            WebCore.EventProcessor.removeAll(this._borderDivs[i]);
+            Core.Web.Event.removeAll(this._borderDivs[i]);
         }
         this._borderDivs = null;
         
         if (this._controlIcons != null) {
             for (var i = 0; i < this._controlIcons.length; ++i) {
-                WebCore.EventProcessor.removeAll(this._controlIcons[i]);
+                Core.Web.Event.removeAll(this._controlIcons[i]);
             }
             this._controlIcons = null;
         }
         
-        WebCore.EventProcessor.removeAll(this._titleBarDiv);
+        Core.Web.Event.removeAll(this._titleBarDiv);
         this._titleBarDiv = null;
         
     },
@@ -649,28 +649,28 @@ EchoAppRender.WindowPaneSync = Core.extend(EchoRender.ComponentSync, {
     renderDisplay: function() {
         this._loadContainerSize();
         this.setBounds(this._requested);
-        WebCore.VirtualPosition.redraw(this._contentDiv);
-        WebCore.VirtualPosition.redraw(this._maskDiv);
+        Core.Web.VirtualPosition.redraw(this._contentDiv);
+        Core.Web.VirtualPosition.redraw(this._maskDiv);
     },
     
     renderFocus: function() {
-        WebCore.DOM.focusElement(this._div);
+        Core.Web.DOM.focusElement(this._div);
     },
     
     renderUpdate: function(update) {
         if (update.hasAddedChildren() || update.hasRemovedChildren()) {
             // Children added/removed: perform full render.
-        } else if (update.isUpdatedPropertySetIn(EchoAppRender.WindowPaneSync.PARTIAL_PROPERTIES_POSITION_SIZE)) {
+        } else if (update.isUpdatedPropertySetIn(Echo.Sync.WindowPane.PARTIAL_PROPERTIES_POSITION_SIZE)) {
             this._loadPositionAndSize();
             return;
-        } else if (update.isUpdatedPropertySetIn(EchoAppRender.WindowPaneSync.PARTIAL_PROPERTIES)) {
+        } else if (update.isUpdatedPropertySetIn(Echo.Sync.WindowPane.PARTIAL_PROPERTIES)) {
             this._renderUpdateFrame();
             return;
         }
 
         var element = this._div;
         var containerElement = element.parentNode;
-        EchoRender.renderComponentDispose(update, update.parent);
+        Echo.Render.renderComponentDispose(update, update.parent);
         containerElement.removeChild(element);
         this.renderAdd(update, containerElement);
         return true;

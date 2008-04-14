@@ -1,4 +1,4 @@
-EchoAppRender._ListComponentMixins = {
+Echo.Sync._ListComponentMixins = {
     
     getSelectionString: function() {
         var selection = this.get("selection");
@@ -33,7 +33,7 @@ EchoAppRender._ListComponentMixins = {
     }
 };
 
-EchoAppRender._ListComponentSyncMixins = {
+Echo.Sync._ListComponentMixins = {
 
     storeProperty: function(clientMessage, propertyName) {
         if (propertyName == "selection") {
@@ -48,28 +48,28 @@ EchoAppRender._ListComponentSyncMixins = {
 /**
  * @class Remote List Box implementation.
  */
-EchoAppRender.RemoteListBox = Core.extend(EchoApp.ListBox, {
+Echo.Sync.RemoteListBox = Core.extend(Echo.ListBox, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("RemoteListBox", this);
-        EchoApp.ComponentFactory.registerType("RLB", this);
+        Echo.ComponentFactory.registerType("RemoteListBox", this);
+        Echo.ComponentFactory.registerType("RLB", this);
     },
 
     componentType: "RemoteListBox",
     
-    $include: [ EchoAppRender._ListComponentMixins ]
+    $include: [ Echo.Sync._ListComponentMixins ]
 });
 
 /**
  * @class Remote List Box synchronization peer implementation.
  */
-EchoAppRender.RemoteListBoxSync = Core.extend(EchoAppRender.ListBoxSync, {
+Echo.Sync.RemoteListBox = Core.extend(Echo.Sync.ListBox, {
 
     $load: function() {
-        EchoRender.registerPeer("RemoteListBox", this);
+        Echo.Render.registerPeer("RemoteListBox", this);
     },
     
-    $include: [ EchoAppRender._ListComponentSyncMixins ]
+    $include: [ Echo.Sync._ListComponentMixins ]
 });
 
 /**
@@ -77,32 +77,32 @@ EchoAppRender.RemoteListBoxSync = Core.extend(EchoAppRender.ListBoxSync, {
  * @param properties initial property values
  * @class Remote Select Field implementation.
  */
-EchoAppRender.RemoteSelectField = Core.extend(EchoApp.SelectField, {
+Echo.Sync.RemoteSelectField = Core.extend(Echo.SelectField, {
 
     $load: function() {
-        EchoApp.ComponentFactory.registerType("RemoteSelectField", this);
-        EchoApp.ComponentFactory.registerType("RSF", this);
+        Echo.ComponentFactory.registerType("RemoteSelectField", this);
+        Echo.ComponentFactory.registerType("RSF", this);
     },
 
     componentType: "RemoteSelectField",
 
-    $include: [ EchoAppRender._ListComponentMixins ]
+    $include: [ Echo.Sync._ListComponentMixins ]
 });
 
 /**
  * Creates a new RemoteSelectField synchronization peer instance.
  * @class Remote Select Field synchronization peer implementation.
  */
-EchoAppRender.RemoteSelectFieldSync = Core.extend(EchoAppRender.SelectFieldSync, {
+Echo.Sync.RemoteSelectField = Core.extend(Echo.Sync.SelectField, {
 
     $load: function() {
-        EchoRender.registerPeer("RemoteSelectField", this);;
+        Echo.Render.registerPeer("RemoteSelectField", this);;
     },
 
-    $include: [ EchoAppRender._ListComponentSyncMixins ]
+    $include: [ Echo.Sync._ListComponentMixins ]
 });
     
-EchoAppRender.RemoteListData = Core.extend({
+Echo.Sync.RemoteListData = Core.extend({
 
     $construct: function(items) { 
         this.items = items;
@@ -116,7 +116,7 @@ EchoAppRender.RemoteListData = Core.extend({
 /**
  * Property Translator for List Data (rendered model elements).
  */
-EchoAppRender.RemoteListDataTranslator = { 
+Echo.Sync.RemoteListDataTranslator = { 
     
     toProperty: function(client, propertyElement) {
         var items = [];
@@ -133,7 +133,7 @@ EchoAppRender.RemoteListDataTranslator = {
                 var childElement = eElement.firstChild;
                 while (childElement) {
                     if (childElement.nodeName == "p" && childElement.getAttribute("t") == "Font") {
-                        item.font = EchoSerial.PropertyTranslator.Font.toProperty(client, childElement);
+                        item.font = Echo.Serial.Font.toProperty(client, childElement);
                     }
                     childElement = childElement.nextSibling;
                 }
@@ -142,8 +142,8 @@ EchoAppRender.RemoteListDataTranslator = {
             items.push(item);
             eElement = eElement.nextSibling;
         }
-        return new EchoAppRender.RemoteListData(items);
+        return new Echo.Sync.RemoteListData(items);
     }
 };
     
-EchoSerial.addPropertyTranslator("RemoteListData", EchoAppRender.RemoteListDataTranslator);
+Echo.Serial.addPropertyTranslator("RemoteListData", Echo.Sync.RemoteListDataTranslator);

@@ -1,10 +1,10 @@
 /**
  * Guess-a-number Tutorial Application.
  */
-NumberGuessApp = Core.extend(EchoApp.Application, {
+NumberGuessApp = Core.extend(Echo.Application, {
 
     $construct: function() {
-        EchoApp.Application.call(this);
+        Echo.Application.call(this);
         this.startNewGame();
     },
     
@@ -35,7 +35,7 @@ NumberGuessApp = Core.extend(EchoApp.Application, {
  * A Column which generates a random number and provides the
  * user opportunities to guess it.
  */
-NumberGuessApp.Game = Core.extend(EchoApp.Column, {
+NumberGuessApp.Game = Core.extend(Echo.Column, {
 
     /** Randomly generated number between 1 and 100 inclusive. */
     _randomNumber: null,
@@ -81,19 +81,19 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
     $construct: function() {
         this._randomNumber = Math.floor(Math.random() * 100) + 1;
     
-        EchoApp.Column.call(this, {
+        Echo.Column.call(this, {
             insets: 30,
             cellSpacing: 10,
             children: [
-                new EchoApp.Label({
+                new Echo.Label({
                     icon: "TitleBanner.png"
                 }),
 
-                this._statusLabel = new EchoApp.Label(),
-                this._countLabel = new EchoApp.Label(),
-                this._promptLabel = new EchoApp.Label(),
+                this._statusLabel = new Echo.Label(),
+                this._countLabel = new Echo.Label(),
+                this._promptLabel = new Echo.Label(),
 
-                this._guessEntryField = new EchoApp.TextField({
+                this._guessEntryField = new Echo.TextField({
                     background: "#ffffff",
                     foreground: "#0000ff",
                     layoutData: {
@@ -105,7 +105,7 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                     }
                 }),
 
-                new EchoApp.Button({
+                new Echo.Button({
                     text: "Submit Your Guess",
                     actionCommand: "submit guess",
                     foreground: "#ffffff",
@@ -118,7 +118,7 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
                     }
                 }),
 
-                new EchoApp.Button({
+                new Echo.Button({
                     text: "Start a New Game",
                     foreground: "#ffffff",
                     background: "#8f0000",
@@ -195,26 +195,26 @@ NumberGuessApp.Game = Core.extend(EchoApp.Column, {
  * A Column which presents a congratulatory message to the
  * player when the correct number has been guessed.
  */
-NumberGuessApp.Congratulator = Core.extend(EchoApp.Column, {
+NumberGuessApp.Congratulator = Core.extend(Echo.Column, {
 
     /**
      * A Column which presents a congratulatory message to the
      * player when the correct number has been guessed.
      */
     $construct: function(numberOfTries) {
-        EchoApp.Column.call(this, {
+        Echo.Column.call(this, {
             insets: 30,
             cellSpacing: 30,
             children: [
-                new EchoApp.Label({
+                new Echo.Label({
                     icon: "CongratulationsBanner.png"
                 }),
-                new EchoApp.Label({
+                new Echo.Label({
                     text: "You got the correct answer in " 
                             + numberOfTries + (numberOfTries == 1
                             ? "try." : " tries.")
                 }),
-                new EchoApp.Button({
+                new Echo.Button({
                     text: "Play Again",
                     foreground: "#ffffff",
                     background: "#8f0000",
@@ -234,9 +234,9 @@ NumberGuessApp.Congratulator = Core.extend(EchoApp.Column, {
 });
 
 init = function() {
-    WebCore.init();
+    Core.Web.init();
     var app = new NumberGuessApp();
-    var client = new EchoFreeClient(app, 
+    var client = new Echo.FreeClient(app, 
             document.getElementById("rootArea"));
     client.init();
 };

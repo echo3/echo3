@@ -1,7 +1,7 @@
 /**
  * Abstract base class for SELECT-element based list components.
  */
-EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
+Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
 
     $static: {
         DEFAULT_DIV_HEIGHT: "6em",
@@ -41,7 +41,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
      */
     _processClick: function(e) {
         if (!this.client.verifyInput(this.component)) {
-            WebCore.DOM.preventEventDefault(e);
+            Core.Web.DOM.preventEventDefault(e);
             this._renderSelection();
             return;
         }
@@ -87,7 +87,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
      */
     _processChange: function(e) {
         if (!this.client.verifyInput(this.component)) {
-            WebCore.DOM.preventEventDefault(e);
+            Core.Web.DOM.preventEventDefault(e);
             this._renderSelection();
             return;
         }
@@ -114,7 +114,7 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
      * IE-specific event handler to prevent mouse-selection of text in DOM-rendered listbox component.
      */
     _processSelectStart: function(e) {
-        WebCore.DOM.preventEventDefault(e);
+        Core.Web.DOM.preventEventDefault(e);
     },
 
     /**
@@ -137,19 +137,19 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             this._element.multiple = "multiple";
         }
 
-        EchoAppRender.Border.render(
-                EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
+        Echo.Sync.Border.render(
+                Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
                 this._element);
-        EchoAppRender.Color.render(
-                EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
+        Echo.Sync.Color.render(
+                Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
                 this._element, "color");
-        EchoAppRender.Color.render(
-                EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
+        Echo.Sync.Color.render(
+                Echo.Sync.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
                 this._element, "backgroundColor");
-        EchoAppRender.Font.render(
-                EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
+        Echo.Sync.Font.render(
+                Echo.Sync.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
                 this._element);
-        EchoAppRender.Insets.render(this.component.render("insets"), this._element, "padding");
+        Echo.Sync.Insets.render(this.component.render("insets"), this._element, "padding");
 
         var items = this.component.get("items");
         if (items) {
@@ -161,20 +161,20 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
                     optionElement.appendChild(document.createTextNode(items[i].text));
                 }
                 if (items[i].foreground) {
-                    EchoAppRender.Color.render(items[i].foreground, optionElement, "color");
+                    Echo.Sync.Color.render(items[i].foreground, optionElement, "color");
                 }
                 if (items[i].background) {
-                    EchoAppRender.Color.render(items[i].background, optionElement, "backgroundColor");
+                    Echo.Sync.Color.render(items[i].background, optionElement, "backgroundColor");
                 }
                 if (items[i].font) {
-                    EchoAppRender.Font.render(items[i].font, optionElement);
+                    Echo.Sync.Font.render(items[i].font, optionElement);
                 }
                 this._element.appendChild(optionElement);
             }
         }
     
         if (this._enabled) {
-            WebCore.EventProcessor.add(this._element, "change", Core.method(this, this._processChange), false);
+            Core.Web.Event.add(this._element, "change", Core.method(this, this._processChange), false);
         }
 
         parentElement.appendChild(this._element);
@@ -204,20 +204,20 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
         //FIXME        
         this._div.style.height = "6em";
         
-        EchoAppRender.Border.render(
-                EchoAppRender.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled, 
-                EchoAppRender.ListComponentSync.DEFAULT_DIV_BORDER, EchoAppRender.ListComponentSync.DEFAULT_DIV_BORDER), 
+        Echo.Sync.Border.render(
+                Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled, 
+                Echo.Sync.ListComponent.DEFAULT_DIV_BORDER, Echo.Sync.ListComponent.DEFAULT_DIV_BORDER), 
                 this._div);
-        EchoAppRender.Color.render(
-                EchoAppRender.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
+        Echo.Sync.Color.render(
+                Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
                 this._div, "color");
-        EchoAppRender.Color.render(
-                EchoAppRender.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
+        Echo.Sync.Color.render(
+                Echo.Sync.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
                 this._div, "backgroundColor");
-        EchoAppRender.Font.render(
-                EchoAppRender.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
+        Echo.Sync.Font.render(
+                Echo.Sync.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
                 this._div);
-        EchoAppRender.Insets.render(this.component.render("insets"), this._div, "padding");
+        Echo.Sync.Insets.render(this.component.render("insets"), this._div, "padding");
 
         var items = this.component.get("items");
         if (items) {
@@ -229,21 +229,21 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
                     optionElement.appendChild(document.createTextNode(items[i].toString()));
                 }
                 if (items[i].foreground) {
-                    EchoAppRender.Color.render(items[i].foreground, optionElement, "color");
+                    Echo.Sync.Color.render(items[i].foreground, optionElement, "color");
                 }
                 if (items[i].background) {
-                    EchoAppRender.Color.render(items[i].background, optionElement, "backgroundColor");
+                    Echo.Sync.Color.render(items[i].background, optionElement, "backgroundColor");
                 }
                 if (items[i].font) {
-                    EchoAppRender.Font.render(items[i].font, optionElement);
+                    Echo.Sync.Font.render(items[i].font, optionElement);
                 }
                 this._div.appendChild(optionElement);
             }
         }
         
         if (this._enabled) {
-            WebCore.EventProcessor.add(this._div, "click", Core.method(this, this._processClick), false);
-            WebCore.EventProcessor.add(this._div, "selectstart", Core.method(this, this._processSelectStart), false);
+            Core.Web.Event.add(this._div, "click", Core.method(this, this._processClick), false);
+            Core.Web.Event.add(this._div, "selectstart", Core.method(this, this._processSelectStart), false);
         }
         
         parentElement.appendChild(this._element);
@@ -253,8 +253,8 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
      * Delegates to _renderMainAsSelect() or _renderMainAsDiv() depending on type of list selection component and browser bugs.
      */
     _renderMain: function(update, parentElement, size) {
-        this._multipleSelect = this.component.get("selectionMode") == EchoApp.ListBox.MULTIPLE_SELECTION;
-        if (this.component instanceof EchoApp.ListBox && WebCore.Environment.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
+        this._multipleSelect = this.component.get("selectionMode") == Echo.ListBox.MULTIPLE_SELECTION;
+        if (this.component instanceof Echo.ListBox && Core.Web.Env.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
             this._alternateRender = true;
         }
         this._enabled = this.component.isRenderEnabled();
@@ -271,10 +271,10 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
     },
     
     renderDispose: function(update) { 
-        WebCore.EventProcessor.removeAll(this._element);
+        Core.Web.Event.removeAll(this._element);
         this._element = null;
         if (this._div) {
-            WebCore.EventProcessor.removeAll(this._div);
+            Core.Web.Event.removeAll(this._div);
             this._div = null;
         }
     },
@@ -316,25 +316,25 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
             if (this._hasRenderedSelectedItems) {
                 var items = this.component.get("items");
                 for (var i = 0; i < items.length; ++i) {
-                    EchoAppRender.Color.renderClear(items[i].foreground, this._div.childNodes[i], 
+                    Echo.Sync.Color.renderClear(items[i].foreground, this._div.childNodes[i], 
                             "color");
-                    EchoAppRender.Color.renderClear(items[i].background, this._div.childNodes[i], 
+                    Echo.Sync.Color.renderClear(items[i].background, this._div.childNodes[i], 
                             "backgroundColor");
                 }
             }
             if (selection instanceof Array) {
                 for (var i = 0; i < selection.length; ++i) {
                     if (selection[i] >= 0 && selection[i] < this._div.childNodes.length) {
-                        EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_FOREGROUND,
+                        Echo.Sync.Color.render(Echo.Sync.ListComponent.DEFAULT_SELECTED_FOREGROUND,
                                 this._div.childNodes[selection[i]], "color");
-                        EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_BACKGROUND,
+                        Echo.Sync.Color.render(Echo.Sync.ListComponent.DEFAULT_SELECTED_BACKGROUND,
                                 this._div.childNodes[selection[i]], "backgroundColor");
                     }
                 }
             } else if (selection >= 0 && selection < this._div.childNodes.length) {
-                EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_FOREGROUND,
+                Echo.Sync.Color.render(Echo.Sync.ListComponent.DEFAULT_SELECTED_FOREGROUND,
                         this._div.childNodes[selection], "color");
-                EchoAppRender.Color.render(EchoAppRender.ListComponentSync.DEFAULT_SELECTED_BACKGROUND,
+                Echo.Sync.Color.render(Echo.Sync.ListComponent.DEFAULT_SELECTED_BACKGROUND,
                         this._div.childNodes[selection], "backgroundColor");
             }
         } else {
@@ -403,10 +403,10 @@ EchoAppRender.ListComponentSync = Core.extend(EchoRender.ComponentSync, {
 /**
  * Component rendering peer: ListBox
  */
-EchoAppRender.ListBoxSync = Core.extend(EchoAppRender.ListComponentSync, {
+Echo.Sync.ListBox = Core.extend(Echo.Sync.ListComponent, {
 
     $load: function() {
-        EchoRender.registerPeer("ListBox", this);
+        Echo.Render.registerPeer("ListBox", this);
     },
 
     renderAdd: function(update, parentElement) {
@@ -417,10 +417,10 @@ EchoAppRender.ListBoxSync = Core.extend(EchoAppRender.ListComponentSync, {
 /**
  * Component rendering peer: SelectField
  */
-EchoAppRender.SelectFieldSync = Core.extend(EchoAppRender.ListComponentSync, { 
+Echo.Sync.SelectField = Core.extend(Echo.Sync.ListComponent, { 
 
     $load: function() {
-        EchoRender.registerPeer("SelectField", this);
+        Echo.Render.registerPeer("SelectField", this);
     },
     
     renderAdd: function(update, parentElement) {

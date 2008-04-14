@@ -1,7 +1,7 @@
 /**
  * Command exeecution peer: Browser Redirect
  */
-EchoRemoteClient.CommandExec.BrowserRedirect = {
+Echo.RemoteClient.CommandExec.BrowserRedirect = {
 
     execute: function(client, commandData) {
         if (!commandData.uri) {
@@ -11,5 +11,5 @@ EchoRemoteClient.CommandExec.BrowserRedirect = {
     }    
 };
 
-EchoRemoteClient.CommandExecProcessor.registerPeer("nextapp.echo.webcontainer.command.BrowserRedirectCommand", 
-        EchoRemoteClient.CommandExec.BrowserRedirect);
+Echo.RemoteClient.CommandExecProcessor.registerPeer("nextapp.echo.webcontainer.command.BrowserRedirectCommand", 
+        Echo.RemoteClient.CommandExec.BrowserRedirect);
