@@ -2931,7 +2931,7 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * WindowPane component.
  *
  * @sp {#FillImage} backgroundImage the background image to display within the content area
- * @sp {Echo.FillImageBorder} border the FillImageBorder containing thw WindowPane
+ * @sp {#FillImageBorder} border the border frame containing thw WindowPane
  * @sp {Boolean} closable flag indicating whether the window is closable
  * @sp {#ImageReference} closeIcon the close button icon
  * @sp {#Insets} closeIconInsets the inset margin around the close button icon
