@@ -66,7 +66,7 @@
         <concat destfile="${dir.dist.client.echo}/Echo.js" fixlastline="yes">
             <filelist dir="${dir.src.client.corejs}">
                 <file name="Core.js"/>
-                <file name="WebCore.js"/>
+                <file name="Core.Web.js"/>
             </filelist>
             <filelist dir="${dir.src.client.echo}">
                 <file name="Application.js"/>
