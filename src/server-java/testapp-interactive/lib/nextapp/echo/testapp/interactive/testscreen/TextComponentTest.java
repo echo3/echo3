@@ -51,6 +51,14 @@ import nextapp.echo.testapp.interactive.Styles;
 
 public class TextComponentTest extends SplitPane {
     
+    public static int toInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
+    }
+    
     /**
      * Writes <code>ActionEvent</code>s to console.
      */
@@ -131,6 +139,20 @@ public class TextComponentTest extends SplitPane {
                 textField.getDocument().setText(text);
                 passwordField.getDocument().setText(text);
                 textArea.getDocument().setText(text);
+            }
+        });
+        controlsColumn.addButton("Integer++", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.setText(Integer.toString(toInt(textField.getText()) + 1));
+                passwordField.setText(Integer.toString(toInt(passwordField.getText()) + 1));
+                textArea.setText(Integer.toString(toInt(textArea.getText()) + 1));
+            }
+        });
+        controlsColumn.addButton("Integer--", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.setText(Integer.toString(toInt(textField.getText()) - 1));
+                passwordField.setText(Integer.toString(toInt(passwordField.getText()) - 1));
+                textArea.setText(Integer.toString(toInt(textArea.getText()) - 1));
             }
         });
         controlsColumn.addButton("Toggle ToolTip Text", new ActionListener(){
