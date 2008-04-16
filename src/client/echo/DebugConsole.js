@@ -107,7 +107,7 @@ Echo.DebugConsole = {
         Echo.DebugConsole._titleBarElement.appendChild(titleDivElement);
     
         var controlsContainerDivElement = document.createElement("div");
-        controlsContainerDivElement.style.cssText = "position:absolute;right:0px;";
+        controlsContainerDivElement.style.cssText = "position:absolute;right:0;";
         Echo.DebugConsole._titleBarElement.appendChild(controlsContainerDivElement);
     
         var clearButtonElement = document.createElement("span");

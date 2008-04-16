@@ -744,7 +744,7 @@ Echo.Sync.TriCellTable = Core.extend({
         _createTablePrototype: function() {
             var tableElement = document.createElement("table");
             tableElement.style.borderCollapse = "collapse";
-            tableElement.style.padding = "0px";
+            tableElement.style.padding = "0";
             
             tbodyElement = document.createElement("tbody");
             tableElement.appendChild(tbodyElement);
@@ -829,13 +829,13 @@ Echo.Sync.TriCellTable = Core.extend({
     
     configure2: function(orientation0_1, margin0_1) {
         this.tdElements = [document.createElement("td"), document.createElement("td")];
-        this.tdElements[0].style.padding = "0px";
-        this.tdElements[1].style.padding = "0px";
+        this.tdElements[0].style.padding = "0";
+        this.tdElements[1].style.padding = "0";
         this.marginTdElements = new Array(1);
         
         if (margin0_1) {
             this.marginTdElements[0] = document.createElement("td");
-            this.marginTdElements[0].style.padding = "0px";
+            this.marginTdElements[0].style.padding = "0";
             if ((orientation0_1 & Echo.Sync.TriCellTable.VERTICAL) == 0) {
                 this.marginTdElements[0].style.width = margin0_1 + "px";
                 this.addSpacer(this.marginTdElements[0], margin0_1, false);
@@ -880,7 +880,7 @@ Echo.Sync.TriCellTable = Core.extend({
         this.tdElements = new Array(3);
         for (var i = 0; i < 3; ++i) {
             this.tdElements[i] = document.createElement("td");
-            this.tdElements[i].style.padding = "0px";
+            this.tdElements[i].style.padding = "0";
         }
         this.marginTdElements = new Array(2);
         

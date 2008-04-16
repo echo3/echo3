@@ -183,7 +183,7 @@ Echo.Sync.Column = Core.extend(Echo.Sync.ArrayContainer, {
             this.spacingPrototype = document.createElement("div");
             this.spacingPrototype.style.height = this.cellSpacing + "px";
             this.spacingPrototype.style.fontSize = "1px";
-            this.spacingPrototype.style.lineHeight = "0px";
+            this.spacingPrototype.style.lineHeight = "0";
         }
         
         this.renderAddChildren(update);
@@ -286,7 +286,7 @@ Echo.Sync.Row = Core.extend(Echo.Sync.ArrayContainer, {
             }
         }
         if (!insets) {
-            insets = "0px";
+            insets = 0;
         }
         Echo.Sync.Insets.render(insets, cellElement, "padding");
     }

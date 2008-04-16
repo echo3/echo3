@@ -291,15 +291,14 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     
         this._splitPaneDiv = document.createElement("div");
         this._splitPaneDiv.id = this.component.renderId;
-        this._splitPaneDiv.style.cssText = "position: absolute; overflow: hidden; " 
-                + "top: 0px; left: 0px; right: 0px; bottom: 0px;";
+        this._splitPaneDiv.style.cssText = "position:absolute;overflow:hidden;top:0;left:0;right:0;bottom:0;";
         
         Echo.Sync.Color.renderFB(this.component, this._splitPaneDiv);
         Echo.Sync.Font.render(this.component.render("font"), this._splitPaneDiv);
         
         if (this._separatorSize > 0) {
             this._separatorDiv = document.createElement("div");
-            this._separatorDiv.style.cssText = "position: absolute; font-size: 1px; line-height: 0; z-index: 2;";
+            this._separatorDiv.style.cssText = "position:absolute;font-size:1px;line-height:0;z-index:2;";
             Echo.Sync.Color.render(this.component.render("separatorColor", Echo.SplitPane.DEFAULT_SEPARATOR_COLOR), 
                     this._separatorDiv, "backgroundColor");
     
@@ -369,42 +368,42 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         var renderingTopLeft = (index == 0 && this._orientationTopLeft) || (index != 0 && !this._orientationTopLeft);
                 
         if (this._orientationVertical) {
-            paneDiv.style.left = "0px";
-            paneDiv.style.right = "0px";
+            paneDiv.style.left = "0";
+            paneDiv.style.right = "0";
             if (this._orientationTopLeft) {
                 if (index == 0) {
-                    paneDiv.style.top = "0px";
+                    paneDiv.style.top = "0";
                     paneDiv.style.height = (this._rendered - insetsAdjustment) + "px";
                 } else {
                     paneDiv.style.top = (this._rendered + this._separatorSize) + "px";
-                    paneDiv.style.bottom = "0px";
+                    paneDiv.style.bottom = "0";
                 }
             } else {
                 if (index == 0) {
-                    paneDiv.style.bottom = "0px";
+                    paneDiv.style.bottom = "0";
                     paneDiv.style.height = (this._rendered - insetsAdjustment) + "px";
                 } else {
-                    paneDiv.style.top = "0px";
+                    paneDiv.style.top = "0";
                     paneDiv.style.bottom = (this._rendered + this._separatorSize) + "px";
                 }
             }
         } else {
-            paneDiv.style.top = "0px";
-            paneDiv.style.bottom = "0px";
+            paneDiv.style.top = "0";
+            paneDiv.style.bottom = "0";
             if (this._orientationTopLeft) {
                 if (index == 0) {
-                    paneDiv.style.left = "0px";
+                    paneDiv.style.left = "0";
                     paneDiv.style.width = (this._rendered - insetsAdjustment) + "px";
                 } else {
                     paneDiv.style.left = (this._rendered + this._separatorSize) + "px";
-                    paneDiv.style.right = "0px";
+                    paneDiv.style.right = "0";
                 }
             } else {
                 if (index == 0) {
                     paneDiv.style.width = (this._rendered - insetsAdjustment) + "px";
-                    paneDiv.style.right = "0px";
+                    paneDiv.style.right = "0";
                 } else {
-                    paneDiv.style.left = "0px";
+                    paneDiv.style.left = "0";
                     paneDiv.style.right = (this._rendered + this._separatorSize) + "px";
                 }
             }
