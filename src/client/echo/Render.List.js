@@ -125,10 +125,10 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
      * when rendered by DOM manipulation).
      * This strategy is used when the _alternateRender flag is false.
      */
-    _renderMainAsSelect: function(update, parentElement, size) {
+    _renderMainAsSelect: function(update, parentElement, listBox) {
         this._element = document.createElement("select");
         this._element.id = this.component.renderId;
-        this._element.size = size;
+        this._element.size = listBox ? 6 : 1;
 
         if (!this._enabled) {
             this._element.disabled = true;
@@ -137,6 +137,8 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
             this._element.multiple = "multiple";
         }
 
+        this._element.style.height = Echo.Sync.Extent.toCssValue(this.component.render("height"), false, false);
+        this._element.style.width = Echo.Sync.Extent.toCssValue(this.component.render("width"), true, false);
         Echo.Sync.Border.render(
                 Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
                 this._element);
@@ -185,7 +187,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
      * This strategy is used on IE6 due to bugs in this browser's rendering engine.
      * This strategy is used when the _alternateRender flag is true.
      */
-    _renderMainAsDiv: function(update, parentElement, size) {
+    _renderMainAsDiv: function(update, parentElement) {
         this._element = document.createElement("table");
         this._element.id = this.component.renderId;
         
@@ -200,10 +202,8 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         tdElement.appendChild(this._div);
         
         this._div.style.cssText = "cursor:default;overflow:auto;";
-        
-        //FIXME        
-        this._div.style.height = "6em";
-        
+        this._div.style.height = Echo.Sync.Extent.toCssValue(this.component.render("height", "6em"), false, false);
+        this._div.style.width = Echo.Sync.Extent.toCssValue(this.component.render("width"), true, false);
         Echo.Sync.Border.render(
                 Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled, 
                 Echo.Sync.ListComponent.DEFAULT_DIV_BORDER, Echo.Sync.ListComponent.DEFAULT_DIV_BORDER), 
@@ -252,17 +252,17 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
     /**
      * Delegates to _renderMainAsSelect() or _renderMainAsDiv() depending on type of list selection component and browser bugs.
      */
-    _renderMain: function(update, parentElement, size) {
+    _renderMain: function(update, parentElement, listBox) {
         this._multipleSelect = this.component.get("selectionMode") == Echo.ListBox.MULTIPLE_SELECTION;
-        if (this.component instanceof Echo.ListBox && Core.Web.Env.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
+        if (listBox && Core.Web.Env.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
             this._alternateRender = true;
         }
         this._enabled = this.component.isRenderEnabled();
         
         if (this._alternateRender) {
-            this._renderMainAsDiv(update, parentElement, size);
+            this._renderMainAsDiv(update, parentElement);
         } else {
-            this._renderMainAsSelect(update, parentElement, size);
+            this._renderMainAsSelect(update, parentElement, listBox);
         }
     },
     
@@ -410,7 +410,7 @@ Echo.Sync.ListBox = Core.extend(Echo.Sync.ListComponent, {
     },
 
     renderAdd: function(update, parentElement) {
-        this._renderMain(update, parentElement, 6);
+        this._renderMain(update, parentElement, true);
     }
 });
 
@@ -424,6 +424,6 @@ Echo.Sync.SelectField = Core.extend(Echo.Sync.ListComponent, {
     },
     
     renderAdd: function(update, parentElement) {
-        this._renderMain(update, parentElement, 0);
+        this._renderMain(update, parentElement, false);
     }
 });
