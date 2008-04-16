@@ -11,7 +11,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
          */
         ChildPane: Core.extend({
         
-            minimumSize: null,
+            minimumSize: 0,
             maximumSize: null,
             component: null,
             layoutData: null,
@@ -125,7 +125,6 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         }
         this._resizable = this.component.render("resizable");
         this._requested = this.component.render("separatorPosition", Echo.SplitPane.DEFAULT_SEPARATOR_POSITION);
-        this._separatorUpdateRequired = true;
         this._separatorSize = Echo.Sync.Extent.toPixels(this.component.render(
                 this._orientationVertical ? "separatorHeight" : "separatorWidth",
                 this._resizable ? Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
@@ -421,10 +420,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     
     renderDisplay: function() {
         Core.Web.VirtualPosition.redraw(this._splitPaneDiv);
-        if (this._separatorUpdateRequired) {
-            this._separatorUpdateRequired = false;
-            this._setSeparatorPosition(this._requested);
-        }
+        this._setSeparatorPosition(this._requested);
         if (this._paneDivs[0]) {
             Core.Web.VirtualPosition.redraw(this._paneDivs[0]);
         }
@@ -526,8 +522,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         if (this._childPanes[1]) {
             var totalSize = this._orientationVertical ? 
                     this._splitPaneDiv.offsetHeight : this._splitPaneDiv.offsetWidth;
-            if (this._childPanes[1].minimumSize != null
-                    && newValue > totalSize - this._childPanes[1].minimumSize - this._separatorSize) {
+            if (newValue > totalSize - this._childPanes[1].minimumSize - this._separatorSize) {
                 newValue = totalSize - this._childPanes[1].minimumSize - this._separatorSize;
             } else if (this._childPanes[1].maximumSize != null
                     && newValue < totalSize - this._childPanes[1].maximumSize - this._separatorSize) {
@@ -535,7 +530,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             }
         }
         if (this._childPanes[0]) {
-            if (this._childPanes[0].minimumSize != null && newValue < this._childPanes[0].minimumSize) {
+            if (newValue < this._childPanes[0].minimumSize) {
                 newValue = this._childPanes[0].minimumSize;
             } else if (this._childPanes[0].maximumSize != null && newValue > this._childPanes[0].maximumSize) {
                 newValue = this._childPanes[0].maximumSize;
