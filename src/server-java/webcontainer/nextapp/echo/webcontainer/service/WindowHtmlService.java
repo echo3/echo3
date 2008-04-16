@@ -68,8 +68,7 @@ implements Service {
     static {
         // The XML declaration is omitted as Internet Explorer 6 will operate in quirks mode if it is present.
         OUTPUT_PROPERTIES.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-        OUTPUT_PROPERTIES.setProperty(OutputKeys.INDENT, "yes");
-        
+        OUTPUT_PROPERTIES.putAll(DomUtil.OUTPUT_PROPERTIES_INDENT);
         OUTPUT_PROPERTIES.setProperty(OutputKeys.DOCTYPE_PUBLIC, XHTML_1_0_TRANSITIONAL_PUBLIC_ID);
         OUTPUT_PROPERTIES.setProperty(OutputKeys.DOCTYPE_SYSTEM, XHTML_1_0_TRANSITIONAL_SYSTSEM_ID);
     }

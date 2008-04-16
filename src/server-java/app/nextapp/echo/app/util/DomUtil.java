@@ -63,6 +63,7 @@ public class DomUtil {
     static {
         OUTPUT_PROPERTIES_INDENT = new Properties();
         OUTPUT_PROPERTIES_INDENT.setProperty(OutputKeys.INDENT, "yes");
+        OUTPUT_PROPERTIES_INDENT.setProperty("{http://xml.apache.org/xalan}indent-amount", "4");    
     }
     
     /**
