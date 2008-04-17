@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ss>
+
+ <s n="Default" t="nextapp.echo.app.text.TextComponent">
+  
+   <p n="background" t="Color">#cfdfff</p>
+   <p n="border" t="Border" v="2px groove #cfdfff">
+    
+   </p>
+   <p n="foreground" t="Color">#000000</p>
+   <p n="font" t="Font">
+    <f sz="10pt">
+                <tf n="sans-serif"/>
+            </f>
+   </p>
+  
+ </s>
+
+ <s n="Default" t="nextapp.echo.app.WindowPane">
+  
+   <!-- Container-specific property to enable Internet Explorer PNG Alpha Renderer for shadow window border. -->
+   <p n="ieAlphaRenderBorder" t="b" v="true"/>
+   <p n="titleInsets" t="Insets" v="5px 10px"/>
+   <p n="titleBackground" t="Color">#2f2f4f</p>
+   <p n="titleBackgroundImage" t="FillImage">
+    <fi r="x" t="r" y="100%">
+     <i r="/chatclient/resource/image/WindowPaneTitleBackground.png"/>
+    </fi>
+   </p>
+   <p n="titleForeground" t="Color">#ffffff</p>
+   <p n="border" t="FillImageBorder">
+    <fib bi="17px 23px 23px 17px" ci="8px 14px 14px 8px">
+     <fi t="r">
+       <i r="/chatclient/resource/image/BorderTopLeft.png"/>
+      </fi>
+     <fi t="r">
+       <i r="/chatclient/resource/image/BorderTop.png"/>
+      </fi>
+     <fi t="r">
+       <i r="/chatclient/resource/image/BorderTopRight.png"/>
+      </fi>
+     <fi t="r">
+       <i r="/chatclient/resource/image/BorderLeft.png"/>
+      </fi>
+     <fi t="r">
+       <i r="/chatclient/resource/image/BorderRight.png"/>
+      </fi>
+     <fi t="r">
+       <i r="/chatclient/resource/image/BorderBottomLeft.png"/>
+      </fi>
+     <fi t="r">
+       <i r="/chatclient/resource/image/BorderBottom.png"/>
+      </fi>
+     <fi t="r">
+       <i r="/chatclient/resource/image/BorderBottomRight.png"/>
+      </fi>
+    </fib>
+   </p>
+  
+ </s>
+ 
+ <s n="ControlPane" t="nextapp.echo.app.Row">
+  
+   <p n="insets" t="Insets" v="2px 10px"/>
+   <p n="cellSpacing" t="Extent" v="3px"/>
+   <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
+    
+     
+      <p n="overflow" t="i" v="OVERFLOW_HIDDEN"/>
+      <p n="background" t="Color">#cfcfdf</p>
+      <p n="backgroundImage" t="FillImage">
+       <fi t="r">
+        <i r="/chatclient/resource/image/ControlPaneFill.png"/>
+       </fi>
+      </p>
+      <p n="insets" t="Insets" v="2px"/>
+     
+    
+   </p>
+  
+ </s>
+ 
+ <s n="ControlPane.Button" t="nextapp.echo.app.button.AbstractButton">
+  
+   <p n="lineWrap" t="b" v="false"/>
+   <p n="insets" t="Insets" v="0px 8px"/>
+   <p n="foreground" t="Color">#000000</p>
+   <p n="rolloverEnabled" t="b" v="true"/>
+   <p n="rolloverForeground" t="Color">#6f0f0f</p>
+  
+ </s>
+ 
+ <s n="LoginScreen.Column" t="nextapp.echo.app.Column">
+  
+   <p n="insets" t="Insets" v="0px 0px 0px 245px"/>
+   <p n="cellSpacing" t="Extent" v="40px"/>
+  
+ </s>
+ 
+ <s n="LoginScreen.WarningTitle" t="nextapp.echo.app.Label">
+  
+   <p n="font" t="Font">
+    <f bo="1"/>
+   </p>
+   <p n="foreground" t="Color">#7f0000</p>
+  
+ </s>
+ 
+ <s n="LoginScreen.WarningMessage" t="nextapp.echo.app.Label">
+  
+   <p n="foreground" t="Color">#7f0000</p>
+  
+ </s>
+ 
+ <s b="Default" n="LoginScreen.LoginWindow" t="nextapp.echo.app.WindowPane">
+  
+   <p n="resizable" t="b" v="false"/>
+   <p n="positionX" t="Extent" v="160px"/>
+   <p n="positionY" t="Extent" v="240px"/>
+   <p n="width" t="Extent" v="450px"/>
+   <p n="height" t="Extent" v="300px"/>
+    
+ </s>
+ 
+ <s n="LoginScreen.ContentPane" t="nextapp.echo.app.ContentPane">
+  
+   <p n="backgroundImage" t="FillImage">
+    <fi r="y" t="r">
+     <i r="/chatclient/resource/image/LoginBackground.png"/>
+    </fi>
+   </p>
+    
+ </s>
+ 
+ <s n="LoginScreen.LayoutGrid" t="nextapp.echo.app.Grid">
+  
+   <p n="insets" t="Insets" v="5px"/>
+   <p n="size" t="i" v="2"/>
+    
+ </s>
+ 
+ <s n="LoginScreen.Prompt" t="nextapp.echo.app.Label">
+  
+   <p n="layoutData" t="nextapp.echo.app.layout.GridLayoutData">
+    
+     
+      <p n="alignment" t="Alignment">
+       <a h="right"/>
+      </p>
+     
+    
+   </p>
+  
+ </s>
+ 
+ <s n="LoginScreen.Continue" t="nextapp.echo.app.Button">
+  
+   <p n="layoutData" t="nextapp.echo.app.layout.GridLayoutData">
+    
+     
+      <p n="columnSpan" t="i" v="2"/>
+     
+    
+   </p>
+  
+ </s>
+ 
+ <s n="LoginScreen.WelcomeLabel" t="nextapp.echo.app.Label">
+  
+   <p n="layoutData" t="nextapp.echo.app.layout.GridLayoutData">
+    
+     
+      <p n="columnSpan" t="i" v="2"/>
+     
+    
+   </p>
+  
+ </s>
+
+ <s n="ChatScreen.SplitPane" t="nextapp.echo.app.SplitPane">
+  
+   <p n="separatorHeight" t="Extent" v="1px"/>
+  
+ </s>
+ 
+ <s n="ChatScreen.SubmitPostButton" t="nextapp.echo.app.Button">
+  
+   <p n="font" t="Font">
+    <f bo="1"/>
+   </p>
+   <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
+    
+     
+      <p n="insets" t="Insets" v="10px"/>
+      <p n="overflow" t="i" v="OVERFLOW_HIDDEN"/>
+     
+    
+   </p>
+  
+ </s>
+ 
+ <s n="ChatScreen.CurrentUserLabel" t="nextapp.echo.app.Label">
+  
+   <p n="foreground" t="Color">#7f0000</p>
+   <p n="font" t="Font">
+    <f bo="1"/>
+   </p>
+   <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
+    
+     
+      <p n="alignment" t="Alignment">
+       <a h="right" v="center"/>
+      </p>
+      <p n="insets" t="Insets" v="10px"/>
+     
+    
+   </p>
+  
+ </s>
+
+ <s b="Default" n="ChatScreen.PostField" t="nextapp.echo.app.TextArea">
+  
+   <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
+    
+     
+      <p n="overflow" t="i" v="OVERFLOW_HIDDEN"/>
+     
+    
+   </p>
+  
+ </s>
+
+ <s n="MessagePane.ListColumn" t="nextapp.echo.app.Column">
+  
+   <p n="cellSpacing" t="Extent" v="3px"/>
+   <p n="insets" t="Insets" v="0px 10px"/>
+  
+ </s>
+ 
+ <s n="MessagePane.MessageRow" t="nextapp.echo.app.Row">
+  
+   <p n="cellSpacing" t="Extent" v="8px"/>
+  
+ </s>
+ 
+ <s b="MessagePane.MessageRow" n="MessagePane.MessageRow.Announcement" t="nextapp.echo.app.Row">
+  
+   <p n="layoutData" t="nextapp.echo.app.layout.ColumnLayoutData">
+    
+     
+      <p n="background" t="Color">#bfffcf</p>
+     
+    
+   </p>
+  
+ </s>
+ 
+ <s n="MessagePane.DateLabel" t="nextapp.echo.app.Label">
+  
+   <p n="foreground" t="Color">#007f3f</p>
+   <p n="layoutData" t="nextapp.echo.app.layout.RowLayoutData">
+    
+     
+      <p n="alignment" t="Alignment">
+       <a v="top"/>
+      </p>
+      <p n="width" t="Extent" v="60px"/>
+     
+    
+   </p>
+   <p n="lineWrap" t="b" v="false"/>
+  
+ </s>
+
+ <s n="MessagePane.UserNameLabel.Other" t="nextapp.echo.app.Label">
+  
+   <p n="foreground" t="Color">#00007f</p>
+   <p n="font" t="Font">
+    <f bo="1"/>
+   </p>
+   <p n="layoutData" t="nextapp.echo.app.layout.RowLayoutData">
+    
+     
+      <p n="alignment" t="Alignment">
+       <a v="top"/>
+      </p>
+      <p n="width" t="Extent" v="120px"/>
+     
+    
+   </p>
+   <p n="lineWrap" t="b" v="false"/>
+  
+ </s>
+
+ <s n="MessagePane.UserNameLabel.Yourself" t="nextapp.echo.app.Label">
+  
+   <p n="foreground" t="Color">#7f0000</p>
+   <p n="font" t="Font">
+    <f bo="1"/>
+   </p>
+   <p n="layoutData" t="nextapp.echo.app.layout.RowLayoutData">
+    
+     
+      <p n="alignment" t="Alignment">
+       <a v="top"/>
+      </p>
+      <p n="width" t="Extent" v="120px"/>
+     
+    
+   </p>
+   <p n="lineWrap" t="b" v="false"/>
+  
+ </s>
+
+ <s n="MessagePane.SystemMessageLabel" t="nextapp.echo.app.Label">
+  
+   <p n="foreground" t="Color">#007f00</p>
+   <p n="font" t="Font">
+    <f bo="1"/>
+   </p>
+  
+ </s>
+ 
+ <s n="MessageDialog.ContentLabel" t="nextapp.echo.app.Label">
+  
+   <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
+    
+     
+      <p n="insets" t="Insets" v="2px 8px"/>
+     
+    
+   </p>
+  
+ </s>
+
+</ss>
