@@ -26,8 +26,6 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
- 
-//FIXME. Stylesheet converter does not currently convert styles to latest Echo3 format.
 
 package nextapp.echo.app.serial;
 
@@ -64,6 +62,7 @@ import org.w3c.dom.NodeList;
  * @author n.beekman
  */
 public class Echo2StyleSheetConverter {
+    
     private static final Pattern CONSTANT_PATTERN = Pattern.compile("(.*?\\.)?[A-Z_]+");
 
     private static final Map TYPE_MAP;
@@ -99,10 +98,6 @@ public class Echo2StyleSheetConverter {
     }
     
     public static void main(String[] args) {
-        if (true) {
-            throw new RuntimeException("FIXME. Stylesheet converter does not currently convert styles to latest Echo3 format.");
-        }
-    
         if (args == null || args.length != 2) {
             System.out.println("Usage: Echo2StyleSheetConverter [inputFileName] [outputFileName]");
             return;
@@ -235,6 +230,7 @@ public class Echo2StyleSheetConverter {
         if (PROPERTY_NAME_MAP.containsKey(name)) {
             name = (String)PROPERTY_NAME_MAP.get(name);
         }
+        boolean renderValueAsContent = false;
         String type = null;
         if (oldProperty.hasAttribute("type")) {
             type = oldProperty.getAttribute("type");
@@ -246,17 +242,22 @@ public class Echo2StyleSheetConverter {
             }
         } else if (value.length() == 7 && value.startsWith("#")) {
             type = "Color";
+            renderValueAsContent = true;
         } else if (CONSTANT_PATTERN.matcher(value).matches()) {
             // constant
             value = value.replaceFirst("echo2", "echo");
             type = "i";
         }
-        if ("Insets".equals(type) || name.equals("insets") || name.endsWith("Insets") || name.equals("outsets") || name.endsWith("Outsets")) {
+        if ("Insets".equals(type) || name.equals("insets") || name.endsWith("Insets") 
+                || name.equals("outsets") || name.endsWith("Outsets")) {
             value = convertInsets(value);
             if (type == null) {
                 type = "Insets";
             }
-        } else if (type == null && (name.equals("width") || name.endsWith("Width") || name.equals("height") || name.endsWith("Height") || name.endsWith("Position") || name.endsWith("Spacing") || name.endsWith("Size") || name.endsWith("X") || name.endsWith("Y") || name.endsWith("Margin"))) {
+        } else if (type == null && (name.equals("width") || name.endsWith("Width") 
+                || name.equals("height") || name.endsWith("Height") || name.endsWith("Position") 
+                || name.endsWith("Spacing") || name.endsWith("Size") || name.endsWith("X") 
+                || name.endsWith("Y") || name.endsWith("Margin"))) {
             type = "Extent";
         } else if ("true".equalsIgnoreCase(value)) {
             if (type == null) {
@@ -276,7 +277,11 @@ public class Echo2StyleSheetConverter {
         } else {
             logWarning("Could not determine type of property: " + name + (value == null ? "" : ", value: " + value));
         }
-        property.setAttribute("v", value);
+        if (renderValueAsContent) {
+            property.appendChild(outputDoc.createTextNode(value));
+        } else {
+            property.setAttribute("v", value);
+        }
         return property;
     }
     
@@ -309,6 +314,7 @@ public class Echo2StyleSheetConverter {
         }
         return property;
     }
+
     
     private void convertFont(Element oldFont, Element property) {
         property.setAttribute("t", "Font");
@@ -504,7 +510,8 @@ public class Echo2StyleSheetConverter {
             Node childNode = childNodes.item(i);
             if ("border-part".equals(childNode.getNodeName())) {
                 String position = ((Element)childNode).getAttribute("position");
-                fillImages.put(FILL_IMAGE_BORDER_MAP.get(position), convertFillImage(DomUtil.getChildElementByTagName((Element)childNode, "fill-image")));
+                fillImages.put(FILL_IMAGE_BORDER_MAP.get(position), 
+                        convertFillImage(DomUtil.getChildElementByTagName((Element)childNode, "fill-image")));
             }
         }
         // add null elements for missing images
