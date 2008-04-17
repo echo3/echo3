@@ -69,7 +69,7 @@ Echo.Sync.RemoteListBoxSync = Core.extend(Echo.Sync.ListBox, {
         Echo.Render.registerPeer("RemoteListBox", this);
     },
     
-    $include: [ Echo.Sync._ListComponentMixins ]
+    $include: [ Echo.Sync._ListComponentSyncMixins ]
 });
 
 /**
@@ -99,7 +99,7 @@ Echo.Sync.RemoteSelectFieldSync = Core.extend(Echo.Sync.SelectField, {
         Echo.Render.registerPeer("RemoteSelectField", this);;
     },
 
-    $include: [ Echo.Sync._ListComponentMixins ]
+    $include: [ Echo.Sync._ListComponentSyncMixins ]
 });
     
 Echo.Sync.RemoteListData = Core.extend({
