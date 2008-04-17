@@ -383,7 +383,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         this._columnCount = gridProcessor.getColumnCount();
         this._rowCount = gridProcessor.getRowCount();
         
-        var defaultInsets = this.component.render("insets", "0");
+        var defaultInsets = Echo.Sync.Insets.toCssValue(this.component.render("insets", 0));
         var defaultBorder = this.component.render("border", "");
     
         this._table = Echo.Sync.Grid._prototypeTable.cloneNode(true);
@@ -392,7 +392,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         Echo.Sync.Color.renderFB(this.component, this._table);
         Echo.Sync.Border.render(defaultBorder, this._table);
         Echo.Sync.Font.render(this.component.render("font"), this._table);
-        Echo.Sync.Insets.render(this.component.render("insets"), this._table, "padding");
+        this._table.style.padding = defaultInsets;
     
         var width = this.component.render("width");
         
@@ -451,7 +451,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         
         var tdPrototype = document.createElement("td");
         Echo.Sync.Border.render(defaultBorder, tdPrototype);
-        tdPrototype.style.padding = defaultInsets.toString();
+        tdPrototype.style.padding = defaultInsets;
         tdPrototype.style.overflow = "hidden";
         
         for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
