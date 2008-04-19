@@ -676,6 +676,14 @@ Echo.Component = Core.extend({
             component.register(this.application);
             this.application.notifyComponentUpdate(this, "children", null, component);
         }
+        
+        if (component._listenerList && component._listenerList.hasListeners("parent")) {
+            component._listenerList.fireEvent({type: "parent", source: component, oldValue: null, newValue: this});
+        }
+
+        if (this._listenerList && this._listenerList.hasListeners("children")) {
+            this._listenerList.fireEvent({type: "children", source: this, add: componennt, index: index});
+        }
     },
     
     /**
@@ -1085,6 +1093,14 @@ Echo.Component = Core.extend({
         
         if (this.application) {
             this.application.notifyComponentUpdate(this, "children", component, null);
+        }
+        
+        if (component._listenerList && component._listenerList.hasListeners("parent")) {
+            component._listenerList.fireEvent({type: "parent", source: component, oldValue: this, newValue: null});
+        }
+
+        if (this._listenerList && this._listenerList.hasListeners("children")) {
+            this._listenerList.fireEvent({type: "children", source: this, remove: componennt, index: index});
         }
     },
     
