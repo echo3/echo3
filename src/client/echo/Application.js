@@ -2900,6 +2900,16 @@ Echo.TextComponent = Core.extend(Echo.Component, {
         Echo.ComponentFactory.registerType("TC", this);
     },
 
+    $virtual: {
+        
+        /**
+         * Programatically performs a text component action.
+         */
+        doAction: function() {
+            this.fireEvent({type: "action", source: this, actionCommand: this.get("actionCommand")});
+        }
+    },
+
     componentType: "TextComponent",
     focusable: true
 });
