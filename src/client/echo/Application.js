@@ -1724,8 +1724,8 @@ Echo.Update.ComponentUpdate = Core.extend({
             if (this._removedDescendantIds == null) {
                 this._removedDescendantIds = [];
             }
-            for (var x in update._removedDescendantIds) {
-                this._removedDescendantIds.push(x);
+            for (i = 0; i < update._removedDescendantIds.length; ++i) {
+                this._removedDescendantIds.push(update._removedDescendantIds[i]);
             }
         }
         
@@ -1734,8 +1734,8 @@ Echo.Update.ComponentUpdate = Core.extend({
             if (this._removedDescendantIds == null) {
                 this._removedDescendantIds = [];
             }
-            for (var x in update._removedChildIds) {
-                this._removedDescendantIds.push(x);
+            for (i = 0; i < update._removedChildIds.length; ++i) {
+                this._removedDescendantIds.push(update._removedChildIds[i]);
             }
         }
         
