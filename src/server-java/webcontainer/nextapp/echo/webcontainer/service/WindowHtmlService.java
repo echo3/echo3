@@ -130,7 +130,7 @@ implements Service {
         bodyElement.setAttribute("id", "body");
         bodyElement.setAttribute("onload", "EchoBoot.boot('" + userInstance.getServletUri() + "', " + debug + ");");
         bodyElement.setAttribute("style",
-                "height:100%;width:100%;margin:0px;padding: 0px;overflow:auto;" +
+                "height:100%;width:100%;margin:0px;padding: 0px;" +
                 "font-family:verdana, arial, helvetica, sans-serif;font-size:10pt");
         htmlElement.appendChild(bodyElement);
 
