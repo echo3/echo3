@@ -124,7 +124,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             throw new Error("Invalid orientation: " + orientation);
         }
         this._resizable = this.component.render("resizable");
-        this._requested = this.component.render("separatorPosition", Echo.SplitPane.DEFAULT_SEPARATOR_POSITION);
+        this._requested = this.component.render("separatorPosition");
         this._separatorSize = Echo.Sync.Extent.toPixels(this.component.render(
                 this._orientationVertical ? "separatorHeight" : "separatorWidth",
                 this._resizable ? Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
@@ -472,8 +472,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             fullRender = true;
         } else if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()) {
             if (update.isUpdatedPropertySetIn({ separatorPosition: true })) {
-                this._requested =  Echo.Sync.Extent.toPixels(this.component.render("separatorPosition",
-                        Echo.SplitPane.DEFAULT_SEPARATOR_POSITION), this._orientationVertical);
+                this._requested = this.component.render("separatorPosition");
                 this._setSeparatorPosition(this._requested);
             } else {
                 fullRender = true;
@@ -510,6 +509,17 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     
     _setSeparatorPosition: function(newValue) {
         var oldValue = this._rendered;
+        
+        if (newValue == null) {
+            // If new value is null, attempt to retrieve from minimumSize property
+            // of pane 0, then 1, then maximumSize property of pane 0, then 1, then
+            // from SplitPane's default value.
+            newValue = (this._childPanes[0] ? this._childPanes[0].minimumSize : null)
+                    || (this._childPanes[1] ? this._childPanes[1].minimumSize : null)
+                    || (this._childPanes[0] ? this._childPanes[0].maximumSize : null)
+                    || (this._childPanes[1] ? this._childPanes[1].maximumSize : null)
+                    || Echo.SplitPane.DEFAULT_SEPARATOR_POSITION;
+        }
         
         if (Echo.Sync.Extent.isPercent(newValue)) {
             var totalSize = this._orientationVertical ? 
