@@ -579,9 +579,12 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         
         // Add content to main DIV.  
         // The object this._contentDiv will have been created by renderAdd(). 
-        this._contentDiv.style.cssText = "position:absolute;z-index:2;overflow:auto;top:" 
+        // Note that overflow is set to 'hidden' if child is a pane component, this is necessary to workaround what
+        // what is presumably a bug in Safari 3.0.x.  It should otherwise not be required.
+        this._contentDiv.style.cssText = "position:absolute;z-index:2;top:" 
                 + (this._contentInsets.top + this._titleBarHeight) + "px;bottom:" + this._contentInsets.bottom + "px;left:" 
-                + this._contentInsets.left + "px;right:" + this._contentInsets.right + "px;";
+                + this._contentInsets.left + "px;right:" + this._contentInsets.right + "px;"
+                + "overflow:"+ ((this.component.children.length == 0 || this.component.children[0].pane) ? "hidden;" : "auto;");
         Echo.Sync.Color.render(this.component.render("background", Echo.WindowPane.DEFAULT_BACKGROUND),
                 this._contentDiv, "backgroundColor");
         Echo.Sync.Color.render(this.component.render("foreground", Echo.WindowPane.DEFAULT_FOREGROUND),
