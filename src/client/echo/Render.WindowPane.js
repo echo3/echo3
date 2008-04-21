@@ -546,7 +546,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         if (hasControlIcons) {
             this._controlDiv = document.createElement("div");
             this._controlDiv.style.cssText = "position:absolute;top:0;right:0;";
-            Echo.Sync.Insets.render(this.component.render("closeIconInsets", 
+            Echo.Sync.Insets.render(this.component.render("controlsInsets",  
                     Echo.WindowPane.DEFAULT_CONTROLS_INSETS), this._controlDiv, "padding");
             this._titleBarDiv.appendChild(this._controlDiv);
 

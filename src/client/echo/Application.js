@@ -2960,7 +2960,10 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * @sp {#FillImageBorder} border the border frame containing thw WindowPane
  * @sp {Boolean} closable flag indicating whether the window is closable
  * @sp {#ImageReference} closeIcon the close button icon
+ * @sp {#Insets} controlsInsets the inset margin around the controls area
  * @sp {#Insets} closeIconInsets the inset margin around the close button icon
+ * @sp {#Insets} maximizeIconInsets the inset margin around the maximize button icon
+ * @sp {#Insets} minimizeIconInsets the inset margin around the minimize button icon
  * @sp {#Extent} height the outside height of the window, including its border
  * @sp {#ImageReference} icon the icon to display adjacent the window title
  * @sp {#Insets} iconInsets the inset margin around the icon
