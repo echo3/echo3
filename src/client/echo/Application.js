@@ -321,7 +321,6 @@ Echo.Application = Core.extend({
             var modalContextRoot = this.getModalContextRoot();
             if (!modalContextRoot.isAncestorOf(newValue)) {
                 // Reject request to focus component outside of modal context.
-                Core.Debug.consoleWrite("not in modal:" + newValue);
                 return;
             }
         }
