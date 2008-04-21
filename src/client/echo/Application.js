@@ -682,7 +682,7 @@ Echo.Component = Core.extend({
         }
 
         if (this._listenerList && this._listenerList.hasListeners("children")) {
-            this._listenerList.fireEvent({type: "children", source: this, add: componennt, index: index});
+            this._listenerList.fireEvent({type: "children", source: this, add: component, index: index});
         }
     },
     
@@ -1100,7 +1100,7 @@ Echo.Component = Core.extend({
         }
 
         if (this._listenerList && this._listenerList.hasListeners("children")) {
-            this._listenerList.fireEvent({type: "children", source: this, remove: componennt, index: index});
+            this._listenerList.fireEvent({type: "children", source: this, remove: component, index: index});
         }
     },
     
@@ -1715,7 +1715,7 @@ Echo.Update.ComponentUpdate = Core.extend({
      * This method is invoked when a component is removed that is an ancestor
      * of a component that has an update in the update manager.
      * 
-     * @param {Echo.Update.CompoenntUpdate} update the update from which to pull 
+     * @param {Echo.Update.CompoentUpdate} update the update from which to pull 
      *        removed components/descendants
      */
     _appendRemovedDescendants: function(update) {
@@ -1953,7 +1953,7 @@ Echo.Update.ComponentUpdate = Core.extend({
     
     /**
      * Records the removal of a descendant of the parent component.
-     * All children of a removed compoennt are recorded as removed
+     * All children of a removed compoent are recorded as removed
      * descendants when the child is removed.
      * This method will recursively invoke itself on children of
      * the specified descendant.
