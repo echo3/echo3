@@ -762,7 +762,7 @@ Core.Web.Event = {
     /**
      * Unregister all event handlers from a specific element.
      * Use of this operation is recommended when disposing of components, it is
-     * more efficient than removing listenerse individually and guarantees proper clean-up.
+     * more efficient than removing listeners individually and guarantees proper clean-up.
      * 
      * @param {Element} element the element
      */
