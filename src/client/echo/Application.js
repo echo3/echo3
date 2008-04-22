@@ -962,9 +962,8 @@ Echo.Component = Core.extend({
         }
     
         if (!application) { // unregistering
-            
+            // Recursively unregister children.
             if (this.children != null) {
-                // Recursively unregister children.
                 for (var i = 0; i < this.children.length; ++i) {
                      this.children[i].register(false); // Recursively unregister children.
                 }
@@ -972,11 +971,16 @@ Echo.Component = Core.extend({
             
             // Notify application.
             this.application._unregisterComponent(this);
-            
+
             // Change application focus in the event the focused component is being removed.
             // Note that this is performed after deregistration to ensure any removed modal context is cleared.
             if (this.application._focusedComponent == this) {
                 this.application.setFocusedComponent(this.parent);
+            }
+
+            // Notify dispose listeners.
+            if (this._listenerList != null && this._listenerList.hasListeners("dispose")) {
+                this._listenerList.fireEvent({ type: "dispose", source: this });
             }
         }
     
@@ -984,7 +988,7 @@ Echo.Component = Core.extend({
         this.application = application;
     
         if (application) { // registering
-            
+            // Assign render id if required.
             if (this.renderId == null) {
                 this.renderId = "cl_" + ++Echo.Component._nextRenderId;
             }
@@ -992,8 +996,13 @@ Echo.Component = Core.extend({
             // Notify application.
             this.application._registerComponent(this);
             
+            // Notify init listeners.
+            if (this._listenerList != null && this._listenerList.hasListeners("init")) {
+                this._listenerList.fireEvent({ type: "init", source: this });
+            }
+
+            // Recursively register children.
             if (this.children != null) {
-                // Recursively register children.
                 for (var i = 0; i < this.children.length; ++i) {
                      this.children[i].register(application); // Recursively unregister children.
                 }
