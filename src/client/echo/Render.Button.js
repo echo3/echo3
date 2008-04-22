@@ -175,7 +175,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client.verifyInput(this.component) || Core.Web.dragInProgress) {
             return;
         }
-        this.component.application.addFocusListener(this._processRolloverExitRef);
+        this.component.application.addListener("focus", this._processRolloverExitRef);
         this._setRolloverState(true);
     },
     
@@ -184,7 +184,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             return;
         }
         if (this._processRolloverExitRef) {
-            this.component.application.removeFocusListener(this._processRolloverExitRef);
+            this.component.application.removeListener("focus", this._processRolloverExitRef);
         }
         this._setRolloverState(false);
     },
@@ -268,7 +268,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     
     renderDispose: function(update) {
         if (this._processRolloverExitRef) {
-            this.client.application.removeFocusListener(this._processRolloverExitRef);
+            this.client.application.removeListener("focus", this._processRolloverExitRef);
         }
         Core.Web.Event.removeAll(this._div);
         this._iconImg = null;

@@ -178,14 +178,14 @@ Echo.Client = Core.extend({
             Core.Arrays.remove(Echo.Client._activeClients, this);
             Core.Web.Event.remove(this.domainElement, 
                     Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._keyPressListener, false);
-            this.application.removeFocusListener(this._applicationFocusListener);
+            this.application.removeListener("focus", this._applicationFocusListener);
         }
         
         this.application = application;
         this.domainElement = domainElement;
     
         if (this.application) {
-            this.application.addFocusListener(this._applicationFocusListener);
+            this.application.addListener("focus", this._applicationFocusListener);
             Core.Web.Event.add(this.domainElement, 
                     Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._keyPressListener, false);
             Echo.Client._activeClients.push(this);

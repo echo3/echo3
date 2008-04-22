@@ -107,22 +107,14 @@ Echo.Application = Core.extend({
     },
 
     /**
-     * Adds a ComponentUpdateListener.
+     * Adds an arbitrary event listener.
      * 
-     * @param {Function} l the listener to add
+     * @param {String} eventType the event type name
+     * @param {Function} eventTarget the method to invoke when the event occurs 
+     *        (the event will be passed as the single argument)
      */
-    addComponentUpdateListener: function(l) {
-        this._listenerList.addListener("componentUpdate", l);
-    },
-    
-    /**
-     * Adds a FocusListener.  Focus listeners will be invoked when the focused
-     * component in the application changes.
-     * 
-     * @param {Function} l the listener to add
-     */
-    addFocusListener: function(l) {
-        this._listenerList.addListener("focus", l);
+    addListener: function(eventType, eventTarget) {
+        this._listenerList.addListener(eventType, eventTarget);
     },
     
     /**
@@ -156,6 +148,19 @@ Echo.Application = Core.extend({
         }
         
         return null;
+    },
+
+    /**
+     * Provides notification of an arbitrary event.
+     * Listeners will be notified based on the event's type property.
+     * 
+     * @param event the event to fire
+     */
+    fireEvent: function(event) {
+        if (this._listenerList == null) {
+            return;
+        }
+        this._listenerList.fireEvent(event);
     },
 
     /**
@@ -252,6 +257,7 @@ Echo.Application = Core.extend({
     
     /**
      * Notifies the application of an update to a component.
+     * Fires a <code>componentUpdate</code> event.
      * 
      * @param {Echo.Component} parent the parent component
      * @param {String} propertyName the updated property
@@ -287,26 +293,19 @@ Echo.Application = Core.extend({
     },
     
     /**
-     * Removes a ComponentUpdateListener.
+     * Removes an arbitrary event listener.
      * 
-     * @param {Function} l the listener to remove
+     * @param {String} eventType the event type name
+     * @param {Function} eventTarget the method to invoke when the event occurs 
+     *        (the event will be passed as the single argument)
      */
-    removeComponentUpdateListener: function(l) {
-        this._listenerList.removeListener("componentUpdate", l);
+    removeListener: function(eventType, eventTarget) {
+        this._listenerList.removeListener(eventType, eventTarget);
     },
-    
+
     /**
-     * Removes a FocusListener.  Focus listeners will be invoked when the focused
-     * component in the application changes.
-     * 
-     * @param {Function} l the listener to remove
-     */
-    removeFocusListener: function(l) {
-        this._listenerList.removeListener("focus", l);
-    },
-    
-    /**
-     * Sets the focused component
+     * Sets the focused component.
+     * A "focus" event is fired to application listeners to inform them of the change.
      * 
      * @param {Echo.Component} newValue the new focused component
      */

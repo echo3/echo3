@@ -288,7 +288,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         
         // Register an update listener to receive notification of user actions such that they
         // may be remarked in the outgoing ClientMessage.
-        application.addComponentUpdateListener(this._processClientUpdateRef);
+        application.addListener("componentUpdate", this._processClientUpdateRef);
         
         // Perform general purpose client configuration.
         this.configure(application, domainElement);
@@ -351,7 +351,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         this.removeInputRestriction(this._inputRestrictionId);
         
         // Register component update listener 
-        this.application.addComponentUpdateListener(this._processClientUpdateRef);
+        this.application.addListener("componentUpdate", this._processClientUpdateRef);
         Echo.Render.processUpdates(this);
         
         this._executeCommands();
@@ -402,7 +402,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         
         // Remove component update listener from application.  This listener is listening
         // for user input.  
-        this.application.removeComponentUpdateListener(this._processClientUpdateRef);
+        this.application.removeListener("componentUpdate", this._processClientUpdateRef);
         
         // Create new ServerMessage object with response document.
         var serverMessage = new Echo.RemoteClient.ServerMessage(this, responseDocument);
@@ -416,7 +416,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     },
     
     /**
-     * Removes a listener for an arbitrary event type to a component.
+     * Removes a listener for an arbitrary event type from a component.
      * 
      * @param {Echo.Component} component the component from which the listener should be removed
      * @param {String} eventType the type of event
