@@ -49,7 +49,11 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         Echo.Sync.Insets.render(this.component.render("insets"), this._input, "padding");
         var width = this.component.render("width");
         if (width) {
-            this._input.style.width = width.toString();
+            if (width == "100%") {
+                this._input.style.width = "95%";
+            } else {
+                this._input.style.width = width.toString();
+            }
         }
         var height = this.component.render("height");
         if (height) {
@@ -66,6 +70,17 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.Event.add(this._input, "blur", Core.method(this, this._processBlur), false);
         Core.Web.Event.add(this._input, "keypress", Core.method(this, this._processKeyPress), false);
         Core.Web.Event.add(this._input, "keyup", Core.method(this, this._processKeyUp), false);
+    },
+    
+    renderDisplay: function() {
+        var width = this.component.render("width");
+        if (width == "100%") {
+            var border = this.component.render("border");
+            var borderSize = Echo.Sync.Border.getPixelSize(this.component.render("border", "2px solid #000000"), "left")
+                    + Echo.Sync.Border.getPixelSize(this.component.render("border", "2px solid #000000"), "right");
+            var overlapPercent = Math.ceil(100 * borderSize / this._input.parentNode.offsetWidth);
+            this._input.style.width = (100 - overlapPercent) + "%";
+        }
     },
     
     renderDispose: function(update) {
