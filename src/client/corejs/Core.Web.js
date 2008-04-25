@@ -1448,6 +1448,7 @@ Core.Web.Scheduler = {
         var timeInterval = runnable.timeInterval ? runnable.timeInterval : 0;
         runnable._enabled = true;
         runnable._nextExecution = currentTime + timeInterval;
+        Core.Arrays.remove(Core.Web.Scheduler._runnables, runnable);
         Core.Web.Scheduler._runnables.push(runnable);
         Core.Web.Scheduler._start(runnable._nextExecution);
     },
@@ -1511,7 +1512,7 @@ Core.Web.Scheduler = {
         Core.Web.Scheduler._runnables = newRunnables;
         
         if (nextInterval < Number.MAX_VALUE) {
-            this._nextExecution = currentTime + nextInterval;
+            Core.Web.Scheduler._nextExecution = currentTime + nextInterval;
             Core.Web.Scheduler._threadHandle = window.setTimeout(Core.Web.Scheduler._execute, nextInterval);
         } else {
             Core.Web.Scheduler._threadHandle = null;
@@ -1540,7 +1541,7 @@ Core.Web.Scheduler = {
      */
     run: function(f, timeInterval, repeat) {
         var runnable = new Core.Web.Scheduler.MethodRunnable(f, timeInterval, repeat);
-        this.add(runnable);
+        Core.Web.Scheduler.add(runnable);
         return runnable;
     },
     
@@ -1552,14 +1553,14 @@ Core.Web.Scheduler = {
     _start: function(nextExecution) {
         var currentTime = new Date().getTime();
         if (Core.Web.Scheduler._threadHandle == null) {
-            this._nextExecution = nextExecution;
+            Core.Web.Scheduler._nextExecution = nextExecution;
             Core.Web.Scheduler._threadHandle = window.setTimeout(Core.Web.Scheduler._execute, nextExecution - currentTime);
-        } else if (this._nextExecution > nextExecution) {
+        } else if (nextExecution < Core.Web.Scheduler._nextExecution) { 
             // Cancel current timeout, start new timeout.
             window.clearTimeout(Core.Web.Scheduler._threadHandle);
-            this._nextExecution = nextExecution;
+            Core.Web.Scheduler._nextExecution = nextExecution;
             Core.Web.Scheduler._threadHandle = window.setTimeout(Core.Web.Scheduler._execute, nextExecution - currentTime);
-        }
+        }          
     },
     
     /**
