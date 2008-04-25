@@ -26,6 +26,7 @@ Echo.FreeClient = Core.extend(Echo.Client, {
         Echo.Client.call(this);
         this._processUpdateRef = Core.method(this, this._processUpdate);;
         this.configure(application, domainElement);
+        this._processUpdate();
     },
     
     /**
@@ -49,9 +50,7 @@ Echo.FreeClient = Core.extend(Echo.Client, {
      * This method must be invoked when the client will no longer be used, in order to clean up resources.
      */
     dispose: function() {
-        Core.Web.Scheduler.remove(this._autoUpdate);
         this.application.updateManager.removeUpdateListener(this._processUpdateRef);
-        this._autoUpdate = null;
         Echo.Render.renderComponentDispose(null, this.application.rootComponent);
         Echo.Client.prototype.dispose.call(this);
     },
@@ -73,9 +72,7 @@ Echo.FreeClient = Core.extend(Echo.Client, {
      */
     init: function() {
         Core.Web.init();
-        this._autoUpdate = new Echo.FreeClient.AutoUpdate(this);
         this.application.updateManager.addUpdateListener(this._processUpdateRef);
-        Core.Web.Scheduler.add(this._autoUpdate);
     },
     
     //FIXME This method is asynchronous, first autoupdate might want to wait on it being completed.
@@ -108,7 +105,10 @@ Echo.FreeClient = Core.extend(Echo.Client, {
     },
 
     _processUpdate: function(e) {
-        //FIXME implement or remove
+        if (!this._autoUpdate) {
+            this._autoUpdate = new Echo.FreeClient.AutoUpdate(this);
+            Core.Web.Scheduler.add(this._autoUpdate);
+        }
     }
 });
 
@@ -117,9 +117,9 @@ Echo.FreeClient = Core.extend(Echo.Client, {
  */
 Echo.FreeClient.AutoUpdate = Core.extend(Core.Web.Scheduler.Runnable, {
 
-    timeInterval: 10,
+    timeInterval: 0,
     
-    repeat: true,
+    repeat: false,
     
     _client: null,
 
@@ -137,5 +137,6 @@ Echo.FreeClient.AutoUpdate = Core.extend(Core.Web.Scheduler.Runnable, {
      */
     run: function() {
         Echo.Render.processUpdates(this._client);
+        this._client._autoUpdate = null;
     }
 });
