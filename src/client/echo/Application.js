@@ -170,7 +170,7 @@ Echo.Application = Core.extend({
      *        previous component
      */
     focusNext: function(reverse) {
-        focusedComponent = this.focusManager.find(null, reverse);
+        var focusedComponent = this.focusManager.find(null, reverse);
         if (focusedComponent != null) {
             this.setFocusedComponent(focusedComponent);
         }
@@ -1547,7 +1547,7 @@ Echo.StyleSheet = Core.extend({
         }
         
         // Retrieve style for specific componentType.
-        style = typeToStyleMap[componentType];
+        var style = typeToStyleMap[componentType];
         if (style == null) {
             var testType = componentType;
             while (style == null) {

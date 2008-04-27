@@ -495,7 +495,7 @@ Echo.Serial.FillImage = {
         if (client.decompressUrl) {
             url = client.decompressUrl(url);
         }
-        repeat = fiElement.getAttribute("r");
+        var repeat = fiElement.getAttribute("r");
         var x = fiElement.getAttribute("x");
         var y = fiElement.getAttribute("y");
         

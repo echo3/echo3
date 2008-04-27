@@ -874,7 +874,7 @@ Core.ResourceBundle = Core.extend({
         }
 
         // Copy any missing items found in parent language bundle (if it exists) into new bundle.
-        parentLanguageCode = Core.ResourceBundle.getParentLanguageCode(languageCode);
+        var parentLanguageCode = Core.ResourceBundle.getParentLanguageCode(languageCode);
         if (parentLanguageCode) {
             var sourceBundle = this._sourceBundles[parentLanguageCode];
             if (sourceBundle) {
@@ -906,7 +906,7 @@ Core.ResourceBundle = Core.extend({
     },
     
     toString: function() {
-        out = "ResourceBundle: ";
+        var out = "ResourceBundle: ";
         for (var x in this._sourceBundles) {
             out += " " + x;
         }

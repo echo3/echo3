@@ -746,7 +746,7 @@ Echo.Sync.TriCellTable = Core.extend({
             tableElement.style.borderCollapse = "collapse";
             tableElement.style.padding = "0";
             
-            tbodyElement = document.createElement("tbody");
+            var tbodyElement = document.createElement("tbody");
             tableElement.appendChild(tbodyElement);
             
             return tableElement;
