@@ -1444,11 +1444,8 @@ Core.Web.Scheduler = {
      * @param {Core.Web.Scheduler.Runnable} runnable the runnable to enqueue
      */
     add: function(runnable) {
-        var currentTime = new Date().getTime();
-        var timeInterval = runnable.timeInterval ? runnable.timeInterval : 0;
-        runnable._enabled = true;
-        runnable._nextExecution = currentTime + timeInterval;
         Core.Arrays.remove(Core.Web.Scheduler._runnables, runnable);
+        runnable._nextExecution = new Date().getTime() + (runnable.timeInterval ? runnable.timeInterval : 0);
         Core.Web.Scheduler._runnables.push(runnable);
         Core.Web.Scheduler._start(runnable._nextExecution);
     },
@@ -1464,7 +1461,7 @@ Core.Web.Scheduler = {
         // Execute pending runnables.
         for (var i = 0; i < Core.Web.Scheduler._runnables.length; ++i) {
             var runnable = Core.Web.Scheduler._runnables[i];
-            if (runnable._nextExecution && runnable._nextExecution <= currentTime) {
+            if (runnable && runnable._nextExecution && runnable._nextExecution <= currentTime) {
                 runnable._nextExecution = null;
                 try {
                     runnable.run();
@@ -1477,7 +1474,7 @@ Core.Web.Scheduler = {
         var newRunnables = [];
         for (var i = 0; i < Core.Web.Scheduler._runnables.length; ++i) {
             var runnable = Core.Web.Scheduler._runnables[i];
-            if (!runnable._enabled) {
+            if (runnable == null) {
                 continue;
             }
 
@@ -1525,8 +1522,8 @@ Core.Web.Scheduler = {
      * @param {Core.Web.Scheduler.Runnable} runnable the runnable to dequeue
      */
     remove: function(runnable) {
-        runnable._enabled = false;
-        runnable._nextExecution = null;
+        var index = Core.Arrays.indexOf(Core.Web.Scheduler._runnables, runnable);
+        Core.Web.Scheduler._runnables[index] = null;
     },
     
     /**
@@ -1575,6 +1572,16 @@ Core.Web.Scheduler = {
         window.clearTimeout(Core.Web.Scheduler._threadHandle);
         Core.Web.Scheduler._threadHandle = null;
         Core.Web.Scheduler._nextExecution = null;
+    },
+    
+    update: function(runnable) {
+        if (Core.Arrays.indexOf(Core.Web.Scheduler._runnables, runnable) == -1) {
+            return;
+        }
+        var currentTime = new Date().getTime();
+        var timeInterval = runnable.timeInterval ? runnable.timeInterval : 0;
+        runnable._nextExecution = currentTime + timeInterval;
+        Core.Web.Scheduler._start(runnable._nextExecution);
     }
 };
 
@@ -1582,8 +1589,6 @@ Core.Web.Scheduler = {
  * A runnable task that may be scheduled with the Scheduler.
  */
 Core.Web.Scheduler.Runnable = Core.extend({
-    
-    _enabled: null,
     
     _nextExecution: null,
     
