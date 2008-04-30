@@ -12,7 +12,6 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             div.tabIndex = "0";
             div.style.outlineStyle = "none";
             div.style.cursor = "pointer";
-            div.style.overflow = "hidden";
             return div;
         },
 
