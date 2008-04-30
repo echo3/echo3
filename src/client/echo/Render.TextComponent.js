@@ -77,7 +77,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         if (width == "100%" && this._input.parentNode.offsetWidth) {
             var border = this.component.render("border");
             var borderSize = Echo.Sync.Border.getPixelSize(this.component.render("border", "2px solid #000000"), "left")
-                    + Echo.Sync.Border.getPixelSize(this.component.render("border", "2px solid #000000"), "right");
+                    + Echo.Sync.Border.getPixelSize(this.component.render("border", "2px solid #000000"), "right") + 1;
             var adjustedPercent = 100 - Math.ceil(100 * borderSize / this._input.parentNode.offsetWidth);
             this._input.style.width = (adjustedPercent > 75 ? adjustedPercent : 75) + "%";
         }
