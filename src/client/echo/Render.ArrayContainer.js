@@ -104,6 +104,9 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
 
     renderRemoveChild: function(update, child) {
         var childElement = this._childIdToElementMap[child.renderId];
+        if (!childElement) {
+            return;
+        }
         
         if (this.cellSpacing) {
             // If cell spacing is enabled, remove a spacing element, either before or after the removed child.
@@ -114,8 +117,9 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
                 this.containerElement.removeChild(childElement.nextSibling);
             }
         }
+        
         this.containerElement.removeChild(childElement);
-    
+        
         delete this._childIdToElementMap[child.renderId];
     },
 
