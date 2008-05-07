@@ -456,7 +456,8 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         } else if (this._childPanes[1] && this._childPanes[1].component == child) {
             index = 1;
         } else {
-            throw new Error("Specified component is not a child of the SplitPane.");
+            // Do nothing (component was never rendered within the SplitPane).
+            return;
         }
 
         this._childPanes[index] = null;
