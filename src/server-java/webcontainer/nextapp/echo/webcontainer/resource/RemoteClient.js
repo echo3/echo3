@@ -17,7 +17,7 @@
  * be necessary for serializing certain information such as the state of a model.
  */
 Echo.RemoteClient = Core.extend(Echo.Client, {
-    
+
     $static: {
         
         /**
@@ -27,7 +27,22 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
          * 
          * @type String
          */
-        libraryServerUrl: null
+        libraryServerUrl: null,
+        
+        initialized: false,
+        
+        init: function() {
+            if (Echo.RemoteClient.initialized) {
+                return;
+            }
+            Echo.RemoteClient.initialized = true;
+            Core.Web.init();
+            if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
+                // Set documentElement.style.overflow to hidden in order to hide root scrollbar in IE.
+                // This is a non-standard CSS property.
+                document.documentElement.style.overflow = "hidden";
+            }
+        }
     },
     
     /**
@@ -124,7 +139,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @param serverUrl the URL of the server
      */
     $construct: function(serverUrl) {
-        Core.Web.init();
+        Echo.RemoteClient.init();
     
         Echo.Client.call(this);
         

@@ -21,7 +21,7 @@
  * Namespace for Web Core.
  * @namespace
  */
-Core.Web = { 
+Core.Web = {
 
     /**
      * Flag indicating that a drag-and-drop operation is in process.
@@ -50,9 +50,6 @@ Core.Web = {
     
         if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
             Core.Web.DOM.addEventListener(document, "selectstart", Core.Web._selectStartListener, false);
-            // Set documentElement.style.overflow to hidden in order to hide root scrollbar in IE.
-            // This is a non-standard CSS property.
-            document.documentElement.style.overflow = "hidden";
         }
         
         Core.Web.initialized = true;
