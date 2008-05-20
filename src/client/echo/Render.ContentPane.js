@@ -173,8 +173,15 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
             if (addedChildren) {
                 // Add children.
                 for (var i = 0; i < addedChildren.length; ++i) {
+                    if (!addedChildren[i].floatingPane) {
+                        // Content updated: renderDisplay() invocation required on ContentPane itself.
+                        update.renderContext.displayRequired = null;
+                    }
                     this._renderAddChild(update, addedChildren[i], this.component.indexOf(addedChildren[i]));
-                    update.renderContext.displayRequired.push(addedChildren[i]); 
+                    if (update.renderContext.displayRequired) {
+                        // If only floating panes are being updated, invoke renderDisplay() only on children.
+                        update.renderContext.displayRequired.push(addedChildren[i]); 
+                    }
                 }
             }
         }

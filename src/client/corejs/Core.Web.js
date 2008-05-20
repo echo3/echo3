@@ -1554,7 +1554,7 @@ Core.Web.Scheduler = {
             window.clearTimeout(Core.Web.Scheduler._threadHandle);
             Core.Web.Scheduler._nextExecution = nextExecution;
             Core.Web.Scheduler._threadHandle = window.setTimeout(Core.Web.Scheduler._execute, nextExecution - currentTime);
-        }          
+        }
     },
     
     /**
