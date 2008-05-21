@@ -822,8 +822,11 @@ Echo.Sync.TriCellTable = Core.extend({
     
     addSpacer: function(parentElement, size, vertical) {
         var divElement = document.createElement("div");
-        divElement.style.width = vertical ? "1px" : size + "px";
-        divElement.style.height = vertical ? size + "px" : "1px";
+        if (vertical) {
+            divElement.style.cssText = "width:1px;height:" + size + "px;font-size:1px;line-height:0;";
+        } else {
+            divElement.style.cssText = "width:" + size + "px;height:1px;font-size:1px;line-height:0;";
+        }
         parentElement.appendChild(divElement);
     },
     
