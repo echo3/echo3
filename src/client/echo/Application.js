@@ -422,7 +422,7 @@ Echo.ComponentFactory = {
     newInstance: function(typeName, renderId) {
         var typeConstructor = this._typeToConstructorMap[typeName];
         if (!typeConstructor) {
-            throw new Error("Type not registered: " + typeName);
+            throw new Error("Type not registered with ComponentFactory: " + typeName);
         }
         var component = new typeConstructor();
         component.renderId = renderId;
@@ -450,7 +450,7 @@ Echo.ComponentFactory = {
     getSuperType: function(typeName) {
         var typeConstructor = this._typeToConstructorMap[typeName];
         if (!typeConstructor) {
-            throw new Error("Type not found: " + typeName + ".");
+            throw new Error("Type not registered with ComponentFactory: " + typeName);
         }
         if (typeConstructor.$super) {
             return typeConstructor.$super.prototype.componentType;
