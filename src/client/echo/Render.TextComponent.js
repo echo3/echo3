@@ -147,7 +147,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             if (update.hasUpdatedProperties()) {
                 var textUpdate = update.getUpdatedProperty("text");
                 if (textUpdate && textUpdate.newValue != this._text) {
-                    this._input.value = textUpdate.newValue;
+                    this._input.value = textUpdate.newValue == null ? "" : textUpdate.newValue;
                 }
             }
         }
