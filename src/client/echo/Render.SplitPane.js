@@ -352,15 +352,18 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             Echo.Sync.FillImage.render(layoutData.backgroundImage, paneDiv);
             if (!child.pane) {
                 Echo.Sync.Insets.render(layoutData.insets, paneDiv, "padding");
+                switch (layoutData.overflow) {
+                case Echo.SplitPane.OVERFLOW_HIDDEN:
+                    paneDiv.style.overflow = "hidden";
+                    break;
+                case Echo.SplitPane.OVERFLOW_SCROLL:
+                    paneDiv.style.overflow = "scroll";
+                    break;
+                }
             }
-            switch (layoutData.overflow) {
-            case Echo.SplitPane.OVERFLOW_HIDDEN:
-                paneDiv.style.overflow = "hidden";
-                break;
-            case Echo.SplitPane.OVERFLOW_SCROLL:
-                paneDiv.style.overflow = "scroll";
-                break;
-            }
+        }
+        if (child.pane) {
+            paneDiv.style.overflow = "hidden";
         }
         
         var insetsAdjustment = this._getInsetsSizeAdjustment(layoutData);

@@ -86,7 +86,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
             childDiv.style.bottom = pixelInsets.bottom + "px";
             childDiv.style.right = pixelInsets.right + "px";
             if (child.pane) {
-                childDiv.style.overflow = "auto";
+                childDiv.style.overflow = "hidden";
             } else {
                 switch (this.component.render("overflow")) {
                 case Echo.ContentPane.OVERFLOW_HIDDEN:
@@ -138,12 +138,38 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
                 var child = this.component.getComponent(i);
                 if (!child.floatingPane) {
                     var contentElement = this._childIdToElementMap[child.renderId];
+
+                    // Adjust horizontal scroll position, if required.
                     if (this._pendingScrollX) {
-                        contentElement.scrollLeft = parseInt(this._pendingScrollX < 0) ? 1000000 : this._pendingScrollX;
+                        if (parseInt(this._pendingScrollX) < 0) {
+                            var position = contentElement.scrollWidth - contentElement.offsetWidth;
+                            if (position > 0) {
+                                contentElement.scrollLeft = position;
+                                if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
+                                    position = contentElement.scrollWidth - contentElement.offsetWidth;
+                                    contentElement.scrollLeft = position;
+                                }
+                            }
+                        } else {
+                            contentElement.scrollLeft = this._pendingScrollX;
+                        }
                         this._pendingScrollX = null;
                     }
+
+                    // Adjust vertical scroll position, if required.
                     if (this._pendingScrollY) {
-                        contentElement.scrollTop = parseInt(this._pendingScrollY) < 0 ? 1000000 : this._pendingScrollY;
+                        if (parseInt(this._pendingScrollY) < 0) {
+                            var position = contentElement.scrollHeight - contentElement.offsetHeight;
+                            if (position > 0) {
+                                contentElement.scrollTop = position;
+                                if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
+                                    position = contentElement.scrollHeight - contentElement.offsetHeight;
+                                    contentElement.scrollTop = position;
+                                }
+                            }
+                        } else {
+                            contentElement.scrollTop = this._pendingScrollY;
+                        }
                         this._pendingScrollY = null;
                     }
                     break;
