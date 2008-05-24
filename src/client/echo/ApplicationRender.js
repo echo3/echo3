@@ -177,30 +177,17 @@ Echo.Sync.Border = {
                 }
             }
         } else {
-            if (border.top) {
-                if (border.right) {
-                    // Top and right specified: render top and right directly.
-                    this.render(border.top, element, styleName + "Top");
-                    this.render(border.right, element, styleName + "Right");
-                    if (border.bottom) {
-                        // Bottom specified: render.
-                        this.render(border.bottom, element, styleName + "Bottom");
-                    } else {
-                        // Bottom not specified: render top as bottom.
-                        this.render(border.top, element, styleName + "Bottom");
-                    }
-                    if (border.left) {
-                        // Left specified: render.
-                        this.render(border.left, element, styleName + "Left");
-                    } else {
-                        // Left not specified: render right as left.
-                        this.render(border.right, element, styleName + "Left");
-                    }
-                } else {
-                    // Right not specified: just render entire border using top.
-                    this.render(border.top, element, styleName);
-                }
+            this.render(border.top, element, styleName + "Top");
+            if (border.right !== null) {
+                this.render(border.right || border.top, element, styleName + "Right");
             }
+            if (border.bottom !== null) {
+                this.render(border.bottom || border.top, element, styleName + "Bottom");
+            }
+            if (border.left !== null) {
+                this.render(border.left || border.right || border.top, element, styleName + "Left");
+            }
+            
         }
     },
     
