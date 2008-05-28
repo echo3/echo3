@@ -46,6 +46,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             Echo.Sync.FillImage.render(Echo.Sync.getEffectProperty(this.component, 
                     "backgroundImage", "disabledBackgroundImage", true), this._input);
         }
+        Echo.Sync.Alignment.render(this.component.render("alignment"), this._input, false, null);
         Echo.Sync.Insets.render(this.component.render("insets"), this._input, "padding");
         var width = this.component.render("width");
         if (width) {
