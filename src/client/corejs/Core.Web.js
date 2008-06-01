@@ -1178,7 +1178,38 @@ Core.Web.Library = {
             conn.addResponseListener(Core.method(this, this._retrieveListener));
             conn.connect();
         }
-    })
+    }),
+    
+    /**
+     * Loads required libraries and then executes a function.
+     * This is a convenience method for use by applications that
+     * automatically creates a Group and invokes the specified function
+     * once the libraries have loaded.
+     * This operation is asynchronous, this method will return before the specified function has been invoked.
+     * Any libraries which have already been loaded will NOT be re-loaded.
+     *
+     * @param {Array} requiredLibraries the URLs of the libraries which must be loaded before the function can execute
+     * @param {Function} f the function to execute
+     */
+    exec: function(requiredLibraries, f) {
+        var group = null;
+        for (var i = 0; i < requiredLibraries.length; ++i) {
+            if (!Core.Web.Library._loadedLibraries[requiredLibraries[i]]) {
+                if (group == null) {
+                    group = new Core.Web.Library.Group();
+                }
+                group.add(requiredLibraries[i]);
+            }
+        }
+        
+        if (group == null) {
+            Core.Web.Scheduler.run(f);
+            return;
+        }
+        
+        group.addLoadListener(f);
+        group.load();
+    }
 };
 
 /**
