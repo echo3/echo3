@@ -1155,6 +1155,10 @@ Core.Web.Library = {
          * @private
          */
         _install: function() {
+            if (Core.Web.Library._loadedLibraries[this._url]) {
+                // If library was already loaded by another invocation, do not load it again.
+                return;
+            }
             Core.Web.Library._loadedLibraries[this._url] = true;
             if (this._content == null) {
                 throw new Error("Attempt to install library when no content has been loaded.");
