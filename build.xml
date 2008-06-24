@@ -78,7 +78,7 @@
                 <file name="Arc.js"/>
             </filelist>
             <fileset dir="${dir.src.client.echo}">
-                <include name="**/Render.*.js"/>
+                <include name="**/Sync*.js"/>
             </fileset>
         </concat>
     </target>
