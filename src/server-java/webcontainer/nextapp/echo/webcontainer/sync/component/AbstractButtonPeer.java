@@ -44,7 +44,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class AbstractButtonPeer extends AbstractComponentSynchronizePeer {
     
     protected static final Service BUTTON_SERVICE = JavaScriptService.forResource("Echo.Button", 
-            "nextapp/echo/webcontainer/resource/Render.Button.js");
+            "nextapp/echo/webcontainer/resource/Sync.Button.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(BUTTON_SERVICE);

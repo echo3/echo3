@@ -1,8 +1,7 @@
 /**
  * @fileoverview
  * <ul> 
- *  <li>Provides core property renderers.</li>
- *  <li>Provides property rendering utilities.</li>
+ *  <li>Provides property rendering utilities for core properties.</li>
  *  <li>Provides TriCellTable rendering utility (used by buttons and labels).</li>
  *  <li>Provides a floating pane z-index management system.</li> 
  * </ul>

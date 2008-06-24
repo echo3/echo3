@@ -44,7 +44,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class GridPeer extends AbstractComponentSynchronizePeer {
 
     private static final Service GRID_SERVICE = JavaScriptService.forResource("Echo.Grid", 
-            "nextapp/echo/webcontainer/resource/Render.Grid.js");
+            "nextapp/echo/webcontainer/resource/Sync.Grid.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(GRID_SERVICE);

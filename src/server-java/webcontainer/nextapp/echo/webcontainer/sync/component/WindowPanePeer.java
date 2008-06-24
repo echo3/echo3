@@ -47,7 +47,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class WindowPanePeer extends AbstractComponentSynchronizePeer {
 
     private static final Service WINDOW_PANE_SERVICE = JavaScriptService.forResource("Echo.WindowPane", 
-            "nextapp/echo/webcontainer/resource/Render.WindowPane.js");
+            "nextapp/echo/webcontainer/resource/Sync.WindowPane.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(WINDOW_PANE_SERVICE);

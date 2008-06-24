@@ -42,7 +42,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class TextComponentPeer extends AbstractComponentSynchronizePeer {
 
     private static final Service TEXT_COMPONENT_SERVICE = JavaScriptService.forResource("Echo.TextComponent", 
-            "nextapp/echo/webcontainer/resource/Render.TextComponent.js");
+            "nextapp/echo/webcontainer/resource/Sync.TextComponent.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(TEXT_COMPONENT_SERVICE);

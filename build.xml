@@ -71,7 +71,7 @@
             <filelist dir="${dir.src.client.echo}">
                 <file name="Application.js"/>
                 <file name="Render.js"/>
-                <file name="ApplicationRender.js"/>
+                <file name="Sync.js"/>
                 <file name="Serial.js"/>
                 <file name="Client.js"/>
                 <file name="FreeClient.js"/>

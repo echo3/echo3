@@ -51,7 +51,7 @@ public class BootService {
         resourceList.add(JS_RESOURCE_PATH + "Core.Web.js");
         resourceList.add(JS_RESOURCE_PATH + "Application.js"); 
         resourceList.add(JS_RESOURCE_PATH + "Render.js");
-        resourceList.add(JS_RESOURCE_PATH + "ApplicationRender.js");
+        resourceList.add(JS_RESOURCE_PATH + "Sync.js");
         resourceList.add(JS_RESOURCE_PATH + "Serial.js");
         resourceList.add(JS_RESOURCE_PATH + "Client.js");
         resourceList.add(JS_RESOURCE_PATH + "RemoteClient.js");
