@@ -11,7 +11,7 @@ CustomWaitIndicator = Core.extend(Echo.RemoteClient.WaitIndicator, {
     },
     
     $load: function() {
-        EchoBoot.addInitMethod(this.boot);
+        Echo.Boot.addInitMethod(this.boot);
     },
 
     $construct: function() {

@@ -41,7 +41,7 @@ ArcTest.ComponentSync = { };
 /**
  * Component rendering peer: TestComponent
  */
-ArcTest.ComponentSync.TestComponent = Core.extend(EchoArc.ComponentSync, {
+ArcTest.ComponentSync.TestComponent = Core.extend(Echo.Arc.ComponentSync, {
 
     $load: function() {
         Echo.Render.registerPeer("ArcTestComponent", this);
@@ -59,7 +59,7 @@ ArcTest.ComponentSync.TestComponent = Core.extend(EchoArc.ComponentSync, {
 /**
  * Component rendering peer: TestContainer
  */
-ArcTest.ComponentSync.TestContainer = Core.extend(EchoArc.ComponentSync, {
+ArcTest.ComponentSync.TestContainer = Core.extend(Echo.Arc.ComponentSync, {
 
     $load: function() {
         Echo.Render.registerPeer("ArcTestContainer", this);
@@ -78,7 +78,7 @@ ArcTest.ComponentSync.TestContainer = Core.extend(EchoArc.ComponentSync, {
             });
             contentPane.add(windowPane);
             
-            var childContainer = new EchoArc.ChildContainer({
+            var childContainer = new Echo.Arc.ChildContainer({
                 component: this.component.children[i]
             });
             windowPane.add(childContainer);
@@ -91,7 +91,7 @@ ArcTest.ComponentSync.TestContainer = Core.extend(EchoArc.ComponentSync, {
     },
     
     renderAdd: function(update, parentElement) {
-        EchoArc.ComponentSync.prototype.renderAdd.call(this, update, parentElement);
+        Echo.Arc.ComponentSync.prototype.renderAdd.call(this, update, parentElement);
         this._divElement = document.createElement("div");
         this._divElement.style.cssText 
                 = "position:relative; width:100%; height:450px; background-color: #3f3f6f; border: 1px #3f3f6f outset";
@@ -99,7 +99,7 @@ ArcTest.ComponentSync.TestContainer = Core.extend(EchoArc.ComponentSync, {
     },
     
     renderDispose: function(update) {
-        EchoArc.ComponentSync.prototype.renderDispose.call(this, update);
+        Echo.Arc.ComponentSync.prototype.renderDispose.call(this, update);
         this._divElement = null;
     }
 });
@@ -107,7 +107,7 @@ ArcTest.ComponentSync.TestContainer = Core.extend(EchoArc.ComponentSync, {
 /**
  * Component rendering peer: TestPane
  */
-ArcTest.ComponentSync.TestPane = Core.extend(EchoArc.ComponentSync, {
+ArcTest.ComponentSync.TestPane = Core.extend(Echo.Arc.ComponentSync, {
 
     $load: function() {
         Echo.Render.registerPeer("ArcTestPane", this);
@@ -169,7 +169,7 @@ ArcTest.ComponentSync.TestPane = Core.extend(EchoArc.ComponentSync, {
     },
     
     renderAdd: function(update, parentElement) {
-        EchoArc.ComponentSync.prototype.renderAdd.call(this, update, parentElement);
+        Echo.Arc.ComponentSync.prototype.renderAdd.call(this, update, parentElement);
         this._divElement = document.createElement("div");
         this._divElement.style.cssText 
                 = "position:relative; width:100%; height:450px; background-color: #3f3f6f; border: 1px #3f3f6f outset";
@@ -177,7 +177,7 @@ ArcTest.ComponentSync.TestPane = Core.extend(EchoArc.ComponentSync, {
     },
     
     renderDispose: function(update) {
-        EchoArc.ComponentSync.prototype.renderDispose.call(this, update);
+        Echo.Arc.ComponentSync.prototype.renderDispose.call(this, update);
         this._testColumn = null;
         this._divElement = null;
     }

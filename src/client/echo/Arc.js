@@ -8,7 +8,7 @@
  * Namespace for application-rendered component support.
  * @namespace
  */
-EchoArc = function() { }
+Echo.Arc = function() { }
 
 /**
  * Client for application-rendered components.
@@ -16,13 +16,13 @@ EchoArc = function() { }
  * ArcClient component synchronization peer.
  * @class 
  */
-EchoArc.Client = Core.extend(Echo.FreeClient, {
+Echo.Arc.Client = Core.extend(Echo.FreeClient, {
     
     arcSync: null,
     
     verifyInput: function(component, flags) {
         if (!this.arcSync.client.verifyInput(this.arcSync.component, flags)) {
-            return false;
+            return false;0
         }
         return Echo.FreeClient.prototype.verifyInput.call(this, component, flags);
     }
@@ -35,7 +35,7 @@ EchoArc.Client = Core.extend(Echo.FreeClient, {
  * renderDisplay(), and renderUpdate() methods must be invoked.
  * @class 
  */
-EchoArc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
+Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
 
     $construct: function() { },
 
@@ -95,7 +95,7 @@ EchoArc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
                     throw new Error("Invalid base component: null");
                 }
                 this.arcApplication.rootComponent.add(this.baseComponent);
-                this.arcClient = new EchoArc.Client(this.arcApplication, this.getDomainElement());
+                this.arcClient = new Echo.Arc.Client(this.arcApplication, this.getDomainElement());
                 this.arcClient.arcSync = this;
                 this.arcClient.parent = this.client;
                 this.arcClient.init();
@@ -142,7 +142,7 @@ EchoArc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
  * A simple container in which to render children of an application rendered component.
  * This container will render as a simple DIV element.
  */
-EchoArc.ChildContainer = Core.extend(Echo.Component, {
+Echo.Arc.ChildContainer = Core.extend(Echo.Component, {
 
     $load: function() {
         Echo.ComponentFactory.registerType("ArcChildContainer", this);
@@ -154,7 +154,7 @@ EchoArc.ChildContainer = Core.extend(Echo.Component, {
 /**
  * Synchronization peer for ChildContainer.
  */
-EchoArc.ChildContainerPeer = Core.extend(Echo.Render.ComponentSync, {
+Echo.Arc.ChildContainerPeer = Core.extend(Echo.Render.ComponentSync, {
 
     $load: function() {
         Echo.Render.registerPeer("ArcChildContainer", this);

@@ -7,7 +7,7 @@
 /**
  * Boot namespace.  Do not instantiate.
  */
-EchoBoot = { 
+Echo.Boot = { 
 
     /**
      * Array of methods which should be invoked at boot.
@@ -18,7 +18,7 @@ EchoBoot = {
      * Adds a method to be invoked at boot.
      */
     addInitMethod: function(initMethod) {
-        EchoBoot._initMethods.push(initMethod);
+        Echo.Boot._initMethods.push(initMethod);
     },
     
     /**
@@ -34,8 +34,8 @@ EchoBoot = {
         }
     
         var client = new Echo.RemoteClient(serverBaseUrl);
-        for (var i = 0; i < EchoBoot._initMethods.length; ++i) {
-            EchoBoot._initMethods[i](client);
+        for (var i = 0; i < Echo.Boot._initMethods.length; ++i) {
+            Echo.Boot._initMethods[i](client);
         }
         client.sync();
     }
