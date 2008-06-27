@@ -959,8 +959,10 @@ Core.Web.HttpConnection = Core.extend({
                 responseEvent = {type: "response", source: this, valid: false, exception: ex};
             }
             
-            this._listenerList.fireEvent(responseEvent);
-            this.dispose();
+            Core.Web.Scheduler.run(Core.method(this, function() {
+                this._listenerList.fireEvent(responseEvent);
+                this.dispose();
+            }));
         }
     },
     
