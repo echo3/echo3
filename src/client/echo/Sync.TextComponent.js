@@ -1,5 +1,9 @@
 /**
  * Component rendering peer: TextComponent
+ * 
+ * Note that this component has workarounds for issues with percentage-width text fields/areas in various browsers.
+ * Percentage widths are reduced based on container size and border width to ensure overall width of component meets
+ * user-set percent width specification.  Workaround is also provided for Internet Explorer 6's growing textarea bug. 
  */
 Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     
@@ -26,9 +30,12 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      */
     _input: null,
     
+    _container: null,
+    
     _text: null,
     
     _renderStyle: function() {
+        var container = this._container ? this._container : this._input;
         if (this.component.isRenderEnabled()) {
             Echo.Sync.Border.render(this.component.render("border"), this._input);
             Echo.Sync.Color.renderFB(this.component, this._input);
@@ -49,16 +56,12 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         Echo.Sync.Alignment.render(this.component.render("alignment"), this._input, false, null);
         Echo.Sync.Insets.render(this.component.render("insets"), this._input, "padding");
         var width = this.component.render("width");
-        if (width) {
-            if (width == "100%") {
-                this._input.style.width = "95%";
-            } else {
-                this._input.style.width = width.toString();
-            }
+        if (width && !Echo.Sync.Extent.isPercent(width)) {
+            container.style.width = Echo.Sync.Extent.toCssValue(width, true);
         }
         var height = this.component.render("height");
         if (height) {
-            this._input.style.height = height.toString();
+            this._input.style.height = Echo.Sync.Extent.toCssValue(height, false);
         }
         var toolTipText = this.component.render("toolTipText");
         if (toolTipText) {
@@ -73,20 +76,36 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.Event.add(this._input, "keyup", Core.method(this, this._processKeyUp), false);
     },
     
+    _adjustPercentWidth: function(percentValue, reducePixels, containerPixels) {
+        var value = (100 - Math.ceil(100 * reducePixels / containerPixels)) * percentValue / 100;
+        return value > 0 ? value : 0;
+    },
+    
     renderDisplay: function() {
         var width = this.component.render("width");
-        if (width == "100%" && this._input.parentNode.offsetWidth) {
+        if (width && Echo.Sync.Extent.isPercent(width) && this._input.parentNode.offsetWidth) {
+            // If width is a percentage, reduce rendered percent width based on measured container size and border width,
+            // such that border pixels will not make the component wider than specified percentage.
             var border = this.component.render("border");
             var borderSize = Echo.Sync.Border.getPixelSize(this.component.render("border", "2px solid #000000"), "left")
                     + Echo.Sync.Border.getPixelSize(this.component.render("border", "2px solid #000000"), "right") + 1;
-            var adjustedPercent = 100 - Math.ceil(100 * borderSize / this._input.parentNode.offsetWidth);
-            this._input.style.width = (adjustedPercent > 75 ? adjustedPercent : 75) + "%";
+            if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
+                // Add default windows scroll bar width to border size for Internet Explorer browsers.
+                if (this._container) {
+                    this._container.style.width = this._adjustPercentWidth(100, 16, this._input.parentNode.offsetWidth) + "%";
+                } else {
+                    borderSize += 16;
+                }
+            }
+            this._input.style.width = this._adjustPercentWidth(parseInt(width), borderSize, this._input.parentNode.offsetWidth)
+                    + "%";
         }
     },
     
     renderDispose: function(update) {
         Core.Web.Event.removeAll(this._input);
         this._input = null;
+        this._container = null;
     },
     
     _processBlur: function(e) {
@@ -170,6 +189,9 @@ Echo.Sync.TextArea = Core.extend(Echo.Sync.TextComponent, {
     },
 
     renderAdd: function(update, parentElement) {
+        // Render text areas inside of a div to accomodate bugs with IE6 where text areas grow when
+        // text is entered if they are set to percent widths.
+        this._container = document.createElement("div");
         this._input = document.createElement("textarea");
         this._input.id = this.component.renderId;
         this._renderStyle(this._input);
@@ -178,7 +200,8 @@ Echo.Sync.TextArea = Core.extend(Echo.Sync.TextComponent, {
         if (this.component.get("text")) {
             this._text = this._input.value = this.component.get("text");
         }
-        parentElement.appendChild(this._input);
+        this._container.appendChild(this._input);
+        parentElement.appendChild(this._container);
     }
 });
 
@@ -196,8 +219,7 @@ Echo.Sync.TextField = Core.extend(Echo.Sync.TextComponent, {
     },
 
     getFocusFlags: function() {
-        return Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_UP | 
-                Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_DOWN;
+        return Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_UP | Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_DOWN;
     },
 
     renderAdd: function(update, parentElement) {
@@ -232,4 +254,3 @@ Echo.Sync.PasswordField = Core.extend(Echo.Sync.TextField, {
     
     _type: "password"
 });
-
