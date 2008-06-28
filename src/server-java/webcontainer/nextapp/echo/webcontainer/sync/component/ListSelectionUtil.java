@@ -80,14 +80,14 @@ class ListSelectionUtil {
     /**
      * Converts a selection String to an int[] array.
      * 
-     * @param selectionString the selection string, e.g., "1,2,3,4", "5", or ""
-     * @return the integer array
+     * @param selectionString the selection string, e.g., "1,2,3,4", "5", "" or <code>null</code>
+     * @return the integer array, never <code>null</code>
      */
     static int[] toIntArray(String selectionString) {
         int[] selection;
-        int selectionStringLength  = selectionString.length();
+        int selectionStringLength = selectionString == null ? 0 : selectionString.length();
         if (selectionStringLength == 0) {
-            selection = new int[0];
+            return new int[0];
         } else {
             int itemCount = 1;
             for (int i = 1; i < selectionStringLength - 1; ++i) {
