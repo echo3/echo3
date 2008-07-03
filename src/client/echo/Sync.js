@@ -381,6 +381,40 @@ Echo.Sync.FillImage = {
 
     FLAG_ENABLE_IE_PNG_ALPHA_FILTER: 0x1,
     
+    getPosition: function(fillImage) {
+        if (fillImage.x || fillImage.y) {
+            var x, y;
+            if (Echo.Sync.Extent.isPercent(fillImage.x)) {
+                x = fillImage.x;
+            } else {
+                x = Echo.Sync.Extent.toPixels(fillImage.x, true) + "px";
+            }
+            if (Echo.Sync.Extent.isPercent(fillImage.y)) {
+                y = fillImage.y;
+            } else {
+                y = Echo.Sync.Extent.toPixels(fillImage.y, false) + "px";
+            }
+            return x + " " + y;
+        } else {
+            return null;
+        }
+    },
+    
+    getRepeat: function(fillImage) {
+        if (this._REPEAT_VALUES[fillImage.repeat]) {
+            return this._REPEAT_VALUES[fillImage.repeat]; 
+        } else {
+            return null;
+        }
+    },
+    
+    getUrl: function(fillImage) {
+        if (fillImage == null) {
+            return null;
+        }
+        return typeof(fillImage) == "object" ? fillImage.url : fillImage;
+    },
+    
     render: function(fillImage, element, flags) {
         if (fillImage == null) {
             // No image specified, do nothing.
@@ -405,22 +439,11 @@ Echo.Sync.FillImage = {
                 element.style.backgroundRepeat = this._REPEAT_VALUES[fillImage.repeat]; 
             }
             
-            if (fillImage.x || fillImage.y) {
-                var x, y;
-                if (Echo.Sync.Extent.isPercent(fillImage.x)) {
-                    x = fillImage.x;
-                } else {
-                    x = Echo.Sync.Extent.toPixels(fillImage.x, true) + "px";
-                }
-                if (Echo.Sync.Extent.isPercent(fillImage.y)) {
-                    y = fillImage.y;
-                } else {
-                    y = Echo.Sync.Extent.toPixels(fillImage.y, false) + "px";
-                }
-                element.style.backgroundPosition = x + " " + y;
+            var position = Echo.Sync.FillImage.getPosition(fillImage);
+            if (position) {
+                element.style.backgroundPosition = position;
             }
         }
-        
     },
     
     renderClear: function(fillImage, element, flags) {

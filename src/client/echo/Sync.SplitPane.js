@@ -177,7 +177,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     
     _processSeparatorMouseDown: function(e) {
         if (!this.client.verifyInput(this.component)) {
-            return;
+            return true;
         }
     
         Core.Web.DOM.preventEventDefault(e);

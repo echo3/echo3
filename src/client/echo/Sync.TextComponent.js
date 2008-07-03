@@ -110,7 +110,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     
     _processBlur: function(e) {
         if (!this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
-            return;
+            return true;
         }
         this.sanitizeInput();
         this.component.set("text", e.registeredTarget.value);
@@ -118,7 +118,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     
     _processClick: function(e) {
         if (!this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
-            return;
+            return true;
         }
         this.component.application.setFocusedComponent(this.component);
     },

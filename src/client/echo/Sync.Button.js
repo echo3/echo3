@@ -104,14 +104,14 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     
     _processBlur: function(e) {
         if (!this.client.verifyInput(this.component)) {
-            return;
+            return true;
         }
         this._setFocusState(false);
     },
     
     _processClick: function(e) {
         if (!this.client.verifyInput(this.component)) {
-            return;
+            return true;
         }
         this.component.application.setFocusedComponent(this.component);
         this.doAction();
@@ -119,7 +119,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     
     _processFocus: function(e) {
         if (!this.client.verifyInput(this.component)) {
-            return;
+            return true;
         }
         this._setFocusState(true);
     },
@@ -157,7 +157,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     
     _processPress: function(e) {
         if (!this.client.verifyInput(this.component)) {
-            return;
+            return true;
         }
         Core.Web.DOM.preventEventDefault(e);
         this._setPressedState(true);
@@ -165,14 +165,14 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     
     _processRelease: function(e) {
         if (!this.client.verifyInput(this.component)) {
-            return;
+            return true;
         }
         this._setPressedState(false);
     },
     
     _processRolloverEnter: function(e) {
         if (!this.client.verifyInput(this.component) || Core.Web.dragInProgress) {
-            return;
+            return true;
         }
         this.component.application.addListener("focus", this._processRolloverExitRef);
         this._setRolloverState(true);
@@ -180,7 +180,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     
     _processRolloverExit: function(e) {
         if (!this.client.verifyInput(this.component)) {
-            return;
+            return true;
         }
         if (this._processRolloverExitRef) {
             this.component.application.removeListener("focus", this._processRolloverExitRef);

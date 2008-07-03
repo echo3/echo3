@@ -622,7 +622,7 @@ Echo.Component = Core.extend({
                 switch (name) {
                 case "style": this._style = properties.style; break;
                 case "styleName": this._styleName = properties.styleName; break;
-                case "renderId": this.renderId = properties.renderId; break;
+                case "renderId": this._renderId = properties.renderId; break;
                 case "children":
                     for (var i = 0; i < properties.children.length; ++i) {
                         this.add(properties.children[i]);

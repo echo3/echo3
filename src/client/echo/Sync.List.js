@@ -43,7 +43,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             Core.Web.DOM.preventEventDefault(e);
             this._renderSelection();
-            return;
+            return true;
         }
         
         var child = this._div.firstChild;
@@ -89,7 +89,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             Core.Web.DOM.preventEventDefault(e);
             this._renderSelection();
-            return;
+            return false;
         }
         
         var selection;

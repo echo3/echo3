@@ -374,7 +374,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     
     _processClick: function(e) {
         if (!this.client.verifyInput(this.component)) {
-            return;
+            return true;
         }
         var trElement = e.registeredTarget;
         var rowIndex = this._getRowIndex(trElement);
@@ -415,7 +415,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     
     _processRolloverEnter: function(e) {
         if (!this.client.verifyInput(this.component)) {
-            return;
+            return true;
         }
         var trElement = e.registeredTarget;
         var rowIndex = this._getRowIndex(trElement);
@@ -434,7 +434,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     
     _processRolloverExit: function(e) {
         if (!this.client.verifyInput(this.component)) {
-            return;
+            return true;
         }
         var trElement = e.registeredTarget;
         var rowIndex = this._getRowIndex(trElement);
