@@ -687,12 +687,10 @@ Core.Web.Event = {
                 // Set registered target on event.
                 e.registeredTarget = elementAncestry[i];
                 if (!listenerList.fireEvent(e)) {
+                    // Stop propagation if requested.
                     propagate = false;
+                    break;
                 }
-            }
-            if (!propagate) {
-                // Stop propagation if requested.
-                break;
             }
         }
         
@@ -700,16 +698,13 @@ Core.Web.Event = {
             // Fire event to bubbling listeners.
             for (var i = 0; i < elementAncestry.length; ++i) {
                 listenerList = Core.Web.Event._bubblingListenerMap.map[elementAncestry[i].__eventProcessorId];
-                // Set registered target on event.
-                e.registeredTarget = elementAncestry[i];
                 if (listenerList) {
+                    // Set registered target on event.
+                    e.registeredTarget = elementAncestry[i];
                     if (!listenerList.fireEvent(e)) {
-                        propagate = false;
+                        // Stop propagation if requested.
+                        break;
                     }
-                }
-                if (!propagate) {
-                    // Stop propagation if requested.
-                    break;
                 }
             }
         }
