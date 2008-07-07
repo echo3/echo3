@@ -1681,6 +1681,14 @@ Echo.Update.ComponentUpdate = Core.extend({
      * @type Array
      */
     _updatedLayoutDataChildIds: null,
+    
+    /**
+     * The set of listener types which have been added to/removed from the component.
+     * Associative mapping between listener type names and boolean values, true representing
+     * the notion that listeners of a type have been added or removed.
+     * @type Object
+     */
+    _listenerUpdates: null,
 
     /**
      * Creates a new ComponentUpdate.
@@ -1880,6 +1888,16 @@ Echo.Update.ComponentUpdate = Core.extend({
     },
     
     /**
+     * Determines if any listeners of a specific type were added or removed
+     * from the component.
+     * 
+     * @param {String} listenerType the type of listener to query
+     */
+    isListenerTypeUpdated: function(listenerType) {
+        return this._listenerUpdates == null ? false : this._listenerUpdates[listenerType]; 
+    },
+    
+    /**
      * Returns the names of all properties being updated in this update.
      * 
      * @return the names of all updated properties, if no properties are updated an
@@ -1998,7 +2016,7 @@ Echo.Update.ComponentUpdate = Core.extend({
     /**
      * Records the update of the LayoutData of a child component.
      * 
-     * @param the child component whose layout data was updated
+     * @param {Echo.Component} child the child component whose layout data was updated
      */
     _updateLayoutData: function(child) {
         this._manager._idMap[child.renderId] = child;
@@ -2006,6 +2024,18 @@ Echo.Update.ComponentUpdate = Core.extend({
             this._updatedLayoutDataChildIds = [];
         }
         this._updatedLayoutDataChildIds.push(child.renderId);
+    },
+    
+    /**
+     * Records the addition or removal of listeners to the parent component.
+     * 
+     * @param {String} listenerType the listener type
+     */
+    _updateListener: function(listenerType) {
+        if (this._listenerUpdates == null) {
+            this._listenerUpdates = { };
+        }
+        this._listenerUpdates[listenerType] = true;
     },
     
     /**
@@ -2229,6 +2259,22 @@ Echo.Update.Manager = Core.extend({
     },
     
     /**
+     * Process a layout data update to a child component.
+     * 
+     * @param {Echo.Component} updatedComponent the updated component
+     */
+    _processComponentListenerUpdate: function(parent, listenerType) {
+        if (this.fullRefreshRequired) {
+            return;
+        }
+        if (this._isAncestorBeingAdded(parent)) {
+            return;
+        }
+        var update = this._createComponentUpdate(parent);
+        update._updateListener(listenerType);
+    },
+    
+    /**
      * Processes a child removal from a component.
      * 
      * @param {Echo.Component} parent the parent component
@@ -2297,7 +2343,9 @@ Echo.Update.Manager = Core.extend({
                 this._processComponentAdd(parent, newValue);
             }
         } else if (propertyName == "layoutData") {
-            this._processComponentLayoutDataUpdate(parent, oldValue, newValue);
+            this._processComponentLayoutDataUpdate(parent);
+        } else if (propertyName == "listeners") {
+            this._processComponentListenerUpdate(parent, oldValue || newValue);
         } else {
             this._processComponentPropertyUpdate(parent, propertyName, oldValue, newValue);
         }
