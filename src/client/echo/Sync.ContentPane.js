@@ -120,6 +120,10 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         }
         
         var childDiv = this._childIdToElementMap[child.renderId];
+        if (!childDiv) {
+            // Child never rendered.
+            return;
+        }
         childDiv.parentNode.removeChild(childDiv);
         delete this._childIdToElementMap[child.renderId];
     },
