@@ -433,6 +433,7 @@ Core.Web.Env = {
             this.PROPRIETARY_EVENT_SELECT_START_SUPPORTED = true;
             this.QUIRK_IE_KEY_DOWN_EVENT_REPEAT = true;
             this.CSS_FLOAT = "styleFloat";
+            this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
             
             if (this.BROWSER_MAJOR_VERSION < 8) {
                 // Internet Explorer 6 and 7 Flags.
@@ -456,7 +457,6 @@ Core.Web.Env = {
                     this.QUIRK_CSS_BACKGROUND_ATTACHMENT_USE_FIXED = true;
                     this.QUIRK_IE_SELECT_Z_INDEX = true;
                     this.NOT_SUPPORTED_CSS_MAX_HEIGHT = true;
-                    this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
                     
                     // Enable 'garbage collection' on large associative arrays to avoid memory leak.
                     Core.Arrays.LargeMap.garbageCollectEnabled = true;
@@ -473,6 +473,8 @@ Core.Web.Env = {
             }
         } else if (this.BROWSER_OPERA) {
             this.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
+        } else if (this.BROWSER_SAFARI) {
+            this.QUIRK_SAFARI_DOM_TEXT_ESCAPE = true;
         }
     },
     
@@ -576,7 +578,7 @@ Core.Web.Event = {
             }
         }
     },
-
+    
     /**
      * Next available sequentially assigned element identifier.
      * Elements are assigned unique identifiers to enable mapping between 
@@ -658,12 +660,13 @@ Core.Web.Event = {
      */
     _processEvent: function(e) {
         e = e ? e : window.event;
+
         if (!e.target && e.srcElement) {
             // The Internet Explorer event model stores the target element in the 'srcElement' property of an event.
             // Modify the event such the target is retrievable using the W3C DOM Level 2 specified property 'target'.
             e.target = e.srcElement;
         }
-        
+
         // Establish array containing elements ancestry, with index 0 containing 
         // the element and the last index containing its most distant ancestor.  
         // Only record elements that have ids.
@@ -675,11 +678,11 @@ Core.Web.Event = {
             }
             targetElement = targetElement.parentNode;
         }
-    
+
         var listenerList;
-        
+
         var propagate = true;
-        
+
         // Fire event to capturing listeners.
         for (var i = elementAncestry.length - 1; i >= 0; --i) {
             listenerList = Core.Web.Event._capturingListenerMap.map[elementAncestry[i].__eventProcessorId];
@@ -693,7 +696,7 @@ Core.Web.Event = {
                 }
             }
         }
-        
+
         if (propagate) {
             // Fire event to bubbling listeners.
             for (var i = 0; i < elementAncestry.length; ++i) {
@@ -839,8 +842,28 @@ Core.Web.HttpConnection = Core.extend({
         this._url = url;
         this._contentType = contentType;
         this._method = method;
+        if (Core.Web.Env.QUIRK_SAFARI_DOM_TEXT_ESCAPE && messageObject instanceof Document) {
+            this._preprocessSafariDOM(messageObject.documentElement);
+        }
+        
         this._messageObject = messageObject;
         this._listenerList = new Core.ListenerList();
+    },
+    
+    _preprocessSafariDOM: function(node) {
+        if (node.nodeType == 3) {
+            var value = node.data;
+            value = value.replace(/&/g, "&amp;");
+            value = value.replace(/</g, "&lt;");
+            value = value.replace(/>/g, "&gt;");
+            node.data = value;
+        } else {
+            var child = node.firstChild;
+            while (child) {
+                this._preprocessSafariDOM(child);
+                child = child.nextSibling;
+            }
+        }
     },
     
     /**
@@ -1476,14 +1499,17 @@ Core.Web.Scheduler = {
         Core.Arrays.remove(Core.Web.Scheduler._runnables, runnable);
         runnable._nextExecution = new Date().getTime() + (runnable.timeInterval ? runnable.timeInterval : 0);
         Core.Web.Scheduler._runnables.push(runnable);
-        Core.Web.Scheduler._start(runnable._nextExecution);
+        Core.Web.Scheduler._setTimeout(runnable._nextExecution);
     },
 
     /**
      * Executes the scheduler, running any runnables that are due.
-     * This method is invoked by the interval/thread.
+     * DESIGN NOTE: this method MUST ONLY be invoked by the timout handle Core.Web.Scheduler._threadHandle.
      */
     _execute: function() {
+        // Mark now-defunct timeout thread handle as null, because this method was invoked by it.
+        Core.Web.Scheduler._threadHandle = null;
+        
         var currentTime = new Date().getTime();
         var nextInterval = Number.MAX_VALUE;
         
@@ -1538,10 +1564,7 @@ Core.Web.Scheduler = {
         Core.Web.Scheduler._runnables = newRunnables;
         
         if (nextInterval < Number.MAX_VALUE) {
-            Core.Web.Scheduler._nextExecution = currentTime + nextInterval;
-            Core.Web.Scheduler._threadHandle = window.setTimeout(Core.Web.Scheduler._execute, nextInterval);
-        } else {
-            Core.Web.Scheduler._threadHandle = null;
+            Core.Web.Scheduler._setTimeout(currentTime + nextInterval);
         }
     },
     
@@ -1572,35 +1595,25 @@ Core.Web.Scheduler = {
     },
     
     /**
-     * Starts the scheduler "thread".
-     * If the scheduler is already running, no action is taken.
+     * Starts the scheduler "thread", to execute at the specified time.
+     * If the specified time is in the past, it will execute with a delay of 0.
      * @private
      */
-    _start: function(nextExecution) {
-        var currentTime = new Date().getTime();
-        if (Core.Web.Scheduler._threadHandle == null) {
-            Core.Web.Scheduler._nextExecution = nextExecution;
-            Core.Web.Scheduler._threadHandle = window.setTimeout(Core.Web.Scheduler._execute, nextExecution - currentTime);
-        } else if (nextExecution < Core.Web.Scheduler._nextExecution) { 
-            // Cancel current timeout, start new timeout.
-            window.clearTimeout(Core.Web.Scheduler._threadHandle);
-            Core.Web.Scheduler._nextExecution = nextExecution;
-            Core.Web.Scheduler._threadHandle = window.setTimeout(Core.Web.Scheduler._execute, nextExecution - currentTime);
-        }
-    },
-    
-    /**
-     * Stops the scheduler "thread".
-     * If the scheduler is not running, no action is taken.
-     * @private
-     */
-    _stop: function() {
-        if (Core.Web.Scheduler._threadHandle == null) {
+    _setTimeout: function(nextExecution) {
+        if (Core.Web.Scheduler._threadHandle != null && Core.Web.Scheduler._nextExecution < nextExecution) {
+            // The current timeout will fire before nextExecution, thus no work needs to be done here.
             return;
         }
-        window.clearTimeout(Core.Web.Scheduler._threadHandle);
-        Core.Web.Scheduler._threadHandle = null;
-        Core.Web.Scheduler._nextExecution = null;
+        
+        if (Core.Web.Scheduler._threadHandle != null) {
+            // Clear any existing timeout.
+            window.clearTimeout(Core.Web.Scheduler._threadHandle);
+        }
+        
+        var currentTime = new Date().getTime();
+        Core.Web.Scheduler._nextExecution = nextExecution;
+        var timeout = nextExecution - currentTime > 0 ? nextExecution - currentTime : 0;
+        Core.Web.Scheduler._threadHandle = window.setTimeout(Core.Web.Scheduler._execute, timeout);
     },
     
     update: function(runnable) {
@@ -1610,7 +1623,7 @@ Core.Web.Scheduler = {
         var currentTime = new Date().getTime();
         var timeInterval = runnable.timeInterval ? runnable.timeInterval : 0;
         runnable._nextExecution = currentTime + timeInterval;
-        Core.Web.Scheduler._start(runnable._nextExecution);
+        Core.Web.Scheduler._setTimeout(runnable._nextExecution);
     }
 };
 
