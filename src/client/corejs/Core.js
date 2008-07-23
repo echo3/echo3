@@ -306,7 +306,7 @@ Core = {
      */
     _inherit: function(destination, source, virtualProperties) {
         for (var name in source) {
-            if (virtualProperties && destination[name] && !this._isVirtual(virtualProperties, name)) {
+            if (virtualProperties && destination[name] !== undefined && !this._isVirtual(virtualProperties, name)) {
                 // Property exists in destination as is not marked as virtual.
                 throw new Error("Cannot override non-virtual property \"" + name + "\".");
             } else {
