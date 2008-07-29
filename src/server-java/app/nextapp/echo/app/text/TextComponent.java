@@ -61,6 +61,7 @@ extends Component {
     public static final String PROPERTY_DISABLED_BORDER = "disabledBorder";
     public static final String PROPERTY_DISABLED_FONT = "disabledFont";
     public static final String PROPERTY_DISABLED_FOREGROUND = "disabledForeground";
+    public static final String PROPERTY_EDITABLE = "editable";
     public static final String PROPERTY_HEIGHT = "height";
     public static final String PROPERTY_HORIZONTAL_SCROLL = "horizontalScroll";
     public static final String PROPERTY_INSETS = "insets";
@@ -317,6 +318,18 @@ extends Component {
     public boolean hasActionListeners() {
         return hasEventListenerList() && getEventListenerList().getListenerCount(ActionListener.class) != 0;
     }
+    
+    /**
+     * Determines the editable state of this component. Components that are not
+     * editable do not receive user input, but they do gain focus, so it is
+     * possible to, say, copy the component's text using keyboard shortcuts.
+     * 
+     * @return <code>true</code> if this component is editable
+     */
+    public boolean isEditable() {
+        Object property = getProperty(PROPERTY_EDITABLE);
+        return null == property ? true : ((Boolean) property).booleanValue();
+    }
 
     /**
      * This component does not support children.
@@ -458,6 +471,17 @@ extends Component {
         document = newValue;
     }
     
+    /**
+     * Sets the editable state of this component. Components that are not
+     * editable do not receive user input, but they do gain focus, so it is
+     * possible to, say, copy the component's text using keyboard shortcuts.
+     * 
+     * @param newValue the new editable state
+     */
+    public void setEditable(boolean newValue) {
+        setProperty(PROPERTY_EDITABLE, Boolean.valueOf(newValue));
+    }
+
     /**
      * Sets the height of the text component.
      * This property only supports <code>Extent</code>s with

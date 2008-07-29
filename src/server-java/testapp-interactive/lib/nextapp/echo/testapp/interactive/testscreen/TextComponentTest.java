@@ -486,6 +486,14 @@ public class TextComponentTest extends SplitPane {
                 textArea.setEnabled(enabled);
             }
         });
+        controlsColumn.addButton("Toggle Editable", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean editable = !textField.isEditable();
+                textField.setEditable(editable);
+                passwordField.setEditable(editable);
+                textArea.setEditable(editable);
+            }
+        });
         controlsColumn.addButton("Focus TextField", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().setFocusedComponent(textField);

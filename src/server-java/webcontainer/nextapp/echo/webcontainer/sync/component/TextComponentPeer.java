@@ -110,7 +110,9 @@ public class TextComponentPeer extends AbstractComponentSynchronizePeer {
     public void storeInputProperty(Context context, Component component, String propertyName, int propertyIndex, Object newValue) {
         if (propertyName.equals(TextComponent.TEXT_CHANGED_PROPERTY)) {
             ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
-            clientUpdateManager.setComponentProperty(component, TextComponent.TEXT_CHANGED_PROPERTY, newValue);
+            if (!Boolean.FALSE.equals(component.getRenderProperty(TextComponent.PROPERTY_EDITABLE))) {
+                clientUpdateManager.setComponentProperty(component, TextComponent.TEXT_CHANGED_PROPERTY, newValue);
+            }
         }
     }
 }

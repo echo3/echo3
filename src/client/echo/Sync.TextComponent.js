@@ -10,7 +10,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     $abstract: true,
     
     $static: {
-        _supportedPartialProperties: ["text"]
+        _supportedPartialProperties: ["text", "editable"]
     },
     
     $virtual: {
@@ -154,7 +154,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     },
     
     renderUpdate: function(update) {
-        var fullRender =  !Core.Arrays.containsAll(Echo.Sync.TextComponent._supportedPartialProperties, 
+        var fullRender = !Core.Arrays.containsAll(Echo.Sync.TextComponent._supportedPartialProperties, 
                     update.getUpdatedPropertyNames(), true);
     
         if (fullRender) {
@@ -168,6 +168,10 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
                 var textUpdate = update.getUpdatedProperty("text");
                 if (textUpdate && textUpdate.newValue != this._text) {
                     this._input.value = textUpdate.newValue == null ? "" : textUpdate.newValue;
+                }
+                var editableUpdate = update.getUpdatedProperty("editable");
+                if (editableUpdate != null) {
+                    this._input.readOnly = !editableUpdate.newValue; // == "false";
                 }
             }
         }
@@ -194,6 +198,7 @@ Echo.Sync.TextArea = Core.extend(Echo.Sync.TextComponent, {
         this._container = document.createElement("div");
         this._input = document.createElement("textarea");
         this._input.id = this.component.renderId;
+        this._input.readonly = !this.component.render("editable", true);
         this._renderStyle(this._input);
         this._input.style.overflow = "auto";
         this._addEventHandlers(this._input);
@@ -225,6 +230,7 @@ Echo.Sync.TextField = Core.extend(Echo.Sync.TextComponent, {
     renderAdd: function(update, parentElement) {
         this._input = document.createElement("input");
         this._input.id = this.component.renderId;
+        this._input.readonly = !this.component.render("editable", true);
         this._input.type = this._type;
         var maximumLength = this.component.render("maximumLength", -1);
         if (maximumLength >= 0) {
