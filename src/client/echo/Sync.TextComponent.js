@@ -34,6 +34,11 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     
     _text: null,
     
+    /**
+     * Actual focus state of component, based on received DOM focus/blur events.
+     */
+    _focused: false,
+    
     _renderStyle: function() {
         var container = this._container ? this._container : this._input;
         if (this.component.isRenderEnabled()) {
@@ -71,6 +76,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     
     _addEventHandlers: function() {
         Core.Web.Event.add(this._input, "click", Core.method(this, this._processClick), false);
+        Core.Web.Event.add(this._input, "focus", Core.method(this, this._processFocus), false);
         Core.Web.Event.add(this._input, "blur", Core.method(this, this._processBlur), false);
         Core.Web.Event.add(this._input, "keypress", Core.method(this, this._processKeyPress), false);
         Core.Web.Event.add(this._input, "keyup", Core.method(this, this._processKeyUp), false);
@@ -109,6 +115,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processBlur: function(e) {
+        this._focused = false;
         if (!this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
             return true;
         }
@@ -123,6 +130,14 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         this.component.application.setFocusedComponent(this.component);
     },
 
+    _processFocus: function(e) {
+        this._focused = true;
+        if (!this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
+            return true;
+        }
+        this.component.application.setFocusedComponent(this.component);
+    },
+    
     _processKeyPress: function(e) {
         if (!this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
             Core.Web.DOM.preventEventDefault(e);
@@ -150,7 +165,10 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     },
     
     renderFocus: function() {
-        Core.Web.DOM.focusElement(this._input);
+        if (!this._focused) {
+            this._focused = true;
+            Core.Web.DOM.focusElement(this._input);
+        }
     },
     
     renderUpdate: function(update) {
