@@ -262,6 +262,7 @@ Echo.Sync.Row = Core.extend(Echo.Sync.ArrayContainer, {
         this.cellSpacing = Echo.Sync.Extent.toPixels(this.component.render("cellSpacing"), false);
         if (this.cellSpacing) {
             this.spacingPrototype = document.createElement("td");
+            this.spacingPrototype.style.padding = 0;
             this.spacingPrototype.style.width = this.cellSpacing + "px";
         }
         

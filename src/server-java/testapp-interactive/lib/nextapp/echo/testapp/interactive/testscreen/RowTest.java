@@ -250,6 +250,11 @@ public class RowTest extends SplitPane {
                 testRow.setCellSpacing(new Extent(0, Extent.PX));
             }
         });
+        controlsColumn.addButton("Cell Spacing -> 1px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testRow.setCellSpacing(new Extent(1, Extent.PX));
+            }
+        });
         controlsColumn.addButton("Cell Spacing -> 2px", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testRow.setCellSpacing(new Extent(2, Extent.PX));
