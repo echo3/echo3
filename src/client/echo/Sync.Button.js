@@ -51,6 +51,8 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
      */
     _processInitEventRef: null,
     
+    _focused: false,
+    
     $construct: function() { 
         this._processInitEventRef = Core.method(this, this._processInitEvent);
     },
@@ -105,10 +107,8 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             var mouseEnterLeaveSupport = Core.Web.Env.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
             var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
             var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
-            Core.Web.Event.add(this._div, enterEvent, 
-                    Core.method(this, this._processRolloverEnter), false);
-            Core.Web.Event.add(this._div, exitEvent, 
-                    Core.method(this, this._processRolloverExit), false);
+            Core.Web.Event.add(this._div, enterEvent, Core.method(this, this._processRolloverEnter), false);
+            Core.Web.Event.add(this._div, exitEvent, Core.method(this, this._processRolloverExit), false);
         }
         if (this.component.render("pressedEnabled")) {
             Core.Web.Event.add(this._div, "mousedown", Core.method(this, this._processPress), false);
@@ -128,7 +128,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             return true;
         }
-        this._setFocusState(false);
+        this._renderFocusStyle(false);
     },
     
     _processClick: function(e) {
@@ -143,7 +143,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             return true;
         }
-        this._setFocusState(true);
+        this._renderFocusStyle(true);
     },
     
     /**
@@ -304,8 +304,8 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     },
 
     renderFocus: function() {
+        this._renderFocusStyle(true);
         Core.Web.DOM.focusElement(this._div);
-        this._setFocusState(true);
     },
     
     renderUpdate: function(update) {
@@ -317,7 +317,10 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         return false; // Child elements not supported: safe to return false.
     },
     
-    _setFocusState: function(focusState) {
+    /**
+     * Enables/disables focused appearance of button.
+     */
+    _renderFocusStyle: function(focusState) {
         if (!this.component.render("focusedEnabled")) {
             // Render default focus aesthetic.
             var background = this.component.render("background");
