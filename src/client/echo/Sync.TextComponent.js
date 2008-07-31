@@ -165,10 +165,12 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     },
     
     renderFocus: function() {
-        if (!this._focused) {
-            this._focused = true;
-            Core.Web.DOM.focusElement(this._input);
+        if (this._focused) {
+            return;
         }
+            
+        this._focused = true;
+        Core.Web.DOM.focusElement(this._input);
     },
     
     renderUpdate: function(update) {

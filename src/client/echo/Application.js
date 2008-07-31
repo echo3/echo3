@@ -324,6 +324,10 @@ Echo.Application = Core.extend({
             }
         }
         
+        if (this._focusedComponent == newValue) {
+            return;
+        }
+        
         this._focusedComponent = newValue;
         this._listenerList.fireEvent({type: "focus", source: this});
     },

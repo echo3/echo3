@@ -51,6 +51,9 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
      */
     _processInitEventRef: null,
     
+    /**
+     * The rendered focus state of the button.
+     */
     _focused: false,
     
     $construct: function() { 
@@ -125,9 +128,6 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processBlur: function(e) {
-        if (!this.client.verifyInput(this.component)) {
-            return true;
-        }
         this._renderFocusStyle(false);
     },
     
@@ -143,7 +143,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             return true;
         }
-        this._renderFocusStyle(true);
+        this.component.application.setFocusedComponent(this.component);
     },
     
     /**
@@ -258,7 +258,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             Core.Web.Event.add(this._div, "focus", this._processInitEventRef, false);
             Core.Web.Event.add(this._div, "mouseover", this._processInitEventRef, false);
         }
-    
+        
         parentElement.appendChild(this._div);
     },
     
@@ -298,12 +298,17 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
 
         Core.Web.Event.removeAll(this._div);
         
+        this._focused = false;
         this._div = null;
         this._textElement = null;
         this._iconImg = null;
     },
 
     renderFocus: function() {
+        if (this._focused) {
+            return;
+        }
+
         this._renderFocusStyle(true);
         Core.Web.DOM.focusElement(this._div);
     },
@@ -321,6 +326,11 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
      * Enables/disables focused appearance of button.
      */
     _renderFocusStyle: function(focusState) {
+        if (this._focused == focusState) {
+            return;
+        }
+        this._focused = focusState;
+        
         if (!this.component.render("focusedEnabled")) {
             // Render default focus aesthetic.
             var background = this.component.render("background");

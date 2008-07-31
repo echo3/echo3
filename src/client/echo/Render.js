@@ -273,15 +273,15 @@ Echo.Render = {
             var component = Echo.Render._disposedComponents[componentId];
             Echo.Render._unloadPeer(component);
         }
+
+        // Clear disposed component list.
         Echo.Render._disposedComponents = null;
         
         // Inform UpdateManager that all updates have been completed.
         updateManager.purge();
         
-        // Perform focus update if required.
-        if (client.focusUpdateRequired) {
-            Echo.Render.updateFocus(client);
-        }
+        // Perform focus update.
+        Echo.Render.updateFocus(client);
     },
     
     /**
@@ -407,9 +407,8 @@ Echo.Render = {
      */
     updateFocus: function(client) {
         var focusedComponent = client.application.getFocusedComponent();
-        if (focusedComponent && focusedComponent.peer && focusedComponent.peer.renderFocus) {
+        if (focusedComponent && focusedComponent.peer) {
             focusedComponent.peer.renderFocus();
-            client.focusUpdateRequired = false;
         }
     }
 };
@@ -442,7 +441,7 @@ Echo.Render.ComponentSync = Core.extend({
     component: null,
 
     /**
-     * Creates a new copmonent synchronization peer.
+     * Creates a new component synchronization peer.
      */
     $construct: function() { },
     
