@@ -87,33 +87,6 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         return value > 0 ? value : 0;
     },
     
-    renderDisplay: function() {
-        var width = this.component.render("width");
-        if (width && Echo.Sync.Extent.isPercent(width) && this._input.parentNode.offsetWidth) {
-            // If width is a percentage, reduce rendered percent width based on measured container size and border width,
-            // such that border pixels will not make the component wider than specified percentage.
-            var border = this.component.render("border");
-            var borderSize = Echo.Sync.Border.getPixelSize(this.component.render("border", "2px solid #000000"), "left")
-                    + Echo.Sync.Border.getPixelSize(this.component.render("border", "2px solid #000000"), "right") + 1;
-            if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
-                // Add default windows scroll bar width to border size for Internet Explorer browsers.
-                if (this._container) {
-                    this._container.style.width = this._adjustPercentWidth(100, 16, this._input.parentNode.offsetWidth) + "%";
-                } else {
-                    borderSize += 16;
-                }
-            }
-            this._input.style.width = this._adjustPercentWidth(parseInt(width), borderSize, this._input.parentNode.offsetWidth)
-                    + "%";
-        }
-    },
-    
-    renderDispose: function(update) {
-        Core.Web.Event.removeAll(this._input);
-        this._input = null;
-        this._container = null;
-    },
-    
     _processBlur: function(e) {
         this._focused = false;
         if (!this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
@@ -162,6 +135,34 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             this.component.doAction();
         }
         return true;
+    },
+
+    renderDisplay: function() {
+        var width = this.component.render("width");
+        if (width && Echo.Sync.Extent.isPercent(width) && this._input.parentNode.offsetWidth) {
+            // If width is a percentage, reduce rendered percent width based on measured container size and border width,
+            // such that border pixels will not make the component wider than specified percentage.
+            var border = this.component.render("border");
+            var borderSize = Echo.Sync.Border.getPixelSize(this.component.render("border", "2px solid #000000"), "left")
+                    + Echo.Sync.Border.getPixelSize(this.component.render("border", "2px solid #000000"), "right") + 1;
+            if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
+                // Add default windows scroll bar width to border size for Internet Explorer browsers.
+                if (this._container) {
+                    this._container.style.width = this._adjustPercentWidth(100, 16, this._input.parentNode.offsetWidth) + "%";
+                } else {
+                    borderSize += 16;
+                }
+            }
+            this._input.style.width = this._adjustPercentWidth(parseInt(width), borderSize, this._input.parentNode.offsetWidth)
+                    + "%";
+        }
+    },
+    
+    renderDispose: function(update) {
+        Core.Web.Event.removeAll(this._input);
+        this._focused = false;
+        this._input = null;
+        this._container = null;
     },
     
     renderFocus: function() {
