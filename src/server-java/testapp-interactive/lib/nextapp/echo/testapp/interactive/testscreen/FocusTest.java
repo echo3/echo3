@@ -35,7 +35,9 @@ import nextapp.echo.app.Extent;
 import nextapp.echo.app.Grid;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
+import nextapp.echo.app.ListBox;
 import nextapp.echo.app.Row;
+import nextapp.echo.app.SelectField;
 import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.TextArea;
 import nextapp.echo.app.TextField;
@@ -55,6 +57,8 @@ public class FocusTest extends SplitPane {
     private Grid focusGrid1;
     private TextField focusTextField;
     private TextArea focusTextArea;
+    private SelectField focusSelectField;
+    private ListBox focusListBox;
 
     public FocusTest() {
         super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
@@ -114,6 +118,22 @@ public class FocusTest extends SplitPane {
             }
         });
         testColumn.add(focusTextArea);
+        
+        focusSelectField = new SelectField(new Object[]{ "One", "Two", "Three" });
+        controlsColumn.addButton("Focus SelectField", new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                getApplicationInstance().setFocusedComponent(focusSelectField);
+            }
+        });
+        testColumn.add(focusSelectField);
+        
+        focusListBox = new ListBox(new Object[]{ "One", "Two", "Three" });
+        controlsColumn.addButton("Focus ListBox", new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                getApplicationInstance().setFocusedComponent(focusListBox);
+            }
+        });
+        testColumn.add(focusListBox);
     }
     
     private void createFocusColumn() {
