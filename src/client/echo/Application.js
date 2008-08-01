@@ -372,6 +372,8 @@ Echo.Application = Core.extend({
                 }
             }
         }
+        
+        this.fireEvent({ source: this, type: "modal", modal: this._modalComponents.length > 0});
     },
     
     /**
