@@ -37,9 +37,19 @@ public class Panel extends Composite {
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
+    public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
     public static final String PROPERTY_BORDER = "border";
     public static final String PROPERTY_INSETS = "insets";
 
+    /**
+     * Returns the background image.
+     * 
+     * @return the background image
+     */
+    public FillImage getBackgroundImage() {
+        return (FillImage) getProperty(PROPERTY_BACKGROUND_IMAGE);
+    }
+    
     /**
      * Returns the <code>Border</code> that encloses the entire <code>Column</code>.
      * 
@@ -60,7 +70,16 @@ public class Panel extends Composite {
         return (Insets) getProperty(PROPERTY_INSETS);
     }
     
-     /**
+    /**
+     * Sets the background image.
+     * 
+     * @param newValue the new background image
+     */
+    public void setBackgroundImage(FillImage newValue) {
+        setProperty(PROPERTY_BACKGROUND_IMAGE, newValue);
+    }
+
+    /**
      * Sets the <code>Border</code> that encloses the entire <code>Column</code>.
      * 
      * @param newValue the new border

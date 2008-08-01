@@ -53,5 +53,6 @@ Echo.Sync.Panel = Core.extend(Echo.Sync.Composite, {
         Echo.Sync.Composite.prototype.renderStyle.call(this, element);
         Echo.Sync.Border.render(this.component.render("border"), element);
         Echo.Sync.Insets.render(this.component.render("insets"), element, "padding");
+        Echo.Sync.FillImage.render(this.component.render("backgroundImage"), element);
     }
 });
