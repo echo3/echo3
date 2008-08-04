@@ -115,7 +115,15 @@ Core.Web.DOM = {
     createDocument: function(namespaceUri, qualifiedName) {
         if (document.implementation && document.implementation.createDocument) {
             // DOM Level 2 Browsers
-            var dom = document.implementation.createDocument(namespaceUri, qualifiedName, null);
+            var dom;
+            if (Core.Web.Env.BROWSER_FIREFOX && Core.Web.Env.BROWSER_MAJOR_VERSION == 3 
+                    && Core.Web.Env.BROWSER_MINOR_VERSION == 0) {
+                // https://bugzilla.mozilla.org/show_bug.cgi?id=431701
+                dom = new DOMParser().parseFromString("<?xml version='1.0' encoding='UTF-8'?><" + qualifiedName + "/>",
+                        "application/xml");
+            } else {
+                dom = document.implementation.createDocument(namespaceUri, qualifiedName, null);
+            }
             if (!dom.documentElement) {
                 dom.appendChild(dom.createElement(qualifiedName));
             }
