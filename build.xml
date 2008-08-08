@@ -422,5 +422,39 @@
         <gzip src="${dir.release}/${tarfile.release}" zipfile="${dir.release}/${tgzfile.release}"/>
         <delete file="${dir.release}/${tarfile.release}"/>
     </target>
-    
+	
+    <target name="mvn-install-win"
+        depends="dist"
+        description="Installs the jars into the local maven repository (windows environment)">
+        <exec executable="cmd">
+            <arg value="/c"/>
+            <arg value="mvn install:install-file -DgroupId=com.nextapp -DartifactId=echo3-app -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=dist${file.separator}lib${file.separator}Echo3_App.jar"/>
+            </exec>
+            <exec executable="cmd">
+                <arg value="/c"/>
+                <arg value="mvn install:install-file -DgroupId=com.nextapp -DartifactId=echo3-webcontainer -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=dist${file.separator}lib${file.separator}Echo3_WebContainer.jar"/>
+            </exec>
+    </target>
+	
+    <target name="mvn-install-unix"
+        depends="dist"
+        description="Installs the jar into the local maven repository (unix environment)">
+        <exec executable="mvn">
+            <arg value="install:install-file"/>
+            <arg value="-DgroupId=com.nextapp"/>
+            <arg value="-DartifactId=echo3-app"/>
+            <arg value="-Dversion=1.0-SNAPSHOT"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Dfile=dist${file.separator}lib${file.separator}Echo3_App.jar"/>
+        </exec>
+        <exec executable="mvn">
+            <arg value="install:install-file"/>
+            <arg value="-DgroupId=com.nextapp"/>
+            <arg value="-DartifactId=echo3-webcontainer"/>
+            <arg value="-Dversion=1.0-SNAPSHOT"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-Dfile=dist${file.separator}lib${file.separator}Echo3_WebContainer.jar"/>
+        </exec>
+    </target>
+
 </project>
