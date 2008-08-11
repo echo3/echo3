@@ -55,8 +55,8 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
                 index = null;
             }
         }
-        if (index == null) {
-            // Full render or append-at-end scenario
+        if (index == null || !this.containerElement.firstChild) {
+            // Full render, append-at-end scenario, or index 0 specified and no children rendered.
             
             // Render spacing cell first if index != 0 and cell spacing enabled.
             if (this.cellSpacing && this.containerElement.firstChild) {
