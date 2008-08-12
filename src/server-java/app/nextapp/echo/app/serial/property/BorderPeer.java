@@ -117,7 +117,7 @@ implements SerialPropertyPeer {
             
             Border.Side[] sides = new Border.Side[sideCount];
             for (int i = 0; i < sides.length; ++i) {
-                sides[i] = fromString(borderElement.getAttribute(borderSideAttributeNames[sideCount]));
+                sides[i] = fromString(borderElement.getAttribute(borderSideAttributeNames[i]));
             }
             return new Border(sides);
         }
