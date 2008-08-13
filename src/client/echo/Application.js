@@ -14,6 +14,12 @@ Echo = {
 /**
  * Representation of a single application instance.
  * Derived objects must invoke construtor with root component id.
+ * 
+ * @event componentUpdate An event fired when any component within the application is updated.
+ *        Listening for this event may degrade the performance of an application, due to the
+ *        frequency with which it will be fired.
+ * @event focus An event fired when the focused component of the application changes.
+ * @event modal An event fired when the modal state of the application changes.
  */
 Echo.Application = Core.extend({
     
@@ -373,7 +379,7 @@ Echo.Application = Core.extend({
             }
         }
         
-        this.fireEvent({ source: this, type: "modal", modal: this._modalComponents.length > 0});
+        this.fireEvent({ source: this, type: "modal", modal: this._modalComponents.length > 0 });
     },
     
     /**
@@ -491,6 +497,15 @@ Echo.ComponentFactory = {
  * @sp {#Font} font the component font
  * @sp {#Color} foreground the foreground color
  * @sp {Object} layoutData layout data information, describng how the component should be rendered by its container 
+ * @event property An event fired when the a property of the component changes.  The <code>propertyName</code> property
+ *        will specify the name of the changed property.  The <code>oldValue</code> and <code>newValue</code> properties
+ *        (may) describe the previous and current states of the property, respectively.
+ * @event init An event which is fired when the Component is added to a component hierarchy which is registered to an
+ *        application.  The "application" property of the Component will be available when the event is fired.
+ * @event dispose An event which is fired when the Component is about to be removed from a component hierarchy which is
+ *        registered to an application.  The "application" property of the Component will be available when the event is fired.
+ * @event parent An event which is fired when the Component's parent is changed.
+ * @event children An event which is fired when a child is added to or removed from the Component.
  */
 Echo.Component = Core.extend({
     
@@ -2446,6 +2461,8 @@ Echo.Update.Manager = Core.extend({
  * @sp {#Alignment} textPosition the position of the text relative to the icon
  * @sp {String} toolTipText the tool tip text
  * @sp {#Extent} width the width of the button
+ * @event action An event fired when the button is pressed (clicked).  The <code>actionCommand</code> property of the pressed
+ *        button is provided as a property.
  */
 Echo.AbstractButton = Core.extend(Echo.Component, {
 
@@ -2561,6 +2578,7 @@ Echo.RadioButton = Core.extend(Echo.ToggleButton, {
  * @sp {#Font} rolloverFont the rollover font
  * @sp {#Color} rolloverForeground the rollover foreground color
  * @sp {#Extent} width the component width 
+ * @event action An event fired when an item is seleted (clicked).
  */
 Echo.AbstractListComponent = Core.extend(Echo.Component, {
 
@@ -2951,6 +2969,7 @@ Echo.SplitPane = Core.extend(Echo.Component, {
  * @sp {String} toolTipText the tool tip text
  * @sp {#Extent} verticalScroll the vertical scrollbar position
  * @sp {#Extent} width the width of the component
+ * @event action An event fired when the enter/return key is pressed while the field is focused.
  */
 Echo.TextComponent = Core.extend(Echo.Component, {
 
@@ -3048,7 +3067,10 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * @sp {#Color} titleForeground the foreground color of the title text
  * @sp {#Extent} titleHeight the height of the title bar
  * @sp {#Insets} titleInsets the inset margin of the title text
- * @sp {#Extent} width the outside width of the window, including its border 
+ * @sp {#Extent} width the outside width of the window, including its border
+ * @event close An event fired when the close button is pressed.
+ * @event maximize An event fired when the maximize button is pressed.
+ * @event minimize An event fired when the minimize button is pressed.
  */
 Echo.WindowPane = Core.extend(Echo.Component, {
 
