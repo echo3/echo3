@@ -450,7 +450,6 @@ Core.Web.Env = {
                 this.QUIRK_IE_REPAINT = true;
                 this.QUIRK_TEXTAREA_CONTENT = true;
                 this.QUIRK_IE_TEXTAREA_NEWLINE_OBLITERATION = true;
-                this.QUIRK_IE_SELECT_LIST_DOM_UPDATE = true;
                 this.QUIRK_CSS_BORDER_COLLAPSE_INSIDE = true;
                 this.QUIRK_CSS_BORDER_COLLAPSE_FOR_0_PADDING = true;
                 this.NOT_SUPPORTED_CSS_OPACITY = true;
@@ -460,6 +459,7 @@ Core.Web.Env = {
                 
                 if (this.BROWSER_MAJOR_VERSION < 7) {
                     // Internet Explorer 6 Flags.
+                    this.QUIRK_IE_SELECT_LIST_DOM_UPDATE = true;
                     this.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY = true;
                     this.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED = true;
                     this.QUIRK_CSS_BACKGROUND_ATTACHMENT_USE_FIXED = true;
