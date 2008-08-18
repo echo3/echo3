@@ -456,7 +456,7 @@ implements Serializable {
         for (int i = modalComponents.size() - 1; i >= 0; --i) {
             Component component = (Component) modalComponents.get(i);
             if (component.isRenderVisible()) {
-                visibleModalComponents.add(component);;
+                visibleModalComponents.add(component);
             }
         }
         
