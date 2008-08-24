@@ -67,7 +67,7 @@ public class Serializer {
         }
     }
     
-    //FIXME.  Hardoding?  Maybe not too bad here, but these need to be spec'd in one place only.
+    //FIXME.  Hardcoding?  Maybe not too bad here, but these need to be spec'd in one place only.
     private static final Map javaLangTypeMap;
     static {
         Map m = new HashMap();

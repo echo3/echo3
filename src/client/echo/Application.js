@@ -13,7 +13,7 @@ Echo = {
 
 /**
  * Representation of a single application instance.
- * Derived objects must invoke construtor with root component id.
+ * Derived objects must invoke constructor with root component id.
  * 
  * @event componentUpdate An event fired when any component within the application is updated.
  *        Listening for this event may degrade the performance of an application, due to the

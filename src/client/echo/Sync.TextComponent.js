@@ -214,7 +214,7 @@ Echo.Sync.TextArea = Core.extend(Echo.Sync.TextComponent, {
     },
 
     renderAdd: function(update, parentElement) {
-        // Render text areas inside of a div to accomodate bugs with IE6 where text areas grow when
+        // Render text areas inside of a div to accommodate bugs with IE6 where text areas grow when
         // text is entered if they are set to percent widths.
         this._container = document.createElement("div");
         this._input = document.createElement("textarea");

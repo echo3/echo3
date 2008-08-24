@@ -189,7 +189,7 @@ Echo.Client = Core.extend({
     
     /**
      * Registers a new input restriction.  Input will be restricted until this and all other
-     * input restrictiosn are removed.
+     * input restrictions are removed.
      *
      * @param {Boolean} allowPropertyUpdates flag indicating whether property updates should be
      *        allowed (if true) or whether all input should be restricted (if false)

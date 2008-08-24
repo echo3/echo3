@@ -5,8 +5,8 @@
  *  <li>Provides cross-platform API for accessing web client features that have
  *   inconsistent implementations on various browser platforms.</li>
  *  <li>Provides HTTP Connection object (wrapper for XMLHttpRequest).</li>
- *  <li>Provides HTML DOM manipulation capabilites.</li>
- *  <li>Provides DOM event mangement facility, enabling capturing/bubbling phases
+ *  <li>Provides HTML DOM manipulation capabilities.</li>
+ *  <li>Provides DOM event management facility, enabling capturing/bubbling phases
  *   on all browsers, including Internet Explorer 6.</li>
  *  <li>Provides "virtual positioning" capability for Internet Explorer 6 to
  *   render proper top/left/right/bottom CSS positioning.</li>
@@ -805,7 +805,7 @@ Core.Web.Event = {
      * toString() implementation for debugging purposes.
      * Displays contents of capturing and bubbling listener maps.
      * 
-     * @return string represenation of listener maps
+     * @return string representation of listener maps
      * @type String
      */
     toString: function() {
@@ -1164,7 +1164,7 @@ Core.Web.Library = {
         },
         
         /**
-         * Event listener for response from the HttpConnection used to retrive the library.
+         * Event listener for response from the HttpConnection used to retrieve the library.
          * 
          * @param e the event
          * @private
@@ -1330,7 +1330,7 @@ Core.Web.Measure = {
      * Measures the scrollbar offset of an element, including any
      * scroll-bar related offsets of its ancestors.
      * 
-     * @param element the elemnt to measure
+     * @param element the element to measure
      * @return the offset data, with 'left' and 'top' properties specifying the offset amounts
      * @type Object
      * @private
@@ -1512,7 +1512,7 @@ Core.Web.Scheduler = {
 
     /**
      * Executes the scheduler, running any runnables that are due.
-     * DESIGN NOTE: this method MUST ONLY be invoked by the timout handle Core.Web.Scheduler._threadHandle.
+     * DESIGN NOTE: this method MUST ONLY be invoked by the timeout handle Core.Web.Scheduler._threadHandle.
      */
     _execute: function() {
         // Mark now-defunct timeout thread handle as null, because this method was invoked by it.
@@ -1589,7 +1589,7 @@ Core.Web.Scheduler = {
     /**
      * Creates a new Runnable that executes the specified method and enqueues it into the scheduler.
      * 
-     * @param {Number} time the time interval, in milleseconds, after which the Runnable should be executed
+     * @param {Number} time the time interval, in milliseconds, after which the Runnable should be executed
      *        (may be null/undefined to execute task immediately, in such cases repeat must be false)
      * @param {Boolean} repeat a flag indicating whether the task should be repeated
      * @param f a function to invoke, may be null/undefined
@@ -1645,7 +1645,7 @@ Core.Web.Scheduler.Runnable = Core.extend({
     $virtual: {
 
         /** 
-         * Time interval, in milleseconds after which the Runnable should be executed.
+         * Time interval, in milliseconds after which the Runnable should be executed.
          * @type Number
          */
         timeInterval: null,
@@ -1664,7 +1664,7 @@ Core.Web.Scheduler.Runnable = Core.extend({
 });
 
 /**
- * A runnable task implemenation that invokes a function at regular intervals.
+ * A runnable task implementation that invokes a function at regular intervals.
  */
 Core.Web.Scheduler.MethodRunnable = Core.extend(Core.Web.Scheduler.Runnable, {
 
@@ -1674,7 +1674,7 @@ Core.Web.Scheduler.MethodRunnable = Core.extend(Core.Web.Scheduler.Runnable, {
      * Creates a new Runnable.
      *
      * @constructor
-     * @param {Number} time the time interval, in milleseconds, after which the Runnable should be executed
+     * @param {Number} time the time interval, in milliseconds, after which the Runnable should be executed
      *        (may be null/undefined to execute task immediately, in such cases repeat must be false)
      * @param {Boolean} repeat a flag indicating whether the task should be repeated
      * @param {Function} f a function to invoke, may be null/undefined
