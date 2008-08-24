@@ -14,7 +14,7 @@
  *    methods of an object instance may be created using the Core.method() function.</li>
  *  <li>Provides a "Large Map" useful for managing an associative array that is frequently modified
  *    and will exist for a long period of time.  This object is unfortunately necessary due to
- *    issues present in certain clients (Internet Explorer 6 memory leak / performance degredation).</li>
+ *    issues present in certain clients (Internet Explorer 6 memory leak / performance degradation).</li>
  *  <li>Provides array manipulation utilities.<li>
  *  <li>Provides some simple debugging utilities, e.g., a pseudo-console output.</li>
  *  <li>Does not provide any web-specific functionality.</li>
@@ -320,7 +320,7 @@ Core = {
      * Any arguments passed to the returned function will be passed to the method.
      * The return value of the method will be returned by the function.
      *
-     * CAUTION: When adding and removing methods as listeners, note that two seperately
+     * CAUTION: When adding and removing methods as listeners, note that two separately
      * constructed methods will not be treated as equal, even if their instance and method
      * properties are the same.  Failing to heed this warning can result in a memory leak,
      * as listeners would never be removed.
@@ -816,9 +816,9 @@ Core.ResourceBundle = Core.extend({
         /**
          * Generates a less specific version of the specified language code.
          * Returns null if no "parent" language code can be determined.
-         * This operation is implemented  by removing the subtag (if found)
+         * This operation is implemented  by removing the sub-tag (if found)
          * from the specified RFC 1766 language code.  If the language
-         * code does not have a subtag, null is returned.
+         * code does not have a sub-tag, null is returned.
          *
          * @param {String} languageCode an RFC 1766 language code
          * @return a less specific version of the specified language code,
