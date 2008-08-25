@@ -41,6 +41,7 @@ import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.ImageService;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 /**
  * <code>ImageReferencePeer</code> implementation to provide
@@ -83,19 +84,22 @@ public class ServedImageReferencePeer implements ImageReferencePeer {
         ImageReference imageReference = (ImageReference) propertyValue;
         propertyElement.setAttribute("t", 
                 (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "ImageReference" : "I");
-        propertyElement.appendChild(serialContext.getDocument().createTextNode(getImageUrl(context, imageReference)));
+        Text urlText = serialContext.getDocument().createTextNode(getImageUrl(context, imageReference));
 
         Extent width = imageReference.getWidth();
         Extent height = imageReference.getHeight();
-        if (width != null || height != null) {
-            Element sizeElement = serialContext.getDocument().createElement("size");
+        if (width == null && height == null) {
+            propertyElement.appendChild(urlText);
+        } else {
+            Element iElement = serialContext.getDocument().createElement("i");
+            iElement.appendChild(urlText);
             if (width != null ) {
-                sizeElement.setAttribute("w", ExtentPeer.toString(width));
+                iElement.setAttribute("w", ExtentPeer.toString(width));
             }
             if (height != null) {
-                sizeElement.setAttribute("h", ExtentPeer.toString(height));
+                iElement.setAttribute("h", ExtentPeer.toString(height));
             }
-            propertyElement.appendChild(sizeElement);
+            propertyElement.appendChild(iElement);
         }
     }
 }

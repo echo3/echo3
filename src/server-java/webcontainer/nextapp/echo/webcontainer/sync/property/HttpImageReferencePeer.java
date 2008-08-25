@@ -30,6 +30,7 @@
 package nextapp.echo.webcontainer.sync.property;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.HttpImageReference;
@@ -39,7 +40,11 @@ import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.property.ExtentPeer;
 import nextapp.echo.app.serial.property.ImageReferencePeer;
 import nextapp.echo.app.util.Context;
+import nextapp.echo.app.util.DomUtil;
 
+/**
+ * <code>XmlPropertyPeer</code> for <code>HttpImageReference</code> properties.
+ */
 public class HttpImageReferencePeer 
 implements ImageReferencePeer {
 
@@ -59,7 +64,20 @@ implements ImageReferencePeer {
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws SerialException {
-        throw new UnsupportedOperationException();
+        Element iElement = DomUtil.getChildElementByTagName(propertyElement, "i");
+        if (iElement == null) {
+            return new HttpImageReference(DomUtil.getElementText(propertyElement));
+        } else {
+            String url = DomUtil.getElementText(iElement);
+            if (url == null) {
+                // "u" attribute provided for backward compatibility, but should be considered deprecated.
+                url = iElement.getAttribute("u");
+            }
+            Extent width = iElement.hasAttribute("w") ? ExtentPeer.fromString(iElement.getAttribute("w")) : null;
+            Extent height = iElement.hasAttribute("h") ? ExtentPeer.fromString(iElement.getAttribute("h")) : null;
+            HttpImageReference httpImage = new HttpImageReference(url, width, height);
+            return httpImage;
+        }
     }
 
     /**
@@ -69,22 +87,25 @@ implements ImageReferencePeer {
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
-        ImageReference imageReference = (ImageReference) propertyValue;
+        HttpImageReference httpImage = (HttpImageReference) propertyValue;
         propertyElement.setAttribute("t", 
                 (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "ImageReference" : "I");
-        propertyElement.appendChild(serialContext.getDocument().createTextNode(getImageUrl(context, imageReference)));
+        Text urlText = serialContext.getDocument().createTextNode(httpImage.getUri());
 
-        Extent width = imageReference.getWidth();
-        Extent height = imageReference.getHeight();
-        if (width != null || height != null) {
-            Element sizeElement = serialContext.getDocument().createElement("size");
+        Extent width = httpImage.getWidth();
+        Extent height = httpImage.getHeight();
+        if (width == null && height == null) {
+            propertyElement.appendChild(urlText);
+        } else {
+            Element iElement = serialContext.getDocument().createElement("i");
+            iElement.appendChild(urlText);
             if (width != null ) {
-                sizeElement.setAttribute("w", ExtentPeer.toString(width));
+                iElement.setAttribute("w", ExtentPeer.toString(width));
             }
             if (height != null) {
-                sizeElement.setAttribute("h", ExtentPeer.toString(height));
+                iElement.setAttribute("h", ExtentPeer.toString(height));
             }
-            propertyElement.appendChild(sizeElement);
+            propertyElement.appendChild(iElement);
         }
     }
 }

@@ -51,12 +51,19 @@ implements SerialPropertyPeer {
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws SerialException {
         Element iElement = DomUtil.getChildElementByTagName(propertyElement, "i");
-        String contentType = iElement.hasAttribute("t") ? iElement.getAttribute("t") : null;
-        String resourceName = iElement.getAttribute("r");
-        Extent width = iElement.hasAttribute("w") ? ExtentPeer.fromString(iElement.getAttribute("w")) : null;
-        Extent height = iElement.hasAttribute("h") ? ExtentPeer.fromString(iElement.getAttribute("h")) : null;
-        ResourceImageReference resourceImage = new ResourceImageReference(resourceName, contentType, width, height);
-        return resourceImage;
+        if (iElement == null) {
+            return new ResourceImageReference(DomUtil.getElementText(propertyElement));
+        } else {
+            String url = DomUtil.getElementText(iElement);
+            if (url == null) {
+                // "r" attribute provided for backward compatibility, but should be considered deprecated.
+                url = iElement.getAttribute("r");
+            }
+            String contentType = iElement.hasAttribute("t") ? iElement.getAttribute("t") : null;
+            Extent width = iElement.hasAttribute("w") ? ExtentPeer.fromString(iElement.getAttribute("w")) : null;
+            Extent height = iElement.hasAttribute("h") ? ExtentPeer.fromString(iElement.getAttribute("h")) : null;
+            return new ResourceImageReference(url, contentType, width, height);
+        }
     }
 
     /**
@@ -65,13 +72,12 @@ implements SerialPropertyPeer {
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
-//FIXME borked.        
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         ResourceImageReference resourceImage = (ResourceImageReference) propertyValue;
         Element iElement = serialContext.getDocument().createElement("i");
         propertyElement.appendChild(iElement);
+        iElement.appendChild(serialContext.getDocument().createTextNode(resourceImage.getResource()));
         iElement.setAttribute("t", resourceImage.getContentType());
-        iElement.setAttribute("r", resourceImage.getResource());
         if (resourceImage.getWidth() != null) {
             iElement.setAttribute("w", ExtentPeer.toString(resourceImage.getWidth()));
         }

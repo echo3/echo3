@@ -600,20 +600,26 @@ Echo.Serial.addPropertyTranslator("F", Echo.Serial.Font);
 Echo.Serial.ImageReference = {
 
     toProperty: function(client, propertyElement) {
-        var url = propertyElement.firstChild.data;
-        if (client.decompressUrl) {
-            url = client.decompressUrl(url);
-        }
-        var width = propertyElement.getAttribute("w");
-        width = width ? width : null;
-        var height = propertyElement.getAttribute("h");
-        height = height ? height : null;
-        
-        if (width || height) {
-            return { url: url, width: width, height: height };
-        } else {
-            return url;
-        }
+	    if (propertyElement.firstChild.nodeType == 1) {
+	    	var iElement = propertyElement.firstChild;
+	        var url = iElement.firstChild.data;
+	        if (client.decompressUrl) {
+	            url = client.decompressUrl(url);
+	        }
+	        var width = iElement.getAttribute("w");
+	        width = width ? width : null;
+	        var height = iElement.getAttribute("h");
+	        height = height ? height : null;
+	        
+	        if (width || height) {
+	            return { url: url, width: width, height: height };
+	        } else {
+	            return url;
+	        }
+	    } else {
+	    	var url = propertyElement.firstChild.data;
+	    	return client.decompressUrl ? client.decompressUrl(url) : url;
+	    }
     }
 };
 

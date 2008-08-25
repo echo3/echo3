@@ -52,14 +52,10 @@
  <s n="DefaultResizable" t="nextapp.echo.app.SplitPane">
   <p n="resizable" t="b" v="true"/>
   <p n="separatorHorizontalImage" t="FillImage">
-   <fi t="r">
-    <i r="/nextapp/echo/testapp/interactive/resource/image/SplitPaneHorizontalSeparator.png"/>
-   </fi>
+   <fi t="r">/nextapp/echo/testapp/interactive/resource/image/SplitPaneHorizontalSeparator.png</fi>
   </p>
   <p n="separatorVerticalImage" t="FillImage">
-   <fi t="r">
-    <i r="/nextapp/echo/testapp/interactive/resource/image/SplitPaneVerticalSeparator.png"/>
-   </fi>
+   <fi t="r">/nextapp/echo/testapp/interactive/resource/image/SplitPaneVerticalSeparator.png</fi>
   </p>
  </s>
  <s n="TitleLabel" t="nextapp.echo.app.Label">
@@ -75,9 +71,7 @@
    </p>
    <p n="background" t="Color">#1b1b21</p>
    <p n="backgroundImage" t="FillImage">
-    <fi r="0" t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/HeaderBackground.png"/>
-    </fi>
+    <fi r="0" t="r">/nextapp/echo/testapp/interactive/resource/image/HeaderBackground.png</fi>
    </p>
    <p n="insets" t="Insets" v="8px"/>
    <p n="overflow" t="i" v="OVERFLOW_HIDDEN"/>
@@ -89,37 +83,19 @@
   <p n="titleInsets" t="Insets" v="5px 10px"/>
   <p n="titleBackground" t="Color">#2f2f4f</p>
   <p n="titleBackgroundImage" t="FillImage">
-   <fi r="x" t="r" y="100%">
-    <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/Header.png"/>
-   </fi>
+   <fi r="x" t="r" y="100%">/nextapp/echo/testapp/interactive/resource/image/window/simple/Header.png</fi>
   </p>
   <p n="titleForeground" t="Color">#ffffff</p>
   <p n="border" t="FillImageBorder">
    <fib bi="17px 23px 23px 17px" ci="8px 14px 14px 8px">
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTopLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTop.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTopRight.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderRight.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottomLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottom.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottomRight.png"/>
-    </fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTopLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTop.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTopRight.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderRight.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottomLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottom.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottomRight.png</fi>
    </fib>
   </p>
  </s>
@@ -128,38 +104,19 @@
   <p n="ieAlphaRenderBorder" t="b" v="true"/>
   <p n="titleInsets" t="Insets" v="5px 10px"/>
   <p n="titleBackgroundImage" t="FillImage">
-   <fi r="x" t="r" y="100%">
-    <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/Header.png"/>
-   </fi>
+   <fi r="x" t="r" y="100%">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/Header.png</fi>
   </p>
   <p n="titleForeground" t="Color">#ffffff</p>
   <p n="border" t="FillImageBorder">
    <fib bi="34px 20px 20px 20px" ci="6px 15px 15px 12px">
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTopLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTop.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTopRight.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderRight.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottomLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottom.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottomRight.png"
-     />
-    </fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTopLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTop.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTopRight.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderRight.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottomLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottom.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottomRight.png</fi>
    </fib>
   </p>
  </s>
@@ -168,39 +125,19 @@
   <p n="ieAlphaRenderBorder" t="b" v="true"/>
   <p n="titleInsets" t="Insets" v="5px 10px"/>
   <p n="titleBackgroundImage" t="FillImage">
-   <fi r="x" t="r" y="100%">
-    <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/Header.png"/>
-   </fi>
+   <fi r="x" t="r" y="100%">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/Header.png</fi>
   </p>
   <p n="titleForeground" t="Color">#ffffff</p>
   <p n="border" t="FillImageBorder">
    <fib bi="34px 20px 20px 20px" ci="6px 15px 15px 12px">
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTopLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTop.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTopRight.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderRight.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottomLeft.png"
-     />
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottom.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottomRight.png"
-     />
-    </fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTopLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTop.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTopRight.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderRight.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottomLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottom.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottomRight.png</fi>
    </fib>
   </p>
  </s>
@@ -218,9 +155,7 @@
    <p n="overflow" t="i" v="OVERFLOW_HIDDEN"/>
    <p n="background" t="Color">#cfcfdf</p>
    <p n="backgroundImage" t="FillImage">
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/ControlPaneFill.png"/>
-    </fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/ControlPaneFill.png</fi>
    </p>
    <p n="insets" t="Insets" v="2px"/>
   </p>
@@ -229,9 +164,7 @@
   <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
    <p n="background" t="Color">#4f4f6f</p>
    <p n="backgroundImage" t="FillImage">
-    <fi r="0" t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundDarkBlue.png"/>
-    </fi>
+    <fi r="0" t="r">/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundDarkBlue.png</fi>
    </p>
    <p n="insets" t="Insets" v="7px 10px"/>
    <p n="minimumSize" t="Extent" v="200px"/>
@@ -242,9 +175,7 @@
   <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
    <p n="background" t="Color">#afafef</p>
    <p n="backgroundImage" t="FillImage">
-    <fi r="0" t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundLightBlue.png"/>
-    </fi>
+    <fi r="0" t="r">/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundLightBlue.png</fi>
    </p>
    <p n="insets" t="Insets" v="7px 10px"/>
    <p n="minimumSize" t="Extent" v="200px"/>
@@ -253,9 +184,7 @@
  </s>
  <s n="WelcomePane" t="nextapp.echo.app.ContentPane">
   <p n="backgroundImage" t="FillImage">
-   <fi r="y" t="r">
-    <i r="/nextapp/echo/testapp/interactive/resource/image/WelcomePaneBackground.png"/>
-   </fi>
+   <fi r="y" t="r">/nextapp/echo/testapp/interactive/resource/image/WelcomePaneBackground.png</fi>
   </p>
  </s>
  <s n="WelcomePane.Column" t="nextapp.echo.app.Column">
