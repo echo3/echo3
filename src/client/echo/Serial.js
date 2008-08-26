@@ -427,9 +427,10 @@ Echo.Serial.addPropertyTranslator("AL", Echo.Serial.Alignment);
 Echo.Serial.Border = {
 
     toProperty: function(client, propertyElement) {
-        var value = propertyElement.getAttribute("v");
-        if (value) {
-            return value;
+	    if (propertyElement.firstChild.nodeType == 3) { // Text content
+	        return propertyElement.firstChild.data;
+	    } else if (propertyElement.getAttribute("v")) {
+            return propertyElement.getAttribute("v");
         } else {
             var element = Core.Web.DOM.getChildElementByTagName(propertyElement, "b");
             var border = {};

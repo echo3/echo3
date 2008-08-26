@@ -100,7 +100,11 @@ implements SerialPropertyPeer {
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws SerialException {
-        if (propertyElement.hasAttribute("v")) {
+        String value = DomUtil.getElementText(propertyElement);
+        if (value != null) {
+            Border.Side side = fromString(value);
+            return new Border(new Border.Side[]{side});
+        } else if (propertyElement.hasAttribute("v")) {
             Border.Side side = fromString(propertyElement.getAttribute("v"));
             return new Border(new Border.Side[]{side});
         } else {
@@ -141,7 +145,7 @@ implements SerialPropertyPeer {
             }
             propertyElement.appendChild(borderElement);
         } else {
-            propertyElement.setAttribute("v", toString(border));
+            propertyElement.appendChild(serialContext.getDocument().createTextNode(toString(border)));
         }
     }
 }
