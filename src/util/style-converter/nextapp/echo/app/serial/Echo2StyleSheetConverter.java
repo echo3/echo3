@@ -48,7 +48,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import nextapp.echo.app.FillImageBorder;
 import nextapp.echo.app.util.DomUtil;
 
 import org.w3c.dom.Document;
@@ -69,6 +68,8 @@ public class Echo2StyleSheetConverter {
     private static final Map FILL_IMAGE_BORDER_MAP;
     private static final Map PROPERTY_NAME_MAP;
     
+    private static final boolean LOG_ENABLED = true; 
+
     private Document inputDoc;
     private Document outputDoc;
 
@@ -81,14 +82,14 @@ public class Echo2StyleSheetConverter {
         TYPE_MAP.put("java.lang.String", "s");
         
         FILL_IMAGE_BORDER_MAP = new HashMap();
-        FILL_IMAGE_BORDER_MAP.put("top-left", new Integer(FillImageBorder.TOP_LEFT));
-        FILL_IMAGE_BORDER_MAP.put("top", new Integer(FillImageBorder.TOP));
-        FILL_IMAGE_BORDER_MAP.put("top-right", new Integer(FillImageBorder.TOP_RIGHT));
-        FILL_IMAGE_BORDER_MAP.put("left", new Integer(FillImageBorder.LEFT));
-        FILL_IMAGE_BORDER_MAP.put("right", new Integer(FillImageBorder.RIGHT));
-        FILL_IMAGE_BORDER_MAP.put("bottom-left", new Integer(FillImageBorder.BOTTOM_LEFT));
-        FILL_IMAGE_BORDER_MAP.put("bottom", new Integer(FillImageBorder.BOTTOM));
-        FILL_IMAGE_BORDER_MAP.put("bottom-right", new Integer(FillImageBorder.BOTTOM_RIGHT));
+        FILL_IMAGE_BORDER_MAP.put("top-left", new Integer(0));
+        FILL_IMAGE_BORDER_MAP.put("top", new Integer(1));
+        FILL_IMAGE_BORDER_MAP.put("top-right", new Integer(2));
+        FILL_IMAGE_BORDER_MAP.put("left", new Integer(3));
+        FILL_IMAGE_BORDER_MAP.put("right", new Integer(4));
+        FILL_IMAGE_BORDER_MAP.put("bottom-left", new Integer(5));
+        FILL_IMAGE_BORDER_MAP.put("bottom", new Integer(6));
+        FILL_IMAGE_BORDER_MAP.put("bottom-right", new Integer(7));
         
         PROPERTY_NAME_MAP = new HashMap();
         PROPERTY_NAME_MAP.put("nextapp.echo2.extras.webcontainer.BorderPanePeer.ieAlphaRenderBorder", "ieAlphaRenderBorder");
@@ -228,14 +229,14 @@ public class Echo2StyleSheetConverter {
         String name = oldProperty.getAttribute("name");
         String value = oldProperty.getAttribute("value");
         if (PROPERTY_NAME_MAP.containsKey(name)) {
-            name = (String)PROPERTY_NAME_MAP.get(name);
+            name = (String) PROPERTY_NAME_MAP.get(name);
         }
         boolean renderValueAsContent = false;
         String type = null;
         if (oldProperty.hasAttribute("type")) {
             type = oldProperty.getAttribute("type");
             if (TYPE_MAP.containsKey(type)) {
-                type = (String)TYPE_MAP.get(type);
+                type = (String) TYPE_MAP.get(type);
             } else {
                 // framework type
                 type = type.replaceFirst("nextapp.echo2.app", "");
@@ -247,11 +248,13 @@ public class Echo2StyleSheetConverter {
             // constant
             value = value.replaceFirst("echo2", "echo");
             type = "i";
+            renderValueAsContent = true;
         }
         if ("Insets".equals(type) || name.equals("insets") || name.endsWith("Insets") 
                 || name.equals("outsets") || name.endsWith("Outsets")) {
             value = convertInsets(value);
             if (type == null) {
+                renderValueAsContent = true;
                 type = "Insets";
             }
         } else if (type == null && (name.equals("width") || name.endsWith("Width") 
@@ -259,16 +262,20 @@ public class Echo2StyleSheetConverter {
                 || name.endsWith("Spacing") || name.endsWith("Size") || name.endsWith("X") 
                 || name.endsWith("Y") || name.endsWith("Margin"))) {
             type = "Extent";
+            renderValueAsContent = true;
         } else if ("true".equalsIgnoreCase(value)) {
             if (type == null) {
+                renderValueAsContent = true;
                 type = "b";
             }
         } else if ("false".equalsIgnoreCase(value)) {
             if (type == null) {
+                renderValueAsContent = true;
                 type = "b";
             }
         } else if (type == null && Pattern.matches("\\d+", value)) {
             logWarning("Type missing for property: " + name + ", defaulting to integer");
+            renderValueAsContent = true;
             type = "i";
         }
         property.setAttribute("n", name);
@@ -395,7 +402,7 @@ public class Echo2StyleSheetConverter {
             style = "none";
         }
         property.setAttribute("t", "Border");
-        property.setAttribute("v", size + " " + style + " " + color);
+        property.appendChild(outputDoc.createTextNode(size + " " + style + " " + color));
     }
 
     private void convertLayoutData(Element oldLayoutData, Element property) {
@@ -406,7 +413,7 @@ public class Echo2StyleSheetConverter {
             if ("properties".equals(childNode.getNodeName())) {
                 List propertyNodes = convertProperties(childNode);
                 for (int j = 0; j < propertyNodes.size(); j++) {
-                    property.appendChild((Node)propertyNodes.get(j));
+                    property.appendChild((Node) propertyNodes.get(j));
                 }
             } else if ("property".equals(childNode.getNodeName())) {
                 logWarning("Illegal location of property element, skipped");
@@ -563,11 +570,15 @@ public class Echo2StyleSheetConverter {
     }
     
     private static void logOutput(String message) {
-        System.out.println("INFO: " + message);
+        if (LOG_ENABLED) {
+            System.out.println("INFO: " + message);
+        }
     }
     
     private static void logWarning(String message) {
-        System.err.println("WARN: " + message);
+        if (LOG_ENABLED) {
+            System.err.println("WARN: " + message);
+        }
     }
     
     private static void logError(String message) {
@@ -575,9 +586,11 @@ public class Echo2StyleSheetConverter {
     }
     
     private static void logError(String message, Exception e) {
-        System.err.println("ERROR: " + message);
-        if (e != null) {
-            e.printStackTrace();
+        if (LOG_ENABLED) {
+            System.err.println("ERROR: " + message);
+            if (e != null) {
+                e.printStackTrace();
+            }
         }
     }
 }
