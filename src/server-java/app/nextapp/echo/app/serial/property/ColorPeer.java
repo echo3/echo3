@@ -49,7 +49,7 @@ implements SerialPropertyPeer {
     public static final Color fromString(String value) 
     throws SerialException {
         try {
-            int colorValue = Integer.parseInt(value.substring(1), 16);
+            int colorValue = Integer.parseInt(value.trim().substring(1), 16);
             return new Color(colorValue);
         } catch (IndexOutOfBoundsException ex) {
             throw new SerialException("Invalid color value: " + value, ex);

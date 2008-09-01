@@ -33,6 +33,7 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
+import nextapp.echo.app.HttpImageReference;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.serial.PropertyPeerFactory;
@@ -91,6 +92,8 @@ implements SerialPropertyPeer {
         SerialPropertyPeer imagePropertyPeer = null;
         if ("r".equals(imageType)) {
             imagePropertyPeer = propertyPeerFactory.getPeerForProperty(ResourceImageReference.class);
+        } else if ("h".equals(imageType)) {
+            imagePropertyPeer = propertyPeerFactory.getPeerForProperty(HttpImageReference.class);
         } else if (imageType != null) {
             SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
             try {

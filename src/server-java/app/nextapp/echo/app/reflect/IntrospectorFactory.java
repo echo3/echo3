@@ -119,7 +119,7 @@ public class IntrospectorFactory {
     }
     
     /**
-     * Initilaizes an <code>IntrospectorFactory</code> for a specific <code>ClassLoader</code>
+     * Initializes an <code>IntrospectorFactory</code> for a specific <code>ClassLoader</code>
      * This method must be invoked before any calls to <code>get()</code> if manual
      * initialization is enabled.
      * 
@@ -142,7 +142,7 @@ public class IntrospectorFactory {
      * Sets whether the init() method must be invoked with a specific <code>ClassLoader</code> before
      * introspecting types at the behest of that <code>ClassLoader</code>.  Initial value is false.
      * When true, <code>get()</code> will throw an exception if the <code>IntrospectorFactory</codE>
-     * has not been initilaized.  Requiring manual initialization (and disposal) is important in
+     * has not been initialized.  Requiring manual initialization (and disposal) is important in
      * environments where multiple classloaders are being managed.
      * 
      * @param newValue the new manual initialization state

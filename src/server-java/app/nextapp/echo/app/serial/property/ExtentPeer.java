@@ -63,6 +63,7 @@ implements SerialPropertyPeer {
         if (value == null) {
             return null;
         }
+        value = value.trim();
         int separatorPoint = -1;
         int length = value.length();
         for (int i = length - 1; i >= 0; --i) {

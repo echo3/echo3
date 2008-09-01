@@ -49,7 +49,11 @@ implements SerialPropertyPeer {
     
     public static Insets fromString(String value) 
     throws SerialException {
+        if (value == null) {
+            return null;
+        }
         Extent[] extents = new Extent[4];
+        value = value.trim();
         StringTokenizer st = new StringTokenizer(value, " ");
         int count = 0;
         for (int i = 0; i < extents.length && st.hasMoreTokens(); ++i) {
