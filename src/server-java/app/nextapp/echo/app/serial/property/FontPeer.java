@@ -68,8 +68,10 @@ implements SerialPropertyPeer {
         Element[] tfElements = DomUtil.getChildElementsByTagName(fElement, "tf");
         Font.Typeface typeface = null;
         for (int i = tfElements.length - 1; i >= 0; --i) {
-            String name = tfElements[i].getAttribute("n");
-            if (name == null) {
+            String name;
+            if (tfElements[i].hasAttribute("n")) {
+                name = tfElements[i].getAttribute("n");
+            } else {
                 name = DomUtil.getElementText(tfElements[i]).trim();
             }
             if (typeface == null) {

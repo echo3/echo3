@@ -61,7 +61,7 @@
  <s n="TitleLabel" t="nextapp.echo.app.Label">
   <p n="font" t="Font">
    <f sz="18px">
-    <tf n="Verdana"/>
+    <tf>Verdana</tf>
    </f>
   </p>
   <p n="foreground" t="Color">#ffffff</p>
