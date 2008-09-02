@@ -405,6 +405,7 @@ Core.Web.Env = {
         this.BROWSER_SAFARI = ua.indexOf("safari") != -1;
         this.BROWSER_KONQUEROR = ua.indexOf("konqueror") != -1;
         this.BROWSER_FIREFOX = ua.indexOf("firefox") != -1;
+        this.BROWSER_CHROME = ua.indexOf("chrome") != -1;
         
         this.CSS_FLOAT = "cssFloat";
     
@@ -423,6 +424,8 @@ Core.Web.Env = {
             this._parseVersionInfo(ua, "firefox/");
         } else if (this.BROWSER_OPERA) {
             this._parseVersionInfo(ua, "opera/");
+        } else if (this.BROWSER_CHROME) {
+            this._parseVersionInfo(ua, "chrome/");
         } else if (this.BROWSER_SAFARI) {
             this._parseVersionInfo(ua, "version/");
         } else if (this.BROWSER_MOZILLA) {
@@ -430,7 +433,7 @@ Core.Web.Env = {
         } else if (this.BROWSER_KONQUEROR) {
             this._parseVersionInfo(ua, "konqueror/");
         }
-    
+
         //FIXME Quirk flags not refined yet, some quirk flags from Echo 2.0/1 will/may be deprecated/removed.
                 
         // Set IE Quirk Flags

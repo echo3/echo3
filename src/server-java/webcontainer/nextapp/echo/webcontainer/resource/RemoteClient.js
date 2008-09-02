@@ -793,6 +793,7 @@ Echo.RemoteClient.ClientMessage = Core.extend({
         cp._add("navigatorUserAgent", window.navigator.userAgent);
         
         var env = Core.Web.Env;
+        cp._add("browserChrome", env.BROWSER_CHROME);
         cp._add("browserOpera", env.BROWSER_OPERA);
         cp._add("browserSafari", env.BROWSER_SAFARI);
         cp._add("browserKonqueror", env.BROWSER_KONQUEROR);

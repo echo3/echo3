@@ -75,6 +75,7 @@ implements ClientMessage.Processor {
         m.put(ClientProperties.NAVIGATOR_PLATFORM, String.class);
         m.put(ClientProperties.NAVIGATOR_USER_AGENT, String.class);
 
+        m.put(ClientProperties.BROWSER_CHROME, Boolean.class);
         m.put(ClientProperties.BROWSER_OPERA, Boolean.class);
         m.put(ClientProperties.BROWSER_KONQUEROR, Boolean.class);
         m.put(ClientProperties.BROWSER_SAFARI, Boolean.class);

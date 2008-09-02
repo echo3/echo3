@@ -66,6 +66,11 @@ implements Serializable {
     public static final String BROWSER_MOZILLA = "browserMozilla";
     
     /**
+     * Flag indicating that the browser is a derivative of the Google Chrome platform.
+     */
+    public static final String BROWSER_CHROME = "browserChrome";
+    
+    /**
      * Flag indicating that the browser is a derivative of the Mozilla
      * Firefox 1.0+ browser platform.
      */
