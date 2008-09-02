@@ -570,10 +570,10 @@ Echo.Serial.Font = {
         if (tfElements.length > 1) {
             font.typeface = new Array(tfElements.length);
             for (var i = 0; i < tfElements.length; ++i) {
-                font.typeface[i] = tfElements[i].getAttribute("n");
+                font.typeface[i] = tfElements[i].firstChild.data;
             }
         } else if (tfElements.length == 1) {
-            font.typeface = tfElements[0].getAttribute("n");
+            font.typeface = tfElements[0].firstChild.data;
         }
         
         var size = element.getAttribute("sz");

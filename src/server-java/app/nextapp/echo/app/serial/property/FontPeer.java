@@ -69,6 +69,9 @@ implements SerialPropertyPeer {
         Font.Typeface typeface = null;
         for (int i = tfElements.length - 1; i >= 0; --i) {
             String name = tfElements[i].getAttribute("n");
+            if (name == null) {
+                name = DomUtil.getElementText(tfElements[i]).trim();
+            }
             if (typeface == null) {
                 typeface = new Font.Typeface(name);
             } else {
@@ -94,7 +97,7 @@ implements SerialPropertyPeer {
         Font.Typeface typeface = font.getTypeface();
         while (typeface != null) {
             Element tfElement = serialContext.getDocument().createElement("tf");
-            tfElement.setAttribute("n", typeface.getName());
+            tfElement.appendChild(serialContext.getDocument().createTextNode(typeface.getName()));
             element.appendChild(tfElement);
             typeface = typeface.getAlternate();
         }

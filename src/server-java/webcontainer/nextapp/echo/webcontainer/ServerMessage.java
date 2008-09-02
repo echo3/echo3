@@ -103,7 +103,7 @@ public class ServerMessage {
             return;
         }
         Element libraryElement = document.createElement("lib");
-        libraryElement.setAttribute("i", serviceId);
+        libraryElement.appendChild(document.createTextNode(serviceId));
         librariesElement.appendChild(libraryElement);
         addedLibraries.add(serviceId);
     }

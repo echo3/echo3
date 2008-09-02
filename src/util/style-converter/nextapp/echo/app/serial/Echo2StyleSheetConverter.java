@@ -368,7 +368,7 @@ public class Echo2StyleSheetConverter {
         }
         for (int i = 0; i < typefaces.size(); i++) {
             Element tfElement = outputDoc.createElement("tf");
-            tfElement.setAttribute("n", (String)typefaces.get(i));
+            tfElement.appendChild(outputDoc.createTextNode((String) typefaces.get(i)));
             fontElement.appendChild(tfElement);
         }
         property.appendChild(fontElement);
