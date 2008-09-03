@@ -839,6 +839,8 @@ Core.Web.HttpConnection = Core.extend({
     _disposed: false,
     
     _xmlHttpRequest: null,
+    
+    _requestHeaders: null,
 
     /**
      * Creates a new <code>HttpConnection</code>.
@@ -921,10 +923,24 @@ Core.Web.HttpConnection = Core.extend({
         };
         
         this._xmlHttpRequest.open(this._method, this._url, true);
-    
+
+        // Set headers.
+        if (this._requestHeaders && (usingActiveXObject || this._xmlHttpRequest.setRequestHeader)) {
+            for(var h in this._requestHeaders) {
+                try {
+                    this._xmlHttpRequest.setRequestHeader(h, this._requestHeaders[h]);
+                } catch (e) {
+                    throw new Error("Failed to set header \"" + h + "\"");
+                }
+            }
+        }
+        
+        // Set Content-Type, if supplied.
         if (this._contentType && (usingActiveXObject || this._xmlHttpRequest.setRequestHeader)) {
             this._xmlHttpRequest.setRequestHeader("Content-Type", this._contentType);
         }
+
+        // Execute request.
         this._xmlHttpRequest.send(this._messageObject ? this._messageObject : null);
     },
     
@@ -937,12 +953,30 @@ Core.Web.HttpConnection = Core.extend({
         this._messageObject = null;
         this._xmlHttpRequest = null;
         this._disposed = true;
+        this._requestHeaders = null;
+    },
+    
+    /**
+     * Returns a header from the received response.
+     * @param {String} header the header to retrieve
+     */
+    getResponseHeader: function(header) {
+        return this._xmlHttpRequest ? this._xmlHttpRequest.getResponseHeader(header) : null;
+    },
+    
+    /**
+     * Returns all the headers of the response.
+     * @param {String} header the header to retrieve
+     */
+    getAllResponseHeaders: function() {
+        return this._xmlHttpRequest ? this._xmlHttpRequest.getAllResponseHeaders() : null;
     },
     
     /**
      * Returns the response status code of the HTTP connection, if available.
      * 
-     * @return Integer the response status code
+     * @return the response status code
+     * @type Integer
      */
     getStatus: function() {
         return this._xmlHttpRequest ? this._xmlHttpRequest.status : null;
@@ -1004,6 +1038,19 @@ Core.Web.HttpConnection = Core.extend({
      */
     removeResponseListener: function(l) {
         this._listenerList.removeListener("response", l);
+    },
+    
+    /**
+     * Sets a header in the request.
+     * 
+     * @param {String} header the header to retrieve
+     * @param {String} value the value of the header
+     */
+    setRequestHeader: function(header, value) {
+    	if (!this._requestHeaders) {
+    		this._requestHeaders = { };
+    	} 
+		this._requestHeaders[header] = value;
     }
 });
 
