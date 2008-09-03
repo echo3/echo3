@@ -324,6 +324,17 @@
     <target name="doc" 
             depends="doc.app, doc.app.private, doc.webcontainer, doc.webcontainer.private"/>
 
+    <target name="compile.style-converter" description="Compile Echo2-Echo3 Style Conversion Utility">
+        <mkdir dir="${dir.build.util.style-converter}"/>
+        <javac srcdir="${dir.src.util.style-converter}" destdir="${dir.build.util.style-converter}" 
+                debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" target="${ant.build.javac.target}"/>
+    </target>
+    
+    <target name="dist.style-converter" depends="clean,compile.style-converter">
+        <mkdir dir="${dir.dist.util}"/>
+        <jar jarfile="${dir.dist.util}/${jarfile.style-converter}" basedir="${dir.build.util.style-converter}"/>
+    </target>
+
     <target name="compile.testapp" depends="dist">
         <mkdir dir="${dir.build.server-java.testapp}/WEB-INF/classes"/>
         <mkdir dir="${dir.build.server-java.testapp}/WEB-INF/lib"/>
