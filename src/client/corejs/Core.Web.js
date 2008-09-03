@@ -402,17 +402,17 @@ Core.Web.Env = {
     _init: function() {
         var ua = navigator.userAgent.toLowerCase();
         this.BROWSER_OPERA = ua.indexOf("opera") != -1;
-        this.BROWSER_SAFARI = ua.indexOf("safari") != -1;
         this.BROWSER_KONQUEROR = ua.indexOf("konqueror") != -1;
         this.BROWSER_FIREFOX = ua.indexOf("firefox") != -1;
         this.BROWSER_CHROME = ua.indexOf("chrome") != -1;
+        this.BROWSER_SAFARI = !this.BROWSER_CHROME && ua.indexOf("safari") != -1;
         
         this.CSS_FLOAT = "cssFloat";
     
         // Note deceptive user agent fields:
         // - Konqueror and Safari UA fields contain "like Gecko"
         // - Opera UA field typically contains "MSIE"
-        this.DECEPTIVE_USER_AGENT = this.BROWSER_OPERA || this.BROWSER_SAFARI || this.BROWSER_KONQUEROR;
+        this.DECEPTIVE_USER_AGENT = this.BROWSER_OPERA || this.BROWSER_SAFARI || this.BROWSER_CHROME || this.BROWSER_KONQUEROR;
         
         this.BROWSER_MOZILLA = !this.DECEPTIVE_USER_AGENT && ua.indexOf("gecko") != -1;
         this.BROWSER_INTERNET_EXPLORER = !this.DECEPTIVE_USER_AGENT && ua.indexOf("msie") != -1;
@@ -485,6 +485,8 @@ Core.Web.Env = {
         } else if (this.BROWSER_OPERA) {
             this.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
         } else if (this.BROWSER_SAFARI) {
+            this.QUIRK_SAFARI_DOM_TEXT_ESCAPE = true;
+        } else if (this.BROWSER_CHROME) {
             this.QUIRK_SAFARI_DOM_TEXT_ESCAPE = true;
         }
     },
