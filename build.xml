@@ -332,7 +332,11 @@
     
     <target name="dist.style-converter" depends="clean,compile.style-converter">
         <mkdir dir="${dir.dist.util}"/>
-        <jar jarfile="${dir.dist.util}/${jarfile.style-converter}" basedir="${dir.build.util.style-converter}"/>
+        <jar jarfile="${dir.dist.util}/${jarfile.style-converter}" basedir="${dir.build.util.style-converter}">
+            <manifest>
+                <attribute name="Main-Class" value="nextapp.echo2migration.StyleSheetConverter"/>
+            </manifest>
+        </jar>
     </target>
 
     <target name="compile.testapp" depends="dist">
