@@ -31,6 +31,14 @@ public class XMLConverter {
             this.source = source;
             this.target = target;
         }
+        
+        public Document getSourceDocument() {
+            return source;
+        }
+        
+        public Document getTargetDocument() {
+            return target;
+        }
     }
     
     private static final Pattern CONSTANT_PATTERN = Pattern.compile("(.*?\\.)?[A-Z_]+");
