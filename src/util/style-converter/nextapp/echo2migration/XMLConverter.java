@@ -23,21 +23,30 @@ public class XMLConverter {
     
     public static class Context {
         
+        boolean loggingEnabled = true;
         Document source;
         Document target;
-        
+
         public Context(Document source, Document target) {
             super();
             this.source = source;
             this.target = target;
         }
-        
+
         public Document getSourceDocument() {
             return source;
         }
         
         public Document getTargetDocument() {
             return target;
+        }
+        
+        public boolean isLoggingEnabled() {
+            return loggingEnabled;
+        }
+        
+        public void setLoggingEnabled(boolean loggingEnabled) {
+            this.loggingEnabled = loggingEnabled;
         }
     }
     
@@ -73,9 +82,11 @@ public class XMLConverter {
         PROPERTY_NAME_MAP.put("nextapp.echo2.extras.webcontainer.AccordionPanePeer.lazyRenderEnabled", "lazyRenderEnabled");
     }
 
-    private static void checkResourceExists(String resource) {
+    private static void checkResourceExists(Context context, String resource) {
         if (XMLConverter.class.getResource(resource) == null) {
-            Util.logWarning("Could not find resource: " + resource + " on the classpath");
+            if (context.isLoggingEnabled()) {
+                Util.logWarning("Could not find resource: " + resource + " on the classpath");
+            }
         }
     }
 
@@ -94,12 +105,16 @@ public class XMLConverter {
     private static void convertBorder(Context context, Element oldBorder, Element property) {
         String size = oldBorder.getAttribute("size");
         if (size == null || size.length() == 0) {
-            Util.logWarning("Size missing, defaulting to 1px");
+            if (context.loggingEnabled) {
+                Util.logWarning("Size missing, defaulting to 1px");
+            }
             size = "1px";
         }
         String color = oldBorder.getAttribute("color");
         if (color == null || color.length() == 0) {
-            Util.logWarning("Color missing, defaulting to black");
+            if (context.loggingEnabled) {
+                Util.logWarning("Color missing, defaulting to black");
+            }
             color = "#000000";
         }
         String style = oldBorder.getAttribute("style");
@@ -140,7 +155,9 @@ public class XMLConverter {
                 if ("nextapp.echo2.app.ResourceImageReference".equals(imageType)) {
                     imageType = "r";
                 } else {
-                    Util.logWarning("Encountered image type " + imageType + ", assuming subclass of ResourceImageReference");
+                    if (context.loggingEnabled) {
+                        Util.logWarning("Encountered image type " + imageType + ", assuming subclass of ResourceImageReference");
+                    }
                 }
                 fillImage.setAttribute("t", imageType);
                 fillImage.appendChild(convertResourceImage(context, oldImage));
@@ -256,7 +273,9 @@ public class XMLConverter {
         case 4:
             return extents[1] + " " + extents[2] + " " + extents[3] + " " + extents[0];
         }
-        Util.logError("Insets could not be parsed: " + oldInsets + ", defaulting to 0px");
+        if (context.loggingEnabled) {
+            Util.logError("Insets could not be parsed: " + oldInsets + ", defaulting to 0px");
+        }
         return "0px";
     }
 
@@ -271,7 +290,9 @@ public class XMLConverter {
                     property.appendChild((Node) propertyNodes.get(j));
                 }
             } else if ("property".equals(childNode.getNodeName())) {
-                Util.logWarning("Illegal location of property element, skipped");
+                if (context.loggingEnabled) {
+                    Util.logWarning("Illegal location of property element, skipped");
+                }
             } else {
                 property.appendChild(context.target.importNode(childNode, true));
             }
@@ -309,7 +330,9 @@ public class XMLConverter {
     }
 
     public static List convertProperties(Context context, Node oldProperties) {
-        Util.logOutput("Converting properties");
+        if (context.loggingEnabled) {
+            Util.logOutput("Converting properties");
+        }
         
         List properties = new ArrayList();
         NodeList propChildNodes = oldProperties.getChildNodes();
@@ -330,7 +353,9 @@ public class XMLConverter {
     
     private static Node convertProperty(Context context, Element oldProperty) {
         if (oldProperty.hasAttribute("name")) {
-            Util.logOutput("Converting property: " + oldProperty.getAttribute("name"));
+            if (context.loggingEnabled) {
+                Util.logOutput("Converting property: " + oldProperty.getAttribute("name"));
+            }
             Element property;
             if (oldProperty.hasAttribute("value")) {
                 property = convertSimpleProperty(context, oldProperty);
@@ -342,7 +367,9 @@ public class XMLConverter {
             }
             return property;
         } else { 
-            Util.logWarning("Encountered property without name, skipped");
+            if (context.loggingEnabled) {
+                Util.logWarning("Encountered property without name, skipped");
+            }
             return null;
         }
     }
@@ -351,7 +378,7 @@ public class XMLConverter {
         if (oldImage.hasAttribute("value")) {
             Element image = context.target.createElement("i");
             String resource = oldImage.getAttribute("value");
-            checkResourceExists(resource);
+            checkResourceExists(context, resource);
             image.setAttribute("r", resource);
             return image;
         } else {
@@ -372,7 +399,7 @@ public class XMLConverter {
         if (oldImageReference.hasAttribute("height")) {
             image.setAttribute("h", oldImageReference.getAttribute("height"));
         }
-        checkResourceExists(resource);
+        checkResourceExists(context, resource);
         image.setAttribute("r", resource);
         return image;
     }
@@ -420,21 +447,27 @@ public class XMLConverter {
                 type = "b";
             }
         } else if (type == null && Pattern.matches("\\d+", value)) {
-            Util.logWarning("Type missing for property: " + name + ", defaulting to integer");
+            if (context.loggingEnabled) {
+                Util.logWarning("Type missing for property: " + name + ", defaulting to integer");
+            }
             type = "i";
         }
         property.setAttribute("n", name);
         if (type != null) {
             property.setAttribute("t", type);
         } else {
-            Util.logWarning("Could not determine type of property: " + name + (value == null ? "" : ", value: " + value));
+            if (context.loggingEnabled) {
+                Util.logWarning("Could not determine type of property: " + name + (value == null ? "" : ", value: " + value));
+            }
         }
         property.appendChild(context.target.createTextNode(value));
         return property;
     }
 
     public static Node convertStyle(Context context, Element oldStyle) {
-        Util.logOutput("Converting style: " + oldStyle.getAttribute("name"));
+        if (context.loggingEnabled) {
+            Util.logOutput("Converting style: " + oldStyle.getAttribute("name"));
+        }
         
         Element style = context.target.createElement("s");
         style.setAttribute("n", oldStyle.getAttribute("name"));
@@ -453,7 +486,9 @@ public class XMLConverter {
                     style.appendChild((Node)propertyNodes.get(j));
                 }
             } else if ("property".equals(childNode.getNodeName())) {
-                Util.logWarning("Illegal location of property element, skipped");
+                if (context.loggingEnabled) {
+                    Util.logWarning("Illegal location of property element, skipped");
+                }
             } else {
                 style.appendChild(context.target.importNode(childNode, true));
             }
