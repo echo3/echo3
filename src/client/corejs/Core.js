@@ -99,7 +99,7 @@ Core = {
         var definition = arguments.length == 1 ? arguments[0] : arguments[1];
         
         // Perform argument error checking.
-        if (baseClass) {
+        if (arguments.length == 2) {
             if (typeof(baseClass) != "function") {
                 throw new Error("Base class is not a function, cannot derive.");
             }
