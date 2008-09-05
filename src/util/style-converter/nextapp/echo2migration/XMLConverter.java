@@ -308,7 +308,7 @@ public class XMLConverter {
         return property;
     }
 
-    private static List convertProperties(Context context, Node oldProperties) {
+    public static List convertProperties(Context context, Node oldProperties) {
         Util.logOutput("Converting properties");
         
         List properties = new ArrayList();
@@ -384,7 +384,6 @@ public class XMLConverter {
         if (PROPERTY_NAME_MAP.containsKey(name)) {
             name = (String) PROPERTY_NAME_MAP.get(name);
         }
-        boolean renderValueAsContent = false;
         String type = null;
         if (oldProperty.hasAttribute("type")) {
             type = oldProperty.getAttribute("type");
@@ -396,18 +395,15 @@ public class XMLConverter {
             }
         } else if (value.length() == 7 && value.startsWith("#")) {
             type = "Color";
-            renderValueAsContent = true;
         } else if (CONSTANT_PATTERN.matcher(value).matches()) {
             // constant
             value = value.replaceFirst("echo2", "echo");
             type = "i";
-            renderValueAsContent = true;
         }
         if ("Insets".equals(type) || name.equals("insets") || name.endsWith("Insets") 
                 || name.equals("outsets") || name.endsWith("Outsets")) {
             value = convertInsets(context, value);
             if (type == null) {
-                renderValueAsContent = true;
                 type = "Insets";
             }
         } else if (type == null && (name.equals("width") || name.endsWith("Width") 
@@ -415,20 +411,16 @@ public class XMLConverter {
                 || name.endsWith("Spacing") || name.endsWith("Size") || name.endsWith("X") 
                 || name.endsWith("Y") || name.endsWith("Margin"))) {
             type = "Extent";
-            renderValueAsContent = true;
         } else if ("true".equalsIgnoreCase(value)) {
             if (type == null) {
-                renderValueAsContent = true;
                 type = "b";
             }
         } else if ("false".equalsIgnoreCase(value)) {
             if (type == null) {
-                renderValueAsContent = true;
                 type = "b";
             }
         } else if (type == null && Pattern.matches("\\d+", value)) {
             Util.logWarning("Type missing for property: " + name + ", defaulting to integer");
-            renderValueAsContent = true;
             type = "i";
         }
         property.setAttribute("n", name);
@@ -437,11 +429,7 @@ public class XMLConverter {
         } else {
             Util.logWarning("Could not determine type of property: " + name + (value == null ? "" : ", value: " + value));
         }
-        if (renderValueAsContent) {
-            property.appendChild(context.target.createTextNode(value));
-        } else {
-            property.setAttribute("v", value);
-        }
+        property.appendChild(context.target.createTextNode(value));
         return property;
     }
 
