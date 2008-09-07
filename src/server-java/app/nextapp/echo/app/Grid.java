@@ -96,7 +96,7 @@ public class Grid extends Component {
      * @return the border
      */
     public Border getBorder() {
-        return (Border) getProperty(PROPERTY_BORDER);
+        return (Border) get(PROPERTY_BORDER);
     }
 
     /**
@@ -108,7 +108,7 @@ public class Grid extends Component {
      * @return the width
      */
     public Extent getColumnWidth(int columnIndex) {
-        return (Extent) getIndexedProperty(PROPERTY_COLUMN_WIDTH, columnIndex);
+        return (Extent) getIndex(PROPERTY_COLUMN_WIDTH, columnIndex);
     }
     
     /**
@@ -119,7 +119,7 @@ public class Grid extends Component {
      * @return the height
      */
     public Extent getHeight() {
-        return (Extent) getProperty(PROPERTY_HEIGHT);
+        return (Extent) get(PROPERTY_HEIGHT);
     }
     
     /**
@@ -130,7 +130,7 @@ public class Grid extends Component {
      * @return the default cell insets
      */
     public Insets getInsets() {
-        return (Insets) getProperty(PROPERTY_INSETS);
+        return (Insets) get(PROPERTY_INSETS);
     }
     
     /**
@@ -153,7 +153,7 @@ public class Grid extends Component {
      * @see #setOrientation
      */
     public int getOrientation() {
-        Integer orientationValue = (Integer) getProperty(PROPERTY_ORIENTATION);
+        Integer orientationValue = (Integer) get(PROPERTY_ORIENTATION);
         return orientationValue == null ? ORIENTATION_HORIZONTAL : orientationValue.intValue();
     }
     
@@ -166,7 +166,7 @@ public class Grid extends Component {
      * @return the height
      */
     public Extent getRowHeight(int rowIndex) {
-        return (Extent) getIndexedProperty(PROPERTY_ROW_HEIGHT, rowIndex);
+        return (Extent) getIndex(PROPERTY_ROW_HEIGHT, rowIndex);
     }
     
     /**
@@ -181,7 +181,7 @@ public class Grid extends Component {
      * @return the number of columns or rows  
      */
     public int getSize() {
-        Integer sizeValue = (Integer) getProperty(PROPERTY_SIZE);
+        Integer sizeValue = (Integer) get(PROPERTY_SIZE);
         if (sizeValue == null) {
             return DEFAULT_SIZE;
         } else {
@@ -197,7 +197,7 @@ public class Grid extends Component {
      * @return the width
      */
     public Extent getWidth() {
-        return (Extent) getProperty(PROPERTY_WIDTH);
+        return (Extent) get(PROPERTY_WIDTH);
     }
     
     /**
@@ -206,7 +206,7 @@ public class Grid extends Component {
      * @param newValue the new border
      */
     public void setBorder(Border newValue) {
-        setProperty(PROPERTY_BORDER, newValue);
+        set(PROPERTY_BORDER, newValue);
     }
     
     /**
@@ -218,7 +218,7 @@ public class Grid extends Component {
      * @param newValue the new width
      */
     public void setColumnWidth(int columnIndex, Extent newValue) {
-        setIndexedProperty(PROPERTY_COLUMN_WIDTH, columnIndex, newValue);
+        setIndex(PROPERTY_COLUMN_WIDTH, columnIndex, newValue);
     }
     
     /**
@@ -229,7 +229,7 @@ public class Grid extends Component {
      * @param newValue the new height
      */
     public void setHeight(Extent newValue) {
-        setProperty(PROPERTY_HEIGHT, newValue);
+        set(PROPERTY_HEIGHT, newValue);
     }
     
     /**
@@ -240,7 +240,7 @@ public class Grid extends Component {
      * @param newValue the new default cell insets
      */
     public void setInsets(Insets newValue) {
-        setProperty(PROPERTY_INSETS, newValue);
+        set(PROPERTY_INSETS, newValue);
     }
 
     /**
@@ -262,7 +262,7 @@ public class Grid extends Component {
      *        </ul>
      */
     public void setOrientation(int newValue) {
-        setProperty(PROPERTY_ORIENTATION, new Integer(newValue));
+        set(PROPERTY_ORIENTATION, new Integer(newValue));
     }
     
     /**
@@ -274,7 +274,7 @@ public class Grid extends Component {
      * @param newValue the new height
      */
     public void setRowHeight(int rowIndex, Extent newValue) {
-        setIndexedProperty(PROPERTY_ROW_HEIGHT, rowIndex, newValue);
+        setIndex(PROPERTY_ROW_HEIGHT, rowIndex, newValue);
     }
     
     /**
@@ -290,7 +290,7 @@ public class Grid extends Component {
      * @see #getSize()
      */
     public void setSize(int newValue) {
-        setProperty(PROPERTY_SIZE, new Integer(newValue));
+        set(PROPERTY_SIZE, new Integer(newValue));
     }
     
     /**
@@ -301,6 +301,6 @@ public class Grid extends Component {
      * @param newValue the new width
      */
     public void setWidth(Extent newValue) {
-        setProperty(PROPERTY_WIDTH, newValue);
+        set(PROPERTY_WIDTH, newValue);
     }
 }

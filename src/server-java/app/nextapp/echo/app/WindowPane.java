@@ -170,7 +170,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the background image
      */
     public FillImage getBackgroundImage() {
-        return (FillImage) getProperty(PROPERTY_BACKGROUND_IMAGE);
+        return (FillImage) get(PROPERTY_BACKGROUND_IMAGE);
     }
     
     /**
@@ -179,7 +179,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return border
      */
     public FillImageBorder getBorder() {
-        return (FillImageBorder) getProperty(PROPERTY_BORDER);
+        return (FillImageBorder) get(PROPERTY_BORDER);
     }
     
     /**
@@ -188,7 +188,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the icon
      */
     public ImageReference getCloseIcon() {
-        return (ImageReference) getProperty(PROPERTY_CLOSE_ICON);
+        return (ImageReference) get(PROPERTY_CLOSE_ICON);
     }
     
     /**
@@ -197,7 +197,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the inset margin
      */
     public Insets getCloseIconInsets() {
-        return (Insets) getProperty(PROPERTY_CLOSE_ICON_INSETS);
+        return (Insets) get(PROPERTY_CLOSE_ICON_INSETS);
     }
     
     /**
@@ -207,7 +207,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the inset margin
      */
     public Insets getControlsInsets() {
-        return (Insets) getProperty(PROPERTY_CONTROLS_INSETS);
+        return (Insets) get(PROPERTY_CONTROLS_INSETS);
     }
     
     /**
@@ -221,7 +221,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      *         </ul>
      */
     public int getDefaultCloseOperation() {
-        Integer defaultCloseOperationValue = (Integer) getProperty(PROPERTY_DEFAULT_CLOSE_OPERATION);
+        Integer defaultCloseOperationValue = (Integer) get(PROPERTY_DEFAULT_CLOSE_OPERATION);
         return defaultCloseOperationValue == null ? 0 : defaultCloseOperationValue.intValue();
     }
     
@@ -231,7 +231,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the height
      */
     public Extent getHeight() {
-        return (Extent) getProperty(PROPERTY_HEIGHT);
+        return (Extent) get(PROPERTY_HEIGHT);
     }
     
     /**
@@ -240,7 +240,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the icon
      */
     public ImageReference getIcon() {
-        return (ImageReference) getProperty(PROPERTY_ICON);
+        return (ImageReference) get(PROPERTY_ICON);
     }
     
     /**
@@ -249,7 +249,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the inset margin
      */
     public Insets getIconInsets() {
-        return (Insets) getProperty(PROPERTY_ICON_INSETS);
+        return (Insets) get(PROPERTY_ICON_INSETS);
     }
     
     /**
@@ -260,7 +260,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the inset
      */
     public Insets getInsets() {
-        return (Insets) getProperty(PROPERTY_INSETS);
+        return (Insets) get(PROPERTY_INSETS);
     }
     
     /**
@@ -269,7 +269,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the icon
      */
     public ImageReference getMaximizeIcon() {
-        return (ImageReference) getProperty(PROPERTY_MAXIMIZE_ICON);
+        return (ImageReference) get(PROPERTY_MAXIMIZE_ICON);
     }
     
     /**
@@ -278,7 +278,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the inset margin
      */
     public Insets getMaximizeIconInsets() {
-        return (Insets) getProperty(PROPERTY_MAXIMIZE_ICON_INSETS);
+        return (Insets) get(PROPERTY_MAXIMIZE_ICON_INSETS);
     }
     
     /**
@@ -288,7 +288,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the maximum height
      */
     public Extent getMaximumHeight() {
-        return (Extent) getProperty(PROPERTY_MAXIMUM_HEIGHT);
+        return (Extent) get(PROPERTY_MAXIMUM_HEIGHT);
     }
     
     /**
@@ -298,7 +298,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the maximum width
      */
     public Extent getMaximumWidth() {
-        return (Extent) getProperty(PROPERTY_MAXIMUM_WIDTH);
+        return (Extent) get(PROPERTY_MAXIMUM_WIDTH);
     }
     
     /**
@@ -307,7 +307,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the icon
      */
     public ImageReference getMinimizeIcon() {
-        return (ImageReference) getProperty(PROPERTY_MINIMIZE_ICON);
+        return (ImageReference) get(PROPERTY_MINIMIZE_ICON);
     }
     
     /**
@@ -316,7 +316,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the inset margin
      */
     public Insets getMinimizeIconInsets() {
-        return (Insets) getProperty(PROPERTY_MINIMIZE_ICON_INSETS);
+        return (Insets) get(PROPERTY_MINIMIZE_ICON_INSETS);
     }
     
     /**
@@ -326,7 +326,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the minimum height
      */
     public Extent getMinimumHeight() {
-        return (Extent) getProperty(PROPERTY_MINIMUM_HEIGHT);
+        return (Extent) get(PROPERTY_MINIMUM_HEIGHT);
     }
     
     /**
@@ -336,7 +336,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the minimum width
      */
     public Extent getMinimumWidth() {
-        return (Extent) getProperty(PROPERTY_MINIMUM_WIDTH);
+        return (Extent) get(PROPERTY_MINIMUM_WIDTH);
     }
     
     /**
@@ -346,7 +346,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the position
      */
     public Extent getPositionX() {
-        return (Extent) getProperty(PROPERTY_POSITION_X);
+        return (Extent) get(PROPERTY_POSITION_X);
     }
     
     /**
@@ -356,7 +356,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the position
      */
     public Extent getPositionY() {
-        return (Extent) getProperty(PROPERTY_POSITION_Y);
+        return (Extent) get(PROPERTY_POSITION_Y);
     }
     
     /**
@@ -365,7 +365,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the title
      */
     public String getTitle() {
-        return (String) getProperty(PROPERTY_TITLE);
+        return (String) get(PROPERTY_TITLE);
     }
     
     /**
@@ -374,7 +374,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the color
      */
     public Color getTitleBackground() {
-        return (Color) getProperty(PROPERTY_TITLE_BACKGROUND);
+        return (Color) get(PROPERTY_TITLE_BACKGROUND);
     }
     
     /**
@@ -383,7 +383,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the background image
      */
     public FillImage getTitleBackgroundImage() {
-        return (FillImage) getProperty(PROPERTY_TITLE_BACKGROUND_IMAGE);
+        return (FillImage) get(PROPERTY_TITLE_BACKGROUND_IMAGE);
     }
     
     /**
@@ -392,7 +392,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the font
      */
     public Font getTitleFont() {
-        return (Font) getProperty(PROPERTY_TITLE_FONT);
+        return (Font) get(PROPERTY_TITLE_FONT);
     }
     
     /**
@@ -401,7 +401,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the color
      */
     public Color getTitleForeground() {
-        return (Color) getProperty(PROPERTY_TITLE_FOREGROUND);
+        return (Color) get(PROPERTY_TITLE_FOREGROUND);
     }
     
     /**
@@ -410,7 +410,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the height
      */
     public Extent getTitleHeight() {
-        return (Extent) getProperty(PROPERTY_TITLE_HEIGHT);
+        return (Extent) get(PROPERTY_TITLE_HEIGHT);
     }
 
     /**
@@ -419,7 +419,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the insets
      */
     public Insets getTitleInsets() {
-        return (Insets) getProperty(PROPERTY_TITLE_INSETS);
+        return (Insets) get(PROPERTY_TITLE_INSETS);
     }
 
     /**
@@ -428,7 +428,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the width
      */
     public Extent getWidth() {
-        return (Extent) getProperty(PROPERTY_WIDTH);
+        return (Extent) get(PROPERTY_WIDTH);
     }
     
     /**
@@ -449,7 +449,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return true if the window is closable
      */
     public boolean isClosable() {
-        Boolean value = (Boolean) getProperty(PROPERTY_CLOSABLE);
+        Boolean value = (Boolean) get(PROPERTY_CLOSABLE);
         return value == null ? true: value.booleanValue();
     }
     
@@ -460,7 +460,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return true if the window can be maximized
      */
     public boolean isMaximizeEnabled() {
-        Boolean value = (Boolean) getProperty(PROPERTY_MAXIMIZE_ENABLED);
+        Boolean value = (Boolean) get(PROPERTY_MAXIMIZE_ENABLED);
         return value == null ? true: value.booleanValue();
     }
     
@@ -471,7 +471,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return true if the window can be minimized
      */
     public boolean isMinimizeEnabled() {
-        Boolean value = (Boolean) getProperty(PROPERTY_MINIMIZE_ENABLED);
+        Boolean value = (Boolean) get(PROPERTY_MINIMIZE_ENABLED);
         return value == null ? true: value.booleanValue();
     }
     
@@ -488,7 +488,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return true if the window is movable
      */
     public boolean isMovable() {
-        Boolean value = (Boolean) getProperty(PROPERTY_MOVABLE);
+        Boolean value = (Boolean) get(PROPERTY_MOVABLE);
         return value == null ? true : value.booleanValue();
     }
 
@@ -498,7 +498,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return true if the window is resizable
      */
     public boolean isResizable() {
-        Boolean value = (Boolean) getProperty(PROPERTY_RESIZABLE);
+        Boolean value = (Boolean) get(PROPERTY_RESIZABLE);
         return value == null ? true : value.booleanValue(); 
     }
     
@@ -545,7 +545,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new background image
      */
     public void setBackgroundImage(FillImage newValue) {
-        setProperty(PROPERTY_BACKGROUND_IMAGE, newValue);
+        set(PROPERTY_BACKGROUND_IMAGE, newValue);
     }
     
     /**
@@ -554,7 +554,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new border
      */
     public void setBorder(FillImageBorder newValue) {
-        setProperty(PROPERTY_BORDER, newValue);
+        set(PROPERTY_BORDER, newValue);
     }
     
     /**
@@ -564,7 +564,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue true if the window is closable
      */
     public void setClosable(boolean newValue) {
-        setProperty(PROPERTY_CLOSABLE, new Boolean(newValue));
+        set(PROPERTY_CLOSABLE, new Boolean(newValue));
     }
     
     /**
@@ -573,7 +573,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new icon
      */
     public void setCloseIcon(ImageReference newValue) {
-        setProperty(PROPERTY_CLOSE_ICON, newValue);
+        set(PROPERTY_CLOSE_ICON, newValue);
     }
     
     /**
@@ -582,7 +582,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new inset margin
      */
     public void setCloseIconInsets(Insets newValue) {
-        setProperty(PROPERTY_CLOSE_ICON_INSETS, newValue);
+        set(PROPERTY_CLOSE_ICON_INSETS, newValue);
     }
     
     /**
@@ -592,7 +592,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new inset margin
      */
     public void setControlsInsets(Extent newValue) {
-        setProperty(PROPERTY_CONTROLS_INSETS, newValue);
+        set(PROPERTY_CONTROLS_INSETS, newValue);
     }
     
     /**
@@ -607,7 +607,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      *        </ul>
      */
     public void setDefaultCloseOperation(int newValue) {
-        setProperty(PROPERTY_DEFAULT_CLOSE_OPERATION, new Integer(newValue));
+        set(PROPERTY_DEFAULT_CLOSE_OPERATION, new Integer(newValue));
     }
     
     /**
@@ -617,7 +617,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new height
      */
     public void setHeight(Extent newValue) {
-        setProperty(PROPERTY_HEIGHT, newValue);
+        set(PROPERTY_HEIGHT, newValue);
     }
     
     /**
@@ -626,7 +626,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new icon
      */
     public void setIcon(ImageReference newValue) {
-        setProperty(PROPERTY_ICON, newValue);
+        set(PROPERTY_ICON, newValue);
     }
     
     /**
@@ -635,7 +635,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new inset margin
      */
     public void setIconInsets(Insets newValue) {
-        setProperty(PROPERTY_ICON_INSETS, newValue);
+        set(PROPERTY_ICON_INSETS, newValue);
     }
     
     /**
@@ -646,7 +646,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new inset
      */
     public void setInsets(Insets newValue) {
-        setProperty(PROPERTY_INSETS, newValue);
+        set(PROPERTY_INSETS, newValue);
     }
     
     /**
@@ -656,7 +656,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue true if the window can be maximized
      */
     public void setMaximizeEnabled(boolean newValue) {
-        setProperty(PROPERTY_MAXIMIZE_ENABLED, new Boolean(newValue));
+        set(PROPERTY_MAXIMIZE_ENABLED, new Boolean(newValue));
     }
     
     /**
@@ -665,7 +665,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new icon
      */
     public void setMaximizeIcon(ImageReference newValue) {
-        setProperty(PROPERTY_MAXIMIZE_ICON, newValue);
+        set(PROPERTY_MAXIMIZE_ICON, newValue);
     }
     
     /**
@@ -674,7 +674,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new inset margin
      */
     public void setMaximizeIconInsets(Insets newValue) {
-        setProperty(PROPERTY_MAXIMIZE_ICON_INSETS, newValue);
+        set(PROPERTY_MAXIMIZE_ICON_INSETS, newValue);
     }
     
     /**
@@ -686,7 +686,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public void setMaximumHeight(Extent newValue) {
         Extent.validate(newValue, Extent.PX);
-        setProperty(PROPERTY_MAXIMUM_HEIGHT, newValue);
+        set(PROPERTY_MAXIMUM_HEIGHT, newValue);
     }
     
     /**
@@ -698,7 +698,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public void setMaximumWidth(Extent newValue) {
         Extent.validate(newValue, Extent.PX);
-        setProperty(PROPERTY_MAXIMUM_WIDTH, newValue);
+        set(PROPERTY_MAXIMUM_WIDTH, newValue);
     }
     
     /**
@@ -708,7 +708,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue true if the window can be minimized
      */
     public void setMinimizeEnabled(boolean newValue) {
-        setProperty(PROPERTY_MINIMIZE_ENABLED, new Boolean(newValue));
+        set(PROPERTY_MINIMIZE_ENABLED, new Boolean(newValue));
     }
     
     /**
@@ -717,7 +717,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new icon
      */
     public void setMinimizeIcon(ImageReference newValue) {
-        setProperty(PROPERTY_MINIMIZE_ICON, newValue);
+        set(PROPERTY_MINIMIZE_ICON, newValue);
     }
     
     /**
@@ -726,7 +726,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new inset margin
      */
     public void setMinimizeIconInsets(Insets newValue) {
-        setProperty(PROPERTY_MINIMIZE_ICON_INSETS, newValue);
+        set(PROPERTY_MINIMIZE_ICON_INSETS, newValue);
     }
     
     /**
@@ -738,7 +738,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public void setMinimumHeight(Extent newValue) {
         Extent.validate(newValue, Extent.PX);
-        setProperty(PROPERTY_MINIMUM_HEIGHT, newValue);
+        set(PROPERTY_MINIMUM_HEIGHT, newValue);
     }
     
     /**
@@ -750,7 +750,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public void setMinimumWidth(Extent newValue) {
         Extent.validate(newValue, Extent.PX);
-        setProperty(PROPERTY_MINIMUM_WIDTH, newValue);
+        set(PROPERTY_MINIMUM_WIDTH, newValue);
     }
     
     /**
@@ -768,7 +768,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue true if the window may be moved by the user
      */
     public void setMovable(boolean newValue) {
-        setProperty(PROPERTY_MOVABLE, new Boolean(newValue));
+        set(PROPERTY_MOVABLE, new Boolean(newValue));
     }
     
     /**
@@ -778,7 +778,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new position
      */
     public void setPositionX(Extent newValue) {
-        setProperty(PROPERTY_POSITION_X, newValue);
+        set(PROPERTY_POSITION_X, newValue);
     }
     
     /**
@@ -788,7 +788,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new position
      */
     public void setPositionY(Extent newValue) {
-        setProperty(PROPERTY_POSITION_Y, newValue);
+        set(PROPERTY_POSITION_Y, newValue);
     }
 
     /**
@@ -797,7 +797,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue true if the window may be resized by the user
      */
     public void setResizable(boolean newValue) {
-        setProperty(PROPERTY_RESIZABLE, new Boolean(newValue));
+        set(PROPERTY_RESIZABLE, new Boolean(newValue));
     }
     
     /**
@@ -806,7 +806,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the title
      */
     public void setTitle(String newValue) {
-        setProperty(PROPERTY_TITLE, newValue);
+        set(PROPERTY_TITLE, newValue);
     }
     
     /**
@@ -815,7 +815,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new font
      */
     public void setTitleFont(Font newValue) {
-        setProperty(PROPERTY_TITLE_FONT, newValue);
+        set(PROPERTY_TITLE_FONT, newValue);
     }
     
     /**
@@ -824,7 +824,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new color
      */
     public void setTitleBackground(Color newValue) {
-        setProperty(PROPERTY_TITLE_BACKGROUND, newValue);
+        set(PROPERTY_TITLE_BACKGROUND, newValue);
     }
     
     /**
@@ -833,7 +833,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new background image
      */
     public void setTitleBackgroundImage(FillImage newValue) {
-        setProperty(PROPERTY_TITLE_BACKGROUND_IMAGE, newValue);
+        set(PROPERTY_TITLE_BACKGROUND_IMAGE, newValue);
     }
     
     /**
@@ -842,7 +842,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new color
      */
     public void setTitleForeground(Color newValue) {
-        setProperty(PROPERTY_TITLE_FOREGROUND, newValue);
+        set(PROPERTY_TITLE_FOREGROUND, newValue);
     }
     
     /**
@@ -853,7 +853,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public void setTitleHeight(Extent newValue) {
         Extent.validate(newValue, Extent.PX);
-        setProperty(PROPERTY_TITLE_HEIGHT, newValue);
+        set(PROPERTY_TITLE_HEIGHT, newValue);
     }
     
     /**
@@ -862,7 +862,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new insets
      */
     public void setTitleInsets(Insets newValue) {
-        setProperty(PROPERTY_TITLE_INSETS, newValue);
+        set(PROPERTY_TITLE_INSETS, newValue);
     }
     
     /**
@@ -871,7 +871,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new width
      */
     public void setWidth(Extent newValue) {
-        setProperty(PROPERTY_WIDTH, newValue);
+        set(PROPERTY_WIDTH, newValue);
     }
     
     /**

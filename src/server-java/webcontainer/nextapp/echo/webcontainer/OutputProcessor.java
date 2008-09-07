@@ -807,7 +807,7 @@ class OutputProcessor {
                 Iterator indicesIt = style.getPropertyIndices(propertyName);
                 while (indicesIt.hasNext()) {
                     int index = ((Integer) indicesIt.next()).intValue();
-                    Object propertyValue = style.getIndexedProperty(propertyName, index);
+                    Object propertyValue = style.getIndex(propertyName, index);
                     if (propertyValue == null) {
                         continue;
                     }
@@ -825,7 +825,7 @@ class OutputProcessor {
                     sElement.appendChild(pElement);
                 }
             } else {
-                Object propertyValue = style.getProperty(propertyName);
+                Object propertyValue = style.get(propertyName);
                 if (propertyValue == null) {
                     continue;
                 }

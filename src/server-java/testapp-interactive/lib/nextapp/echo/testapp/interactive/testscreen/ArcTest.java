@@ -65,11 +65,11 @@ public class ArcTest extends SplitPane {
         public static final String PROPERTY_TEXT = "text";
         
         public String getText() {
-            return (String) getProperty(PROPERTY_TEXT);
+            return (String) get(PROPERTY_TEXT);
         }
         
         public void setText(String newValue) {
-            setProperty(PROPERTY_TEXT, newValue);
+            set(PROPERTY_TEXT, newValue);
         }
     }
     

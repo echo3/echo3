@@ -71,26 +71,26 @@ public class DerivedMutableStyle extends MutableStyle {
     }
     
     /**
-     * @see nextapp.echo.app.Style#getIndexedProperty(java.lang.String, int)
+     * @see nextapp.echo.app.Style#getIndex(java.lang.String, int)
      */
-    public Object getIndexedProperty(String propertyName, int propertyIndex) {
+    public Object getIndex(String propertyName, int propertyIndex) {
         if (super.isIndexedPropertySet(propertyName, propertyIndex)) {
-            return super.getIndexedProperty(propertyName, propertyIndex);
+            return super.getIndex(propertyName, propertyIndex);
         } else if (parentStyle != null) {
-            return parentStyle.getIndexedProperty(propertyName, propertyIndex);
+            return parentStyle.getIndex(propertyName, propertyIndex);
         } else {
             return null;
         }
     }
 
     /**
-     * @see nextapp.echo.app.Style#getProperty(java.lang.String)
+     * @see nextapp.echo.app.Style#get(java.lang.String)
      */
-    public Object getProperty(String propertyName) {
+    public Object get(String propertyName) {
         if (super.isPropertySet(propertyName)) {
-            return super.getProperty(propertyName);
+            return super.get(propertyName);
         } else if (parentStyle != null) {
-            return parentStyle.getProperty(propertyName);
+            return parentStyle.get(propertyName);
         } else {
             return null;
         }

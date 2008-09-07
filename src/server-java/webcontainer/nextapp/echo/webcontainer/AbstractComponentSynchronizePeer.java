@@ -256,9 +256,9 @@ implements ComponentSynchronizePeer {
      */
     public Object getOutputProperty(Context context, Component component, String propertyName, int propertyIndex) {
         if (propertyIndex == -1) {
-            return component.getLocalStyle().getProperty(propertyName);
+            return component.getLocalStyle().get(propertyName);
         } else {
-            return component.getLocalStyle().getIndexedProperty(propertyName, propertyIndex);
+            return component.getLocalStyle().getIndex(propertyName, propertyIndex);
         }
     }
     

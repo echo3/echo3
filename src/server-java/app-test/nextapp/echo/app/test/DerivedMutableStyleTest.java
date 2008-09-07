@@ -40,21 +40,21 @@ public class DerivedMutableStyleTest extends TestCase {
     
     public void testIndexed() {
         MutableStyle baseStyle = new MutableStyle();
-        baseStyle.setIndexedProperty("alpha", 1, "a");
-        baseStyle.setIndexedProperty("bravo", 2,  "b");
-        baseStyle.setIndexedProperty("bravo", 1,  "b3");
+        baseStyle.setIndex("alpha", 1, "a");
+        baseStyle.setIndex("bravo", 2,  "b");
+        baseStyle.setIndex("bravo", 1,  "b3");
         
         DerivedMutableStyle derivedStyle = new DerivedMutableStyle(baseStyle);
-        derivedStyle.setIndexedProperty("bravo", 2, "b2");
-        derivedStyle.setIndexedProperty("charlie", 3, "c");
+        derivedStyle.setIndex("bravo", 2, "b2");
+        derivedStyle.setIndex("charlie", 3, "c");
 
-        assertEquals("b", baseStyle.getIndexedProperty("bravo", 2));
+        assertEquals("b", baseStyle.getIndex("bravo", 2));
         
-        assertEquals("b2", derivedStyle.getIndexedProperty("bravo", 2));
-        assertEquals("c", derivedStyle.getIndexedProperty("charlie", 3));
+        assertEquals("b2", derivedStyle.getIndex("bravo", 2));
+        assertEquals("c", derivedStyle.getIndex("charlie", 3));
         
-        assertEquals("a", derivedStyle.getIndexedProperty("alpha", 1));
-        assertEquals("b3", derivedStyle.getIndexedProperty("bravo", 1));
+        assertEquals("a", derivedStyle.getIndex("alpha", 1));
+        assertEquals("b3", derivedStyle.getIndex("bravo", 1));
         
         assertTrue(derivedStyle.isIndexedPropertySet("alpha", 1));
         assertFalse(derivedStyle.isIndexedPropertySet("alpha", 2));
@@ -66,15 +66,15 @@ public class DerivedMutableStyleTest extends TestCase {
 
     public void testSimple() {
         MutableStyle baseStyle = new MutableStyle();
-        baseStyle.setProperty("alpha", "a");
-        baseStyle.setProperty("bravo", "b");
+        baseStyle.set("alpha", "a");
+        baseStyle.set("bravo", "b");
         
         DerivedMutableStyle derivedStyle = new DerivedMutableStyle(baseStyle);
-        baseStyle.setProperty("bravo", "b2");
-        baseStyle.setProperty("charlie", "c");
+        baseStyle.set("bravo", "b2");
+        baseStyle.set("charlie", "c");
         
-        assertEquals("a", derivedStyle.getProperty("alpha"));
-        assertEquals("b2", derivedStyle.getProperty("bravo"));
-        assertEquals("c", derivedStyle.getProperty("charlie"));
+        assertEquals("a", derivedStyle.get("alpha"));
+        assertEquals("b2", derivedStyle.get("bravo"));
+        assertEquals("c", derivedStyle.get("charlie"));
     }
 }

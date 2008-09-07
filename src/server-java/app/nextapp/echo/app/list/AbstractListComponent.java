@@ -191,7 +191,7 @@ public abstract class AbstractListComponent extends Component {
      * @return the action command
      */
     public String getActionCommand() {
-        return (String) getProperty(PROPERTY_ACTION_COMMAND);
+        return (String) get(PROPERTY_ACTION_COMMAND);
     }
     
     /**
@@ -200,7 +200,7 @@ public abstract class AbstractListComponent extends Component {
      * @return the border
      */
     public Border getBorder() {
-        return (Border) getProperty(PROPERTY_BORDER);
+        return (Border) get(PROPERTY_BORDER);
     }
     
     /**
@@ -219,7 +219,7 @@ public abstract class AbstractListComponent extends Component {
      * @return the color
      */
     public Color getDisabledBackground() {
-        return (Color) getProperty(PROPERTY_DISABLED_BACKGROUND);
+        return (Color) get(PROPERTY_DISABLED_BACKGROUND);
     }
 
     /**
@@ -229,7 +229,7 @@ public abstract class AbstractListComponent extends Component {
      * @return the border
      */
     public Border getDisabledBorder() {
-        return (Border) getProperty(PROPERTY_DISABLED_BORDER);
+        return (Border) get(PROPERTY_DISABLED_BORDER);
     }
 
     /**
@@ -239,7 +239,7 @@ public abstract class AbstractListComponent extends Component {
      * @return the font
      */
     public Font getDisabledFont() {
-        return (Font) getProperty(PROPERTY_DISABLED_FONT);
+        return (Font) get(PROPERTY_DISABLED_FONT);
     }
 
     /**
@@ -249,7 +249,7 @@ public abstract class AbstractListComponent extends Component {
      * @return the color
      */
     public Color getDisabledForeground() {
-        return (Color) getProperty(PROPERTY_DISABLED_FOREGROUND);
+        return (Color) get(PROPERTY_DISABLED_FOREGROUND);
     }
 
     /**
@@ -260,7 +260,7 @@ public abstract class AbstractListComponent extends Component {
      * @return the height
      */
     public Extent getHeight() {
-        return (Extent) getProperty(PROPERTY_HEIGHT);
+        return (Extent) get(PROPERTY_HEIGHT);
     }
     
     /**
@@ -269,7 +269,7 @@ public abstract class AbstractListComponent extends Component {
      * @return the inset margin
      */
     public Insets getInsets() {
-        return (Insets) getProperty(PROPERTY_INSETS);
+        return (Insets) get(PROPERTY_INSETS);
     }
     
     /**
@@ -287,7 +287,7 @@ public abstract class AbstractListComponent extends Component {
      * @return the rollover background
      */
     public Color getRolloverBackground() {
-        return (Color) getProperty(PROPERTY_ROLLOVER_BACKGROUND);
+        return (Color) get(PROPERTY_ROLLOVER_BACKGROUND);
     }
     
     /**
@@ -296,7 +296,7 @@ public abstract class AbstractListComponent extends Component {
      * @return the rollover font
      */
     public Font getRolloverFont() {
-        return (Font) getProperty(PROPERTY_ROLLOVER_FONT);
+        return (Font) get(PROPERTY_ROLLOVER_FONT);
     }
     
     /**
@@ -305,7 +305,7 @@ public abstract class AbstractListComponent extends Component {
      * @return the rollover foreground
      */
     public Color getRolloverForeground() {
-        return (Color) getProperty(PROPERTY_ROLLOVER_FOREGROUND);
+        return (Color) get(PROPERTY_ROLLOVER_FOREGROUND);
     }
     
     /**
@@ -324,7 +324,7 @@ public abstract class AbstractListComponent extends Component {
      * @return the tool tip text
      */
     public String getToolTipText() {
-        return (String) getProperty(PROPERTY_TOOL_TIP_TEXT);
+        return (String) get(PROPERTY_TOOL_TIP_TEXT);
     }
     
     /**
@@ -335,7 +335,7 @@ public abstract class AbstractListComponent extends Component {
      * @return the width
      */
     public Extent getWidth() {
-        return (Extent) getProperty(PROPERTY_WIDTH);
+        return (Extent) get(PROPERTY_WIDTH);
     }
     
     /**
@@ -353,7 +353,7 @@ public abstract class AbstractListComponent extends Component {
      * @return true if rollover effects are enabled
      */
     public boolean isRolloverEnabled() {
-        Boolean value = (Boolean) getProperty(PROPERTY_ROLLOVER_ENABLED);
+        Boolean value = (Boolean) get(PROPERTY_ROLLOVER_ENABLED);
         return value == null ? false : value.booleanValue();
     }
 
@@ -407,7 +407,7 @@ public abstract class AbstractListComponent extends Component {
      * @param newValue the new action command
      */
     public void setActionCommand(String newValue) {
-        setProperty(PROPERTY_ACTION_COMMAND, newValue);
+        set(PROPERTY_ACTION_COMMAND, newValue);
     }
     
     /**
@@ -416,7 +416,7 @@ public abstract class AbstractListComponent extends Component {
      * @param newValue the new <code>Border</code>
      */
     public void setBorder(Border newValue) {
-        setProperty(PROPERTY_BORDER, newValue);
+        set(PROPERTY_BORDER, newValue);
     }
     
     /**
@@ -441,7 +441,7 @@ public abstract class AbstractListComponent extends Component {
      * @param newValue the new <code>Color</code>
      */
     public void setDisabledBackground(Color newValue) {
-        setProperty(PROPERTY_DISABLED_BACKGROUND, newValue);
+        set(PROPERTY_DISABLED_BACKGROUND, newValue);
     }
 
     /**
@@ -450,7 +450,7 @@ public abstract class AbstractListComponent extends Component {
      * @param newValue the new border
      */
     public void setDisabledBorder(Border newValue) {
-        setProperty(PROPERTY_DISABLED_BORDER, newValue);
+        set(PROPERTY_DISABLED_BORDER, newValue);
     }
 
     /**
@@ -459,7 +459,7 @@ public abstract class AbstractListComponent extends Component {
      * @param newValue the new <code>Font</code>
      */
     public void setDisabledFont(Font newValue) {
-        setProperty(PROPERTY_DISABLED_FONT, newValue);
+        set(PROPERTY_DISABLED_FONT, newValue);
     }
 
     /**
@@ -468,7 +468,7 @@ public abstract class AbstractListComponent extends Component {
      * @param newValue the new <code>Color</code>
      */
     public void setDisabledForeground(Color newValue) {
-        setProperty(PROPERTY_DISABLED_FOREGROUND, newValue);
+        set(PROPERTY_DISABLED_FOREGROUND, newValue);
     }
 
     /**
@@ -479,7 +479,7 @@ public abstract class AbstractListComponent extends Component {
      * @param newValue the new height
      */
     public void setHeight(Extent newValue) {
-        setProperty(PROPERTY_HEIGHT, newValue);
+        set(PROPERTY_HEIGHT, newValue);
     }
     
     /**
@@ -488,7 +488,7 @@ public abstract class AbstractListComponent extends Component {
      * @param newValue the new inset margin
      */
     public void setInsets(Insets newValue) {
-        setProperty(PROPERTY_INSETS, newValue);
+        set(PROPERTY_INSETS, newValue);
     }
     
     /**
@@ -516,7 +516,7 @@ public abstract class AbstractListComponent extends Component {
      * @param newValue the new rollover background
      */
     public void setRolloverBackground(Color newValue) {
-        setProperty(PROPERTY_ROLLOVER_BACKGROUND, newValue);
+        set(PROPERTY_ROLLOVER_BACKGROUND, newValue);
     }
     
     /**
@@ -525,7 +525,7 @@ public abstract class AbstractListComponent extends Component {
      * @param newValue the new rollover enabled state
      */
     public void setRolloverEnabled(boolean newValue) {
-        setProperty(PROPERTY_ROLLOVER_ENABLED, new Boolean(newValue));
+        set(PROPERTY_ROLLOVER_ENABLED, new Boolean(newValue));
     }
     
     /**
@@ -534,7 +534,7 @@ public abstract class AbstractListComponent extends Component {
      * @param newValue the new rollover font
      */
     public void setRolloverFont(Font newValue) {
-        setProperty(PROPERTY_ROLLOVER_FONT, newValue);
+        set(PROPERTY_ROLLOVER_FONT, newValue);
     }
     
     /**
@@ -543,7 +543,7 @@ public abstract class AbstractListComponent extends Component {
      * @param newValue the new rollover foreground
      */
     public void setRolloverForeground(Color newValue) {
-        setProperty(PROPERTY_ROLLOVER_FOREGROUND, newValue);
+        set(PROPERTY_ROLLOVER_FOREGROUND, newValue);
     }
     
     /**
@@ -572,7 +572,7 @@ public abstract class AbstractListComponent extends Component {
      * @param newValue the new tool tip text
      */
     public void setToolTipText(String newValue) {
-        setProperty(PROPERTY_TOOL_TIP_TEXT, newValue);
+        set(PROPERTY_TOOL_TIP_TEXT, newValue);
     }
 
     /**
@@ -583,6 +583,6 @@ public abstract class AbstractListComponent extends Component {
      * @param newValue the new width 
      */
     public void setWidth(Extent newValue) {
-        setProperty(PROPERTY_WIDTH, newValue);
+        set(PROPERTY_WIDTH, newValue);
     }
 }

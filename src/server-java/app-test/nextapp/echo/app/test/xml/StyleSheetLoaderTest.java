@@ -46,6 +46,6 @@ public class StyleSheetLoaderTest extends TestCase {
         
         Style welcomePaneStyle = styleSheet.getStyle("WelcomePane", WindowPane.class, true);
         assertNotNull(welcomePaneStyle);
-        assertEquals(Boolean.TRUE, welcomePaneStyle.getProperty(WindowPane.PROPERTY_RESIZABLE));
+        assertEquals(Boolean.TRUE, welcomePaneStyle.get(WindowPane.PROPERTY_RESIZABLE));
     }
 }

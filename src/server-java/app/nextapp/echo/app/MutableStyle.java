@@ -175,24 +175,31 @@ implements Style {
         Iterator nameIt = style.getPropertyNames();
         while (nameIt.hasNext()) {
             String name = (String) nameIt.next();
-            Object value = style.getProperty(name);
+            Object value = style.get(name);
             if (value instanceof IndexedPropertyValue) {
                 IndexedPropertyValue indexedPropertyValue = (IndexedPropertyValue) value;
                 Iterator indexIt = indexedPropertyValue.getIndices();
                 while (indexIt.hasNext()) {
                     int index = ((Integer) indexIt.next()).intValue();
-                    setIndexedProperty(name, index, indexedPropertyValue.getValue(index));
+                    setIndex(name, index, indexedPropertyValue.getValue(index));
                 }
             } else {
-                setProperty(name, value);
+                set(name, value);
             }
         }
     }
     
     /**
-     * @see nextapp.echo.app.Style#getIndexedProperty(java.lang.String, int)
+     * @see nextapp.echo.app.Style#get(java.lang.String)
      */
-    public Object getIndexedProperty(String propertyName, int propertyIndex) {
+    public Object get(String propertyName) {
+        return retrieveProperty(propertyName);
+    }
+    
+    /**
+     * @see nextapp.echo.app.Style#getIndex(java.lang.String, int)
+     */
+    public Object getIndex(String propertyName, int propertyIndex) {
         Object value = retrieveProperty(propertyName);
         if (!(value instanceof IndexedPropertyValue)) {
             return null;
@@ -201,17 +208,26 @@ implements Style {
     }
     
     /**
+     * @see nextapp.echo.app.Style#getIndexedProperty(String, int)
+     * @deprecated Use {@link #getIndex(String, int)} instead.
+     */
+    public Object getIndexedProperty(String propertyName, int propertyIndex) {
+    	return getIndex(propertyName, propertyIndex);
+    }
+    
+    /**
      * @see nextapp.echo.app.Style#getProperty(java.lang.String)
+     * @deprecated Use {@link #get(String)} instead.
      */
     public Object getProperty(String propertyName) {
-        return retrieveProperty(propertyName);
+        return get(propertyName);
     }
     
     /**
      * @see nextapp.echo.app.Style#getPropertyIndices(java.lang.String)
      */
     public Iterator getPropertyIndices(String propertyName) {
-        Object value = getProperty(propertyName);
+        Object value = get(propertyName);
         if (!(value instanceof IndexedPropertyValue)) {
             return null;
         }
@@ -303,22 +319,6 @@ implements Style {
     }
     
     /**
-     * Sets an indexed property of the <code>Style</code>
-     * 
-     * @param propertyName the name of the property
-     * @param propertyIndex the index of the property
-     * @param propertyValue the value of the property
-     */
-    public void setIndexedProperty(String propertyName, int propertyIndex, Object propertyValue) {
-        Object value = retrieveProperty(propertyName);
-        if (!(value instanceof IndexedPropertyValue)) {
-            value = new IndexedPropertyValue();
-            setProperty(propertyName, value);
-        }
-        ((IndexedPropertyValue) value).setValue(propertyIndex, propertyValue);
-    }
-    
-    /**
      * Sets a property of the <code>Style</code>.
      * If <code>propertyValue</code> is null, the property will be
      * removed.
@@ -326,7 +326,7 @@ implements Style {
      * @param propertyName the name of the property
      * @param propertyValue the value of the property
      */
-    public void setProperty(String propertyName, Object propertyValue) {
+    public void set(String propertyName, Object propertyValue) {
         if (propertyValue == null) {
             removeProperty(propertyName);
             return;
@@ -361,6 +361,49 @@ implements Style {
         newData[data.length + 1] = propertyValue;
         length += 2;
         data = newData;
+    }
+    
+    /**
+     * Sets an indexed property of the <code>Style</code>
+     * 
+     * @param propertyName the name of the property
+     * @param propertyIndex the index of the property
+     * @param propertyValue the value of the property
+     */
+    public void setIndex(String propertyName, int propertyIndex, Object propertyValue) {
+        Object value = retrieveProperty(propertyName);
+        if (!(value instanceof IndexedPropertyValue)) {
+            value = new IndexedPropertyValue();
+            set(propertyName, value);
+        }
+        ((IndexedPropertyValue) value).setValue(propertyIndex, propertyValue);
+    }
+    
+    /**
+     * Sets an indexed property of the <code>Style</code>
+     * 
+     * @param propertyName the name of the property
+     * @param propertyIndex the index of the property
+     * @param propertyValue the value of the property
+     * 
+     * @deprecated use {@link #setIndex(String, int, Object)} instead.
+     */
+    public void setIndexedProperty(String propertyName, int propertyIndex, Object propertyValue) {
+    	setIndex(propertyName, propertyIndex, propertyValue);
+    }
+   
+    /**
+     * Sets a property of the <code>Style</code>.
+     * If <code>propertyValue</code> is null, the property will be
+     * removed.
+     * 
+     * @param propertyName the name of the property
+     * @param propertyValue the value of the property
+     * 
+     * @deprecated use {@link #set(String, Object)} instead.
+     */
+    public void setProperty(String propertyName, Object value) {
+    	set(propertyName, value);
     }
     
     /**

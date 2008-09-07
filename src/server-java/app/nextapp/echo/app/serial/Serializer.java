@@ -177,9 +177,9 @@ public class Serializer {
                 Object value = peer.toProperty(context, introspector.getObjectClass(), pElements[i]);
 
                 if (index == -1) {
-                    style.setProperty(name, value);
+                    style.set(name, value);
                 } else {
-                    style.setIndexedProperty(name, index, value);
+                    style.setIndex(name, index, value);
                 }
             }
             

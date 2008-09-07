@@ -45,7 +45,7 @@ public class StyleTest extends TestCase {
      */
     public void testStyle() {
         MutableStyle style = new MutableStyle();
-        style.setProperty(Component.PROPERTY_BACKGROUND, Color.GREEN);
+        style.set(Component.PROPERTY_BACKGROUND, Color.GREEN);
         
         TextField textField = new TextField();
         textField.setForeground(Color.YELLOW);

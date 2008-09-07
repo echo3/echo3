@@ -90,7 +90,7 @@ public class Label extends Component {
      * @return the icon
      */
     public ImageReference getIcon() {
-        return (ImageReference) getProperty(PROPERTY_ICON);
+        return (ImageReference) get(PROPERTY_ICON);
     }
     
     /**
@@ -101,7 +101,7 @@ public class Label extends Component {
      * @return the margin size 
      */
     public Extent getIconTextMargin() {
-        return (Extent) getProperty(PROPERTY_ICON_TEXT_MARGIN);
+        return (Extent) get(PROPERTY_ICON_TEXT_MARGIN);
     }
     
     /**
@@ -110,7 +110,7 @@ public class Label extends Component {
      * @return the text
      */
     public String getText() {
-        return (String) getProperty(PROPERTY_TEXT);
+        return (String) get(PROPERTY_TEXT);
     }
 
     /**
@@ -119,7 +119,7 @@ public class Label extends Component {
      * @return the text alignment
      */
     public Alignment getTextAlignment() {
-        return (Alignment) getProperty(PROPERTY_TEXT_ALIGNMENT);
+        return (Alignment) get(PROPERTY_TEXT_ALIGNMENT);
     }
 
     /**
@@ -128,7 +128,7 @@ public class Label extends Component {
      * @return the text position
      */
     public Alignment getTextPosition() {
-        return (Alignment) getProperty(PROPERTY_TEXT_POSITION);
+        return (Alignment) get(PROPERTY_TEXT_POSITION);
     }
 
     /**
@@ -138,7 +138,7 @@ public class Label extends Component {
      * @return the tool tip text
      */
     public String getToolTipText() {
-        return (String) getProperty(PROPERTY_TOOL_TIP_TEXT);
+        return (String) get(PROPERTY_TOOL_TIP_TEXT);
     }
     
     /**
@@ -148,7 +148,7 @@ public class Label extends Component {
      * @return the format whitespace state
      */
     public boolean isFormatWhitespace() {
-        Boolean value = (Boolean) getProperty(PROPERTY_FORMAT_WHITESPACE);
+        Boolean value = (Boolean) get(PROPERTY_FORMAT_WHITESPACE);
         return value == null ? false : value.booleanValue();
     }
     
@@ -159,7 +159,7 @@ public class Label extends Component {
      * @return the line wrap state
      */
     public boolean isLineWrap() {
-        Boolean value = (Boolean) getProperty(PROPERTY_LINE_WRAP);
+        Boolean value = (Boolean) get(PROPERTY_LINE_WRAP);
         return value == null ? true : value.booleanValue();
     }
     
@@ -179,7 +179,7 @@ public class Label extends Component {
      * @param newValue the new format whitespace state
      */
     public void setFormatWhitespace(boolean newValue) {
-        setProperty(PROPERTY_FORMAT_WHITESPACE, newValue ? Boolean.TRUE : Boolean.FALSE);
+        set(PROPERTY_FORMAT_WHITESPACE, newValue ? Boolean.TRUE : Boolean.FALSE);
     }
     
     /**
@@ -188,7 +188,7 @@ public class Label extends Component {
      * @param newValue the icon to be displayed
      */
     public void setIcon(ImageReference newValue) {
-        setProperty(PROPERTY_ICON, newValue);
+        set(PROPERTY_ICON, newValue);
     }
     
     /**
@@ -199,7 +199,7 @@ public class Label extends Component {
      * @param newValue the margin size 
      */
     public void setIconTextMargin(Extent newValue) {
-        setProperty(PROPERTY_ICON_TEXT_MARGIN, newValue);
+        set(PROPERTY_ICON_TEXT_MARGIN, newValue);
     }
     
     /**
@@ -209,7 +209,7 @@ public class Label extends Component {
      * @param newValue the new line wrap state
      */
     public void setLineWrap(boolean newValue) {
-        setProperty(PROPERTY_LINE_WRAP, new Boolean(newValue));
+        set(PROPERTY_LINE_WRAP, new Boolean(newValue));
     }
     
     /**
@@ -218,7 +218,7 @@ public class Label extends Component {
      * @param newValue the text to be displayed
      */
     public void setText(String newValue) {
-        setProperty(PROPERTY_TEXT, newValue);
+        set(PROPERTY_TEXT, newValue);
     }
     
     /**
@@ -229,7 +229,7 @@ public class Label extends Component {
      * @param newValue the new text position
      */
     public void setTextAlignment(Alignment newValue) {
-        setProperty(PROPERTY_TEXT_ALIGNMENT, newValue);
+        set(PROPERTY_TEXT_ALIGNMENT, newValue);
     }
     
     /**
@@ -240,7 +240,7 @@ public class Label extends Component {
      * @param newValue the new text position
      */
     public void setTextPosition(Alignment newValue) {
-        setProperty(PROPERTY_TEXT_POSITION, newValue);
+        set(PROPERTY_TEXT_POSITION, newValue);
     }
 
     /**
@@ -250,6 +250,6 @@ public class Label extends Component {
      * @param newValue the new tool tip text
      */
     public void setToolTipText(String newValue) {
-        setProperty(PROPERTY_TOOL_TIP_TEXT, newValue);
+        set(PROPERTY_TOOL_TIP_TEXT, newValue);
     }
 }

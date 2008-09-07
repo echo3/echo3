@@ -63,12 +63,12 @@ public class BooleanPeerTest extends TestCase {
     public void testLoadTrue() {
         Style deltaStyle = styleSheet.getStyle("delta", Button.class, true);
         assertNotNull(deltaStyle);
-        assertEquals(Boolean.TRUE, deltaStyle.getProperty("lineWrap"));
+        assertEquals(Boolean.TRUE, deltaStyle.get("lineWrap"));
     }
     
     public void testLoadFalse() {
         Style charlieStyle = styleSheet.getStyle("charlie", Label.class, true);
         assertNotNull(charlieStyle);
-        assertEquals(Boolean.FALSE, charlieStyle.getProperty("lineWrap"));
+        assertEquals(Boolean.FALSE, charlieStyle.get("lineWrap"));
     }
 }

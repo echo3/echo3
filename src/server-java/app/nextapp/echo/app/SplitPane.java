@@ -183,7 +183,7 @@ implements Pane, PaneContainer {
      *         </ul>
      */
     public int getOrientation() {
-        Integer orientation = (Integer) getProperty(PROPERTY_ORIENTATION); 
+        Integer orientation = (Integer) get(PROPERTY_ORIENTATION); 
         return orientation == null ? ORIENTATION_VERTICAL : orientation.intValue();
     }
     
@@ -193,7 +193,7 @@ implements Pane, PaneContainer {
      * @return the color
      */
     public Color getSeparatorColor() {
-        return (Color) getProperty(PROPERTY_SEPARATOR_COLOR);
+        return (Color) get(PROPERTY_SEPARATOR_COLOR);
     }
     
     /**
@@ -205,7 +205,7 @@ implements Pane, PaneContainer {
      * @return the separator width
      */
     public Extent getSeparatorHeight() {
-        return (Extent) getProperty(PROPERTY_SEPARATOR_HEIGHT);
+        return (Extent) get(PROPERTY_SEPARATOR_HEIGHT);
     }
     
     /**
@@ -215,7 +215,7 @@ implements Pane, PaneContainer {
      * @return the image
      */
     public FillImage getSeparatorHorizontalImage() {
-        return (FillImage) getProperty(PROPERTY_SEPARATOR_HORIZONTAL_IMAGE);
+        return (FillImage) get(PROPERTY_SEPARATOR_HORIZONTAL_IMAGE);
     }
     
     /**
@@ -226,7 +226,7 @@ implements Pane, PaneContainer {
      * @return the separator position
      */
     public Extent getSeparatorPosition() {
-        return (Extent) getProperty(PROPERTY_SEPARATOR_POSITION);
+        return (Extent) get(PROPERTY_SEPARATOR_POSITION);
     }
     
     /**
@@ -236,7 +236,7 @@ implements Pane, PaneContainer {
      * @return the image
      */
     public FillImage getSeparatorVerticalImage() {
-        return (FillImage) getProperty(PROPERTY_SEPARATOR_VERTICAL_IMAGE);
+        return (FillImage) get(PROPERTY_SEPARATOR_VERTICAL_IMAGE);
     }
     
     /**
@@ -248,7 +248,7 @@ implements Pane, PaneContainer {
      * @return the separator width
      */
     public Extent getSeparatorWidth() {
-        return (Extent) getProperty(PROPERTY_SEPARATOR_WIDTH);
+        return (Extent) get(PROPERTY_SEPARATOR_WIDTH);
     }
     
     /**
@@ -257,7 +257,7 @@ implements Pane, PaneContainer {
      * @return true if the <code>SplitPane</code> is resizable
      */
     public boolean isResizable() {
-        Boolean value = (Boolean) getProperty(PROPERTY_RESIZABLE);
+        Boolean value = (Boolean) get(PROPERTY_RESIZABLE);
         return value == null ? false : value.booleanValue();
     }
 
@@ -303,7 +303,7 @@ implements Pane, PaneContainer {
      *        </ul>
      */
     public void setOrientation(int newValue) {
-        setProperty(PROPERTY_ORIENTATION, new Integer(newValue));
+        set(PROPERTY_ORIENTATION, new Integer(newValue));
     }
     
     /**
@@ -314,7 +314,7 @@ implements Pane, PaneContainer {
      *        not
      */
     public void setResizable(boolean newValue) {
-        setProperty(PROPERTY_RESIZABLE, new Boolean(newValue));
+        set(PROPERTY_RESIZABLE, new Boolean(newValue));
     }
     
     /**
@@ -323,7 +323,7 @@ implements Pane, PaneContainer {
      * @param newValue the new color
      */
     public void setSeparatorColor(Color newValue) {
-        setProperty(PROPERTY_SEPARATOR_COLOR, newValue);
+        set(PROPERTY_SEPARATOR_COLOR, newValue);
     }
     
     /**
@@ -336,7 +336,7 @@ implements Pane, PaneContainer {
      */
     public void setSeparatorHeight(Extent newValue) {
         Extent.validate(newValue, Extent.PX);
-        setProperty(PROPERTY_SEPARATOR_HEIGHT, newValue);
+        set(PROPERTY_SEPARATOR_HEIGHT, newValue);
     }
     
     /**
@@ -346,7 +346,7 @@ implements Pane, PaneContainer {
      * @param newValue the new image
      */
     public void setSeparatorHorizontalImage(FillImage newValue) {
-        setProperty(PROPERTY_SEPARATOR_HORIZONTAL_IMAGE, newValue);
+        set(PROPERTY_SEPARATOR_HORIZONTAL_IMAGE, newValue);
     }
 
     /**
@@ -360,7 +360,7 @@ implements Pane, PaneContainer {
         if (newValue != null && newValue.getValue() < 0) {
             throw new IllegalArgumentException("Extent value may not be negative.");
         }
-        setProperty(PROPERTY_SEPARATOR_POSITION, newValue);
+        set(PROPERTY_SEPARATOR_POSITION, newValue);
     }
     
     /**
@@ -370,7 +370,7 @@ implements Pane, PaneContainer {
      * @param newValue the new image
      */
     public void setSeparatorVerticalImage(FillImage newValue) {
-        setProperty(PROPERTY_SEPARATOR_VERTICAL_IMAGE, newValue);
+        set(PROPERTY_SEPARATOR_VERTICAL_IMAGE, newValue);
     }
     
     /**
@@ -383,6 +383,6 @@ implements Pane, PaneContainer {
      */
     public void setSeparatorWidth(Extent newValue) {
         Extent.validate(newValue, Extent.PX);
-        setProperty(PROPERTY_SEPARATOR_WIDTH, newValue);
+        set(PROPERTY_SEPARATOR_WIDTH, newValue);
     }
 }

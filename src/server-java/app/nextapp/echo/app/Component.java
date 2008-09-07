@@ -83,11 +83,11 @@ import nextapp.echo.app.event.EventListenerList;
  * A <code>Component</code> implementation should not store the values of
  * style properties as instance variables. Rather, the values of style
  * properties should be stored in the local <code>Style</code> instance, by
- * way of the <code>setProperty()</code> method. The
- * <code>getProperty()</code> method may be used to obtain the value of such
+ * way of the <code>set()</code> method. The
+ * <code>get()</code> method may be used to obtain the value of such
  * properties. Only style properties should be stored using these methods;
  * properties such as models should never be stored using the
- * <code>getProperty()</code>/<code>setProperty()</code> interface.
+ * <code>get()</code>/<code>set()</code> interface.
  * 
  * <h3>Events</h3>
  * <p>
@@ -497,7 +497,7 @@ implements RenderIdSupport, Serializable {
      * @return the background color
      */
     public Color getBackground() {
-        return (Color) localStyle.getProperty(PROPERTY_BACKGROUND);
+        return (Color) localStyle.get(PROPERTY_BACKGROUND);
     }
     
     /**
@@ -606,7 +606,7 @@ implements RenderIdSupport, Serializable {
      * @return the font
      */
     public Font getFont() {
-        return (Font) localStyle.getProperty(PROPERTY_FONT);
+        return (Font) localStyle.get(PROPERTY_FONT);
     }
     
     /**
@@ -618,7 +618,7 @@ implements RenderIdSupport, Serializable {
      * @return the foreground color
      */
     public Color getForeground() {
-        return (Color) localStyle.getProperty(PROPERTY_FOREGROUND);
+        return (Color) localStyle.get(PROPERTY_FOREGROUND);
     }
     
     /**
@@ -646,8 +646,8 @@ implements RenderIdSupport, Serializable {
      * @param propertyIndex the property index
      * @return the property value
      */
-    public final Object getIndexedProperty(String propertyName, int propertyIndex) {
-        return localStyle.getIndexedProperty(propertyName, propertyIndex);
+    public final Object getIndex(String propertyName, int propertyIndex) {
+        return localStyle.getIndex(propertyName, propertyIndex);
     }
     
     /**
@@ -658,7 +658,7 @@ implements RenderIdSupport, Serializable {
      * @see LayoutData
      */
     public LayoutData getLayoutData() {
-        return (LayoutData) localStyle.getProperty(PROPERTY_LAYOUT_DATA);
+        return (LayoutData) localStyle.get(PROPERTY_LAYOUT_DATA);
     } 
     
     /**
@@ -719,8 +719,8 @@ implements RenderIdSupport, Serializable {
      * @param propertyName the property name
      * @return the property value
      */
-    public final Object getProperty(String propertyName) {
-        return localStyle.getProperty(propertyName);
+    public final Object get(String propertyName) {
+        return localStyle.get(propertyName);
     }
     
     /**
@@ -782,16 +782,16 @@ implements RenderIdSupport, Serializable {
     public final Object getRenderIndexedProperty(String propertyName, int propertyIndex, Object defaultValue) {
         if (localStyle.isIndexedPropertySet(propertyName, propertyIndex)) {
             // Return local style value.
-            return localStyle.getIndexedProperty(propertyName, propertyIndex);
+            return localStyle.getIndex(propertyName, propertyIndex);
         } else if (sharedStyle != null && sharedStyle.isIndexedPropertySet(propertyName, propertyIndex)) {
             // Return style value specified in shared style.
-            return sharedStyle.getIndexedProperty(propertyName, propertyIndex);
+            return sharedStyle.getIndex(propertyName, propertyIndex);
         } else {
             if (applicationInstance != null) {
                 Style applicationStyle = applicationInstance.getStyle(getClass(), styleName);
                 if (applicationStyle != null && applicationStyle.isIndexedPropertySet(propertyName, propertyIndex)) {
                     // Return style value specified in application.
-                    return applicationStyle.getIndexedProperty(propertyName, propertyIndex);
+                    return applicationStyle.getIndex(propertyName, propertyIndex);
                 }
             }
             return defaultValue;
@@ -868,12 +868,12 @@ implements RenderIdSupport, Serializable {
      * @return the property state
      */ 
     public final Object getRenderProperty(String propertyName, Object defaultValue) {
-        Object propertyValue = localStyle.getProperty(propertyName);
+        Object propertyValue = localStyle.get(propertyName);
         if (propertyValue != null) {
             return propertyValue;
         }
         if (sharedStyle != null) {
-            propertyValue = sharedStyle.getProperty(propertyName);
+            propertyValue = sharedStyle.get(propertyName);
             if (propertyValue != null) {
                 return propertyValue;
             }
@@ -882,7 +882,7 @@ implements RenderIdSupport, Serializable {
             Style applicationStyle = applicationInstance.getStyle(getClass(), styleName);
             if (applicationStyle != null) {
                 // Return style value specified in application.
-                propertyValue = applicationStyle.getProperty(propertyName);
+                propertyValue = applicationStyle.get(propertyName);
                 if (propertyValue != null) {
                     return propertyValue;
                 }
@@ -1164,7 +1164,7 @@ implements RenderIdSupport, Serializable {
      * <strong>Security note:</strong>  Because input to this method is 
      * likely from a remote client, it should be treated as potentially hostile.
      * All input to this method should be carefully verified.
-     * For example, directly invoking setProperty() method with the
+     * For example, directly invoking <code>set()</code> method with the
      * provided input would constitute a security hole. 
      * 
      * @param inputName the name of the input
@@ -1330,7 +1330,7 @@ implements RenderIdSupport, Serializable {
      * @param newValue the new background <code>Color</code>
      */
     public void setBackground(Color newValue) {
-        setProperty(PROPERTY_BACKGROUND, newValue);
+        set(PROPERTY_BACKGROUND, newValue);
     }
     
     /**
@@ -1381,7 +1381,7 @@ implements RenderIdSupport, Serializable {
      * @param newValue the new <code>Font</code>
      */
     public void setFont(Font newValue) {
-        setProperty(PROPERTY_FONT, newValue);
+        set(PROPERTY_FONT, newValue);
     }
     
     /**
@@ -1390,7 +1390,7 @@ implements RenderIdSupport, Serializable {
      * @param newValue the new foreground <code>Color</code>
      */
     public void setForeground(Color newValue) {
-        setProperty(PROPERTY_FOREGROUND, newValue);
+        set(PROPERTY_FOREGROUND, newValue);
     }
     
     /**
@@ -1410,10 +1410,10 @@ implements RenderIdSupport, Serializable {
      * @param propertyIndex the index of the property
      * @param newValue the value of the property
      * 
-     * @see #getIndexedProperty(java.lang.String, int)
+     * @see #getIndex(java.lang.String, int)
      */
-    public void setIndexedProperty(String propertyName, int propertyIndex, Object newValue) {
-        localStyle.setIndexedProperty(propertyName, propertyIndex, newValue);
+    public void setIndex(String propertyName, int propertyIndex, Object newValue) {
+        localStyle.setIndex(propertyName, propertyIndex, newValue);
         firePropertyChange(propertyName, null, null);
     }
     
@@ -1427,7 +1427,7 @@ implements RenderIdSupport, Serializable {
      * @see LayoutData
      */
     public void setLayoutData(LayoutData newValue) {
-        setProperty(PROPERTY_LAYOUT_DATA, newValue);
+        set(PROPERTY_LAYOUT_DATA, newValue);
     }
     
     /**
@@ -1460,11 +1460,11 @@ implements RenderIdSupport, Serializable {
      * 
      * @param propertyName the name of the property
      * @param newValue the value of the property
-     * @see #getProperty(java.lang.String)
+     * @see #get(java.lang.String)
      */
-    public void setProperty(String propertyName, Object newValue) {
-        Object oldValue = localStyle.getProperty(propertyName);
-        localStyle.setProperty(propertyName, newValue);
+    public void set(String propertyName, Object newValue) {
+        Object oldValue = localStyle.get(propertyName);
+        localStyle.set(propertyName, newValue);
         firePropertyChange(propertyName, oldValue, newValue);
     }
     

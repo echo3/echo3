@@ -78,7 +78,7 @@ implements SerialPropertyPeer {
             while (it.hasNext()) {
                 String propertyName = (String) it.next();
                 Method writeMethod = introspector.getWriteMethod(propertyName);
-                writeMethod.invoke(layoutData, new Object[]{propertyStyle.getProperty(propertyName)});
+                writeMethod.invoke(layoutData, new Object[]{propertyStyle.get(propertyName)});
             }
             
             return layoutData;

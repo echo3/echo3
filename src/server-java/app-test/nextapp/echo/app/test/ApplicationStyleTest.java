@@ -52,17 +52,17 @@ public class ApplicationStyleTest extends TestCase  {
         MutableStyleSheet styleSheet = new MutableStyleSheet();
 
         MutableStyle alphaButtonStyle = new MutableStyle();
-        alphaButtonStyle.setProperty(Button.PROPERTY_BORDER, TestConstants.BORDER_THICK_ORANGE);
-        alphaButtonStyle.setProperty(Button.PROPERTY_BACKGROUND, Color.YELLOW);
+        alphaButtonStyle.set(Button.PROPERTY_BORDER, TestConstants.BORDER_THICK_ORANGE);
+        alphaButtonStyle.set(Button.PROPERTY_BACKGROUND, Color.YELLOW);
         styleSheet.addStyle(Button.class, "alpha", alphaButtonStyle);
 
         MutableStyle bravoButtonStyle = new MutableStyle();
-        bravoButtonStyle.setProperty(Button.PROPERTY_BORDER, TestConstants.BORDER_THIN_YELLOW);
-        bravoButtonStyle.setProperty(Button.PROPERTY_BACKGROUND, Color.GREEN);
+        bravoButtonStyle.set(Button.PROPERTY_BORDER, TestConstants.BORDER_THIN_YELLOW);
+        bravoButtonStyle.set(Button.PROPERTY_BACKGROUND, Color.GREEN);
         styleSheet.addStyle(Button.class, "bravo", bravoButtonStyle);
 
         MutableStyle bravoLabelStyle = new MutableStyle();
-        bravoLabelStyle.setProperty(Label.PROPERTY_FOREGROUND, Color.RED);
+        bravoLabelStyle.set(Label.PROPERTY_FOREGROUND, Color.RED);
         styleSheet.addStyle(Label.class, "bravo", bravoLabelStyle);
         
         app.setStyleSheet(styleSheet);

@@ -72,7 +72,7 @@ implements Pane, PaneContainer {
      * @return the background image
      */
     public FillImage getBackgroundImage() {
-        return (FillImage) getProperty(PROPERTY_BACKGROUND_IMAGE);
+        return (FillImage) get(PROPERTY_BACKGROUND_IMAGE);
     }
     
     /**
@@ -81,7 +81,7 @@ implements Pane, PaneContainer {
      * @return the horizontal scrollbar position
      */
     public Extent getHorizontalScroll() {
-        return (Extent) getProperty(PROPERTY_HORIZONTAL_SCROLL);
+        return (Extent) get(PROPERTY_HORIZONTAL_SCROLL);
     }
     
     /**
@@ -96,7 +96,7 @@ implements Pane, PaneContainer {
      *         </ul>
      */
     public int getOverflow() {
-        Integer overflow = (Integer) getProperty(PROPERTY_OVERFLOW); 
+        Integer overflow = (Integer) get(PROPERTY_OVERFLOW); 
         return overflow == null ? OVERFLOW_AUTO : overflow.intValue();
     }
 
@@ -110,7 +110,7 @@ implements Pane, PaneContainer {
      * @return newValue the inset margin
      */
     public Insets getInsets() {
-        return (Insets) getProperty(PROPERTY_INSETS);
+        return (Insets) get(PROPERTY_INSETS);
     }
     
     /**
@@ -119,7 +119,7 @@ implements Pane, PaneContainer {
      * @return the vertical scrollbar position
      */
     public Extent getVerticalScroll() {
-        return (Extent) getProperty(PROPERTY_VERTICAL_SCROLL);
+        return (Extent) get(PROPERTY_VERTICAL_SCROLL);
     }
 
     /**
@@ -166,7 +166,7 @@ implements Pane, PaneContainer {
      * @param newValue the new background image
      */
     public void setBackgroundImage(FillImage newValue) {
-        setProperty(PROPERTY_BACKGROUND_IMAGE, newValue);
+        set(PROPERTY_BACKGROUND_IMAGE, newValue);
     }
 
     /**
@@ -178,7 +178,7 @@ implements Pane, PaneContainer {
      * @param newValue the new horizontal scrollbar position
      */
     public void setHorizontalScroll(Extent newValue) {
-        setProperty(PROPERTY_HORIZONTAL_SCROLL, newValue);
+        set(PROPERTY_HORIZONTAL_SCROLL, newValue);
     }
     
     /**
@@ -191,7 +191,7 @@ implements Pane, PaneContainer {
      * @param newValue the new inset margin
      */
     public void setInsets(Insets newValue) {
-        setProperty(PROPERTY_INSETS, newValue);
+        set(PROPERTY_INSETS, newValue);
     }
 
     /**
@@ -206,7 +206,7 @@ implements Pane, PaneContainer {
      *        </ul>
      */
     public void setOverflow(int newValue) {
-        setProperty(PROPERTY_OVERFLOW, new Integer(newValue));
+        set(PROPERTY_OVERFLOW, new Integer(newValue));
     }
 
     /**
@@ -219,8 +219,8 @@ implements Pane, PaneContainer {
      */
     public void setVerticalScroll(Extent newValue) {
         if (SCROLL_BOTTOM.equals(newValue)) {
-            setProperty(PROPERTY_VERTICAL_SCROLL, PX_0);
+            set(PROPERTY_VERTICAL_SCROLL, PX_0);
         }
-        setProperty(PROPERTY_VERTICAL_SCROLL, newValue);
+        set(PROPERTY_VERTICAL_SCROLL, newValue);
     }
 }

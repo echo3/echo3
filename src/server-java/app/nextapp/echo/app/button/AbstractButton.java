@@ -167,7 +167,7 @@ public abstract class AbstractButton extends Component {
      * @return the alignment
      */
     public Alignment getAlignment() {
-        return (Alignment) getProperty(PROPERTY_ALIGNMENT);
+        return (Alignment) get(PROPERTY_ALIGNMENT);
     }
 
     /**
@@ -176,7 +176,7 @@ public abstract class AbstractButton extends Component {
      * @return the background image
      */
     public FillImage getBackgroundImage() {
-        return (FillImage) getProperty(PROPERTY_BACKGROUND_IMAGE);
+        return (FillImage) get(PROPERTY_BACKGROUND_IMAGE);
     }
 
     /**
@@ -185,7 +185,7 @@ public abstract class AbstractButton extends Component {
      * @return the border
      */
     public Border getBorder() {
-        return (Border) getProperty(PROPERTY_BORDER);
+        return (Border) get(PROPERTY_BORDER);
     }
     
     /**
@@ -194,7 +194,7 @@ public abstract class AbstractButton extends Component {
      * @return the color
      */
     public Color getDisabledBackground() {
-        return (Color) getProperty(PROPERTY_DISABLED_BACKGROUND);
+        return (Color) get(PROPERTY_DISABLED_BACKGROUND);
     }
 
     /**
@@ -203,7 +203,7 @@ public abstract class AbstractButton extends Component {
      * @return the background image
      */
     public FillImage getDisabledBackgroundImage() {
-        return (FillImage) getProperty(PROPERTY_DISABLED_BACKGROUND_IMAGE);
+        return (FillImage) get(PROPERTY_DISABLED_BACKGROUND_IMAGE);
     }
 
     /**
@@ -213,7 +213,7 @@ public abstract class AbstractButton extends Component {
      * @return the border
      */
     public Border getDisabledBorder() {
-        return (Border) getProperty(PROPERTY_DISABLED_BORDER);
+        return (Border) get(PROPERTY_DISABLED_BORDER);
     }
 
     /**
@@ -222,7 +222,7 @@ public abstract class AbstractButton extends Component {
      * @return the font
      */
     public Font getDisabledFont() {
-        return (Font) getProperty(PROPERTY_DISABLED_FONT);
+        return (Font) get(PROPERTY_DISABLED_FONT);
     }
 
     /**
@@ -231,7 +231,7 @@ public abstract class AbstractButton extends Component {
      * @return the color
      */
     public Color getDisabledForeground() {
-        return (Color) getProperty(PROPERTY_DISABLED_FOREGROUND);
+        return (Color) get(PROPERTY_DISABLED_FOREGROUND);
     }
 
     /**
@@ -241,7 +241,7 @@ public abstract class AbstractButton extends Component {
      * @return the icon
      */
     public ImageReference getDisabledIcon() {
-        return (ImageReference) getProperty(PROPERTY_DISABLED_ICON);
+        return (ImageReference) get(PROPERTY_DISABLED_ICON);
     }
 
     /**
@@ -250,7 +250,7 @@ public abstract class AbstractButton extends Component {
      * @return the color
      */
     public Color getFocusedBackground() {
-        return (Color) getProperty(PROPERTY_FOCUSED_BACKGROUND);
+        return (Color) get(PROPERTY_FOCUSED_BACKGROUND);
     }
 
     /**
@@ -259,7 +259,7 @@ public abstract class AbstractButton extends Component {
      * @return the background image
      */
     public FillImage getFocusedBackgroundImage() {
-        return (FillImage) getProperty(PROPERTY_FOCUSED_BACKGROUND_IMAGE);
+        return (FillImage) get(PROPERTY_FOCUSED_BACKGROUND_IMAGE);
     }
 
     /**
@@ -269,7 +269,7 @@ public abstract class AbstractButton extends Component {
      * @return the border
      */
     public Border getFocusedBorder() {
-        return (Border) getProperty(PROPERTY_FOCUSED_BORDER);
+        return (Border) get(PROPERTY_FOCUSED_BORDER);
     }
 
     /**
@@ -278,7 +278,7 @@ public abstract class AbstractButton extends Component {
      * @return the font
      */
     public Font getFocusedFont() {
-        return (Font) getProperty(PROPERTY_FOCUSED_FONT);
+        return (Font) get(PROPERTY_FOCUSED_FONT);
     }
 
     /**
@@ -287,7 +287,7 @@ public abstract class AbstractButton extends Component {
      * @return the color
      */
     public Color getFocusedForeground() {
-        return (Color) getProperty(PROPERTY_FOCUSED_FOREGROUND);
+        return (Color) get(PROPERTY_FOCUSED_FOREGROUND);
     }
 
     /**
@@ -297,7 +297,7 @@ public abstract class AbstractButton extends Component {
      * @return the icon
      */
     public ImageReference getFocusedIcon() {
-        return (ImageReference) getProperty(PROPERTY_FOCUSED_ICON);
+        return (ImageReference) get(PROPERTY_FOCUSED_ICON);
     }
 
     /**
@@ -308,7 +308,7 @@ public abstract class AbstractButton extends Component {
      * @return the height
      */
     public Extent getHeight() {
-        return (Extent) getProperty(PROPERTY_HEIGHT);
+        return (Extent) get(PROPERTY_HEIGHT);
     }
 
     /**
@@ -317,7 +317,7 @@ public abstract class AbstractButton extends Component {
      * @return the icon
      */
     public ImageReference getIcon() {
-        return (ImageReference) getProperty(PROPERTY_ICON);
+        return (ImageReference) get(PROPERTY_ICON);
     }
 
     /**
@@ -330,7 +330,7 @@ public abstract class AbstractButton extends Component {
      * @return the margin size 
      */
     public Extent getIconTextMargin() {
-        return (Extent) getProperty(PROPERTY_ICON_TEXT_MARGIN);
+        return (Extent) get(PROPERTY_ICON_TEXT_MARGIN);
     }
     
     /**
@@ -339,7 +339,7 @@ public abstract class AbstractButton extends Component {
      * @return the margin
      */
     public Insets getInsets() {
-        return (Insets) getProperty(PROPERTY_INSETS);
+        return (Insets) get(PROPERTY_INSETS);
     }
 
     /**
@@ -348,7 +348,7 @@ public abstract class AbstractButton extends Component {
      * @return the model
      */
     public ButtonModel getModel() {
-        return (ButtonModel) getProperty(PROPERTY_MODEL);
+        return (ButtonModel) get(PROPERTY_MODEL);
     }
 
     /**
@@ -357,7 +357,7 @@ public abstract class AbstractButton extends Component {
      * @return the color
      */
     public Color getPressedBackground() {
-        return (Color) getProperty(PROPERTY_PRESSED_BACKGROUND);
+        return (Color) get(PROPERTY_PRESSED_BACKGROUND);
     }
 
     /**
@@ -366,7 +366,7 @@ public abstract class AbstractButton extends Component {
      * @return the background image
      */
     public FillImage getPressedBackgroundImage() {
-        return (FillImage) getProperty(PROPERTY_PRESSED_BACKGROUND_IMAGE);
+        return (FillImage) get(PROPERTY_PRESSED_BACKGROUND_IMAGE);
     }
 
     /**
@@ -376,7 +376,7 @@ public abstract class AbstractButton extends Component {
      * @return the border
      */
     public Border getPressedBorder() {
-        return (Border) getProperty(PROPERTY_PRESSED_BORDER);
+        return (Border) get(PROPERTY_PRESSED_BORDER);
     }
 
     /**
@@ -385,7 +385,7 @@ public abstract class AbstractButton extends Component {
      * @return the font
      */
     public Font getPressedFont() {
-        return (Font) getProperty(PROPERTY_PRESSED_FONT);
+        return (Font) get(PROPERTY_PRESSED_FONT);
     }
 
     /**
@@ -394,7 +394,7 @@ public abstract class AbstractButton extends Component {
      * @return the color
      */
     public Color getPressedForeground() {
-        return (Color) getProperty(PROPERTY_PRESSED_FOREGROUND);
+        return (Color) get(PROPERTY_PRESSED_FOREGROUND);
     }
 
     /**
@@ -404,7 +404,7 @@ public abstract class AbstractButton extends Component {
      * @return the icon
      */
     public ImageReference getPressedIcon() {
-        return (ImageReference) getProperty(PROPERTY_PRESSED_ICON);
+        return (ImageReference) get(PROPERTY_PRESSED_ICON);
     }
 
     /**
@@ -414,7 +414,7 @@ public abstract class AbstractButton extends Component {
      * @return the color
      */
     public Color getRolloverBackground() {
-        return (Color) getProperty(PROPERTY_ROLLOVER_BACKGROUND);
+        return (Color) get(PROPERTY_ROLLOVER_BACKGROUND);
     }
 
     /**
@@ -424,7 +424,7 @@ public abstract class AbstractButton extends Component {
      * @return the background image
      */
     public FillImage getRolloverBackgroundImage() {
-        return (FillImage) getProperty(PROPERTY_ROLLOVER_BACKGROUND_IMAGE);
+        return (FillImage) get(PROPERTY_ROLLOVER_BACKGROUND_IMAGE);
     }
 
     /**
@@ -434,7 +434,7 @@ public abstract class AbstractButton extends Component {
      * @return the border
      */
     public Border getRolloverBorder() {
-        return (Border) getProperty(PROPERTY_ROLLOVER_BORDER);
+        return (Border) get(PROPERTY_ROLLOVER_BORDER);
     }
 
     /**
@@ -444,7 +444,7 @@ public abstract class AbstractButton extends Component {
      * @return the font
      */
     public Font getRolloverFont() {
-        return (Font) getProperty(PROPERTY_ROLLOVER_FONT);
+        return (Font) get(PROPERTY_ROLLOVER_FONT);
     }
 
     /**
@@ -454,7 +454,7 @@ public abstract class AbstractButton extends Component {
      * @return the color
      */
     public Color getRolloverForeground() {
-        return (Color) getProperty(PROPERTY_ROLLOVER_FOREGROUND);
+        return (Color) get(PROPERTY_ROLLOVER_FOREGROUND);
     }
 
     /**
@@ -464,7 +464,7 @@ public abstract class AbstractButton extends Component {
      * @return the icon
      */
     public ImageReference getRolloverIcon() {
-        return (ImageReference) getProperty(PROPERTY_ROLLOVER_ICON);
+        return (ImageReference) get(PROPERTY_ROLLOVER_ICON);
     }
 
     /**
@@ -473,7 +473,7 @@ public abstract class AbstractButton extends Component {
      * @return the text label
      */
     public String getText() {
-        return (String) getProperty(PROPERTY_TEXT);
+        return (String) get(PROPERTY_TEXT);
     }
 
     /**
@@ -482,7 +482,7 @@ public abstract class AbstractButton extends Component {
      * @return the text alignment
      */
     public Alignment getTextAlignment() {
-        return (Alignment) getProperty(PROPERTY_TEXT_ALIGNMENT);
+        return (Alignment) get(PROPERTY_TEXT_ALIGNMENT);
     }
 
     /**
@@ -491,7 +491,7 @@ public abstract class AbstractButton extends Component {
      * @return the text position
      */
     public Alignment getTextPosition() {
-        return (Alignment) getProperty(PROPERTY_TEXT_POSITION);
+        return (Alignment) get(PROPERTY_TEXT_POSITION);
     }
     
     /**
@@ -501,7 +501,7 @@ public abstract class AbstractButton extends Component {
      * @return the tool tip text
      */
     public String getToolTipText() {
-        return (String) getProperty(PROPERTY_TOOL_TIP_TEXT);
+        return (String) get(PROPERTY_TOOL_TIP_TEXT);
     }
     
     /**
@@ -512,7 +512,7 @@ public abstract class AbstractButton extends Component {
      * @return the width
      */
     public Extent getWidth() {
-        return (Extent) getProperty(PROPERTY_WIDTH);
+        return (Extent) get(PROPERTY_WIDTH);
     }
 
     /**
@@ -532,7 +532,7 @@ public abstract class AbstractButton extends Component {
      * @see #setFocusedEnabled(boolean)
      */
     public boolean isFocusedEnabled() {
-        Boolean value = (Boolean) getProperty(PROPERTY_PRESSED_ENABLED);
+        Boolean value = (Boolean) get(PROPERTY_PRESSED_ENABLED);
         return value == null ? false : value.booleanValue();
     }
 
@@ -543,7 +543,7 @@ public abstract class AbstractButton extends Component {
      * @return the line wrap state
      */
     public boolean isLineWrap() {
-        Boolean value = (Boolean) getProperty(PROPERTY_LINE_WRAP);
+        Boolean value = (Boolean) get(PROPERTY_LINE_WRAP);
         return value == null ? true : value.booleanValue();
     }
     
@@ -554,7 +554,7 @@ public abstract class AbstractButton extends Component {
      * @see #setPressedEnabled(boolean)
      */
     public boolean isPressedEnabled() {
-        Boolean value = (Boolean) getProperty(PROPERTY_PRESSED_ENABLED);
+        Boolean value = (Boolean) get(PROPERTY_PRESSED_ENABLED);
         return value == null ? false : value.booleanValue();
     }
 
@@ -565,7 +565,7 @@ public abstract class AbstractButton extends Component {
      * @see #setRolloverEnabled(boolean)
      */
     public boolean isRolloverEnabled() {
-        Boolean value = (Boolean) getProperty(PROPERTY_ROLLOVER_ENABLED);
+        Boolean value = (Boolean) get(PROPERTY_ROLLOVER_ENABLED);
         return value == null ? false : value.booleanValue();
     }
 
@@ -621,7 +621,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new alignment
      */
     public void setAlignment(Alignment newValue) {
-        setProperty(PROPERTY_ALIGNMENT, newValue);
+        set(PROPERTY_ALIGNMENT, newValue);
     }
 
     /**
@@ -630,7 +630,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new background image
      */
     public void setBackgroundImage(FillImage newValue) {
-        setProperty(PROPERTY_BACKGROUND_IMAGE, newValue);
+        set(PROPERTY_BACKGROUND_IMAGE, newValue);
     }
 
     /**
@@ -639,7 +639,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new border
      */
     public void setBorder(Border newValue) {
-        setProperty(PROPERTY_BORDER, newValue);
+        set(PROPERTY_BORDER, newValue);
     }
 
     /**
@@ -648,7 +648,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new <code>Color</code>
      */
     public void setDisabledBackground(Color newValue) {
-        setProperty(PROPERTY_DISABLED_BACKGROUND, newValue);
+        set(PROPERTY_DISABLED_BACKGROUND, newValue);
     }
 
     /**
@@ -657,7 +657,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new background image
      */
     public void setDisabledBackgroundImage(FillImage newValue) {
-        setProperty(PROPERTY_DISABLED_BACKGROUND_IMAGE, newValue);
+        set(PROPERTY_DISABLED_BACKGROUND_IMAGE, newValue);
     }
 
     /**
@@ -666,7 +666,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new border
      */
     public void setDisabledBorder(Border newValue) {
-        setProperty(PROPERTY_DISABLED_BORDER, newValue);
+        set(PROPERTY_DISABLED_BORDER, newValue);
     }
 
     /**
@@ -675,7 +675,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new <code>Font</code>
      */
     public void setDisabledFont(Font newValue) {
-        setProperty(PROPERTY_DISABLED_FONT, newValue);
+        set(PROPERTY_DISABLED_FONT, newValue);
     }
 
     /**
@@ -684,7 +684,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new <code>Color</code>
      */
     public void setDisabledForeground(Color newValue) {
-        setProperty(PROPERTY_DISABLED_FOREGROUND, newValue);
+        set(PROPERTY_DISABLED_FOREGROUND, newValue);
     }
 
     /**
@@ -694,7 +694,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new icon
      */
     public void setDisabledIcon(ImageReference newValue) {
-        setProperty(PROPERTY_DISABLED_ICON, newValue);
+        set(PROPERTY_DISABLED_ICON, newValue);
     }
 
     /**
@@ -703,7 +703,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new <code>Color</code>
      */
     public void setFocusedBackground(Color newValue) {
-        setProperty(PROPERTY_FOCUSED_BACKGROUND, newValue);
+        set(PROPERTY_FOCUSED_BACKGROUND, newValue);
     }
 
     /**
@@ -712,7 +712,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new background image
      */
     public void setFocusedBackgroundImage(FillImage newValue) {
-        setProperty(PROPERTY_FOCUSED_BACKGROUND_IMAGE, newValue);
+        set(PROPERTY_FOCUSED_BACKGROUND_IMAGE, newValue);
     }
 
     /**
@@ -721,7 +721,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new border
      */
     public void setFocusedBorder(Border newValue) {
-        setProperty(PROPERTY_FOCUSED_BORDER, newValue);
+        set(PROPERTY_FOCUSED_BORDER, newValue);
     }
 
     /**
@@ -732,7 +732,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue true if focused effects should be enabled
      */
     public void setFocusedEnabled(boolean newValue) {
-        setProperty(PROPERTY_FOCUSED_ENABLED, new Boolean(newValue));
+        set(PROPERTY_FOCUSED_ENABLED, new Boolean(newValue));
     }
 
     /**
@@ -741,7 +741,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new <code>Font</code>
      */
     public void setFocusedFont(Font newValue) {
-        setProperty(PROPERTY_FOCUSED_FONT, newValue);
+        set(PROPERTY_FOCUSED_FONT, newValue);
     }
 
     /**
@@ -750,7 +750,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new <code>Color</code>
      */
     public void setFocusedForeground(Color newValue) {
-        setProperty(PROPERTY_FOCUSED_FOREGROUND, newValue);
+        set(PROPERTY_FOCUSED_FOREGROUND, newValue);
     }
 
     /**
@@ -760,7 +760,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new icon
      */
     public void setFocusedIcon(ImageReference newValue) {
-        setProperty(PROPERTY_FOCUSED_ICON, newValue);
+        set(PROPERTY_FOCUSED_ICON, newValue);
     }
 
     /**
@@ -771,7 +771,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new height
      */
     public void setHeight(Extent newValue) {
-        setProperty(PROPERTY_HEIGHT, newValue);
+        set(PROPERTY_HEIGHT, newValue);
     }
 
     /**
@@ -780,7 +780,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new icon
      */
     public void setIcon(ImageReference newValue) {
-        setProperty(PROPERTY_ICON, newValue);
+        set(PROPERTY_ICON, newValue);
     }
 
     /**
@@ -793,7 +793,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the margin size 
      */
     public void setIconTextMargin(Extent newValue) {
-        setProperty(PROPERTY_ICON_TEXT_MARGIN, newValue);
+        set(PROPERTY_ICON_TEXT_MARGIN, newValue);
     }
 
     /**
@@ -802,7 +802,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new margin
      */
     public void setInsets(Insets newValue) {
-        setProperty(PROPERTY_INSETS, newValue);
+        set(PROPERTY_INSETS, newValue);
     }
 
     /**
@@ -812,7 +812,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new line wrap state
      */
     public void setLineWrap(boolean newValue) {
-        setProperty(PROPERTY_LINE_WRAP, new Boolean(newValue));
+        set(PROPERTY_LINE_WRAP, new Boolean(newValue));
     }
     
     /**
@@ -833,7 +833,7 @@ public abstract class AbstractButton extends Component {
 
         newValue.addActionListener(actionForwarder);
 
-        setProperty(PROPERTY_MODEL, newValue);
+        set(PROPERTY_MODEL, newValue);
     }
 
     /**
@@ -842,7 +842,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new <code>Color</code>
      */
     public void setPressedBackground(Color newValue) {
-        setProperty(PROPERTY_PRESSED_BACKGROUND, newValue);
+        set(PROPERTY_PRESSED_BACKGROUND, newValue);
     }
 
     /**
@@ -851,7 +851,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new background image
      */
     public void setPressedBackgroundImage(FillImage newValue) {
-        setProperty(PROPERTY_PRESSED_BACKGROUND_IMAGE, newValue);
+        set(PROPERTY_PRESSED_BACKGROUND_IMAGE, newValue);
     }
 
     /**
@@ -860,7 +860,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new border
      */
     public void setPressedBorder(Border newValue) {
-        setProperty(PROPERTY_PRESSED_BORDER, newValue);
+        set(PROPERTY_PRESSED_BORDER, newValue);
     }
 
     /**
@@ -871,7 +871,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue true if pressed effects should be enabled
      */
     public void setPressedEnabled(boolean newValue) {
-        setProperty(PROPERTY_PRESSED_ENABLED, new Boolean(newValue));
+        set(PROPERTY_PRESSED_ENABLED, new Boolean(newValue));
     }
 
     /**
@@ -880,7 +880,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new <code>Font</code>
      */
     public void setPressedFont(Font newValue) {
-        setProperty(PROPERTY_PRESSED_FONT, newValue);
+        set(PROPERTY_PRESSED_FONT, newValue);
     }
 
     /**
@@ -889,7 +889,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new <code>Color</code>
      */
     public void setPressedForeground(Color newValue) {
-        setProperty(PROPERTY_PRESSED_FOREGROUND, newValue);
+        set(PROPERTY_PRESSED_FOREGROUND, newValue);
     }
 
     /**
@@ -898,7 +898,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new icon
      */
     public void setPressedIcon(ImageReference newValue) {
-        setProperty(PROPERTY_PRESSED_ICON, newValue);
+        set(PROPERTY_PRESSED_ICON, newValue);
     }
 
     /**
@@ -908,7 +908,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new <code>Color</code>
      */
     public void setRolloverBackground(Color newValue) {
-        setProperty(PROPERTY_ROLLOVER_BACKGROUND, newValue);
+        set(PROPERTY_ROLLOVER_BACKGROUND, newValue);
     }
 
     /**
@@ -918,7 +918,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new background image
      */
     public void setRolloverBackgroundImage(FillImage newValue) {
-        setProperty(PROPERTY_ROLLOVER_BACKGROUND_IMAGE, newValue);
+        set(PROPERTY_ROLLOVER_BACKGROUND_IMAGE, newValue);
     }
 
     /**
@@ -928,7 +928,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new border
      */
     public void setRolloverBorder(Border newValue) {
-        setProperty(PROPERTY_ROLLOVER_BORDER, newValue);
+        set(PROPERTY_ROLLOVER_BORDER, newValue);
     }
 
     /**
@@ -939,7 +939,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue true if rollover effects should be enabled
      */
     public void setRolloverEnabled(boolean newValue) {
-        setProperty(PROPERTY_ROLLOVER_ENABLED, new Boolean(newValue));
+        set(PROPERTY_ROLLOVER_ENABLED, new Boolean(newValue));
     }
 
     /**
@@ -948,7 +948,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new <code>Font</code>
      */
     public void setRolloverFont(Font newValue) {
-        setProperty(PROPERTY_ROLLOVER_FONT, newValue);
+        set(PROPERTY_ROLLOVER_FONT, newValue);
     }
 
     /**
@@ -958,7 +958,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new <code>Color</code>
      */
     public void setRolloverForeground(Color newValue) {
-        setProperty(PROPERTY_ROLLOVER_FOREGROUND, newValue);
+        set(PROPERTY_ROLLOVER_FOREGROUND, newValue);
     }
 
     /**
@@ -968,7 +968,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new icon
      */
     public void setRolloverIcon(ImageReference newValue) {
-        setProperty(PROPERTY_ROLLOVER_ICON, newValue);
+        set(PROPERTY_ROLLOVER_ICON, newValue);
     }
 
     /**
@@ -977,7 +977,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new text label
      */
     public void setText(String newValue) {
-        setProperty(PROPERTY_TEXT, newValue);
+        set(PROPERTY_TEXT, newValue);
     }
 
     /**
@@ -988,7 +988,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new text alignment
      */
     public void setTextAlignment(Alignment newValue) {
-        setProperty(PROPERTY_TEXT_ALIGNMENT, newValue);
+        set(PROPERTY_TEXT_ALIGNMENT, newValue);
     }
     
     /**
@@ -999,7 +999,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new text position
      */
     public void setTextPosition(Alignment newValue) {
-        setProperty(PROPERTY_TEXT_POSITION, newValue);
+        set(PROPERTY_TEXT_POSITION, newValue);
     }
     
     /**
@@ -1009,7 +1009,7 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new tool tip text
      */
     public void setToolTipText(String newValue) {
-        setProperty(PROPERTY_TOOL_TIP_TEXT, newValue);
+        set(PROPERTY_TOOL_TIP_TEXT, newValue);
     }
 
     /**
@@ -1020,6 +1020,6 @@ public abstract class AbstractButton extends Component {
      * @param newValue the new width
      */
     public void setWidth(Extent newValue) {
-        setProperty(PROPERTY_WIDTH, newValue);
+        set(PROPERTY_WIDTH, newValue);
     }
 }

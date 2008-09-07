@@ -45,23 +45,23 @@ public class StyleSheetTest extends TestCase {
         MutableStyleSheet styleSheet = new MutableStyleSheet();
         
         MutableStyle alphaButtonStyle = new MutableStyle();
-        alphaButtonStyle.setProperty(Button.PROPERTY_BORDER, TestConstants.BORDER_THICK_ORANGE);
-        alphaButtonStyle.setProperty(Button.PROPERTY_BACKGROUND, Color.YELLOW);
+        alphaButtonStyle.set(Button.PROPERTY_BORDER, TestConstants.BORDER_THICK_ORANGE);
+        alphaButtonStyle.set(Button.PROPERTY_BACKGROUND, Color.YELLOW);
         styleSheet.addStyle(Button.class, "alpha", alphaButtonStyle);
         
         assertEquals(alphaButtonStyle, styleSheet.getStyle("alpha", Button.class, true));
         assertNull(styleSheet.getStyle("bravo", Button.class, true));
         
         MutableStyle bravoButtonStyle = new MutableStyle();
-        bravoButtonStyle.setProperty(Button.PROPERTY_BORDER, TestConstants.BORDER_THIN_YELLOW);
-        bravoButtonStyle.setProperty(Button.PROPERTY_BACKGROUND, Color.GREEN);
+        bravoButtonStyle.set(Button.PROPERTY_BORDER, TestConstants.BORDER_THIN_YELLOW);
+        bravoButtonStyle.set(Button.PROPERTY_BACKGROUND, Color.GREEN);
         styleSheet.addStyle(Button.class, "bravo", bravoButtonStyle);
 
         assertEquals(alphaButtonStyle, styleSheet.getStyle("alpha", Button.class, true));
         assertEquals(bravoButtonStyle, styleSheet.getStyle("bravo", Button.class, true));
         
         MutableStyle bravoLabelStyle = new MutableStyle();
-        bravoLabelStyle.setProperty(Label.PROPERTY_FOREGROUND, Color.RED);
+        bravoLabelStyle.set(Label.PROPERTY_FOREGROUND, Color.RED);
         styleSheet.addStyle(Label.class, "bravo", bravoLabelStyle);
 
         assertEquals(alphaButtonStyle, styleSheet.getStyle("alpha", Button.class, true));

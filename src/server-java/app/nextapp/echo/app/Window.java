@@ -66,7 +66,7 @@ public class Window extends Component {
      * @return the window title
      */
     public String getTitle() {
-        return (String) getProperty(PROPERTY_TITLE);
+        return (String) get(PROPERTY_TITLE);
     }
     
     /**
@@ -102,6 +102,6 @@ public class Window extends Component {
      * @param newValue the new window title
      */
     public void setTitle(String newValue) {
-        setProperty(PROPERTY_TITLE, newValue);
+        set(PROPERTY_TITLE, newValue);
     }
 }

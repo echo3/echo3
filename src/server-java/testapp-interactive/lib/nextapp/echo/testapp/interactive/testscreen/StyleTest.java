@@ -61,7 +61,7 @@ public class StyleTest extends SplitPane {
         controlsColumn.addButton("Set Test Button Style", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 MutableStyle style = new MutableStyle();
-                style.setProperty(Button.PROPERTY_BACKGROUND, Color.GREEN);
+                style.set(Button.PROPERTY_BACKGROUND, Color.GREEN);
                 testButton.setStyle(style);
             }
         });

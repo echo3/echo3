@@ -61,7 +61,7 @@ public class Column extends Component {
      * @return the border
      */
     public Border getBorder() {
-        return (Border) getProperty(PROPERTY_BORDER);
+        return (Border) get(PROPERTY_BORDER);
     }
     
     /**
@@ -72,7 +72,7 @@ public class Column extends Component {
      * @return the cell spacing
      */
     public Extent getCellSpacing() {
-        return (Extent) getProperty(PROPERTY_CELL_SPACING);
+        return (Extent) get(PROPERTY_CELL_SPACING);
     }
     
     /**
@@ -83,7 +83,7 @@ public class Column extends Component {
      * @return the inset
      */
     public Insets getInsets() {
-        return (Insets) getProperty(PROPERTY_INSETS);
+        return (Insets) get(PROPERTY_INSETS);
     }
     
      /**
@@ -92,7 +92,7 @@ public class Column extends Component {
      * @param newValue the new border
      */
     public void setBorder(Border newValue) {
-        setProperty(PROPERTY_BORDER, newValue);
+        set(PROPERTY_BORDER, newValue);
     }
     
     /**
@@ -103,7 +103,7 @@ public class Column extends Component {
      * @param newValue the new spacing
      */
     public void setCellSpacing(Extent newValue) {
-        setProperty(PROPERTY_CELL_SPACING, newValue);
+        set(PROPERTY_CELL_SPACING, newValue);
     }
     
     /**
@@ -114,6 +114,6 @@ public class Column extends Component {
      * @param newValue the new inset
      */
     public void setInsets(Insets newValue) {
-        setProperty(PROPERTY_INSETS, newValue);
+        set(PROPERTY_INSETS, newValue);
     }
 }

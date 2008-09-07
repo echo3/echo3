@@ -58,7 +58,7 @@ public class AlignmentPeerTest extends TestCase {
 
     public void testLoadAlignment() {
         Style alphaStyle = styleSheet.getStyle("alpha", Label.class, true);
-        Alignment alignment = (Alignment) alphaStyle.getProperty(Label.PROPERTY_TEXT_POSITION);
+        Alignment alignment = (Alignment) alphaStyle.get(Label.PROPERTY_TEXT_POSITION);
         assertNotNull(alignment);
         assertEquals(Alignment.CENTER, alignment.getHorizontal());
         assertEquals(Alignment.BOTTOM, alignment.getVertical());
@@ -66,7 +66,7 @@ public class AlignmentPeerTest extends TestCase {
 
     public void testLoadDefault() {
         Style bravoStyle = styleSheet.getStyle("bravo", Label.class, true);
-        Alignment alignment = (Alignment) bravoStyle.getProperty(Label.PROPERTY_TEXT_POSITION);
+        Alignment alignment = (Alignment) bravoStyle.get(Label.PROPERTY_TEXT_POSITION);
         assertNotNull(alignment);
         assertEquals(Alignment.DEFAULT, alignment.getHorizontal());
         assertEquals(Alignment.DEFAULT, alignment.getVertical());

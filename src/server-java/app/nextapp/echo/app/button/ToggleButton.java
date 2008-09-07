@@ -108,7 +108,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @return the icon
      */
     public ImageReference getDisabledSelectedStateIcon() {
-        return (ImageReference) getProperty(PROPERTY_DISABLED_SELECTED_STATE_ICON);
+        return (ImageReference) get(PROPERTY_DISABLED_SELECTED_STATE_ICON);
     }
     
     /**
@@ -117,7 +117,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @return the icon
      */
     public ImageReference getDisabledStateIcon() {
-        return (ImageReference) getProperty(PROPERTY_DISABLED_STATE_ICON);
+        return (ImageReference) get(PROPERTY_DISABLED_STATE_ICON);
     }
     
     /**
@@ -127,7 +127,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @return the icon
      */
     public ImageReference getPressedSelectedStateIcon() {
-        return (ImageReference) getProperty(PROPERTY_PRESSED_SELECTED_STATE_ICON);
+        return (ImageReference) get(PROPERTY_PRESSED_SELECTED_STATE_ICON);
     }
     
     /**
@@ -137,7 +137,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @return the icon
      */
     public ImageReference getPressedStateIcon() {
-        return (ImageReference) getProperty(PROPERTY_PRESSED_STATE_ICON);
+        return (ImageReference) get(PROPERTY_PRESSED_STATE_ICON);
     }
     
     /**
@@ -147,7 +147,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @return the icon
      */
     public ImageReference getRolloverSelectedStateIcon() {
-        return (ImageReference) getProperty(PROPERTY_ROLLOVER_SELECTED_STATE_ICON);
+        return (ImageReference) get(PROPERTY_ROLLOVER_SELECTED_STATE_ICON);
     }
     
     /**
@@ -157,7 +157,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @return the icon
      */
     public ImageReference getRolloverStateIcon() {
-        return (ImageReference) getProperty(PROPERTY_ROLLOVER_STATE_ICON);
+        return (ImageReference) get(PROPERTY_ROLLOVER_STATE_ICON);
     }
     
     /**
@@ -166,7 +166,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @return the icon
      */
     public ImageReference getSelectedStateIcon() {
-        return (ImageReference) getProperty(PROPERTY_SELECTED_STATE_ICON);
+        return (ImageReference) get(PROPERTY_SELECTED_STATE_ICON);
     }
     
     /**
@@ -176,7 +176,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @return the state alignment
      */
     public Alignment getStateAlignment() {
-        return (Alignment) getProperty(PROPERTY_STATE_ALIGNMENT);
+        return (Alignment) get(PROPERTY_STATE_ALIGNMENT);
     }
 
     /**
@@ -185,7 +185,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @return the icon
      */
     public ImageReference getStateIcon() {
-        return (ImageReference) getProperty(PROPERTY_STATE_ICON);
+        return (ImageReference) get(PROPERTY_STATE_ICON);
     }
     
     /**
@@ -199,7 +199,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @return the margin size 
      */
     public Extent getStateMargin() {
-        return (Extent) getProperty(PROPERTY_STATE_MARGIN);
+        return (Extent) get(PROPERTY_STATE_MARGIN);
     }
 
     /**
@@ -209,7 +209,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @return the state position
      */
     public Alignment getStatePosition() {
-        return (Alignment) getProperty(PROPERTY_STATE_POSITION);
+        return (Alignment) get(PROPERTY_STATE_POSITION);
     }
     
     /**
@@ -247,7 +247,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @param newValue the new icon
      */
     public void setDisabledSelectedStateIcon(ImageReference newValue) {
-        setProperty(PROPERTY_DISABLED_SELECTED_STATE_ICON, newValue);
+        set(PROPERTY_DISABLED_SELECTED_STATE_ICON, newValue);
     }
     
     /**
@@ -256,7 +256,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @param newValue the new icon
      */
     public void setDisabledStateIcon(ImageReference newValue) {
-        setProperty(PROPERTY_DISABLED_STATE_ICON, newValue);
+        set(PROPERTY_DISABLED_STATE_ICON, newValue);
     }
     
     /**
@@ -285,7 +285,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @param newValue the new icon
      */
     public void setPressedSelectedStateIcon(ImageReference newValue) {
-        setProperty(PROPERTY_PRESSED_SELECTED_STATE_ICON, newValue);
+        set(PROPERTY_PRESSED_SELECTED_STATE_ICON, newValue);
     }
     
     /**
@@ -295,7 +295,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @param newValue the new icon
      */
     public void setPressedStateIcon(ImageReference newValue) {
-        setProperty(PROPERTY_PRESSED_STATE_ICON, newValue);
+        set(PROPERTY_PRESSED_STATE_ICON, newValue);
     }
     
     /**
@@ -305,7 +305,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @param newValue the new icon
      */
     public void setRolloverSelectedStateIcon(ImageReference newValue) {
-        setProperty(PROPERTY_ROLLOVER_SELECTED_STATE_ICON, newValue);
+        set(PROPERTY_ROLLOVER_SELECTED_STATE_ICON, newValue);
     }
     
     /**
@@ -315,7 +315,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @param newValue the new icon
      */
     public void setRolloverStateIcon(ImageReference newValue) {
-        setProperty(PROPERTY_ROLLOVER_STATE_ICON, newValue);
+        set(PROPERTY_ROLLOVER_STATE_ICON, newValue);
     }
     
     /**
@@ -324,7 +324,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @param newValue the new icon
      */
     public void setSelectedStateIcon(ImageReference newValue) {
-        setProperty(PROPERTY_SELECTED_STATE_ICON, newValue);
+        set(PROPERTY_SELECTED_STATE_ICON, newValue);
     }
     
     /**
@@ -345,7 +345,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @param newValue the new state alignment
      */
     public void setStateAlignment(Alignment newValue) {
-        setProperty(PROPERTY_STATE_ALIGNMENT, newValue);
+        set(PROPERTY_STATE_ALIGNMENT, newValue);
     }
     
     /**
@@ -354,7 +354,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @param newValue the new icon
      */
     public void setStateIcon(ImageReference newValue) {
-        setProperty(PROPERTY_STATE_ICON, newValue);
+        set(PROPERTY_STATE_ICON, newValue);
     }
     
     /**
@@ -368,7 +368,7 @@ public abstract class ToggleButton extends AbstractButton {
      * @param newValue the new margin size 
      */
     public void setStateMargin(Extent newValue) {
-        setProperty(PROPERTY_STATE_MARGIN, newValue);
+        set(PROPERTY_STATE_MARGIN, newValue);
     }
 
     /**
@@ -380,6 +380,6 @@ public abstract class ToggleButton extends AbstractButton {
      * @param newValue the new state position
      */
     public void setStatePosition(Alignment newValue) {
-        setProperty(PROPERTY_STATE_POSITION, newValue);
+        set(PROPERTY_STATE_POSITION, newValue);
     }
 }

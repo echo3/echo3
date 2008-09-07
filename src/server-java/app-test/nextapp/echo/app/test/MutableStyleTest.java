@@ -43,68 +43,68 @@ public class MutableStyleTest extends TestCase {
     
     public void testAddStyle() {
         MutableStyle style1 = new MutableStyle();
-        style1.setIndexedProperty("alpha", 0, "tango");
-        style1.setIndexedProperty("alpha", 2, "uniform");
-        style1.setIndexedProperty("alpha", 3, "victor");
-        style1.setProperty("charlie", "delta");
-        style1.setProperty("echo", "foxtrot");
+        style1.setIndex("alpha", 0, "tango");
+        style1.setIndex("alpha", 2, "uniform");
+        style1.setIndex("alpha", 3, "victor");
+        style1.set("charlie", "delta");
+        style1.set("echo", "foxtrot");
         
         MutableStyle style2 = new MutableStyle();
-        style2.setProperty("charlie", "golf");
-        assertEquals("golf", style2.getProperty("charlie"));
+        style2.set("charlie", "golf");
+        assertEquals("golf", style2.get("charlie"));
         
         style2.addStyleContent(style1);
         
-        assertEquals("tango", style2.getIndexedProperty("alpha", 0));
-        assertEquals("uniform", style2.getIndexedProperty("alpha", 2));
-        assertEquals("victor", style2.getIndexedProperty("alpha", 3));
-        assertEquals("delta", style2.getProperty("charlie"));
-        assertEquals("foxtrot", style2.getProperty("echo"));
+        assertEquals("tango", style2.getIndex("alpha", 0));
+        assertEquals("uniform", style2.getIndex("alpha", 2));
+        assertEquals("victor", style2.getIndex("alpha", 3));
+        assertEquals("delta", style2.get("charlie"));
+        assertEquals("foxtrot", style2.get("echo"));
         
-        style2.setIndexedProperty("alpha", 3, "whiskey");
-        assertEquals("whiskey", style2.getIndexedProperty("alpha", 3));
-        assertEquals("victor", style1.getIndexedProperty("alpha", 3));
+        style2.setIndex("alpha", 3, "whiskey");
+        assertEquals("whiskey", style2.getIndex("alpha", 3));
+        assertEquals("victor", style1.getIndex("alpha", 3));
         
-        style2.setProperty("echo", "hotel");
-        assertEquals("hotel", style2.getProperty("echo"));
-        assertEquals("foxtrot", style1.getProperty("echo"));
+        style2.set("echo", "hotel");
+        assertEquals("hotel", style2.get("echo"));
+        assertEquals("foxtrot", style1.get("echo"));
     }
     
     public void testBasic() {
         MutableStyle style = new MutableStyle();
         assertEquals(0, style.size());
         assertFalse(style.isPropertySet("alpha"));
-        assertNull(style.getProperty("alpha"));
+        assertNull(style.get("alpha"));
         
-        style.setProperty("alpha", "bravo");
+        style.set("alpha", "bravo");
         assertEquals(1, style.size());
         assertTrue(style.isPropertySet("alpha"));
         assertFalse(style.isPropertySet("bravo"));
         
-        style.setProperty("bravo", "charlie");
+        style.set("bravo", "charlie");
         assertEquals(2, style.size());
-        assertEquals("bravo", style.getProperty("alpha"));
-        assertEquals("charlie", style.getProperty("bravo"));
+        assertEquals("bravo", style.get("alpha"));
+        assertEquals("charlie", style.get("bravo"));
         
-        style.setProperty("bravo", "delta");
+        style.set("bravo", "delta");
         assertEquals(2, style.size());
-        assertEquals("bravo", style.getProperty("alpha"));
-        assertEquals("delta", style.getProperty("bravo"));
+        assertEquals("bravo", style.get("alpha"));
+        assertEquals("delta", style.get("bravo"));
         
-        style.setProperty("echo", "foxtrot");
-        style.setProperty("golf", "hotel");
-        style.setProperty("india", "juliet");
-        style.setProperty("kilo", "lima");
+        style.set("echo", "foxtrot");
+        style.set("golf", "hotel");
+        style.set("india", "juliet");
+        style.set("kilo", "lima");
         assertEquals(6, style.size());
-        assertEquals("juliet", style.getProperty("india"));
+        assertEquals("juliet", style.get("india"));
         
         style.removeProperty("kilo");
         assertEquals(5, style.size());
-        assertNull(style.getProperty("kilo"));
+        assertNull(style.get("kilo"));
 
         style.removeProperty("alpha");
         assertEquals(4, style.size());
-        assertNull(style.getProperty("alpha"));
+        assertNull(style.get("alpha"));
         
         style.removeProperty("mike");
         assertEquals(4, style.size());
@@ -120,9 +120,9 @@ public class MutableStyleTest extends TestCase {
     
     public void testGetPropertyIndices() {
         MutableStyle style = new MutableStyle();
-        style.setIndexedProperty("alpha", 0, "zero");
-        style.setIndexedProperty("alpha", 1, "one");
-        style.setIndexedProperty("alpha", 5, "five");
+        style.setIndex("alpha", 0, "zero");
+        style.setIndex("alpha", 1, "one");
+        style.setIndex("alpha", 5, "five");
         Iterator it = style.getPropertyIndices("alpha");
         assertNotNull(it);
         Set indices = new HashSet();
@@ -137,9 +137,9 @@ public class MutableStyleTest extends TestCase {
     
     public void testGetPropertyNames() {
         MutableStyle style = new MutableStyle();
-        style.setProperty("alpha", "bravo");
-        style.setProperty("charlie", "delta");
-        style.setProperty("echo", "foxtrot");
+        style.set("alpha", "bravo");
+        style.set("charlie", "delta");
+        style.set("echo", "foxtrot");
         Iterator it = style.getPropertyNames();
         assertNotNull(it);
         Set names = new HashSet();
@@ -156,19 +156,19 @@ public class MutableStyleTest extends TestCase {
     
     public void testIndexedProperty() {
         MutableStyle style = new MutableStyle();
-        style.setIndexedProperty("alpha", 0, "0");
-        style.setIndexedProperty("alpha", 1, "1");
-        style.setIndexedProperty("alpha", 2, "2");
-        style.setIndexedProperty("alpha", 0, "3");
+        style.setIndex("alpha", 0, "0");
+        style.setIndex("alpha", 1, "1");
+        style.setIndex("alpha", 2, "2");
+        style.setIndex("alpha", 0, "3");
         
         assertFalse(style.isIndexedPropertySet("alpha", -1));
         assertTrue(style.isIndexedPropertySet("alpha", 0));
         assertTrue(style.isIndexedPropertySet("alpha", 1));
         assertTrue(style.isIndexedPropertySet("alpha", 2));
         assertFalse(style.isIndexedPropertySet("alpha", 3));
-        assertEquals("3", style.getIndexedProperty("alpha", 0));
-        assertEquals("1", style.getIndexedProperty("alpha", 1));
-        assertEquals("2", style.getIndexedProperty("alpha", 2));
+        assertEquals("3", style.getIndex("alpha", 0));
+        assertEquals("1", style.getIndex("alpha", 1));
+        assertEquals("2", style.getIndex("alpha", 2));
         
         style.removeIndexedProperty("alpha", 1);
         assertFalse(style.isIndexedPropertySet("alpha", 1));
@@ -176,15 +176,15 @@ public class MutableStyleTest extends TestCase {
     
     public void testSet1Set2Remove2Set2() {
         MutableStyle style = new MutableStyle();
-        style.setProperty("golf", "hotel");
-        style.setProperty("alpha", "bravo");
-        assertEquals("hotel", style.getProperty("golf"));
-        assertEquals("bravo", style.getProperty("alpha"));
-        style.setProperty("alpha", null);
-        assertEquals("hotel", style.getProperty("golf"));
-        assertEquals(null, style.getProperty("alpha"));
-        style.setProperty("alpha", "bravo");
-        assertEquals("hotel", style.getProperty("golf"));
-        assertEquals("bravo", style.getProperty("alpha"));
+        style.set("golf", "hotel");
+        style.set("alpha", "bravo");
+        assertEquals("hotel", style.get("golf"));
+        assertEquals("bravo", style.get("alpha"));
+        style.set("alpha", null);
+        assertEquals("hotel", style.get("golf"));
+        assertEquals(null, style.get("alpha"));
+        style.set("alpha", "bravo");
+        assertEquals("hotel", style.get("golf"));
+        assertEquals("bravo", style.get("alpha"));
     }
 }

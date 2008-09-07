@@ -42,10 +42,22 @@ extends Serializable {
     /**
      * Retrieves the value of the specified indexed property.
      */
+    public Object getIndex(String propertyName, int index);
+    
+    /**
+     * Retrieves the value of the specified indexed property.
+     * @deprecated use {@link #getIndex(String, int)} instead.
+     */
     public Object getIndexedProperty(String propertyName, int index);
     
     /**
      * Retrieves the value of the specified property.
+     */
+    public Object get(String propertyName);
+    
+    /**
+     * Retrieves the value of the specified property.
+     * @deprecated use {@link #get(String)} instead.
      */
     public Object getProperty(String propertyName);
     

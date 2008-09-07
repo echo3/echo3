@@ -141,7 +141,7 @@ extends Component {
      * @return the action command
      */
     public String getActionCommand() {
-        return (String) getProperty(PROPERTY_ACTION_COMMAND);
+        return (String) get(PROPERTY_ACTION_COMMAND);
     }
     
     /**
@@ -150,7 +150,7 @@ extends Component {
      * @return the alignment
      */
     public Alignment getAlignment() {
-        return (Alignment) getProperty(PROPERTY_ALIGNMENT);
+        return (Alignment) get(PROPERTY_ALIGNMENT);
     }
     
     /**
@@ -159,7 +159,7 @@ extends Component {
      * @return the background image
      */
     public FillImage getBackgroundImage() {
-        return (FillImage) getProperty(PROPERTY_BACKGROUND_IMAGE);
+        return (FillImage) get(PROPERTY_BACKGROUND_IMAGE);
     }
     
     /**
@@ -168,7 +168,7 @@ extends Component {
      * @return the border
      */
     public Border getBorder() {
-        return (Border) getProperty(PROPERTY_BORDER);
+        return (Border) get(PROPERTY_BORDER);
     }
     
     /**
@@ -178,7 +178,7 @@ extends Component {
      * @return the color
      */
     public Color getDisabledBackground() {
-        return (Color) getProperty(PROPERTY_DISABLED_BACKGROUND);
+        return (Color) get(PROPERTY_DISABLED_BACKGROUND);
     }
 
     /**
@@ -188,7 +188,7 @@ extends Component {
      * @return the background image
      */
     public FillImage getDisabledBackgroundImage() {
-        return (FillImage) getProperty(PROPERTY_DISABLED_BACKGROUND_IMAGE);
+        return (FillImage) get(PROPERTY_DISABLED_BACKGROUND_IMAGE);
     }
 
     /**
@@ -198,7 +198,7 @@ extends Component {
      * @return the border
      */
     public Border getDisabledBorder() {
-        return (Border) getProperty(PROPERTY_DISABLED_BORDER);
+        return (Border) get(PROPERTY_DISABLED_BORDER);
     }
 
     /**
@@ -208,7 +208,7 @@ extends Component {
      * @return the font
      */
     public Font getDisabledFont() {
-        return (Font) getProperty(PROPERTY_DISABLED_FONT);
+        return (Font) get(PROPERTY_DISABLED_FONT);
     }
 
     /**
@@ -218,7 +218,7 @@ extends Component {
      * @return the color
      */
     public Color getDisabledForeground() {
-        return (Color) getProperty(PROPERTY_DISABLED_FOREGROUND);
+        return (Color) get(PROPERTY_DISABLED_FOREGROUND);
     }
 
     /**
@@ -238,7 +238,7 @@ extends Component {
      * @return the height
      */
     public Extent getHeight() {
-        return (Extent) getProperty(PROPERTY_HEIGHT);
+        return (Extent) get(PROPERTY_HEIGHT);
     }
     
     /**
@@ -247,7 +247,7 @@ extends Component {
      * @return the scroll bar position
      */
     public Extent getHorizontalScroll() {
-        return (Extent) getProperty(PROPERTY_HORIZONTAL_SCROLL);
+        return (Extent) get(PROPERTY_HORIZONTAL_SCROLL);
     }
     
     /**
@@ -256,7 +256,7 @@ extends Component {
      * @return the insets
      */
     public Insets getInsets() {
-        return (Insets) getProperty(PROPERTY_INSETS);
+        return (Insets) get(PROPERTY_INSETS);
     }
     
     /**
@@ -266,7 +266,7 @@ extends Component {
      * @return the maximum length, or -1 if no value is specified
      */
     public int getMaximumLength() {
-        Integer value = (Integer) getProperty(PROPERTY_MAXIMUM_LENGTH);
+        Integer value = (Integer) get(PROPERTY_MAXIMUM_LENGTH);
         return value == null ? -1 : value.intValue();
     }
     
@@ -287,7 +287,7 @@ extends Component {
      * @return the tool tip text
      */
     public String getToolTipText() {
-        return (String) getProperty(PROPERTY_TOOL_TIP_TEXT);
+        return (String) get(PROPERTY_TOOL_TIP_TEXT);
     }
     
     /**
@@ -296,7 +296,7 @@ extends Component {
      * @return the scroll bar position
      */
     public Extent getVerticalScroll() {
-        return (Extent) getProperty(PROPERTY_VERTICAL_SCROLL);
+        return (Extent) get(PROPERTY_VERTICAL_SCROLL);
     }
     
     /**
@@ -307,7 +307,7 @@ extends Component {
      * @return the width
      */
     public Extent getWidth() {
-        return (Extent) getProperty(PROPERTY_WIDTH);
+        return (Extent) get(PROPERTY_WIDTH);
     }
     
     /**
@@ -327,7 +327,7 @@ extends Component {
      * @return <code>true</code> if this component is editable
      */
     public boolean isEditable() {
-        Object property = getProperty(PROPERTY_EDITABLE);
+        Object property = get(PROPERTY_EDITABLE);
         return null == property ? true : ((Boolean) property).booleanValue();
     }
 
@@ -379,7 +379,7 @@ extends Component {
      * @param newValue the new action command
      */
     public void setActionCommand(String newValue) {
-        setProperty(PROPERTY_ACTION_COMMAND, newValue);
+        set(PROPERTY_ACTION_COMMAND, newValue);
     }
 
     /**
@@ -388,7 +388,7 @@ extends Component {
      * @param newValue the new alignment
      */
     public void setAlignment(Alignment newValue) {
-        setProperty(PROPERTY_ALIGNMENT, newValue);
+        set(PROPERTY_ALIGNMENT, newValue);
     }
     
     /**
@@ -397,7 +397,7 @@ extends Component {
      * @param newValue the new background image
      */
     public void setBackgroundImage(FillImage newValue) {
-        setProperty(PROPERTY_BACKGROUND_IMAGE, newValue);
+        set(PROPERTY_BACKGROUND_IMAGE, newValue);
     }
     
     /**
@@ -406,7 +406,7 @@ extends Component {
      * @param newValue the new border
      */
     public void setBorder(Border newValue) {
-        setProperty(PROPERTY_BORDER, newValue);
+        set(PROPERTY_BORDER, newValue);
     }
 
     /**
@@ -415,7 +415,7 @@ extends Component {
      * @param newValue the new <code>Color</code>
      */
     public void setDisabledBackground(Color newValue) {
-        setProperty(PROPERTY_DISABLED_BACKGROUND, newValue);
+        set(PROPERTY_DISABLED_BACKGROUND, newValue);
     }
 
     /**
@@ -424,7 +424,7 @@ extends Component {
      * @param newValue the new background image
      */
     public void setDisabledBackgroundImage(FillImage newValue) {
-        setProperty(PROPERTY_DISABLED_BACKGROUND_IMAGE, newValue);
+        set(PROPERTY_DISABLED_BACKGROUND_IMAGE, newValue);
     }
 
     /**
@@ -433,7 +433,7 @@ extends Component {
      * @param newValue the new border
      */
     public void setDisabledBorder(Border newValue) {
-        setProperty(PROPERTY_DISABLED_BORDER, newValue);
+        set(PROPERTY_DISABLED_BORDER, newValue);
     }
 
     /**
@@ -442,7 +442,7 @@ extends Component {
      * @param newValue the new <code>Font</code>
      */
     public void setDisabledFont(Font newValue) {
-        setProperty(PROPERTY_DISABLED_FONT, newValue);
+        set(PROPERTY_DISABLED_FONT, newValue);
     }
 
     /**
@@ -451,7 +451,7 @@ extends Component {
      * @param newValue the new <code>Color</code>
      */
     public void setDisabledForeground(Color newValue) {
-        setProperty(PROPERTY_DISABLED_FOREGROUND, newValue);
+        set(PROPERTY_DISABLED_FOREGROUND, newValue);
     }
 
     /**
@@ -479,7 +479,7 @@ extends Component {
      * @param newValue the new editable state
      */
     public void setEditable(boolean newValue) {
-        setProperty(PROPERTY_EDITABLE, Boolean.valueOf(newValue));
+        set(PROPERTY_EDITABLE, Boolean.valueOf(newValue));
     }
 
     /**
@@ -490,7 +490,7 @@ extends Component {
      * @param newValue the new height
      */
     public void setHeight(Extent newValue) {
-        setProperty(PROPERTY_HEIGHT, newValue);
+        set(PROPERTY_HEIGHT, newValue);
     }
     
     /**
@@ -500,7 +500,7 @@ extends Component {
      * @param newValue the new scroll bar position
      */
     public void setHorizontalScroll(Extent newValue) {
-        setProperty(PROPERTY_HORIZONTAL_SCROLL, newValue);
+        set(PROPERTY_HORIZONTAL_SCROLL, newValue);
     }
     
     /**
@@ -509,7 +509,7 @@ extends Component {
      * @param newValue the new insets
      */
     public void setInsets(Insets newValue) {
-        setProperty(PROPERTY_INSETS, newValue);
+        set(PROPERTY_INSETS, newValue);
     }
     
     /**
@@ -521,9 +521,9 @@ extends Component {
      */
     public void setMaximumLength(int newValue) {
         if (newValue < 0) {
-            setProperty(PROPERTY_MAXIMUM_LENGTH, null);
+            set(PROPERTY_MAXIMUM_LENGTH, null);
         } else {
-            setProperty(PROPERTY_MAXIMUM_LENGTH, new Integer(newValue));
+            set(PROPERTY_MAXIMUM_LENGTH, new Integer(newValue));
         }
     }
     
@@ -533,7 +533,7 @@ extends Component {
      * @param newValue the new text
      */
     public void setText(String newValue) {
-        Integer maxLength = (Integer) getProperty(PROPERTY_MAXIMUM_LENGTH);
+        Integer maxLength = (Integer) get(PROPERTY_MAXIMUM_LENGTH);
         if (newValue != null && maxLength != null && maxLength.intValue() > 0 
                 && newValue.length() > maxLength.intValue()) {
             getDocument().setText(newValue.substring(0, maxLength.intValue()));
@@ -549,7 +549,7 @@ extends Component {
      * @param newValue the new tool tip text
      */
     public void setToolTipText(String newValue) {
-        setProperty(PROPERTY_TOOL_TIP_TEXT, newValue);
+        set(PROPERTY_TOOL_TIP_TEXT, newValue);
     }
 
     /**
@@ -559,7 +559,7 @@ extends Component {
      * @param newValue the new scroll bar position
      */
     public void setVerticalScroll(Extent newValue) {
-        setProperty(PROPERTY_VERTICAL_SCROLL, newValue);
+        set(PROPERTY_VERTICAL_SCROLL, newValue);
     }
     
     /**
@@ -570,6 +570,6 @@ extends Component {
      * @param newValue the new width
      */
     public void setWidth(Extent newValue) {
-        setProperty(PROPERTY_WIDTH, newValue);
+        set(PROPERTY_WIDTH, newValue);
     }
 }
