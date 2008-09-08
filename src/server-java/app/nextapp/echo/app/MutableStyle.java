@@ -402,8 +402,8 @@ implements Style {
      * 
      * @deprecated use {@link #set(String, Object)} instead.
      */
-    public void setProperty(String propertyName, Object value) {
-    	set(propertyName, value);
+    public void setProperty(String propertyName, Object propertyValue) {
+    	set(propertyName, propertyValue);
     }
     
     /**
