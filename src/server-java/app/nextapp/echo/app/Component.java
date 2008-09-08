@@ -1334,6 +1334,18 @@ implements RenderIdSupport, Serializable {
     }
     
     /**
+     * Sets the child components for this container, removing
+     * any existing children.
+     * @param components the child components for this container.
+     */
+    public void setComponents(Component[] components) {
+        removeAll();
+        for (int i = 0; i < components.length; i++) {
+            add(components[i]);
+        }
+    }
+    
+    /**
      * Sets the enabled state of the <code>Component</code>.
      * 
      * @param newValue the new state
