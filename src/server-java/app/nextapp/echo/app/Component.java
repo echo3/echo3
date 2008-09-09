@@ -168,15 +168,14 @@ implements RenderIdSupport, Serializable {
     public static final String FOCUS_TRAVERSAL_PARTICIPANT_CHANGED_PROPERTY = "focusTraversalParticipant";
     public static final String LAYOUT_DIRECTION_CHANGED_PROPERTY = "layoutDirection";
     public static final String LOCALE_CHANGED_PROPERTY = "locale";
+    public static final String STYLE_CHANGED_PROPERTY = "style";
+    public static final String STYLE_NAME_CHANGED_PROPERTY = "styleName";
+    public static final String VISIBLE_CHANGED_PROPERTY = "visible";
     
     public static final String PROPERTY_BACKGROUND = "background";
     public static final String PROPERTY_FONT = "font";
     public static final String PROPERTY_FOREGROUND = "foreground";
     public static final String PROPERTY_LAYOUT_DATA = "layoutData";
-
-    public static final String STYLE_CHANGED_PROPERTY = "style";
-    public static final String STYLE_NAME_CHANGED_PROPERTY = "styleName";
-    public static final String VISIBLE_CHANGED_PROPERTY = "visible";
     
     /**
      * Verifies a character is a (7-bit ASCII) letter.
