@@ -107,26 +107,28 @@ import nextapp.echo.app.event.EventListenerList;
  */
 public abstract class Component 
 implements RenderIdSupport, Serializable {
-
+    
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
-
+    
     /**
      * <code>ArrayList</code> capacity for child storage.
      */
     private static final int CHILD_LIST_CAPACITY = 3;
-    
+
     /**
      * Empty array returned by <code>getComponents()</code> when a
      * <code>Component</code> has no children.
      */
     private static final Component[] EMPTY_COMPONENT_ARRAY = new Component[0];
 
+    private static final int FLAG_DISPOSE_IN_PROGRESS = 0x20;
+    
     /**
      * Flag indicating the <code>Component</code> is enabled.
      */
     private static final int FLAG_ENABLED = 0x1;
-
+    
     /**
      * Flag indicating the <code>Component</code> is visible.
      */
@@ -140,21 +142,26 @@ implements RenderIdSupport, Serializable {
     
     /**
      * Flag indicating that the <code>Component</code> is currently undergoing
+     * initialization.
+     */
+    private static final int FLAG_INIT_IN_PROGRESS = 0x10;
+    
+    /**
+     * Flag indicating that the <code>Component</code>  is initialized.
+     */
+    private static final int FLAG_INITIALIZED = 0x40;
+    
+    /**
+     * Flag indicating that the <code>Component</code> is currently undergoing
      * registration to an <code>ApplicationInstance</code>.
      */
     private static final int FLAG_REGISTERING = 0x8;
-    
-    private static final int FLAG_INIT_IN_PROGRESS = 0x10;
-    
-    private static final int FLAG_DISPOSE_IN_PROGRESS = 0x20;
-    
-    private static final int FLAG_INITIALIZED = 0x40;
     
     /**
      * Flag mask of bits used for storage of focus traversal index.
      */
     private static final int FLAGS_FOCUS_TRAVERSAL_INDEX = 0x7fff0000;
-    
+
     public static final String CHILDREN_CHANGED_PROPERTY = "children";
     public static final String ENABLED_CHANGED_PROPERTY = "enabled";
     public static final String FOCUS_TRAVERSAL_INDEX_CHANGED_PROPERTY = "focusTraversalIndex";
@@ -166,6 +173,7 @@ implements RenderIdSupport, Serializable {
     public static final String PROPERTY_FONT = "font";
     public static final String PROPERTY_FOREGROUND = "foreground";
     public static final String PROPERTY_LAYOUT_DATA = "layoutData";
+
     public static final String STYLE_CHANGED_PROPERTY = "style";
     public static final String STYLE_NAME_CHANGED_PROPERTY = "styleName";
     public static final String VISIBLE_CHANGED_PROPERTY = "visible";
@@ -478,6 +486,23 @@ implements RenderIdSupport, Serializable {
     }
     
     /**
+     * Returns the value of the specified property.
+     * This method is generally used only internally by a 
+     * <code>Component</code>, however there are exceptions.
+     * The more specific <code>getXXX()</code> methods to retrieve 
+     * property values from a <code>Component</code> whenever
+     * possible.
+     * See the class-level documentation for a more detailed 
+     * explanation of the use of this method.
+     * 
+     * @param propertyName the property name
+     * @return the property value
+     */
+    public final Object get(String propertyName) {
+        return localStyle.get(propertyName);
+    }
+    
+    /**
      * Returns the <code>ApplicationInstance</code> to which this 
      * <code>Component</code> is registered, or null if it is not currently 
      * registered.
@@ -648,7 +673,7 @@ implements RenderIdSupport, Serializable {
      */
     public final Object getIndex(String propertyName, int propertyIndex) {
         return localStyle.getIndex(propertyName, propertyIndex);
-    }
+    } 
     
     /**
      * Returns the <code>LayoutData</code> object used to describe how this
@@ -659,8 +684,8 @@ implements RenderIdSupport, Serializable {
      */
     public LayoutData getLayoutData() {
         return (LayoutData) localStyle.get(PROPERTY_LAYOUT_DATA);
-    } 
-    
+    }
+
     /**
      * Returns the specific layout direction setting of this component, if any.
      * This method will return null unless a <code>LayoutDirection</code> is
@@ -684,7 +709,7 @@ implements RenderIdSupport, Serializable {
     public Locale getLocale() {
         return locale;
     }
-
+    
     /**
      * Returns the <code>Style</code> object in which local style
      * properties are stored.  Access to this object is provided
@@ -704,23 +729,6 @@ implements RenderIdSupport, Serializable {
      */
     public final Component getParent() {
         return parent;
-    }
-    
-    /**
-     * Returns the value of the specified property.
-     * This method is generally used only internally by a 
-     * <code>Component</code>, however there are exceptions.
-     * The more specific <code>getXXX()</code> methods to retrieve 
-     * property values from a <code>Component</code> whenever
-     * possible.
-     * See the class-level documentation for a more detailed 
-     * explanation of the use of this method.
-     * 
-     * @param propertyName the property name
-     * @return the property value
-     */
-    public final Object get(String propertyName) {
-        return localStyle.get(propertyName);
     }
     
     /**
@@ -1325,6 +1333,20 @@ implements RenderIdSupport, Serializable {
     }
     
     /**
+     * Sets a generic property of the <code>Component</code>.
+     * The value will be stored in this <code>Component</code>'s local style.
+     * 
+     * @param propertyName the name of the property
+     * @param newValue the value of the property
+     * @see #get(java.lang.String)
+     */
+    public void set(String propertyName, Object newValue) {
+        Object oldValue = localStyle.get(propertyName);
+        localStyle.set(propertyName, newValue);
+        firePropertyChange(propertyName, oldValue, newValue);
+    }
+    
+    /**
      * Sets the default background color of the <code>Component</code>.
      * 
      * @param newValue the new background <code>Color</code>
@@ -1371,7 +1393,7 @@ implements RenderIdSupport, Serializable {
         flags = flags & ((~FLAGS_FOCUS_TRAVERSAL_INDEX)) | (newValue << 16);
         firePropertyChange(FOCUS_TRAVERSAL_INDEX_CHANGED_PROPERTY, new Integer(oldValue), new Integer(newValue));
     }
-    
+
     /**
      * Sets whether the component participates in the focus traversal order 
      * (tab order).
@@ -1386,7 +1408,7 @@ implements RenderIdSupport, Serializable {
             firePropertyChange(FOCUS_TRAVERSAL_PARTICIPANT_CHANGED_PROPERTY, new Boolean(oldValue), new Boolean(newValue));
         }
     }
-
+    
     /**
      * Sets the default text font of the <code>Component</code>.
      * 
@@ -1464,20 +1486,6 @@ implements RenderIdSupport, Serializable {
         Locale oldValue = locale;
         locale = newValue;
         firePropertyChange(LOCALE_CHANGED_PROPERTY, oldValue, newValue);
-    }
-    
-    /**
-     * Sets a generic property of the <code>Component</code>.
-     * The value will be stored in this <code>Component</code>'s local style.
-     * 
-     * @param propertyName the name of the property
-     * @param newValue the value of the property
-     * @see #get(java.lang.String)
-     */
-    public void set(String propertyName, Object newValue) {
-        Object oldValue = localStyle.get(propertyName);
-        localStyle.set(propertyName, newValue);
-        firePropertyChange(propertyName, oldValue, newValue);
     }
     
     /**
