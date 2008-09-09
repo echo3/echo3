@@ -34,6 +34,12 @@ Echo.Client = Core.extend({
         // Register resize listener on containing window one time.
         Core.Web.DOM.addEventListener(window, "resize", this._globalWindowResizeListener, false);
     },
+
+    /**
+     * Flag indicating the user interface should be rendered in design-mode, where all rendered component elements are
+     * assigned an id.
+     */
+    designMode: false,
     
     /**
      * The root DOM element in which the application is contained.

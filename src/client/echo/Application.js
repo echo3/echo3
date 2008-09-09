@@ -39,7 +39,7 @@ Echo.Application = Core.extend({
     },
     
     $abstract: true,
-
+    
     /** 
      * Mapping between component ids and component instances.
      * @type Core.Arrays.LargeMap

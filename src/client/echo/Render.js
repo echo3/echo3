@@ -36,7 +36,7 @@ Echo.Render = {
     // parent contentPane is redrawn.
     
     /**
-     * An array sorting implemention to organize an array by component depth.
+     * An array sorting implementation to organize an array by component depth.
      */
     _componentDepthArraySort: function(a, b) {
         return Echo.Render._getComponentDepth(a.parent) - Echo.Render._getComponentDepth(b.parent);
@@ -227,7 +227,7 @@ Echo.Render = {
             var fullRender = peer.renderUpdate(updates[i]);
             
             // If the update required re-rendering descendants of the updated component,
-            // null-out any pending updates to descandant components.
+            // null-out any pending updates to descendant components.
             if (fullRender) {
                 for (var j = i + 1; j < updates.length; ++j) {
                     if (updates[j] != null && updates[i].parent.isAncestorOf(updates[j].parent)) {
@@ -286,7 +286,7 @@ Echo.Render = {
     
     /**
      * Registers a component type name with an instantiable peer class.
-     * Components of the specified type name will be assigned new instasnces of the peer class
+     * Components of the specified type name will be assigned new instances of the peer class
      * when rendered for the first time.
      * 
      * @param {String} componentName the component type name
@@ -303,7 +303,7 @@ Echo.Render = {
      * Renders a new component inside of a DOM element.
      * This method should be called by container components in order to render their children.
      * 
-     * @param {Echo.Update.ComponentUpdate} update the revelant ComponentUpdate
+     * @param {Echo.Update.ComponentUpdate} update the relevant ComponentUpdate
      * @param {Echo.Component} component the component to add
      * @param {Element} parentElement the DOM element to which the rendered component should be added
      */
@@ -385,7 +385,7 @@ Echo.Render = {
     
     // FIXME. Ensure this is properly invoked and no peers are being leaked.
     /**
-     * Destroys a component synchronization peer for a specific compoennt.
+     * Destroys a component synchronization peer for a specific components.
      * The peer will be removed from the "peer" property of the component.
      * The client will be removed from the "client" property of the component.
      * The peer to component association will be removed.
