@@ -179,7 +179,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
                     update.getUpdatedPropertyNames(), true);
     
         if (fullRender) {
-            var element = this._input;
+            var element = this._container ? this._container : this._input;
             var containerElement = element.parentNode;
             this.renderDispose(update);
             containerElement.removeChild(element);
