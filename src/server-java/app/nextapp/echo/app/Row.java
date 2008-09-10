@@ -67,7 +67,7 @@ public class Row extends Component {
     }
 
     /**
-     * Returns the <code>Border</code> that encloses the entire <code>Column</code>.
+     * Returns the <code>Border</code> that encloses the entire <code>Row</code>.
      * 
      * @return the border
      */
@@ -76,7 +76,7 @@ public class Row extends Component {
     }
     
     /**
-     * Returns the spacing between individual cells of the <code>Column</code>.
+     * Returns the spacing between individual cells of the <code>Row</code>.
      * This property only supports <code>Extent</code>s with
      * fixed (i.e., not percent) units.
      * 
@@ -87,7 +87,7 @@ public class Row extends Component {
     }
     
     /**
-     * Returns the inset between the border and cells of the <code>Column</code>.
+     * Returns the inset between the border and cells of the <code>Row</code>.
      *
      * @return the inset
      */
@@ -106,7 +106,7 @@ public class Row extends Component {
     }
     
     /**
-     * Sets the <code>Border</code> that encloses the entire <code>Column</code>.
+     * Sets the <code>Border</code> that encloses the entire <code>Row</code>.
      * 
      * @param newValue the new border
      */
@@ -115,7 +115,7 @@ public class Row extends Component {
     }
     
     /**
-     * Sets the spacing between individual cells of the <code>Column</code>.
+     * Sets the spacing between individual cells of the <code>Row</code>.
      * This property only supports <code>Extent</code>s with
      * fixed (i.e., not percent) units.
      * 
@@ -126,7 +126,7 @@ public class Row extends Component {
     }
     
     /**
-     * Sets the inset between the border and cells of the <code>Column</code>.
+     * Sets the inset between the border and cells of the <code>Row</code>.
      * 
      * @param newValue the new inset
      */
