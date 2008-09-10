@@ -508,6 +508,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
     renderDispose: function(update) {
         Core.Web.Event.removeAll(this._table);
         this._table = null;
+        this._renderPercentWidthByMeasure = null;
     },
     
     renderDisplay: function() {
