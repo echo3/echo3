@@ -273,6 +273,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         }
         this._tableElement = null;
         this._tbodyElement = null;
+        this._renderPercentWidthByMeasure = null;
     },
     
     _getRowIndex: function(element) {
