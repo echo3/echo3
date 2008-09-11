@@ -1743,7 +1743,7 @@ Core.Web.Scheduler.MethodRunnable = Core.extend(Core.Web.Scheduler.Runnable, {
     $virtual: {
         
         /**
-         * Default run() implementation. Should be overidden by subclasses.
+         * Default run() implementation. Should be overridden by subclasses.
          */
         run: function() {
             this.f();
@@ -1873,7 +1873,7 @@ Core.Web.VirtualPosition = {
      * @return true if the value is a pixel dimension, false if it is not
      */
     _verifyPixelValue: function(value) {
-        if (value == null || value == "" || value == undefined) {
+        if (value == null || value == "") {
             return false;
         }
         var valueString = value.toString();
