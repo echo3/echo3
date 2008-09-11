@@ -164,15 +164,15 @@ Echo.Arc.ChildContainerPeer = Core.extend(Echo.Render.ComponentSync, {
     },
 
     renderAdd: function(update, parentElement) {
-        this._divElement = document.createElement("div");
+        this._div = document.createElement("div");
         var component = this.component.get("component");
         if (component) {
             if (!component.parent || !component.parent.peer || !component.parent.peer.client) {
                 throw new Error("Invalid component: not part of registered hierarchy.");
             }
-            Echo.Render.renderComponentAdd(null, component, this._divElement);
+            Echo.Render.renderComponentAdd(null, component, this._div);
         }
-        parentElement.appendChild(this._divElement);
+        parentElement.appendChild(this._div);
     },
     
     renderDisplay: function() {
@@ -187,7 +187,7 @@ Echo.Arc.ChildContainerPeer = Core.extend(Echo.Render.ComponentSync, {
         if (component) {
             Echo.Render.renderComponentDispose(null, component);
         }
-        this._divElement = null;
+        this._div = null;
     },
     
     renderUpdate: function(update) {
