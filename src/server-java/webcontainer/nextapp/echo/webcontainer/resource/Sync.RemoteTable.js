@@ -60,8 +60,8 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
                     parseInt(this.component.get("selectionMode")));
         }
         
-        this._tableElement = document.createElement("table");
-        this._tableElement.id = this.component.renderId;
+        this._table = document.createElement("table");
+        this._table.id = this.component.renderId;
         
         var width = this.component.render("width");
         if (width && Core.Web.Env.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && Echo.Sync.Extent.isPercent(width)) {
@@ -69,24 +69,24 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
             width = null;
         }
     
-        this._tableElement.style.borderCollapse = "collapse";
+        this._table.style.borderCollapse = "collapse";
         if (this._selectionEnabled) {
-            this._tableElement.style.cursor = "pointer";
+            this._table.style.cursor = "pointer";
         }
-        Echo.Sync.Color.renderFB(this.component, this._tableElement);
-        Echo.Sync.Font.render(this.component.render("font"), this._tableElement);
+        Echo.Sync.Color.renderFB(this.component, this._table);
+        Echo.Sync.Font.render(this.component.render("font"), this._table);
         var border = this.component.render("border");
         if (border) {
-            Echo.Sync.Border.render(border, this._tableElement);
+            Echo.Sync.Border.render(border, this._table);
             if (border.size && !Core.Web.Env.QUIRK_CSS_BORDER_COLLAPSE_INSIDE) {
-                this._tableElement.style.margin = (Echo.Sync.Extent.toPixels(border.size, false) / 2) + "px";
+                this._table.style.margin = (Echo.Sync.Extent.toPixels(border.size, false) / 2) + "px";
             }
         }
         if (width) {
-            this._tableElement.style.width = width;
+            this._table.style.width = width;
         }
         
-        this._tbodyElement = document.createElement("tbody");
+        this._tbody = document.createElement("tbody");
         
         if (this.component.render("columnWidth")) {
             // If any column widths are set, render colgroup.
@@ -115,20 +115,20 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
                 }
                 colGroupElement.appendChild(colElement);
             }
-            this._tableElement.appendChild(colGroupElement);
+            this._table.appendChild(colGroupElement);
         }
         
-        this._tableElement.appendChild(this._tbodyElement);
+        this._table.appendChild(this._tbody);
         
-        parentElement.appendChild(this._tableElement);
+        parentElement.appendChild(this._table);
         
         var trPrototype = this._createRowPrototype();
         
         if (this._headerVisible) {
-            this._tbodyElement.appendChild(this._renderRow(update, Echo.Sync.RemoteTableSync._HEADER_ROW, trPrototype));
+            this._tbody.appendChild(this._renderRow(update, Echo.Sync.RemoteTableSync._HEADER_ROW, trPrototype));
         }
         for (var rowIndex = 0; rowIndex < this._rowCount; rowIndex++) {
-            this._tbodyElement.appendChild(this._renderRow(update, rowIndex, trPrototype));
+            this._tbody.appendChild(this._renderRow(update, rowIndex, trPrototype));
         }
         
         if (this._selectionEnabled) {
@@ -145,37 +145,37 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
      */
     _renderRowStyle: function(rowIndex) {
         var tableRowIndex = rowIndex + (this._headerVisible ? 1 : 0);
-        if (tableRowIndex >= this._tbodyElement.childNodes.length) {
+        if (tableRowIndex >= this._tbody.childNodes.length) {
             return;
         }
         var selected = this._selectionEnabled && this.selectionModel.isSelectedIndex(rowIndex);
-        var trElement = this._tbodyElement.childNodes[tableRowIndex];
-        var tdElement = trElement.firstChild;
+        var tr = this._tbody.childNodes[tableRowIndex];
+        var td = tr.firstChild;
         
         var columnIndex = 0;
         
-        while (tdElement) {
+        while (td) {
             if (selected) {
-                Echo.Sync.Font.render(this.component.render("selectionFont"), tdElement);
-                Echo.Sync.Color.render(this.component.render("selectionForeground"), tdElement, "color");
-                Echo.Sync.Color.render(this.component.render("selectionBackground"), tdElement, "background");
-                Echo.Sync.FillImage.render(this.component.render("selectionBackgroundImage"), tdElement);
+                Echo.Sync.Font.render(this.component.render("selectionFont"), td);
+                Echo.Sync.Color.render(this.component.render("selectionForeground"), td, "color");
+                Echo.Sync.Color.render(this.component.render("selectionBackground"), td, "background");
+                Echo.Sync.FillImage.render(this.component.render("selectionBackgroundImage"), td);
             } else {
-                tdElement.style.color = "";
-                tdElement.style.backgroundColor = "";
-                tdElement.style.backgroundImage = "";
+                td.style.color = "";
+                td.style.backgroundColor = "";
+                td.style.backgroundImage = "";
                 
                 var child = this.component.getComponent((rowIndex + (this._headerVisible ? 1 : 0)) 
                         * this._columnCount + columnIndex);
                 var layoutData = child.render("layoutData");
 
                 if (layoutData) {
-                    Echo.Sync.Color.render(layoutData.background, tdElement, "backgroundColor");
-                    Echo.Sync.FillImage.render(layoutData.backgroundImage, tdElement);
+                    Echo.Sync.Color.render(layoutData.background, td, "backgroundColor");
+                    Echo.Sync.FillImage.render(layoutData.backgroundImage, td);
                 }
             
             }
-            tdElement = tdElement.nextSibling;
+            td = td.nextSibling;
             ++columnIndex;
         }
     },
@@ -190,9 +190,9 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
      *        and is specified for performance reasons.  If omitted one is created automatically.)
      */
     _renderRow: function(update, rowIndex, trPrototype) {
-        var trElement = trPrototype ? trPrototype.cloneNode(true) : this._createRowPrototype();
+        var tr = trPrototype ? trPrototype.cloneNode(true) : this._createRowPrototype();
         
-        var tdElement = trElement.firstChild;
+        var td = tr.firstChild;
         var columnIndex = 0;
         
         while (columnIndex < this._columnCount) {
@@ -200,22 +200,22 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
             var layoutData = child.render("layoutData");
             
             if (layoutData) {
-                Echo.Sync.Color.render(layoutData.background, tdElement, "backgroundColor");
-                Echo.Sync.FillImage.render(layoutData.backgroundImage, tdElement);
-                Echo.Sync.Alignment.render(layoutData.alignment, tdElement, true, this.component);
-                Echo.Sync.Insets.render(layoutData.insets, tdElement, "padding");
+                Echo.Sync.Color.render(layoutData.background, td, "backgroundColor");
+                Echo.Sync.FillImage.render(layoutData.backgroundImage, td);
+                Echo.Sync.Alignment.render(layoutData.alignment, td, true, this.component);
+                Echo.Sync.Insets.render(layoutData.insets, td, "padding");
             }
     
-            Echo.Render.renderComponentAdd(update, child, tdElement);
+            Echo.Render.renderComponentAdd(update, child, td);
             
             ++columnIndex;
-            tdElement = tdElement.nextSibling;
+            td = td.nextSibling;
         }
-        return trElement;
+        return tr;
     },
     
     _createRowPrototype: function() {
-        var trElement = document.createElement("tr");
+        var tr = document.createElement("tr");
     
         var tdPrototype = document.createElement("td");
         Echo.Sync.Border.render(this.component.render("border"), tdPrototype);
@@ -223,17 +223,17 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         tdPrototype.style.padding = this._defaultCellPadding;
     
         for (var columnIndex = 0; columnIndex < this._columnCount; columnIndex++) {
-            var tdElement = tdPrototype.cloneNode(false);
-            trElement.appendChild(tdElement);
+            var td = tdPrototype.cloneNode(false);
+            tr.appendChild(td);
         }
-        return trElement;
+        return tr;
     },
     
     renderDisplay: function() {
         if (this._renderPercentWidthByMeasure) {
-            this._tableElement.style.width = "";
-            var percentWidth = (this._tableElement.parentNode.offsetWidth * this._renderPercentWidthByMeasure) / 100;
-            this._tableElement.style.width = percentWidth + "px";
+            this._table.style.width = "";
+            var percentWidth = (this._table.parentNode.offsetWidth * this._renderPercentWidthByMeasure) / 100;
+            this._table.style.width = percentWidth + "px";
         }
     },
     
@@ -252,7 +252,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
             }
         }
         // full update
-        var element = this._tableElement;
+        var element = this._table;
         var containerElement = element.parentNode;
         Echo.Render.renderComponentDispose(update, update.parent);
         containerElement.removeChild(element);
@@ -262,22 +262,22 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     
     renderDispose: function(update) {
         if (this._rolloverEnabled || this._selectionEnabled) {
-            var trElement = this._tbodyElement.firstChild;
+            var tr = this._tbody.firstChild;
             if (this._headerVisible) {
-                trElement = trElement.nextSibling;
+                tr = tr.nextSibling;
             }
-            while (trElement) {
-                Core.Web.Event.removeAll(trElement);
-                trElement = trElement.nextSibling;
+            while (tr) {
+                Core.Web.Event.removeAll(tr);
+                tr = tr.nextSibling;
             }
         }
-        this._tableElement = null;
-        this._tbodyElement = null;
+        this._table = null;
+        this._tbody = null;
         this._renderPercentWidthByMeasure = null;
     },
     
     _getRowIndex: function(element) {
-        var testElement = this._tbodyElement.firstChild;
+        var testElement = this._tbody.firstChild;
         var index = this._headerVisible ? -1 : 0;
         while (testElement) {
             if (testElement == element) {
@@ -356,14 +356,14 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
             var clickRef = Core.method(this, this._processClick);
             
             for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
-                var trElement = this._tableElement.rows[rowIndex + rowOffset];
+                var tr = this._table.rows[rowIndex + rowOffset];
                 if (this._rolloverEnabled) {
-                    Core.Web.Event.add(trElement, enterEvent, rolloverEnterRef, false);
-                    Core.Web.Event.add(trElement, exitEvent, rolloverExitRef, false);
+                    Core.Web.Event.add(tr, enterEvent, rolloverEnterRef, false);
+                    Core.Web.Event.add(tr, exitEvent, rolloverExitRef, false);
                 }
                 if (this._selectionEnabled) {
-                    Core.Web.Event.add(trElement, "click", clickRef, false);
-                    Core.Web.Event.Selection.disable(trElement);
+                    Core.Web.Event.add(tr, "click", clickRef, false);
+                    Core.Web.Event.Selection.disable(tr);
                 }
             }
         }
@@ -377,8 +377,8 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             return true;
         }
-        var trElement = e.registeredTarget;
-        var rowIndex = this._getRowIndex(trElement);
+        var tr = e.registeredTarget;
+        var rowIndex = this._getRowIndex(tr);
         if (rowIndex == -1) {
             return;
         }
@@ -418,14 +418,14 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             return true;
         }
-        var trElement = e.registeredTarget;
-        var rowIndex = this._getRowIndex(trElement);
+        var tr = e.registeredTarget;
+        var rowIndex = this._getRowIndex(tr);
         if (rowIndex == -1) {
             return;
         }
         
-        for (var i = 0; i < trElement.cells.length; ++i) {
-            var cell = trElement.cells[i];
+        for (var i = 0; i < tr.cells.length; ++i) {
+            var cell = tr.cells[i];
             Echo.Sync.Font.render(this.component.render("rolloverFont"), cell);
             Echo.Sync.Color.render(this.component.render("rolloverForeground"), cell, "color");
             Echo.Sync.Color.render(this.component.render("rolloverBackground"), cell, "background");
@@ -437,8 +437,8 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client.verifyInput(this.component)) {
             return true;
         }
-        var trElement = e.registeredTarget;
-        var rowIndex = this._getRowIndex(trElement);
+        var tr = e.registeredTarget;
+        var rowIndex = this._getRowIndex(tr);
         if (rowIndex == -1) {
             return;
         }
