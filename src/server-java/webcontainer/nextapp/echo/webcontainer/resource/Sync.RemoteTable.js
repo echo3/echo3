@@ -232,7 +232,15 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     renderDisplay: function() {
         if (this._renderPercentWidthByMeasure) {
             this._table.style.width = "";
-            var percentWidth = (this._table.parentNode.offsetWidth * this._renderPercentWidthByMeasure) / 100;
+            var tableParent = this._table.parentNode;
+            var availableWidth = tableParent.offsetWidth;
+            if (tableParent.style.paddingLeft) {
+                availableWidth -= parseInt(tableParent.style.paddingLeft);
+            }
+            if (tableParent.style.paddingRight) {
+                availableWidth -= parseInt(tableParent.style.paddingRight);
+            }
+            var percentWidth = (availableWidth * this._renderPercentWidthByMeasure) / 100;
             this._table.style.width = percentWidth + "px";
         }
     },
