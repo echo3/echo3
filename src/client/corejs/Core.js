@@ -404,7 +404,7 @@ Core = {
          }
          
          for (var x in baseClass.$abstract) {
-             if (!constructorClass.prototype[x]) {
+             if (constructorClass.prototype[x] == null) {
                  throw new Error("Concrete class does not provide implementation of abstract method \"" + x + "\".");
              }
          }
