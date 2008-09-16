@@ -1047,8 +1047,9 @@ Echo.Component = Core.extend({
             if (this._style != null) {
                 value = this._style[name];
             }
-            if (value == null && this._styleName && this.application && this.application._styleSheet) {
-                var style = this.application._styleSheet.getRenderStyle(this._styleName, this.componentType);
+            if (value == null && this.application && this.application._styleSheet) {
+                var style = this.application._styleSheet.getRenderStyle(
+                        this._styleName != null ? this._styleName : "", this.componentType);
                 if (style) {
                     value = style[name];
                 }
@@ -1077,7 +1078,8 @@ Echo.Component = Core.extend({
                 value = valueArray ? valueArray[index] : null;
             }
             if (value == null && this._styleName && this.application && this.application._styleSheet) {
-                var style = this.application._styleSheet.getRenderStyle(this._styleName, this.componentType);
+                var style = this.application._styleSheet.getRenderStyle(
+                        this._styleName != null ? this._styleName : "", this.componentType);
                 if (style) {
                     valueArray = style[name];
                     value = valueArray ? valueArray[index] : null;
