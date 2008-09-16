@@ -109,6 +109,7 @@ implements Pane, PaneContainer {
     public static final String PROPERTY_SEPARATOR_POSITION = "separatorPosition";
     public static final String PROPERTY_SEPARATOR_WIDTH = "separatorWidth";
     public static final String PROPERTY_SEPARATOR_VERTICAL_IMAGE = "separatorVerticalImage";
+    public static final String PROPERTY_SEPARATOR_VISIBLE = "separatorVisible";
     
     /**
      * Creates a new <code>SplitPane</code> with default (horizontal) 
@@ -262,6 +263,20 @@ implements Pane, PaneContainer {
     }
 
     /**
+     * Determines if the separator should be rendered visible.
+     * The separator will always be displayed if a <code>SplitPane</code>
+     * is resizable, regardless of the value of this property.
+     * This property has a default value of <code>true</code>.
+     * 
+     * @return true if the <code>SplitPane</code> should provide
+     *         a visible separator.
+     */
+    public boolean isSeparatorVisible(boolean newValue) {
+        Boolean value = (Boolean) get(PROPERTY_SEPARATOR_VISIBLE);
+        return value == null ? true : value.booleanValue();
+    }
+    
+    /**
      * No more than two children may be added.
      * 
      * @see nextapp.echo.app.Component#isValidChild(nextapp.echo.app.Component)
@@ -315,6 +330,19 @@ implements Pane, PaneContainer {
      */
     public void setResizable(boolean newValue) {
         set(PROPERTY_RESIZABLE, new Boolean(newValue));
+    }
+    
+    /**
+     * Sets whether the separator is visible.
+     * The separator will always be displayed if a <code>SplitPane</code>
+     * is resizable, regardless of the value of this property.
+     * This property has a default value of <code>true</code>.
+     * 
+     * @param newValue true if the <code>SplitPane</code> should provide
+     *        a visible separator.
+     */
+    public void setSeparatorVisible(boolean newValue) {
+        set(PROPERTY_SEPARATOR_VISIBLE, new Boolean(newValue));
     }
     
     /**

@@ -125,6 +125,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         }
         this._resizable = this.component.render("resizable");
         this._requested = this.component.render("separatorPosition");
+        this._separatorVisible = this._resizable || this.component.render("separatorVisible", true);
         this._separatorSize = Echo.Sync.Extent.toPixels(this.component.render(
                 this._orientationVertical ? "separatorHeight" : "separatorWidth",
                 this._resizable ? Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
@@ -295,7 +296,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         Echo.Sync.Color.renderFB(this.component, this._splitPaneDiv);
         Echo.Sync.Font.render(this.component.render("font"), this._splitPaneDiv);
         
-        if (this._separatorSize > 0) {
+        if (this._separatorVisible) {
             this._separatorDiv = document.createElement("div");
             this._separatorDiv.style.cssText = "position:absolute;font-size:1px;line-height:0;z-index:2;";
             Echo.Sync.Color.render(this.component.render("separatorColor", Echo.SplitPane.DEFAULT_SEPARATOR_COLOR), 
