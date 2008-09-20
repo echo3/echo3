@@ -48,40 +48,34 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     /**
      * The base server url.
      * @type String
-     * @private
      */
     _serverUrl: null,
     
     /**
      * Flag indicating whether a client-server transaction is currently in progres.
      * @type Boolean
-     * @private
      */
     _transactionInProgress: false,
     
     /**
      * Identifier for input restriction registered with client during transactions.
-     * @private
      */
     _inputRestrictionId: null,
 
     /**
      * Function wrapper to invoke _processClientUpdate() method.
      * @type Function
-     * @private
      */
     _processClientUpdateRef: null,
     
     /**
      * Function wrapper to invoke _processClientEvent() method.
      * @type Function
-     * @private
      */
     _processClientEventRef: null,
     
     /**
      * Associative array mapping between shorthand URL codes and replacement values.
-     * @private
      */
     _urlMappings: null,
     
@@ -89,42 +83,36 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * Queue of commands to be executed.  Each command occupies two
      * indices, first index is the command peer, second is the command data.
      * @type Array
-     * @private
      */
     _commandQueue: null,
     
     /**
      * Outgoing client message.
      * @type Echo.RemoteClient.ClientMessage
-     * @private
      */
     _clientMessage: null,
     
     /**
      * AsyncManager instance which will invoke server-pushed operations.
      * @type Echo.RemoteClient.AsyncManager
-     * @private
      */
     _asyncManager: null,
     
     /**
      * Wait indicator.
      * @type Echo.RemoteClient.WaitIndicator
-     * @private
      */
     _waitIndicator: null,
     
     /**
      * Network delay before raising wait indicator, in milleseconds.
      * @type Integer
-     * @private
      */
     _preWaitIndicatorDelay: 500,
     
     /**
      * Runnable that will trigger initialization of wait indicator.
      * @type Core.Web.Scheduler.Runnable
-     * @private
      */
     _waitIndicatorRunnable: null,
     
@@ -191,7 +179,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             // urlTokens[1] = key
             // urlTokens[2] = baseUrl
             if (urlTokens.length != 3) {
-                throw new IllegalArgumentException("Invalid encoded URL");
+                throw new Error("Invalid encoded URL");
             }
             var replacementValue = this._urlMappings[urlTokens[1]]; 
             if (replacementValue == null) {
@@ -206,7 +194,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * 
      * @param commandPeer the command peer to execute
      * @param commandData an object containing the command data sent from the server
-     * @private
      */
     _enqueueCommand: function(commandPeer, commandData) {
         if (this._commandQueue == null) {
@@ -217,7 +204,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     
     /**
      * Executes all enqued commands; empties the queue.
-     * @private
      */
     _executeCommands: function() {
         if (this._commandQueue) {
@@ -234,7 +220,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @param serviceId the serviceId
      * @return the full library URL
      * @type String
-     * @private
      */
     _getLibraryServiceUrl: function(serviceId) {
         if (!Echo.RemoteClient._libraryServerUrl) {
@@ -479,7 +464,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     
     /**
      * Activates the wait indicator.
-     * @private
      */
     _waitIndicatorActivate: function() {
         this._waitIndicatorActive = true;
@@ -521,7 +505,6 @@ Echo.RemoteClient.AsyncManager = Core.extend({
      * The supported client.
      *
      * @type Echo.RemoteClient
-     * @private
      */
     _client: null,
     
@@ -529,7 +512,6 @@ Echo.RemoteClient.AsyncManager = Core.extend({
      * The repeating runnable used for server polling.
      *
      * @type Core.Web.Scheduler.Runnable
-     * @private 
      */
     _runnable: null,
 
@@ -611,7 +593,6 @@ Echo.RemoteClient.ClientMessage = Core.extend({
     
         /**
          * @class Utility class for constructing the client properties directive.
-         * @private
          */
         _ClientProperties: Core.extend({
         
@@ -649,7 +630,6 @@ Echo.RemoteClient.ClientMessage = Core.extend({
     /**
      * The RemoteClient which generated this message.
      * @type {Echo.RemoteClient}
-     * @private
      */
     _client: null,
     
@@ -658,7 +638,6 @@ Echo.RemoteClient.ClientMessage = Core.extend({
      * Values in this map are updated by the storeProperty() method.
      * These values will be rendered to XML when required.
      * @type {Object}
-     * @private
      */
     _componentIdToPropertyMap: null,
 
@@ -666,28 +645,24 @@ Echo.RemoteClient.ClientMessage = Core.extend({
      * Id of the component which fired the event that is responsible for
      * the client message being sent to the server.
      * @type String
-     * @private
      */
     _eventComponentId: null,
     
     /**
      * Type of event fired to cause server interaction.
      * @type String
-     * @private
      */
     _eventType: null,
     
     /**
      * Event data object of event responsible for server interaction.
      * @type Object
-     * @private
      */
     _eventData: null,
     
     /**
      * The DOM object to which the client message will be rendered.
      * @type Docuemnt
-     * @private
      */
     _document: null,
 
@@ -713,7 +688,6 @@ Echo.RemoteClient.ClientMessage = Core.extend({
      * Queries the application for the currently focused component and renders
      * this information to the client message DOM.
      *
-     * @private
      */
     _renderCFocus: function() {
         if (!this._client.application) {
@@ -734,7 +708,6 @@ Echo.RemoteClient.ClientMessage = Core.extend({
      * Renders compoennt hierarchy state change information to the client message DOM.
      * This information is retrieved from instance variables of the client message object,
      * i.e., the component-id-to-property-value map and event properties.  
-     * @private
      */
     _renderCSync: function() {
         var cSyncElement = this._document.createElement("dir");
@@ -772,8 +745,6 @@ Echo.RemoteClient.ClientMessage = Core.extend({
     /**
      * Renders information about the client environment to the client message DOM.
      * This information is rendered only in the first client message to the server.
-     *
-     * @private
      */
     _renderClientProperties: function() {
         var cp = new Echo.RemoteClient.ClientMessage._ClientProperties(this);
@@ -809,7 +780,6 @@ Echo.RemoteClient.ClientMessage = Core.extend({
      * 
      * @return the DOM
      * @type Document
-     * @private
      */
     _renderXml: function() {
         if (!this._rendered) {

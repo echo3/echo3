@@ -213,7 +213,7 @@ Echo.Sync.Border = {
                 return Echo.Sync.Extent.toPixels(extent);
             }
         } else if (typeof(border) == "object") {
-            // Retrieve value for indivudal side.
+            // Retrieve value for individual side.
             // Specified side is queried first, followed by alternatives.
             while (true) {
                 var side = this.getPixelSize(border[sideName]);
