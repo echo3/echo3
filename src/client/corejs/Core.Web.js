@@ -445,6 +445,7 @@ Core.Web.Env = {
             this.QUIRK_IE_KEY_DOWN_EVENT_REPEAT = true;
             this.CSS_FLOAT = "styleFloat";
             this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
+            this.QUIRK_UNLOADED_IMAGE_HAS_SIZE = true;
             
             if (this.BROWSER_MAJOR_VERSION < 8) {
                 // Internet Explorer 6 and 7 Flags.
