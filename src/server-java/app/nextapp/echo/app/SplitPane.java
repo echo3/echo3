@@ -142,7 +142,7 @@ implements Pane, PaneContainer {
     }
     
     /**
-     * Creates a new <code>SplitPane</code> with the specified orientation
+     * [EXPERIMENTAL] Creates a new <code>SplitPane</code> with the specified orientation
      * and auto-positioned state.
      * 
      * @param orientation a constant representing the orientation, one of the 
@@ -289,7 +289,7 @@ implements Pane, PaneContainer {
     }
 
     /**
-     * Determines if the <code>SplitPane</code> is auto-positioned.
+     * [EXPERIMENTAL] Determines if the <code>SplitPane</code> is auto-positioned.
      * Auto positioning indicates that the separator position should
      * be set automatically based on the size of the first child.
      * This feature is only available on vertically oriented panes, where the
@@ -342,7 +342,7 @@ implements Pane, PaneContainer {
     }
     
     /**
-     * Sets whether the <code>SplitPane</code> is auto-positioned.
+     * [EXPERIMENTAL] Sets whether the <code>SplitPane</code> is auto-positioned.
      * Auto positioning indicates that the separator position should
      * be set automatically based on the size of the first child.
      * This feature is only available on vertically oriented panes, where the

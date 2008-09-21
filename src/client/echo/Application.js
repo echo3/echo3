@@ -2893,9 +2893,9 @@ Echo.Row = Core.extend(Echo.Component, {
  *     of the separator in vertical orientations 
  * @sp {#FillImage} separatorHorizontalImage a FillImage used to paint the separator for horizontal orientations
  * @sp {#Extent} separatorPosition an extent specifying the position of the separator
- * @sp {Boolean} autoPosition flag indicating whether the pane should set the separator position automatically
+ * @sp {Boolean} autoPositioned [EXPERIMENTAL] flag indicating whether the pane should set the separator position automatically
  *     based on size of first child.  This feature is only available on vertically oriented panes, where the
- *     first child contains non-pane content.
+ *     first child contains non-pane content. 
  * @sp {#FillImage} separatorVerticalImage a FillImage used to paint the separator for vertical orientations
  * @sp {#Extent} separatorWidth the width of the separator (this property is used to determine the size
  *     of the separator in horizontal orientations
