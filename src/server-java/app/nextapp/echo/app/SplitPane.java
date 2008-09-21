@@ -279,16 +279,6 @@ implements Pane, PaneContainer {
     }
     
     /**
-     * Determines if the <code>SplitPane</code> is resizable.
-     * 
-     * @return true if the <code>SplitPane</code> is resizable
-     */
-    public boolean isResizable() {
-        Boolean value = (Boolean) get(PROPERTY_RESIZABLE);
-        return value == null ? false : value.booleanValue();
-    }
-
-    /**
      * [EXPERIMENTAL] Determines if the <code>SplitPane</code> is auto-positioned.
      * Auto positioning indicates that the separator position should
      * be set automatically based on the size of the first child.
@@ -299,6 +289,16 @@ implements Pane, PaneContainer {
      */
     public boolean isAutoPositioned() {
         Boolean value = (Boolean) get(PROPERTY_AUTO_POSITIONED);
+        return value == null ? false : value.booleanValue();
+    }
+
+    /**
+     * Determines if the <code>SplitPane</code> is resizable.
+     * 
+     * @return true if the <code>SplitPane</code> is resizable
+     */
+    public boolean isResizable() {
+        Boolean value = (Boolean) get(PROPERTY_RESIZABLE);
         return value == null ? false : value.booleanValue();
     }
 
