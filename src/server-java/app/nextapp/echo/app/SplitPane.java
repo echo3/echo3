@@ -48,7 +48,7 @@ implements Pane, PaneContainer {
     /**
      * An <code>orientation</code> constant indicating that the 
      * <code>SplitPane</code> should be laid out horizontally with the
-     * first (fixed-sze) pane in the leading position.
+     * first (fixed-size) pane in the leading position.
      * The leading position is on the left side for left-to-right languages
      * and on the right side for right-to-left languages.
      */
@@ -57,7 +57,7 @@ implements Pane, PaneContainer {
     /**
      * An <code>orientation</code> constant indicating that the 
      * <code>SplitPane</code> should be laid out horizontally with the
-     * first (fixed-sze) pane in the trailing position.
+     * first (fixed-size) pane in the trailing position.
      * The trailing position is on the right side for left-to-right languages
      * and on the left side for right-to-left languages.
      */
@@ -66,28 +66,28 @@ implements Pane, PaneContainer {
     /**
      * An <code>orientation</code> constant indicating that the 
      * <code>SplitPane</code> should be laid out horizontally with the
-     * first (fixed-sze) pane in the left position.
+     * first (fixed-size) pane in the left position.
      */
     public static final int ORIENTATION_HORIZONTAL_LEFT_RIGHT = 2;
 
     /**
      * An <code>orientation</code> constant indicating that the 
      * <code>SplitPane</code> should be laid out horizontally with the
-     * first (fixed-sze) pane in the right position.
+     * first (fixed-size) pane in the right position.
      */
     public static final int ORIENTATION_HORIZONTAL_RIGHT_LEFT = 3;
 
     /**
      * An <code>orientation</code> constant indicating that the 
      * <code>SplitPane</code> should be laid out vertically with the
-     * first (fixed-sze) pane in the top position.
+     * first (fixed-size) pane in the top position.
      */
     public static final int ORIENTATION_VERTICAL_TOP_BOTTOM = 4;
 
     /**
      * An <code>orientation</code> constant indicating that the 
      * <code>SplitPane</code> should be laid out vertically with the
-     * first (fixed-sze) pane in the bottom position.
+     * first (fixed-size) pane in the bottom position.
      */
     public static final int ORIENTATION_VERTICAL_BOTTOM_TOP = 5;
     
@@ -101,6 +101,7 @@ implements Pane, PaneContainer {
      */
     public static final int ORIENTATION_VERTICAL = ORIENTATION_VERTICAL_TOP_BOTTOM;
     
+    public static final String PROPERTY_AUTO_POSITIONED = "autoPositioned";
     public static final String PROPERTY_ORIENTATION = "orientation";
     public static final String PROPERTY_RESIZABLE = "resizable";
     public static final String PROPERTY_SEPARATOR_COLOR = "separatorColor";
@@ -138,6 +139,31 @@ implements Pane, PaneContainer {
     public SplitPane(int orientation) {
         super();
         setOrientation(orientation);
+    }
+    
+    /**
+     * Creates a new <code>SplitPane</code> with the specified orientation
+     * and auto-positioned state.
+     * 
+     * @param orientation a constant representing the orientation, one of the 
+     *        following values:
+     *        <ul>
+     *         <li><code>ORIENTATION_HORIZONTAL</code></li>
+     *         <li><code>ORIENTATION_VERTICAL</code></li>
+     *         <li><code>ORIENTATION_HORIZONTAL_LEADING_TRAILING</code></li>
+     *         <li><code>ORIENTATION_HORIZONTAL_TRAILING_LEADING</code></li>
+     *         <li><code>ORIENTATION_HORIZONTAL_LEFT_RIGHT</code></li>
+     *         <li><code>ORIENTATION_HORIZONTAL_RIGHT_LEFT</code></li>
+     *         <li><code>ORIENTATION_VERTICAL_TOP_BOTTOM</code></li>
+     *         <li><code>ORIENTATION_VERTICAL_BOTTOM_TOP</code></li>
+     *        </ul>
+     * @param autoPositioned flag indicating whether the separator position
+     *        should be automatically positioned
+     */
+    public SplitPane(int orientation, boolean autoPositioned) {
+        super();
+        setOrientation(orientation);
+        setAutoPositioned(autoPositioned);
     }
     
     /**
@@ -263,6 +289,20 @@ implements Pane, PaneContainer {
     }
 
     /**
+     * Determines if the <code>SplitPane</code> is auto-positioned.
+     * Auto positioning indicates that the separator position should
+     * be set automatically based on the size of the first child.
+     * This feature is only available on vertically oriented panes, where the
+     * first child contains non-pane content.
+     *   
+     * @return true if the <code>SplitPane</code> is auto-positioned
+     */
+    public boolean isAutoPositioned() {
+        Boolean value = (Boolean) get(PROPERTY_AUTO_POSITIONED);
+        return value == null ? false : value.booleanValue();
+    }
+
+    /**
      * Determines if the separator should be rendered visible.
      * The separator will always be displayed if a <code>SplitPane</code>
      * is resizable, regardless of the value of this property.
@@ -301,6 +341,19 @@ implements Pane, PaneContainer {
         }
     }
     
+    /**
+     * Sets whether the <code>SplitPane</code> is auto-positioned.
+     * Auto positioning indicates that the separator position should
+     * be set automatically based on the size of the first child.
+     * This feature is only available on vertically oriented panes, where the
+     * first child contains non-pane content.
+     * 
+     * @param newValue true if the <code>SplitPane</code> separator
+     *        should be automatically positioned.
+     */
+    public void setAutoPositioned(boolean newValue) {
+        set(PROPERTY_AUTO_POSITIONED, new Boolean(newValue));
+    }
     /**
      * Sets the orientation of the <code>SplitPane</code>.
      * 

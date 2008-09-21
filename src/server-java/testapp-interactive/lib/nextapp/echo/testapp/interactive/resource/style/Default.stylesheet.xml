@@ -2,7 +2,6 @@
 <!-- FIXME. Temporarily using full class names -->
 <ss>
  <s n="TestPane" t="nextapp.echo.app.SplitPane">
-  <p n="separatorPosition" t="Extent">40px</p>
   <p n="separatorHeight" t="Extent">1px</p>
   <p n="separatorColor">#1d1d1d</p>
  </s>

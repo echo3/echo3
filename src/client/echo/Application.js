@@ -2095,10 +2095,10 @@ Echo.Update.Manager = Core.extend({
      * Flag indicating whether a full refresh or incremental update will be performed.
      * @type Boolean
      */
-    _fullRefreshRequired: false,
+    fullRefreshRequired: false,
     
     /**
-     * The application whose updates are being manged.
+     * The application whose updates are being managed.
      * @type Echo.Application
      */
     application: null,
@@ -2893,10 +2893,12 @@ Echo.Row = Core.extend(Echo.Component, {
  *     of the separator in vertical orientations 
  * @sp {#FillImage} separatorHorizontalImage a FillImage used to paint the separator for horizontal orientations
  * @sp {#Extent} separatorPosition an extent specifying the position of the separator
+ * @sp {Boolean} autoPosition flag indicating whether the pane should set the separator position automatically
+ *     based on size of first child.  This feature is only available on vertically oriented panes, where the
+ *     first child contains non-pane content.
  * @sp {#FillImage} separatorVerticalImage a FillImage used to paint the separator for vertical orientations
  * @sp {#Extent} separatorWidth the width of the separator (this property is used to determine the size
  *     of the separator in horizontal orientations
- *
  * @ldp {#Alignment} alignment the alignment of the child component within its subpane
  * @ldp {#Color} background the background of the child component's subpane
  * @ldp {#FillImage} backrgoundImage the background image of the child component's subpane

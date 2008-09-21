@@ -82,7 +82,7 @@ public class WelcomePane extends ContentPane {
         loginWindow.setClosable(false);
         add(loginWindow);
         
-        SplitPane splitPane = new SplitPane(SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP, new Extent(32));
+        SplitPane splitPane = new SplitPane(SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP, true);
         loginWindow.add(splitPane);
         
         Row controlRow = new Row();

@@ -205,7 +205,7 @@ public class WindowPaneExamplesTest extends SplitPane {
                     windowPane.setTitleBackground(new Color(0x2f2f4f));
                     windowPane.setWidth(new Extent(500, Extent.PX));
                     windowPane.setHeight(new Extent(300, Extent.PX));
-                    SplitPane splitPane = new SplitPane(SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP, new Extent(42));
+                    SplitPane splitPane = new SplitPane(SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP, true);
                     SplitPaneLayoutData splitPaneLayoutData;
                     
                     Button okButton = new Button("Ok");
