@@ -483,6 +483,9 @@ Core.Web.Env = {
                 this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
             }
         } else if (this.BROWSER_OPERA) {
+            if (this.BROWSER_MAJOR_VERSION == 9 && this.BROWSER_MINOR_VERSION >= 50) {
+                this.QUIRK_OPERA_WINDOW_RESIZE_POSITIONING = true;
+            }
             this.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
         } else if (this.BROWSER_SAFARI) {
             this.QUIRK_SAFARI_DOM_TEXT_ESCAPE = true;
