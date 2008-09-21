@@ -63,7 +63,11 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     _paneDivs: null,
     _separatorDiv: null,
     
-    _redrawRequired: false,
+    /**
+     * Flag indicating whether the renderDisplay() method must be invoked on this peer 
+     * (and descendant component peers).
+     */
+    _redisplayRequired: false,
     
     /**
      * The user's desired position of the separator.  This is the last
@@ -71,12 +75,13 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
      * that the separator was explicitly set to.  This value may not be the
      * actual separator position, in cases where other constraints have
      * temporarily adjusted it.
-     * @type Integer
+     * @type Number
      */
     _requested: null,
     
     /**
      * Current rendered separator position.
+     * @type Number
      */
     _rendered: null,
 
@@ -91,7 +96,114 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         this._processSeparatorMouseMoveRef = Core.method(this, this._processSeparatorMouseMove);
         this._processSeparatorMouseUpRef = Core.method(this, this._processSeparatorMouseUp);
     },
+    
+    /**
+     * Converts a desired separator position into a render-able separator position that
+     * complies with the SplitPane's separator bounds (miniumSize and maximumSize of child
+     * component layout data).
+     * 
+     * @param {Number} position requested separator position
+     * @return the bounded separator position
+     * @type Number
+     */
+    _getBoundedSeparatorPosition: function(position) {
+        if (this._childPanes[1]) {
+            var totalSize = this._orientationVertical ? 
+                    this._splitPaneDiv.offsetHeight : this._splitPaneDiv.offsetWidth;
+            if (position > totalSize - this._childPanes[1].minimumSize - this._separatorSize) {
+                position = totalSize - this._childPanes[1].minimumSize - this._separatorSize;
+            } else if (this._childPanes[1].maximumSize != null
+                    && position < totalSize - this._childPanes[1].maximumSize - this._separatorSize) {
+                position = totalSize - this._childPanes[1].maximumSize - this._separatorSize;
+            }
+        }
+        if (this._childPanes[0]) {
+            if (position < this._childPanes[0].minimumSize) {
+                position = this._childPanes[0].minimumSize;
+            } else if (this._childPanes[0].maximumSize != null && position > this._childPanes[0].maximumSize) {
+                position = this._childPanes[0].maximumSize;
+            }
+        }
+        return position;
+    },
+    
+    /**
+     * Determines the number of pixels of inset margin specified in a layout data object.
+     * Horizontal or vertical pixels will be analyzed based on the SplitPane's orientation.
+     * The result of this method can be subtracted from the desired height or width of a pane
+     * to determine the appropriate value to set for a CSS width/height attribute.
+     * 
+     * @param {Object} layoutData a component layout data object
+     * @return the number of inset pixels
+     * @type Number 
+     */
+    _getInsetsSizeAdjustment: function(layoutData) {
+        if (!layoutData || layoutData.insets == null || layoutDataInsets == 0) {
+            return 0;
+        }
+        var layoutDataInsets = Echo.Sync.Insets.toPixels(layoutData.insets);
+        var adjustment;
+        if (this._orientationVertical) {
+            adjustment = layoutDataInsets.top + layoutDataInsets.bottom;
+        } else {
+            adjustment = layoutDataInsets.left + layoutDataInsets.right;
+        }
+        if (this._rendered != null && adjustment > this._rendered) {
+            adjustment = this._rendered;
+        }
+        return adjustment;
+    },
+    
+    /**
+     * Determines the pixel position at which the separator should be rendered.
+     * This method simply returns the value of the this._rendered property in
+     * the event the separator position has been explicitly set.
+     * Measures the size of first pane in the event that automatic positioning of
+     * the separator is desired.
+     * 
+     * @return the rendered separator position
+     * @type Number
+     */
+    _getRenderedSeparatorPosition: function() {
+        if (this._rendered) {
+            // Separator position has been specifically set: return it.
+            return this._rendered;
+        } else if (this._paneDivs[0]) {
+            // Separator position is set based on size of pane 0: measure it.
+            var bounds0 = new Core.Web.Measure.Bounds(this._paneDivs[0]);
+            var position = this._orientationVertical ? bounds0.height : bounds0.width;
+            position = this._getBoundedSeparatorPosition(position);
+            return position;
+        } else {
+            // Separator position is set based on size of pane 0 and it does not exist: return 0.
+            return 0;
+        }
+    },
+    
+    /**
+     * Determines if the specified update has caused either child of the SplitPane to
+     * be relocated (i.e., a child which existed before continues to exist, but at a
+     * different index).
+     * 
+     * @param {Echo.Update.ComponentUpdate} update the component update
+     * @return true if a child has been relocated
+     * @type Boolean
+     */
+    _hasRelocatedChildren: function(update) {
+        var oldChild0 = this._childPanes[0] ? this._childPanes[0].component : null; 
+        var oldChild1 = this._childPanes[1] ? this._childPanes[1].component : null; 
+        var childCount = this.component.getComponentCount();
+        var newChild0 = childCount > 0 ? this.component.getComponent(0) : null;
+        var newChild1 = childCount > 1 ? this.component.getComponent(1) : null;
+        return (oldChild0 != null && oldChild0 == newChild1) 
+                || (oldChild1 != null && oldChild1 == newChild0);
+    },
 
+    /**
+     * Retrieves properties from Echo.SplitPane component instances and
+     * stores them in local variables in a format more convenient for processing
+     * by this synchronization peer.
+     */
     loadRenderData: function() {
         var orientation = this.component.render("orientation", 
                 Echo.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING);
@@ -146,10 +258,10 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     _processImageLoad: function(e) {
         e = e ? e : window.event;
         Core.Web.DOM.removeEventListener(Core.Web.DOM.getEventTarget(e), "load", this._processImageLoadRef, false);
-        if (!this._redrawRequired) {
-            this._redrawRequired = true;
+        if (!this._redisplayRequired) {
+            this._redisplayRequired = true;
             Core.Web.Scheduler.run(Core.method(this, function() {
-                this._redrawRequired = false;
+                this._redisplayRequired = false;
                 Echo.Render.renderComponentDisplay(this.component);
             }), 50);
         }
@@ -248,33 +360,6 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         Echo.Render.notifyResize(this.component);
     },
     
-    _getInsetsSizeAdjustment: function(layoutData) {
-        if (!layoutData || layoutData.insets == null || layoutDataInsets == 0) {
-            return 0;
-        }
-        var layoutDataInsets = Echo.Sync.Insets.toPixels(layoutData.insets);
-        var adjustment;
-        if (this._orientationVertical) {
-            adjustment = layoutDataInsets.top + layoutDataInsets.bottom;
-        } else {
-            adjustment = layoutDataInsets.left + layoutDataInsets.right;
-        }
-        if (this._rendered != null && adjustment > this._rendered) {
-            adjustment = this._rendered;
-        }
-        return adjustment;
-    },
-    
-    _hasRelocatedChildren: function(update) {
-        var oldChild0 = this._childPanes[0] ? this._childPanes[0].component : null; 
-        var oldChild1 = this._childPanes[1] ? this._childPanes[1].component : null; 
-        var childCount = this.component.getComponentCount();
-        var newChild0 = childCount > 0 ? this.component.getComponent(0) : null;
-        var newChild1 = childCount > 1 ? this.component.getComponent(1) : null;
-        return (oldChild0 != null && oldChild0 == newChild1) 
-                || (oldChild1 != null && oldChild1 == newChild0);
-    },
-
     _redraw: function() {
         var insetsAdjustment = 0;
         if (this.component.getComponentCount() > 0) {
@@ -468,22 +553,6 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
-    _getRenderedSeparatorPosition: function() {
-        if (this._rendered) {
-            // Separator position has been specifically set: return it.
-            return this._rendered;
-        } else if (this._paneDivs[0]) {
-            // Separator position is set based on size of pane 0: measure it.
-            var bounds0 = new Core.Web.Measure.Bounds(this._paneDivs[0]);
-            var position = this._orientationVertical ? bounds0.height : bounds0.width;
-            position = this._getBoundedSeparatorPosition(position);
-            return position;
-        } else {
-            // Separator position is set based on size of pane 0 and it does not exist: return 0.
-            return 0;
-        }
-    },
-    
     renderDisplay: function() {
         Core.Web.VirtualPosition.redraw(this._splitPaneDiv);
         this._setSeparatorPosition(this._requested);
@@ -616,27 +685,11 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         return fullRender;
     },
     
-    _getBoundedSeparatorPosition: function(position) {
-        if (this._childPanes[1]) {
-            var totalSize = this._orientationVertical ? 
-                    this._splitPaneDiv.offsetHeight : this._splitPaneDiv.offsetWidth;
-            if (position > totalSize - this._childPanes[1].minimumSize - this._separatorSize) {
-                position = totalSize - this._childPanes[1].minimumSize - this._separatorSize;
-            } else if (this._childPanes[1].maximumSize != null
-                    && position < totalSize - this._childPanes[1].maximumSize - this._separatorSize) {
-                position = totalSize - this._childPanes[1].maximumSize - this._separatorSize;
-            }
-        }
-        if (this._childPanes[0]) {
-            if (position < this._childPanes[0].minimumSize) {
-                position = this._childPanes[0].minimumSize;
-            } else if (this._childPanes[0].maximumSize != null && position > this._childPanes[0].maximumSize) {
-                position = this._childPanes[0].maximumSize;
-            }
-        }
-        return position;
-    },
-    
+    /**
+     * Sets the position of the SplitPane separator.
+     * 
+     * @param {Number} newValue the new separator position, in pixels
+     */
     _setSeparatorPosition: function(newValue) {
         var oldValue = this._rendered;
         
