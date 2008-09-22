@@ -453,10 +453,9 @@ Echo.Render.ComponentSync = Core.extend({
          * being updated.
          *
          * @param {Echo.Update.ComponentUpdate} update the update being rendered
+         * @param {Element} parentElement the parent DOM element to which the component should be rendered.
          */
-        renderAdd: function(update, parentElement) {
-            throw new Error("Operation \"renderAdd\" not supported (Component: " + this.component + ").");
-        },
+        renderAdd: function(update, parentElement) { },
 
         /**
          * Invoked when the rendered component is about to be removed from the DOM.
@@ -477,9 +476,7 @@ Echo.Render.ComponentSync = Core.extend({
          *        
          * @param {Echo.Update.ComponentUpdate} update the update being rendered
          */
-        renderDispose: function(update) {
-            throw new Error("Operation \"renderDispose\" not supported (Component: " + this.component + ").");
-        },
+        renderDispose: function(update) { },
         
         /**
          * Renders an update to a component, e.g., children added/removed, properties updated.
@@ -488,9 +485,7 @@ Echo.Render.ComponentSync = Core.extend({
          * @param {Echo.Update.ComponentUpdate} update the update being rendered
          * @return true if this invocation has re-rendered all child components, false otherwise
          */
-        renderUpdate: function(update) {
-            throw new Error("Operation \"renderUpdate\" not supported (Component: " + this.component + ").");
-        }
+        renderUpdate: function(update) { }
     },
     
     $virtual: {
