@@ -59,7 +59,7 @@
  </s>
  <s n="TitleLabel" t="nextapp.echo.app.Label">
   <p n="font" t="Font">
-   <f sz="18px">
+   <f sz="14pt">
     <tf>Verdana</tf>
    </f>
   </p>
@@ -166,8 +166,8 @@
     <fi r="0" t="r">/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundDarkBlue.png</fi>
    </p>
    <p n="insets" t="Insets">7px 10px</p>
-   <p n="minimumSize" t="Extent">200px</p>
-   <p n="maximumSize" t="Extent">300px</p>
+   <p n="minimumSize" t="Extent">14em</p>
+   <p n="maximumSize" t="Extent">33%</p>
   </p>
  </s>
  <s n="TestControlsColumn" t="nextapp.echo.app.Column">
@@ -177,8 +177,8 @@
     <fi r="0" t="r">/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundLightBlue.png</fi>
    </p>
    <p n="insets" t="Insets">7px 10px</p>
-   <p n="minimumSize" t="Extent">200px</p>
-   <p n="maximumSize" t="Extent">300px</p>
+   <p n="minimumSize" t="Extent">14em</p>
+   <p n="maximumSize" t="Extent">33%</p>
   </p>
  </s>
  <s n="WelcomePane" t="nextapp.echo.app.ContentPane">
@@ -191,8 +191,8 @@
   <p n="cellSpacing" t="Extent">40px</p>
  </s>
  <s b="Default" n="WelcomePane" t="nextapp.echo.app.WindowPane">
-  <p n="width" t="Extent">550px</p>
-  <p n="height" t="Extent">300px</p>
+  <p n="width" t="Extent">40em</p>
+  <p n="height" t="Extent">22em</p>
   <p n="resizable" t="b">true</p>
   <p n="positionX" t="Extent">160px</p>
   <p n="positionY" t="Extent">300px</p>
