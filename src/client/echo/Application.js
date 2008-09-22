@@ -133,10 +133,10 @@ Echo.Application = Core.extend({
     },
     
     /**
-     * Recurisvely determines the current root component of the modal context.
+     * Recursively determines the current root component of the modal context.
      *
      * @param {Echo.Component} searchComponent (optional) the component from which to search
-     *        (this paramater is provided when recursively searching, if omitted the sear
+     *        (this parameter is provided when recursively searching, if omitted the sear
      *        will begin at the root component of the application).
      * @return the current modal context root component
      */
@@ -411,7 +411,7 @@ Echo.Application = Core.extend({
 
 /**
  * Factory to create new instances of arbitrary components.  This object is 
- * used to instantiate new components during XML deserialization.
+ * used to instantiate new components during XML de-serialization.
  * @class
  */
 Echo.ComponentFactory = {
@@ -456,7 +456,7 @@ Echo.ComponentFactory = {
      * Determines the super type of a component, based on the type name of the component.
      *
      * @param {String} typeName the component type
-     * @return the parent componetn type
+     * @return the parent component type
      * @type String
      */
     getSuperType: function(typeName) {
@@ -496,7 +496,7 @@ Echo.ComponentFactory = {
  * @sp {#Color} background the background color
  * @sp {#Font} font the component font
  * @sp {#Color} foreground the foreground color
- * @sp {Object} layoutData layout data information, describng how the component should be rendered by its container 
+ * @sp {Object} layoutData layout data information, describing how the component should be rendered by its container 
  * @event property An event fired when the a property of the component changes.  The <code>propertyName</code> property
  *        will specify the name of the changed property.  The <code>oldValue</code> and <code>newValue</code> properties
  *        (may) describe the previous and current states of the property, respectively.
@@ -630,7 +630,7 @@ Echo.Component = Core.extend({
      *         <li><code>style</code> specifies the referenced component style</li>
      *         <li><code>renderId</code> specifies the render id</li>
      *         <li><code>children</code> an array specifying the initial children of the component</li>
-     *         <li><code>events</code> an associative mapping between event names and listener methdos</li>
+     *         <li><code>events</code> an associative mapping between event names and listener methods</li>
      *        </ul>
      * @constructor
      */
@@ -804,7 +804,7 @@ Echo.Component = Core.extend({
     
     /**
      * Retrieves local style property map associations.
-     * This method should only be used by a deserialized for
+     * This method should only be used by a de-serialized for
      * the purpose of rapidly loading properties into a new
      * component.
      * 
@@ -994,7 +994,7 @@ Echo.Component = Core.extend({
             this.application._unregisterComponent(this);
 
             // Change application focus in the event the focused component is being removed.
-            // Note that this is performed after deregistration to ensure any removed modal context is cleared.
+            // Note that this is performed after de-registration to ensure any removed modal context is cleared.
             if (this.application._focusedComponent == this) {
                 this.application.setFocusedComponent(this.parent);
             }
@@ -2001,7 +2001,7 @@ Echo.Update.ComponentUpdate = Core.extend({
     
     /**
      * Records the removal of a descendant of the parent component.
-     * All children of a removed compoent are recorded as removed
+     * All children of a removed component are recorded as removed
      * descendants when the child is removed.
      * This method will recursively invoke itself on children of
      * the specified descendant.
@@ -2422,7 +2422,7 @@ Echo.Update.Manager = Core.extend({
  * Base class from which button components are derived.
  *
  * @sp {String} actionCommand the action command fired in action events 
- *     when the buttton is pushed
+ *     when the button is pushed
  * @sp {#Alignment} alignment the alignment of the button's content
  * @sp {#FillImage} backgroundImage the background image
  * @sp {#Border} border the default button border
@@ -2481,7 +2481,7 @@ Echo.AbstractButton = Core.extend(Echo.Component, {
     $virtual: {
         
         /**
-         * Programatically performs a button action.
+         * Programmatically performs a button action.
          */
         doAction: function() {
             this.fireEvent({type: "action", source: this, actionCommand: this.get("actionCommand")});
@@ -2565,7 +2565,7 @@ Echo.RadioButton = Core.extend(Echo.ToggleButton, {
  *     will be displayed in the selection component.
  * @cp selectedId the values of the id property of the selected item,
  *     or an array of the id values when multiple items are selected
- * @cp selection the index of the selcted item, or an array of the 
+ * @cp selection the index of the selected item, or an array of the 
  *     indices of selected items when multiple items are selected
  *
  * @sp {#Border} border the default border
@@ -2580,7 +2580,7 @@ Echo.RadioButton = Core.extend(Echo.ToggleButton, {
  * @sp {#Font} rolloverFont the rollover font
  * @sp {#Color} rolloverForeground the rollover foreground color
  * @sp {#Extent} width the component width 
- * @event action An event fired when an item is seleted (clicked).
+ * @event action An event fired when an item is selected (clicked).
  */
 Echo.AbstractListComponent = Core.extend(Echo.Component, {
 
@@ -2597,7 +2597,7 @@ Echo.AbstractListComponent = Core.extend(Echo.Component, {
     $virtual: {
         
         /**
-         * Programatically performs a list select action.
+         * Programmatically performs a list select action.
          */
         doAction: function() {
             this.fireEvent({type: "action", source: this, actionCommand: this.get("actionCommand")});
@@ -2653,7 +2653,7 @@ Echo.SelectField = Core.extend(Echo.AbstractListComponent, {
 /**
  * A container component which displays cells in a column in vertical order.
  *
- * @sp {#Border} border the border dispalyed around the entire column
+ * @sp {#Border} border the border displayed around the entire column
  * @sp {#Extent} cellSpacing the extent margin between cells of the column
  * @sp {#Insets} insets the inset margin between the column border and its cells
  *
@@ -2754,7 +2754,7 @@ Echo.ContentPane = Core.extend(Echo.Component, {
  * A container component which displays children in a grid.
  * Cells may be configured to span multiple rows and/or columns.
  *
- * @sp {#Border} border the border dispalyed around the grid, and between cells
+ * @sp {#Border} border the border displayed around the grid, and between cells
  * @sp {#Extent} columnWidth an indexed property whose indices represent the width 
  *     of each column of the grid
  * @sp {#Extent} height the overall height of the grid
@@ -2764,7 +2764,7 @@ Echo.ContentPane = Core.extend(Echo.Component, {
  *     following values:
  *     <ul>
  *      <li><code>ORIENTATION_HORIZONTAL</code> (the default) lay children out horizontally, then vertically</li> 
- *      <li><code>ORIENTATION_VERTICAL</code> lay children out verticall, then horizontally</li> 
+ *      <li><code>ORIENTATION_VERTICAL</code> lay children out vertically, then horizontally</li> 
  *     </ul>
  * @sp {#Extent} rowWidth an indexed property whose indices represent the height 
  *     of each row of the grid
@@ -2778,7 +2778,7 @@ Echo.ContentPane = Core.extend(Echo.Component, {
  * @ldp {Number} columnSpan the number of column the containing cell should span
  *      (a value of <code>SPAN_FILL</code> indicates that cell should fill all columns until
  *      the end of the grid is reached; this value may only be used in
- *      this property for hoirzontally oriented grids)
+ *      this property for horizontally oriented grids)
  * @ldp {#Insets} insets the insets margin of the child component's cell 
  *      (this inset is added to any inset set on the container component)
  * @ldp {Number} rowSpan the number of rows the containing cell should span
@@ -2853,7 +2853,7 @@ Echo.Label = Core.extend(Echo.Component, {
 /**
  * A container component which displays cells in a row in horizontal order.
  *
- * @sp {#Border} border the border dispalyed around the entire column
+ * @sp {#Border} border the border displayed around the entire column
  * @sp {#Extent} cellSpacing the extent margin between cells of the column
  * @sp {#Insets} insets the inset margin between the column border and its cells
  *
@@ -2987,7 +2987,7 @@ Echo.TextComponent = Core.extend(Echo.Component, {
     $virtual: {
         
         /**
-         * Programatically performs a text component action.
+         * Programmatically performs a text component action.
          */
         doAction: function() {
             this.fireEvent({type: "action", source: this, actionCommand: this.get("actionCommand")});
@@ -3041,7 +3041,7 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * WindowPane component.
  *
  * @sp {#FillImage} backgroundImage the background image to display within the content area
- * @sp {#FillImageBorder} border the border frame containing thw WindowPane
+ * @sp {#FillImageBorder} border the border frame containing the WindowPane
  * @sp {Boolean} closable flag indicating whether the window is closable
  * @sp {#ImageReference} closeIcon the close button icon
  * @sp {#Insets} controlsInsets the inset margin around the controls area
@@ -3088,11 +3088,11 @@ Echo.WindowPane = Core.extend(Echo.Component, {
         DEFAULT_BACKGROUND: "#ffffff",
         DEFAULT_FOREGROUND: "#000000",
         DEFAULT_CONTROLS_INSETS: 4,
-        DEFAULT_HEIGHT: 200,
+        DEFAULT_HEIGHT: "15em",
         DEFAULT_MINIMUM_WIDTH: 100,
         DEFAULT_MINIMUM_HEIGHT: 100,
         DEFAULT_TITLE_HEIGHT: 30,
-        DEFAULT_WIDTH: 400
+        DEFAULT_WIDTH: "30em"
     },
 
     componentType: "WindowPane",
