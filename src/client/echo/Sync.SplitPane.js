@@ -90,6 +90,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     _childPanes: null,
     _paneDivs: null,
     _separatorDiv: null,
+    _autoPositioned: false,
     
     /**
      * Flag indicating whether the renderDisplay() method must be invoked on this peer 
@@ -267,10 +268,10 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             throw new Error("Invalid orientation: " + orientation);
         }
         this._resizable = this.component.render("resizable");
-        var autoPositioned = this._orientationVertical && this.component.children.length > 0 &&
+        this._autoPositioned = this._orientationVertical && this.component.children.length > 0 &&
                 !this.component.children[0].pane && this.component.render("autoPositioned");
-        this._requested = this.component.render("separatorPosition", 
-                autoPositioned ? null : Echo.SplitPane.DEFAULT_SEPARATOR_POSITION);
+        this._requested = this.component.render("separatorPosition");
+
         this._separatorSize = Echo.Sync.Extent.toPixels(this.component.render(
                 this._orientationVertical ? "separatorHeight" : "separatorWidth",
                 this._resizable ? Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
@@ -582,6 +583,19 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     renderDisplay: function() {
+        if (this._requested == null) {
+            // No specified separator position.
+            if (this.component.children.length > 0 && this.component.children[0].peer.getPreferredSize) {
+                // Query child component for preferred size if available.
+                var size = this.component.children[0].peer.getPreferredSize();
+                this._requested = size ? size.height : null;
+            }
+            if (this._requested == null && !this._autoPositioned) {
+                // If requested position remains null and separator is not auto-positioned, use default position.
+                this._requested = Echo.SplitPane.DEFAULT_SEPARATOR_POSITION;
+            }
+        }
+
         Core.Web.VirtualPosition.redraw(this._splitPaneDiv);
         if (this._childPanes[0]) {
             this._childPanes[0].loadDisplayData();

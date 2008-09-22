@@ -493,12 +493,22 @@ Echo.Render.ComponentSync = Core.extend({
         getFocusFlags: null,
         
         /**
-         * Invoked when component is rendered focused.
+         * (Optional) Returns the preferred rendered size of the component in pixels.  Certain parent
+         * components may query this method during <code>renderDisplay()</code> to determine
+         * the space provided to the child component.  If implemented, this method should return
+         * an object containing height and/or width properties specifying integer pixel values.
+         * 
+         * @return the preferred rendered size of the component
+         */
+        getPreferredSize: null,
+        
+        /**
+         * (Optional) Invoked when component is rendered focused.
          */
         renderFocus: null,
         
         /**
-         * Optional method.  Invoked when the component has been added to the hierarchy and first appears
+         * (Optional) Invoked when the component has been added to the hierarchy and first appears
          * on screen, and when ancestors of the component (or the containing window) have
          * resized.         
          */
