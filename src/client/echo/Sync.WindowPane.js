@@ -89,12 +89,12 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         }
         if (bounds.x != null) {
             pxBounds.x = Math.round(Echo.Sync.Extent.isPercent(bounds.x)
-                    ? ((this._containerSize.width - pxBounds.width) * (bounds.x / 100))
+                    ? ((this._containerSize.width - pxBounds.width) * (parseInt(bounds.x) / 100))
                     : Echo.Sync.Extent.toPixels(bounds.x, true));
         }
         if (bounds.y != null) {
             pxBounds.y = Math.round(Echo.Sync.Extent.isPercent(bounds.y)
-                    ? ((this._containerSize.height - pxBounds.height) * (bounds.y / 100))
+                    ? ((this._containerSize.height - pxBounds.height) * (parseInt(bounds.y) / 100))
                     : Echo.Sync.Extent.toPixels(bounds.y, false));
         }
         return pxBounds;
