@@ -43,6 +43,7 @@ Core.Web = {
     
         Core.Web.Env._init();
         Core.Web.Measure._calculateExtentSizes();
+        Core.Web.Measure.Bounds._initMeasureContainer();
         if (Core.Web.Env.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY) {
             // Enable virtual positioning.
             Core.Web.VirtualPosition._init();
@@ -1429,6 +1430,16 @@ Core.Web.Measure = {
      */
     Bounds: Core.extend({
 
+        $static: {
+            _initMeasureContainer: function() {
+                // Create off-screen div element for evaluating sizes.
+                this._offscreenDiv = document.createElement("div");
+                this._offscreenDiv.style.cssText 
+                        = "position: absolute; top: -1300px; left: -1700px; width: 1600px; height: 1200px;";
+                document.body.appendChild(this._offscreenDiv);
+            }
+        },
+
         /**
          * The width of the element, in pixels.
          * @type Integer
@@ -1466,16 +1477,8 @@ Core.Web.Measure = {
             }
             var rendered = testElement == document;
             
-            // Create off-screen div element for evaluating sizes if necessary.
-            if (!Core.Web.Measure.Bounds._offscreenDiv) {
-                Core.Web.Measure.Bounds._offscreenDiv = document.createElement("div");
-                Core.Web.Measure.Bounds._offscreenDiv.style.cssText 
-                        = "position: absolute; top: -1700px; left: -1300px; width: 1600px; height: 1200px;";
-            }
-        
             var parentNode, nextSibling;
             if (!rendered) {
-                document.body.appendChild(Core.Web.Measure.Bounds._offscreenDiv);
                 // Element must be added to off-screen element for measuring.
                 
                 // Store parent node and next sibling such that element may be replaced into proper position
@@ -1503,7 +1506,6 @@ Core.Web.Measure = {
                 if (parentNode) {
                     parentNode.insertBefore(element, nextSibling);
                 }
-                document.body.removeChild(Core.Web.Measure.Bounds._offscreenDiv);
             }
             
             // Determine top and left positions of element if rendered on-screen.
