@@ -588,7 +588,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             if (this.component.children.length > 0 && this.component.children[0].peer.getPreferredSize) {
                 // Query child component for preferred size if available.
                 var size = this.component.children[0].peer.getPreferredSize();
-                this._requested = size ? size.height : null;
+                this._requested = size ? (this._orientationVertical ? size.height : size.width) : null;
             }
             if (this._requested == null && !this._autoPositioned) {
                 // If requested position remains null and separator is not auto-positioned, use default position.
