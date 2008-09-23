@@ -197,17 +197,50 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         if (this._rendered) {
             // Separator position has been specifically set: return it.
             return this._rendered;
-        } else if (this._paneDivs[0]) {
-            // Separator position is set based on size of pane 0: measure it.
-            var bounds0 = new Core.Web.Measure.Bounds(this._paneDivs[0]);
-            var position = this._orientationVertical ? bounds0.height : bounds0.width;
+        } 
+
+        var position = null;
+        if (this._autoPositioned && this.component.children.length > 0) {
+            
+            if (this.component.children[0].peer.getPreferredSize) {
+                // Query child component for preferred size if available.
+                var prefSize = this.component.children[0].peer.getPreferredSize();
+                position = prefSize ? (this._orientationVertical ? prefSize.height : prefSize.width) : null;
+            }
+            
+            if (position == null && this._orientationVertical && !this.component.children[0].pane) {
+                // Automatically position vertical SplitPane based on height of non-pane child 0.
+                var bounds0 = new Core.Web.Measure.Bounds(this._paneDivs[0]);
+                position = bounds0.height;
+            }
+            
+            if (position == null) {
+                position = 0;
+            }
+
             position = this._getBoundedSeparatorPosition(position);
+            
             return position;
-        } else {
-            // Separator position is set based on size of pane 0 and it does not exist: return 0.
-            return 0;
         }
+        
+        return 0;
     },
+    
+//    getPreferredSize: function() {
+//        if (this.component.children.length == 0) {
+//            return null;
+//        } else if {
+//            var size0;
+//            if (this.component.children[0].peer.getPreferredSize) {
+//                size0 = this.component.children[0].peer.getPreferredSize();
+//            } else if (!this.component.children[0].pane) {
+//            }
+//                
+//            return .getPreferredSize();
+//        } else {
+//            
+//        }
+//    },
     
     /**
      * Determines if the specified update has caused either child of the SplitPane to
@@ -267,9 +300,9 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         default:
             throw new Error("Invalid orientation: " + orientation);
         }
+
         this._resizable = this.component.render("resizable");
-        this._autoPositioned = this._orientationVertical && this.component.children.length > 0 &&
-                !this.component.children[0].pane && this.component.render("autoPositioned");
+        this._autoPositioned = this.component.render("autoPositioned") && this.component.children.length > 0;
         this._requested = this.component.render("separatorPosition");
 
         this._separatorSize = Echo.Sync.Extent.toPixels(this.component.render(
@@ -583,19 +616,6 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     renderDisplay: function() {
-        if (this._requested == null) {
-            // No specified separator position.
-            if (this.component.children.length > 0 && this.component.children[0].peer.getPreferredSize) {
-                // Query child component for preferred size if available.
-                var size = this.component.children[0].peer.getPreferredSize();
-                this._requested = size ? (this._orientationVertical ? size.height : size.width) : null;
-            }
-            if (this._requested == null && !this._autoPositioned) {
-                // If requested position remains null and separator is not auto-positioned, use default position.
-                this._requested = Echo.SplitPane.DEFAULT_SEPARATOR_POSITION;
-            }
-        }
-
         Core.Web.VirtualPosition.redraw(this._splitPaneDiv);
         if (this._childPanes[0]) {
             this._childPanes[0].loadDisplayData();
@@ -603,8 +623,18 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         if (this._childPanes[1]) {
             this._childPanes[1].loadDisplayData();
         }
+
+        if (this._requested == null) {
+            // No specified separator position.
+            if (this._requested == null && !this._autoPositioned) {
+                // If requested position remains null and separator is not auto-positioned, use default position.
+                this._requested = Echo.SplitPane.DEFAULT_SEPARATOR_POSITION;
+            }
+        }
+
         this._setSeparatorPosition(this._requested);
-        if (this._paneDivs[0] && this._rendered == null) {
+        
+        if (this._autoPositioned && this._rendered == null) {
             // Automatic sizing requested: set separator and pane 1 positions to be adjacent to browser's rendered size of pane 0.
             var size = this._separatorDiv ? this._separatorSize : 0;
             var position = this._getRenderedSeparatorPosition();
