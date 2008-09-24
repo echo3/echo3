@@ -32,6 +32,9 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
                 this.layoutData = component.render("layoutData");
             },
             
+            /**
+             * 
+             */
             loadDisplayData: function() {
                 if (this._permanentSizes) {
                     // Do nothing.
@@ -39,11 +42,10 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
                 }
                 this._permanentSizes = true;
                 if (this.layoutData) {
-                    var bounds = null;
                     if (this.layoutData.minimumSize) {
                         if (Echo.Sync.Extent.isPercent(this.layoutData.minimumSize)) {
-                            bounds = new Core.Web.Measure.Bounds(this._peer._splitPaneDiv);
-                            this.minimumSize = Math.round((this._peer._orientationVertical ? bounds.height : bounds.width)
+                            var size = this._peer._getSize();
+                            this.minimumSize = Math.round((this._peer._orientationVertical ? size.height : size.width)
                                     * parseInt(this.layoutData.minimumSize) / 100);
                             this._permanentSizes = false;
                         } else {
@@ -53,10 +55,8 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
                     }
                     if (this.layoutData.maximumSize) {
                         if (Echo.Sync.Extent.isPercent(this.layoutData.maximumSize)) {
-                            if (!bounds) {
-                                bounds = new Core.Web.Measure.Bounds(this._peer._splitPaneDiv);
-                            }
-                            this.maximumSize = Math.round((this._peer._orientationVertical ? bounds.height : bounds.width)
+                            var size = this._peer._getSize();
+                            this.maximumSize = Math.round((this._peer._orientationVertical ? size.height : size.width)
                                     * parseInt(this.layoutData.maximumSize) / 100);
                             this._permanentSizes = false;
                         } else {
@@ -118,6 +118,13 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     _processSeparatorMouseUpRef: null,
     _processImageLoadRef: null,
     _initialAutoSizeComplete: null,
+    
+    /**
+     * The rendered size of the SplitPane outer DIV.  This value is lazily loaded by
+     * _getSize(), thus it should always be retrieved by invoking _getSize().
+     * This property will be cleared any time the size changes.
+     */
+    _size: null,
 
     $construct: function() {
         this._childPanes = new Array(2);
@@ -283,6 +290,13 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         
         //FIXME Return default position 
         return 0;
+    },
+    
+    _getSize: function() {
+        if (!this._size) {
+            this._size = new Core.Web.Measure.Bounds(this._splitPaneDiv);
+        }
+        return this._size;
     },
     
     /**
@@ -623,6 +637,8 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     
     renderDisplay: function() {
         Core.Web.VirtualPosition.redraw(this._splitPaneDiv);
+        this._size = null;
+        
         if (this._childPanes[0]) {
             this._childPanes[0].loadDisplayData();
         }
