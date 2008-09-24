@@ -144,8 +144,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
      */
     _getBoundedSeparatorPosition: function(position) {
         if (this._childPanes[1]) {
-            var totalSize = this._orientationVertical ? 
-                    this._splitPaneDiv.offsetHeight : this._splitPaneDiv.offsetWidth;
+            var totalSize = this._orientationVertical ? this._getSize().height : this._getSize().width;
             if (position > totalSize - this._childPanes[1].minimumSize - this._separatorSize) {
                 position = totalSize - this._childPanes[1].minimumSize - this._separatorSize;
             } else if (this._childPanes[1].maximumSize != null
@@ -463,6 +462,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         this._setSeparatorPosition(this._orientationTopLeft
                 ? this._dragInitPosition + mousePosition - this._dragInitMouseOffset
                 : this._dragInitPosition - mousePosition + this._dragInitMouseOffset);
+        this._redraw();
     },
     
     _processSeparatorMouseUp: function(e) {
@@ -659,6 +659,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         }
 
         this._setSeparatorPosition(this._requested);
+        this._redraw();
         
         if (this._autoPositioned && this._rendered == null && this._paneDivs[0]) {
             // Automatic sizing requested: set separator and pane 1 positions to be adjacent to browser's rendered size of pane 0.
@@ -761,6 +762,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             if (update.isUpdatedPropertySetIn({ separatorPosition: true })) {
                 this._requested = this.component.render("separatorPosition");
                 this._setSeparatorPosition(this._requested);
+                this._redraw();
             } else {
                 fullRender = true;
             }
@@ -800,21 +802,16 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
      * @param {Number} newValue the new separator position, in pixels
      */
     _setSeparatorPosition: function(newValue) {
-        var oldValue = this._rendered;
-        
         if (newValue != null) {
             if (Echo.Sync.Extent.isPercent(newValue)) {
-                var totalSize = this._orientationVertical ? this._splitPaneDiv.offsetHeight : this._splitPaneDiv.offsetWidth;
+                var totalSize = this._orientationVertical ? this._getSize().height : this._getSize().width;
                 newValue = Math.round((parseInt(newValue) / 100) * totalSize);
             } else {
                 newValue = Math.round(Echo.Sync.Extent.toPixels(newValue, !this._orientationVertical));
             }
-            
             newValue = this._getBoundedSeparatorPosition(newValue);
         }
         
         this._rendered = newValue;
-        
-        this._redraw();
     }
 });
