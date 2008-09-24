@@ -223,24 +223,65 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             return position;
         }
         
+        //FIXME Return default position 
         return 0;
     },
     
-//    getPreferredSize: function() {
-//        if (this.component.children.length == 0) {
-//            return null;
-//        } else if {
-//            var size0;
-//            if (this.component.children[0].peer.getPreferredSize) {
-//                size0 = this.component.children[0].peer.getPreferredSize();
-//            } else if (!this.component.children[0].pane) {
-//            }
-//                
-//            return .getPreferredSize();
-//        } else {
-//            
-//        }
-//    },
+    getPreferredSize: function(dimension) {
+        if (this.component.children.length == 0) {
+            return null;
+        }
+        dimension = dimension || (Echo.Render.ComponentSync.SIZE_WIDTH | Echo.Render.ComponentSync.SIZE_HEIGHT); 
+
+        // Determine size of pane 0.
+        var size0;
+        if (this.component.children[0].peer.getPreferredSize) {
+            // Use getPreferredSize() if available.
+            size0 = this.component.children[0].peer.getPreferredSize(dimension);
+        } else if (!this.component.children[0].pane && (dimension & Echo.Render.ComponentSync.SIZE_HEIGHT)) {
+            // Measure height of non-pane child (assuming height is being requested).
+            size0 = { height: new Core.Web.Measure.Bounds(this._paneDivs[0]).height };
+        } else {
+            // Pane 0 cannot be measured.
+            size0 = { };
+        }
+
+        // Determine size of pane 1.
+        var size1;
+        if (this.component.children.length == 1) {
+            // Pane 1 does not exist.
+            size1 = { width: 0, height: 0 };
+        } else if (this.component.children[1].peer.getPreferredSize) {
+            // Use getPreferredSize() if available.
+            size1 = this.component.children[1].peer.getPreferredSize(dimension);
+        } else if (!this.component.children[1].pane && (dimension & Echo.Render.ComponentSync.SIZE_HEIGHT)) {
+            // Measure height of non-pane child (assuming height is being requested).
+            size1 = { height: new Core.Web.Measure.Bounds(this._paneDivs[1]).height };
+        } else {
+            // Pane 1 cannot be measured.
+            size1 = { };
+        }
+        
+        var height = null;
+        if ((dimension & Echo.Render.ComponentSync.SIZE_HEIGHT) && size0.height != null && size1.height != null) {
+            if (this._orientationVertical) {
+                height = size0.height + size1.height + this._separatorSize;
+            } else {
+                height = size0.height > size1.height ? size0.height : size1.height;
+            }
+        }
+        
+        var width = null;
+        if ((dimension & Echo.Render.ComponentSync.SIZE_WIDTH) && size0.width != null && size1.width != null) {
+            if (this._orientationVertical) {
+                width = size0.width > size1.width ? size0.width : size1.width;
+            } else {
+                width = size0.width + size1.width + this._separatorSize;
+            }
+        }
+        
+        return { height: height, width: width };
+    },
     
     /**
      * Determines if the specified update has caused either child of the SplitPane to
@@ -667,23 +708,32 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     
     /**
      * Perform tasks for the initial render display phase of an auto-sized SplitPane.
-     * This method will register listeners on any unloaded images in the size-determining
-     * child of the split pane such that the SplitPane will be resized after those images
-     * have loaded.
      */
     _initialAutoSize: function() {
+        this._registerSizingImageLoadListeners(this._paneDivs[0]);
+        this._initialAutoSizeComplete = true;
+    },
+    
+    /**
+     * Register listeners on any unloaded images in a size-determining
+     * child of the split pane such that the SplitPane will be resized after those images
+     * have loaded.
+     * 
+     * @param element the topmost element which potentially contains IMG elements to which the
+     *        load listeners should be attached
+     */
+    _registerSizingImageLoadListeners: function(element) {
         if (!this._processImageLoadRef) {
             this._processImageLoadRef = Core.method(this, this._processImageLoad);
         }
-        var imgs = this._paneDivs[0].getElementsByTagName("img");
+        var imgs = element.getElementsByTagName("img");
         for (var i = 0; i < imgs.length; ++i) {
             if (!imgs[i].loaded && (Core.Web.Env.QUIRK_UNLOADED_IMAGE_HAS_SIZE || (!imgs[i].height && !imgs[i].style.height))) {
                 Core.Web.DOM.addEventListener(imgs[i], "load", this._processImageLoadRef, false);
             }
         }
-        this._initialAutoSizeComplete = true;
     },
-    
+
     renderDispose: function(update) {
         for (var i = 0; i < 2; ++i) {
             if (this._paneDivs[i]) {

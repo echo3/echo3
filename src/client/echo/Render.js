@@ -420,11 +420,46 @@ Echo.Render = {
 Echo.Render.ComponentSync = Core.extend({ 
 
     $static: {
+    
+        /**
+         * Focus flag indicating up arrow keypress events should be handled by focus manager when
+         * the component is focused.
+         */
         FOCUS_PERMIT_ARROW_UP: 0x1,
+
+        /**
+         * Focus flag indicating down arrow keypress events should be handled by focus manager when
+         * the component is focused.
+         */
         FOCUS_PERMIT_ARROW_DOWN: 0x2, 
+
+        /**
+         * Focus flag indicating left arrow keypress events should be handled by focus manager when
+         * the component is focused.
+         */
         FOCUS_PERMIT_ARROW_LEFT: 0x4,
+        
+        /**
+         * Focus flag indicating right arrow keypress events should be handled by focus manager when
+         * the component is focused.
+         */
         FOCUS_PERMIT_ARROW_RIGHT: 0x8, 
-        FOCUS_PERMIT_ARROW_ALL: 0xf
+
+        /**
+         * Focus flag indicating all arrow keypress events should be handled by focus manager when
+         * the component is focused.
+         */
+        FOCUS_PERMIT_ARROW_ALL: 0xf,
+        
+        /**
+         * Dimension value for <code>getPreferredSize()</code> indicating height should be calculated.
+         */
+        SIZE_HEIGHT: 0x1,
+        
+        /**
+         * Dimension value for <code>getPreferredSize()</code> indicating width should be calculated.
+         */
+        SIZE_WIDTH: 0x2
     },
 
     /**
@@ -498,6 +533,12 @@ Echo.Render.ComponentSync = Core.extend({
          * the space provided to the child component.  If implemented, this method should return
          * an object containing height and/or width properties specifying integer pixel values.
          * 
+         * @param dimension the dimension to be calculated, one of the following values, or null
+         *        to specify that all dimensions should be calculated:
+         *        <ul>
+         *         <li><code>SIZE_WIDTH</code></li>
+         *         <li><code>SIZE_HEIGHT</code></li>
+         *        </ul>
          * @return the preferred rendered size of the component
          */
         getPreferredSize: null,
