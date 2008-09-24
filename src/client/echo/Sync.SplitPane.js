@@ -254,51 +254,6 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /**
-     * Determines the pixel position at which the separator should be rendered.
-     * This method simply returns the value of the this._rendered property in
-     * the event the separator position has been explicitly set.
-     * Measures the size of first pane in the event that automatic positioning of
-     * the separator is desired.
-     * 
-     * @return the rendered separator position
-     * @type Number
-     */
-    _getRenderedSeparatorPosition: function() {
-        if (this._rendered) {
-            // Separator position has been specifically set: return it.
-            return this._rendered;
-        } 
-
-        var position = null;
-        if (this._autoPositioned && this.component.children.length != 0) {
-            
-            if (this.component.children[0].peer.getPreferredSize) {
-                // Query child component for preferred size if available.
-                var prefSize = this.component.children[0].peer.getPreferredSize(
-                        this._orientationVertical ? Echo.Render.ComponentSync.SIZE_HEIGHT : Echo.Render.ComponentSync.SIZE_WIDTH);
-                position = prefSize ? (this._orientationVertical ? prefSize.height : prefSize.width) : null;
-            }
-            
-            if (position == null && this._orientationVertical && !this.component.children[0].pane) {
-                // Automatically position vertical SplitPane based on height of non-pane child 0.
-                var bounds0 = new Core.Web.Measure.Bounds(this._paneDivs[0]);
-                position = bounds0.height;
-            }
-            
-            if (position == null) {
-                position = 0;
-            }
-
-            position = this._getBoundedSeparatorPosition(position);
-            
-            return position;
-        }
-        
-        //FIXME Return default position 
-        return 0;
-    },
-    
-    /**
      * Retrieves the (potentially cached) dimensions of the SplitPane outer DIV.
      */
     _getSize: function() {
@@ -457,7 +412,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         
         Core.Web.dragInProgress = true;
     
-        this._dragInitPosition = this._getRenderedSeparatorPosition();
+        this._dragInitPosition = this._rendered;
         if (this._orientationVertical) {
             this._dragInitMouseOffset = e.clientY;
         } else {
@@ -470,7 +425,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     
     _processSeparatorMouseMove: function(e) {
         var mousePosition = this._orientationVertical ? e.clientY : e.clientX;
-        this._setSeparatorPosition(this._orientationTopLeft
+        this._rendered = this._getBoundedSeparatorPosition(this._orientationTopLeft
                 ? this._dragInitPosition + mousePosition - this._dragInitMouseOffset
                 : this._dragInitPosition - mousePosition + this._dragInitMouseOffset);
         this._redraw(this._rendered);
@@ -664,35 +619,49 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             this._childPanes[1].loadDisplayData();
         }
 
-        if (this._requested == null && !this._autoPositioned) {
-            // If requested position remains null and separator is not auto-positioned, use default position.
-            this._requested = Echo.SplitPane.DEFAULT_SEPARATOR_POSITION;
-        }
-
-        this._setSeparatorPosition(this._requested);
-        this._redraw(this._rendered);
+        var position = this._requested;
         
-        if (this._autoPositioned && this._rendered == null && this._paneDivs[0]) {
-            // Automatic sizing requested: set separator and pane 1 positions to be adjacent to browser's rendered size of pane 0.
-            var size = this._separatorDiv ? this._separatorSize : 0;
-            var position = this._getRenderedSeparatorPosition();
-            var positionAttr = this._orientationVertical
-                    ? (this._orientationTopLeft ? "top" : "bottom")
-                    : (this._orientationTopLeft ? "left" : "right");
-            var sizeAttr = this._orientationVertical ? "height" : "width";
-            var layoutData = this.component.getComponent(0).render("layoutData");
-            insetsAdjustment = this._getInsetsSizeAdjustment(null, layoutData);
-            this._paneDivs[0].style[sizeAttr] = (position - insetsAdjustment) + "px"; 
-            if (this._separatorDiv) {
-                this._separatorDiv.style[positionAttr] = position + "px";
+        if (position == null && this._autoPositioned && this._paneDivs[0]) {
+            // Automatic sizing requested: set separator and pane 1 positions to be adjacent to browser's 
+            // rendered size of pane 0.
+
+            if (this.component.children[0].peer.getPreferredSize) {
+                // Query child 0 component for preferred size if available.
+                var prefSize = this.component.children[0].peer.getPreferredSize(
+                        this._orientationVertical ? Echo.Render.ComponentSync.SIZE_HEIGHT : Echo.Render.ComponentSync.SIZE_WIDTH);
+                position = prefSize ? (this._orientationVertical ? prefSize.height : prefSize.width) : null;
             }
-            if (this._paneDivs[1]) {
-                this._paneDivs[1].style[positionAttr] = (position + size) + "px";
+            
+            if (position == null && this._orientationVertical && !this.component.children[0].pane) {
+                // Automatically position vertical SplitPane based on height of non-pane child 0.
+                this._paneDivs[0].style.height = "";
+                var bounds0 = new Core.Web.Measure.Bounds(this._paneDivs[0]);
+                position = bounds0.height;
             }
+
             if (!this._initialAutoSizeComplete) {
                 this._initialAutoSize();
             }
         }
+
+        if (position == null) {
+            position = Echo.SplitPane.DEFAULT_SEPARATOR_POSITION;
+        }
+
+        if (Echo.Sync.Extent.isPercent(position)) {
+            // Convert percent position to integer value.
+            var totalSize = this._orientationVertical ? this._getSize().height : this._getSize().width;
+            position = Math.round((parseInt(position) / 100) * totalSize);
+        } else {
+            // Convert non-percent extent position to integer position.
+            position = Math.round(Echo.Sync.Extent.toPixels(position, !this._orientationVertical));
+        }
+        
+        // Constrain position and assign as rendered position.
+        this._rendered = this._getBoundedSeparatorPosition(position);
+        
+        // Redraw dynamic elements of SplitPane.
+        this._redraw(this._rendered);
         
         // IE Virtual positioning updates.
         Core.Web.VirtualPosition.redraw(this._paneDivs[0]);
@@ -795,24 +764,5 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         }
         
         return fullRender;
-    },
-    
-    /**
-     * Sets the position of the SplitPane separator.
-     * 
-     * @param {Number} newValue the new separator position, in pixels
-     */
-    _setSeparatorPosition: function(newValue) {
-        if (newValue != null) {
-            if (Echo.Sync.Extent.isPercent(newValue)) {
-                var totalSize = this._orientationVertical ? this._getSize().height : this._getSize().width;
-                newValue = Math.round((parseInt(newValue) / 100) * totalSize);
-            } else {
-                newValue = Math.round(Echo.Sync.Extent.toPixels(newValue, !this._orientationVertical));
-            }
-            newValue = this._getBoundedSeparatorPosition(newValue);
-        }
-        
-        this._rendered = newValue;
     }
 });
