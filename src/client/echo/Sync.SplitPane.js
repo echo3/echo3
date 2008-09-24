@@ -328,6 +328,14 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     },
 
     /**
+     * Perform tasks for the initial render display phase of an auto-sized SplitPane.
+     */
+    _initialAutoSize: function() {
+        this._registerSizingImageLoadListeners(this._paneDivs[0]);
+        this._initialAutoSizeComplete = true;
+    },
+    
+    /**
      * Retrieves properties from Echo.SplitPane component instances and
      * stores them in local variables in a format more convenient for processing
      * by this synchronization peer.
@@ -689,14 +697,6 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         // IE Virtual positioning updates.
         Core.Web.VirtualPosition.redraw(this._paneDivs[0]);
         Core.Web.VirtualPosition.redraw(this._paneDivs[1]);
-    },
-    
-    /**
-     * Perform tasks for the initial render display phase of an auto-sized SplitPane.
-     */
-    _initialAutoSize: function() {
-        this._registerSizingImageLoadListeners(this._paneDivs[0]);
-        this._initialAutoSizeComplete = true;
     },
     
     /**
