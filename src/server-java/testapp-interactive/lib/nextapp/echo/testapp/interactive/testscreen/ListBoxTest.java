@@ -65,6 +65,7 @@ public class ListBoxTest extends SplitPane {
     public static final String[] NUMBERS = new String[] { "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight",
                 "Nine", "Ten" };
     public static final String[] PEOPLE = new String[] { "", "Xander Crews", "Wendell Stamps", "Grace Ryan", "Arthur Watley" };
+    public static final String[] SINGLE = new String[] { "Just One Entry!" };
 
     /**
      * Interface used to apply style information to all test components.
@@ -188,9 +189,11 @@ public class ListBoxTest extends SplitPane {
         add(testColumn);
 
         listBox1 = new ListBox(NUMBERS);
+        listBox1.setId("listBox1");
         testColumn.add(listBox1);
 
         selectField1 = new SelectField(NUMBERS);
+        selectField1.setId("selectField1");
         testColumn.add(selectField1);
         
         Grid grid = new Grid();
@@ -198,13 +201,26 @@ public class ListBoxTest extends SplitPane {
         testColumn.add(grid);
         
         selectField2 = new SelectField(NUMBERS);
+        selectField2.setId("selectField2");
         grid.add(selectField2);
         
         listBox2 = new ListBox(NUMBERS);
+        listBox2.setId("listBox2");
         grid.add(listBox2);
         
         controlsColumn.add(new Label("Global"));
 
+        controlsColumn.addButton("Query First Selection Item", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractListComponent listComponent) {
+                        ((InteractiveApp) getApplicationInstance()).consoleWrite(listComponent.getId() + ": "
+                                + listComponent.getSelectionModel().getMinSelectedIndex());
+                    }
+                });
+            }
+        });
+        
         controlsColumn.addButton("Add ActionListener", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator() {
@@ -585,6 +601,16 @@ public class ListBoxTest extends SplitPane {
                 apply(new Applicator(){
                     public void apply(AbstractListComponent listComponent) {
                         listComponent.setModel(new DefaultListModel(PEOPLE));
+                    }
+                });
+            }
+        });
+
+        controlsColumn.addButton("Set ListModel = Single", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator(){
+                    public void apply(AbstractListComponent listComponent) {
+                        listComponent.setModel(new DefaultListModel(SINGLE));
                     }
                 });
             }
