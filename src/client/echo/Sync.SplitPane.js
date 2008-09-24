@@ -33,11 +33,12 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             },
             
             /**
-             * 
+             * Load minimum and maximum separator positions for panes.
              */
             loadDisplayData: function() {
                 if (this._permanentSizes) {
-                    // Do nothing.
+                    // Pane size constraints have been loaded for this ChildPane, and will not ever change
+                    // (because they are pixel rather percent-based.
                     return;
                 }
                 this._permanentSizes = true;
@@ -287,7 +288,6 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
      */
     _initialAutoSize: function() {
         this._registerSizingImageLoadListeners(this._paneDivs[0]);
-        this._initialAutoSizeComplete = true;
     },
     
     /**
@@ -633,12 +633,16 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
                 position = bounds0.height;
             }
 
-            if (!this._initialAutoSizeComplete) {
+            if (position != null && !this._initialAutoSizeComplete) {
+                // If position was successfully set, perform initial operations related to automatic sizing 
+                // (executed on first renderDisplay() after renderAdd()).
+                this._initialAutoSizeComplete = true;
                 this._initialAutoSize();
             }
         }
 
         if (position == null) {
+            // Use default separator position if none has been provided at this point.
             position = Echo.SplitPane.DEFAULT_SEPARATOR_POSITION;
         }
 
