@@ -354,6 +354,16 @@ public class SplitPaneTest extends SplitPane {
         controlsColumn.add(new Label("Configure SplitPane"));
         groupContainerColumn.add(controlsColumn);
         
+        controlsColumn.addButton("Set AutoPositioned = false", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testPane.setAutoPositioned(false);
+            }
+        });
+        controlsColumn.addButton("Set AutoPositioned = true", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testPane.setAutoPositioned(true);
+            }
+        });
         controlsColumn.addButton("Set Separator Position = null", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testPane.setSeparatorPosition(null);
