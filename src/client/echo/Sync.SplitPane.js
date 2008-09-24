@@ -463,20 +463,14 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         var positionAttr = this._orientationVertical
                 ? (this._orientationTopLeft ? "top" : "bottom")
                 : (this._orientationTopLeft ? "left" : "right");
-        if (position == null) {
-            this._redrawItem(this._paneDivs[0], sizeAttr, "");
-            this._redrawItem(this._paneDivs[1], positionAttr, "");
-            this._redrawItem(this._separatorDiv, positionAttr, "");
-        } else {
-            this._redrawItem(this._paneDivs[0], sizeAttr, (position - insetsAdjustment) + "px");
-            this._redrawItem(this._paneDivs[1], positionAttr, (position + this._separatorSize) + "px");
-            this._redrawItem(this._separatorDiv, positionAttr, position + "px");
+        if (this._paneDivs[0]) {
+            this._paneDivs[0].style[sizeAttr] = (position - insetsAdjustment) + "px";
         }
-    },
-    
-    _redrawItem: function(element, styleProperty, newValue) {
-        if (element) {
-            element.style[styleProperty] = newValue;
+        if (this._paneDivs[1]) {
+            this._paneDivs[1].style[positionAttr] =  (position + this._separatorSize) + "px"
+        }
+        if (this._separatorDiv) {
+            this._separatorDiv.style[positionAttr] = position + "px";
         }
     },
     
