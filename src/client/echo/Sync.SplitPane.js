@@ -292,6 +292,9 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         return 0;
     },
     
+    /**
+     * Retrieves the (potentially cached) dimensions of the SplitPane outer DIV.
+     */
     _getSize: function() {
         if (!this._size) {
             this._size = new Core.Web.Measure.Bounds(this._splitPaneDiv);
@@ -646,12 +649,9 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             this._childPanes[1].loadDisplayData();
         }
 
-        if (this._requested == null) {
-            // No specified separator position.
-            if (this._requested == null && !this._autoPositioned) {
-                // If requested position remains null and separator is not auto-positioned, use default position.
-                this._requested = Echo.SplitPane.DEFAULT_SEPARATOR_POSITION;
-            }
+        if (this._requested == null && !this._autoPositioned) {
+            // If requested position remains null and separator is not auto-positioned, use default position.
+            this._requested = Echo.SplitPane.DEFAULT_SEPARATOR_POSITION;
         }
 
         this._setSeparatorPosition(this._requested);
@@ -679,12 +679,8 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         }
         
         // IE Virtual positioning updates.
-        if (this._paneDivs[0]) {
-            Core.Web.VirtualPosition.redraw(this._paneDivs[0]);
-        }
-        if (this._paneDivs[1]) {
-            Core.Web.VirtualPosition.redraw(this._paneDivs[1]);
-        }
+        Core.Web.VirtualPosition.redraw(this._paneDivs[0]);
+        Core.Web.VirtualPosition.redraw(this._paneDivs[1]);
     },
     
     /**
