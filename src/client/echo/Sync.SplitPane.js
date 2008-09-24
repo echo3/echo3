@@ -257,7 +257,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         } 
 
         var position = null;
-        if (this._autoPositioned && this.component.children.length > 0) {
+        if (this._autoPositioned && this.component.children.length != 0) {
             
             if (this.component.children[0].peer.getPreferredSize) {
                 // Query child component for preferred size if available.
@@ -345,13 +345,14 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         }
 
         this._resizable = this.component.render("resizable");
-        this._autoPositioned = this.component.render("autoPositioned") && this.component.children.length > 0;
+        this._autoPositioned = this.component.render("autoPositioned");
         this._requested = this.component.render("separatorPosition");
 
         this._separatorSize = Echo.Sync.Extent.toPixels(this.component.render(
                 this._orientationVertical ? "separatorHeight" : "separatorWidth",
                 this._resizable ? Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
-                : Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED), this._orientationVertical);
+                : Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED), 
+                this._orientationVertical);
         this._separatorVisible = this._resizable 
                 || (this.component.render("separatorVisible", true) && this._separatorSize > 0);
     },
@@ -676,7 +677,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
 
         this._setSeparatorPosition(this._requested);
         
-        if (this._autoPositioned && this._rendered == null) {
+        if (this._autoPositioned && this._rendered == null && this._paneDivs[0]) {
             // Automatic sizing requested: set separator and pane 1 positions to be adjacent to browser's rendered size of pane 0.
             var size = this._separatorDiv ? this._separatorSize : 0;
             var position = this._getRenderedSeparatorPosition();
