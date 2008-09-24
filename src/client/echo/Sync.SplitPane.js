@@ -761,8 +761,6 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         } else if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()) {
             if (update.isUpdatedPropertySetIn({ separatorPosition: true })) {
                 this._requested = this.component.render("separatorPosition");
-                this._setSeparatorPosition(this._requested);
-                this._redraw();
             } else {
                 fullRender = true;
             }
