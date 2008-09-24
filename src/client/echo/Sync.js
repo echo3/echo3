@@ -496,6 +496,21 @@ Echo.Sync.Font = {
     renderClear: function(font, element) {
         if (font) {
             this.render(font, element);
+            if (!font.typeface) {
+                element.style.fontFamily = "";
+            }
+            if (!font.underline) {
+                element.style.textDecoration = "";
+            }
+            if (!font.bold) {
+                element.style.fontWeight = "";
+            }
+            if (!font.size) {
+                element.style.fontSize = "";
+            }
+            if (!font.italic) {
+                element.style.fontStyle = "";
+            }
         } else {
             element.style.fontFamily = "";
             element.style.fontSize = "";
