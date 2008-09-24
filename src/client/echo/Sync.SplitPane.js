@@ -498,6 +498,11 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.Event.remove(document.body, "mouseup", this._processSeparatorMouseUpRef, true);
     },
     
+    /**
+     * renderAdd() implementation.
+     * Adds basic structure of SplitPane to DOM, but much work is delayed for initial invocation
+     * of renderDisplay().
+     */
     renderAdd: function(update, parentElement) {
         this._initialAutoSizeComplete = false;
         this._loadRenderData();
@@ -586,65 +591,23 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         if (child.pane) {
             paneDiv.style.overflow = "hidden";
         }
-        
-        var insetsAdjustment = this._getInsetsSizeAdjustment(layoutData);
-        var renderingTopLeft = (index == 0 && this._orientationTopLeft) || (index != 0 && !this._orientationTopLeft);
                 
+        // Set static CSS positioning attributes on pane DIV.
         if (this._orientationVertical) {
-            paneDiv.style.left = "0";
-            paneDiv.style.right = "0";
-            if (this._orientationTopLeft) {
-                if (index == 0) {
-                    paneDiv.style.top = "0";
-                    if (this._rendered != null) {
-                        paneDiv.style.height = (this._rendered - insetsAdjustment) + "px";
-                    }
-                } else {
-                    if (this._rendered != null) {
-                        paneDiv.style.top = (this._rendered + this._separatorSize) + "px";
-                    }
-                    paneDiv.style.bottom = "0";
-                }
+            paneDiv.style.left = 0;
+            paneDiv.style.right = 0;;
+            if ((this._orientationTopLeft && index == 0) || (!this._orientationTopLeft && index == 1)) {
+                paneDiv.style.top = 0;;
             } else {
-                if (index == 0) {
-                    paneDiv.style.bottom = "0";
-                    if (this._rendered != null) {
-                        paneDiv.style.height = (this._rendered - insetsAdjustment) + "px";
-                    }
-                } else {
-                    paneDiv.style.top = "0";
-                    if (this._rendered != null) {
-                        paneDiv.style.bottom = (this._rendered + this._separatorSize) + "px";
-                    }
-                }
+                paneDiv.style.bottom = 0;;
             }
         } else {
             paneDiv.style.top = "0";
             paneDiv.style.bottom = "0";
-            if (this._orientationTopLeft) {
-                if (index == 0) {
-                    paneDiv.style.left = "0";
-                    if (this._rendered != null) {
-                        paneDiv.style.width = (this._rendered - insetsAdjustment) + "px";
-                    }
-                } else {
-                    if (this._rendered != null) {
-                        paneDiv.style.left = (this._rendered + this._separatorSize) + "px";
-                    }
-                    paneDiv.style.right = "0";
-                }
+            if ((this._orientationTopLeft && index == 0) || (!this._orientationTopLeft && index == 1)) {
+                paneDiv.style.left = 0;;
             } else {
-                if (index == 0) {
-                    if (this._rendered != null) {
-                        paneDiv.style.width = (this._rendered - insetsAdjustment) + "px";
-                    }
-                    paneDiv.style.right = "0";
-                } else {
-                    paneDiv.style.left = "0";
-                    if (this._rendered != null) {
-                        paneDiv.style.right = (this._rendered + this._separatorSize) + "px";
-                    }
-                }
+                paneDiv.style.right = 0;;
             }
         }
         
