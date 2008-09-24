@@ -204,7 +204,8 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             
             if (this.component.children[0].peer.getPreferredSize) {
                 // Query child component for preferred size if available.
-                var prefSize = this.component.children[0].peer.getPreferredSize();
+                var prefSize = this.component.children[0].peer.getPreferredSize(
+                        this._orientationVertical ? Echo.Render.ComponentSync.SIZE_HEIGHT : Echo.Render.ComponentSync.SIZE_WIDTH);
                 position = prefSize ? (this._orientationVertical ? prefSize.height : prefSize.width) : null;
             }
             
@@ -231,6 +232,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         if (this.component.children.length == 0) {
             return null;
         }
+        
         dimension = dimension || (Echo.Render.ComponentSync.SIZE_WIDTH | Echo.Render.ComponentSync.SIZE_HEIGHT); 
 
         // Determine size of pane 0.
@@ -449,8 +451,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         this._removeSeparatorListeners();
         this.component.set("separatorPosition", this._rendered);
         
-        // inform renderer that separatorposition is currently drawn as this._rendered
-        
+        // Inform renderer that separator position is currently drawn as this._rendered.
         this._requested = this._rendered;
     
         if (this._paneDivs[0]) {
