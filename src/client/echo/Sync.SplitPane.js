@@ -195,7 +195,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             return null;
         }
         
-        dimension = dimension || (Echo.Render.ComponentSync.SIZE_WIDTH | Echo.Render.ComponentSync.SIZE_HEIGHT); 
+        dimension = dimension || (Echo.Render.ComponentSync.SIZE_WIDTH | Echo.Render.ComponentSync.SIZE_HEIGHT);
 
         // Determine size of pane 0.
         var size0;
@@ -229,8 +229,10 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         var height = null;
         if ((dimension & Echo.Render.ComponentSync.SIZE_HEIGHT) && size0.height != null && size1.height != null) {
             if (this._orientationVertical) {
+                // Measure height of vertical SplitPane: sum pane heights and separator.
                 height = size0.height + size1.height + this._separatorSize;
             } else {
+                // Measure height of horizontal SplitPane: use maximum pane height.
                 height = size0.height > size1.height ? size0.height : size1.height;
             }
         }
@@ -238,8 +240,10 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         var width = null;
         if ((dimension & Echo.Render.ComponentSync.SIZE_WIDTH) && size0.width != null && size1.width != null) {
             if (this._orientationVertical) {
+                // Measure width of vertical SplitPane: use maximum pane width.
                 width = size0.width > size1.width ? size0.width : size1.width;
             } else {
+                // Measure width of horizontal SplitPane: sum pane widths and separator.
                 width = size0.width + size1.width + this._separatorSize;
             }
         }
