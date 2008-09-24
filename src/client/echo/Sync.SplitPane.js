@@ -104,7 +104,10 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
      * that the separator was explicitly set to.  This value may not be the
      * actual separator position, in cases where other constraints have
      * temporarily adjusted it.
-     * @type Number
+     * This is value is retained such that if constraints are lifted, the 
+     * separator position will return to where the user last preferred it.
+     * 
+     * @type Extent
      */
     _requested: null,
     
@@ -172,7 +175,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
      * @return the number of inset pixels
      * @type Number 
      */
-    _getInsetsSizeAdjustment: function(layoutData) {
+    _getInsetsSizeAdjustment: function(position, layoutData) {
         if (!layoutData || layoutData.insets == null || layoutDataInsets == 0) {
             return 0;
         }
@@ -183,8 +186,8 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         } else {
             adjustment = layoutDataInsets.left + layoutDataInsets.right;
         }
-        if (this._rendered != null && adjustment > this._rendered) {
-            adjustment = this._rendered;
+        if (position != null && adjustment > position) {
+            adjustment = position;
         }
         return adjustment;
     },
@@ -462,7 +465,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         this._setSeparatorPosition(this._orientationTopLeft
                 ? this._dragInitPosition + mousePosition - this._dragInitMouseOffset
                 : this._dragInitPosition - mousePosition + this._dragInitMouseOffset);
-        this._redraw();
+        this._redraw(this._rendered);
     },
     
     _processSeparatorMouseUp: function(e) {
@@ -486,25 +489,25 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         Echo.Render.notifyResize(this.component);
     },
     
-    _redraw: function() {
+    _redraw: function(position) {
         var insetsAdjustment = 0;
         if (this.component.getComponentCount() > 0) {
             var layoutData = this.component.getComponent(0).render("layoutData");
-            insetsAdjustment = this._getInsetsSizeAdjustment(layoutData);
+            insetsAdjustment = this._getInsetsSizeAdjustment(position, layoutData);
         }
 
         var sizeAttr = this._orientationVertical ? "height" : "width";
         var positionAttr = this._orientationVertical
                 ? (this._orientationTopLeft ? "top" : "bottom")
                 : (this._orientationTopLeft ? "left" : "right");
-        if (this._rendered == null) {
+        if (position == null) {
             this._redrawItem(this._paneDivs[0], sizeAttr, "");
             this._redrawItem(this._paneDivs[1], positionAttr, "");
             this._redrawItem(this._separatorDiv, positionAttr, "");
         } else {
-            this._redrawItem(this._paneDivs[0], sizeAttr, (this._rendered - insetsAdjustment) + "px");
-            this._redrawItem(this._paneDivs[1], positionAttr, (this._rendered + this._separatorSize) + "px");
-            this._redrawItem(this._separatorDiv, positionAttr, this._rendered + "px");
+            this._redrawItem(this._paneDivs[0], sizeAttr, (position - insetsAdjustment) + "px");
+            this._redrawItem(this._paneDivs[1], positionAttr, (position + this._separatorSize) + "px");
+            this._redrawItem(this._separatorDiv, positionAttr, position + "px");
         }
     },
     
@@ -659,7 +662,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         }
 
         this._setSeparatorPosition(this._requested);
-        this._redraw();
+        this._redraw(this._rendered);
         
         if (this._autoPositioned && this._rendered == null && this._paneDivs[0]) {
             // Automatic sizing requested: set separator and pane 1 positions to be adjacent to browser's rendered size of pane 0.
@@ -670,7 +673,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
                     : (this._orientationTopLeft ? "left" : "right");
             var sizeAttr = this._orientationVertical ? "height" : "width";
             var layoutData = this.component.getComponent(0).render("layoutData");
-            insetsAdjustment = this._getInsetsSizeAdjustment(layoutData);
+            insetsAdjustment = this._getInsetsSizeAdjustment(null, layoutData);
             this._paneDivs[0].style[sizeAttr] = (position - insetsAdjustment) + "px"; 
             if (this._separatorDiv) {
                 this._separatorDiv.style[positionAttr] = position + "px";
