@@ -595,19 +595,19 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         // Set static CSS positioning attributes on pane DIV.
         if (this._orientationVertical) {
             paneDiv.style.left = 0;
-            paneDiv.style.right = 0;;
+            paneDiv.style.right = 0;
             if ((this._orientationTopLeft && index == 0) || (!this._orientationTopLeft && index == 1)) {
-                paneDiv.style.top = 0;;
+                paneDiv.style.top = 0;
             } else {
-                paneDiv.style.bottom = 0;;
+                paneDiv.style.bottom = 0;
             }
         } else {
             paneDiv.style.top = "0";
             paneDiv.style.bottom = "0";
             if ((this._orientationTopLeft && index == 0) || (!this._orientationTopLeft && index == 1)) {
-                paneDiv.style.left = 0;;
+                paneDiv.style.left = 0;
             } else {
-                paneDiv.style.right = 0;;
+                paneDiv.style.right = 0;
             }
         }
         
