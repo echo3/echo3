@@ -183,51 +183,6 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         return adjustment;
     },
     
-    /**
-     * Determines the pixel position at which the separator should be rendered.
-     * This method simply returns the value of the this._rendered property in
-     * the event the separator position has been explicitly set.
-     * Measures the size of first pane in the event that automatic positioning of
-     * the separator is desired.
-     * 
-     * @return the rendered separator position
-     * @type Number
-     */
-    _getRenderedSeparatorPosition: function() {
-        if (this._rendered) {
-            // Separator position has been specifically set: return it.
-            return this._rendered;
-        } 
-
-        var position = null;
-        if (this._autoPositioned && this.component.children.length > 0) {
-            
-            if (this.component.children[0].peer.getPreferredSize) {
-                // Query child component for preferred size if available.
-                var prefSize = this.component.children[0].peer.getPreferredSize(
-                        this._orientationVertical ? Echo.Render.ComponentSync.SIZE_HEIGHT : Echo.Render.ComponentSync.SIZE_WIDTH);
-                position = prefSize ? (this._orientationVertical ? prefSize.height : prefSize.width) : null;
-            }
-            
-            if (position == null && this._orientationVertical && !this.component.children[0].pane) {
-                // Automatically position vertical SplitPane based on height of non-pane child 0.
-                var bounds0 = new Core.Web.Measure.Bounds(this._paneDivs[0]);
-                position = bounds0.height;
-            }
-            
-            if (position == null) {
-                position = 0;
-            }
-
-            position = this._getBoundedSeparatorPosition(position);
-            
-            return position;
-        }
-        
-        //FIXME Return default position 
-        return 0;
-    },
-    
     getPreferredSize: function(dimension) {
         if (this.component.children.length == 0) {
             return null;
@@ -283,6 +238,51 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         }
         
         return { height: height, width: width };
+    },
+    
+    /**
+     * Determines the pixel position at which the separator should be rendered.
+     * This method simply returns the value of the this._rendered property in
+     * the event the separator position has been explicitly set.
+     * Measures the size of first pane in the event that automatic positioning of
+     * the separator is desired.
+     * 
+     * @return the rendered separator position
+     * @type Number
+     */
+    _getRenderedSeparatorPosition: function() {
+        if (this._rendered) {
+            // Separator position has been specifically set: return it.
+            return this._rendered;
+        } 
+
+        var position = null;
+        if (this._autoPositioned && this.component.children.length > 0) {
+            
+            if (this.component.children[0].peer.getPreferredSize) {
+                // Query child component for preferred size if available.
+                var prefSize = this.component.children[0].peer.getPreferredSize(
+                        this._orientationVertical ? Echo.Render.ComponentSync.SIZE_HEIGHT : Echo.Render.ComponentSync.SIZE_WIDTH);
+                position = prefSize ? (this._orientationVertical ? prefSize.height : prefSize.width) : null;
+            }
+            
+            if (position == null && this._orientationVertical && !this.component.children[0].pane) {
+                // Automatically position vertical SplitPane based on height of non-pane child 0.
+                var bounds0 = new Core.Web.Measure.Bounds(this._paneDivs[0]);
+                position = bounds0.height;
+            }
+            
+            if (position == null) {
+                position = 0;
+            }
+
+            position = this._getBoundedSeparatorPosition(position);
+            
+            return position;
+        }
+        
+        //FIXME Return default position 
+        return 0;
     },
     
     /**
