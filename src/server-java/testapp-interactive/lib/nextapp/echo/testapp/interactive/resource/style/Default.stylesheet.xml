@@ -70,7 +70,7 @@
    </p>
    <p n="background" t="Color">#1b1b21</p>
    <p n="backgroundImage" t="FillImage">
-    <fi r="0" t="r">/nextapp/echo/testapp/interactive/resource/image/HeaderBackground.png</fi>
+    <fi t="r" y="50%" r="0">/nextapp/echo/testapp/interactive/resource/image/HeaderBackground.png</fi>
    </p>
    <p n="insets" t="Insets">8px</p>
    <p n="overflow" t="i">OVERFLOW_HIDDEN</p>
@@ -82,7 +82,7 @@
   <p n="titleInsets" t="Insets">5px 10px</p>
   <p n="titleBackground" t="Color">#2f2f4f</p>
   <p n="titleBackgroundImage" t="FillImage">
-   <fi r="x" t="r" y="50%">/nextapp/echo/testapp/interactive/resource/image/window/simple/Header.png</fi>
+   <fi r="0" t="r" y="50%">/nextapp/echo/testapp/interactive/resource/image/window/simple/Header.png</fi>
   </p>
   <p n="titleForeground" t="Color">#ffffff</p>
   <p n="border" t="FillImageBorder">
