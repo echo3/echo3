@@ -82,7 +82,7 @@
   <p n="titleInsets" t="Insets">5px 10px</p>
   <p n="titleBackground" t="Color">#2f2f4f</p>
   <p n="titleBackgroundImage" t="FillImage">
-   <fi r="x" t="r" y="100%">/nextapp/echo/testapp/interactive/resource/image/window/simple/Header.png</fi>
+   <fi r="x" t="r" y="50%">/nextapp/echo/testapp/interactive/resource/image/window/simple/Header.png</fi>
   </p>
   <p n="titleForeground" t="Color">#ffffff</p>
   <p n="border" t="FillImageBorder">
