@@ -64,12 +64,12 @@ implements SerialPropertyPeer {
 
     private static final String[] borderSideAttributeNames = new String[]{"t", "r", "b", "l"};
     
-    public static final String toString(Border border) 
+    private static final String toString(Border border) 
     throws SerialException {
         return toString(border.getSides()[0]);
     }
     
-    public static final String toString(Border.Side side) 
+    private static final String toString(Border.Side side) 
     throws SerialException {
         StringBuffer out = new StringBuffer();
         out.append(ExtentPeer.toString(side.getSize()));
@@ -80,7 +80,7 @@ implements SerialPropertyPeer {
         return out.toString();
     }
     
-    public static final Border.Side fromString(String value) 
+    private static final Border.Side fromString(String value) 
     throws SerialException {
         StringTokenizer st = new StringTokenizer(value, " ");
         String sizeString = st.nextToken();
@@ -102,6 +102,9 @@ implements SerialPropertyPeer {
     throws SerialException {
         String value = DomUtil.getElementText(propertyElement);
         if (value != null) {
+            value = value.trim();
+        }
+        if (value != null && value.length() > 0) {
             Border.Side side = fromString(value);
             return new Border(new Border.Side[]{side});
         } else if (propertyElement.hasAttribute("v")) {
