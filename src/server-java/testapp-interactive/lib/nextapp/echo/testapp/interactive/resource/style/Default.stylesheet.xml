@@ -154,7 +154,7 @@
    <p n="overflow" t="i">OVERFLOW_HIDDEN</p>
    <p n="background" t="Color">#cfcfdf</p>
    <p n="backgroundImage" t="FillImage">
-    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/ControlPaneFill.png</fi>
+    <fi t="r" y="50%" r="x">/nextapp/echo/testapp/interactive/resource/image/ControlPaneFill.png</fi>
    </p>
    <p n="insets" t="Insets">2px</p>
   </p>
