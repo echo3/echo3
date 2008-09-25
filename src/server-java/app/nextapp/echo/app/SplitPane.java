@@ -416,7 +416,6 @@ implements Pane, PaneContainer {
      * @param newValue the new height
      */
     public void setSeparatorHeight(Extent newValue) {
-        Extent.validate(newValue, Extent.PX);
         set(PROPERTY_SEPARATOR_HEIGHT, newValue);
     }
     
@@ -463,7 +462,6 @@ implements Pane, PaneContainer {
      * @param newValue the new width
      */
     public void setSeparatorWidth(Extent newValue) {
-        Extent.validate(newValue, Extent.PX);
         set(PROPERTY_SEPARATOR_WIDTH, newValue);
     }
 }
