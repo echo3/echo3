@@ -612,7 +612,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
     
     /**
      * Sets the height of the content region of the <code>WindowPane</code>.
-     * Values must be in pixel units.
      * 
      * @param newValue the new height
      */
@@ -680,7 +679,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
     /**
      * Sets the maximum height of the content region of the 
      * <code>WindowPane</code>.
-     * Values must be in pixel units.
      * 
      * @param newValue the new maximum height
      */
@@ -691,7 +689,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
     /**
      * Sets the maximum width of the content region of the 
      * <code>WindowPane</code>.
-     * Values must be in pixel units.
      * 
      * @param newValue the new maximum width
      */
@@ -730,7 +727,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
     /**
      * Sets the minimum height of the content region of the 
      * <code>WindowPane</code>.
-     * Values must be in pixel units.
      * 
      * @param newValue the new minimum height
      */
@@ -741,7 +737,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
     /**
      * Sets the minimum width of the content region of the 
      * <code>WindowPane</code>.
-     * Values must be in pixel units.
      * 
      * @param newValue the new minimum width
      */
@@ -843,7 +838,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
     
     /**
      * Sets the height of the title region.
-     * Values must be in pixel units.
      * 
      * @param newValue the new height
      */
