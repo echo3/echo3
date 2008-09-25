@@ -334,11 +334,16 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         this._autoPositioned = this.component.render("autoPositioned");
         this._requested = this.component.render("separatorPosition");
 
-        this._separatorSize = Echo.Sync.Extent.toPixels(this.component.render(
-                this._orientationVertical ? "separatorHeight" : "separatorWidth",
-                this._resizable ? Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
-                : Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED), 
-                this._orientationVertical);
+        var defaultSeparatorSize = this._resizable ? Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
+                : Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED
+        var separatorSizeExtent = this.component.render(
+                this._orientationVertical ? "separatorHeight" : "separatorWidth", 
+                defaultSeparatorSize);
+        this._separatorSize = Echo.Sync.Extent.toPixels(separatorSizeExtent, this._orientationVertical);
+        if (this._separatorSize == null) {
+            this._separatorSize = defaultSeparatorSize;
+        }
+        
         this._separatorVisible = this._resizable 
                 || (this.component.render("separatorVisible", true) && this._separatorSize > 0);
     },

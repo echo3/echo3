@@ -446,7 +446,7 @@ public class SplitPaneTest extends SplitPane {
                 testPane.setSeparatorWidth(new Extent(2, Extent.EM));
             }
         });
-        controlsColumn.addButton("SeparatorWidth/Height = 5%", new ActionListener() {
+        controlsColumn.addButton("SeparatorWidth/Height = 5% (Ignored)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testPane.setSeparatorHeight(new Extent(5, Extent.PERCENT));
                 testPane.setSeparatorWidth(new Extent(5, Extent.PERCENT));
