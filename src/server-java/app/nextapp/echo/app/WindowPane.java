@@ -685,7 +685,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new maximum height
      */
     public void setMaximumHeight(Extent newValue) {
-        Extent.validate(newValue, Extent.PX);
         set(PROPERTY_MAXIMUM_HEIGHT, newValue);
     }
     
@@ -697,7 +696,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new maximum width
      */
     public void setMaximumWidth(Extent newValue) {
-        Extent.validate(newValue, Extent.PX);
         set(PROPERTY_MAXIMUM_WIDTH, newValue);
     }
     
@@ -737,7 +735,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new minimum height
      */
     public void setMinimumHeight(Extent newValue) {
-        Extent.validate(newValue, Extent.PX);
         set(PROPERTY_MINIMUM_HEIGHT, newValue);
     }
     
@@ -749,7 +746,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new minimum width
      */
     public void setMinimumWidth(Extent newValue) {
-        Extent.validate(newValue, Extent.PX);
         set(PROPERTY_MINIMUM_WIDTH, newValue);
     }
     
@@ -852,7 +848,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new height
      */
     public void setTitleHeight(Extent newValue) {
-        Extent.validate(newValue, Extent.PX);
         set(PROPERTY_TITLE_HEIGHT, newValue);
     }
     

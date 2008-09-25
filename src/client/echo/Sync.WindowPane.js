@@ -509,7 +509,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         var titleBarHeight = this.component.render("titleHeight");
         if (titleBarHeight) {
             this._titleBarHeight = Echo.Sync.Extent.toPixels(titleBarHeight);
-        } else {
+        }
+        if (!titleBarHeight) {
             var titleMeasure = new Core.Web.Measure.Bounds(this._titleBarDiv);
             if (titleMeasure.height) {
                 this._titleBarHeight = titleMeasure.height;
