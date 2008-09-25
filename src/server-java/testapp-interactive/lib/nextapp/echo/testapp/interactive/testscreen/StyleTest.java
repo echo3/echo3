@@ -32,7 +32,6 @@ package nextapp.echo.testapp.interactive.testscreen;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
-import nextapp.echo.app.Extent;
 import nextapp.echo.app.MutableStyle;
 import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.event.ActionEvent;

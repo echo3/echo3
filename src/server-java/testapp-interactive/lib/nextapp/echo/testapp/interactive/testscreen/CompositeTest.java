@@ -30,7 +30,6 @@
 package nextapp.echo.testapp.interactive.testscreen;
 
 import nextapp.echo.app.Composite;
-import nextapp.echo.app.Extent;
 import nextapp.echo.app.Grid;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
