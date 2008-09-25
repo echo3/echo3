@@ -273,8 +273,8 @@ public class HierarchyTest extends SplitPane {
     private ContentPane testPane;
 
     public HierarchyTest() {
-        super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
-        setStyleName("DefaultResizable");
+        super();
+        setStyleName("TestControls");
         
         Column controlGroupsColumn = new Column();
         controlGroupsColumn.setCellSpacing(new Extent(5));

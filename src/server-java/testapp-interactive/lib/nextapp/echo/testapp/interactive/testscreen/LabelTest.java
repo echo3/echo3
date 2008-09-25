@@ -61,8 +61,8 @@ public class LabelTest extends SplitPane {
     private Column testColumn;
     
     public LabelTest() {
-        super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
-        setStyleName("DefaultResizable");
+        super();
+        setStyleName("TestControls");
 
         SplitPaneLayoutData splitPaneLayoutData;
         

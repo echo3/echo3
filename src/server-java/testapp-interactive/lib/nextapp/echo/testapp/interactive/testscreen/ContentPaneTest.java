@@ -51,8 +51,8 @@ import nextapp.echo.testapp.interactive.StyleUtil;
 public class ContentPaneTest extends SplitPane {
 
     public ContentPaneTest() {
-        super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
-        setStyleName("DefaultResizable");
+        super();
+        setStyleName("TestControls");
         
         final ContentPane rootContentPane = InteractiveApp.getApp().getDefaultWindow().getContent();
         

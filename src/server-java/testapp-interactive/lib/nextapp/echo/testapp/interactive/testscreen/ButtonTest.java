@@ -108,8 +108,8 @@ extends SplitPane {
     };
     
     public ButtonTest() {
-        super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
-        setStyleName("DefaultResizable");
+        super();
+        setStyleName("TestControls");
 
         SplitPaneLayoutData splitPaneLayoutData;
         

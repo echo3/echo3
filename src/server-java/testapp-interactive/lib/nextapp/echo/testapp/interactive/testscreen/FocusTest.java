@@ -61,8 +61,8 @@ public class FocusTest extends SplitPane {
     private ListBox focusListBox;
 
     public FocusTest() {
-        super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
-        setStyleName("DefaultResizable");
+        super();
+        setStyleName("TestControls");
 
         SplitPaneLayoutData splitPaneLayoutData;
 

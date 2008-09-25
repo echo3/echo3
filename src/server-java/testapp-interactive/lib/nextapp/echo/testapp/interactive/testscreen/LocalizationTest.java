@@ -48,8 +48,8 @@ public class LocalizationTest extends SplitPane {
     final Column testColumn;
     
     public LocalizationTest() {
-        super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(300, Extent.PX));
-        setStyleName("DefaultResizable");
+        super();
+        setStyleName("TestControls");
         
         ButtonColumn controlsColumn = new ButtonColumn();
         controlsColumn.setStyleName("TestControlsColumn");

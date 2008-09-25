@@ -52,8 +52,8 @@ public class ReparentTest extends SplitPane {
     private Button movingButton;
     
     public ReparentTest() {
-        super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
-        setStyleName("DefaultResizable");
+        super();
+        setStyleName("TestControls");
 
         SplitPaneLayoutData splitPaneLayoutData;
 

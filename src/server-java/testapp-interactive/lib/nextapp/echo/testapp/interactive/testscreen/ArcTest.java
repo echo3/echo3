@@ -185,8 +185,8 @@ public class ArcTest extends SplitPane {
     private ArcTestContainer arcTestContainer;
     
     public ArcTest() {
-        super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
-        setStyleName("DefaultResizable");
+        super();
+        setStyleName("TestControls");
 
         SplitPaneLayoutData splitPaneLayoutData;
 

@@ -57,6 +57,10 @@
    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/SplitPaneVerticalSeparator.png</fi>
   </p>
  </s>
+ <s b="DefaultResizable" n="TestControls" t="nextapp.echo.app.SplitPane">
+  <p n="separatorPosition">20em</p>
+  <p n="orientation">ORIENTATION_HORIZONTAL</p> 
+ </s> 
  <s n="TitleLabel" t="nextapp.echo.app.Label">
   <p n="font" t="Font">
    <f sz="14pt">

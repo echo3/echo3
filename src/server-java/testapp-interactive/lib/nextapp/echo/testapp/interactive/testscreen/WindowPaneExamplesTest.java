@@ -356,8 +356,8 @@ public class WindowPaneExamplesTest extends SplitPane {
     private int windowNumber = 0;
 
     public WindowPaneExamplesTest() {
-        super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
-        setStyleName("DefaultResizable");
+        super();
+        setStyleName("TestControls");
         
         ButtonColumn controlsColumn = new ButtonColumn();
         controlsColumn.setCellSpacing(new Extent(5));

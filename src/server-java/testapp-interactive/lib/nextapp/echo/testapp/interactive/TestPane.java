@@ -90,8 +90,8 @@ public class TestPane extends ContentPane {
         titleLabel.setStyleName("TitleLabel");
         verticalPane.add(titleLabel);
         
-        horizontalPane = new SplitPane(SplitPane.ORIENTATION_HORIZONTAL, new Extent(16, Extent.EM));
-        horizontalPane.setStyleName("DefaultResizable");
+        horizontalPane = new SplitPane();
+        horizontalPane.setStyleName("TestControls");
         verticalPane.add(horizontalPane);
         
         Column controlsColumn = new Column();

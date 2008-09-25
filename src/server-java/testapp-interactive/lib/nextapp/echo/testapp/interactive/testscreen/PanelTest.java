@@ -48,8 +48,8 @@ import nextapp.echo.testapp.interactive.StyleUtil;
 public class PanelTest extends SplitPane {
     
     public PanelTest() {
-        super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
-        setStyleName("DefaultResizable");
+        super();
+        setStyleName("TestControls");
         
         ButtonColumn controlsColumn = new ButtonColumn();
         controlsColumn.setStyleName("TestControlsColumn");

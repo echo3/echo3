@@ -29,7 +29,6 @@
 
 package nextapp.echo.testapp.interactive.testscreen;
 
-import nextapp.echo.app.Extent;
 import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
@@ -41,8 +40,8 @@ import nextapp.echo.testapp.interactive.ButtonColumn;
 public class WindowTest extends SplitPane {
     
     public WindowTest() {
-        super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
-        setStyleName("DefaultResizable");
+        super();
+        setStyleName("TestControls");
         
         ButtonColumn controlsColumn = new ButtonColumn();
         controlsColumn.setStyleName("TestControlsColumn");

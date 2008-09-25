@@ -57,8 +57,8 @@ public class ColumnTest extends SplitPane {
     private int nextValue = 0;
     
     public ColumnTest() {
-        super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250));
-        setStyleName("DefaultResizable");
+        super();
+        setStyleName("TestControls");
         
         ButtonColumn controlsColumn = new ButtonColumn();
         controlsColumn.setStyleName("TestControlsColumn");

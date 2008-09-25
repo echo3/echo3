@@ -172,8 +172,8 @@ public class ListBoxTest extends SplitPane {
     private SelectField selectField1, selectField2;
 
     public ListBoxTest() {
-        super(SplitPane.ORIENTATION_HORIZONTAL, new Extent(250, Extent.PX));
-        setStyleName("DefaultResizable");
+        super();
+        setStyleName("TestControls");
 
         SplitPaneLayoutData splitPaneLayoutData;
 
