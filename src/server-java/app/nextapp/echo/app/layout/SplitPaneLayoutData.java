@@ -99,8 +99,6 @@ implements LayoutData {
     
     /**
      * Returns the preferred maximum size of the containing pane.
-     * This property only supports <code>Extent</code>s with
-     * pixel units.
      * 
      * @return the maximum size
      */
@@ -110,8 +108,6 @@ implements LayoutData {
     
     /**
      * Returns the preferred minimum size of the containing pane.
-     * This property only supports <code>Extent</code>s with
-     * pixel units.
      * 
      * @return the minimum size
      */
@@ -175,8 +171,6 @@ implements LayoutData {
     
     /**
      * Sets the preferred maximum size of the containing pane.
-     * This property only supports <code>Extent</code>s with
-     * pixel units.
      * 
      * @param newValue the new maximum size
      */
@@ -186,8 +180,6 @@ implements LayoutData {
     
     /**
      * Sets the preferred minimum size of the containing pane.
-     * This property only supports <code>Extent</code>s with
-     * pixel units.
      * 
      * @param newValue the new minimum size
      */
