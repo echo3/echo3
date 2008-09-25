@@ -146,13 +146,23 @@
  </s>
  <s n="ControlPane.Button" t="nextapp.echo.app.button.AbstractButton">
   <p n="lineWrap" t="b">false</p>
-  <p n="insets" t="Insets">0px 8px</p>
+  <p n="insets" t="Insets">3px 15px</p>
   <p n="foreground" t="Color">#000000</p>
   <p n="rolloverEnabled" t="b">true</p>
-  <p n="rolloverForeground" t="Color">#6f0f0f</p>
+  <p n="rolloverForeground" t="Color">#ffffff</p>
+  <p n="rolloverBackground" t="Color">#3939d6</p>
+  <p n="rolloverBackgroundImage" t="FillImage">
+   <fi t="r" r="x" y="50%">/nextapp/echo/testapp/interactive/resource/image/ControlPaneHighlight.png</fi>
+  </p>
+  <p n="pressedEnabled" t="b">true</p>
+  <p n="pressedForeground" t="Color">#dfffff</p>
+  <p n="pressedBackground" t="Color">#3939d6</p>
+  <p n="pressedBackgroundImage" t="FillImage">
+   <fi t="r" r="x" y="50%">/nextapp/echo/testapp/interactive/resource/image/ControlPaneHighlightLight.png</fi>
+  </p>
  </s>
  <s n="ControlPane" t="nextapp.echo.app.Row">
-  <p n="insets" t="Insets">2px 10px</p>
+  <p n="insets" t="Insets">0px 9px</p>
   <p n="cellSpacing" t="Extent">3px</p>
   <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
    <p n="overflow" t="i">OVERFLOW_HIDDEN</p>
@@ -160,7 +170,6 @@
    <p n="backgroundImage" t="FillImage">
     <fi t="r" y="50%" r="x">/nextapp/echo/testapp/interactive/resource/image/ControlPaneFill.png</fi>
    </p>
-   <p n="insets" t="Insets">2px</p>
   </p>
  </s>
  <s n="ApplicationControlsColumn" t="nextapp.echo.app.Column">
