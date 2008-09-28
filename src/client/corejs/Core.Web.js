@@ -1301,7 +1301,7 @@ Core.Web.Library = {
  * Namespace for measuring-related operations.
  * @class
  */
-Core.Web.Measure = { 
+Core.Web.Measure = {
 
     _scrollElements: ["div", "body"],
 
@@ -1322,6 +1322,12 @@ Core.Web.Measure = {
     
     /** Size of one 'em' in vertical pixels. */
     _vEm: 13.3333,
+    
+    /** Estimated scroll bar width. */
+    SCROLL_WIDTH: 17,
+    
+    /** Estimated scroll bar height. */
+    SCROLL_HEIGHT: 17,
 
     /**
      * Converts any non-relative extent value to pixels.
