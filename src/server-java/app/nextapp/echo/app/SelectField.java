@@ -86,7 +86,8 @@ public class SelectField extends AbstractListComponent {
      */
     public Object getSelectedItem() {
         int selectedIndex = getSelectionModel().getMinSelectedIndex();
-        return selectedIndex == -1 ? null : getModel().get(selectedIndex);
+        int size = getModel().size();
+        return selectedIndex == -1 || selectedIndex >= size ? null : getModel().get(selectedIndex);
     }
     
     /**
