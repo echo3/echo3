@@ -51,6 +51,8 @@ implements FloatingPane, ModalSupport, PaneContainer {
     
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
     public static final String PROPERTY_BORDER = "border";
+    public static final String PROPERTY_CONTENT_HEIGHT = "contentHeight";
+    public static final String PROPERTY_CONTENT_WIDTH = "contentWidth";
     public static final String PROPERTY_CLOSABLE = "closable";
     public static final String PROPERTY_CLOSE_ICON = "closeIcon";
     public static final String PROPERTY_CLOSE_ICON_INSETS = "closeIconInsets";
@@ -201,6 +203,24 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
+     * Returns the configured height of the content region of the window.
+     * 
+     * @return the height
+     */
+    public Extent getContentHeight() {
+        return (Extent) get(PROPERTY_HEIGHT);
+    }
+    
+    /**
+     * Returns the configured width of the content region of the window.
+     * 
+     * @return the width
+     */
+    public Extent getContentWidth() {
+        return (Extent) get(PROPERTY_HEIGHT);
+    }
+    
+    /**
      * Returns the inset margin around the window controls 
      * (e.g., close, minimize, and maximize buttons)
      * 
@@ -226,7 +246,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
-     * Returns the height of the content region of the window.
+     * Returns the configured height of the overall window, including its border.
      * 
      * @return the height
      */
@@ -423,7 +443,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
 
     /**
-     * Returns the width of the content region of the window.
+     * Returns the configured width of the overall window, including its border.
      * 
      * @return the width
      */
@@ -586,6 +606,26 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
+     * Sets the content height of the <code>WindowPane</code>.
+     * This value will be overridden by the <code>height</code> property, if it is set.
+     * 
+     * @param newValue the new content height
+     */
+    public void setContentHeight(Extent newValue) {
+        set(PROPERTY_CONTENT_HEIGHT, newValue);
+    }
+    
+    /**
+     * Sets the content width of the <code>WindowPane</code>.
+     * This value will be overridden by the <code>width</code> property, if it is set.
+     * 
+     * @param newValue the new content width
+     */
+    public void setContentWidth(Extent newValue) {
+        set(PROPERTY_CONTENT_WIDTH, newValue);
+    }
+    
+    /**
      * Sets the inset margin around the window controls 
      * (e.g., close, minimize, and maximize buttons)
      * 
@@ -611,7 +651,8 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
-     * Sets the height of the content region of the <code>WindowPane</code>.
+     * Sets the overall height of the <code>WindowPane</code>, including its border.
+     * This value will override any setting of the <code>contentHeight</code> property.
      * 
      * @param newValue the new height
      */
@@ -855,7 +896,8 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
-     * Sets the width of the content region of the window.
+     * Sets the overall width of the <code>WindowPane</code>, including its border.
+     * This value will override any setting of the <code>contentWidth</code> property.
      * 
      * @param newValue the new width
      */

@@ -212,6 +212,30 @@ public class WindowPaneTest extends SplitPane {
                 windowPane.setPositionY(new Extent((int) (Math.random() * 500)));
             }
         });
+        controlsColumn.addButton("Set Size 400x300", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setWidth(new Extent(400));
+                windowPane.setHeight(new Extent(300));
+            }
+        });
+        controlsColumn.addButton("Set Size Null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setWidth(null);
+                windowPane.setHeight(null);
+            }
+        });
+        controlsColumn.addButton("Set Content Size 400x300", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setContentWidth(new Extent(400));
+                windowPane.setContentHeight(new Extent(300));
+            }
+        });
+        controlsColumn.addButton("Set Content Size Null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setContentWidth(null);
+                windowPane.setContentHeight(null);
+            }
+        });
         controlsColumn.addButton("Set Size Random", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.setWidth(new Extent(100 + (int) (Math.random() * 400)));

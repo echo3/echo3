@@ -81,11 +81,21 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             pxBounds.width = Math.round(Echo.Sync.Extent.isPercent(bounds.width)
                     ? (parseInt(bounds.width) * this._containerSize.width / 100)
                     : Echo.Sync.Extent.toPixels(bounds.width, true));
+        } else if (bounds.contentWidth != null) {
+            pxBounds.contentWidth = Math.round(Echo.Sync.Extent.isPercent(bounds.contentWidth)
+                    ? (parseInt(bounds.contentWidth) * this._containerSize.width / 100)
+                    : Echo.Sync.Extent.toPixels(bounds.contentWidth, true));
+            pxBounds.width = this._contentInsets.left + this._contentInsets.right + pxBounds.contentWidth;
         }
         if (bounds.height != null) {
             pxBounds.height = Math.round(Echo.Sync.Extent.isPercent(bounds.height)
                     ? (parseInt(bounds.height) * this._containerSize.height / 100)
                     : Echo.Sync.Extent.toPixels(bounds.height, false));
+        } else if (bounds.contentHeight != null) {
+            pxBounds.contentHeight = Math.round(Echo.Sync.Extent.isPercent(bounds.contentHeight)
+                    ? (parseInt(bounds.contentHeight) * this._containerSize.height / 100)
+                    : Echo.Sync.Extent.toPixels(bounds.contentHeight, false));
+            pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + pxBounds.contentHeight;
         }
         if (bounds.x != null) {
             pxBounds.x = Math.round(Echo.Sync.Extent.isPercent(bounds.x)
@@ -107,9 +117,12 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._requested = {
             x: this.component.render("positionX", "50%"),
             y: this.component.render("positionY", "50%"),
-            width: this.component.render("width", Echo.WindowPane.DEFAULT_WIDTH),
-            height: this.component.render("height", Echo.WindowPane.DEFAULT_HEIGHT)
+            contentWidth: this.component.render("contentWidth"),
+            contentHeight: this.component.render("contentHeight")
         };
+        
+        this._requested.width = this.component.render("width", this._requested.contentWidth ? null : Echo.WindowPane.DEFAULT_WIDTH);
+        this._requested.height = this.component.render("height", this._requested.contentHeight ? null : Echo.WindowPane.DEFAULT_HEIGHT);
     },
 
     _loadContainerSize: function() {
@@ -293,7 +306,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             // Do not render if window does not have set dimensions.
             return;
         }
-
+        
         var borderSideWidth = this._rendered.width - this._borderInsets.left - this._borderInsets.right;
         var borderSideHeight = this._rendered.height - this._borderInsets.top - this._borderInsets.bottom;
     
@@ -694,6 +707,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     
     setBounds: function(bounds) {
         var c = this._coordinatesToPixels(bounds);
+        
         if (this._rendered == null) {
             this._rendered = { };
         }
@@ -705,7 +719,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 }
                 c.width = this._maximumWidth;
             }
-            if (bounds.width < this._minimumWidth) {
+            if (c.width < this._minimumWidth) {
                 if (c.x != null) {
                     c.x += (c.width - this._minimumWidth);
                 }
@@ -721,7 +735,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 }
                 c.height = this._maximumHeight;
             }
-            if (bounds.height < this._minimumHeight) {
+            if (c.height < this._minimumHeight) {
                 if (c.y != null) {
                     c.y += (c.height - this._minimumHeight);
                 }
