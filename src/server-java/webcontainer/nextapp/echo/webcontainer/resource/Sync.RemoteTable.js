@@ -97,13 +97,12 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
             }
             
             var colGroupElement = document.createElement("colgroup");
-            var renderRelative = !Core.Web.Env.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS;
             for (var i = 0; i < this._columnCount; ++i) {
                 var colElement = document.createElement("col");
                 var width = this.component.renderIndex("columnWidth", i); 
                 if (width != null) {
                     if (Echo.Sync.Extent.isPercent(width)) {
-                        colElement.width = parseInt(width) + (renderRelative ? "*" : "%");
+                        colElement.width = parseInt(width) + "%";
                     } else {
                         var columnPixels = Echo.Sync.Extent.toPixels(width, true);
                         if (columnPixelAdjustment) {
