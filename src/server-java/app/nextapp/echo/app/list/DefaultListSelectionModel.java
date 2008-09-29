@@ -84,25 +84,14 @@ implements ListSelectionModel, Serializable {
      * @see nextapp.echo.app.list.ListSelectionModel#getMaxSelectedIndex()
      */
     public int getMaxSelectedIndex() {
-        int max = selection.length() - 1;
-        if (max == -1 && selectionMode != MULTIPLE_SELECTION) {
-            return 0;
-        } else {
-            return max;
-        }
+        return selection.length() - 1;
     }
     
     /**
      * @see nextapp.echo.app.list.ListSelectionModel#getMinSelectedIndex()
      */
     public int getMinSelectedIndex() {
-        if (minSelectedIndex == -1) {
-            // Return 0 as minimum selected index in the event that multiple selection is disabled 
-            // (and thus an item must be selected).
-            return selectionMode == MULTIPLE_SELECTION ? -1 : 0;
-        } else {
-            return minSelectedIndex;
-        }
+        return minSelectedIndex;
     }
     
     /**
@@ -116,10 +105,6 @@ implements ListSelectionModel, Serializable {
      * @see nextapp.echo.app.list.ListSelectionModel#isSelectedIndex(int)
      */
     public boolean isSelectedIndex(int index) {
-        if (minSelectedIndex == -1) {
-            // Return true for isSelectedIndex(0) when multiple selection is disabled and nothing is selected.
-            return selectionMode == MULTIPLE_SELECTION ? false : index == 0;
-        }
         return selection.get(index);
     }
     
@@ -127,12 +112,7 @@ implements ListSelectionModel, Serializable {
      * @see nextapp.echo.app.list.ListSelectionModel#isSelectionEmpty()
      */
     public boolean isSelectionEmpty() {
-        if (selection.length() == 0) {
-            // Selection is never empty when multiple selection is disabled.
-            return selectionMode == MULTIPLE_SELECTION;
-        } else {
-            return false;
-        }
+        return selection.length() == 0;
     }
     
     /**

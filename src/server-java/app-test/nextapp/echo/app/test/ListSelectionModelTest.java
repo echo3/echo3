@@ -78,10 +78,10 @@ public class ListSelectionModelTest extends TestCase {
     public void testInitialState() {
         DefaultListSelectionModel selectionModel = new DefaultListSelectionModel();
         
-        assertFalse(selectionModel.isSelectionEmpty());
-        assertEquals(0, selectionModel.getMinSelectedIndex());
-        assertEquals(0, selectionModel.getMaxSelectedIndex());
-        assertTrue(selectionModel.isSelectedIndex(0));
+        assertTrue(selectionModel.isSelectionEmpty());
+        assertEquals(-1, selectionModel.getMinSelectedIndex());
+        assertEquals(-1, selectionModel.getMaxSelectedIndex());
+        assertFalse(selectionModel.isSelectedIndex(0));
         assertFalse(selectionModel.isSelectedIndex(1));
         assertFalse(selectionModel.isSelectedIndex(2));
     }
@@ -207,11 +207,11 @@ public class ListSelectionModelTest extends TestCase {
         changeListener.e = null;
 
         selectionModel.clearSelection();
-        assertFalse(selectionModel.isSelectionEmpty());
+        assertTrue(selectionModel.isSelectionEmpty());
         assertFalse(selectionModel.isSelectedIndex(50));
         assertFalse(selectionModel.isSelectedIndex(75));
-        assertEquals(0, selectionModel.getMinSelectedIndex());
-        assertEquals(0, selectionModel.getMaxSelectedIndex());
+        assertEquals(-1, selectionModel.getMinSelectedIndex());
+        assertEquals(-1, selectionModel.getMaxSelectedIndex());
         assertNotNull(changeListener.e);
         assertEquals(selectionModel, changeListener.e.getSource());
         changeListener.e = null;

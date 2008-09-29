@@ -560,7 +560,6 @@ public abstract class AbstractListComponent extends Component {
         if (oldValue != null) {
             oldValue.removeChangeListener(changeHandler);
         }
-        
         newValue.addChangeListener(changeHandler);
         selectionModel = newValue;
         firePropertyChange(SELECTION_MODEL_CHANGED_PROPERTY, oldValue, newValue);
