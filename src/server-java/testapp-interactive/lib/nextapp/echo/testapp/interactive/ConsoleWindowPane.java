@@ -56,7 +56,7 @@ public class ConsoleWindowPane extends WindowPane {
         setTitle("Console");
         setStyleName("Default");
         
-        SplitPane splitPane = new SplitPane(SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP, new Extent(32));
+        SplitPane splitPane = new SplitPane(SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP, true);
         add(splitPane);
         
         Row controlRow = new Row();
