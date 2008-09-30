@@ -349,7 +349,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         // Render child component, add to content DIV.
         var componentCount = this.component.getComponentCount();
         if (componentCount == 1) {
-            this.renderAddChild(update, this.component.getComponent(0), this._contentDiv);
+            Echo.Render.renderComponentAdd(update, this.component.getComponent(0), this._contentDiv);
         } else if (componentCount > 1) {
             throw new Error("Too many children: " + componentCount);
         }
@@ -372,15 +372,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     
         // Append main DIV to parent.
         parentElement.appendChild(this._div);
-    },
-    
-    renderAddChild: function(update, child, parentElement) {
-        if (child.pane) {
-            this._contentDiv.style.padding = "0";
-        } else {
-            Echo.Sync.Insets.render(this.component.render("insets"), this._contentDiv, "padding");
-        }
-        Echo.Render.renderComponentAdd(update, child, parentElement);
     },
     
     _renderAddFrame: function() {
@@ -599,6 +590,10 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 + (this._contentInsets.top + this._titleBarHeight) + "px;bottom:" + this._contentInsets.bottom + "px;left:" 
                 + this._contentInsets.left + "px;right:" + this._contentInsets.right + "px;"
                 + "overflow:"+ ((this.component.children.length == 0 || this.component.children[0].pane) ? "hidden;" : "auto;");
+        if (this.component.children.length > 0 && !this.component.children[0].pane) {
+            Echo.Sync.Insets.render(this.component.render("insets"), this._contentDiv, "padding");
+        }
+                
         Echo.Sync.Color.render(this.component.render("background", Echo.WindowPane.DEFAULT_BACKGROUND),
                 this._contentDiv, "backgroundColor");
         Echo.Sync.Color.render(this.component.render("foreground", Echo.WindowPane.DEFAULT_FOREGROUND),
