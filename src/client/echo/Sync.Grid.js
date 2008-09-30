@@ -523,7 +523,9 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                 availableWidth -= parseInt(tableParent.style.paddingRight);
             }
             var width = ((availableWidth * this._renderPercentWidthByMeasure) / 100) - Core.Web.Measure.SCROLL_WIDTH;
-            this._table.style.width = width + "px";
+            if (width > 0) {
+                this._table.style.width = width + "px";
+            }
         }
     },
     
