@@ -359,7 +359,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             this._redisplayRequired = true;
             Core.Web.Scheduler.run(Core.method(this, function() {
                 this._redisplayRequired = false;
-                if (this.component.application) { // Verify component still registered.
+                if (this.component) { // Verify component still registered.
                     Echo.Render.renderComponentDisplay(this.component);
                 }
             }), 50);
