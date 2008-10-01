@@ -86,7 +86,10 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
          */
         renderDisplay: function() {
             if (this.arcApplication) {
-                Echo.Render.renderComponentDisplay(this.baseComponent);
+                Core.Web.Scheduler.run(Core.method(this, function() {
+                    // Perform renderDisplay() on client application in a new execution context.  This is critical for IE7.
+                    Echo.Render.renderComponentDisplay(this.baseComponent);
+                }));
             } else {
                 this.arcApplication = new Echo.Application();
                 this.arcApplication.setStyleSheet(this.client.application.getStyleSheet());
