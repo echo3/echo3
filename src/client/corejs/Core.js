@@ -28,20 +28,16 @@
 Core = {
 
     /**
-     * Creates a duplicate copy of a function.
-     * Per the ECMA-262 v3 specification, Function.toString() is required to return an (implementation specific)
-     * string representation of the function.
-     * Creating a copy of a constructor is more efficient than invoking Function.apply() in certain browsers
-     * (a significant performance improvement was observed in Internet Explorer 6).
+     * Creates a duplicate copy of a function by wrapping the original in a closure.
      *
      * @param f the function
-     * @return an identical copy
+     * @return an effectively identical copy
      * @private
      */
     _copyFunction: function(f) {
-        var fCopy;
-        eval("fCopy = " + f.toString() + ";");
-        return fCopy;
+        return function() {
+            f.apply(this, arguments);
+        };
     },
     
     /**
