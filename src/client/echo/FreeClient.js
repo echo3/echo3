@@ -136,7 +136,12 @@ Echo.FreeClient.AutoUpdate = Core.extend(Core.Web.Scheduler.Runnable, {
      * Runnable run() implementation.
      */
     run: function() {
-        Echo.Render.processUpdates(this._client);
-        this._client._autoUpdate = null;
+        if (this._client.application) {
+            // Only execute updates in the event client has not been deconfigured, which can
+            // occur before auto-update fires if other operations were scheduled for immediate
+            // execution.
+            Echo.Render.processUpdates(this._client);
+            this._client._autoUpdate = null;
+        }
     }
 });
