@@ -255,10 +255,13 @@ Echo.Render = {
             //FIXME. this does needless work....resizing twice is quite possible.
             // if property updates are present.
             if (updates[i].renderContext.displayRequired) {
+                // The renderContext has specified only certain child components should have their
+                // renderDisplay() methods invoked.
                 for (var j = 0; j < updates[i].renderContext.displayRequired.length; ++j) {
                     Echo.Render._doRenderDisplay(updates[i].renderContext.displayRequired[j], true);
                 }
-            } else {
+            } else if (!updates[i].renderContext.noDisplay) {
+                // Default behavior (the renderContext does not contain a displayNotRequired flag).
                 Echo.Render._doRenderDisplay(updates[i].parent, true);
             }
         }
