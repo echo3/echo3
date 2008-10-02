@@ -22,7 +22,7 @@ Echo.Arc.Client = Core.extend(Echo.FreeClient, {
     
     verifyInput: function(component, flags) {
         if (!this.arcSync.client.verifyInput(this.arcSync.component, flags)) {
-            return false;0
+            return false;
         }
         return Echo.FreeClient.prototype.verifyInput.call(this, component, flags);
     }
