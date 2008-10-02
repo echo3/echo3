@@ -687,7 +687,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         }
         var imgs = element.getElementsByTagName("img");
         for (var i = 0; i < imgs.length; ++i) {
-            if (!imgs[i].loaded && (Core.Web.Env.QUIRK_UNLOADED_IMAGE_HAS_SIZE || (!imgs[i].height && !imgs[i].style.height))) {
+            if (!imgs[i].complete && (Core.Web.Env.QUIRK_UNLOADED_IMAGE_HAS_SIZE || (!imgs[i].height && !imgs[i].style.height))) {
                 Core.Web.DOM.addEventListener(imgs[i], "load", this._processImageLoadRef, false);
             }
         }
