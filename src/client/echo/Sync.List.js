@@ -333,7 +333,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
             // If selection is null (selectedId not set, or corresponding item not found),
             // set selection to null/default value.
             if (selection == null) {
-                selection = this._multipleSelect ? [] : 0;
+                selection = [];
             }
         }
         
