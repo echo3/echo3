@@ -57,7 +57,6 @@
         <delete dir="${dir.build}"/>
         <delete dir="${dir.dist}"/>
         <delete dir="${dir.javadoc}"/>
-        <delete dir="${dir.jsdoc}"/>
         <delete dir="${dir.testoutput}"/>
         <delete dir="${dir.release}"/>
     </target>
@@ -287,34 +286,6 @@
     
     <target name="test" depends="test.app, test.webcontainer"/>
     
-    <target name="doc.js.public"
-            description="Create public documentation for the JavaScript modules">
-        <mkdir dir="${dir.jsdoc.public}"/>
-        <exec executable="jsdoc">
-             <arg value="--logo ${jsdoc.logofile}"/>
-             <arg value="--project-name ${jsdoc.projectname}"/>
-             <arg value="--package-naming"/>
-             <arg value="--directory ${dir.jsdoc.public}"/>
-             <arg value="${dir.src.server-java.webcontainer.res}"/>
-        </exec>
-    </target>
-    
-    <target name="doc.js.private"
-            description="Create private documentation for the JavaScript modules">
-        <mkdir dir="${dir.jsdoc.private}"/>
-        <exec executable="jsdoc">
-             <arg value="--logo ${jsdoc.logofile}"/>
-             <arg value="--project-name ${jsdoc.projectname}"/>
-             <arg value="--package-naming"/>
-             <arg value="--private"/>
-             <arg value="--directory ${dir.jsdoc.private}"/>
-             <arg value="${dir.src.server-java.webcontainer.res}"/>
-        </exec>
-    </target>
-    
-    <target name="doc.js"
-            depends="doc.js.public, doc.js.private"/>
-    
     <target name="doc.public" 
             depends="doc.app, doc.webcontainer"/>
 
@@ -426,13 +397,6 @@
         <copy todir="${dir.build.server-java.release.root}/Documentation">
             <fileset dir="${dir.resource}/Documentation"/>
         </copy>
-        
-        <!-- JSDOC Temporarily Disabled -->
-        <!--
-        <copy todir="${dir.build.server-java.release.root}/Documentation/jsapi/public">
-            <fileset dir="${dir.jsdoc.public}"/>
-        </copy>
-        -->
         
         <!-- Licensing -->
         <copy todir="${dir.build.server-java.release.root}/Licensing">
