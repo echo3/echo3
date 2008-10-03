@@ -105,6 +105,14 @@ public class StyleUtil {
         return new Border(randomExtent(25), randomColor(), randomBorderStyle());
     }
     
+    public static Border.Side randomBorderSide() {
+        return new Border.Side(randomExtent(25), randomColor(), randomBorderStyle());
+    }
+    
+    public static Border randomMultisidedBorder() {
+        return new Border(new Border.Side[]{ randomBorderSide(), randomBorderSide(), randomBorderSide(), randomBorderSide()}); 
+    }
+    
     public static int randomBorderStyle() {
         return BORDER_STYLES[(int) (Math.random() * BORDER_STYLES.length)];
     }

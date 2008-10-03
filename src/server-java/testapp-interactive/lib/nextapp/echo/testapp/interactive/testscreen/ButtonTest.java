@@ -430,10 +430,18 @@ extends SplitPane {
         });
         controlsColumn.addButton("Set Border (All Attributes)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                final Border border = StyleUtil.randomBorder();
                 apply(new Applicator() {
                     public void apply(AbstractButton button) {
-                        button.setBorder(border);
+                        button.setBorder(StyleUtil.randomBorder());
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set Border (All, Individual Sides)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setBorder(StyleUtil.randomMultisidedBorder());
                     }
                 });
             }
