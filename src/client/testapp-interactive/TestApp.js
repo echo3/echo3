@@ -1,3 +1,13 @@
+init = function() {
+    Core.Debug.consoleElement = document.getElementById("debugconsole");
+    Core.Web.init();
+
+    var app = new TestApp();
+    var client = new Echo.FreeClient(app, document.getElementById("rootArea"));
+    client.loadStyleSheet("Default.stylesheet.xml");
+    client.init();
+};
+
 TestApp = Core.extend(Echo.Application, {
 
     $static: {
@@ -399,13 +409,3 @@ TestApp.Tests.WindowPane = Core.extend(TestApp.TestPane, {
         this.windowPane.set("title", null);
     }
 });
-
-init = function() {
-    Core.Debug.consoleElement = document.getElementById("debugconsole");
-    Core.Web.init();
-
-    var app = new TestApp();
-    var client = new Echo.FreeClient(app, document.getElementById("rootArea"));
-    client.loadStyleSheet("Default.stylesheet.xml");
-    client.init();
-};
