@@ -214,8 +214,11 @@ public class ListBoxTest extends SplitPane {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator() {
                     public void apply(AbstractListComponent listComponent) {
-                        ((InteractiveApp) getApplicationInstance()).consoleWrite(listComponent.getId() + ": "
-                                + listComponent.getSelectionModel().getMinSelectedIndex());
+                        String out = listComponent.getId() + ": " + listComponent.getSelectionModel().getMinSelectedIndex();
+                        if (listComponent instanceof SelectField) {
+                            out += " (" + ((SelectField) listComponent).getSelectedIndex() + ")";
+                        }
+                        ((InteractiveApp) getApplicationInstance()).consoleWrite(out);
                     }
                 });
             }

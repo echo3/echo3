@@ -74,7 +74,8 @@ public class SelectField extends AbstractListComponent {
      * @return the index of the currently selected item
      */
     public int getSelectedIndex() {
-        return getSelectionModel().getMinSelectedIndex();
+        int selectedIndex = getSelectionModel().getMinSelectedIndex(); 
+        return selectedIndex == -1 ? 0 : selectedIndex;
     }
     
     /**
