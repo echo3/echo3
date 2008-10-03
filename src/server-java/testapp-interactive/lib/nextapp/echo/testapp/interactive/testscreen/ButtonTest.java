@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 
 import nextapp.echo.app.Alignment;
+import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.CheckBox;
 import nextapp.echo.app.Color;
@@ -423,6 +424,64 @@ extends SplitPane {
                 apply(new Applicator() {
                     public void apply(AbstractButton button) {
                         button.setBackgroundImage(null);
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set Border (All Attributes)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                final Border border = StyleUtil.randomBorder();
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setBorder(border);
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set Border Color", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        Border border = button.getBorder();
+                        if (border == null) {
+                            border = new Border(new Extent(1), Color.BLUE, Border.STYLE_SOLID);
+                        }
+                        button.setBorder(new Border(border.getSize(), StyleUtil.randomColor(), border.getStyle()));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set Border Size", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        Border border = button.getBorder();
+                        if (border == null) {
+                            border = new Border(new Extent(1), Color.BLUE, Border.STYLE_SOLID);
+                        }
+                        button.setBorder(StyleUtil.nextBorderSize(button.getBorder()));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set Border Style", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        Border border = button.getBorder();
+                        if (border == null) {
+                            border = new Border(new Extent(1), Color.BLUE, Border.STYLE_SOLID);
+                        }
+                        button.setBorder(StyleUtil.nextBorderStyle(button.getBorder()));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Remove Border", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setBorder(null);
                     }
                 });
             }
