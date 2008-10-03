@@ -11,6 +11,10 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
     },
 
     $abstract: true,
+    
+    $virtual: {
+        listBox: false,
+    },
 
     _hasRenderedSelectedItems: false,
     
@@ -144,10 +148,10 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
      * when rendered by DOM manipulation).
      * This strategy is used when the _alternateRender flag is false.
      */
-    _renderMainAsSelect: function(update, parentElement, listBox) {
+    _renderMainAsSelect: function(update, parentElement) {
         this._element = document.createElement("select");
         this._element.id = this.component.renderId;
-        this._element.size = listBox ? 6 : 1;
+        this._element.size = this.listBox ? 6 : 1;
 
         if (!this._enabled) {
             this._element.disabled = true;
@@ -275,9 +279,9 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
     /**
      * Delegates to _renderMainAsSelect() or _renderMainAsDiv() depending on type of list selection component and browser bugs.
      */
-    _renderMain: function(update, parentElement, listBox) {
+    _renderMain: function(update, parentElement) {
         this._multipleSelect = this.component.get("selectionMode") == Echo.ListBox.MULTIPLE_SELECTION;
-        if (listBox && Core.Web.Env.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
+        if (this.listBox && Core.Web.Env.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
             this._alternateRender = true;
         }
         this._enabled = this.component.isRenderEnabled();
@@ -285,7 +289,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         if (this._alternateRender) {
             this._renderMainAsDiv(update, parentElement);
         } else {
-            this._renderMainAsSelect(update, parentElement, listBox);
+            this._renderMainAsSelect(update, parentElement);
         }
     },
     
@@ -333,7 +337,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
             // If selection is null (selectedId not set, or corresponding item not found),
             // set selection to null/default value.
             if (selection == null) {
-                selection = [];
+                selection = this.listBox ? [] : 0;
             }
         }
         
@@ -436,6 +440,8 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
  * Component rendering peer: ListBox
  */
 Echo.Sync.ListBox = Core.extend(Echo.Sync.ListComponent, {
+    
+    listBox: true,
 
     $load: function() {
         Echo.Render.registerPeer("ListBox", this);
