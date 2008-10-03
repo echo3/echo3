@@ -1401,11 +1401,11 @@ Core.Web.Measure = {
     _getScrollOffset: function(element) {
         var valueT = 0, valueL = 0;
         do {
-            if ((element.scrollLeft || element.scrollTop) && element.nodeName.toLowerCase() in this._scrollElements) {
+            if (element.scrollLeft || element.scrollTop) {
                 valueT += element.scrollTop  || 0;
                 valueL += element.scrollLeft || 0; 
             }
-            element = element.parentNode;
+            element = element.offsetParent;
         } while (element);
         return { left: valueL, top: valueT };
     },
