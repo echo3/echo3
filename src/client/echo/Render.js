@@ -260,8 +260,7 @@ Echo.Render = {
                 for (var j = 0; j < updates[i].renderContext.displayRequired.length; ++j) {
                     Echo.Render._doRenderDisplay(updates[i].renderContext.displayRequired[j], true);
                 }
-            } else if (!updates[i].renderContext.noDisplay) {
-                // Default behavior (the renderContext does not contain a displayNotRequired flag).
+            } else {
                 Echo.Render._doRenderDisplay(updates[i].parent, true);
             }
         }

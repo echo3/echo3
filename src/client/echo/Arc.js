@@ -82,7 +82,7 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
          * 
          * When the application is created, the component returned by createComponent() 
          * will be added to the root component of the application.  The application will
-         * be installed in th DOM at the element returned by the getDomainElement().
+         * be installed in the DOM at the element returned by the getDomainElement().
          */
         renderDisplay: function() {
             if (this.arcApplication) {
