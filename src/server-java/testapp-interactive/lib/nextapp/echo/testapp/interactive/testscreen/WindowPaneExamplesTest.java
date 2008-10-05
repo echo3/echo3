@@ -154,6 +154,45 @@ public class WindowPaneExamplesTest extends SplitPane {
                     c1.add(w2);
                 }
             });
+            addButton("Add Modal Window In A Modal Window", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    WindowPane w1 = new WindowPane();
+                    w1.setStyleName("Default");
+                    w1.setWidth(new Extent(650));
+                    w1.setHeight(new Extent(450));
+                    w1.setTitle("This Window is Modal");
+                    w1.setModal(true);
+                    targetContentPane.add(w1);
+                    
+                    ContentPane c1 = new ContentPane();
+                    final Button b1 = new Button("Click me:");
+                    b1.setStyleName("Default");
+                    b1.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            b1.setText(b1.getText() + "!");
+                        }
+                    });
+                    c1.add(b1);
+
+                    w1.add(c1);
+                    
+                    WindowPane w2 = new WindowPane();
+                    w2.setStyleName("Default");
+                    final Button b2 = new Button("Click me:");
+                    b2.setStyleName("Default");
+                    b2.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            b2.setText(b2.getText() + "!");
+                        }
+                    });
+                    w2.add(b2);
+                    
+                    w2.setTitle("This Window is also Modal.");
+                    w2.setModal(true);
+                    
+                    c1.add(w2);
+                }
+            });
             addButton("Add Constrained Size Window", new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     WindowPane windowPane = createSimpleWindow("Constrained");
