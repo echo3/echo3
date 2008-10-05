@@ -612,12 +612,4 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
     }
 });
 
-/**
- * Namespace for utility objects.
- * @class
- */
-Echo.Render.Util = {
-    
-};
-
 Echo.Render.registerPeer("Root", Echo.Render.RootSync);
