@@ -1,5 +1,5 @@
 /**
- * Command exeecution peer: Browser Open Window
+ * Command execution peer: Browser Open Window
  */
 Echo.RemoteClient.CommandExec.BrowserOpenWindow = { 
 
@@ -36,6 +36,7 @@ Echo.RemoteClient.CommandExec.BrowserOpenWindow = {
         features.push("location=" + (commandData.flags & this.FLAG_LOCATION ? "yes" : "no"));
         features.push("status=" + (commandData.flags & this.FLAG_STATUS ? "yes" : "no"));
         features.push("resizable=" + (commandData.flags & this.FLAG_RESIZABLE ? "yes" : "no"));
+        features.push("scrollbars=yes");
         
         window.open(commandData.uri, commandData.name, features.join(","), replace);
     }

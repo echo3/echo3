@@ -57,7 +57,7 @@ public class CommandTest extends Column {
         button.setStyleName("Default");
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                getApplicationInstance().enqueueCommand(new BrowserRedirectCommand("http://www.nextapp.com/products/echo3"));
+                getApplicationInstance().enqueueCommand(new BrowserRedirectCommand("http://echo.nextapp.com"));
             }
         });
         add(button);
@@ -76,7 +76,7 @@ public class CommandTest extends Column {
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().enqueueCommand(
-                        new BrowserOpenWindowCommand("http://www.nextapp.com/platform/echo3/", null));
+                        new BrowserOpenWindowCommand("http://echo.nextapp.com", null));
             }
         });
         add(button);
@@ -86,7 +86,7 @@ public class CommandTest extends Column {
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().enqueueCommand(
-                        new BrowserOpenWindowCommand("http://www.nextapp.com/platform/echo3/", 
+                        new BrowserOpenWindowCommand("http://echo.nextapp.com", 
                         "auxwindow", new Extent(640), new Extent(240), BrowserOpenWindowCommand.FLAG_REPLACE));
             }
         });
@@ -97,7 +97,7 @@ public class CommandTest extends Column {
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().enqueueCommand(
-                        new BrowserOpenWindowCommand("http://www.nextapp.com/platform/echo3/", 
+                        new BrowserOpenWindowCommand("http://echo.nextapp.com", 
                         "auxwindow", new Extent(40, Extent.PERCENT), new Extent(60, Extent.PERCENT),
                         BrowserOpenWindowCommand.FLAG_REPLACE));
             }
@@ -108,7 +108,7 @@ public class CommandTest extends Column {
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().enqueueCommand(
-                        new BrowserOpenWindowCommand("http://www.nextapp.com/platform/echo3/", 
+                        new BrowserOpenWindowCommand("http://echo.nextapp.com", 
                         "auxwindow", new Extent(40, Extent.PERCENT), new Extent(60, Extent.PERCENT),
                         BrowserOpenWindowCommand.FLAG_REPLACE | BrowserOpenWindowCommand.FLAG_MENUBAR |
                         BrowserOpenWindowCommand.FLAG_TOOLBAR | BrowserOpenWindowCommand.FLAG_LOCATION | 
