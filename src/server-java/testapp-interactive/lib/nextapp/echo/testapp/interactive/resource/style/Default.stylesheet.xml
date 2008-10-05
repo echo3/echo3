@@ -144,6 +144,20 @@
    </fib>
   </p>
  </s>
+ <s n="Borderless" t="nextapp.echo.app.WindowPane">
+  <p n="border">
+   <fib bi="0px" c="#ffffff" ci="0px">
+    <null-fi/>
+    <null-fi/>
+    <null-fi/>
+    <null-fi/>
+    <null-fi/>
+    <null-fi/>
+    <null-fi/>
+    <null-fi/>
+   </fib> 
+  </p>
+ </s>
  <s n="ControlPane.Button" t="nextapp.echo.app.button.AbstractButton">
   <p n="lineWrap" t="b">false</p>
   <p n="insets" t="Insets">3px 15px</p>

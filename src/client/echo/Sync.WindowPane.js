@@ -320,10 +320,18 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     
         this._titleBarDiv.style.width = (this._rendered.width - this._contentInsets.left - this._contentInsets.right) + "px";
         
-        this._borderDivs[1].style.width = borderSideWidth + "px";
-        this._borderDivs[6].style.width = borderSideWidth + "px";
-        this._borderDivs[3].style.height = borderSideHeight + "px";
-        this._borderDivs[4].style.height = borderSideHeight + "px";   
+        if (this._borderDivs[1]) {
+            this._borderDivs[1].style.width = borderSideWidth + "px";
+        }
+        if (this._borderDivs[6]) {
+            this._borderDivs[6].style.width = borderSideWidth + "px";
+        }
+        if (this._borderDivs[3]) {
+            this._borderDivs[3].style.height = borderSideHeight + "px";
+        }
+        if (this._borderDivs[4]) {
+            this._borderDivs[4].style.height = borderSideHeight + "px";   
+        }
         
         Core.Web.VirtualPosition.redraw(this._contentDiv);
         Core.Web.VirtualPosition.redraw(this._maskDiv);

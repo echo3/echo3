@@ -92,6 +92,14 @@ public class WindowPaneExamplesTest extends SplitPane {
                     targetContentPane.add(windowPane);
                 }
             });
+            addButton("Add Borderless Window", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    WindowPane windowPane = createSimpleWindow("Borderless");
+                    windowPane.setStyleName("Borderless");
+                    windowPane.setMaximizeEnabled(true);
+                    targetContentPane.add(windowPane);
+                }
+            });
             addButton("Add Modal Window", new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     WindowPane windowPane = createModalWindow("Modal");

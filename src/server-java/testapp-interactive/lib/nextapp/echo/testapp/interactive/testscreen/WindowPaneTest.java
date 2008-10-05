@@ -128,7 +128,6 @@ public class WindowPaneTest extends SplitPane {
                 windowPane.setStyleName(null);
             }
         });
-
         controlsColumn.addButton("Set Border = Blue Fade", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.setBorder((FillImageBorder) InteractiveApp.getApp().getStyleSheet().getStyle("Default", 
