@@ -8,6 +8,11 @@
  *  <li>Provides root component synchronization peer implementation.</li>
  *  <li>Provides rendering utilities for the core properties.</li>
  * </ul>
+ * 
+ * <h3>renderContext</h3>
+ * 
+ * <p>This object will add a <code>renderContext</code> property to all <code>Echo.Update.ComponentUpdate</code>
+ * objects which are processed by it.
  */
 
 /**
@@ -518,6 +523,19 @@ Echo.Render.ComponentSync = Core.extend({
         /**
          * Renders an update to a component, e.g., children added/removed, properties updated.
          * The supplied update will refer specifically to an update of the supported component.
+         * 
+         * The provided update will contain a <code>renderContext</code> object property.
+         * The following properties of <code>renderContext</code> may be configured by the
+         * implementation, if desired:
+         *  
+         * <ul>
+         *  <li><code>displayRequired</code>: an array of child component objects whose synchronization peers should have their
+         *  renderDisplay() methods invoked once the update cycle is complete.  The default value of null indicates the peers
+         *  of all descendant components and the updated component itself will have their renderDisplay() methods invoked.
+         *  Specifying an empty array will cause NO components to have their renderDisplay() methods invoked.
+         *  This property is generally used on container components (or application-rendered components) which may have property
+         *  updates that need not cause renderDisplay() to be invoked on their entire descendant tree for performance reasons.
+         * </ul> 
          *
          * @param {Echo.Update.ComponentUpdate} update the update being rendered
          * @return true if this invocation has re-rendered all child components, false otherwise
