@@ -97,7 +97,7 @@ Echo.DebugConsole = {
         
         Echo.DebugConsole._titleBarElement = document.createElement("div");
         Echo.DebugConsole._titleBarElement.style.cssText
-                = "position:absolute;top:1px;left:1px;width:278px;height:20px;padding:3px 10px;background-color:#5f5f8f;"
+                = "position:absolute;top:1px;left:1px;width:278px;height:3em;padding:3px 10px;background-color:#5f5f8f;"
                 + "color:#ffffff;overflow:hidden;";
         Echo.DebugConsole._windowElement.appendChild(Echo.DebugConsole._titleBarElement);
 
@@ -107,7 +107,7 @@ Echo.DebugConsole = {
         Echo.DebugConsole._titleBarElement.appendChild(titleDivElement);
     
         var controlsContainerDivElement = document.createElement("div");
-        controlsContainerDivElement.style.cssText = "position:absolute;right:0;";
+        controlsContainerDivElement.style.cssText = "position:absolute;right:0;background-color:#5f5f8f;";
         Echo.DebugConsole._titleBarElement.appendChild(controlsContainerDivElement);
     
         var clearButtonElement = document.createElement("span");
@@ -129,7 +129,7 @@ Echo.DebugConsole = {
         Core.Web.DOM.addEventListener(closeButtonElement, "click", Echo.DebugConsole._closeListener, false);
     
         Echo.DebugConsole._contentElement = document.createElement("div");
-        Echo.DebugConsole._contentElement.style.cssText = "font-family:monospace;font-size:9px;position:absolute;top:28px;left:1px;"
+        Echo.DebugConsole._contentElement.style.cssText = "font-family:monospace;font-size:9px;position:absolute;top:3em;left:1px;"
                 + "width:278px;height:265px;padding:3px 10px;background-color:#1f1f2f;overflow:auto;color:#3fff6f;";
         Echo.DebugConsole._windowElement.appendChild(Echo.DebugConsole._contentElement);
         
