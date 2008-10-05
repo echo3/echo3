@@ -656,7 +656,6 @@ Echo.Component = Core.extend({
                     break;
                 default:
                     this._localStyle[name] = properties[name];
-                    break;
                 }
             }
         }
@@ -1460,8 +1459,6 @@ Echo.FocusManager = Core.extend({
     }
 });
 
-// Fundamental Property Types
-
 /**
  * Describes the layout direction of text and content to provide support 
  * for bidirectional localization.
@@ -1506,8 +1503,6 @@ Echo.LayoutDirection.LTR = new Echo.LayoutDirection(true);
  * @final
  */
 Echo.LayoutDirection.RTL = new Echo.LayoutDirection(false);
-
-// StyleSheets
 
 /**
  * An application style sheet.
@@ -2893,7 +2888,7 @@ Echo.Row = Core.extend(Echo.Component, {
  *     of the separator in vertical orientations 
  * @sp {#FillImage} separatorHorizontalImage a FillImage used to paint the separator for horizontal orientations
  * @sp {#Extent} separatorPosition an extent specifying the position of the separator
- * @sp {Boolean} autoPositioned [EXPERIMENTAL] flag indicating whether the pane should set the separator position automatically
+ * @sp {Boolean} autoPositioned flag indicating whether the pane should set the separator position automatically
  *     based on size of first child.  This feature is only available on vertically oriented panes, where the
  *     first child contains non-pane content. 
  * @sp {#FillImage} separatorVerticalImage a FillImage used to paint the separator for vertical orientations
