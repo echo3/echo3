@@ -1,3 +1,8 @@
+/**
+ * A simple debug console which attaches to Core.Debug to provide
+ * the capability to view messages printed with
+ * <code>Core.Debug.consoleWrite()</code>.
+ */
 Echo.DebugConsole = {
         
     _installed: false,
@@ -7,6 +12,10 @@ Echo.DebugConsole = {
     _logging: false,
     _maximized: false,
     
+    /**
+     * Attaches the Debug console to Core.Web, by overriding the implementation of 
+     * <code>Core.Debug.consoleWrite()</code>.
+     */
     install: function() {
         if (Echo.DebugConsole._installed) {
             return;
@@ -81,6 +90,12 @@ Echo.DebugConsole = {
         Echo.DebugConsole.setVisible(!Echo.DebugConsole.isVisible());
     },
     
+    /**
+     * Queries the visibility of the console.
+     * 
+     * @return the console visibility state.
+     * @type Boolean
+     */
     isVisible: function() {
         if (!Echo.DebugConsole._rendered) {
             return false;
@@ -138,6 +153,11 @@ Echo.DebugConsole = {
         Echo.DebugConsole._rendered = true;
     },
     
+    /**
+     * Sets the visibility of the console.
+     * 
+     * @param {Boolean} newValue the new console visibility state
+     */
     setVisible: function(newValue) {
         if (!Echo.DebugConsole._rendered) {
             Echo.DebugConsole._render();
