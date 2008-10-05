@@ -57,6 +57,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
     public static final String PROPERTY_CLOSE_ICON = "closeIcon";
     public static final String PROPERTY_CLOSE_ICON_INSETS = "closeIconInsets";
     public static final String PROPERTY_CONTROLS_INSETS = "controlsInsets";
+    public static final String PROPERTY_CONTROLS_SPACING = "controlsSpacing";
     public static final String PROPERTY_DEFAULT_CLOSE_OPERATION = "defaultCloseOperation";
     public static final String PROPERTY_HEIGHT = "height";
     public static final String PROPERTY_ICON = "icon";
@@ -218,6 +219,16 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public Extent getContentWidth() {
         return (Extent) get(PROPERTY_HEIGHT);
+    }
+    
+    /**
+     * Returns the spacing between the window control icons
+     * (e.g., close, minimize, and maximize buttons).
+     * 
+     * @return the controls spacing
+     */
+    public Extent getControlsSpacing() {
+        return (Extent) get(PROPERTY_CONTROLS_SPACING);
     }
     
     /**
@@ -560,6 +571,18 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
+     * Removes a <code>WindowPaneListener</code> from receiving event notifications.
+     * 
+     * @param l the <code>WindowPaneListener</code> to remove
+     */
+    public void removeWindowPaneListener(WindowPaneListener l) {
+        if (!hasEventListenerList()) {
+            return;
+        }
+        getEventListenerList().removeListener(WindowPaneListener.class, l);
+    }
+    
+    /**
      * Sets the background image of the <code>WindowPane</code>.
      * 
      * @param newValue the new background image
@@ -626,8 +649,18 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
+     * Sets the spacing between the window control icons
+     * (e.g., close, minimize, and maximize buttons).
+     * 
+     * @param newValue the new controls spacing
+     */
+    public void setControlsSpacing(Extent newValue) {
+        set(PROPERTY_CONTROLS_SPACING, newValue);
+    }
+    
+    /**
      * Sets the inset margin around the window controls 
-     * (e.g., close, minimize, and maximize buttons)
+     * (e.g., close, minimize, and maximize buttons).
      * 
      * @param newValue the new inset margin
      */
@@ -916,18 +949,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
         int oldValue = zIndex;
         zIndex = newValue;
         firePropertyChange(Z_INDEX_CHANGED_PROPERTY, new Integer(oldValue), new Integer(newValue));
-    }
-    
-    /**
-     * Removes a <code>WindowPaneListener</code> from receiving event notifications.
-     * 
-     * @param l the <code>WindowPaneListener</code> to remove
-     */
-    public void removeWindowPaneListener(WindowPaneListener l) {
-        if (!hasEventListenerList()) {
-            return;
-        }
-        getEventListenerList().removeListener(WindowPaneListener.class, l);
     }
     
     /**

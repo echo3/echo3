@@ -10,10 +10,11 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         CURSORS: ["nw-resize", "n-resize", "ne-resize", "w-resize", "e-resize", "sw-resize", "s-resize", "se-resize"],
         FIB_POSITIONS: ["topLeft", "top", "topRight", "left", "right", "bottomLeft", "bottom", "bottomRight"],
         PARTIAL_PROPERTIES: {background: true, backgroundImage: true, border: true, closable: true, closeIcon: true, 
-                closeIconInsets: true, font: true, foreground: true, height: true, icon: true, iconInsets: true, insets: true, 
-                maximizeEnabled: true, maximizeIcon: true, maximumHeight: true, maximumWidth: true, minimizeEnabled: true, 
-                minimizeIcon: true, minimumHeight: true, minimumWidth: true, movable: true, positionX: true, positionY: true, 
-                resizable: true, title: true, titleBackground: true, titleBackgroundImage: true, titleFont: true, 
+                closeIconInsets: true, controlsInsets: true, font: true, foreground: true, height: true, icon: true, 
+                iconInsets: true, insets: true, maximizeEnabled: true, maximizeIcon: true, maximumHeight: true, 
+                maximumWidth: true, minimizeEnabled: true, minimizeIcon: true, minimumHeight: true, 
+                minimumWidth: true, movable: true, positionX: true, positionY: true, resizable: true, title: true, 
+                titleBackground: true, titleBackgroundImage: true, titleFont: true, 
                 titleForeground: true, titleHeight: true, titleInsets: true, width: true },  
         PARTIAL_PROPERTIES_POSITION_SIZE: { positionX: true, positionY: true, width: true, height: true },
         adjustOpacity: false
@@ -121,8 +122,10 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             contentHeight: this.component.render("contentHeight")
         };
         
-        this._requested.width = this.component.render("width", this._requested.contentWidth ? null : Echo.WindowPane.DEFAULT_WIDTH);
-        this._requested.height = this.component.render("height", this._requested.contentHeight ? null : Echo.WindowPane.DEFAULT_HEIGHT);
+        this._requested.width = this.component.render("width", 
+                this._requested.contentWidth ? null : Echo.WindowPane.DEFAULT_WIDTH);
+        this._requested.height = this.component.render("height", 
+                this._requested.contentHeight ? null : Echo.WindowPane.DEFAULT_HEIGHT);
     },
 
     _loadContainerSize: function() {
@@ -610,7 +613,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
 
     _renderControlIcon: function(icon, rolloverIcon, pressedIcon, altText, insets, eventMethod) {
         var controlIcon = document.createElement("div");
-        controlIcon.style.cssText = "float:right;cursor:pointer;margin-left:5px;";
+        controlIcon.style.cssText = "float:right;cursor:pointer;margin-left:"
+                + Echo.Sync.Extent.toCssValue(this.component.render("controlsSpacing", Echo.WindowPane.DEFAULT_CONTROLS_SPACING));
         Echo.Sync.Insets.render(insets, controlIcon, "padding");
         if (icon) {
             var img = document.createElement("img");

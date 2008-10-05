@@ -265,6 +265,16 @@ public class WindowPaneTest extends SplitPane {
                 windowPane.setResizable(!windowPane.isResizable());
             }
         });        
+        controlsColumn.addButton("Toggle Maximize Enabled", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setMaximizeEnabled(!windowPane.isMaximizeEnabled());
+            }
+        });        
+        controlsColumn.addButton("Toggle Minimize Enabled", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setMinimizeEnabled(!windowPane.isMinimizeEnabled());
+            }
+        });
         
         // Title-Related Properties
         
@@ -346,6 +356,16 @@ public class WindowPaneTest extends SplitPane {
         controlsColumn.addButton("Clear Title Font", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.setTitleFont(null);
+            }
+        });
+        controlsColumn.addButton("Set Controls Spacing", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setControlsSpacing(new Extent(((int) (Math.random() * 24)) + 24));
+            }
+        });
+        controlsColumn.addButton("Clear Controls Spacing", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setControlsSpacing(null);
             }
         });
 

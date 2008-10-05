@@ -3040,6 +3040,7 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * @sp {Boolean} closable flag indicating whether the window is closable
  * @sp {#ImageReference} closeIcon the close button icon
  * @sp {#Insets} controlsInsets the inset margin around the controls area
+ * @sp {#Extent} controlsSpacing the spacing between controls in the controls area
  * @sp {#Insets} closeIconInsets the inset margin around the close button icon
  * @sp {#Insets} maximizeIconInsets the inset margin around the maximize button icon
  * @sp {#Insets} minimizeIconInsets the inset margin around the minimize button icon
@@ -3083,6 +3084,7 @@ Echo.WindowPane = Core.extend(Echo.Component, {
         DEFAULT_BACKGROUND: "#ffffff",
         DEFAULT_FOREGROUND: "#000000",
         DEFAULT_CONTROLS_INSETS: 4,
+        DEFAULT_CONTROLS_SPACING: 4,
         DEFAULT_HEIGHT: "15em",
         DEFAULT_MINIMUM_WIDTH: 100,
         DEFAULT_MINIMUM_HEIGHT: 100,
