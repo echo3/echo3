@@ -654,7 +654,9 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.Event.removeAll(this._div);
 
         for (var i = 0; i < this._borderDivs.length; ++i) {
-            Core.Web.Event.removeAll(this._borderDivs[i]);
+            if (this._borderDivs[i]) {
+                Core.Web.Event.removeAll(this._borderDivs[i]);
+            }
         }
         this._borderDivs = null;
         
