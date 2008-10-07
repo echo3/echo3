@@ -119,15 +119,15 @@ Echo.Sync.Border = {
      * Regular expression to validate/parse a CSS border expression, e.g., "1px solid #abcdef".
      * Supports omission of any term, or empty strings.
      */
-    _PARSER_PX: new RegExp("^(-?\\d+px)?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|" 
-            + "double|groove|ridge|inset|outset)?(?:^|$|(?= )) ?(#[0-9a-fA-F]{6})?$"),
+    _PARSER_PX: new RegExp("^(-?\\d+px)?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|" + 
+            "double|groove|ridge|inset|outset)?(?:^|$|(?= )) ?(#[0-9a-fA-F]{6})?$"),
 
     /**
      * Regular expression to validate/parse a pixel-based CSS border expression, e.g., "1px solid #abcdef".
      * Supports omission of any term, or empty strings.
      */
-    _PARSER: new RegExp("^(-?\\d+(?:px|pt|pc|cm|mm|in|em|ex))?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|"
-            + "double|groove|ridge|inset|outset)?(?:^|$|(?= )) ?(#[0-9a-fA-F]{6})?$"),
+    _PARSER: new RegExp("^(-?\\d+(?:px|pt|pc|cm|mm|in|em|ex))?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|" +
+            "double|groove|ridge|inset|outset)?(?:^|$|(?= )) ?(#[0-9a-fA-F]{6})?$"),
             
     _TEST_EXTENT_PX: /^(-?\d+px*)$/,
     
@@ -154,10 +154,10 @@ Echo.Sync.Border = {
         }
         if (typeof(border) == "string") {
             var parts = this._PARSER.exec(border);
-            return { size: parts[1], style: parts[2], color: parts[3] } 
+            return { size: parts[1], style: parts[2], color: parts[3] }; 
         } else {
             // FIXME support multisided borders.
-            return { }
+            return { };
         }
     },
 
@@ -208,7 +208,7 @@ Echo.Sync.Border = {
             if (extent == null) {
                 return 0;
             } else if (this._TEST_EXTENT_PX.test(extent)) {
-                return parseInt(extent);
+                return parseInt(extent, 10);
             } else {
                 return Echo.Sync.Extent.toPixels(extent);
             }
@@ -255,13 +255,13 @@ Echo.Sync.Color = {
      */
     adjust: function(value, r, g, b) {
         var colorInt = parseInt(value.substring(1), 16);
-        var red = parseInt(colorInt / 0x10000) + r;
+        var red = Math.floor(colorInt / 0x10000) + r;
         if (red < 0) {
             red = 0;
         } else if (red > 255) {
             red = 255;
         }
-        var green = parseInt(colorInt / 0x100) % 0x100 + g;
+        var green = Math.floor(colorInt / 0x100) % 0x100 + g;
         if (green < 0) {
             green = 0;
         } else if (green > 255) {
@@ -273,9 +273,9 @@ Echo.Sync.Color = {
         } else if (blue > 255) {
             blue = 255;
         }
-        return "#" + (red < 16 ? "0" : "") + red.toString(16)
-                + (green < 16 ? "0" : "") + green.toString(16)
-                + (blue < 16 ? "0" : "") + blue.toString(16); 
+        return "#" + (red < 16 ? "0" : "") + red.toString(16) +
+                (green < 16 ? "0" : "") + green.toString(16) +
+                (blue < 16 ? "0" : "") + blue.toString(16); 
     },
 
     render: function(color, element, styleProperty) {
@@ -290,10 +290,10 @@ Echo.Sync.Color = {
     
     renderFB: function(component, element) { 
         var color;
-        if (color = component.render("foreground")) {
+        if ((color = component.render("foreground"))) {
             element.style.color = color;
         }
-        if (color = component.render("background")) {
+        if ((color = component.render("background"))) {
             element.style.backgroundColor = color;
         }
     }
@@ -328,7 +328,6 @@ Echo.Sync.Extent = {
         switch(typeof(extent)) {
             case "number":
                 return extent + "px";
-                break;
             case "string":
                 if (this._FORMATTED_PIXEL_TEST.test(extent)) {
                     return extent;
@@ -427,8 +426,7 @@ Echo.Sync.FillImage = {
         if (Core.Web.Env.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED &&
                 flags && (flags & this.FLAG_ENABLE_IE_PNG_ALPHA_FILTER)) {
             // IE6 PNG workaround required.
-            element.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" 
-                + url + "', sizingMethod='scale')";
+            element.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + url + "', sizingMethod='scale')";
         } else {
             // IE6 PNG workaround not required.
             element.style.backgroundImage = "url(" + url + ")";
@@ -585,8 +583,8 @@ Echo.Sync.Insets = {
                     element.style[styleAttribute] = insets;
                 } else {
                     var pixelInsets = this.toPixels(insets);
-                    element.style[styleAttribute] = pixelInsets.top + "px " + pixelInsets.right + "px "
-                            + pixelInsets.bottom + "px " + pixelInsets.left + "px";
+                    element.style[styleAttribute] = pixelInsets.top + "px " + pixelInsets.right + "px " +
+                            pixelInsets.bottom + "px " + pixelInsets.left + "px";
                 }
                 break;
         }
@@ -596,14 +594,13 @@ Echo.Sync.Insets = {
         switch(typeof(insets)) {
             case "number":
                 return insets + "px";
-                break;
             case "string":
                 if (this._FORMATTED_PIXEL_INSETS.test(insets)) {
                     return insets;
                 } else {
                     var pixelInsets = this.toPixels(insets);
-                    return pixelInsets.top + "px " + pixelInsets.right + "px "
-                            + pixelInsets.bottom + "px " + pixelInsets.left + "px";
+                    return pixelInsets.top + "px " + pixelInsets.right + "px " +
+                            pixelInsets.bottom + "px " + pixelInsets.left + "px";
                 }
                 break;
         }
@@ -863,7 +860,7 @@ Echo.Sync.TriCellTable = Core.extend({
         if (margin0_1) {
             this.marginTdElements[0] = document.createElement("td");
             this.marginTdElements[0].style.padding = "0";
-            if ((orientation0_1 & Echo.Sync.TriCellTable.VERTICAL) == 0) {
+            if ((orientation0_1 & Echo.Sync.TriCellTable.VERTICAL) === 0) {
                 this.marginTdElements[0].style.width = margin0_1 + "px";
                 this.addSpacer(this.marginTdElements[0], margin0_1, false);
             } else {
@@ -1020,7 +1017,7 @@ Echo.Sync.TriCellTable = Core.extend({
                 
                 // Render 01
                 trElement = document.createElement("tr");
-                if ((orientation0_1 & Echo.Sync.TriCellTable.INVERTED) == 0) {
+                if ((orientation0_1 & Echo.Sync.TriCellTable.INVERTED) === 0) {
                     // normal (left to right)
                     this.addColumn(trElement, this.tdElements[0]);
                     this.addColumn(trElement, this.marginTdElements[0]);
