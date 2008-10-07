@@ -177,7 +177,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
      * @type Number 
      */
     _getInsetsSizeAdjustment: function(position, layoutData) {
-        if (!layoutData || layoutData.insets == null || layoutDataInsets == 0) {
+        if (!layoutData || layoutData.insets == null) {
             return 0;
         }
         var layoutDataInsets = Echo.Sync.Insets.toPixels(layoutData.insets);
