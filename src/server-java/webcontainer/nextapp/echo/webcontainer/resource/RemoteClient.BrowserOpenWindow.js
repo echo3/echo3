@@ -18,14 +18,14 @@ Echo.RemoteClient.CommandExec.BrowserOpenWindow = {
         var features = [];
         if (commandData.width) {
             if (Echo.Sync.Extent.isPercent(commandData.width)) {
-                features.push("width=" + screen.width * parseInt(commandData.width) / 100);
+                features.push("width=" + screen.width * parseInt(commandData.width, 10) / 100);
             } else {
                 features.push("width=" + Echo.Sync.Extent.toPixels(commandData.width, true));
             }
         }
         if (commandData.height) {
             if (Echo.Sync.Extent.isPercent(commandData.height)) {
-                features.push("height=" + screen.height * parseInt(commandData.height) / 100);
+                features.push("height=" + screen.height * parseInt(commandData.height, 10) / 100);
             } else {
                 features.push("height=" + Echo.Sync.Extent.toPixels(commandData.height, false));
             }
