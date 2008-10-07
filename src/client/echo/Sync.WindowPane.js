@@ -405,7 +405,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         var fillImageFlags = this.component.render("ieAlphaRenderBorder") ? Echo.Sync.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER : 0;
         
         this._div.style.cssText = "outline-style:none;position:absolute;z-index:1;overflow:hidden;";
-        Echo.Sync.Font.render(this.component.render("font"), this._div);
         
         this._borderDivs = new Array(8);
         
@@ -598,6 +597,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 (this._contentInsets.top + this._titleBarHeight) + "px;bottom:" + this._contentInsets.bottom + "px;left:" + 
                 this._contentInsets.left + "px;right:" + this._contentInsets.right + "px;" +
                 "overflow:"+ ((this.component.children.length === 0 || this.component.children[0].pane) ? "hidden;" : "auto;");
+        Echo.Sync.Font.renderClear(this.component.render("font"), this._contentDiv);
         if (this.component.children.length > 0 && !this.component.children[0].pane) {
             Echo.Sync.Insets.render(this.component.render("insets"), this._contentDiv, "padding");
         }
