@@ -344,7 +344,8 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
     _processKeyPress: function(e) { 
         var focusPrevious,
             focusedComponent,
-            focusFlags;
+            focusFlags,
+            focusChild;
         switch (e.keyCode) {
         case 37:
         case 39:

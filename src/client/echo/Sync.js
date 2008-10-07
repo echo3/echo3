@@ -1006,7 +1006,7 @@ Echo.Sync.TriCellTable = Core.extend({
                 var columns = margin0_1 ? 3 : 2;
                 this.tdElements[2].setAttribute("colspan", columns);
                 if (this.marginTdElements[1] != null) {
-                    this.marginTdElements[1].setAttribute("colspan", Integer.toString(columns));
+                    this.marginTdElements[1].setAttribute("colspan", columns);
                 }
                 
                 if (orientation01_2 & Echo.Sync.TriCellTable.INVERTED) {
