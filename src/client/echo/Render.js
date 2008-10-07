@@ -193,10 +193,10 @@ Echo.Render = {
         var updates = updateManager.getUpdates();
         updates.sort(Echo.Render._componentDepthArraySort);
         
-        var peer;
+        var peer, i, j;
     
         // Load peers for any new root components being updated.
-        for (var i = 0; i < updates.length; ++i) {
+        for (i = 0; i < updates.length; ++i) {
             updates[i].renderContext = {};
         
             peer = updates[i].parent.peer;
@@ -206,7 +206,7 @@ Echo.Render = {
         }
     
         // Remove Phase: Invoke renderDispose on all updates.
-        for (var i = updates.length - 1; i >= 0; --i) {
+        for (i = updates.length - 1; i >= 0; --i) {
             if (updates[i] == null) {
                 // Skip removed updates.
                 continue;
@@ -221,14 +221,14 @@ Echo.Render = {
         }
         
         // Update Phase: Invoke renderUpdate on all updates.
-        for (var i = 0; i < updates.length; ++i) {
+        for (i = 0; i < updates.length; ++i) {
             if (updates[i] == null) {
                 // The update has been removed, skip it.
                 continue;
             }
             
             // Obtain component synchronization peer.
-            var peer = updates[i].parent.peer;
+            peer = updates[i].parent.peer;
             
             // Perform update by invoking peer's renderUpdate() method.
             var fullRender = peer.renderUpdate(updates[i]);
@@ -236,7 +236,7 @@ Echo.Render = {
             // If the update required re-rendering descendants of the updated component,
             // null-out any pending updates to descendant components.
             if (fullRender) {
-                for (var j = i + 1; j < updates.length; ++j) {
+                for (j = i + 1; j < updates.length; ++j) {
                     if (updates[j] != null && updates[i].parent.isAncestorOf(updates[j].parent)) {
                         updates[j] = null;
                     }
@@ -254,7 +254,7 @@ Echo.Render = {
         }
         
         // Display Phase: Invoke renderDisplay on all updates.
-        for (var i = 0; i < updates.length; ++i) {
+        for (i = 0; i < updates.length; ++i) {
             if (updates[i] == null) {
                 // Skip removed updates.
                 continue;
@@ -264,7 +264,7 @@ Echo.Render = {
             if (updates[i].renderContext.displayRequired) {
                 // The renderContext has specified only certain child components should have their
                 // renderDisplay() methods invoked.
-                for (var j = 0; j < updates[i].renderContext.displayRequired.length; ++j) {
+                for (j = 0; j < updates[i].renderContext.displayRequired.length; ++j) {
                     Echo.Render._doRenderDisplay(updates[i].renderContext.displayRequired[j], true);
                 }
             } else {
@@ -318,9 +318,9 @@ Echo.Render = {
      */
     renderComponentAdd: function(update, component, parentElement) {
         if (!component.parent || !component.parent.peer || !component.parent.peer.client) {
-            throw new Error("Cannot find reference to the Client with which this component should be associated: "
-                    + "cannot load peer.  This is due to the component's parent's peer not being associated with a Client. "
-                    + "Component = " + component);
+            throw new Error("Cannot find reference to the Client with which this component should be associated: " +
+                    "cannot load peer.  This is due to the component's parent's peer not being associated with a Client. " +
+                    "Component = " + component);
         }
     
         Echo.Render._loadPeer(component.parent.peer.client, component);
