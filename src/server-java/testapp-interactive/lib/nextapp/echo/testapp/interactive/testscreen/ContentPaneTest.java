@@ -31,6 +31,7 @@ package nextapp.echo.testapp.interactive.testscreen;
 
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
+import nextapp.echo.app.Column;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FloatingPane;
@@ -122,6 +123,29 @@ public class ContentPaneTest extends SplitPane {
             public void actionPerformed(ActionEvent e) {
                 removeAllContent(testContentPane);
                 testContentPane.add(new Label(StyleUtil.QUASI_LATIN_TEXT_1 + StyleUtil.QUASI_LATIN_TEXT_1));
+            }
+        });
+        controlsColumn.addButton("Add Long Label w/ Horizontal Scrolling", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                removeAllContent(testContentPane);
+                Column column = new Column();
+
+                Label label = new Label(StyleUtil.QUASI_LATIN_TEXT_1 + StyleUtil.QUASI_LATIN_TEXT_1);
+                label.setLineWrap(false);
+                column.add(label);
+
+                label = new Label(StyleUtil.QUASI_LATIN_TEXT_1 + StyleUtil.QUASI_LATIN_TEXT_1);
+                column.add(label);
+                
+                label = new Label(StyleUtil.QUASI_LATIN_TEXT_1 + StyleUtil.QUASI_LATIN_TEXT_1);
+                label.setLineWrap(false);
+                column.add(label);
+                
+                label = new Label(StyleUtil.QUASI_LATIN_TEXT_1 + StyleUtil.QUASI_LATIN_TEXT_1);
+                label.setLineWrap(false);
+                column.add(label);
+                
+                testContentPane.add(column);
             }
         });
         controlsColumn.addButton("Add SplitPane", new ActionListener() {
@@ -231,6 +255,16 @@ public class ContentPaneTest extends SplitPane {
                 testContentPane.setHorizontalScroll(new Extent(100));
             }
         });
+        controlsColumn.addButton("Set Horizontal Scroll = 25%", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testContentPane.setHorizontalScroll(new Extent(25, Extent.PERCENT));
+            }
+        });
+        controlsColumn.addButton("Set Horizontal Scroll = 50%", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testContentPane.setHorizontalScroll(new Extent(50, Extent.PERCENT));
+            }
+        });
         controlsColumn.addButton("Set Horizontal Scroll = End (-1)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testContentPane.setHorizontalScroll(new Extent(-1));
@@ -255,6 +289,16 @@ public class ContentPaneTest extends SplitPane {
         controlsColumn.addButton("Set Vertical Scroll = 100", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testContentPane.setVerticalScroll(new Extent(100));
+            }
+        });
+        controlsColumn.addButton("Set Vertical Scroll = 25%", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testContentPane.setVerticalScroll(new Extent(25, Extent.PERCENT));
+            }
+        });
+        controlsColumn.addButton("Set Vertical Scroll = 50%", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testContentPane.setVerticalScroll(new Extent(50, Extent.PERCENT));
             }
         });
         controlsColumn.addButton("Set Vertical Scroll = End (-1)", new ActionListener() {
