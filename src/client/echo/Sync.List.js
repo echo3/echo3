@@ -13,7 +13,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
     $abstract: true,
     
     $virtual: {
-        listBox: false,
+        listBox: false
     },
 
     _hasRenderedSelectedItems: false,

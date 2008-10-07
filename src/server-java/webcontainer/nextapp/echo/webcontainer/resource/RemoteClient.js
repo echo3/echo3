@@ -1027,7 +1027,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                 if (!translator) {
                     throw new Error("Translator not available for property type: " + propertyType);
                 }
-                propertyValue = translator.toProperty(this._client, propertyElement);
+                var propertyValue = translator.toProperty(this._client, propertyElement);
                 if (!this._referenceMap) {
                     this._referenceMap = {};
                 }

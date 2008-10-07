@@ -435,7 +435,7 @@ Echo.Serial.Border = {
             var element = Core.Web.DOM.getChildElementByTagName(pElement, "b");
             var border = {};
             
-            value = element.getAttribute("t");
+            var value = element.getAttribute("t");
             if (value) {
                 border.top = value;
                 value = element.getAttribute("r");
