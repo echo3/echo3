@@ -134,7 +134,7 @@ Echo.Client = Core.extend({
          */
         verifyInput: function(component, flags) {
             // Check for input restrictions.
-            if (this._inputRestrictionCount != 0) {
+            if (this._inputRestrictionCount !== 0) {
                 if (!flags & Echo.Client.FLAG_INPUT_PROPERTY) {
                     // Input is not a property update, automatically return false if any input restrictions pressent.
                     return false;
