@@ -8,7 +8,7 @@
  * Namespace for application-rendered component support.
  * @namespace
  */
-Echo.Arc = function() { }
+Echo.Arc = function() { };
 
 /**
  * Client for application-rendered components.
