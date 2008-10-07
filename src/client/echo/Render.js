@@ -192,12 +192,14 @@ Echo.Render = {
         // updates if they require re-rendering their descendants.
         var updates = updateManager.getUpdates();
         updates.sort(Echo.Render._componentDepthArraySort);
+        
+        var peer;
     
-        // Load peers for any root components being updated.
+        // Load peers for any new root components being updated.
         for (var i = 0; i < updates.length; ++i) {
             updates[i].renderContext = {};
         
-            var peers = updates[i].parent.peer;
+            peer = updates[i].parent.peer;
             if (peer == null && updates[i].parent.componentType == "Root") {
                 Echo.Render._loadPeer(client, updates[i].parent);
             }
@@ -209,7 +211,7 @@ Echo.Render = {
                 // Skip removed updates.
                 continue;
             }
-            var peer = updates[i].parent.peer;
+            peer = updates[i].parent.peer;
             Echo.Render._processDispose(updates[i]);
         }
         
