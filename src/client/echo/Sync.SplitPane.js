@@ -41,13 +41,15 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
                     // (because they are pixel rather percent-based.
                     return;
                 }
+                
+                var size;
                 this._permanentSizes = true;
                 if (this.layoutData) {
                     if (this.layoutData.minimumSize) {
                         if (Echo.Sync.Extent.isPercent(this.layoutData.minimumSize)) {
-                            var size = this._peer._getSize();
-                            this.minimumSize = Math.round((this._peer._orientationVertical ? size.height : size.width)
-                                    * parseInt(this.layoutData.minimumSize) / 100);
+                            size = this._peer._getSize();
+                            this.minimumSize = Math.round((this._peer._orientationVertical ? size.height : size.width) *
+                                    parseInt(this.layoutData.minimumSize, 10) / 100);
                             this._permanentSizes = false;
                         } else {
                             this.minimumSize = Math.round(Echo.Sync.Extent.toPixels(this.layoutData.minimumSize, 
@@ -56,9 +58,9 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
                     }
                     if (this.layoutData.maximumSize) {
                         if (Echo.Sync.Extent.isPercent(this.layoutData.maximumSize)) {
-                            var size = this._peer._getSize();
-                            this.maximumSize = Math.round((this._peer._orientationVertical ? size.height : size.width)
-                                    * parseInt(this.layoutData.maximumSize) / 100);
+                            size = this._peer._getSize();
+                            this.maximumSize = Math.round((this._peer._orientationVertical ? size.height : size.width) *
+                                    parseInt(this.layoutData.maximumSize, 10) / 100);
                             this._permanentSizes = false;
                         } else {
                             this.maximumSize = Math.round(Echo.Sync.Extent.toPixels(this.layoutData.maximumSize, 
@@ -194,7 +196,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     getPreferredSize: function(dimension) {
-        if (this.component.children.length == 0) {
+        if (this.component.children.length === 0) {
             return null;
         }
         
@@ -279,8 +281,8 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         var childCount = this.component.getComponentCount();
         var newChild0 = childCount > 0 ? this.component.getComponent(0) : null;
         var newChild1 = childCount > 1 ? this.component.getComponent(1) : null;
-        return (oldChild0 != null && oldChild0 == newChild1) 
-                || (oldChild1 != null && oldChild1 == newChild0);
+        return (oldChild0 != null && oldChild0 == newChild1) || 
+                (oldChild1 != null && oldChild1 == newChild0);
     },
 
     /**
@@ -334,18 +336,16 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         this._autoPositioned = this.component.render("autoPositioned");
         this._requested = this.component.render("separatorPosition");
 
-        var defaultSeparatorSize = this._resizable ? Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE 
-                : Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED
+        var defaultSeparatorSize = this._resizable ? Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE : 
+                Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED;
         var separatorSizeExtent = this.component.render(
-                this._orientationVertical ? "separatorHeight" : "separatorWidth", 
-                defaultSeparatorSize);
+                this._orientationVertical ? "separatorHeight" : "separatorWidth", defaultSeparatorSize);
         this._separatorSize = Echo.Sync.Extent.toPixels(separatorSizeExtent, this._orientationVertical);
         if (this._separatorSize == null) {
             this._separatorSize = defaultSeparatorSize;
         }
         
-        this._separatorVisible = this._resizable 
-                || (this.component.render("separatorVisible", true) && this._separatorSize > 0);
+        this._separatorVisible = this._resizable || (this.component.render("separatorVisible", true) && this._separatorSize > 0);
     },
     
     /**
@@ -367,17 +367,21 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     },
 
     _processKeyPress: function(e) {
+        var focusPrevious,
+            focusedComponent,
+            focusFlags,
+            focusChild;
         switch (e.keyCode) {
         case 37:
         case 39:
             if (!this._orientationVertical) {
-                var focusPrevious = (e.keyCode == 37) ^ (!this._orientationTopLeft);
-                var focusedComponent = this.component.application.getFocusedComponent();
+                focusPrevious = (e.keyCode == 37) ^ (!this._orientationTopLeft);
+                focusedComponent = this.component.application.getFocusedComponent();
                 if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
-                    var focusFlags = focusedComponent.peer.getFocusFlags();
-                    if ((focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_LEFT)
-                            || (!focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT)) {
-                        var focusChild = this.component.application.focusManager.findInParent(this.component, focusPrevious);
+                    focusFlags = focusedComponent.peer.getFocusFlags();
+                    if ((focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_LEFT) || 
+                            (!focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT)) {
+                        focusChild = this.component.application.focusManager.findInParent(this.component, focusPrevious);
                         if (focusChild) {
                             this.component.application.setFocusedComponent(focusChild);
                             Core.Web.DOM.preventEventDefault(e);
@@ -390,13 +394,13 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         case 38:
         case 40:
             if (this._orientationVertical) {
-                var focusPrevious = (e.keyCode == 38) ^ (!this._orientationTopLeft);
-                var focusedComponent = this.component.application.getFocusedComponent();
+                focusPrevious = (e.keyCode == 38) ^ (!this._orientationTopLeft);
+                focusedComponent = this.component.application.getFocusedComponent();
                 if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
-                    var focusFlags = focusedComponent.peer.getFocusFlags();
-                    if ((focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_UP)
-                            || (!focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_DOWN)) {
-                        var focusChild = this.component.application.focusManager.findInParent(this.component, focusPrevious);
+                    focusFlags = focusedComponent.peer.getFocusFlags();
+                    if ((focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_UP) ||
+                            (!focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_DOWN)) {
+                        focusChild = this.component.application.focusManager.findInParent(this.component, focusPrevious);
                         if (focusChild) {
                             this.component.application.setFocusedComponent(focusChild);
                             Core.Web.DOM.preventEventDefault(e);
@@ -432,9 +436,9 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     
     _processSeparatorMouseMove: function(e) {
         var mousePosition = this._orientationVertical ? e.clientY : e.clientX;
-        this._rendered = this._getBoundedSeparatorPosition(this._orientationTopLeft
-                ? this._dragInitPosition + mousePosition - this._dragInitMouseOffset
-                : this._dragInitPosition - mousePosition + this._dragInitMouseOffset);
+        this._rendered = this._getBoundedSeparatorPosition(this._orientationTopLeft ?
+                this._dragInitPosition + mousePosition - this._dragInitMouseOffset :
+                this._dragInitPosition - mousePosition + this._dragInitMouseOffset);
         this._redraw(this._rendered);
     },
     
@@ -467,14 +471,14 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         }
 
         var sizeAttr = this._orientationVertical ? "height" : "width";
-        var positionAttr = this._orientationVertical
-                ? (this._orientationTopLeft ? "top" : "bottom")
-                : (this._orientationTopLeft ? "left" : "right");
+        var positionAttr = this._orientationVertical ?
+                (this._orientationTopLeft ? "top" : "bottom") :
+                (this._orientationTopLeft ? "left" : "right");
         if (this._paneDivs[0]) {
             this._paneDivs[0].style[sizeAttr] = (position - insetsAdjustment) + "px";
         }
         if (this._paneDivs[1]) {
-            this._paneDivs[1].style[positionAttr] =  (position + this._separatorSize) + "px"
+            this._paneDivs[1].style[positionAttr] =  (position + this._separatorSize) + "px";
         }
         if (this._separatorDiv) {
             this._separatorDiv.style[positionAttr] = position + "px";
@@ -584,7 +588,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         if (this._orientationVertical) {
             paneDiv.style.left = 0;
             paneDiv.style.right = 0;
-            if ((this._orientationTopLeft && index == 0) || (!this._orientationTopLeft && index == 1)) {
+            if ((this._orientationTopLeft && index === 0) || (!this._orientationTopLeft && index == 1)) {
                 paneDiv.style.top = 0;
             } else {
                 paneDiv.style.bottom = 0;
@@ -592,7 +596,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         } else {
             paneDiv.style.top = "0";
             paneDiv.style.bottom = "0";
-            if ((this._orientationTopLeft && index == 0) || (!this._orientationTopLeft && index == 1)) {
+            if ((this._orientationTopLeft && index === 0) || (!this._orientationTopLeft && index == 1)) {
                 paneDiv.style.left = 0;
             } else {
                 paneDiv.style.right = 0;
@@ -656,7 +660,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         if (Echo.Sync.Extent.isPercent(position)) {
             // Convert percent position to integer value.
             var totalSize = this._orientationVertical ? this._getSize().height : this._getSize().width;
-            position = Math.round((parseInt(position) / 100) * totalSize);
+            position = Math.round((parseInt(position, 10) / 100) * totalSize);
         } else {
             // Convert non-percent extent position to integer position.
             position = Math.round(Echo.Sync.Extent.toPixels(position, !this._orientationVertical));
@@ -731,7 +735,8 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     },
         
     renderUpdate: function(update) {
-        var fullRender = false;
+        var fullRender = false,
+            i;
         
         if (this._hasRelocatedChildren()) {
             fullRender = true;
@@ -747,14 +752,14 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             var removedChildren = update.getRemovedChildren();
             if (removedChildren) {
                 // Remove children.
-                for (var i = 0; i < removedChildren.length; ++i) {
+                for (i = 0; i < removedChildren.length; ++i) {
                     this._renderRemoveChild(update, removedChildren[i]);
                 }
             }
             var addedChildren = update.getAddedChildren();
             if (addedChildren) {
                 // Add children.
-                for (var i = 0; i < addedChildren.length; ++i) {
+                for (i = 0; i < addedChildren.length; ++i) {
                     this._renderAddChild(update, addedChildren[i], this.component.indexOf(addedChildren[i])); 
                 }
             }
