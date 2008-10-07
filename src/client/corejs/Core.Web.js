@@ -117,8 +117,8 @@ Core.Web.DOM = {
         if (document.implementation && document.implementation.createDocument) {
             // DOM Level 2 Browsers
             var dom;
-            if (Core.Web.Env.BROWSER_FIREFOX && Core.Web.Env.BROWSER_MAJOR_VERSION == 3 
-                    && Core.Web.Env.BROWSER_MINOR_VERSION == 0) {
+            if (Core.Web.Env.BROWSER_FIREFOX && Core.Web.Env.BROWSER_MAJOR_VERSION == 3 &&
+                    Core.Web.Env.BROWSER_MINOR_VERSION === 0) {
                 // https://bugzilla.mozilla.org/show_bug.cgi?id=431701
                 dom = new DOMParser().parseFromString("<?xml version='1.0' encoding='UTF-8'?><" + qualifiedName + "/>",
                         "application/xml");
@@ -226,7 +226,7 @@ Core.Web.DOM = {
      *         indicating its upper-left corner
      */
     getEventOffset: function(e) {
-        if (typeof(e.offsetX) == "number") {
+        if (typeof e.offsetX == "number") {
             return { x: e.offsetX, y: e.offsetY };
         } else {
             var bounds = new Core.Web.Measure.Bounds(this.getEventTarget(e));
@@ -430,7 +430,7 @@ Core.Web.Env = {
         } else if (this.BROWSER_SAFARI) {
             this._parseVersionInfo(ua, "version/");
         } else if (this.BROWSER_MOZILLA) {
-            this._parseVersionInfo(ua, "rv:")
+            this._parseVersionInfo(ua, "rv:");
         } else if (this.BROWSER_KONQUEROR) {
             this._parseVersionInfo(ua, "konqueror/");
         }
@@ -528,11 +528,11 @@ Core.Web.Env = {
             }
         }
         
-        this.BROWSER_MAJOR_VERSION = parseInt(ua.substring(ix1 + searchString.length, ix2));
+        this.BROWSER_MAJOR_VERSION = parseInt(ua.substring(ix1 + searchString.length, ix2), 10);
         if (ix2 == ua.length) {
             this.BROWSER_MINOR_VERSION = 0;
         } else {
-            this.BROWSER_MINOR_VERSION = parseInt(ua.substring(ix2 + 1, ix3));
+            this.BROWSER_MINOR_VERSION = parseInt(ua.substring(ix2 + 1, ix3), 10);
         }
     }
 };
@@ -636,15 +636,14 @@ Core.Web.Event = {
         var listenerList;
         
         // Determine the Core.ListenerList to which the listener should be added.
-        if (element.__eventProcessorId == Core.Web.Event._lastId 
-                && capture == Core.Web.Event._lastCapture) {
+        if (element.__eventProcessorId == Core.Web.Event._lastId && 
+                capture == Core.Web.Event._lastCapture) {
             // If the 'element' and 'capture' properties are identical to those specified on the prior invocation
             // of this method, the correct listener list is stored in the '_lastListenerList' property. 
             listenerList = Core.Web.Event._lastListenerList; 
         } else {
             // Obtain correct id->ListenerList mapping based on capture parameter.
-            var listenerMap = capture ? Core.Web.Event._capturingListenerMap 
-                                      : Core.Web.Event._bubblingListenerMap;
+            var listenerMap = capture ? Core.Web.Event._capturingListenerMap : Core.Web.Event._bubblingListenerMap;
             
             // Obtain ListenerList based on element id.                              
             listenerList = listenerMap.map[element.__eventProcessorId];
@@ -678,7 +677,7 @@ Core.Web.Event = {
      */
     _processEvent: function(e) {
         e = e ? e : window.event;
-
+        
         if (!e.target && e.srcElement) {
             // The Internet Explorer event model stores the target element in the 'srcElement' property of an event.
             // Modify the event such the target is retrievable using the W3C DOM Level 2 specified property 'target'.
@@ -697,12 +696,10 @@ Core.Web.Event = {
             targetElement = targetElement.parentNode;
         }
 
-        var listenerList;
-
-        var propagate = true;
+        var listenerList, i, propagate = true;
 
         // Fire event to capturing listeners.
-        for (var i = elementAncestry.length - 1; i >= 0; --i) {
+        for (i = elementAncestry.length - 1; i >= 0; --i) {
             listenerList = Core.Web.Event._capturingListenerMap.map[elementAncestry[i].__eventProcessorId];
             if (listenerList) {
                 // Set registered target on event.
@@ -717,7 +714,7 @@ Core.Web.Event = {
 
         if (propagate) {
             // Fire event to bubbling listeners.
-            for (var i = 0; i < elementAncestry.length; ++i) {
+            for (i = 0; i < elementAncestry.length; ++i) {
                 listenerList = Core.Web.Event._bubblingListenerMap.map[elementAncestry[i].__eventProcessorId];
                 if (listenerList) {
                     // Set registered target on event.
@@ -752,8 +749,7 @@ Core.Web.Event = {
         }
     
         // Obtain correct id->ListenerList mapping based on capture parameter.
-        var listenerMap = capture ? Core.Web.Event._capturingListenerMap 
-                                  : Core.Web.Event._bubblingListenerMap;
+        var listenerMap = capture ? Core.Web.Event._capturingListenerMap : Core.Web.Event._bubblingListenerMap;
     
         // Obtain ListenerList based on element id.                              
         var listenerList = listenerMap.map[element.__eventProcessorId];
@@ -819,8 +815,7 @@ Core.Web.Event = {
      * @type String
      */
     toString: function() {
-        return "Capturing: " + Core.Web.Event._capturingListenerMap + "\n"
-                + "Bubbling: " + Core.Web.Event._bubblingListenerMap;
+        return "Capturing: " + Core.Web.Event._capturingListenerMap + "\n" + "Bubbling: " + Core.Web.Event._bubblingListenerMap;
     }
 };
 
@@ -1022,7 +1017,7 @@ Core.Web.HttpConnection = Core.extend({
             var responseEvent;
             try {
                 // 0 included as a valid response code for non-served applications.
-                var valid = this._xmlHttpRequest.status == 0 ||  
+                var valid = !this._xmlHttpRequest.status ||  
                         (this._xmlHttpRequest.status >= 200 && this._xmlHttpRequest.status <= 299);
                 responseEvent = {type: "response", source: this, valid: valid};
             } catch (ex) {
@@ -1440,8 +1435,8 @@ Core.Web.Measure = {
             _initMeasureContainer: function() {
                 // Create off-screen div element for evaluating sizes.
                 this._offscreenDiv = document.createElement("div");
-                this._offscreenDiv.style.cssText 
-                        = "position: absolute; top: -1300px; left: -1700px; width: 1600px; height: 1200px;";
+                this._offscreenDiv.style.cssText = 
+                        "position: absolute; top: -1300px; left: -1700px; width: 1600px; height: 1200px;";
                 document.body.appendChild(this._offscreenDiv);
             }
         },
@@ -1584,10 +1579,11 @@ Core.Web.Scheduler = {
         
         var currentTime = new Date().getTime();
         var nextInterval = Number.MAX_VALUE;
+        var i, runnable;
         
         // Execute pending runnables.
-        for (var i = 0; i < Core.Web.Scheduler._runnables.length; ++i) {
-            var runnable = Core.Web.Scheduler._runnables[i];
+        for (i = 0; i < Core.Web.Scheduler._runnables.length; ++i) {
+            runnable = Core.Web.Scheduler._runnables[i];
             if (runnable && runnable._nextExecution && runnable._nextExecution <= currentTime) {
                 runnable._nextExecution = null;
                 try {
@@ -1599,8 +1595,8 @@ Core.Web.Scheduler = {
         }
 
         var newRunnables = [];
-        for (var i = 0; i < Core.Web.Scheduler._runnables.length; ++i) {
-            var runnable = Core.Web.Scheduler._runnables[i];
+        for (i = 0; i < Core.Web.Scheduler._runnables.length; ++i) {
+            runnable = Core.Web.Scheduler._runnables[i];
             if (runnable == null) {
                 continue;
             }
@@ -1802,7 +1798,7 @@ Core.Web.VirtualPosition = {
                 if (value.toString().indexOf("px") == -1) {
                     return -1;
                 }
-                offsets += parseInt(value);
+                offsets += parseInt(value, 10);
             }
         }
         return offsets;
@@ -1831,6 +1827,8 @@ Core.Web.VirtualPosition = {
         if (!element || !element.parentNode) {
             return;
         }
+        
+        var offsets;
     
         // Adjust 'height' property if 'top' and 'bottom' properties are set, 
         // and if all padding/margin/borders are 0 or set in pixel units.
@@ -1840,9 +1838,10 @@ Core.Web.VirtualPosition = {
             // the element is no longer hierarchy.
             var offsetHeight = element.parentNode.offsetHeight;
             if (!isNaN(offsetHeight)) {
-                var offsets = this._calculateOffsets(this._OFFSETS_VERTICAL, element.style);
+                offsets = this._calculateOffsets(this._OFFSETS_VERTICAL, element.style);
                 if (offsets != -1) {
-                    var calculatedHeight = offsetHeight - parseInt(element.style.top) - parseInt(element.style.bottom) - offsets;
+                    var calculatedHeight = offsetHeight - parseInt(element.style.top, 10) - 
+                            parseInt(element.style.bottom, 10) - offsets;
                     if (calculatedHeight <= 0) {
                         element.style.height = 0;
                     } else {
@@ -1862,9 +1861,10 @@ Core.Web.VirtualPosition = {
             // the element is no longer hierarchy.
             var offsetWidth = element.parentNode.offsetWidth;
             if (!isNaN(offsetWidth)) {
-                var offsets = this._calculateOffsets(this._OFFSETS_HORIZONTAL, element.style);
+                offsets = this._calculateOffsets(this._OFFSETS_HORIZONTAL, element.style);
                 if (offsets != -1) {
-                    var calculatedWidth = offsetWidth - parseInt(element.style.left) - parseInt(element.style.right) - offsets;
+                    var calculatedWidth = offsetWidth - parseInt(element.style.left, 10) - 
+                            parseInt(element.style.right, 10) - offsets;
                     if (calculatedWidth <= 0) {
                         element.style.width = 0;
                     } else {
@@ -1885,7 +1885,7 @@ Core.Web.VirtualPosition = {
      * @return true if the value is a pixel dimension, false if it is not
      */
     _verifyPixelValue: function(value) {
-        if (value == null || value == "") {
+        if (value == null || value === "") {
             return false;
         }
         var valueString = value.toString();
