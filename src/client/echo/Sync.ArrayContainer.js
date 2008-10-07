@@ -124,7 +124,7 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
     },
 
     renderUpdate: function(update) {
-        var fullRender = false;
+        var i, fullRender = false;
         if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()) {
             // Full render
             fullRender = true;
@@ -132,14 +132,14 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
             var removedChildren = update.getRemovedChildren();
             if (removedChildren) {
                 // Remove children.
-                for (var i = 0; i < removedChildren.length; ++i) {
+                for (i = 0; i < removedChildren.length; ++i) {
                     this.renderRemoveChild(update, removedChildren[i]);
                 }
             }
             var addedChildren = update.getAddedChildren();
             if (addedChildren) {
                 // Add children.
-                for (var i = 0; i < addedChildren.length; ++i) {
+                for (i = 0; i < addedChildren.length; ++i) {
                     this.renderAddChild(update, addedChildren[i], this.component.indexOf(addedChildren[i])); 
                 }
             }

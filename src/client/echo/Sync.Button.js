@@ -264,7 +264,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     
     _renderButtonText: function(element, text) {
         this._textElement = element;
-        var textAlignment = this.component.render("textAlignment") 
+        var textAlignment = this.component.render("textAlignment"); 
         if (textAlignment) {
             Echo.Sync.Alignment.render(textAlignment, element, true, this.component);
         }
@@ -281,7 +281,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _renderButtonIcon: function(element, icon) {
-        var alignment = this.component.render("alignment") 
+        var alignment = this.component.render("alignment"); 
         if (alignment) {
             Echo.Sync.Alignment.render(alignment, element, true, this.component);
         }
@@ -330,10 +330,11 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             return;
         }
         this._focused = focusState;
+        var background;
         
         if (!this.component.render("focusedEnabled")) {
             // Render default focus aesthetic.
-            var background = this.component.render("background");
+            background = this.component.render("background");
             if (background != null) {
                 var newBackground = focusState ? Echo.Sync.Color.adjust(background, 0x20, 0x20, 0x20) : background;
                 Echo.Sync.Color.render(newBackground, this._div, "backgroundColor");
@@ -341,7 +342,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             return;
         } else {
             var foreground = Echo.Sync.getEffectProperty(this.component, "foreground", "focusedForeground", focusState);
-            var background = Echo.Sync.getEffectProperty(this.component, "background", "focusedBackground", focusState);
+            background = Echo.Sync.getEffectProperty(this.component, "background", "focusedBackground", focusState);
             var backgroundImage = Echo.Sync.getEffectProperty(
                     this.component, "backgroundImage", "focusedBackgroundImage", focusState);
             var font = Echo.Sync.getEffectProperty(this.component, "font", "focusedFont", focusState);
@@ -463,6 +464,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         var text = this.component.render("text");
         var icon = this.component.render("icon");
         this._stateElement = this.createStateElement();
+        var orientation, margin, tct;
         
         var entityCount = (text ? 1 : 0) + (icon ? 1 : 0) + (this._stateElement ? 1 : 0);
         if (entityCount == 1) {
@@ -474,14 +476,13 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
                 this._div.appendChild(this._stateElement);
             }
         } else if (entityCount == 2) {
-            var orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
-            var margin;
+            orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
             if (this._stateElement) {
                 margin = this.component.render("stateMargin", Echo.Sync.Button._defaultIconTextMargin);
             } else {
                 margin = this.component.render("iconTextMargin", Echo.Sync.Button._defaultIconTextMargin);
             }
-            var tct = new Echo.Sync.TriCellTable(orientation, Echo.Sync.Extent.toPixels(margin));
+            tct = new Echo.Sync.TriCellTable(orientation, Echo.Sync.Extent.toPixels(margin));
             if (text != null) {
                 this._renderButtonText(tct.tdElements[0], text);
                 if (icon) {
@@ -495,11 +496,11 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
             }
             this._div.appendChild(tct.tableElement);
         } else if (entityCount == 3) {
-            var orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
-            var margin = this.component.render("iconTextMargin", Echo.Sync.Button._defaultIconTextMargin);
+            orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
+            margin = this.component.render("iconTextMargin", Echo.Sync.Button._defaultIconTextMargin);
             var stateOrientation = Echo.Sync.TriCellTable.TRAILING_LEADING;
             var stateMargin = this.component.render("stateMargin", Echo.Sync.Button._defaultIconTextMargin);
-            var tct = new Echo.Sync.TriCellTable(orientation, 
+            tct = new Echo.Sync.TriCellTable(orientation, 
                     Echo.Sync.Extent.toPixels(margin), stateOrientation, Echo.Sync.Extent.toPixels(stateMargin));
             this._renderButtonText(tct.tdElements[0], text);
             this._iconImg = this._renderButtonIcon(tct.tdElements[1], icon);
@@ -588,7 +589,7 @@ Echo.Sync.RadioButton = Core.extend(Echo.Sync.ToggleButton, {
     },
 
     $load: function() {
-        Echo.Render.registerPeer("RadioButton", this);;
+        Echo.Render.registerPeer("RadioButton", this);
     },
     
     _group: null,
@@ -642,7 +643,7 @@ Echo.Sync.RadioButton = Core.extend(Echo.Sync.ToggleButton, {
         Echo.Sync.ToggleButton.prototype.renderDispose.call(this, update);
         if (this._group) {
             this._group.remove(this);
-            if (this._group.size() == 0) {
+            if (this._group.size() === 0) {
                 Echo.Sync.RadioButton._groups.remove(this._group.id);
             }
             this._group = null;
