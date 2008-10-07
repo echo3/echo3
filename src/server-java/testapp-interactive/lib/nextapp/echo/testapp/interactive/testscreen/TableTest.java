@@ -583,6 +583,12 @@ public class TableTest extends SplitPane {
                 testTable.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_SELECTION);
             }
         });
+        controlsColumn.addButton("Toggle Selection of Row #0", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ListSelectionModel selectionModel = testTable.getSelectionModel();
+                selectionModel.setSelectedIndex(0, !selectionModel.isSelectedIndex(0));
+            }
+        });
         controlsColumn.addButton("Toggle Selection of Row #2", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 ListSelectionModel selectionModel = testTable.getSelectionModel();

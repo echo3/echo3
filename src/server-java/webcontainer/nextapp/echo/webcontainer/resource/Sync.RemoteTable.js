@@ -45,8 +45,8 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     },
     
     renderAdd: function(update, parentElement) {
-        this._columnCount = this.component.render("columnCount");
-        this._rowCount = this.component.render("rowCount");
+        this._columnCount = parseInt(this.component.render("columnCount"), 10);
+        this._rowCount = parseInt(this.component.render("rowCount"), 10);
         this._selectionEnabled = this.component.render("selectionEnabled");
         this._rolloverEnabled = this.component.render("rolloverEnabled");
         
@@ -57,7 +57,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     
         if (this._selectionEnabled) {
             this.selectionModel = new Echo.Sync.RemoteTable.ListSelectionModel(
-                    parseInt(this.component.get("selectionMode")));
+                    parseInt(this.component.get("selectionMode"), 10));
         }
         
         this._table = document.createElement("table");
@@ -65,7 +65,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         
         var width = this.component.render("width");
         if (width && Core.Web.Env.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && Echo.Sync.Extent.isPercent(width)) {
-            this._renderPercentWidthByMeasure = parseInt(width);
+            this._renderPercentWidthByMeasure = parseInt(width, 10);
             width = null;
         }
     
@@ -99,10 +99,10 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
             var colGroupElement = document.createElement("colgroup");
             for (var i = 0; i < this._columnCount; ++i) {
                 var colElement = document.createElement("col");
-                var width = this.component.renderIndex("columnWidth", i); 
+                width = this.component.renderIndex("columnWidth", i); 
                 if (width != null) {
                     if (Echo.Sync.Extent.isPercent(width)) {
-                        colElement.width = parseInt(width) + "%";
+                        colElement.width = parseInt(width, 10) + "%";
                     } else {
                         var columnPixels = Echo.Sync.Extent.toPixels(width, true);
                         if (columnPixelAdjustment) {
@@ -164,8 +164,8 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
                 td.style.backgroundColor = "";
                 td.style.backgroundImage = "";
                 
-                var child = this.component.getComponent((rowIndex + (this._headerVisible ? 1 : 0)) 
-                        * this._columnCount + columnIndex);
+                var child = this.component.getComponent((rowIndex + (this._headerVisible ? 1 : 0)) * 
+                        this._columnCount + columnIndex);
                 var layoutData = child.render("layoutData");
 
                 if (layoutData) {
@@ -234,10 +234,10 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
             var tableParent = this._table.parentNode;
             var availableWidth = tableParent.offsetWidth;
             if (tableParent.style.paddingLeft) {
-                availableWidth -= parseInt(tableParent.style.paddingLeft);
+                availableWidth -= parseInt(tableParent.style.paddingLeft, 10);
             }
             if (tableParent.style.paddingRight) {
-                availableWidth -= parseInt(tableParent.style.paddingRight);
+                availableWidth -= parseInt(tableParent.style.paddingRight, 10);
             }
             var width = ((availableWidth * this._renderPercentWidthByMeasure) / 100) - Core.Web.Measure.SCROLL_WIDTH;
             if (width > 0) {
@@ -313,10 +313,10 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         }
         var selectedIndices = value.split(",");
         for (var i = 0; i < selectedIndices.length; i++) {
-            if (selectedIndices[i] == "") {
+            if (selectedIndices[i] === "") {
                 continue;
             }
-            this._setSelected(parseInt(selectedIndices[i]), true);
+            this._setSelected(parseInt(selectedIndices[i], 10), true);
         }
     },
     
@@ -353,7 +353,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         }
         
         if (this._selectionEnabled || this._rolloverEnabled) {
-            if (this._rowCount == 0) {
+            if (this._rowCount === 0) {
                 return;
             }
             var mouseEnterLeaveSupport = Core.Web.Env.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
@@ -394,13 +394,13 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         
         Core.Web.DOM.preventEventDefault(e);
     
-        if (this.selectionModel.getSelectionMode() == Echo.Sync.RemoteTable.ListSelectionModel.SINGLE_SELECTION 
-                || !(e.shiftKey || e.ctrlKey || e.metaKey || e.altKey)) {
+        if (this.selectionModel.getSelectionMode() == Echo.Sync.RemoteTable.ListSelectionModel.SINGLE_SELECTION || 
+                !(e.shiftKey || e.ctrlKey || e.metaKey || e.altKey)) {
             this._clearSelected();
         }
     
-        if (!this.selectionModel.getSelectionMode() == Echo.Sync.RemoteTable.ListSelectionModel.SINGLE_SELECTION 
-                && e.shiftKey && this.lastSelectedIndex != -1) {
+        if (!this.selectionModel.getSelectionMode() == Echo.Sync.RemoteTable.ListSelectionModel.SINGLE_SELECTION && 
+                e.shiftKey && this.lastSelectedIndex != -1) {
             var startIndex;
             var endIndex;
             if (this.lastSelectedIndex < rowIndex) {
