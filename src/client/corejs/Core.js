@@ -94,6 +94,8 @@ Core = {
         var baseClass = arguments.length == 1 ? null : arguments[0];
         var definition = arguments.length == 1 ? arguments[0] : arguments[1];
         
+        var x, name;
+        
         // Perform argument error checking.
         if (arguments.length == 2) {
             if (typeof(baseClass) != "function") {
@@ -150,14 +152,14 @@ Core = {
             constructorClass.$abstract = {};
             if (baseClass && baseClass.$abstract) {
                 // Copy abstract properties from base class.
-                for (var x in baseClass.$abstract) {
+                for (x in baseClass.$abstract) {
                     constructorClass.$abstract[x] = baseClass.$abstract[x];
                 }
             }
 
             if (definition.$abstract instanceof Object) {
                 // Add abstract properties from definition.
-                for (var x in definition.$abstract) {
+                for (x in definition.$abstract) {
                     constructorClass.$abstract[x] = true;
                     constructorClass.$virtual[x] = true;
                 }
@@ -169,7 +171,7 @@ Core = {
         
         // Copy virtual property flags from base class to shared prototype.
         if (baseClass) {
-            for (var name in baseClass.$virtual) {
+            for (name in baseClass.$virtual) {
                 constructorClass.$virtual[name] = baseClass.$virtual[name];
             }
         }
@@ -177,7 +179,7 @@ Core = {
         // Add virtual instance properties from definition to shared prototype.
         if (definition.$virtual) {
             Core._inherit(constructorClass.prototype, definition.$virtual, constructorClass.$virtual);
-            for (var name in definition.$virtual) {
+            for (name in definition.$virtual) {
                 constructorClass.$virtual[name] = true;
             }
 
@@ -435,7 +437,7 @@ Core.Debug = {
         if (Core.Debug.consoleElement) {
             var entryElement = document.createElement("div");
             entryElement.appendChild(document.createTextNode(text));
-            if (Core.Debug.consoleElement.childNodes.length == 0) {
+            if (Core.Debug.consoleElement.childNodes.length === 0) {
                 Core.Debug.consoleElement.appendChild(entryElement);
             } else {
                 Core.Debug.consoleElement.insertBefore(entryElement, Core.Debug.consoleElement.firstChild);
@@ -484,7 +486,7 @@ Core.Arrays = {
         if (unique && array1.length < array2.length) {
             return false;
         }
-        if (array2.length == 0) {
+        if (array2.length === 0) {
             return true;
         }
         var found, item;
@@ -680,15 +682,15 @@ Core.ListenerList = Core.extend({
             throw new Error("Cannot fire event, type property not set.");
         }
         
-        var listeners = [];
-        for (var i = 0; i < this._data.length; i += 2) {
+        var i, returnValue = true, listeners = [];
+        
+        for (i = 0; i < this._data.length; i += 2) {
             if (this._data[i] == event.type) {
                 listeners.push(this._data[i + 1]);
             }
         }
         
-        var returnValue = true;
-        for (var i = 0; i < listeners.length; ++i) {
+        for (i = 0; i < listeners.length; ++i) {
             returnValue = listeners[i](event) && returnValue; 
         }
         return returnValue;
@@ -767,7 +769,7 @@ Core.ListenerList = Core.extend({
      * @type Boolean
      */
     isEmpty: function() {
-        return this._data.length == 0;
+        return this._data.length === 0;
     },
     
     /**
@@ -872,7 +874,7 @@ Core.ResourceBundle = Core.extend({
         // Copy any missing items found in parent language bundle (if it exists) into new bundle.
         var parentLanguageCode = Core.ResourceBundle.getParentLanguageCode(languageCode);
         if (parentLanguageCode) {
-            var sourceBundle = this._sourceBundles[parentLanguageCode];
+            sourceBundle = this._sourceBundles[parentLanguageCode];
             if (sourceBundle) {
                 for (x in sourceBundle) {
                     if (bundle[x] === undefined) {
