@@ -19,10 +19,10 @@ Echo.Sync._ListComponentMixins = {
             selection = null;
         } else {
             selection = selectionString.split(",");
-            if (selection.length == 0) {
+            if (selection.length === 0) {
                 selection = null;
             } else if (selection.length == 1) {
-                selection = selection == "" ? null : selection[0];
+                selection = selection[0] === "" ? null : selection[0];
             }
         }
         this.set("selection", selection);
@@ -96,7 +96,7 @@ Echo.Sync.RemoteSelectField = Core.extend(Echo.SelectField, {
 Echo.Sync.RemoteSelectFieldSync = Core.extend(Echo.Sync.SelectField, {
 
     $load: function() {
-        Echo.Render.registerPeer("RemoteSelectField", this);;
+        Echo.Render.registerPeer("RemoteSelectField", this);
     },
 
     $include: [ Echo.Sync._ListComponentSyncMixins ]
