@@ -346,12 +346,13 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
     
     _renderSelection: function() {
         // Set selection.
-        var selection = this._getSelection();
+        var selection = this._getSelection(),
+            i;
         
         if (this._alternateRender) {
             if (this._hasRenderedSelectedItems) {
                 var items = this.component.get("items");
-                for (var i = 0; i < items.length; ++i) {
+                for (i = 0; i < items.length; ++i) {
                     Echo.Sync.Color.renderClear(items[i].foreground, this._div.childNodes[i], 
                             "color");
                     Echo.Sync.Color.renderClear(items[i].background, this._div.childNodes[i], 
@@ -359,7 +360,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
                 }
             }
             if (selection instanceof Array) {
-                for (var i = 0; i < selection.length; ++i) {
+                for (i = 0; i < selection.length; ++i) {
                     if (selection[i] >= 0 && selection[i] < this._div.childNodes.length) {
                         Echo.Sync.Color.render(Echo.Sync.ListComponent.DEFAULT_SELECTED_FOREGROUND,
                                 this._div.childNodes[selection[i]], "color");
@@ -378,7 +379,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
                 this._element.selectedIndex = -1;
             }
             if (selection instanceof Array) {
-                for (var i = 0; i < selection.length; ++i) {
+                for (i = 0; i < selection.length; ++i) {
                     if (selection[i] >= 0 && selection[i] < this._element.options.length) {
                         this._element.options[selection[i]].selected = true;
                     }
