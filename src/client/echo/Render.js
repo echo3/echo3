@@ -157,15 +157,15 @@ Echo.Render = {
      * @param {Echo.Update.ComponentUpdate} update the update
      */
     _processDispose: function(update) {
-        var components = update.getRemovedDescendants();
+        var i, components = update.getRemovedDescendants();
         if (components) {
-            for (var i = 0; i < components.length; ++i) {
+            for (i = 0; i < components.length; ++i) {
                 Echo.Render._renderComponentDisposeImpl(update, components[i]);
             }
         }
         components = update.getRemovedChildren();
         if (components) {
-            for (var i = 0; i < components.length; ++i) {
+            for (i = 0; i < components.length; ++i) {
                 Echo.Render._renderComponentDisposeImpl(update, components[i]);
             }
         }
