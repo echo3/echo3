@@ -112,9 +112,8 @@ Echo.Serial = {
                     component.setLocale(element.firstChild ? element.firstChild.nodeValue : null);
                     break;
                 case "dir": // Layout direction update.
-                    component.setLayoutDirection(element.firstChild
-                            ? (element.firstChild.nodeValue == "rtl" ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR)
-                            : null);
+                    component.setLayoutDirection(element.firstChild ?
+                            (element.firstChild.nodeValue == "rtl" ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR) : null);
                 }
             }
             element = element.nextSibling;
@@ -213,10 +212,8 @@ Echo.Serial = {
                     var sChild = ssChild.firstChild;
                     while (sChild) {
                         if (sChild.nodeType == 1) {
-                            switch (sChild.nodeName) {
-                            case "p":
+                            if (sChild.nodeName == "p") {
                                 this.loadProperty(client, sChild, null, style, referenceMap);
-                                break;
                             }
                         }
                         sChild = sChild.nextSibling;
@@ -302,7 +299,7 @@ Echo.Serial.addPropertyTranslator("f", Echo.Serial.Float);
 Echo.Serial.Integer = { 
 
     toProperty: function(client, pElement) {
-        return parseInt(pElement.firstChild.data);
+        return parseInt(pElement.firstChild.data, 10);
     }
 };
 
@@ -344,7 +341,7 @@ Echo.Serial.Date = {
         if (!result) {
             return null;
         }
-        return new Date(result[1], parseInt(result[2]) - 1, result[3]);
+        return new Date(result[1], parseInt(result[2], 10) - 1, result[3]);
     },
     
     toXml: function(client, pElement, value) {
@@ -526,8 +523,8 @@ Echo.Serial.FillImageBorder = {
     
     _parseElement: function(client, fibElement) {
         var fillImageBorder = { 
-            contentInsets: fibElement.getAttribute("ci") == "" ? null : fibElement.getAttribute("ci"),
-            borderInsets: fibElement.getAttribute("bi") == "" ? null : fibElement.getAttribute("bi"),
+            contentInsets: fibElement.getAttribute("ci") ? fibElement.getAttribute("ci") : null,
+            borderInsets: fibElement.getAttribute("bi") ? fibElement.getAttribute("bi") : null,
             color: fibElement.getAttribute("bc")
         };
         
@@ -544,7 +541,7 @@ Echo.Serial.FillImageBorder = {
             }
             element = element.nextSibling;
         }
-        if (!(i == 0 || i == 8)) {
+        if (!(i === 0 || i == 8)) {
             throw new Error("Invalid FillImageBorder image count: " + i);
         }
     
@@ -601,9 +598,10 @@ Echo.Serial.addPropertyTranslator("F", Echo.Serial.Font);
 Echo.Serial.ImageReference = {
 
     toProperty: function(client, pElement) {
+        var url;
 	    if (pElement.firstChild.nodeType == 1) {
 	    	var iElement = pElement.firstChild;
-	        var url = iElement.firstChild.data;
+	        url = iElement.firstChild.data;
 	        if (client.decompressUrl) {
 	            url = client.decompressUrl(url);
 	        }
@@ -618,7 +616,7 @@ Echo.Serial.ImageReference = {
 	            return url;
 	        }
 	    } else {
-	    	var url = pElement.firstChild.data;
+	     url = pElement.firstChild.data;
 	    	return client.decompressUrl ? client.decompressUrl(url) : url;
 	    }
     }
@@ -652,10 +650,8 @@ Echo.Serial.LayoutData = {
         var element = pElement.firstChild;
         while (element) {
             if (element.nodeType == 1) {
-                switch (element.nodeName) {
-                case "p":
+                if (element.nodeName == "p") {
                     Echo.Serial.loadProperty(client, element, null, layoutData);
-                    break;
                 }
             }
             element = element.nextSibling;
