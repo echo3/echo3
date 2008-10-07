@@ -24,7 +24,7 @@ Echo.FreeClient = Core.extend(Echo.Client, {
      */
     $construct: function(application, domainElement) {
         Echo.Client.call(this);
-        this._processUpdateRef = Core.method(this, this._processUpdate);;
+        this._processUpdateRef = Core.method(this, this._processUpdate);
         this.configure(application, domainElement);
         this._processUpdate();
     },
