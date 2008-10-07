@@ -155,7 +155,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         
         while (td) {
             if (selected) {
-                Echo.Sync.Font.render(this.component.render("selectionFont"), td);
+                Echo.Sync.Font.renderClear(this.component.render("selectionFont"), td);
                 Echo.Sync.Color.render(this.component.render("selectionForeground"), td, "color");
                 Echo.Sync.Color.render(this.component.render("selectionBackground"), td, "background");
                 Echo.Sync.FillImage.render(this.component.render("selectionBackgroundImage"), td);
@@ -163,6 +163,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
                 td.style.color = "";
                 td.style.backgroundColor = "";
                 td.style.backgroundImage = "";
+                Echo.Sync.Font.renderClear(null, td);
                 
                 var child = this.component.getComponent((rowIndex + (this._headerVisible ? 1 : 0)) * 
                         this._columnCount + columnIndex);
@@ -435,7 +436,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         
         for (var i = 0; i < tr.cells.length; ++i) {
             var cell = tr.cells[i];
-            Echo.Sync.Font.render(this.component.render("rolloverFont"), cell);
+            Echo.Sync.Font.renderClear(this.component.render("rolloverFont"), cell);
             Echo.Sync.Color.render(this.component.render("rolloverForeground"), cell, "color");
             Echo.Sync.Color.render(this.component.render("rolloverBackground"), cell, "background");
             Echo.Sync.FillImage.render(this.component.render("rolloverBackgroundImage"), cell); 
