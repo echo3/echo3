@@ -79,34 +79,34 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     _coordinatesToPixels: function(bounds) {
         var pxBounds = {};
         if (bounds.width != null) {
-            pxBounds.width = Math.round(Echo.Sync.Extent.isPercent(bounds.width)
-                    ? (parseInt(bounds.width) * this._containerSize.width / 100)
-                    : Echo.Sync.Extent.toPixels(bounds.width, true));
+            pxBounds.width = Math.round(Echo.Sync.Extent.isPercent(bounds.width) ?
+                    (parseInt(bounds.width, 10) * this._containerSize.width / 100) :
+                    Echo.Sync.Extent.toPixels(bounds.width, true));
         } else if (bounds.contentWidth != null) {
-            pxBounds.contentWidth = Math.round(Echo.Sync.Extent.isPercent(bounds.contentWidth)
-                    ? (parseInt(bounds.contentWidth) * this._containerSize.width / 100)
-                    : Echo.Sync.Extent.toPixels(bounds.contentWidth, true));
+            pxBounds.contentWidth = Math.round(Echo.Sync.Extent.isPercent(bounds.contentWidth) ?
+                    (parseInt(bounds.contentWidth, 10) * this._containerSize.width / 100) :
+                    Echo.Sync.Extent.toPixels(bounds.contentWidth, true));
             pxBounds.width = this._contentInsets.left + this._contentInsets.right + pxBounds.contentWidth;
         }
         if (bounds.height != null) {
-            pxBounds.height = Math.round(Echo.Sync.Extent.isPercent(bounds.height)
-                    ? (parseInt(bounds.height) * this._containerSize.height / 100)
-                    : Echo.Sync.Extent.toPixels(bounds.height, false));
+            pxBounds.height = Math.round(Echo.Sync.Extent.isPercent(bounds.height) ?
+                    (parseInt(bounds.height, 10) * this._containerSize.height / 100) :
+                    Echo.Sync.Extent.toPixels(bounds.height, false));
         } else if (bounds.contentHeight != null) {
-            pxBounds.contentHeight = Math.round(Echo.Sync.Extent.isPercent(bounds.contentHeight)
-                    ? (parseInt(bounds.contentHeight) * this._containerSize.height / 100)
-                    : Echo.Sync.Extent.toPixels(bounds.contentHeight, false));
+            pxBounds.contentHeight = Math.round(Echo.Sync.Extent.isPercent(bounds.contentHeight) ?
+                    (parseInt(bounds.contentHeight, 10) * this._containerSize.height / 100) :
+                    Echo.Sync.Extent.toPixels(bounds.contentHeight, false));
             pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + pxBounds.contentHeight;
         }
         if (bounds.x != null) {
-            pxBounds.x = Math.round(Echo.Sync.Extent.isPercent(bounds.x)
-                    ? ((this._containerSize.width - pxBounds.width) * (parseInt(bounds.x) / 100))
-                    : Echo.Sync.Extent.toPixels(bounds.x, true));
+            pxBounds.x = Math.round(Echo.Sync.Extent.isPercent(bounds.x) ?
+                    ((this._containerSize.width - pxBounds.width) * (parseInt(bounds.x, 10) / 100)) :
+                    Echo.Sync.Extent.toPixels(bounds.x, true));
         }
         if (bounds.y != null) {
-            pxBounds.y = Math.round(Echo.Sync.Extent.isPercent(bounds.y)
-                    ? ((this._containerSize.height - pxBounds.height) * (parseInt(bounds.y) / 100))
-                    : Echo.Sync.Extent.toPixels(bounds.y, false));
+            pxBounds.y = Math.round(Echo.Sync.Extent.isPercent(bounds.y) ?
+                    ((this._containerSize.height - pxBounds.height) * (parseInt(bounds.y, 10) / 100)) :
+                    Echo.Sync.Extent.toPixels(bounds.y, false));
         }
         return pxBounds;
     },
@@ -176,8 +176,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this.setBounds({
             x: this._resizeIncrement.x == -1 ? this._dragInit.x + e.clientX - this._dragOrigin.x : null,
             y: this._resizeIncrement.y == -1 ? this._dragInit.y + e.clientY - this._dragOrigin.y : null,
-            width: this._dragInit.width + ((this._resizeIncrement.x) * (e.clientX - this._dragOrigin.x)),
-            height: this._dragInit.height + ((this._resizeIncrement.y) * (e.clientY - this._dragOrigin.y))
+            width: this._dragInit.width + (this._resizeIncrement.x * (e.clientX - this._dragOrigin.x)),
+            height: this._dragInit.height + (this._resizeIncrement.y * (e.clientY - this._dragOrigin.y))
         });
     },
 
@@ -209,8 +209,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processKeyDown: function(e) {
-        switch (e.keyCode) {
-        case 27:
+        if (e.keyCode == 27) {
             this.component.userClose();
             Core.Web.DOM.preventEventDefault(e);
             return false;
@@ -219,8 +218,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     },
 
     _processKeyPress: function(e) {
-        switch (e.keyCode) {
-        case 27:
+        if (e.keyCode == 27) {
             Core.Web.DOM.preventEventDefault(e);
             return false;
         }
@@ -370,8 +368,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         if (Core.Web.Env.QUIRK_IE_SELECT_Z_INDEX) {
             // Render Select Field Masking Transparent IFRAME.
             this._maskDiv = document.createElement("div");
-            this._maskDiv.style.cssText 
-                    = "filter:alpha(opacity=0);z-index:1;position:absolute;left:0,right:0,top:0,bottom:0,borderWidth:0;";
+            this._maskDiv.style.cssText = 
+                    "filter:alpha(opacity=0);z-index:1;position:absolute;left:0,right:0,top:0,bottom:0,borderWidth:0;";
             var maskIFrameElement = document.createElement("iframe");
             maskIFrameElement.style.cssText = "width:100%;height:100%;";
             maskIFrameElement.src = this.client.getResourceUrl("Echo", "resource/Blank.html");
@@ -404,8 +402,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         var maximizeEnabled = this.component.render("maximizeEnabled", false);
         var minimizeEnabled = this.component.render("minimizeEnabled", false);
         var hasControlIcons = closable || maximizeEnabled || minimizeEnabled;
-        var fillImageFlags = this.component.render("ieAlphaRenderBorder") 
-                ? Echo.Sync.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER : 0;
+        var fillImageFlags = this.component.render("ieAlphaRenderBorder") ? Echo.Sync.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER : 0;
         
         this._div.style.cssText = "outline-style:none;position:absolute;z-index:1;overflow:hidden;";
         Echo.Sync.Font.render(this.component.render("font"), this._div);
@@ -418,35 +415,35 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             // Render top left corner
             if (this._borderInsets.left > 0) {
                 this._borderDivs[0] = document.createElement("div");
-                this._borderDivs[0].style.cssText = borderBaseCss + "left:0;top:0;"
-                        + "width:" + this._borderInsets.left + "px;height:" + this._borderInsets.top + "px;";
+                this._borderDivs[0].style.cssText = borderBaseCss + "left:0;top:0;" +
+                        "width:" + this._borderInsets.left + "px;height:" + this._borderInsets.top + "px;";
             }
             
             // Render top side
             this._borderDivs[1] = document.createElement("div");
-            this._borderDivs[1].style.cssText = borderBaseCss + "top:0;"
-                    + "left:" + this._borderInsets.left + "px;height:" + this._borderInsets.top + "px;";
+            this._borderDivs[1].style.cssText = borderBaseCss + "top:0;" +
+                    "left:" + this._borderInsets.left + "px;height:" + this._borderInsets.top + "px;";
     
             // Render top right corner
             if (this._borderInsets.right > 0) {
                 this._borderDivs[2] = document.createElement("div");
-                this._borderDivs[2].style.cssText = borderBaseCss + "right:0;top:0;"
-                        + "width:" + this._borderInsets.right + "px;height:" + this._borderInsets.top + "px;";
+                this._borderDivs[2].style.cssText = borderBaseCss + "right:0;top:0;" +
+                        "width:" + this._borderInsets.right + "px;height:" + this._borderInsets.top + "px;";
             }
         }
     
         // Render left side
         if (this._borderInsets.left > 0) {
             this._borderDivs[3] = document.createElement("div");
-            this._borderDivs[3].style.cssText = borderBaseCss + "left:0;"
-                    + "top:" + this._borderInsets.top + "px;width:" + this._borderInsets.left + "px;";
+            this._borderDivs[3].style.cssText = borderBaseCss + "left:0;" +
+                    "top:" + this._borderInsets.top + "px;width:" + this._borderInsets.left + "px;";
         }
         
         // Render right side
         if (this._borderInsets.right > 0) {
             this._borderDivs[4] = document.createElement("div");
-            this._borderDivs[4].style.cssText = borderBaseCss + "right:0;"
-                    + "top:" + this._borderInsets.top + "px;width:" + this._borderInsets.right + "px;";
+            this._borderDivs[4].style.cssText = borderBaseCss + "right:0;" +
+                    "top:" + this._borderInsets.top + "px;width:" + this._borderInsets.right + "px;";
         }
         
         // Render bottom row
@@ -454,20 +451,20 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             // Render bottom left corner
             if (this._borderInsets.left > 0) {
                 this._borderDivs[5] = document.createElement("div");
-                this._borderDivs[5].style.cssText = borderBaseCss + "left:0;bottom:0;"
-                        + "width:" + this._borderInsets.left + "px;height:" + this._borderInsets.bottom + "px;";
+                this._borderDivs[5].style.cssText = borderBaseCss + "left:0;bottom:0;" +
+                        "width:" + this._borderInsets.left + "px;height:" + this._borderInsets.bottom + "px;";
             }
             
             // Render bottom side
             this._borderDivs[6] = document.createElement("div");
-            this._borderDivs[6].style.cssText = borderBaseCss + "bottom:0;"
-                    + "left:" + this._borderInsets.left + "px;height:" + this._borderInsets.bottom + "px;";
+            this._borderDivs[6].style.cssText = borderBaseCss + "bottom:0;" +
+                    "left:" + this._borderInsets.left + "px;height:" + this._borderInsets.bottom + "px;";
     
             // Render bottom right corner
             if (this._borderInsets.right > 0) {
                 this._borderDivs[7] = document.createElement("div");
-                this._borderDivs[7].style.cssText = borderBaseCss + "right:0;bottom:0;"
-                        + "width:" + this._borderInsets.right + "px;height:" + this._borderInsets.bottom + "px;";
+                this._borderDivs[7].style.cssText = borderBaseCss + "right:0;bottom:0;" +
+                        "width:" + this._borderInsets.right + "px;height:" + this._borderInsets.bottom + "px;";
             }
         }
         
@@ -597,10 +594,10 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         // The object this._contentDiv will have been created by renderAdd(). 
         // Note that overflow is set to 'hidden' if child is a pane component, this is necessary to workaround what
         // what is presumably a bug in Safari 3.0.x.  It should otherwise not be required.
-        this._contentDiv.style.cssText = "position:absolute;z-index:2;top:" 
-                + (this._contentInsets.top + this._titleBarHeight) + "px;bottom:" + this._contentInsets.bottom + "px;left:" 
-                + this._contentInsets.left + "px;right:" + this._contentInsets.right + "px;"
-                + "overflow:"+ ((this.component.children.length == 0 || this.component.children[0].pane) ? "hidden;" : "auto;");
+        this._contentDiv.style.cssText = "position:absolute;z-index:2;top:" + 
+                (this._contentInsets.top + this._titleBarHeight) + "px;bottom:" + this._contentInsets.bottom + "px;left:" + 
+                this._contentInsets.left + "px;right:" + this._contentInsets.right + "px;" +
+                "overflow:"+ ((this.component.children.length === 0 || this.component.children[0].pane) ? "hidden;" : "auto;");
         if (this.component.children.length > 0 && !this.component.children[0].pane) {
             Echo.Sync.Insets.render(this.component.render("insets"), this._contentDiv, "padding");
         }
@@ -621,8 +618,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
 
     _renderControlIcon: function(icon, rolloverIcon, pressedIcon, altText, insets, eventMethod) {
         var controlIcon = document.createElement("div");
-        controlIcon.style.cssText = "float:right;cursor:pointer;margin-left:"
-                + Echo.Sync.Extent.toCssValue(this.component.render("controlsSpacing", Echo.WindowPane.DEFAULT_CONTROLS_SPACING));
+        controlIcon.style.cssText = "float:right;cursor:pointer;margin-left:" +
+                Echo.Sync.Extent.toCssValue(this.component.render("controlsSpacing", Echo.WindowPane.DEFAULT_CONTROLS_SPACING));
         Echo.Sync.Insets.render(insets, controlIcon, "padding");
         if (icon) {
             var img = document.createElement("img");
@@ -651,9 +648,11 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _renderDisposeFrame: function() {
+        var i;
+
         Core.Web.Event.removeAll(this._div);
 
-        for (var i = 0; i < this._borderDivs.length; ++i) {
+        for (i = 0; i < this._borderDivs.length; ++i) {
             if (this._borderDivs[i]) {
                 Core.Web.Event.removeAll(this._borderDivs[i]);
             }
@@ -661,7 +660,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._borderDivs = null;
         
         if (this._controlIcons != null) {
-            for (var i = 0; i < this._controlIcons.length; ++i) {
+            for (i = 0; i < this._controlIcons.length; ++i) {
                 Core.Web.Event.removeAll(this._controlIcons[i]);
             }
             this._controlIcons = null;
