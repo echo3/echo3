@@ -55,23 +55,24 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
             },
             
             calculateExtents: function() {
+                var i;
                 var xProperty = this.horizontalOrientation ? "columnWidth" : "rowHeight";
                 var yProperty = this.horizontalOrientation ? "rowHeight" : "columnWidth";
                 
                 this.xExtents = [];
-                for (var i = 0; i < this.gridXSize; ++i) {
+                for (i = 0; i < this.gridXSize; ++i) {
                     this.xExtents.push(this.grid.renderIndex(xProperty, i));
                 }
             
                 this.yExtents = [];
-                for (var i = 0; i < this.gridYSize; ++i) {
+                for (i = 0; i < this.gridYSize; ++i) {
                     this.yExtents.push(this.grid.renderIndex(yProperty, i));
                 }
             },
             
             createCells: function() {
                 var childCount = this.grid.getComponentCount();
-                if (childCount == 0) {
+                if (childCount === 0) {
                     // Abort if Grid is empty.
                     return null;
                 }
@@ -149,11 +150,12 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
              */
             reduceX: function() {
                 // Determine duplicate cell sets on x-axis.
-                var xRemoves = [];
-                var x = 1;
-                var length = this.cellArrays[0].length;
+                var xRemoves = [], 
+                    x = 1, 
+                    y, 
+                    length = this.cellArrays[0].length;
                 while (x < length) {
-                    var y = 0;
+                    y = 0;
                     var identical = true;
                     while (y < this.cellArrays.length) {
                         if (this.cellArrays[y][x] != this.cellArrays[y][x - 1]) {
@@ -169,7 +171,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                 }
                 
                 // If no reductions are necessary on the x-axis, do nothing.
-                if (xRemoves.length == 0) {
+                if (xRemoves.length === 0) {
                     return;
                 }
                 
@@ -178,8 +180,8 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                         continue;
                     }
                     
-                    for (var y = 0; y < this.gridYSize; ++y) {
-                        if (y == 0 || this.cellArrays[y][removedX - 1] != this.cellArrays[y - 1][removedX - 1]) {
+                    for (y = 0; y < this.gridYSize; ++y) {
+                        if (y === 0 || this.cellArrays[y][removedX - 1] != this.cellArrays[y - 1][removedX - 1]) {
                             // Reduce x-span, taking care not to reduce it multiple times if cell has a y-span.
                             if (this.cellArrays[y][removedX - 1] != null) {
                                 --this.cellArrays[y][removedX - 1].xSpan;
@@ -201,18 +203,18 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
              * "span over" a given y-axis coordinate. 
              */
             reduceY: function() {
-                var yRemoves = [];
-                var y = 1;
-                
-                var size = this.cellArrays.length;
-                var previousCellArray;
-                var currentCellArray = this.cellArrays[0];
+                var yRemoves = [],
+                    y = 1,
+                    x,
+                    size = this.cellArrays.length,
+                    previousCellArray,
+                    currentCellArray = this.cellArrays[0];
                 
                 while (y < size) {
                     previousCellArray = currentCellArray;
                     currentCellArray = this.cellArrays[y];
                     
-                    var x = 0;
+                    x = 0;
                     var identical = true;
                     
                     while (x < currentCellArray.length) {
@@ -230,7 +232,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                 }
                 
                 // If no reductions are necessary on the y-axis, do nothing.
-                if (yRemoves.length == 0) {
+                if (yRemoves.length === 0) {
                     return;
                 }
                 
@@ -242,8 +244,8 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                     // Shorten the y-spans of the cell array that will be retained to 
                     // reflect the fact that a cell array is being removed.
                     var retainedCellArray = this.cellArrays[removedY - 1];
-                    for (var x = 0; x < this.gridXSize; ++x) {
-                        if (x == 0 || retainedCellArray[x] != retainedCellArray[x - 1]) {
+                    for (x = 0; x < this.gridXSize; ++x) {
+                        if (x === 0 || retainedCellArray[x] != retainedCellArray[x - 1]) {
                             // Reduce y-span, taking care not to reduce it multiple times if cell has an x-span.
                             if (retainedCellArray[x] != null) {
                                 --retainedCellArray[x].ySpan;
@@ -262,9 +264,12 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
             },
             
             renderCellMatrix: function(cells) {
-                this.gridXSize = parseInt(this.grid.render("size", 2));
-                var x = 0, y = 0;
-                var yCells = this._getCellArray(y);
+                this.gridXSize = parseInt(this.grid.render("size", 2), 10);
+                var x = 0, 
+                    y = 0,
+                    xIndex,
+                    yIndex,
+                    yCells = this._getCellArray(y);
                 
                 for (var componentIndex = 0; componentIndex < cells.length; ++componentIndex) {
                     
@@ -287,16 +292,16 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                         // Scan to ensure no y-spans are blocking this x-span.
                         // If a y-span is blocking, shorten the x-span to not
                         // interfere.
-                        for (var xIndex = 1; xIndex < cells[componentIndex].xSpan; ++xIndex) {
+                        for (xIndex = 1; xIndex < cells[componentIndex].xSpan; ++xIndex) {
                             if (yCells[x + xIndex] != null) {
                                 // Blocking component found.
                                 cells[componentIndex].xSpan = xIndex;
                                 break;
                             }
                         }
-                        for (var yIndex = 0; yIndex < cells[componentIndex].ySpan; ++yIndex) {
+                        for (yIndex = 0; yIndex < cells[componentIndex].ySpan; ++yIndex) {
                             var yIndexCells = this._getCellArray(y + yIndex);
-                            for (var xIndex = 0; xIndex < cells[componentIndex].xSpan; ++xIndex) {
+                            for (xIndex = 0; xIndex < cells[componentIndex].xSpan; ++xIndex) {
                                 yIndexCells[x + xIndex] = cells[componentIndex];
                             }
                         }
@@ -337,16 +342,19 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
     _rowCount: null,
     
     _processKeyPress: function(e) { 
+        var focusPrevious,
+            focusedComponent,
+            focusFlags;
         switch (e.keyCode) {
         case 37:
         case 39:
-            var focusPrevious = e.keyCode == 37;
-            var focusedComponent = this.component.application.getFocusedComponent();
+            focusPrevious = e.keyCode == 37;
+            focusedComponent = this.component.application.getFocusedComponent();
             if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
-                var focusFlags = focusedComponent.peer.getFocusFlags();
-                if ((focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_LEFT)
-                        || (!focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT)) {
-                    var focusChild = this.component.application.focusManager.findInParent(this.component, focusPrevious);
+                focusFlags = focusedComponent.peer.getFocusFlags();
+                if ((focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_LEFT) ||
+                        (!focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT)) {
+                    focusChild = this.component.application.focusManager.findInParent(this.component, focusPrevious);
                     if (focusChild) {
                         this.component.application.setFocusedComponent(focusChild);
                         Core.Web.DOM.preventEventDefault(e);
@@ -357,13 +365,13 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
             break;
         case 38:
         case 40:
-            var focusPrevious = e.keyCode == 38;
-            var focusedComponent = this.component.application.getFocusedComponent();
+            focusPrevious = e.keyCode == 38;
+            focusedComponent = this.component.application.getFocusedComponent();
             if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
-                var focusFlags = focusedComponent.peer.getFocusFlags();
-                if ((focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_UP)
-                        || (!focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_DOWN)) {
-                    var focusChild = this.component.application.focusManager.findInParent(this.component, focusPrevious,
+                focusFlags = focusedComponent.peer.getFocusFlags();
+                if ((focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_UP) ||
+                        (!focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_DOWN)) {
+                    focusChild = this.component.application.focusManager.findInParent(this.component, focusPrevious,
                             this._columnCount);
                     if (focusChild) {
                         this.component.application.setFocusedComponent(focusChild);
@@ -378,14 +386,16 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
     },
 
     renderAdd: function(update, parentElement) {
-        var gridProcessor = new Echo.Sync.Grid.Processor(this.component);
+        var gridProcessor = new Echo.Sync.Grid.Processor(this.component),
+            defaultInsets = Echo.Sync.Insets.toCssValue(this.component.render("insets", 0)),
+            defaultBorder = this.component.render("border", ""),
+            width = this.component.render("width"),
+            height = this.component.render("height"),
+            td,
+            columnIndex;
         
         this._columnCount = gridProcessor.getColumnCount();
         this._rowCount = gridProcessor.getRowCount();
-        
-        var defaultInsets = Echo.Sync.Insets.toCssValue(this.component.render("insets", 0));
-        var defaultBorder = this.component.render("border", "");
-    
         this._table = Echo.Sync.Grid._prototypeTable.cloneNode(true);
         this._table.id = this.component.renderId;
         
@@ -394,10 +404,9 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         Echo.Sync.Font.render(this.component.render("font"), this._table);
         this._table.style.padding = defaultInsets;
     
-        var width = this.component.render("width");
         
         if (width && Core.Web.Env.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && Echo.Sync.Extent.isPercent(width)) {
-            this._renderPercentWidthByMeasure = parseInt(width);
+            this._renderPercentWidthByMeasure = parseInt(width, 10);
             width = null;
         }
         
@@ -409,7 +418,6 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
             }
         }
         
-        var height = this.component.render("height");
         if (height) {
             if (Echo.Sync.Extent.isPercent(height)) {
                 this._table.style.height = height;
@@ -419,9 +427,9 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         }
         
         var colGroup = this._table.firstChild;
-        for (var columnIndex = 0; columnIndex < this._columnCount; ++columnIndex) {
+        for (columnIndex = 0; columnIndex < this._columnCount; ++columnIndex) {
             var col = document.createElement("col");
-            var width = gridProcessor.xExtents[columnIndex];
+            width = gridProcessor.xExtents[columnIndex];
             if (width != null) {
                 if (Echo.Sync.Extent.isPercent(width)) {
                     col.width = width.toString();
@@ -434,10 +442,9 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         
         var tbody = colGroup.nextSibling;
         
-        var size = parseInt(this.component.render("size", 2));
+        var size = parseInt(this.component.render("size", 2), 10);
         
         var tr;
-        var height;
         var renderedComponentIds = {};
         
         var xSpan, ySpan;
@@ -462,10 +469,10 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
             }
             tbody.appendChild(tr);
             
-            for (var columnIndex = 0; columnIndex < this._columnCount; ++columnIndex) {
+            for (columnIndex = 0; columnIndex < this._columnCount; ++columnIndex) {
                 var cell = gridProcessor.getCell(columnIndex, rowIndex);
                 if (cell == null) {
-                    var td = document.createElement("td");
+                    td = document.createElement("td");
                     tr.appendChild(td);
                     continue;
                 }
@@ -475,7 +482,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                 }
                 renderedComponentIds[cell.component.renderId] = true;
                 
-                var td = tdPrototype.cloneNode(false);
+                td = tdPrototype.cloneNode(false);
                 
                 if (cell.xSpan > 1) {
                     td.setAttribute(xSpan, cell.xSpan);
@@ -517,10 +524,10 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
             var tableParent = this._table.parentNode;
             var availableWidth = tableParent.offsetWidth;
             if (tableParent.style.paddingLeft) {
-                availableWidth -= parseInt(tableParent.style.paddingLeft);
+                availableWidth -= parseInt(tableParent.style.paddingLeft, 10);
             }
             if (tableParent.style.paddingRight) {
-                availableWidth -= parseInt(tableParent.style.paddingRight);
+                availableWidth -= parseInt(tableParent.style.paddingRight, 10);
             }
             var width = ((availableWidth * this._renderPercentWidthByMeasure) / 100) - Core.Web.Measure.SCROLL_WIDTH;
             if (width > 0) {
