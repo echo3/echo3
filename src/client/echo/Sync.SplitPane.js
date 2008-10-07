@@ -619,6 +619,9 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     
     renderDisplay: function() {
         Core.Web.VirtualPosition.redraw(this._splitPaneDiv);
+        Core.Web.VirtualPosition.redraw(this._paneDivs[0]);
+        Core.Web.VirtualPosition.redraw(this._paneDivs[1]);
+
         this._size = null;
         
         if (this._childPanes[0]) {
