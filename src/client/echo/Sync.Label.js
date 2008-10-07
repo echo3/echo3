@@ -41,16 +41,17 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
     
     renderAdd: function(update, parentElement) {
         this._containerElement = parentElement;
-        var icon = this.component.render("icon");
-        var text = this.component.render("text");
-        var foreground = this.component.render("foreground");
-        var background = this.component.render("background");
-        var toolTip = this.component.render("toolTipText");
+        var icon = this.component.render("icon"),
+            text = this.component.render("text"),
+            foreground = this.component.render("foreground"),
+            background = this.component.render("background"),
+            toolTip = this.component.render("toolTipText"),
+            img;
     
         if (text != null) {
             var lineWrap = this.component.render("lineWrap", true);
-            var formatWhitespace = this.component.render("formatWhitespace", false)
-                    && (text.indexOf(' ') != -1 || text.indexOf('\n') != -1 || text.indexOf('\t') != -1);
+            var formatWhitespace = this.component.render("formatWhitespace", false) &&
+                    (text.indexOf(' ') != -1 || text.indexOf('\n') != -1 || text.indexOf('\t') != -1);
             
             if (icon) {
                 // Text and icon.
@@ -58,7 +59,7 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
                         Echo.Sync.Label._defaultIconTextMargin);
                 var orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
                 var tct = new Echo.Sync.TriCellTable(orientation, Echo.Sync.Extent.toPixels(iconTextMargin));
-                var img = document.createElement("img");
+                img = document.createElement("img");
                 Echo.Sync.ImageReference.renderImg(icon, img);
                 if (formatWhitespace) {
                     this._formatWhitespace(text, tct.tdElements[0]);
@@ -76,8 +77,8 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
             } else {
                 // Text without icon.
                 var font = this.component.render("font");
-                if (!this.client.designMode && !toolTip && !font && lineWrap && !foreground && !background 
-                        && !formatWhitespace) {
+                if (!this.client.designMode && !toolTip && !font && lineWrap && !foreground && !background && 
+                        !formatWhitespace) {
                     this._node = document.createTextNode(text);
                 } else {
                     this._node = document.createElement("span");
@@ -95,7 +96,7 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
                 }
             }
         } else if (icon) {
-            var img = document.createElement("img");
+            img = document.createElement("img");
             Echo.Sync.ImageReference.renderImg(icon, img);
             this._node = document.createElement("span");
             this._node.id = this.component.renderId;
