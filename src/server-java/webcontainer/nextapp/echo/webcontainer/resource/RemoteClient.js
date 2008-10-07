@@ -486,10 +486,8 @@ Echo.RemoteClient.ApplicationSyncProcessor = Core.extend({
     process: function(dirElement) {
         var propertyElement = dirElement.firstChild;
         while (propertyElement) {
-            switch(propertyElement.nodeName) {
-            case "locale":
+            if (propertyElement.nodeName == "locale") {
                 this._client.application.setLocale(propertyElement.firstChild.nodeValue);
-                break;
             }
             propertyElement = propertyElement.nextSibling;
         }
@@ -752,7 +750,7 @@ Echo.RemoteClient.ClientMessage = Core.extend({
         cp._add("screenWidth", screen.width);
         cp._add("screenHeight", screen.height);
         cp._add("screenColorDepth", screen.colorDepth);
-        cp._add("utcOffset", 0 - parseInt((new Date()).getTimezoneOffset()));
+        cp._add("utcOffset", 0 - parseInt(new Date().getTimezoneOffset(), 10));
         
         cp._add("navigatorAppName", window.navigator.appName);
         cp._add("navigatorAppVersion", window.navigator.appVersion);
@@ -890,8 +888,8 @@ Echo.RemoteClient.ComponentFocusProcessor = Core.extend({
         var element = dirElement.firstChild;
         while (element) {
             if (element.nodeType == 1) {
-                switch (element.nodeName) {
-                   case "focus": this._processFocus(element); break;
+                if (element.nodeName == "focus") {
+                    this._processFocus(element);
                 }
             }
             element = element.nextSibling;
@@ -939,32 +937,34 @@ Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend({
     },
     
     _processComponentRemove: function(parentComponent, childElementIds) {
+        var i;
+
         if (childElementIds.length > 5) {
             // Special case: many children being removed: create renderId -> index map and remove by index
             // in order to prevent Component.indexOf() of from being invoked n times.
             
             // Create map between ids and indices.
             var idToIndexMap = {};
-            for (var i = 0; i < parentComponent.children.length; ++i) {
+            for (i = 0; i < parentComponent.children.length; ++i) {
                 idToIndexMap[parentComponent.children[i].renderId] = i;
             }
             
             // Create array of indices to remove.
-            var indicesToRemove = new Array();
-            for (var i = 0; i <  childElementIds.length; ++i) {
+            var indicesToRemove = [];
+            for (i = 0; i <  childElementIds.length; ++i) {
                 var index = idToIndexMap[childElementIds[i]];
                 if (index != null) {
-                    indicesToRemove.push(parseInt(index));
+                    indicesToRemove.push(parseInt(index, 10));
                 }
             }
             indicesToRemove.sort(Echo.RemoteClient.ComponentSyncUpdateProcessor._numericReverseSort);
     
             // Remove components (last to first).
-            for (var i = 0; i < indicesToRemove.length; ++i) {
+            for (i = 0; i < indicesToRemove.length; ++i) {
                 parentComponent.remove(indicesToRemove[i]);
             }
         } else {
-            for (var i = 0; i < childElementIds.length; ++i) {
+            for (i = 0; i < childElementIds.length; ++i) {
                 var component = this._client.application.getComponentByRenderId(childElementIds[i]);
                 if (component) {
                     parentComponent.remove(component);
@@ -1019,8 +1019,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
     _processStoreProperties: function(spElement) {
         var propertyElement = spElement.firstChild;
         while (propertyElement) {
-            switch (propertyElement.nodeName) {
-            case "rp": // Referenced Property
+            if (propertyElement.nodeName == "rp") {
                 var propertyId = propertyElement.getAttribute("i");
                 var propertyType = propertyElement.getAttribute("t");
                 var translator = Echo.Serial.getPropertyTranslator(propertyType);
@@ -1032,7 +1031,6 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                     this._referenceMap = {};
                 }
                 this._referenceMap[propertyId] = propertyValue;
-                break;
             }
             propertyElement = propertyElement.nextSibling;
         }
@@ -1069,7 +1067,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                         ++cursorIndex;
                     } else {
                         // Index specified, add child at index, set insertion cursor position to index + 1.
-                        index = parseInt(index);
+                        index = parseInt(index, 10);
                         parentComponent.add(component, index);
                         cursorIndex = index + 1;
                     }
@@ -1096,9 +1094,8 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                     parentComponent.setLocale(element.firstChild ? element.firstChild.nodeValue : null);
                     break;
                 case "dir": // Layout direction update.
-                    parentComponent.setLayoutDirection(element.firstChild
-                            ? (element.firstChild.nodeValue == "rtl" ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.RTL)
-                            : null);
+                    parentComponent.setLayoutDirection(element.firstChild ?
+                            (element.firstChild.nodeValue == "rtl" ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.RTL) : null);
                     break;
                 }
             }
@@ -1181,7 +1178,7 @@ Echo.RemoteClient.ServerMessage = Core.extend({
         
         // Start server push listener if required.
         if (this.document.documentElement.getAttribute("async-interval")) {
-            this.client._asyncManager._setInterval(parseInt(this.document.documentElement.getAttribute("async-interval")));
+            this.client._asyncManager._setInterval(parseInt(this.document.documentElement.getAttribute("async-interval"), 10));
             this.client._asyncManager._start();
         }
     },
@@ -1219,8 +1216,8 @@ Echo.RemoteClient.DefaultWaitIndicator = Core.extend(Echo.RemoteClient.WaitIndic
 
     $construct: function() {
         this._divElement = document.createElement("div");
-        this._divElement.style.cssText = "display: none; z-index: 32767; position: absolute; top: 30px; right: 30px; width: 200px;"
-                 + " padding: 20px; border: 1px outset #abcdef; background-color: #abcdef; color: #000000; text-align: center;";
+        this._divElement.style.cssText = "display: none;z-index:32767;position:absolute;top:30px;right:30px;" +
+                 "width:200px;padding:20px;border:1px outset #abcdef;background-color:#abcdef;color:#000000;text-align:center;";
         this._divElement.appendChild(document.createTextNode("Please wait..."));
         this._fadeRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._tick), 50, true);
         document.body.appendChild(this._divElement);
@@ -1245,7 +1242,7 @@ Echo.RemoteClient.DefaultWaitIndicator = Core.extend(Echo.RemoteClient.WaitIndic
         // Next take the absolute value, result ranges from 20 to 0 to 20.
         // Divide this value by 30, so the range goes from 2/3 to 0 to 2/3.
         // Subtract that value from 1, so the range goes from 1/3 to 1 and back.
-        var opacityValue = 1 - ((Math.abs((this._opacity % 40) - 20)) / 30);
+        var opacityValue = 1 - (Math.abs((this._opacity % 40) - 20) / 30);
         if (!Core.Web.Env.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
             this._divElement.style.opacity = opacityValue;
         }
