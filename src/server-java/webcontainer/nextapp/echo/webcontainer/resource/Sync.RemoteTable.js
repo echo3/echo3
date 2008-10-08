@@ -384,7 +384,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processClick: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
         var tr = e.registeredTarget;
@@ -425,7 +425,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processRolloverEnter: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
         var tr = e.registeredTarget;
@@ -444,7 +444,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processRolloverExit: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
         var tr = e.registeredTarget;
