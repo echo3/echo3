@@ -632,6 +632,10 @@ Core.Arrays.LargeMap = Core.extend({
                 this._garbageCollect();
             }
         }
+    },
+    
+    toString: function() {
+        return Core.Debug.toString(this.map);
     }
 });
 
