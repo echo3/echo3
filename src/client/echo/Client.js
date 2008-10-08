@@ -136,7 +136,7 @@ Echo.Client = Core.extend({
             // Check for input restrictions.
             if (this._inputRestrictionCount !== 0) {
                 if (!flags & Echo.Client.FLAG_INPUT_PROPERTY) {
-                    // Input is not a property update, automatically return false if any input restrictions pressent.
+                    // Input is not a property update, automatically return false if any input restrictions present.
                     return false;
                 }
                 for (var x in this._inputRestrictionMap) {
