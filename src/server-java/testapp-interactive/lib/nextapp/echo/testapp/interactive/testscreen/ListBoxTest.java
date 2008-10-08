@@ -49,6 +49,7 @@ import nextapp.echo.app.event.ListDataEvent;
 import nextapp.echo.app.event.ListDataListener;
 import nextapp.echo.app.layout.SplitPaneLayoutData;
 import nextapp.echo.app.list.AbstractListComponent;
+import nextapp.echo.app.list.AbstractListModel;
 import nextapp.echo.app.list.DefaultListModel;
 import nextapp.echo.app.list.ListCellRenderer;
 import nextapp.echo.app.list.ListSelectionModel;
@@ -66,6 +67,24 @@ public class ListBoxTest extends SplitPane {
                 "Nine", "Ten" };
     public static final String[] PEOPLE = new String[] { "", "Xander Crews", "Wendell Stamps", "Grace Ryan", "Arthur Watley" };
     public static final String[] SINGLE = new String[] { "Just One Entry!" };
+    
+    public static class ChangingListModel extends AbstractListModel {
+        
+        private int size = 10;
+        
+        public void change() {
+            size = (int) (Math.random() * 10);
+            fireContentsChanged(0, size() - 1);
+        }
+
+        public Object get(int index) {
+            return Integer.toString(size - index);
+        }
+
+        public int size() {
+            return size;
+        }
+    }
 
     /**
      * Interface used to apply style information to all test components.
@@ -579,7 +598,7 @@ public class ListBoxTest extends SplitPane {
             }
         });
         
-        controlsColumn.addButton("Empty ListModel", new ActionListener() {
+        controlsColumn.addButton("Empty ListModel (DefaultListModel)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator(){
                     public void apply(AbstractListComponent listComponent) {
@@ -589,7 +608,7 @@ public class ListBoxTest extends SplitPane {
             }
         });
         
-        controlsColumn.addButton("Set ListModel = Numbers", new ActionListener() {
+        controlsColumn.addButton("Set ListModel = Numbers (DefaultListModel)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator(){
                     public void apply(AbstractListComponent listComponent) {
@@ -599,7 +618,7 @@ public class ListBoxTest extends SplitPane {
             }
         });
 
-        controlsColumn.addButton("Set ListModel = People", new ActionListener() {
+        controlsColumn.addButton("Set ListModel = People (DefaultListModel)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator(){
                     public void apply(AbstractListComponent listComponent) {
@@ -609,7 +628,7 @@ public class ListBoxTest extends SplitPane {
             }
         });
 
-        controlsColumn.addButton("Set ListModel = Single", new ActionListener() {
+        controlsColumn.addButton("Set ListModel = Single (DefaultListModel)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator(){
                     public void apply(AbstractListComponent listComponent) {
@@ -619,7 +638,7 @@ public class ListBoxTest extends SplitPane {
             }
         });
 
-        controlsColumn.addButton("Add Item To DefaultListModel", new ActionListener() {
+        controlsColumn.addButton("Add Item (DefaultListModel Only)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator(){
                     public void apply(AbstractListComponent listComponent) {
@@ -632,7 +651,7 @@ public class ListBoxTest extends SplitPane {
             }
         });
 
-        controlsColumn.addButton("Remove Last Item From DefaultListModel", new ActionListener() {
+        controlsColumn.addButton("Remove Last Item (DefaultListModel Only)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator(){
                     public void apply(AbstractListComponent listComponent) {
@@ -646,7 +665,28 @@ public class ListBoxTest extends SplitPane {
                 });
             }
         });
+        
+        controlsColumn.addButton("Set ListModel = \"ChangingListModel\"", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator(){
+                    public void apply(AbstractListComponent listComponent) {
+                        listComponent.setModel(new ChangingListModel());
+                    }
+                });
+            }
+        });
 
+        controlsColumn.addButton("Change \"ChangingListModel\" Contents", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator(){
+                    public void apply(AbstractListComponent listComponent) {
+                        if (listComponent.getModel() instanceof ChangingListModel) {
+                            ((ChangingListModel) listComponent.getModel()).change();
+                        }
+                    }
+                });
+            }
+        });
         controlsColumn.addButton("Focus SelectField1", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().setFocusedComponent(selectField1);
