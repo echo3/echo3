@@ -1333,26 +1333,21 @@ Core.Web.Measure = {
     _PARSER: /^(-?\d+(?:\.\d+)?)(.+)?$/,
 
     /**
-     * Converts any non-relative extent value to pixels.
+     * Converts any non-relative extent value to pixels.  Returns null in the case of a percentage extent.
      * 
-     * @param value the value to convert, either a 
-     * @param {String} units units, one of the following values: in, cm, mm, pt, pc, em, ex
+     * @param {String} value a unitized extent value, e.g., "2px", "5em", etc.
      * @param {Boolean} horizontal a flag indicating whether the extent is horizontal (true) or vertical (false)
      * @return the pixel value (may have a fractional part)
      * @type Number
      */
-    extentToPixels: function(value, units, horizontal) {
-        if (typeof value == "string") {
-            if (typeof units == "boolean") {
-                horizontal = units;
-            }
-            var parts = this._PARSER.exec(value);
-            if (!parts) {
-                throw new Error("Invalid Extent: " + extent);
-            }
-            value = parseFloat(parts[1]);
-            units = parts[2] ? parts[2] : "px";
+    extentToPixels: function(extent, horizontal) {
+        var parts = this._PARSER.exec(extent);
+        if (!parts) {
+            throw new Error("Invalid Extent: " + extent);
         }
+        var value = parseFloat(parts[1]);
+        var units = parts[2] ? parts[2] : "px";
+
         if (!units || units == "px") {
             return value;
         }

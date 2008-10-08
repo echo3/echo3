@@ -350,13 +350,7 @@ Echo.Sync.Extent = {
         } else if (typeof(extent) == "number") {
             return extent;
         } else {
-            var parts = this._PARSER.exec(extent);
-            if (!parts) {
-                throw new Error("Invalid Extent: " + extent);
-            }
-            var value = parseFloat(parts[1]);
-            var units = parts[2] ? parts[2] : "px";
-            return Core.Web.Measure.extentToPixels(value, units, horizontal);
+            return Core.Web.Measure.extentToPixels(extent, horizontal);
         }
     }
 };
