@@ -139,7 +139,7 @@ public class StyleSheetTest extends Column {
         styleSheetEntryTextArea = new TextArea();
         styleSheetEntryTextArea.getDocument().setText(DEFAULT_STYLE_SHEET_TEXT);
         styleSheetEntryTextArea.setStyleName("Default");
-        styleSheetEntryTextArea.setWidth(new Extent(600));
+        styleSheetEntryTextArea.setWidth(new Extent(100, Extent.PERCENT));
         styleSheetEntryTextArea.setHeight(new Extent(300));
         add(styleSheetEntryTextArea);
         
