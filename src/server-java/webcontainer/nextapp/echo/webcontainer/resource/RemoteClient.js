@@ -550,7 +550,9 @@ Echo.RemoteClient.AsyncManager = Core.extend({
         }
         
         if (responseDocument.documentElement.getAttribute("request-sync") == "true") {
-            this._client.sync();
+            if (!this._client._transactionInProgress) {
+                this._client.sync();
+            }
         } else {
             Core.Web.Scheduler.add(this._runnable);
         }
