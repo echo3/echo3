@@ -619,6 +619,34 @@ public class ListBoxTest extends SplitPane {
             }
         });
 
+        controlsColumn.addButton("Add Item To DefaultListModel", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator(){
+                    public void apply(AbstractListComponent listComponent) {
+                        if (listComponent.getModel() instanceof DefaultListModel) {
+                            DefaultListModel listModel = (DefaultListModel) listComponent.getModel();
+                            listModel.add("Added item: " + (int) (Math.random() * 1000));
+                        }
+                    }
+                });
+            }
+        });
+
+        controlsColumn.addButton("Remove Last Item From DefaultListModel", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator(){
+                    public void apply(AbstractListComponent listComponent) {
+                        if (listComponent.getModel() instanceof DefaultListModel) {
+                            DefaultListModel listModel = (DefaultListModel) listComponent.getModel();
+                            if (listModel.size() > 0) {
+                                listModel.remove(listModel.size() - 1);
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
         controlsColumn.addButton("Focus SelectField1", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().setFocusedComponent(selectField1);
