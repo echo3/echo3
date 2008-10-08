@@ -226,7 +226,7 @@ Core.Web.DOM = {
      *         indicating its upper-left corner
      */
     getEventOffset: function(e) {
-        if (typeof e.offsetX == "number") {
+        if (false && typeof e.offsetX == "number") {
             return { x: e.offsetX, y: e.offsetY };
         } else {
             var bounds = new Core.Web.Measure.Bounds(this.getEventTarget(e));
@@ -436,6 +436,8 @@ Core.Web.Env = {
         }
 
         //FIXME Quirk flags not refined yet, some quirk flags from Echo 2.0/1 will/may be deprecated/removed.
+        
+        this.CSS_BORDER_MEASURE_FACTOR = 0;
                 
         // Set IE Quirk Flags
         if (this.BROWSER_INTERNET_EXPLORER) {
@@ -447,6 +449,7 @@ Core.Web.Env = {
             this.CSS_FLOAT = "styleFloat";
             this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
             this.QUIRK_UNLOADED_IMAGE_HAS_SIZE = true;
+            this.CSS_BORDER_MEASURE_FACTOR = 1;
             
             if (this.BROWSER_MAJOR_VERSION < 8) {
                 // Internet Explorer 6 and 7 Flags.
@@ -476,6 +479,7 @@ Core.Web.Env = {
                 }
             }
         } else if (this.BROWSER_MOZILLA) {
+            this.CSS_BORDER_MEASURE_FACTOR = 2;
             if (this.BROWSER_FIREFOX) {
                 if (this.BROWSER_MAJOR_VERSION < 2) {
                     this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
@@ -490,8 +494,10 @@ Core.Web.Env = {
             }
             this.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
         } else if (this.BROWSER_SAFARI) {
+            this.CSS_BORDER_MEASURE_FACTOR = 1;
             this.QUIRK_SAFARI_DOM_TEXT_ESCAPE = true;
         } else if (this.BROWSER_CHROME) {
+            this.CSS_BORDER_MEASURE_FACTOR = 1;
             this.QUIRK_SAFARI_DOM_TEXT_ESCAPE = true;
         }
     },
@@ -1047,10 +1053,10 @@ Core.Web.HttpConnection = Core.extend({
      * @param {String} value the value of the header
      */
     setRequestHeader: function(header, value) {
-    	if (!this._requestHeaders) {
-    		this._requestHeaders = { };
-    	} 
-		this._requestHeaders[header] = value;
+        if (!this._requestHeaders) {
+            this._requestHeaders = { };
+        } 
+        this._requestHeaders[header] = value;
     }
 });
 
@@ -1323,17 +1329,30 @@ Core.Web.Measure = {
     
     /** Estimated scroll bar height. */
     SCROLL_HEIGHT: 17,
+    
+    _PARSER: /^(-?\d+(?:\.\d+)?)(.+)?$/,
 
     /**
      * Converts any non-relative extent value to pixels.
      * 
-     * @param {Number} value the value to convert
+     * @param value the value to convert, either a 
      * @param {String} units units, one of the following values: in, cm, mm, pt, pc, em, ex
      * @param {Boolean} horizontal a flag indicating whether the extent is horizontal (true) or vertical (false)
      * @return the pixel value (may have a fractional part)
      * @type Number
      */
     extentToPixels: function(value, units, horizontal) {
+        if (typeof value == "string") {
+            if (typeof units == "boolean") {
+                horizontal = units;
+            }
+            var parts = this._PARSER.exec(value);
+            if (!parts) {
+                throw new Error("Invalid Extent: " + extent);
+            }
+            value = parseFloat(parts[1]);
+            units = parts[2] ? parts[2] : "px";
+        }
         if (!units || units == "px") {
             return value;
         }
@@ -1418,6 +1437,14 @@ Core.Web.Measure = {
         do {
             valueT += element.offsetTop  || 0;
             valueL += element.offsetLeft || 0;
+            if (element.style.borderLeftWidth) {
+                valueL += (Core.Web.Measure.extentToPixels(element.style.borderLeftWidth, true) || 0) *
+                         Core.Web.Env.CSS_BORDER_MEASURE_FACTOR;
+            }
+            if (element.style.borderTopWidth) {
+                valueT += (Core.Web.Measure.extentToPixels(element.style.borderTopWidth, false) || 0) *
+                         Core.Web.Env.CSS_BORDER_MEASURE_FACTOR;
+            }
             element = element.offsetParent;
         } while (element);
         return { left: valueL, top: valueT };
