@@ -179,11 +179,11 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             // urlTokens[1] = key
             // urlTokens[2] = baseUrl
             if (urlTokens.length != 3) {
-                throw new Error("Invalid encoded URL");
+                throw new Error("Invalid encoded URL: " + url);
             }
             var replacementValue = this._urlMappings[urlTokens[1]]; 
             if (replacementValue == null) {
-                throw new Error("Invalid URL shorthand key \"" + urlTokens[1] + "\".");
+                throw new Error("Invalid URL shorthand key \"" + urlTokens[1] + "\" in URL: " + url);
             }
             return replacementValue + urlTokens[2];
         }
