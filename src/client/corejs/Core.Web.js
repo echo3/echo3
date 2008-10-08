@@ -613,6 +613,16 @@ Core.Web.Event = {
     _nextId: 0,
     
     /**
+     * Current listener count.
+     */
+    _listenerCount: 0,
+    
+    /**
+     * Flag to display listener count every time an event is fired.  Enable this flag to check for listener leaks.
+     */
+    debugListenerCount: false,
+    
+    /**
      * Mapping between element ids and ListenerLists containing listeners to invoke during capturing phase.
      * @type Core.Arrays.LargeMap
      */
@@ -670,6 +680,7 @@ Core.Web.Event = {
         // Register event listener on DOM element.
         if (!listenerList.hasListeners(eventType)) {
             Core.Web.DOM.addEventListener(element, eventType, Core.Web.Event._processEvent, false);
+            ++Core.Web.Event._listenerCount;
         }
 
         // Add event handler to the ListenerList.
@@ -682,6 +693,10 @@ Core.Web.Event = {
      * @param {Event} e 
      */
     _processEvent: function(e) {
+        if (Core.Web.Event.debugListenerCount) {
+            Core.Debug.consoleWrite("Core.Web.Event listener count: " + Core.Web.Event._listenerCount);        
+        }
+
         e = e ? e : window.event;
         
         if (!e.target && e.srcElement) {
@@ -770,6 +785,7 @@ Core.Web.Event = {
             // Unregister event listener on DOM element if all listeners have been removed.
             if (!listenerList.hasListeners(eventType)) {
                 Core.Web.DOM.removeEventListener(element, eventType, Core.Web.Event._processEvent, false);
+                --Core.Web.Event._listenerCount;
             }
         }
     },
@@ -807,7 +823,8 @@ Core.Web.Event = {
     
         var types = listenerList.getListenerTypes();
         for (var i = 0; i < types.length; ++i) {
-            Core.Web.DOM.removeEventListener(element, types[i], Core.Web.Event._processEvent, false); 
+            Core.Web.DOM.removeEventListener(element, types[i], Core.Web.Event._processEvent, false);
+            --Core.Web.Event._listenerCount;
         }
         
         listenerMap.remove(element.__eventProcessorId);
