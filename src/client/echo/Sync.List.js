@@ -53,7 +53,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
      * listbox for IE6, i.e., the _alternateRender flag will be true. 
      */
     _processClick: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             Core.Web.DOM.preventEventDefault(e);
             this._renderSelection();
             return true;
@@ -101,7 +101,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
      * This event handler is registered only for traditional SELECT elements, i.e., the _alternateRender flag will be false.
      */
     _processChange: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             Core.Web.DOM.preventEventDefault(e);
             this._renderSelection();
             return false;
@@ -127,7 +127,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
     
     _processFocus: function(e) {
         this._focused = true;
-        if (!this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
+        if (!this.client || !this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
             return true;
         }
         this.component.application.setFocusedComponent(this.component);

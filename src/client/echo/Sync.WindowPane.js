@@ -134,7 +134,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processBorderMouseDown: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
 
@@ -226,14 +226,14 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processCloseClick: function(e) { 
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
         this.component.userClose();
     },
     
     _processFocusClick: function(e) { 
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
         this.component.parent.peer.raise(this.component);
@@ -241,7 +241,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processMaximizeClick: function(e) { 
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
         this.component.userMaximize();
@@ -249,14 +249,14 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processMinimizeClick: function(e) { 
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
         this.component.userMinimize();
     },
     
     _processTitleBarMouseDown: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
     

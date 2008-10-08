@@ -132,7 +132,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processClick: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
         this.component.application.setFocusedComponent(this.component);
@@ -140,7 +140,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processFocus: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
         this.component.application.setFocusedComponent(this.component);
@@ -166,7 +166,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processKeyPress: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
         if (e.keyCode == 13) { // FIXME This will fail in IE (I think)
@@ -178,7 +178,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processPress: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
         Core.Web.DOM.preventEventDefault(e);
@@ -186,14 +186,14 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processRelease: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
         this._setPressedState(false);
     },
     
     _processRolloverEnter: function(e) {
-        if (!this.client.verifyInput(this.component) || Core.Web.dragInProgress) {
+        if (!this.client || !this.client.verifyInput(this.component) || Core.Web.dragInProgress) {
             return true;
         }
         this.component.application.addListener("focus", this._processRolloverExitRef);
@@ -201,7 +201,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processRolloverExit: function(e) {
-        if (!this.client.verifyInput(this.component)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
         if (this._processRolloverExitRef) {
