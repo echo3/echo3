@@ -226,7 +226,7 @@ Core.Web.DOM = {
      *         indicating its upper-left corner
      */
     getEventOffset: function(e) {
-        if (false && typeof e.offsetX == "number") {
+        if (typeof e.offsetX == "number") {
             return { x: e.offsetX, y: e.offsetY };
         } else {
             var bounds = new Core.Web.Measure.Bounds(this.getEventTarget(e));
