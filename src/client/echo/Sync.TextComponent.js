@@ -62,7 +62,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         Echo.Sync.Insets.render(this.component.render("insets"), this._input, "padding");
         var width = this.component.render("width");
         if (width && !Echo.Sync.Extent.isPercent(width)) {
-            container.style.width = Echo.Sync.Extent.toCssValue(width, true);
+            this._input.style.width = Echo.Sync.Extent.toCssValue(width, true);
         }
         var height = this.component.render("height");
         if (height) {
