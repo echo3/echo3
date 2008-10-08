@@ -203,7 +203,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     },
     
     /**
-     * Executes all enqued commands; empties the queue.
+     * Executes all enqueued commands; empties the queue.
      */
     _executeCommands: function() {
         if (this._commandQueue) {
