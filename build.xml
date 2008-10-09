@@ -159,7 +159,7 @@
                 destdir="${dir.javadoc.app.private}" 
                 WindowTitle="${javadoc.windowtitle}"
                 DocTitle="${javadoc.doctitle.app}"
-                Overview="${dir.src.server-java.app}/nextapp/echo/webcontainer/overview.html"
+                Overview="${dir.src.server-java.app}/nextapp/echo/app/overview.html"
                 Header="${javadoc.header}"
                 Private="true"/>
     </target>
@@ -256,7 +256,7 @@
                 destdir="${dir.javadoc.webcontainer.public}" 
                 WindowTitle="${javadoc.windowtitle}"
                 DocTitle="${javadoc.doctitle.webcontainer}"
-                Overview="${dir.src.server-java.webcontainer}/nextapp/echo/app/overview.html"
+                Overview="${dir.src.server-java.webcontainer}/nextapp/echo/webcontainer/overview.html"
                 Header="${javadoc.header}">
             <classpath>
                 <pathelement path="${servlet.lib.jar}"/>
