@@ -437,7 +437,7 @@ Core.Web.Env = {
 
         //FIXME Quirk flags not refined yet, some quirk flags from Echo 2.0/1 will/may be deprecated/removed.
         
-        this.CSS_BORDER_MEASURE_FACTOR = 0;
+        this.MEASURE_OFFSET_EXCLUDES_BORDER = false;
                 
         // Set IE Quirk Flags
         if (this.BROWSER_INTERNET_EXPLORER) {
@@ -449,7 +449,7 @@ Core.Web.Env = {
             this.CSS_FLOAT = "styleFloat";
             this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
             this.QUIRK_UNLOADED_IMAGE_HAS_SIZE = true;
-            this.CSS_BORDER_MEASURE_FACTOR = 1;
+            this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
             
             if (this.BROWSER_MAJOR_VERSION < 8) {
                 // Internet Explorer 6 and 7 Flags.
@@ -479,7 +479,8 @@ Core.Web.Env = {
                 }
             }
         } else if (this.BROWSER_MOZILLA) {
-            this.CSS_BORDER_MEASURE_FACTOR = 2;
+            this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
+            this.QUIRK_MEASURE_OFFSET_HIDDEN_BORDER = true;
             if (this.BROWSER_FIREFOX) {
                 if (this.BROWSER_MAJOR_VERSION < 2) {
                     this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
@@ -494,10 +495,10 @@ Core.Web.Env = {
             }
             this.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
         } else if (this.BROWSER_SAFARI) {
-            this.CSS_BORDER_MEASURE_FACTOR = 1;
+            this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
             this.QUIRK_SAFARI_DOM_TEXT_ESCAPE = true;
         } else if (this.BROWSER_CHROME) {
-            this.CSS_BORDER_MEASURE_FACTOR = 1;
+            this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
             this.QUIRK_SAFARI_DOM_TEXT_ESCAPE = true;
         }
     },
@@ -1445,18 +1446,27 @@ Core.Web.Measure = {
      * @private
      */
     _getCumulativeOffset: function(element) {
-        var valueT = 0, valueL = 0;
+        var valueT = 0, 
+            valueL = 0,
+            init = true;
         do {
             valueT += element.offsetTop  || 0;
             valueL += element.offsetLeft || 0;
-            if (element.style.borderLeftWidth) {
-                valueL += (Core.Web.Measure.extentToPixels(element.style.borderLeftWidth, true) || 0) *
-                         Core.Web.Env.CSS_BORDER_MEASURE_FACTOR;
+            if (element.style.borderLeftWidth && !init && Core.Web.Env.MEASURE_OFFSET_EXCLUDES_BORDER) {
+                var borderLeft = Core.Web.Measure.extentToPixels(element.style.borderLeftWidth, true);
+                valueL += borderLeft;
+                if (Core.Web.Env.QUIRK_MEASURE_OFFSET_HIDDEN_BORDER && element.style.overflow == "hidden") {
+                    valueL += borderLeft;
+                }
             }
-            if (element.style.borderTopWidth) {
-                valueT += (Core.Web.Measure.extentToPixels(element.style.borderTopWidth, false) || 0) *
-                         Core.Web.Env.CSS_BORDER_MEASURE_FACTOR;
+            if (element.style.borderTopWidth && !init && Core.Web.Env.MEASURE_OFFSET_EXCLUDES_BORDER) {
+                var borderTop = Core.Web.Measure.extentToPixels(element.style.borderTopWidth, false);
+                valueT += borderTop;
+                if (Core.Web.Env.QUIRK_MEASURE_OFFSET_HIDDEN_BORDER && element.style.overflow == "hidden") {
+                    valueT += borderTop;
+                }
             }
+            init = false;
             element = element.offsetParent;
         } while (element);
         return { left: valueL, top: valueT };
