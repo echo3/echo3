@@ -733,7 +733,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 }
                 c.width = this._minimumWidth;
             }
-            this._rendered.width = c.width;
+            this._rendered.width = Math.round(c.width);
         }
         
         if (c.height != null) {
@@ -749,7 +749,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 }
                 c.height = this._minimumHeight;
             }
-            this._rendered.height = c.height;
+            this._rendered.height = Math.round(c.height);
         }
     
         if (c.x != null) {
@@ -759,7 +759,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             if (c.x < 0) {
                 c.x = 0;
             }
-            this._rendered.x = c.x;
+            this._rendered.x = Math.round(c.x);
         }
     
         if (c.y != null) {
@@ -769,7 +769,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             if (c.y < 0) {
                 c.y = 0;
             }
-            this._rendered.y = c.y;
+            this._rendered.y = Math.round(c.y);
         }
         
         this.redraw();
