@@ -141,7 +141,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * This is used to eliminate issues that could be encountered with two
      * browser windows pointing at the same application instance.
      */
-    private long transactionId = 0;
+    private int transactionId = 0;
     
     /**
      * Provides information about updated <code>UserInstance</code> properties.
@@ -266,7 +266,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * 
      * @return the current transaction id
      */
-    public long getCurrentTransactionId() {
+    public int getCurrentTransactionId() {
         return transactionId;
     }
 
@@ -299,7 +299,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * 
      * @return the current transaction id, after an increment
      */
-    public long getNextTransactionId() {
+    public int getNextTransactionId() {
         ++transactionId;
         return transactionId;
     }

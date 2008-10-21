@@ -57,6 +57,7 @@ public class ClientMessage {
     
     private Document document;
     private String type;
+    private int transactionId;
     
     public ClientMessage(Document document) 
     throws IOException {
@@ -65,10 +66,15 @@ public class ClientMessage {
         // Retrieve message type.
         this.document = document;
         type = document.getDocumentElement().getAttribute("t");
+        transactionId = Integer.parseInt(document.getDocumentElement().getAttribute("i"));
     }
     
     public Document getDocument() {
         return document;
+    }
+    
+    public long getTransactionId() {
+        return transactionId;
     }
     
     public String getType() {

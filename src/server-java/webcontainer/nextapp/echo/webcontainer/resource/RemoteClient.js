@@ -52,7 +52,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     _serverUrl: null,
     
     /**
-     * Flag indicating whether a client-server transaction is currently in progres.
+     * Flag indicating whether a client-server transaction is currently in progress.
      * @type Boolean
      */
     _transactionInProgress: false,
@@ -120,6 +120,11 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * Flag indicating whether the remote client has been initialized.
      */
     _initialized: false,
+    
+    /**
+     * Current client/server transaction id.
+     */
+    transactionId: 0,
     
     /**
      * Creates a new RemoteClient instance.
@@ -397,7 +402,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             this.init(responseDocument);
         }
         
-        // Profiling Timer (Uncomment to enable, comment to disable).
+        // Profiling Timer (Un-comment to enable, comment to disable).
         Echo.Client.profilingTimer = new Echo.Client.Timer();
         
         // Remove component update listener from application.  This listener is listening
@@ -406,6 +411,8 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         
         // Create new ServerMessage object with response document.
         var serverMessage = new Echo.RemoteClient.ServerMessage(this, responseDocument);
+        
+        this.transactionId = serverMessage.transactionId;
         
         // Add completion listener to invoke _processSyncComplete when message has been fully processed.
         // (Some elements of the server message are processed asynchronously). 
@@ -452,6 +459,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     
         this._asyncManager._stop();    
         this._syncInitTime = new Date().getTime();
+
         var conn = new Core.Web.HttpConnection(this._getServiceUrl("Echo.Sync"), "POST", 
                 this._clientMessage._renderXml(), "text/xml");
         
@@ -785,6 +793,7 @@ Echo.RemoteClient.ClientMessage = Core.extend({
         if (!this._rendered) {
             this._renderCFocus();
             this._renderCSync();
+            this._document.documentElement.setAttribute("i", this._client.transactionId);
             this._rendered = true;
         }
         return this._document;
@@ -1116,12 +1125,15 @@ Echo.RemoteClient.ServerMessage = Core.extend({
             this._processorClasses[name] = processor;
         }
     },
+    
+    transactionId: null,
 
     $construct: function(client, xmlDocument) { 
         this.client = client;
         this.document = xmlDocument;
         this._listenerList = new Core.ListenerList();
         this._processorInstances = { };
+        this.transactionId = xmlDocument.documentElement.getAttribute("i");
     },
     
     addCompletionListener: function(l) {
