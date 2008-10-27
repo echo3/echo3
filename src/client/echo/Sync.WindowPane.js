@@ -225,13 +225,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         return true;
     },
     
-    _processCloseClick: function(e) { 
-        if (!this.client || !this.client.verifyInput(this.component)) {
-            return true;
-        }
-        this.component.userClose();
-    },
-    
     _processFocusClick: function(e) { 
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
@@ -240,19 +233,38 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         return true;
     },
     
-    _processMaximizeClick: function(e) { 
+    _processControlClick: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
-        this.component.userMaximize();
-        Echo.Render.processUpdates(this.client);
+        switch (e.registeredTarget._controlName) {
+        case "close":
+            this.component.userClose();
+            break;
+        case "maximize":
+            this.component.userMaximize();
+            Echo.Render.processUpdates(this.client);
+            break;
+        case "minimize":
+            this.component.userMinimize();
+            break;
+        }
     },
     
-    _processMinimizeClick: function(e) { 
+    _processControlRolloverEnter: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
-        this.component.userMinimize();
+        switch (e.target._controlName) {
+        case "close":
+            break;
+        }
+    },
+    
+    _processControlRolloverExit: function(e) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
+            return true;
+        }
     },
     
     _processTitleBarMouseDown: function(e) {
@@ -564,26 +576,15 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
 
             // Close Button
             if (closable) {
-                this._renderControlIcon(this.component.render("closeIcon", 
-                        this.client.getResourceUrl("Echo", "resource/WindowPaneClose.gif")),
-                        null, null, "[X]", this.component.render("closeIconInsets"),
-                        Core.method(this, this._processCloseClick));
+                this._renderControlIcon("close", this.client.getResourceUrl("Echo", "resource/WindowPaneClose.gif"), "[X]");
                 Core.Web.Event.add(this._div, "keydown", Core.method(this, this._processKeyDown), false);
                 Core.Web.Event.add(this._div, "keypress", Core.method(this, this._processKeyPress), false);
             }
-            
             if (maximizeEnabled) {
-                this._renderControlIcon(this.component.render("maximizeIcon", 
-                        this.client.getResourceUrl("Echo", "resource/WindowPaneMaximize.gif")),
-                        null, null, "[+]", this.component.render("maximizeIconInsets"),
-                        Core.method(this, this._processMaximizeClick));
+                this._renderControlIcon("maximize", this.client.getResourceUrl("Echo", "resource/WindowPaneMaximize.gif"), "[+]");
             }
-
             if (minimizeEnabled) {
-                this._renderControlIcon(this.component.render("minimizeIcon", 
-                        this.client.getResourceUrl("Echo", "resource/WindowPaneMinimize.gif")),
-                        null, null, "[-]", this.component.render("minimizeIconInsets"),
-                        Core.method(this, this._processMinimizeClick));
+                this._renderControlIcon("minimize", this.client.getResourceUrl("Echo", "resource/WindowPaneMinimize.gif"), "[-]");
             }
         }
         
@@ -616,28 +617,30 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 Core.method(this, this._processFocusClick), true);
     },
 
-    _renderControlIcon: function(icon, rolloverIcon, pressedIcon, altText, insets, eventMethod) {
-        var controlIcon = document.createElement("div");
-        controlIcon.style.cssText = "float:right;cursor:pointer;margin-left:" +
+    _renderControlIcon: function(name, defaultIcon, altText) {
+        var controlDiv = document.createElement("div");
+        controlDiv._controlName = name;
+        controlDiv.style.cssText = "float:right;cursor:pointer;margin-left:" +
                 Echo.Sync.Extent.toCssValue(this.component.render("controlsSpacing", Echo.WindowPane.DEFAULT_CONTROLS_SPACING));
-        Echo.Sync.Insets.render(insets, controlIcon, "padding");
+        
+        var icon = this.component.render(name + "Icon", defaultIcon);
+        
+        Echo.Sync.Insets.render(this.component.render(name + "Insets"), controlDiv, "padding");
         if (icon) {
             var img = document.createElement("img");
             Echo.Sync.ImageReference.renderImg(icon, img);
-            controlIcon.appendChild(img);
+            controlDiv.appendChild(img);
         } else {
-            controlIcon.appendChild(document.createTextNode(altText));
+            controlDiv.appendChild(document.createTextNode(altText));
         }
         
-        if (eventMethod) {
-            Core.Web.Event.add(controlIcon, "click", eventMethod, false);
-        }
+        Core.Web.Event.add(controlDiv, "click", Core.method(this, this._processControlClick), false);
         
-        this._controlDiv.appendChild(controlIcon);
+        this._controlDiv.appendChild(controlDiv);
         if (this._controlIcons == null) {
             this._controlIcons = [];
         }
-        this._controlIcons.push(controlIcon);
+        this._controlIcons.push(controlDiv);
     },
     
     renderDispose: function(update) {

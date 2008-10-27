@@ -3044,6 +3044,7 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * @sp {Boolean} closable flag indicating whether the window is closable
  * @sp {#ImageReference} closeIcon the close button icon
  * @sp {#Insets} closeIconInsets the inset margin around the close button icon
+ * @sp {#ImageReference} closeRolloverIcon the close button rollover icon
  * @sp {#Insets} controlsInsets the inset margin around the controls area
  * @sp {#Extent} controlsSpacing the spacing between controls in the controls area
  * @sp {#Extent} height the outside height of the window, including its border
@@ -3053,11 +3054,13 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * @sp {Boolean} maximizeEnabled flag indicating whether maximize feature should be enabled
  * @sp {#ImageReference} maximizeIcon the minimize button icon
  * @sp {#Insets} maximizeIconInsets the inset margin around the maximize button icon
+ * @sp {#ImageReference} maximizeRolloverIcon the maximize button rollover icon
  * @sp {#Extent} maximumHeight the maximum height of the window
  * @sp {#Extent} maximumWidth the maximum width of the window
  * @sp {Boolean} minimizeEnabled flag indicating whether maximize feature should be enabled
  * @sp {#ImageReference} minimizeIcon the minimize button icon
  * @sp {#Insets} minimizeIconInsets the inset margin around the minimize button icon
+ * @sp {#ImageReference} minimizeRolloverIcon the minimize button rollover icon
  * @sp {#Extent} minimumHeight the minimum height of the window
  * @sp {#Extent} minimumWidth the minimum width of the window
  * @sp {Boolean} movable flag indicating whether the window is movable
