@@ -2877,6 +2877,9 @@ Echo.Row = Core.extend(Echo.Component, {
  * SplitPane component.
  * Splits a pane into two regions.  A maximum of two components may be added as children.
  *
+ * @sp {Boolean} autoPositioned flag indicating whether the pane should set the separator position automatically
+ *     based on size of first child.  This feature is only available on vertically oriented panes, where the
+ *     first child contains non-pane content. 
  * @sp {Number} orientation the orientation of the SplitPane, one of the following values:
  *     <ul>
  *      <li><code>ORIENTATION_HORIZONTAL_LEADING_TRAILING</code> (the default)</li>
@@ -2889,15 +2892,12 @@ Echo.Row = Core.extend(Echo.Component, {
  * @sp {Boolean} resizable flag indicating whether the pane separator can be moved
  * @sp {#Color} separatorColor the separator color
  * @sp {#Extent} separatorHeight the height of the separator (this property is used to determine the size
- *     of the separator in vertical orientations 
+ *     of the separator in vertical orientations)
  * @sp {#FillImage} separatorHorizontalImage a FillImage used to paint the separator for horizontal orientations
  * @sp {#Extent} separatorPosition an extent specifying the position of the separator
- * @sp {Boolean} autoPositioned flag indicating whether the pane should set the separator position automatically
- *     based on size of first child.  This feature is only available on vertically oriented panes, where the
- *     first child contains non-pane content. 
  * @sp {#FillImage} separatorVerticalImage a FillImage used to paint the separator for vertical orientations
  * @sp {#Extent} separatorWidth the width of the separator (this property is used to determine the size
- *     of the separator in horizontal orientations
+ *     of the separator in horizontal orientations)
  * @ldp {#Alignment} alignment the alignment of the child component within its subpane
  * @ldp {#Color} background the background of the child component's subpane
  * @ldp {#FillImage} backrgoundImage the background image of the child component's subpane
@@ -3043,21 +3043,21 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * @sp {#FillImageBorder} border the border frame containing the WindowPane
  * @sp {Boolean} closable flag indicating whether the window is closable
  * @sp {#ImageReference} closeIcon the close button icon
+ * @sp {#Insets} closeIconInsets the inset margin around the close button icon
  * @sp {#Insets} controlsInsets the inset margin around the controls area
  * @sp {#Extent} controlsSpacing the spacing between controls in the controls area
- * @sp {#Insets} closeIconInsets the inset margin around the close button icon
- * @sp {#Insets} maximizeIconInsets the inset margin around the maximize button icon
- * @sp {#Insets} minimizeIconInsets the inset margin around the minimize button icon
  * @sp {#Extent} height the outside height of the window, including its border
  * @sp {#ImageReference} icon the icon to display adjacent the window title
  * @sp {#Insets} iconInsets the inset margin around the icon
  * @sp {#Insets} insets the inset margin around the window content
  * @sp {Boolean} maximizeEnabled flag indicating whether maximize feature should be enabled
  * @sp {#ImageReference} maximizeIcon the minimize button icon
+ * @sp {#Insets} maximizeIconInsets the inset margin around the maximize button icon
  * @sp {#Extent} maximumHeight the maximum height of the window
  * @sp {#Extent} maximumWidth the maximum width of the window
  * @sp {Boolean} minimizeEnabled flag indicating whether maximize feature should be enabled
  * @sp {#ImageReference} minimizeIcon the minimize button icon
+ * @sp {#Insets} minimizeIconInsets the inset margin around the minimize button icon
  * @sp {#Extent} minimumHeight the minimum height of the window
  * @sp {#Extent} minimumWidth the minimum width of the window
  * @sp {Boolean} movable flag indicating whether the window is movable
