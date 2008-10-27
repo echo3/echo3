@@ -256,26 +256,20 @@ Echo.Sync.Color = {
     adjust: function(value, r, g, b) {
         var colorInt = parseInt(value.substring(1), 16);
         var red = Math.floor(colorInt / 0x10000) + r;
-        if (red < 0) {
-            red = 0;
-        } else if (red > 255) {
-            red = 255;
-        }
         var green = Math.floor(colorInt / 0x100) % 0x100 + g;
-        if (green < 0) {
-            green = 0;
-        } else if (green > 255) {
-            green = 255;
-        }
         var blue = colorInt % 0x100 + b;
-        if (blue < 0) {
-            blue = 0;
-        } else if (blue > 255) {
-            blue = 255;
-        }
-        return "#" + (red < 16 ? "0" : "") + red.toString(16) +
-                (green < 16 ? "0" : "") + green.toString(16) +
-                (blue < 16 ? "0" : "") + blue.toString(16); 
+        return this._toHex(red, green, blue);
+    },
+    
+    blend: function(value1, value2, ratio) {
+        ratio = ratio < 0 ? 0 : (ratio > 1 ? 1 : ratio);
+        var colorInt1 = parseInt(value1.substring(1), 16);
+        var colorInt2 = parseInt(value2.substring(1), 16);
+        var red = Math.round(Math.floor(colorInt1 / 0x10000) * (1 - ratio) + Math.floor(colorInt2 / 0x10000) * ratio);
+        var green = Math.round(Math.floor(colorInt1 / 0x100) % 0x100 * (1 - ratio) + 
+                Math.floor(colorInt2 / 0x100) % 0x100 * ratio);
+        var blue = Math.round((colorInt1 % 0x100) * (1 - ratio) + (colorInt2 % 0x100) * ratio);
+        return this._toHex(red, green, blue);
     },
 
     render: function(color, element, styleProperty) {
@@ -296,6 +290,28 @@ Echo.Sync.Color = {
         if ((color = component.render("background"))) {
             element.style.backgroundColor = color;
         }
+    },
+    
+    _toHex: function(red, green, blue) {
+        if (red < 0) {
+            red = 0;
+        } else if (red > 255) {
+            red = 255;
+        }
+        if (green < 0) {
+            green = 0;
+        } else if (green > 255) {
+            green = 255;
+        }
+        if (blue < 0) {
+            blue = 0;
+        } else if (blue > 255) {
+            blue = 255;
+        }
+
+        return "#" + (red < 16 ? "0" : "") + red.toString(16) +
+                (green < 16 ? "0" : "") + green.toString(16) +
+                (blue < 16 ? "0" : "") + blue.toString(16); 
     }
 };
 
