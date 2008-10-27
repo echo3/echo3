@@ -56,6 +56,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
     public static final String PROPERTY_CLOSABLE = "closable";
     public static final String PROPERTY_CLOSE_ICON = "closeIcon";
     public static final String PROPERTY_CLOSE_ICON_INSETS = "closeIconInsets";
+    public static final String PROPERTY_CLOSE_ROLLOVER_ICON = "closeRolloverIcon";
     public static final String PROPERTY_CONTROLS_INSETS = "controlsInsets";
     public static final String PROPERTY_CONTROLS_SPACING = "controlsSpacing";
     public static final String PROPERTY_DEFAULT_CLOSE_OPERATION = "defaultCloseOperation";
@@ -66,11 +67,13 @@ implements FloatingPane, ModalSupport, PaneContainer {
     public static final String PROPERTY_MAXIMIZE_ENABLED = "maximizeEnabled";
     public static final String PROPERTY_MAXIMIZE_ICON = "maximizeIcon";
     public static final String PROPERTY_MAXIMIZE_ICON_INSETS = "maximizeIconInsets";
+    public static final String PROPERTY_MAXIMIZE_ROLLOVER_ICON = "maximizeRolloverIcon";
+    public static final String PROPERTY_MAXIMUM_HEIGHT = "maximumHeight";
+    public static final String PROPERTY_MAXIMUM_WIDTH = "maximumWidth";
     public static final String PROPERTY_MINIMIZE_ENABLED = "minimizeEnabled";
     public static final String PROPERTY_MINIMIZE_ICON = "minimizeIcon";
     public static final String PROPERTY_MINIMIZE_ICON_INSETS = "minimizeIconInsets";
-    public static final String PROPERTY_MAXIMUM_HEIGHT = "maximumHeight";
-    public static final String PROPERTY_MAXIMUM_WIDTH = "maximumWidth";
+    public static final String PROPERTY_MINIMIZE_ROLLOVER_ICON = "minimizeRolloverIcon";
     public static final String PROPERTY_MINIMUM_HEIGHT = "minimumHeight";
     public static final String PROPERTY_MINIMUM_WIDTH = "minimumWidth";
     public static final String PROPERTY_MOVABLE = "movable";
@@ -204,6 +207,15 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
+     * Returns the close button rollover icon.
+     * 
+     * @return the icon
+     */
+    public ImageReference getCloseRolloverIcon() {
+        return (ImageReference) get(PROPERTY_CLOSE_ROLLOVER_ICON);
+    }
+    
+    /**
      * Returns the configured height of the content region of the window.
      * 
      * @return the height
@@ -313,6 +325,15 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
+     * Returns the maximize button rollover icon.
+     * 
+     * @return the icon
+     */
+    public ImageReference getMaximizeRolloverIcon() {
+        return (ImageReference) get(PROPERTY_MAXIMIZE_ROLLOVER_ICON);
+    }
+    
+    /**
      * Returns the maximum height of the content region of the 
      * <code>WindowPane</code>.
      * 
@@ -348,6 +369,15 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public Insets getMinimizeIconInsets() {
         return (Insets) get(PROPERTY_MINIMIZE_ICON_INSETS);
+    }
+    
+    /**
+     * Returns the minimize button rollover icon.
+     * 
+     * @return the icon
+     */
+    public ImageReference getMinimizeRolloverIcon() {
+        return (ImageReference) get(PROPERTY_MINIMIZE_ROLLOVER_ICON);
     }
     
     /**
@@ -629,6 +659,15 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
+     * Sets the close button rollover icon.
+     * 
+     * @param newValue the new icon
+     */
+    public void setCloseRolloverIcon(ImageReference newValue) {
+        set(PROPERTY_CLOSE_ROLLOVER_ICON, newValue);
+    }
+    
+    /**
      * Sets the content height of the <code>WindowPane</code>.
      * This value will be overridden by the <code>height</code> property, if it is set.
      * 
@@ -751,6 +790,15 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
+     * Sets the maximize button rollover icon.
+     * 
+     * @param newValue the new icon
+     */
+    public void setMaximizeRolloverIcon(ImageReference newValue) {
+        set(PROPERTY_MAXIMIZE_ROLLOVER_ICON, newValue);
+    }
+    
+    /**
      * Sets the maximum height of the content region of the 
      * <code>WindowPane</code>.
      * 
@@ -796,6 +844,15 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public void setMinimizeIconInsets(Insets newValue) {
         set(PROPERTY_MINIMIZE_ICON_INSETS, newValue);
+    }
+    
+    /**
+     * Sets the minimize button rollover icon.
+     * 
+     * @param newValue the new icon
+     */
+    public void setMinimizeRolloverIcon(ImageReference newValue) {
+        set(PROPERTY_MINIMIZE_ROLLOVER_ICON, newValue);
     }
     
     /**
