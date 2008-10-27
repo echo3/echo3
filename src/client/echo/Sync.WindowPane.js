@@ -212,7 +212,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
-        switch (e.registeredTarget._controlName) {
+        switch (e.registeredTarget._renderData.name) {
         case "close":
             this.component.userClose();
             break;
@@ -230,13 +230,11 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
-        switch (e.target._controlName) {
-        case "close":
-            break;
-        }
+        Echo.Sync.ImageReference.renderImg(e.registeredTarget._renderData.rolloverIcon, e.registeredTarget.firstChild);
     },
     
     _processControlRolloverExit: function(e) {
+        Echo.Sync.ImageReference.renderImg(e.registeredTarget._renderData.icon, e.registeredTarget.firstChild);
     },
     
     _processKeyDown: function(e) {
@@ -615,29 +613,39 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     },
 
     _renderControlIcon: function(name, defaultIcon, altText) {
-        var controlDiv = document.createElement("div");
-        controlDiv._controlName = name;
+        var controlDiv = document.createElement("div"),
+            icon = this.component.render(name + "Icon", defaultIcon),
+            rolloverIcon = this.component.render(name + "RolloverIcon");
+ 
         controlDiv.style.cssText = "float:right;cursor:pointer;margin-left:" +
                 Echo.Sync.Extent.toCssValue(this.component.render("controlsSpacing", Echo.WindowPane.DEFAULT_CONTROLS_SPACING));
-        
-        var icon = this.component.render(name + "Icon", defaultIcon);
-        
         Echo.Sync.Insets.render(this.component.render(name + "Insets"), controlDiv, "padding");
+
         if (icon) {
             var img = document.createElement("img");
             Echo.Sync.ImageReference.renderImg(icon, img);
             controlDiv.appendChild(img);
+            if (rolloverIcon) {
+                Core.Web.Event.add(controlDiv, "mouseover", Core.method(this, this._processControlRolloverEnter), false);
+                Core.Web.Event.add(controlDiv, "mouseout", Core.method(this, this._processControlRolloverExit), false);
+            }
         } else {
             controlDiv.appendChild(document.createTextNode(altText));
         }
         
         Core.Web.Event.add(controlDiv, "click", Core.method(this, this._processControlClick), false);
-        
+
         this._controlDiv.appendChild(controlDiv);
         if (this._controlIcons == null) {
             this._controlIcons = [];
         }
         this._controlIcons.push(controlDiv);
+        
+        controlDiv._renderData = {
+            name: name,
+            icon: icon,
+            rolloverIcon: rolloverIcon
+        };
     },
     
     renderDispose: function(update) {
