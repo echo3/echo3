@@ -208,31 +208,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         Echo.Render.notifyResize(this.component);
     },
     
-    _processKeyDown: function(e) {
-        if (e.keyCode == 27) {
-            this.component.userClose();
-            Core.Web.DOM.preventEventDefault(e);
-            return false;
-        }
-        return true;
-    },
-
-    _processKeyPress: function(e) {
-        if (e.keyCode == 27) {
-            Core.Web.DOM.preventEventDefault(e);
-            return false;
-        }
-        return true;
-    },
-    
-    _processFocusClick: function(e) { 
-        if (!this.client || !this.client.verifyInput(this.component)) {
-            return true;
-        }
-        this.component.parent.peer.raise(this.component);
-        return true;
-    },
-    
     _processControlClick: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
@@ -262,9 +237,31 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _processControlRolloverExit: function(e) {
+    },
+    
+    _processKeyDown: function(e) {
+        if (e.keyCode == 27) {
+            this.component.userClose();
+            Core.Web.DOM.preventEventDefault(e);
+            return false;
+        }
+        return true;
+    },
+
+    _processKeyPress: function(e) {
+        if (e.keyCode == 27) {
+            Core.Web.DOM.preventEventDefault(e);
+            return false;
+        }
+        return true;
+    },
+    
+    _processFocusClick: function(e) { 
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
+        this.component.parent.peer.raise(this.component);
+        return true;
     },
     
     _processTitleBarMouseDown: function(e) {
