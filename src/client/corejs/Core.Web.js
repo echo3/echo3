@@ -1521,6 +1521,15 @@ Core.Web.Measure = {
          * @constructor
          */    
         $construct: function(element) {
+            if (element === document.body) {
+                return { 
+                    x: 0,
+                    y: 0,
+                    height: document.offsetHeight,
+                    width: document.offsetWidth
+                };
+            }
+            
             var testElement = element;
             while (testElement && testElement != document) {
                 testElement = testElement.parentNode;
