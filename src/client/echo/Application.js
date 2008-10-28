@@ -2894,8 +2894,13 @@ Echo.Row = Core.extend(Echo.Component, {
  * @sp {#Extent} separatorHeight the height of the separator (this property is used to determine the size
  *     of the separator in vertical orientations)
  * @sp {#FillImage} separatorHorizontalImage a FillImage used to paint the separator for horizontal orientations
+ * @sp {#FillImage} separatorHorizontalRolloverImage a FillImage used to paint the separator for horizontal orientations when
+ *     the mouse is over it
  * @sp {#Extent} separatorPosition an extent specifying the position of the separator
+ * @sp {#Color} separatorRolloverColor the rollover separator color
  * @sp {#FillImage} separatorVerticalImage a FillImage used to paint the separator for vertical orientations
+ * @sp {#FillImage} separatorVerticalRolloverImage a FillImage used to paint the separator for vertical orientations when the
+ *     mouse is over it
  * @sp {#Extent} separatorWidth the width of the separator (this property is used to determine the size
  *     of the separator in horizontal orientations)
  * @ldp {#Alignment} alignment the alignment of the child component within its subpane

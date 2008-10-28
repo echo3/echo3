@@ -467,6 +467,15 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         Echo.Render.notifyResize(this.component);
     },
     
+    _processSeparatorRolloverEnter: function(e) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
+            return true;
+        }
+    },
+    
+    _processSeparatorRolloverExit: function(e) {
+    },
+    
     _redraw: function(position) {
         var insetsAdjustment = 0;
         if (this.component.getComponentCount() > 0) {
