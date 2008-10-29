@@ -89,6 +89,13 @@
    <fi r="0" t="r" y="50%">/nextapp/echo/testapp/interactive/resource/image/window/simple/Header.png</fi>
   </p>
   <p n="titleForeground" t="Color">#ffffff</p>
+  <p n="controlsInsets" t="Insets">-1px 5px</p>
+  <p n="maximizeIcon" t="ResourceImageReference">/nextapp/echo/testapp/interactive/resource/image/window/simple/ControlMaximize.png</p>
+  <p n="maximizeRolloverIcon" t="ResourceImageReference">/nextapp/echo/testapp/interactive/resource/image/window/simple/ControlMaximizeRollover.png</p>
+  <p n="minimizeIcon" t="ResourceImageReference">/nextapp/echo/testapp/interactive/resource/image/window/simple/ControlMinimize.png</p>
+  <p n="minimizeRolloverIcon" t="ResourceImageReference">/nextapp/echo/testapp/interactive/resource/image/window/simple/ControlMinimizeRollover.png</p>
+  <p n="closeIcon" t="ResourceImageReference">/nextapp/echo/testapp/interactive/resource/image/window/simple/ControlClose.png</p>
+  <p n="closeRolloverIcon" t="ResourceImageReference">/nextapp/echo/testapp/interactive/resource/image/window/simple/ControlCloseRollover.png</p>
   <p n="border" t="FillImageBorder">
    <fib bi="17px 23px 23px 17px" ci="8px 14px 14px 8px">
     <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTopLeft.png</fi>
