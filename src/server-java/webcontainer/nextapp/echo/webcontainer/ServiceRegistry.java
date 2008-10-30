@@ -43,6 +43,15 @@ public class ServiceRegistry {
     /** Maps service Ids to services */
     private final Map serviceMap = new HashMap();
     
+    private static final String DISABLE_DUPLICATE_SERVICE_CHECK_PROPERTY = 
+        ServiceRegistry.class.getName() + ".disableDuplicateServiceCheck";
+    
+    /**
+     * Whether the check for duplicate services should be disabled - see below.
+     */
+    private static final boolean disableDuplicateServiceCheck = 
+        "true".equals(System.getProperty(DISABLE_DUPLICATE_SERVICE_CHECK_PROPERTY)) ? true : false;
+    
     /**
      * Creates a new <code>ServiceRegistry</code>.
      */
@@ -52,12 +61,34 @@ public class ServiceRegistry {
     
     /** 
      * Adds a service to the registry.
+     * <p>
+     * By default, this will throw an <code>IllegalArgumentException</code>
+     * if an attempt to register two different service objects under the same
+     * service id is made.
+     * </p>
+     * <p>
+     * However, there may be times when it is desirable to simply ignore these
+     * extra requests and return without throwing an exception, such as when
+     * a JVM-level shared memory cache is in operation within a cluster.  In this
+     * situation, the service registry may have already been populated by another
+     * node member, and when the application is first invoked an another node
+     * member, attempts will be made to populate the registry again.  In this
+     * situation, we just ignore the superfluous requests.
+     * </p>
+     * <p>
+     * In order to turn off the duplicate service id exception for this scenario,
+     * specify the system property <code>nextapp.echo.webcontainer.ServiceRegistry.disableDuplicateServiceCheck</code>
+     * with a value of <code>true</code>.
      *
      * @param service The service to be added.
      */
     public synchronized void add(Service service) {
         if (serviceMap.containsKey(service.getId()) && serviceMap.get(service.getId()) != service) {
-            throw new IllegalArgumentException("Identifier already in use by another service.");
+            if (disableDuplicateServiceCheck) {
+                return;
+            } else {
+                throw new IllegalArgumentException("Identifier already in use by another service.");
+            }
         }
         serviceMap.put(service.getId(), service);
     }
