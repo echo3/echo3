@@ -1525,8 +1525,8 @@ Core.Web.Measure = {
                 return { 
                     x: 0,
                     y: 0,
-                    height: document.offsetHeight,
-                    width: document.offsetWidth
+                    height: window.innerHeight || document.documentElement.clientHeight,
+                    width: window.innerWidth || document.documentElement.clientWidth
                 };
             }
             
