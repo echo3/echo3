@@ -452,6 +452,36 @@ public class SplitPaneTest extends SplitPane {
                 testPane.setSeparatorWidth(new Extent(5, Extent.PERCENT));
             }
         });
+        controlsColumn.addButton("Set StyleName = null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testPane.setStyleName(null);
+            }
+        });
+        controlsColumn.addButton("Set StyleName = DefaultResizable", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testPane.setStyleName("DefaultResizable");
+            }
+        });
+        controlsColumn.addButton("Set Separator Color", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testPane.setSeparatorColor(StyleUtil.randomColor());
+            }
+        });
+        controlsColumn.addButton("Clear Separator Color", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testPane.setSeparatorColor(StyleUtil.randomColor());
+            }
+        });
+        controlsColumn.addButton("Set Separator Rollover Color", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testPane.setSeparatorRolloverColor(StyleUtil.randomColor());
+            }
+        });
+        controlsColumn.addButton("Clear Separator Rollover Color", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testPane.setSeparatorRolloverColor(StyleUtil.randomColor());
+            }
+        });
         
         groupContainerColumn.add(new PaneControlsColumn(0));
         groupContainerColumn.add(new PaneControlsColumn(1));

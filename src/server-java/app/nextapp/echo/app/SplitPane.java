@@ -107,9 +107,12 @@ implements Pane, PaneContainer {
     public static final String PROPERTY_SEPARATOR_COLOR = "separatorColor";
     public static final String PROPERTY_SEPARATOR_HEIGHT = "separatorHeight";
     public static final String PROPERTY_SEPARATOR_HORIZONTAL_IMAGE = "separatorHorizontalImage";
+    public static final String PROPERTY_SEPARATOR_HORIZONTAL_ROLLOVER_IMAGE = "separatorHorizontalRolloverImage";
     public static final String PROPERTY_SEPARATOR_POSITION = "separatorPosition";
+    public static final String PROPERTY_SEPARATOR_ROLLOVER_COLOR = "separatorRolloverColor";
     public static final String PROPERTY_SEPARATOR_WIDTH = "separatorWidth";
     public static final String PROPERTY_SEPARATOR_VERTICAL_IMAGE = "separatorVerticalImage";
+    public static final String PROPERTY_SEPARATOR_VERTICAL_ROLLOVER_IMAGE = "separatorVerticalRolloverImage";
     public static final String PROPERTY_SEPARATOR_VISIBLE = "separatorVisible";
     
     /**
@@ -243,12 +246,31 @@ implements Pane, PaneContainer {
     }
     
     /**
+     * Returns the rollover fill image of the pane separator that is displayed when the
+     * <code>SplitPane</code> has a horizontal orientation.
+     * 
+     * @return the image
+     */
+    public FillImage getSeparatorHorizontalRolloverImage() {
+        return (FillImage) get(PROPERTY_SEPARATOR_HORIZONTAL_ROLLOVER_IMAGE);
+    }
+    
+    /**
      * Returns the position of the pane separator.
      * 
      * @return the separator position
      */
     public Extent getSeparatorPosition() {
         return (Extent) get(PROPERTY_SEPARATOR_POSITION);
+    }
+    
+    /**
+     * Returns the color of the pane separator.
+     * 
+     * @return the color
+     */
+    public Color getSeparatorRolloverColor() {
+        return (Color) get(PROPERTY_SEPARATOR_ROLLOVER_COLOR);
     }
     
     /**
@@ -259,6 +281,16 @@ implements Pane, PaneContainer {
      */
     public FillImage getSeparatorVerticalImage() {
         return (FillImage) get(PROPERTY_SEPARATOR_VERTICAL_IMAGE);
+    }
+    
+    /**
+     * Returns the rollover fill image of the pane separator that is displayed when the
+     * <code>SplitPane</code> has a vertical orientation.
+     * 
+     * @return the image
+     */
+    public FillImage getSeparatorVerticalRolloverImage() {
+        return (FillImage) get(PROPERTY_SEPARATOR_VERTICAL_ROLLOVER_IMAGE);
     }
     
     /**
@@ -422,6 +454,16 @@ implements Pane, PaneContainer {
     }
 
     /**
+     * Sets the rollover fill image of the pane separator that is displayed when the
+     * <code>SplitPane</code> has a horizontal orientation.
+     * 
+     * @param newValue the new image
+     */
+    public void setSeparatorHorizontalRolloverImage(FillImage newValue) {
+        set(PROPERTY_SEPARATOR_HORIZONTAL_ROLLOVER_IMAGE, newValue);
+    }
+
+    /**
      * Sets the position of the pane separator.
      * 
      * @param newValue the new position
@@ -434,6 +476,15 @@ implements Pane, PaneContainer {
     }
     
     /**
+     * Sets the rollover color of the pane separator.
+     * 
+     * @param newValue the new color
+     */
+    public void setSeparatorRolloverColor(Color newValue) {
+        set(PROPERTY_SEPARATOR_ROLLOVER_COLOR, newValue);
+    }
+    
+    /**
      * Sets the fill image of the pane separator that is displayed when the
      * <code>SplitPane</code> has a vertical orientation.
      * 
@@ -441,6 +492,16 @@ implements Pane, PaneContainer {
      */
     public void setSeparatorVerticalImage(FillImage newValue) {
         set(PROPERTY_SEPARATOR_VERTICAL_IMAGE, newValue);
+    }
+    
+    /**
+     * Sets the rollover fill image of the pane separator that is displayed when the
+     * <code>SplitPane</code> has a vertical orientation.
+     * 
+     * @param newValue the new image
+     */
+    public void setSeparatorRolloverVerticalImage(FillImage newValue) {
+        set(PROPERTY_SEPARATOR_VERTICAL_ROLLOVER_IMAGE, newValue);
     }
     
     /**

@@ -339,7 +339,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         this._resizable = this.component.render("resizable");
         this._autoPositioned = this.component.render("autoPositioned");
         this._requested = this.component.render("separatorPosition");
-
+        
         var defaultSeparatorSize = this._resizable ? Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_RESIZABLE : 
                 Echo.SplitPane.DEFAULT_SEPARATOR_SIZE_FIXED;
         var separatorSizeExtent = this.component.render(
@@ -348,6 +348,15 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         if (this._separatorSize == null) {
             this._separatorSize = defaultSeparatorSize;
         }
+        
+        this._separatorColor = this.component.render("separatorColor", Echo.SplitPane.DEFAULT_SEPARATOR_COLOR); 
+        this._separatorRolloverColor = this.component.render("separatorRolloverColor") || 
+                Echo.Sync.Color.adjust(this._separatorColor, 0x20, 0x20, 0x20);
+        
+        this._separatorImage = this.component.render(this._orientationVertical ? 
+                "separatorVerticalImage" : "separatorHorizontalImage");
+        this._separatorRolloverImage = this.component.render(this._orientationVertical ? 
+                "separatorVerticalRolloverImage" : "separatorHorizontalRolloverImage");
         
         this._separatorVisible = this._resizable || (this.component.render("separatorVisible", true) && this._separatorSize > 0);
     },
@@ -471,9 +480,20 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
+        
+        if (this._separatorRolloverImage) {
+            Echo.Sync.FillImage.render(this._separatorRolloverImage, this._separatorDiv, 0);
+        } else {
+            Echo.Sync.Color.render(this._separatorRolloverColor, this._separatorDiv, "backgroundColor");
+        }
     },
     
     _processSeparatorRolloverExit: function(e) {
+        if (this._separatorRolloverImage) {
+            Echo.Sync.FillImage.renderClear(this._separatorImage, this._separatorDiv, 0);
+        } else {
+            Echo.Sync.Color.render(this._separatorColor, this._separatorDiv, "backgroundColor");
+        }
     },
     
     _redraw: function(position) {
@@ -566,6 +586,10 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         if (this._resizable) {
             Core.Web.Event.add(this._separatorDiv, "mousedown", 
                     Core.method(this, this._processSeparatorMouseDown), false);
+            Core.Web.Event.add(this._separatorDiv, "mouseover", 
+                    Core.method(this, this._processSeparatorRolloverEnter), false);
+            Core.Web.Event.add(this._separatorDiv, "mouseout", 
+                    Core.method(this, this._processSeparatorRolloverExit), false);
         }
     },
     
