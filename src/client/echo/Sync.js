@@ -339,6 +339,13 @@ Echo.Sync.Extent = {
             return parts[2] == "%";
         }
     },
+    
+    render: function(extent, element, styleAttribute, horizontal, allowPercent) {
+        var cssValue = Echo.Sync.Extent.toCssValue(extent, horizontal, allowPercent);
+        if (cssValue !== "") {
+            element.style[styleAttribute] = cssValue;
+        }
+    },
 
     toCssValue: function(extent, horizontal, allowPercent) {
         switch(typeof(extent)) {
