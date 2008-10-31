@@ -43,15 +43,6 @@ public class ServiceRegistry {
     /** Maps service Ids to services */
     private final Map serviceMap = new HashMap();
     
-    private static final String DISABLE_DUPLICATE_SERVICE_CHECK_PROPERTY = 
-        ServiceRegistry.class.getName() + ".disableDuplicateServiceCheck";
-    
-    /**
-     * Whether the check for duplicate services should be disabled - see below.
-     */
-    private static final boolean disableDuplicateServiceCheck = 
-        "true".equals(System.getProperty(DISABLE_DUPLICATE_SERVICE_CHECK_PROPERTY)) ? true : false;
-    
     /**
      * Creates a new <code>ServiceRegistry</code>.
      */
@@ -83,12 +74,9 @@ public class ServiceRegistry {
      * @param service The service to be added.
      */
     public synchronized void add(Service service) {
-        if (serviceMap.containsKey(service.getId()) && serviceMap.get(service.getId()) != service) {
-            if (disableDuplicateServiceCheck) {
-                return;
-            } else {
-                throw new IllegalArgumentException("Identifier already in use by another service.");
-            }
+        if (serviceMap.containsKey(service.getId()) 
+        		&& serviceMap.get(service.getId()).getClass().getName() != service.getClass().getName()) {
+            throw new IllegalArgumentException("Identifier already in use by another service.");
         }
         serviceMap.put(service.getId(), service);
     }
