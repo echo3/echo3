@@ -19,8 +19,8 @@ Echo.FreeClient = Core.extend(Echo.Client, {
     /**
      * Creates a new FreeClient.
      *
-     * @param {Echo.Application} application the application the client operate on.
-     * @param {Element} domainElement the HTML 
+     * @param {Echo.Application} application the application which the client will contain
+     * @param {Element} domainElement the HTML element in which the client will be rendered
      */
     $construct: function(application, domainElement) {
         Echo.Client.call(this);
