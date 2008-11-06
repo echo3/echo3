@@ -122,6 +122,9 @@ public class StyleSheetLoader {
         // First pass, load style information.
         for (int i = 0; i < styleElements.length; ++i) {
             String name = styleElements[i].getAttribute("n");
+            if ("".equals(name)) {
+            	name = null;
+            }
             if (!styleElements[i].hasAttribute("t")) {
                 throw new SerialException("Component type not specified in style: " + name, null);
             }
