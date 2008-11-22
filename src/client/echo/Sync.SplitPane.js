@@ -362,6 +362,30 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /**
+     * Adds an overlay DIV at maximum z-index to cover any objects that will not provide move mouseup freedback.
+     */ 
+    _overlayAdd: function() {
+        if (this._overlay) {
+            return;
+        }
+        this._overlay = document.createElement("div");
+        this._overlay.style.cssText = "position:absolute;z-index:32767;width:100%;height:100%;";
+        Echo.Sync.FillImage.render(this.client.getResourceUrl("Echo", "resource/Transparent.gif"), this._overlay);
+        document.body.appendChild(this._overlay);
+    },
+    
+    /**
+     * Removes the overlay DIV.
+     */
+    _overlayRemove: function() {
+        if (!this._overlay) {
+            return;
+        }
+        document.body.removeChild(this._overlay);
+        this._overlay = null;
+    },
+    
+    /**
      * Process an image loading event on an automatically sized SplitPane.
      * Schedule invocation of renderDisplay() after short delay if not already scheduled.
      */
@@ -445,6 +469,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         
         Core.Web.Event.add(document.body, "mousemove", this._processSeparatorMouseMoveRef, true);
         Core.Web.Event.add(document.body, "mouseup", this._processSeparatorMouseUpRef, true);
+        this._overlayAdd();
     },
     
     _processSeparatorMouseMove: function(e) {
@@ -458,6 +483,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     _processSeparatorMouseUp: function(e) {
         Core.Web.DOM.preventEventDefault(e);
         
+        this._overlayRemove();
         Core.Web.dragInProgress = false;
     
         this._removeSeparatorListeners();
@@ -738,6 +764,8 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     },
 
     renderDispose: function(update) {
+        this._overlayRemove();
+
         for (var i = 0; i < 2; ++i) {
             if (this._paneDivs[i]) {
                 if (this._childPanes[i]) {
