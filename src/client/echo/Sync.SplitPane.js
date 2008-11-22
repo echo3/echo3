@@ -94,6 +94,11 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     _paneDivs: null,
     _separatorDiv: null,
     _autoPositioned: false,
+
+    /**
+     * Overlay DIV which covers other elements (such as IFRAMEs) when dragging which may otherwise suppress events.
+     */
+    _overlay: null,
     
     /**
      * Flag indicating whether the renderDisplay() method must be invoked on this peer 

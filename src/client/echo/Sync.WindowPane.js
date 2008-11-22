@@ -64,6 +64,11 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     _processTitleBarMouseMoveRef: null,
     _processTitleBarMouseUpRef: null,
     _controlIcons: null,
+    
+    /**
+     * Overlay DIV which covers other elements (such as IFRAMEs) when dragging which may otherwise suppress events.
+     */
+    _overlay: null,
 
     $construct: function() {
         this._processBorderMouseMoveRef = Core.method(this, this._processBorderMouseMove);
@@ -133,6 +138,30 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._containerSize = new Core.Web.Measure.Bounds(this._div.parentNode.parentNode);
     },
     
+    /**
+     * Adds an overlay DIV at maximum z-index to cover any objects that will not provide move mouseup freedback.
+     */ 
+    _overlayAdd: function() {
+        if (this._overlay) {
+            return;
+        }
+        this._overlay = document.createElement("div");
+        this._overlay.style.cssText = "position:absolute;z-index:32767;width:100%;height:100%;";
+        Echo.Sync.FillImage.render(this.client.getResourceUrl("Echo", "resource/Transparent.gif"), this._overlay);
+        document.body.appendChild(this._overlay);
+    },
+    
+    /**
+     * Removes the overlay DIV.
+     */
+    _overlayRemove: function() {
+        if (!this._overlay) {
+            return;
+        }
+        document.body.removeChild(this._overlay);
+        this._overlay = null;
+    },
+    
     _processBorderMouseDown: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
@@ -141,6 +170,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         // Prevent selections.
         Core.Web.dragInProgress = true;
         Core.Web.DOM.preventEventDefault(e);
+        this._overlayAdd();
     
         this._loadContainerSize();
         this._dragInit = {
@@ -185,6 +215,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.DOM.preventEventDefault(e);
         
         Core.Web.dragInProgress = false;
+        this._overlayRemove();
     
         // Set opaque.
         this._div.style.opacity = 1;
@@ -212,7 +243,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
-        switch (e.registeredTarget._renderData.name) {
+        switch (e.registeredTarget._controlData.name) {
         case "close":
             this.component.userClose();
             break;
@@ -230,11 +261,11 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
-        Echo.Sync.ImageReference.renderImg(e.registeredTarget._renderData.rolloverIcon, e.registeredTarget.firstChild);
+        Echo.Sync.ImageReference.renderImg(e.registeredTarget._controlData.rolloverIcon, e.registeredTarget.firstChild);
     },
     
     _processControlRolloverExit: function(e) {
-        Echo.Sync.ImageReference.renderImg(e.registeredTarget._renderData.icon, e.registeredTarget.firstChild);
+        Echo.Sync.ImageReference.renderImg(e.registeredTarget._controlData.icon, e.registeredTarget.firstChild);
     },
     
     _processKeyDown: function(e) {
@@ -266,6 +297,15 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
+        
+        // Ignore mouse down clicks on control icons.
+        var target = e.target;
+        while (target != e.registeredTarget) {
+            if (target._controlData) {
+                return;
+            }
+            target = target.parentNode;
+        }
     
         // Raise window.
         this.component.parent.peer.raise(this.component);
@@ -273,6 +313,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         // Prevent selections.
         Core.Web.dragInProgress = true;
         Core.Web.DOM.preventEventDefault(e);
+        this._overlayAdd();
     
         this._loadContainerSize();
         this._dragInit = { x: this._rendered.x, y: this._rendered.y };
@@ -296,6 +337,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     
     _processTitleBarMouseUp: function(e) {
         Core.Web.dragInProgress = false;
+        this._overlayRemove();
     
         // Set opaque.
         this._div.style.opacity = 1;
@@ -641,7 +683,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         }
         this._controlIcons.push(controlDiv);
         
-        controlDiv._renderData = {
+        controlDiv._controlData = {
             name: name,
             icon: icon,
             rolloverIcon: rolloverIcon
@@ -649,6 +691,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     renderDispose: function(update) {
+        this._overlayRemove();
         this._renderDisposeFrame();
         this._div = null;
         this._maskDiv = null;
