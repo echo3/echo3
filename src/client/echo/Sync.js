@@ -295,7 +295,7 @@ Echo.Sync.Color = {
         var red = Math.floor(colorInt / 0x10000) + r;
         var green = Math.floor(colorInt / 0x100) % 0x100 + g;
         var blue = colorInt % 0x100 + b;
-        return this._toHex(red, green, blue);
+        return this.toHex(red, green, blue);
     },
     
     blend: function(value1, value2, ratio) {
@@ -306,7 +306,7 @@ Echo.Sync.Color = {
         var green = Math.round(Math.floor(colorInt1 / 0x100) % 0x100 * (1 - ratio) + 
                 Math.floor(colorInt2 / 0x100) % 0x100 * ratio);
         var blue = Math.round((colorInt1 % 0x100) * (1 - ratio) + (colorInt2 % 0x100) * ratio);
-        return this._toHex(red, green, blue);
+        return this.toHex(red, green, blue);
     },
 
     render: function(color, element, styleProperty) {
@@ -329,7 +329,7 @@ Echo.Sync.Color = {
         }
     },
     
-    _toHex: function(red, green, blue) {
+    toHex: function(red, green, blue) {
         if (red < 0) {
             red = 0;
         } else if (red > 255) {
