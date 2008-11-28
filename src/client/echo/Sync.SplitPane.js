@@ -309,16 +309,14 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     _loadRenderData: function() {
         var orientation = this.component.render("orientation", 
                 Echo.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING);
-        // FIXME: RTL is hardcoded to false.
-        var rtl = false;
-     
+        
         switch (orientation) {
         case Echo.SplitPane.ORIENTATION_HORIZONTAL_LEADING_TRAILING:
-            this._orientationTopLeft = !rtl;
+            this._orientationTopLeft = this.component.getRenderLayoutDirection().isLeftToRight();
             this._orientationVertical = false;
             break;
         case Echo.SplitPane.ORIENTATION_HORIZONTAL_TRAILING_LEADING:
-            this._orientationTopLeft = rtl;
+            this._orientationTopLeft = !this.component.getRenderLayoutDirection().isLeftToRight();
             this._orientationVertical = false;
             break;
         case Echo.SplitPane.ORIENTATION_HORIZONTAL_LEFT_RIGHT:
