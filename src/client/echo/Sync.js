@@ -22,6 +22,31 @@ Echo.Sync = {
             property = component.render(defaultPropertyName, defaultDefaultPropertyValue);
         }
         return property;
+    },
+    
+    /**
+     * Renders component foreground, background, font, and layout direction properties
+     * (if each is provided) to the specified element.  This is a performance/convenience method
+     * which combines capabilities found in Echo.Sync.Color/Font/LayoutDirection.
+     * 
+     * @param {Echo.Component} component the component
+     * @param {Element} element the target element
+     */
+    renderComponentDefaults: function(component, element) {
+        var color;
+        if ((color = component.render("foreground"))) {
+            element.style.color = color;
+        }
+        if ((color = component.render("background"))) {
+            element.style.backgroundColor = color;
+        }
+        var font = component.render("font");
+        if (font) {
+            Echo.Sync.Font.render(font, element);
+        }
+        if (component.getLayoutDirection()) {
+            element.dir = component.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl";
+        }
     }
 };
 
@@ -776,6 +801,15 @@ Echo.Sync.FloatingPaneManager = Core.extend({
         this._listeners.removeListener("zIndex", l);
     }
 });
+
+Echo.Sync.LayoutDirection = {
+
+    render: function(layoutDirection, element) {
+        if (layoutDirection) {
+            element.dir = component.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl";
+        }
+    }
+};
 
 /**
  * Renders a table with two or three cells, suitable for laying out buttons, labels, 

@@ -72,8 +72,7 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
                 tct.tdElements[1].appendChild(img);
                 this._node = tct.tableElement;
                 this._node.id = this.component.renderId;
-                Echo.Sync.Font.render(this.component.render("font"), this._node);
-                Echo.Sync.Color.renderFB(this.component, this._node);
+                Echo.Sync.renderComponentDefaults(this.component, this._node);
             } else {
                 // Text without icon.
                 var font = this.component.render("font");
@@ -91,8 +90,7 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
                     if (!lineWrap) {
                         this._node.style.whiteSpace = "nowrap";
                     }
-                    Echo.Sync.Font.render(font, this._node);
-                    Echo.Sync.Color.renderFB(this.component, this._node);
+                    Echo.Sync.renderComponentDefaults(this.component, this._node);
                 }
             }
         } else if (icon) {

@@ -574,8 +574,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         this._splitPaneDiv.id = this.component.renderId;
         this._splitPaneDiv.style.cssText = "position:absolute;overflow:hidden;top:0;left:0;right:0;bottom:0;";
         
-        Echo.Sync.Color.renderFB(this.component, this._splitPaneDiv);
-        Echo.Sync.Font.render(this.component.render("font"), this._splitPaneDiv);
+        Echo.Sync.renderComponentDefaults(this.component, this._splitPaneDiv);
         
         if (this._separatorVisible) {
             this._separatorDiv = document.createElement("div");
