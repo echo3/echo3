@@ -603,6 +603,8 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
             fullRender = true;
         }
         
+        this.client.domainElement.dir = this.component.application.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl";
+        
         if (update.hasUpdatedProperties()) {
             var titleUpdate = update.getUpdatedProperty("title");
             if (titleUpdate) {
