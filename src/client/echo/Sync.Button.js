@@ -37,7 +37,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     _textElement: null,
     
     /**
-     * IMG element represnting buttons icon.
+     * IMG element representing buttons icon.
      */
     _iconImg: null,
     
