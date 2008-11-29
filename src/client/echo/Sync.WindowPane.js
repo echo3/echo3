@@ -822,7 +822,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             }
             this._rendered.y = Math.round(c.y);
         }
-        
+
         this.redraw();
     }
 });

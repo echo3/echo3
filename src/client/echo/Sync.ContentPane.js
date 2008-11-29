@@ -77,6 +77,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         childDiv.style.position = "absolute";
         if (child.floatingPane) {
             childDiv.style.zIndex = "1";
+            childDiv.style.left = childDiv.style.top = 0;
         } else {
             var insets = this.component.render("insets", 0);
             var pixelInsets = Echo.Sync.Insets.toPixels(insets);
