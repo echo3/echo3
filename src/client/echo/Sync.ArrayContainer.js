@@ -20,6 +20,9 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
         case this.prevFocusKey:
         case this.nextFocusKey:
             var focusPrevious = e.keyCode == this.prevFocusKey;
+            if (this.invertFocusRtl && !this.component.getRenderLayoutDirection().isLeftToRight()) {
+                focusPrevious = !focusPrevious;
+            }
             var focusedComponent = this.component.application.getFocusedComponent();
             if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
                 var focusFlags = focusedComponent.peer.getFocusFlags();
@@ -245,6 +248,7 @@ Echo.Sync.Row = Core.extend(Echo.Sync.ArrayContainer, {
     prevFocusFlag: Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_LEFT,
     nextFocusKey: 39,
     nextFocusFlag: Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT,
+    invertFocusRtl: true,
     
     renderAdd: function(update, parentElement) {
         this.element = Echo.Sync.Row._rowPrototype.cloneNode(true);

@@ -349,7 +349,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         switch (e.keyCode) {
         case 37:
         case 39:
-            focusPrevious = e.keyCode == 37;
+            focusPrevious = this.component.getRenderLayoutDirection().isLeftToRight() ? e.keyCode == 37 : e.keyCode == 39;
             focusedComponent = this.component.application.getFocusedComponent();
             if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
                 focusFlags = focusedComponent.peer.getFocusFlags();
