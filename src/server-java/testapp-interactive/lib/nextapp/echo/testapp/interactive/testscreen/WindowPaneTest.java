@@ -297,6 +297,16 @@ public class WindowPaneTest extends SplitPane {
                 windowPane.setTitle(null);
             }
         });
+        controlsColumn.addButton("Set Icon", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setIcon(Styles.ICON_24_MAIL_COMPOSE);
+            }
+        });
+        controlsColumn.addButton("Clear Icon", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setIcon(null);
+            }
+        });
         controlsColumn.addButton("Set Title Height", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.setTitleHeight(new Extent(((int) (Math.random() * 24)) + 24));
