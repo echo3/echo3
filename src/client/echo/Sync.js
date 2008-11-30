@@ -59,6 +59,16 @@ Echo.Sync.Alignment = {
     _HORIZONTALS: { left: true, center: true, right: true, leading: true, trailing: true },
     _VERTICALS: { top: true, middle: true, bottom: true },
 
+    /**
+     * Returns the render-able horizontal component of an alignment property.  This method
+     * translates leading/trailing horizontal values to left/right based on the specified layout
+     * direction provider.  If a provider is no given, leading defaults to left and trailing to
+     * right.
+     * 
+     * @param {#Alignment} alignment the alignment
+     * @return the rendered horizontal component, i.e., "left", "center", "right", or null
+     * @type String
+     */
     getRenderedHorizontal: function(alignment, layoutDirectionProvider) {
         if (alignment == null) {
             return null;
@@ -79,6 +89,13 @@ Echo.Sync.Alignment = {
         }
     },
     
+    /**
+     * Returns the horizontal component of an alignment property.
+     * 
+     * @param {#Alignment} the alignment
+     * @return the horizontal component, i.e., "left", "center", "right", "leading", "trailing", or null
+     * @type String
+     */
     getHorizontal: function(alignment) {
         if (alignment == null) {
             return null;
@@ -90,6 +107,13 @@ Echo.Sync.Alignment = {
         }
     },
 
+    /**
+     * Returns the vertical component of an alignment property.
+     * 
+     * @param {#Alignment} the alignment
+     * @return the vertical component, i.e., "top", "middle", "bottom", or null 
+     * @type String
+     */
     getVertical: function(alignment) {
         if (alignment == null) {
             return null;
@@ -101,6 +125,16 @@ Echo.Sync.Alignment = {
         }
     },
 
+    /**
+     * Renders an alignment property to an element.
+     * 
+     * @param {#Alignment} alignment the alignment
+     * @param {Element} the target element
+     * @param {Boolean} renderToElement flag indicating whether the alignment state should be rendered to the element using
+     *        attributes (true) or CSS (false)
+     * @param layoutDirectionProvider an (optional) object providing a getRenderLayoutDirection() method to determine if the
+     *        element has a layout direction of left-to-right or right-to-left
+     */
     render: function(alignment, element, renderToElement, layoutDirectionProvider) {
         if (alignment == null) {
             return;
