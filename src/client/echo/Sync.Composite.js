@@ -1,5 +1,5 @@
 /**
- * Component rendering peer: Composite
+ * Component rendering peer: Composite.
  */
 Echo.Sync.Composite = Core.extend(Echo.Render.ComponentSync, {
 
@@ -8,6 +8,7 @@ Echo.Sync.Composite = Core.extend(Echo.Render.ComponentSync, {
     },
 
     $virtual: {
+
         renderStyle: function(element) {
             Echo.Sync.renderComponentDefaults(this.component, element);
         }
@@ -39,6 +40,9 @@ Echo.Sync.Composite = Core.extend(Echo.Render.ComponentSync, {
     }
 });
 
+/**
+ * Component rendering peer: Panel.
+ */
 Echo.Sync.Panel = Core.extend(Echo.Sync.Composite, {
     $load: function() {
         Echo.Render.registerPeer("Panel", this);
