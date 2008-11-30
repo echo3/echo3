@@ -215,10 +215,10 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         
         this._div = Echo.Sync.Button._prototypeButton.cloneNode(false); 
         this._div.id = this.component.renderId;
-    
+
+        Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this._div);
         if (this._enabled) {
-            Echo.Sync.Color.render(this.component.render("foreground"), this._div, "color");
-            Echo.Sync.Color.render(this.component.render("background"), this._div, "backgroundColor");
+            Echo.Sync.Color.renderFB(this.component, this._div);
             Echo.Sync.Border.render(this.component.render("border"), this._div);
             Echo.Sync.FillImage.render(this.component.render("backgroundImage"), this._div);
         } else {
