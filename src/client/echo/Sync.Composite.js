@@ -9,8 +9,7 @@ Echo.Sync.Composite = Core.extend(Echo.Render.ComponentSync, {
 
     $virtual: {
         renderStyle: function(element) {
-            Echo.Sync.Color.renderFB(this.component, element);
-            Echo.Sync.Font.render(this.component.render("font"), element);
+            Echo.Sync.renderComponentDefaults(this.component, element);
         }
     },
     
@@ -18,13 +17,9 @@ Echo.Sync.Composite = Core.extend(Echo.Render.ComponentSync, {
         this._div = document.createElement("div");
         this._div.id = this.component.renderId;
         
-        var componentCount = this.component.getComponentCount();
-        if (componentCount > 0) {
+        if (this.component.children.length != 0) {
             this.renderStyle(this._div);
-            for (var i = 0; i < componentCount; ++i) {
-                var child = this.component.getComponent(i);
-                Echo.Render.renderComponentAdd(update, child, this._div);
-            }
+            Echo.Render.renderComponentAdd(update, this.component.children[0], this._div);
         }
         
         parentElement.appendChild(this._div);
@@ -50,7 +45,7 @@ Echo.Sync.Panel = Core.extend(Echo.Sync.Composite, {
     },
 
     renderStyle: function(element) {
-        Echo.Sync.Composite.prototype.renderStyle.call(this, element);
+        Echo.Sync.renderComponentDefaults(this.component, element);
         Echo.Sync.Border.render(this.component.render("border"), element);
         Echo.Sync.Insets.render(this.component.render("insets"), element, "padding");
         Echo.Sync.FillImage.render(this.component.render("backgroundImage"), element);

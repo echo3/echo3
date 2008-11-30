@@ -400,11 +400,9 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         this._table = Echo.Sync.Grid._prototypeTable.cloneNode(true);
         this._table.id = this.component.renderId;
         
-        Echo.Sync.Color.renderFB(this.component, this._table);
+        Echo.Sync.renderComponentDefaults(this.component, this._table);
         Echo.Sync.Border.render(defaultBorder, this._table);
-        Echo.Sync.Font.render(this.component.render("font"), this._table);
         this._table.style.padding = defaultInsets;
-    
         
         if (width && Core.Web.Env.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && Echo.Sync.Extent.isPercent(width)) {
             this._renderPercentWidthByMeasure = parseInt(width, 10);
