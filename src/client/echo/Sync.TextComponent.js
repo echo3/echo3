@@ -42,11 +42,11 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     _renderStyle: function() {
         var container = this._container ? this._container : this._input;
         if (this.component.isRenderEnabled()) {
+            Echo.Sync.renderComponentDefaults(this.component, this._input);
             Echo.Sync.Border.render(this.component.render("border"), this._input);
-            Echo.Sync.Color.renderFB(this.component, this._input);
-            Echo.Sync.Font.render(this.component.render("font"), this._input);
             Echo.Sync.FillImage.render(this.component.render("backgroundImage"), this._input);
         } else {
+            Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this._input);
             Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
                     this._input, "color");
             Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "background", "disabledBackground", true), 

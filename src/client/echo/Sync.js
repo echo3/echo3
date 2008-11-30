@@ -806,7 +806,7 @@ Echo.Sync.LayoutDirection = {
 
     render: function(layoutDirection, element) {
         if (layoutDirection) {
-            element.dir = component.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl";
+            element.dir = layoutDirection.isLeftToRight() ? "ltr" : "rtl";
         }
     }
 };
