@@ -399,7 +399,9 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._div = document.createElement("div");
         this._div.id = this.component.renderId;
         this._div.tabIndex = "0";
-
+        
+        this._rtl = !this.component.getRenderLayoutDirection().isLeftToRight();
+        
         // Create content DIV.
         // Content DIV will be appended to main DIV by _renderAddFrame().
         this._contentDiv = document.createElement("div");
@@ -427,6 +429,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     
         // Render window frame.
         this._renderAddFrame();
+        
+        Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this._div);
     
         // Append main DIV to parent.
         parentElement.appendChild(this._div);
@@ -543,7 +547,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         var icon = this.component.render("icon");
         if (icon) {
             var titleIconDiv = document.createElement("div");
-            titleIconDiv.style[Core.Web.Env.CSS_FLOAT] = "left";
+            titleIconDiv.style[Core.Web.Env.CSS_FLOAT] = this._rtl ? "right" : "left";
             Echo.Sync.Insets.render(this.component.render("iconInsets"), titleIconDiv, "padding");
             this._titleBarDiv.appendChild(titleIconDiv);
             
@@ -556,7 +560,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         if (title) {
             var titleTextDiv = document.createElement("div");
             if (icon) {
-                titleTextDiv.style[Core.Web.Env.CSS_FLOAT] = "left";
+                titleTextDiv.style[Core.Web.Env.CSS_FLOAT] = this._rtl ? "right" : "left";
             }
             titleTextDiv.style.whiteSpace = "nowrap";
             Echo.Sync.Font.render(this.component.render("titleFont"), titleTextDiv);
@@ -606,7 +610,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         
         if (hasControlIcons) {
             this._controlDiv = document.createElement("div");
-            this._controlDiv.style.cssText = "position:absolute;top:0;right:0;";
+            this._controlDiv.style.cssText = "position:absolute;top:0;";
+            this._controlDiv.style[this._rtl ? "left" : "right"] = 0;
             Echo.Sync.Insets.render(this.component.render("controlsInsets",  
                     Echo.WindowPane.DEFAULT_CONTROLS_INSETS), this._controlDiv, "margin");
             this._titleBarDiv.appendChild(this._controlDiv);
@@ -659,8 +664,10 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             icon = this.component.render(name + "Icon", defaultIcon),
             rolloverIcon = this.component.render(name + "RolloverIcon");
  
-        controlDiv.style.cssText = "float:right;cursor:pointer;margin-left:" +
-                Echo.Sync.Extent.toCssValue(this.component.render("controlsSpacing", Echo.WindowPane.DEFAULT_CONTROLS_SPACING));
+        var controlSpacing = Echo.Sync.Extent.toCssValue(this.component.render("controlsSpacing", 
+                Echo.WindowPane.DEFAULT_CONTROLS_SPACING));
+        controlDiv.style.cssText = this._rtl ? ("float:left;cursor:pointer;margin-right:" + controlSpacing) :  
+                ("float:right;cursor:pointer;margin-left:" + controlSpacing);
         Echo.Sync.Insets.render(this.component.render(name + "Insets"), controlDiv, "padding");
 
         if (icon) {
