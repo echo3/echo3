@@ -77,7 +77,7 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
                 // Text without icon.
                 var font = this.component.render("font");
                 if (!this.client.designMode && !toolTip && !font && lineWrap && !foreground && !background && 
-                        !formatWhitespace) {
+                        !formatWhitespace && !this.component.getLayoutDirection()) {
                     this._node = document.createTextNode(text);
                 } else {
                     this._node = document.createElement("span");
@@ -99,7 +99,7 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
             this._node = document.createElement("span");
             this._node.id = this.component.renderId;
             this._node.appendChild(img);
-            Echo.Sync.Color.renderFB(this.component, this._node); // should be BG only.
+            Echo.Sync.Color.render(this.component.render("background"), this._node, "backgroundColor");
         } else {
             // Neither icon nor text, render blank.
             if (this.client.designMode) {
