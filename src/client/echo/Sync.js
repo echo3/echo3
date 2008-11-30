@@ -566,8 +566,18 @@ Echo.Sync.FillImage = {
         "repeat": "repeat"
     },
 
+    /**
+     * Flag indicating that the Internet Explorer 6-specific PNG alpha filter should be used to render PNG alpha (transparency).
+     */
     FLAG_ENABLE_IE_PNG_ALPHA_FILTER: 0x1,
     
+    /**
+     * Determines the background-position CSS attribute of a FillImage.
+     * 
+     * @param {#FillImage} fillImage the FillImage
+     * @return the appropriate CSS background-position attribute, or null if it is not specified
+     * @type String
+     */
     getPosition: function(fillImage) {
         if (fillImage.x || fillImage.y) {
             var x, y;
@@ -587,6 +597,13 @@ Echo.Sync.FillImage = {
         }
     },
     
+    /**
+     * Determines the background-repeat CSS attribute of a FillImage.
+     * 
+     * @param {#FillImage} fillImage the FillImage
+     * @return the appropriate CSS background-repeat attribute, or null if it is not specified/invalid
+     * @type String
+     */
     getRepeat: function(fillImage) {
         if (this._REPEAT_VALUES[fillImage.repeat]) {
             return this._REPEAT_VALUES[fillImage.repeat]; 
@@ -595,6 +612,13 @@ Echo.Sync.FillImage = {
         }
     },
     
+    /**
+     * Returns the URL of a FillImage.
+     * 
+     * @param {#FillImage} fillImage the FillImage
+     * @return the URL
+     * @type String
+     */
     getUrl: function(fillImage) {
         if (fillImage == null) {
             return null;
@@ -602,6 +626,16 @@ Echo.Sync.FillImage = {
         return typeof(fillImage) == "object" ? fillImage.url : fillImage;
     },
     
+    /**
+     * Renders a FillImage to an element.
+     * 
+     * @param {#FillImage} fillImage the FillImage (may be null)
+     * @param {Element} element the target element
+     * @param flags (optional) the rendering flags, one or more of the following values:
+     *        <ul>
+     *         <li><code>FLAG_ENABLE_IE_PNG_ALPHA_FILTER</code></li>
+     *        <ul>
+     */
     render: function(fillImage, element, flags) {
         if (fillImage == null) {
             // No image specified, do nothing.
@@ -632,6 +666,16 @@ Echo.Sync.FillImage = {
         }
     },
     
+    /**
+     * Renders a FillImage to an element, clearing any existing value.
+     * 
+     * @param {#FillImage} fillImage the FillImage (may be null)
+     * @param {Element} element the target element
+     * @param flags (optional) the rendering flags, one or more of the following values:
+     *        <ul>
+     *         <li><code>FLAG_ENABLE_IE_PNG_ALPHA_FILTER</code></li>
+     *        <ul>
+     */
     renderClear: function(fillImage, element, flags) {
         if (fillImage) {
             this.render(fillImage, element, flags);
@@ -649,6 +693,12 @@ Echo.Sync.FillImage = {
  */
 Echo.Sync.Font = { 
 
+    /**
+     * Renders a Font property to an element.
+     * 
+     * @param {#Font} font the font
+     * @param {Element} element the target element
+     */
     render: function(font, element) {
         if (!font) {
             return;
@@ -679,6 +729,12 @@ Echo.Sync.Font = {
         }
     },
     
+    /**
+     * Renders a Font property to an element, clearing any previously set font first.
+     * 
+     * @param {#Font} font the font
+     * @param {Element} element the target element
+     */
     renderClear: function(font, element) {
         if (font) {
             this.render(font, element);
