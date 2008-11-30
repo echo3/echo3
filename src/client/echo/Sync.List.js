@@ -166,18 +166,13 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
             Echo.Sync.renderComponentDefaults(this.component, this._element);
         } else {
             Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this._element);
-            Echo.Sync.Color.render(
-                    Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
+            Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
                     this._element, "color");
-            Echo.Sync.Color.render(
-                    Echo.Sync.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
+            Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "background", "disabledBackground", true), 
                     this._element, "backgroundColor");
-            Echo.Sync.Font.render(
-                    Echo.Sync.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
-                    this._element);
+            Echo.Sync.Font.render(Echo.Sync.getEffectProperty(this.component, "font", "disabledFont", true),this._element);
         }
-        Echo.Sync.Border.render(
-                Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
+        Echo.Sync.Border.render(Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
                 this._element);
         Echo.Sync.Insets.render(this.component.render("insets"), this._element, "padding");
 
@@ -234,18 +229,19 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         this._div.style.cssText = "cursor:default;overflow:auto;";
         this._div.style.height = Echo.Sync.Extent.toCssValue(this.component.render("height", "6em"), false, false);
         this._div.style.width = Echo.Sync.Extent.toCssValue(this.component.render("width"), true, false);
+        if (this._enabled) {
+            Echo.Sync.renderComponentDefaults(this.component, this._element);
+        } else {
+            Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this._element);
+            Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
+                    this._div, "color");
+            Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "background", "disabledBackground", true), 
+                    this._div, "backgroundColor");
+            Echo.Sync.Font.render(Echo.Sync.getEffectProperty(this.component, "font", "disabledFont", true), this._div);
+        }
         Echo.Sync.Border.render(
                 Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled, 
-                Echo.Sync.ListComponent.DEFAULT_DIV_BORDER, Echo.Sync.ListComponent.DEFAULT_DIV_BORDER), 
-                this._div);
-        Echo.Sync.Color.render(
-                Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", !this._enabled), 
-                this._div, "color");
-        Echo.Sync.Color.render(
-                Echo.Sync.getEffectProperty(this.component, "background", "disabledBackground", !this._enabled), 
-                this._div, "backgroundColor");
-        Echo.Sync.Font.render(
-                Echo.Sync.getEffectProperty(this.component, "font", "disabledFont", !this._enabled), 
+                Echo.Sync.ListComponent.DEFAULT_DIV_BORDER, null), 
                 this._div);
         Echo.Sync.Insets.render(this.component.render("insets"), this._div, "padding");
 
