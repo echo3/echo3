@@ -323,6 +323,16 @@ Echo.Sync.Color = {
         return this.toHex(red, green, blue);
     },
     
+    /**
+     * Blends two colors together.
+     * 
+     * @param {#Color} value1 the first color
+     * @param {#Color} value2 the second color
+     * @param {Number} ratio the blend ratio, where 0 represents the first color, 1 the second color, and 0.5 an equal blend
+     *        between the first and second colors
+     * @return the blended color
+     * @type #Color
+     */
     blend: function(value1, value2, ratio) {
         ratio = ratio < 0 ? 0 : (ratio > 1 ? 1 : ratio);
         var colorInt1 = parseInt(value1.substring(1), 16);
@@ -334,16 +344,37 @@ Echo.Sync.Color = {
         return this.toHex(red, green, blue);
     },
 
+    /**
+     * Renders a color to an element.
+     * 
+     * @param {#Color} color the color
+     * @param {#Element} element the target element
+     * @param {String} styleProperty the name of the style property, e.g., "color", "backgroundColor" 
+     */
     render: function(color, element, styleProperty) {
         if (color) {
             element.style[styleProperty] = color;
         }
     },
     
+    /**
+     * Renders a color to an element, clearing any existing value.
+     * 
+     * @param {#Color} color the color
+     * @param {#Element} element the target element
+     * @param {String} styleProperty the name of the style property, e.g., "color", "backgroundColor" 
+     */
     renderClear: function(color, element, styleProperty) {
         element.style[styleProperty] = color ? color : "";
     },
     
+    /**
+     * Renders the "foreground" and "background" color properties of a component to an element's "color" and
+     * "backgroundColor" properties.
+     * 
+     * @param {Echo.Component} component the component
+     * @param {Element} the target element 
+     */
     renderFB: function(component, element) { 
         var color;
         if ((color = component.render("foreground"))) {
@@ -354,6 +385,15 @@ Echo.Sync.Color = {
         }
     },
     
+    /**
+     * Converts red/green/blue integer values to a 6 digit hexadecimal string, preceded by a sharp, e.g. #1a2b3c.
+     * 
+     * @param {Number} red the red value, 0-255
+     * @param {Number} green the green value, 0-255
+     * @param {Number} blue the blue value, 0-255
+     * @return the hex string
+     * @type String
+     */
     toHex: function(red, green, blue) {
         if (red < 0) {
             red = 0;
@@ -388,8 +428,18 @@ Echo.Sync.Extent = {
      */
     _PARSER: /^(-?\d+(?:\.\d+)?)(.+)?$/,
 
+    /**
+     * Regular expression to determine if an extent value is already formatted to pixel units.
+     */
     _FORMATTED_PIXEL_TEST: /^(-?\d+px *)$/,
     
+    /**
+     * Determines if an extent has percent units.
+     * 
+     * @param {#Extent} extent the Extent
+     * @return true if the extent has percent units
+     * @type Boolean
+     */
     isPercent: function(extent) {
         if (extent == null || typeof(extent) == "number") {
             return false;
@@ -402,6 +452,15 @@ Echo.Sync.Extent = {
         }
     },
     
+    /**
+     * Renders an extent value to an element.
+     *
+     * @param {#Extent} extent the Extent
+     * @param {Element} element the target element
+     * @param {String} styleAttribute the style attribute name, e.g., "padding-left", or "width"
+     * @param {Boolean} horizontal flag indicating whether the value is being rendered horizontally
+     * @param {Boolean} allowPercent flag indicating whether percent values should be rendered
+     */
     render: function(extent, element, styleAttribute, horizontal, allowPercent) {
         var cssValue = Echo.Sync.Extent.toCssValue(extent, horizontal, allowPercent);
         if (cssValue !== "") {
@@ -409,6 +468,15 @@ Echo.Sync.Extent = {
         }
     },
 
+    /**
+     * Returns a CSS representation of an extent value.
+     * 
+     * @param {#Extent} extent the Extent
+     * @param {Boolean} horizontal flag indicating whether the value is being rendered horizontally
+     * @param {Boolean} allowPercent flag indicating whether percent values should be rendered
+     * @return the rendered CSS value or the empty string ("") if no value could be determined (null will never be returned)
+     * @type String
+     */
     toCssValue: function(extent, horizontal, allowPercent) {
         switch(typeof(extent)) {
             case "number":
@@ -429,6 +497,13 @@ Echo.Sync.Extent = {
         return "";
     },
 
+    /**
+     * Converts an extent value to pixels.
+     * 
+     * @param {#Extent} extent the Extent
+     * @param {Boolean} horizontal flag indicating whether the value is being rendered horizontally
+     * @type Number
+     */
     toPixels: function(extent, horizontal) {
         if (extent == null) {
             return 0;
