@@ -73,8 +73,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         if (this._selectionEnabled) {
             this._table.style.cursor = "pointer";
         }
-        Echo.Sync.Color.renderFB(this.component, this._table);
-        Echo.Sync.Font.render(this.component.render("font"), this._table);
+        Echo.Sync.renderComponentDefaults(this.component, this._table);
         var border = this.component.render("border");
         if (border) {
             Echo.Sync.Border.render(border, this._table);
