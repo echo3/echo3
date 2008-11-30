@@ -604,10 +604,23 @@ Echo.Sync.Font = {
  */
 Echo.Sync.ImageReference = {
 
+    /**
+     * Returns the URL of an image reference object.
+     * 
+     * @param {#ImageReference} imageReference the image reference (may be null)
+     * @return the URL
+     * @type String
+     */
     getUrl: function(imageReference) {
         return imageReference ? (typeof(imageReference) == "string" ? imageReference : imageReference.url) : null;
     },
 
+    /**
+     * Renders an image reference object to an IMG element.
+     * 
+     * @param {#ImageReference} imageReference the image reference
+     * @param {Element} imgElement the IMG element.
+     */
     renderImg: function(imageReference, imgElement) {
         if (!imageReference) {
             return;
@@ -652,6 +665,13 @@ Echo.Sync.Insets = {
         4: [0, 1, 2, 3] 
     },
 
+    /**
+     * Renders an insets property to an element.
+     * 
+     * @param {#Insets} insets the insets property
+     * @param {Element} the target element
+     * @param {String} the style attribute name, e.g., "padding" or "margin" 
+     */
     render: function(insets, element, styleAttribute) {
         switch(typeof(insets)) {
             case "number":
@@ -669,6 +689,13 @@ Echo.Sync.Insets = {
         }
     },
     
+    /**
+     * Generates a CSS value for an insets property.
+     * 
+     * @param {#Insets} insets the insets property
+     * @return the CSS value
+     * @type String
+     */
     toCssValue: function(insets) {
         switch(typeof(insets)) {
             case "number":
@@ -686,6 +713,12 @@ Echo.Sync.Insets = {
         return "";
     },
     
+    /**
+     * Returns an object representing the pixel dimensions of a insets property.
+     * 
+     * @param {#Insets} insets the insets property
+     * @return an object containing top, bottom, left, and right values representing the pixel sizes of the insets property
+     */
     toPixels: function(insets) {
         if (insets == null) {
             return this._ZERO;
@@ -802,8 +835,17 @@ Echo.Sync.FloatingPaneManager = Core.extend({
     }
 });
 
+/**
+ * Provides tools for rendering layout direction properties. 
+ */
 Echo.Sync.LayoutDirection = {
 
+    /**
+     * Renders a layout direction property to an element.
+     * 
+     * @param {Echo.LayoutDirection} layoutDirection the layoutDirection property (may be null)
+     * @param {Element} element the target element
+     */
     render: function(layoutDirection, element) {
         if (layoutDirection) {
             element.dir = layoutDirection.isLeftToRight() ? "ltr" : "rtl";
