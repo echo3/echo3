@@ -2681,7 +2681,7 @@ Echo.Column = Core.extend(Echo.Component, {
 
 /**
  * Composite component.
- * A single-child container that provides no rendering properties.
+ * A single-child container that provides no rendering properties (other than those specified in Component).
  */
 Echo.Composite = Core.extend(Echo.Component, {
 
