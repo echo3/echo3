@@ -73,7 +73,7 @@ public class ClientMessage {
         return document;
     }
     
-    public long getTransactionId() {
+    public int getTransactionId() {
         return transactionId;
     }
     

@@ -107,10 +107,19 @@ public class InputProcessor {
         UserInstance userInstance = conn.getUserInstance();
         UpdateManager updateManager = userInstance.getUpdateManager();
         Context context = new InputContext();
+        boolean outOfSync = false;
         
         if (ClientMessage.TYPE_INITIALIZE.equals(clientMessage.getType())) {
             // Flag full refresh if initializing.
             updateManager.getServerUpdateManager().processFullRefresh();
+        } else if (clientMessage.getTransactionId() != userInstance.getCurrentTransactionId()) {
+            // Flag full refresh for an out of sync client.
+            updateManager.getServerUpdateManager().processFullRefresh();
+            outOfSync = true;
+            if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
+                System.err.println("Client out of sync: client id = " + clientMessage.getTransactionId() + 
+                        ", server id = " + userInstance.getCurrentTransactionId());
+            }
         }
         
         if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
@@ -122,6 +131,9 @@ public class InputProcessor {
             }
         }
         
-        clientMessage.process(context);
+        if (!outOfSync) {
+            // Do not process the client message if out of sync.
+            clientMessage.process(context);
+        }
     }
 }
