@@ -1121,7 +1121,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                     break;
                 case "dir": // Layout direction update.
                     parentComponent.setLayoutDirection(element.firstChild ?
-                            (element.firstChild.nodeValue == "rtl" ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.RTL) : null);
+                            (element.firstChild.nodeValue == "rtl" ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR) : null);
                     break;
                 }
             }
