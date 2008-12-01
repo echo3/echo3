@@ -46,7 +46,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     },
     
     /**
-     * The base server url.
+     * The base server URL.
      * @type String
      */
     _serverUrl: null,
@@ -105,7 +105,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     _waitIndicator: null,
     
     /**
-     * Network delay before raising wait indicator, in milleseconds.
+     * Network delay before raising wait indicator, in milliseconds.
      * @type Integer
      */
     _preWaitIndicatorDelay: 500,
@@ -528,7 +528,7 @@ Echo.RemoteClient.AsyncManager = Core.extend({
     /** 
      * Creates a new asynchronous manager.
      *
-     * @param {Echo.RemoteClient} client the supported cilent
+     * @param {Echo.RemoteClient} client the supported client
      */
     $construct: function(client) {
         this._client = client;
@@ -573,7 +573,7 @@ Echo.RemoteClient.AsyncManager = Core.extend({
     /**
      * Sets the interval at which the server should be polled.
      * 
-     * @param interval the new polling interval, in milleseconds
+     * @param interval the new polling interval, in milliseconds
      */
     _setInterval: function(interval) {
         this._runnable.timeInterval = interval;
@@ -677,7 +677,7 @@ Echo.RemoteClient.ClientMessage = Core.extend({
     
     /**
      * The DOM object to which the client message will be rendered.
-     * @type Docuemnt
+     * @type Document
      */
     _document: null,
 
@@ -720,7 +720,7 @@ Echo.RemoteClient.ClientMessage = Core.extend({
     },
     
     /**
-     * Renders compoennt hierarchy state change information to the client message DOM.
+     * Renders component hierarchy state change information to the client message DOM.
      * This information is retrieved from instance variables of the client message object,
      * i.e., the component-id-to-property-value map and event properties.  
      */
@@ -954,7 +954,7 @@ Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend({
                 parentComponent = this._client.application.getComponentByRenderId(parentId);
             }
     
-            // Retrive child ids and remove.
+            // Retrieve child ids and remove.
             var childElementIds = rmElement.getAttribute("rm").split(",");
             this._processComponentRemove(parentComponent, childElementIds);
             
