@@ -111,6 +111,41 @@ implements Serializable {
     public static final String BROWSER_VERSION_MINOR = "browserVersionMinor";
     
     /**
+     * Flag indicating the layout engine is Mozilla Gecko.
+     */
+    public static final String ENGINE_GECKO = "engineGecko"; 
+
+    /**
+     * Flag indicating the layout engine is KHTML (from Konqueror).
+     */
+    public static final String ENGINE_KHTML = "engineKHTML"; 
+
+    /**
+     * Flag indicating the layout engine is MSHTML / Trident.
+     */
+    public static final String ENGINE_MSHTML = "engineMSHTML"; 
+
+    /**
+     * Flag indicating the layout engine is Presto (Opera).
+     */
+    public static final String ENGINE_PRESTO = "enginePresto"; 
+
+    /**
+     * The major version number of the layout engine.
+     */
+    public static final String ENGINE_VERSION_MAJOR = "engineVersionMajor";
+    
+    /**
+     * The minor version number of the layout engine.
+     */
+    public static final String ENGINE_VERSION_MINOR = "engineVersionMinor";
+    
+    /**
+     * Flag indicating the layout engine is WebKit.
+     */
+    public static final String ENGINE_WEBKIT = "engineWebKit"; 
+    
+    /**
      * The <code>Locale</code> of the client, derived from the language property.
      */
     public static final String LOCALES = "locales";

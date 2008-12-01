@@ -631,6 +631,9 @@ Echo.RemoteClient.ClientMessage = Core.extend({
              * @param value the value
              */
             _add: function(key, value) {
+                if (value == null) {
+                    return;
+                }
                 var element = this._clientMessage._document.createElement("p");
                 element.setAttribute("n", key);
                 Echo.Serial.storeProperty(this._clientMessage._client, element, value);
@@ -783,8 +786,16 @@ Echo.RemoteClient.ClientMessage = Core.extend({
         cp._add("browserMozillaFirefox", env.BROWSER_FIREFOX);
         cp._add("browserMozilla", env.BROWSER_MOZILLA);
         cp._add("browserInternetExplorer", env.BROWSER_INTERNET_EXPLORER);
-        cp._add("browserVersionMajor", env.BROWSER_MAJOR_VERSION);
-        cp._add("browserVersionMinor", env.BROWSER_MINOR_VERSION);
+        cp._add("browserVersionMajor", env.BROWSER_VERSION_MAJOR);
+        cp._add("browserVersionMinor", env.BROWSER_VERSION_MINOR);
+        
+        cp._add("engineGecko", env.ENGINE_GECKO);
+        cp._add("engineKHTML", env.ENGINE_KHTML);
+        cp._add("engineMSHTML", env.ENGINE_MSHTML);
+        cp._add("enginePresto", env.ENGINE_PRESTO);
+        cp._add("engineWebKit", env.ENGINE_WEBKIT);
+        cp._add("engineVersionMajor", env.ENGINE_VERSION_MAJOR);
+        cp._add("engineVersionMinor", env.ENGINE_VERSION_MINOR);
     },
     
     /**

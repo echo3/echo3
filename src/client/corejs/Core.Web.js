@@ -117,8 +117,8 @@ Core.Web.DOM = {
         if (document.implementation && document.implementation.createDocument) {
             // DOM Level 2 Browsers
             var dom;
-            if (Core.Web.Env.BROWSER_FIREFOX && Core.Web.Env.BROWSER_MAJOR_VERSION == 3 &&
-                    Core.Web.Env.BROWSER_MINOR_VERSION === 0) {
+            if (Core.Web.Env.BROWSER_FIREFOX && Core.Web.Env.BROWSER_VERSION_MAJOR == 3 &&
+                    Core.Web.Env.BROWSER_VERSION_MINOR === 0) {
                 // https://bugzilla.mozilla.org/show_bug.cgi?id=431701
                 dom = new DOMParser().parseFromString("<?xml version='1.0' encoding='UTF-8'?><" + qualifiedName + "/>",
                         "application/xml");
@@ -397,43 +397,98 @@ Core.Web.DOM = {
 Core.Web.Env = {
 
     /**
+     * User-agent string, in lowercase.
+     */
+    _ua: null,
+    
+    /**
+     * The user agent string with all non-alpha character sequences replaced with single slashes and with 
+     * leading/trailing slashes appended.  This string can be searched for whole words using indexOf("/example/")
+     */
+    _uaAlpha: null,
+    
+    /**
      * Performs initial analysis of environment.
      * Automatically invoked when Core.Web module is initialized.
      */
     _init: function() {
-        var ua = navigator.userAgent.toLowerCase();
-        this.BROWSER_OPERA = ua.indexOf("opera") != -1;
-        this.BROWSER_KONQUEROR = ua.indexOf("konqueror") != -1;
-        this.BROWSER_FIREFOX = ua.indexOf("firefox") != -1;
-        this.BROWSER_CHROME = ua.indexOf("chrome") != -1;
-        this.BROWSER_SAFARI = !this.BROWSER_CHROME && ua.indexOf("safari") != -1;
+        var browserVersion = null, 
+            engineVersion = null, 
+            engineId = false;
+
+        this._ua = navigator.userAgent.toLowerCase();
+        this._uaAlpha = "/" + this._ua.replace(/[^a-z]+/g, "/") + "/";
+        
+        // Parse version string for known major browsers, in reverse order of which they are imitated,
+        // i.e., Chrome imitates Safari and Gecko, while Mozilla imitates nothing.
+        if (this._testUAString("opera")) {
+            this.BROWSER_OPERA = engineId = this.ENGINE_PRESTO = true;
+            browserVersion = this._parseVersionInfo("opera/");
+        } else if (this._testUAString("chrome")) {
+            this.BROWSER_CHROME = engineId = this.ENGINE_WEBKIT = true;
+            browserVersion = this._parseVersionInfo("chrome/");
+        } else if (this._testUAString("safari")) {
+            this.BROWSER_SAFARI = engineId = this.ENGINE_WEBKIT = true;
+            browserVersion = this._parseVersionInfo("version/");
+        } else if (this._testUAString("konqueror")) {
+            this.BROWSER_KONQUEROR = engineId = this.ENGINE_KHTML = true;
+            browserVersion = this._parseVersionInfo("konqueror/");
+        } else if (this._testUAString("firefox")) {
+            this.BROWSER_FIREFOX = this.BROWSER_MOZILLA = engineId = this.ENGINE_GECKO = true;
+            browserVersion = this._parseVersionInfo("firefox/");
+        } else if (this._testUAString("msie")) {
+            this.BROWSER_INTERNET_EXPLORER = engineId = this.ENGINE_MSHTML = true;
+            // Set engine version to browser version for MSIE/MSHTML.  Unfortunately "Trident" versioning
+            // is unpredictable, with the MSIE8 UA string reporting "Trident/4.0" but MSIE6 supposedly using "Trident IV"
+            // and MSIE7 supposedly using "Trident V".  We thus go by the suspected MSHTML DLL version, which is equivalent to
+            // the IE version.
+            engineVersion = browserVersion = this._parseVersionInfo("msie ");
+        }
+        
+        if (!engineId) {
+            // Browser/engine not yet identified, attempt to identify by engine.
+            if (this._testUAString("presto")) {
+                this.ENGINE_PRESTO = true;
+            } else if (this._testUAString("webkit")) {
+                this.ENGINE_WEBKIT = true;
+            } else if (this._testUAString("khtml")) {
+                this.ENGINE_KHTML = true;
+            } else if (this._testUAString("trident")) {
+                this.ENGINE_MSHTML = true;
+            } else if (this._testUAString("gecko")) {
+                this.BROWSER_MOZILLA = ENGINE_GECKO = true;
+            }
+        }
+        
+        if (!engineVersion) {
+            if (this.ENGINE_PRESTO) {
+                engineVersion = this._parseVersionInfo("presto/");
+            } else if (this.ENGINE_WEBKIT) {
+                engineVersion = this._parseVersionInfo("webkit/");
+            } else if (this.ENGINE_GECKO) {
+                engineVersion = this._parseVersionInfo("rv:");
+                if (!browserVersion) {
+                    browserVersion = engineVersion;
+                }
+            }
+        }
+        
+        if (browserVersion) {
+            this.BROWSER_VERSION_MAJOR = browserVersion.major;
+            this.BROWSER_VERSION_MINOR = browserVersion.minor;
+        }
+        if (engineVersion) {
+            this.ENGINE_VERSION_MAJOR = engineVersion.major;
+            this.ENGINE_VERSION_MINOR = engineVersion.minor;
+        }
         
         this.CSS_FLOAT = "cssFloat";
     
         // Note deceptive user agent fields:
         // - Konqueror and Safari UA fields contain "like Gecko"
         // - Opera UA field typically contains "MSIE"
+        // If this flag is set, browser is not GECKO/MSHTML
         this.DECEPTIVE_USER_AGENT = this.BROWSER_OPERA || this.BROWSER_SAFARI || this.BROWSER_CHROME || this.BROWSER_KONQUEROR;
-        
-        this.BROWSER_MOZILLA = !this.DECEPTIVE_USER_AGENT && ua.indexOf("gecko") != -1;
-        this.BROWSER_INTERNET_EXPLORER = !this.DECEPTIVE_USER_AGENT && ua.indexOf("msie") != -1;
-        
-        // Retrieve Version Info (as necessary).
-        if (this.BROWSER_INTERNET_EXPLORER) {
-            this._parseVersionInfo(ua, "msie ");
-        } else if (this.BROWSER_FIREFOX) {
-            this._parseVersionInfo(ua, "firefox/");
-        } else if (this.BROWSER_OPERA) {
-            this._parseVersionInfo(ua, "opera/");
-        } else if (this.BROWSER_CHROME) {
-            this._parseVersionInfo(ua, "chrome/");
-        } else if (this.BROWSER_SAFARI) {
-            this._parseVersionInfo(ua, "version/");
-        } else if (this.BROWSER_MOZILLA) {
-            this._parseVersionInfo(ua, "rv:");
-        } else if (this.BROWSER_KONQUEROR) {
-            this._parseVersionInfo(ua, "konqueror/");
-        }
 
         //FIXME Quirk flags not refined yet, some quirk flags from Echo 2.0/1 will/may be deprecated/removed.
         
@@ -451,7 +506,7 @@ Core.Web.Env = {
             this.QUIRK_UNLOADED_IMAGE_HAS_SIZE = true;
             this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
             
-            if (this.BROWSER_MAJOR_VERSION < 8) {
+            if (this.BROWSER_VERSION_MAJOR < 8) {
                 // Internet Explorer 6 and 7 Flags.
                 this.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING = true;
                 this.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
@@ -465,7 +520,7 @@ Core.Web.Env = {
                 this.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR = true;
                 this.QUIRK_IE_SELECT_PERCENT_WIDTH = true;
                 
-                if (this.BROWSER_MAJOR_VERSION < 7) {
+                if (this.BROWSER_VERSION_MAJOR < 7) {
                     // Internet Explorer 6 Flags.
                     this.QUIRK_IE_SELECT_LIST_DOM_UPDATE = true;
                     this.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY = true;
@@ -478,26 +533,23 @@ Core.Web.Env = {
                     Core.Arrays.LargeMap.garbageCollectEnabled = true;
                 }
             }
-        } else if (this.BROWSER_MOZILLA) {
+        } else if (this.ENGINE_GECKO) {
             this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
             this.QUIRK_MEASURE_OFFSET_HIDDEN_BORDER = true;
             if (this.BROWSER_FIREFOX) {
-                if (this.BROWSER_MAJOR_VERSION < 2) {
+                if (this.BROWSER_VERSION_MAJOR < 2) {
                     this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
                 }
             } else {
                 this.QUIRK_PERFORMANCE_LARGE_DOM_REMOVE = true;
                 this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
             }
-        } else if (this.BROWSER_OPERA) {
-            if (this.BROWSER_MAJOR_VERSION == 9 && this.BROWSER_MINOR_VERSION >= 50) {
+        } else if (this.ENGINE_PRESTO) {
+            if (this.BROWSER_VERSION_MAJOR == 9 && this.BROWSER_VERSION_MINOR >= 50) {
                 this.QUIRK_OPERA_WINDOW_RESIZE_POSITIONING = true;
             }
             this.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
-        } else if (this.BROWSER_SAFARI) {
-            this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
-            this.QUIRK_SAFARI_DOM_TEXT_ESCAPE = true;
-        } else if (this.BROWSER_CHROME) {
+        } else if (this.ENGINE_WEBKIT) {
             this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
             this.QUIRK_SAFARI_DOM_TEXT_ESCAPE = true;
         }
@@ -517,17 +569,23 @@ Core.Web.Env = {
      * @param searchString the text that prefixes the version info (version info must be the first appearance of 
      *          this text in the ua string)
      */
-    _parseVersionInfo: function(ua, searchString) {
-        var ix1 = ua.indexOf(searchString);
-        var ix2 = ua.indexOf(".", ix1);
-        var ix3 = ua.length;
+    _parseVersionInfo: function(searchString) {
+        var version = { };
+        
+        var ix1 = this._ua.indexOf(searchString);
+        if (ix1 == -1) {
+            return;
+        }
+        
+        var ix2 = this._ua.indexOf(".", ix1);
+        var ix3 = this._ua.length;
         
         if (ix2 == -1) {
-            ix2 = ua.length;
+            ix2 = this._ua.length;
         } else {
             // search for the first non-number character after the dot
-            for (var i = ix2 + 1; i < ua.length; i++) {
-                var c = ua.charAt(i);
+            for (var i = ix2 + 1; i < this._ua.length; i++) {
+                var c = this._ua.charAt(i);
                 if (isNaN(c)) {
                     ix3 = i;
                     break;
@@ -535,12 +593,18 @@ Core.Web.Env = {
             }
         }
         
-        this.BROWSER_MAJOR_VERSION = parseInt(ua.substring(ix1 + searchString.length, ix2), 10);
-        if (ix2 == ua.length) {
-            this.BROWSER_MINOR_VERSION = 0;
+        version.major = parseInt(this._ua.substring(ix1 + searchString.length, ix2), 10);
+        if (ix2 == this._ua.length) {
+            version.minor = 0;
         } else {
-            this.BROWSER_MINOR_VERSION = parseInt(ua.substring(ix2 + 1, ix3), 10);
+            version.minor = parseInt(this._ua.substring(ix2 + 1, ix3), 10);
         }
+        
+        return version;
+    },
+    
+    _testUAString: function(browser) {
+        return this._uaAlpha.indexOf("/" + browser + "/") != -1;
     }
 };
 

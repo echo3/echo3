@@ -85,6 +85,14 @@ implements ClientMessage.Processor {
         m.put(ClientProperties.BROWSER_VERSION_MAJOR, Integer.class);
         m.put(ClientProperties.BROWSER_VERSION_MINOR, Integer.class);
         
+        m.put(ClientProperties.ENGINE_GECKO, Boolean.class);
+        m.put(ClientProperties.ENGINE_KHTML, Boolean.class);
+        m.put(ClientProperties.ENGINE_MSHTML, Boolean.class);
+        m.put(ClientProperties.ENGINE_PRESTO, Boolean.class);
+        m.put(ClientProperties.ENGINE_WEBKIT, Boolean.class);
+        m.put(ClientProperties.ENGINE_VERSION_MAJOR, Integer.class);
+        m.put(ClientProperties.ENGINE_VERSION_MINOR, Integer.class);
+        
         TYPE_MAP = Collections.unmodifiableMap(m);
     }
     
