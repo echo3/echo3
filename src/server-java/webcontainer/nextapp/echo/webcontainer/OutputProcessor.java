@@ -254,7 +254,7 @@ class OutputProcessor {
         Element localeElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "AppSync", "locale");
         localeElement.appendChild(document.createTextNode(getClientLocaleString(
                 userInstance.getApplicationInstance().getLocale())));
-        Element layoutDirElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "AppSync", "layout-dir");
+        Element layoutDirElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "AppSync", "dir");
         layoutDirElement.appendChild(document.createTextNode(
                 userInstance.getApplicationInstance().getLayoutDirection().isLeftToRight() ? "ltr" : "rtl"));
     }

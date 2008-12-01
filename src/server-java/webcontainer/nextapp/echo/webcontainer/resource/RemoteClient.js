@@ -497,7 +497,7 @@ Echo.RemoteClient.ApplicationSyncProcessor = Core.extend({
             if (propertyElement.nodeName == "locale") {
                 this._client.application.setLocale(propertyElement.firstChild.nodeValue);
             }
-            if (propertyElement.nodeName == "layout-dir") {
+            if (propertyElement.nodeName == "dir") {
                 this._client.application.setLayoutDirection(propertyElement.firstChild.nodeValue === "rtl"
                     ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR);
             }
