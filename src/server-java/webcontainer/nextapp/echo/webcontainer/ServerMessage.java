@@ -212,6 +212,15 @@ public class ServerMessage {
     }
     
     /**
+     * Sets the "out-of-sync" attribute to true, indicating that the server
+     * is recovering from a condition where the client has become out of sync.
+     * This can occur if two browsers are manipulating the same user instance.
+     */
+    public void setOutOfSync() {
+        serverMessageElement.setAttribute("out-of-sync", "true");
+    }
+    
+    /**
      * Sets the numeric identifier for this transaction, which will be returned
      * in next client message.
      * 
