@@ -132,7 +132,7 @@ public class InputProcessor {
         }
         
         if (!outOfSync) {
-            // Do not process the client message if out of sync.
+            // Only process the client message if client/server are synchronized.
             clientMessage.process(context);
         }
     }
