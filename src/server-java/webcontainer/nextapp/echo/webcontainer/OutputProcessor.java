@@ -209,7 +209,7 @@ class OutputProcessor {
     throws IOException {
         serverMessage.setTransactionId(userInstance.getNextTransactionId());
         if (syncState.isOutOfSync()) {
-            serverMessage.setOutOfSync();
+            serverMessage.setResync();
         }
         try {
             // Render output to server message DOM.

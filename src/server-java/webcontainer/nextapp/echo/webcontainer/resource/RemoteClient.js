@@ -194,6 +194,10 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         }
     },
     
+    _displayResyncNotification: function() {
+        alert("This window was not synchronized with the web server and has been reset.  Please try your last request again.");
+    },
+    
     /**
      * Enqueues a command to be processed after component synchronization has been completed.
      * 
@@ -413,6 +417,10 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         var serverMessage = new Echo.RemoteClient.ServerMessage(this, responseDocument);
         
         this.transactionId = serverMessage.transactionId;
+        
+        if (serverMessage.resync) {
+            this._displayResyncNotification();
+        }
         
         // Add completion listener to invoke _processSyncComplete when message has been fully processed.
         // (Some elements of the server message are processed asynchronously). 
@@ -1149,6 +1157,9 @@ Echo.RemoteClient.ServerMessage = Core.extend({
         this._listenerList = new Core.ListenerList();
         this._processorInstances = { };
         this.transactionId = xmlDocument.documentElement.getAttribute("i");
+        if (xmlDocument.documentElement.getAttribute("resync")) {
+            this.resync = true;
+        }
     },
     
     addCompletionListener: function(l) {
