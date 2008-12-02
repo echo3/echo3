@@ -266,6 +266,9 @@ implements Serializable {
             defaultWindow.doDispose();
             defaultWindow.register(null);
         }
+        synchronized (taskQueueMap) {
+            taskQueueMap.clear();
+        }
     }
 
     /**
