@@ -128,8 +128,7 @@ public class InputProcessor {
             try {
                 DomUtil.save(clientMessage.getDocument(), System.err, DomUtil.OUTPUT_PROPERTIES_INDENT);
             } catch (SAXException ex) {
-                //FIXME ex handling.
-                throw new RuntimeException(ex);
+                throw new IOException("Cannot render XML sync message to console: " + ex);
             }
         }
         

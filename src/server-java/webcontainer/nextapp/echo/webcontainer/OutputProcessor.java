@@ -227,11 +227,9 @@ class OutputProcessor {
             conn.setContentType(ContentType.TEXT_XML);
             DomUtil.save(serverMessage.getDocument(), conn.getWriter(), null);
         } catch (SerialException ex) {
-            //FIXME. Bad exception handling.
-            throw new IOException(ex.toString());
+            throw new IOException("Cannot serialize server state: " + ex);
         } catch (SAXException ex) {
-            //FIXME. Bad exception handling.
-            throw new IOException(ex.toString());
+            throw new IOException("Cannot parse client XML: " + ex);
         }
         
         if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
@@ -240,7 +238,7 @@ class OutputProcessor {
                 DomUtil.save(document, System.err, DomUtil.OUTPUT_PROPERTIES_INDENT);
             } catch (SAXException ex) {
                 // Should not generally occur.
-                throw new RuntimeException(ex);
+                throw new IOException("Cannot render XML sync message to console: " + ex);
             }
         }
     }
