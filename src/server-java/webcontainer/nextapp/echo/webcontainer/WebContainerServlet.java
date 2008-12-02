@@ -41,6 +41,7 @@ import nextapp.echo.webcontainer.service.WindowHtmlService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -260,6 +261,11 @@ public abstract class WebContainerServlet extends HttpServlet {
         services.add(AsyncMonitorService.INSTANCE);
     }
     
+    /**
+     * Adds a JavaScript service to be loaded at startup.
+     * 
+     * @param service the service which will provide JavaScript content.
+     */
     protected void addStartupScript(Service service) {
         if (startupScripts == null) {
             startupScripts = new ArrayList();
@@ -328,8 +334,13 @@ public abstract class WebContainerServlet extends HttpServlet {
         return service;
     }
     
+    /**
+     * Returns an iterator over startup script services.
+     * 
+     * @return the iterator
+     */
     public Iterator getStartupScripts() {
-        return startupScripts == null ? null : startupScripts.iterator();
+        return startupScripts == null ? null : Collections.unmodifiableCollection(startupScripts).iterator();
     }
     
     /**
