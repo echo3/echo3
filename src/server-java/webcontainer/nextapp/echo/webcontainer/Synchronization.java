@@ -36,10 +36,12 @@ import nextapp.echo.app.ApplicationInstance;
 /**
  * A single client-server synchronization.
  */
-public class Synchronization {
+public class Synchronization 
+implements SynchronizationState {
 
     private Connection conn;
     private UserInstance userInstance;
+    private boolean outOfSync = false;
 
     public Synchronization(Connection conn) {
         super();
@@ -47,6 +49,14 @@ public class Synchronization {
         this.userInstance = conn.getUserInstance();
     }
     
+    public boolean isOutOfSync() {
+        return outOfSync;
+    }
+    
+    public void setOutOfSync() {
+        outOfSync = true;
+    }
+
     public void process() 
     throws IOException {
         synchronized(userInstance) {
@@ -60,7 +70,7 @@ public class Synchronization {
             ApplicationInstance.setActive(userInstance.getApplicationInstance());
             try {
                 // Process client input.
-                InputProcessor inputProcessor = new InputProcessor(conn);
+                InputProcessor inputProcessor = new InputProcessor(this, conn);
                 inputProcessor.process();
                 
                 // Manage render states.
@@ -71,7 +81,7 @@ public class Synchronization {
                 }
                 
                 // Render updates.
-                OutputProcessor outputProcessor = new OutputProcessor(conn);
+                OutputProcessor outputProcessor = new OutputProcessor(this, conn);
                 outputProcessor.process();
                 
                 // Purge updates.

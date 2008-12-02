@@ -91,11 +91,13 @@ public class InputProcessor {
     }
     
     private Connection conn;
+    private SynchronizationState syncState;
     private ClientMessage clientMessage;
     private PropertyPeerFactory propertyPeerFactory;
 
-    public InputProcessor(Connection conn) {
+    public InputProcessor(SynchronizationState syncState, Connection conn) {
         super();
+        this.syncState = syncState;
         this.conn = conn;
         propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME. temporary
     }
@@ -107,7 +109,6 @@ public class InputProcessor {
         UserInstance userInstance = conn.getUserInstance();
         UpdateManager updateManager = userInstance.getUpdateManager();
         Context context = new InputContext();
-        boolean outOfSync = false;
         
         if (ClientMessage.TYPE_INITIALIZE.equals(clientMessage.getType())) {
             // Flag full refresh if initializing.
@@ -115,7 +116,7 @@ public class InputProcessor {
         } else if (clientMessage.getTransactionId() != userInstance.getCurrentTransactionId()) {
             // Flag full refresh for an out of sync client.
             updateManager.getServerUpdateManager().processFullRefresh();
-            outOfSync = true;
+            this.syncState.setOutOfSync();
             if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
                 System.err.println("Client out of sync: client id = " + clientMessage.getTransactionId() + 
                         ", server id = " + userInstance.getCurrentTransactionId());
@@ -127,11 +128,12 @@ public class InputProcessor {
             try {
                 DomUtil.save(clientMessage.getDocument(), System.err, DomUtil.OUTPUT_PROPERTIES_INDENT);
             } catch (SAXException ex) {
+                //FIXME ex handling.
                 throw new RuntimeException(ex);
             }
         }
         
-        if (!outOfSync) {
+        if (!syncState.isOutOfSync()) {
             // Only process the client message if client/server are synchronized.
             clientMessage.process(context);
         }

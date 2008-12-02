@@ -142,6 +142,7 @@ class OutputProcessor {
     private int nextPropertyKey = 0;
     private Map propertyValueToKeyMap = null;
     private Element spElement;
+    private SynchronizationState syncState;
     
     /**
      * Cached set of known-to-be-not-lazily-rendered components.
@@ -155,10 +156,11 @@ class OutputProcessor {
      * @param conn the <code>Connection</code> for which the output is 
      * being generated.
      */
-    public OutputProcessor(Connection conn) {
+    public OutputProcessor(SynchronizationState syncState, Connection conn) {
         super();
+        this.syncState = syncState;
         this.conn = conn;
-        this.context = new OutputContext();
+        context = new OutputContext();
         serverMessage = new ServerMessage();
         document = serverMessage.getDocument();
         userInstance = conn.getUserInstance();
@@ -206,6 +208,9 @@ class OutputProcessor {
     public void process() 
     throws IOException {
         serverMessage.setTransactionId(userInstance.getNextTransactionId());
+        if (syncState.isOutOfSync()) {
+            serverMessage.setOutOfSync();
+        }
         try {
             // Render output to server message DOM.
             if (serverUpdateManager.isFullRefreshRequired()) {
