@@ -31,6 +31,14 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         
         initialized: false,
         
+        resource: new Core.ResourceBundle({
+            "ResyncMessage": "This window was not synchronized with the web server and has been reset.  " + 
+                    "Please try your last request again.",
+            "InvalidResponseMessagePre": "An invalid response was received from the server",
+            "InvalidResponseMessagePost": ".\nPress the browser reload or refresh button.",
+            "WaitMessage": "Waiting on server response.  Press the browser reload or refresh button if server fails to respond."
+        }),
+        
         init: function() {
             if (Echo.RemoteClient.initialized) {
                 return;
@@ -136,6 +144,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     
         Echo.Client.call(this);
         
+        this._msg = Echo.RemoteClient.resource.get();
         this._serverUrl = serverUrl;
         this._processClientUpdateRef = Core.method(this, this._processClientUpdate);
         this._processClientEventRef = Core.method(this, this._processClientEvent);
@@ -195,7 +204,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     },
     
     _displayResyncNotification: function() {
-        alert("This window was not synchronized with the web server and has been reset.  Please try your last request again.");
+        alert(this._msg["ResyncMessage"]);
     },
     
     /**
@@ -260,13 +269,13 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @param e the HttpConnection response event
      */
     _handleInvalidResponse: function(e) {
-        var msg = "An invalid response was received from the server";
+        var msg = this._msg["InvalidResponseMessagePre"];
         if (e.exception) {
             Core.Debug.consoleWrite(msg + ": " + e.exception);
         } else if (e.source.getResponseText()) {
             Core.Debug.consoleWrite(msg + ": \"" + e.source.getResponseText() + "\"");
         }
-        alert(msg + ".\nPress the browser reload or refresh button.");
+        alert(msg + this._msg["InvalidResponseMessagePost"]);
     },
     
     /**
@@ -314,8 +323,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     _processClientEvent: function(e) {
         if (this._transactionInProgress) {
             if (new Date().getTime() - this._syncInitTime > 2000) {
-                //FIXME Central error handling for these.
-                alert("Waiting on server response.  Press the browser reload or refresh button if server fails to respond.");
+                alert(this._msg["WaitMessage"]);
             }
             return;
         }
