@@ -214,9 +214,10 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         if (this.component.children[0].peer.getPreferredSize) {
             // Use getPreferredSize() if available.
             size0 = this.component.children[0].peer.getPreferredSize(dimension);
-        } else if (!this.component.children[0].pane && (dimension & Echo.Render.ComponentSync.SIZE_HEIGHT)) {
+        } else if (!this.component.children[0].pane && (dimension & Echo.Render.ComponentSync.SIZE_HEIGHT) &&
+                this._paneDivs[0].firstChild) {
             // Measure height of non-pane child (assuming height is being requested).
-            bounds = new Core.Web.Measure.Bounds(this._paneDivs[0]);
+            bounds = new Core.Web.Measure.Bounds(this._paneDivs[0].firstChild);
             size0 = { height: bounds.height === 0 ? null : bounds.height };
         } else {
             // Pane 0 cannot be measured.
@@ -231,9 +232,10 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         } else if (this.component.children[1].peer.getPreferredSize) {
             // Use getPreferredSize() if available.
             size1 = this.component.children[1].peer.getPreferredSize(dimension);
-        } else if (!this.component.children[1].pane && (dimension & Echo.Render.ComponentSync.SIZE_HEIGHT)) {
+        } else if (!this.component.children[1].pane && (dimension & Echo.Render.ComponentSync.SIZE_HEIGHT) &&
+                this._paneDivs[1].firstChild) {
             // Measure height of non-pane child (assuming height is being requested).
-            bounds = new Core.Web.Measure.Bounds(this._paneDivs[1]);
+            bounds = new Core.Web.Measure.Bounds(this._paneDivs[1].firstChild);
             size1 = { height: bounds.height === 0 ? null : bounds.height };
         } else {
             // Pane 1 cannot be measured.

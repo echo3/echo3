@@ -54,7 +54,7 @@ Echo.Sync = {
  * Provides tools for rendering alignment properties.
  * @class
  */
-Echo.Sync.Alignment = { 
+Echo.Sync.Alignment = {
 
     _HORIZONTALS: { left: true, center: true, right: true, leading: true, trailing: true },
     _VERTICALS: { top: true, middle: true, bottom: true },
