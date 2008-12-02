@@ -85,7 +85,6 @@ implements SerialPropertyPeer {
         try {
             return new Integer(valueText);
         } catch (NumberFormatException ex) {
-System.err.println("VALUE=" + valueText);            
             return introspectConstantValue(context, objectClass, valueText);
         }
     }
