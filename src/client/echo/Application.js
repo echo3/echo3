@@ -3056,6 +3056,8 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * @sp {#ImageReference} closeIcon the close button icon
  * @sp {#Insets} closeIconInsets the inset margin around the close button icon
  * @sp {#ImageReference} closeRolloverIcon the close button rollover icon
+ * @sp {#Extent} contentHeight the height of the content region of the window
+ * @sp {#Extent} contentWidth the width of the content region of the window
  * @sp {#Insets} controlsInsets the inset margin around the controls area
  * @sp {#Extent} controlsSpacing the spacing between controls in the controls area
  * @sp {#Extent} height the outside height of the window, including its border
