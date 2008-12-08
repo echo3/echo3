@@ -1143,6 +1143,74 @@ Core.Web.HttpConnection = Core.extend({
 });
 
 /**
+ * Image-related utilities.
+ */
+Core.Web.Image = {
+    
+    /**
+     * Work object for monitorImageLoading() method.
+     */
+    _Monitor: Core.extend({
+
+        _processImageLoadRef: null,
+        _queuedRunnable: null,
+        _listener: null,
+        _interval: null,
+        _count: 0,
+        
+        $construct: function(element, listener, interval) {
+            this._listener = listener;
+            this._interval = interval || 2000;
+            this._processImageLoadRef = Core.method(this, this._processImageLoad);
+            var imgs = element.getElementsByTagName("img");
+            this._count = imgs.length;
+            for (var i = 0; i < this._count; ++i) {
+                if (!imgs[i].complete && (Core.Web.Env.QUIRK_UNLOADED_IMAGE_HAS_SIZE || 
+                        (!imgs[i].height && !imgs[i].style.height))) {
+                    Core.Web.DOM.addEventListener(imgs[i], "load", this._processImageLoadRef, false);
+                }
+            }
+        },
+        
+        /**
+         * Process an image loading event. 
+         */
+        _processImageLoad: function(e) {
+            e = e ? e : window.event;
+            Core.Web.DOM.removeEventListener(Core.Web.DOM.getEventTarget(e), "load", this._processImageLoadRef, false);
+            --this._count;
+            
+            if (this._queuedRunnable && this._count === 0) {
+                Core.Web.Scheduler.remove(this._queuedRunnable);
+                this._queuedRunnable = null;
+            }
+            
+            if (!this._queuedRunnable) {
+                this._queuedRunnable = Core.Web.Scheduler.run(Core.method(this, function() {
+                    this._queuedRunnable = null;
+                    this._listener();
+                }), this._count === 0 ? 0 : this._interval);
+            }
+        }
+    }),
+    
+    /**
+     * Registers a listener to receive notifications as image size information becomes available.
+     * Registers "load" listeners on images which are children of the specified element, invoking the specified listener
+     * zero or more times as the images load.  If all images are already loaded (e.g., they were cached) or have specified 
+     * sizes, the listener may never be invoked.  If the images take some time to load, the listener may be invoked multiple times.
+     * 
+     * @param element the root element which may (or may not) contain IMG elements
+     * @param l the method to invoke when images are loaded.
+     * @param interval the maximum time interval at which the listener should be invoked (default value is 50ms, the listener will
+     *        be invoked immediately once all images have loaded)
+     */
+    monitor: function(element, l, interval) {
+        var monitor = new Core.Web.Image._Monitor(element, l, interval);
+    }
+};
+
+/**
  * Utilities for dynamically loading additional script libraries.
  * @class
  */
@@ -1582,9 +1650,11 @@ Core.Web.Measure = {
          * Creates a new Bounds object to calculate the size and/or position of an element.
          * 
          * @param element the element to measure.
+         * @param constraints an object containing width and or height properties specifying size of region in which to measure
+         *        the element
          * @constructor
          */    
-        $construct: function(element) {
+        $construct: function(element, constraints) {
             if (element === document.body) {
                 return { 
                     x: 0,
@@ -1614,8 +1684,22 @@ Core.Web.Measure = {
                     parentNode.removeChild(element);
                 }
                 
+                if (constraints) {
+                    if (constraints.width) {
+                        Core.Web.Measure._offscreenDiv.width = constraints.width;
+                    }
+                    if (constraints.height) {
+                        Core.Web.Measure._offscreenDiv.height = constraints.height;
+                    }
+                }
+                
                 // Append element to measuring container DIV.
                 Core.Web.Measure.Bounds._offscreenDiv.appendChild(element);
+                
+                if (constraints) {
+                    Core.Web.Measure._offscreenDiv.width = "1600px";
+                    Core.Web.Measure._offscreenDiv.height = "1200px";
+                }
             }
             
             // Store width and height of element.
