@@ -297,13 +297,6 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     },
 
     /**
-     * Perform tasks for the initial render display phase of an auto-sized SplitPane.
-     */
-    _initialAutoSize: function() {
-        this._registerSizingImageLoadListeners(this._paneDivs[0]);
-    },
-    
-    /**
      * Retrieves properties from Echo.SplitPane component instances and
      * stores them in local variables in a format more convenient for processing
      * by this synchronization peer.
@@ -390,24 +383,6 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         this._overlay = null;
     },
     
-    /**
-     * Process an image loading event on an automatically sized SplitPane.
-     * Schedule invocation of renderDisplay() after short delay if not already scheduled.
-     */
-    _processImageLoad: function(e) {
-        e = e ? e : window.event;
-        Core.Web.DOM.removeEventListener(Core.Web.DOM.getEventTarget(e), "load", this._processImageLoadRef, false);
-        if (!this._redisplayRequired) {
-            this._redisplayRequired = true;
-            Core.Web.Scheduler.run(Core.method(this, function() {
-                this._redisplayRequired = false;
-                if (this.component) { // Verify component still registered.
-                    Echo.Render.renderComponentDisplay(this.component);
-                }
-            }), 50);
-        }
-    },
-
     _processKeyPress: function(e) {
         var focusPrevious,
             focusedComponent,
@@ -718,7 +693,12 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
                 // If position was successfully set, perform initial operations related to automatic sizing 
                 // (executed on first renderDisplay() after renderAdd()).
                 this._initialAutoSizeComplete = true;
-                this._initialAutoSize();
+                var imageListener = Core.method(this, function() {
+                    if (this.component) { // Verify component still registered.
+                        Echo.Render.renderComponentDisplay(this.component);
+                    }
+                });
+                Core.Web.Image.monitor(this._paneDivs[0], imageListener);
             }
         }
 
@@ -747,26 +727,6 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.VirtualPosition.redraw(this._paneDivs[1]);
     },
     
-    /**
-     * Register listeners on any unloaded images in a size-determining
-     * child of the split pane such that the SplitPane will be resized after those images
-     * have loaded.
-     * 
-     * @param element the topmost element which potentially contains IMG elements to which the
-     *        load listeners should be attached
-     */
-    _registerSizingImageLoadListeners: function(element) {
-        if (!this._processImageLoadRef) {
-            this._processImageLoadRef = Core.method(this, this._processImageLoad);
-        }
-        var imgs = element.getElementsByTagName("img");
-        for (var i = 0; i < imgs.length; ++i) {
-            if (!imgs[i].complete && (Core.Web.Env.QUIRK_UNLOADED_IMAGE_HAS_SIZE || (!imgs[i].height && !imgs[i].style.height))) {
-                Core.Web.DOM.addEventListener(imgs[i], "load", this._processImageLoadRef, false);
-            }
-        }
-    },
-
     renderDispose: function(update) {
         this._overlayRemove();
 
