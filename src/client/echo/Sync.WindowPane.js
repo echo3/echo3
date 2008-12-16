@@ -649,6 +649,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 this._contentDiv, "backgroundColor");
         Echo.Sync.Color.render(this.component.render("foreground", Echo.WindowPane.DEFAULT_FOREGROUND),
                 this._contentDiv, "color");
+        Echo.Sync.FillImage.render(this.component.render("backgroundImage"), this._contentDiv);
         this._div.appendChild(this._contentDiv);
 
         // Add Internet Explorer 6-specific windowed control-blocking IFRAME.
