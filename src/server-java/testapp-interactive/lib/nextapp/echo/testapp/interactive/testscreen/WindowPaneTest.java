@@ -164,6 +164,16 @@ public class WindowPaneTest extends SplitPane {
                 windowPane.setBackground(null);
             }
         });
+        controlsColumn.addButton("Set Background Image", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE);
+            }
+        });
+        controlsColumn.addButton("Clear Background Image", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setBackgroundImage(null);
+            }
+        });
         controlsColumn.addButton("Set Font", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.setFont(StyleUtil.randomFont());
