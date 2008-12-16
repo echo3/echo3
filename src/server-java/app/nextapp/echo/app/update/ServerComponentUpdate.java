@@ -299,6 +299,17 @@ implements Serializable {
     }
     
     /**
+     * Determines if the specified component is a removed child or descendant of the parent component.
+     * 
+     * @param component the potentially removed child/descendant
+     * @return true if the component is a removed child/descendant
+     */
+    public boolean hasRemovedDescendant(Component component) {
+        return removedChildren != null && (removedChildren.contains(component) || 
+                (removedDescendants != null && removedDescendants.contains(component)));
+    }
+    
+    /**
      * Determines if the update is removing children from the parent that 
      * have descendants.
      * Having removed descendants implies having removed children.  

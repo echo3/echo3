@@ -97,6 +97,8 @@ implements Serializable {
     private ClientUpdateManager clientUpdateManager;
     private ApplicationInstance applicationInstance;
     
+    private ServerComponentUpdate[] cachedComponentUpdates;
+    
     /**
      * Creates a new <code>ServerUpdateManager</code>.
      * 
@@ -185,11 +187,15 @@ implements Serializable {
         if (isFullRefreshRequired()) {
             return new ServerComponentUpdate[]{fullRefreshUpdate};
         } else {
-            Collection hierarchyUpdates = componentUpdateMap.values();
-            ServerComponentUpdate[] serverComponentUpdates = (ServerComponentUpdate[])
-                     hierarchyUpdates.toArray(new ServerComponentUpdate[hierarchyUpdates.size()]);
-            Arrays.sort(serverComponentUpdates, hierarchyDepthUpdateComparator);
-            return serverComponentUpdates;
+            if (cachedComponentUpdates == null) {
+                Collection hierarchyUpdates = componentUpdateMap.values();
+                cachedComponentUpdates = (ServerComponentUpdate[])
+                         hierarchyUpdates.toArray(new ServerComponentUpdate[hierarchyUpdates.size()]);
+                Arrays.sort(cachedComponentUpdates, hierarchyDepthUpdateComparator);
+                return cachedComponentUpdates;
+            } else {
+                return cachedComponentUpdates;
+            }
         }
     }
     
@@ -279,6 +285,8 @@ implements Serializable {
             return;
         }
         
+        cachedComponentUpdates = null;
+
         ServerComponentUpdate update = createComponentUpdate(parent);
         update.addChild(child);
     }
@@ -298,6 +306,8 @@ implements Serializable {
             return;
         }
 
+        cachedComponentUpdates = null;
+        
         Component parentComponent = updatedComponent.getParent();
         if (parentComponent == null || isAncestorBeingAdded(parentComponent)) {
             // Do nothing.
@@ -327,6 +337,8 @@ implements Serializable {
         if (isAncestorBeingAdded(updatedComponent)) {
             return;
         }
+
+        cachedComponentUpdates = null;
         
         // Do not add update (and if necessary cancel any update) if the property is being updated
         // as the result of input from the client (and thus client and server state of property are
@@ -366,6 +378,9 @@ implements Serializable {
         if (isAncestorBeingAdded(parent)) {
             return;
         }
+        
+        cachedComponentUpdates = null;
+        
         ServerComponentUpdate update = createComponentUpdate(parent);
         update.removeChild(child);
         
@@ -391,6 +406,8 @@ implements Serializable {
      *        hierarchy whose visible state has changed.
      */
     public void processComponentVisibilityUpdate(Component updatedComponent) {
+        cachedComponentUpdates = null;
+
         Component parentComponent = updatedComponent.getParent();
         if (updatedComponent.isVisible()) {
             processComponentAdd(parentComponent, updatedComponent);
@@ -408,6 +425,8 @@ implements Serializable {
             return;
         }
         
+        cachedComponentUpdates = null;
+
         fullRefreshUpdate = new ServerComponentUpdate(null);
 
         if (applicationInstance.getDefaultWindow() != null) {
@@ -435,5 +454,6 @@ implements Serializable {
         componentUpdateMap.clear();
         commands = null;
         fullRefreshUpdate = null;
+        cachedComponentUpdates = null;
     }
 }

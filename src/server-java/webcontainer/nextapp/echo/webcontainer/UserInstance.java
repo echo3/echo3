@@ -44,6 +44,7 @@ import javax.servlet.http.HttpSessionEvent;
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.TaskQueueHandle;
+import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.update.UpdateManager;
 import nextapp.echo.webcontainer.util.IdTable;
 
@@ -452,11 +453,21 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * registered.
      */
     public void purgeRenderStates() {
+        ServerComponentUpdate[] updates = getUpdateManager().getServerUpdateManager().getComponentUpdates();
+
         Iterator it = componentToRenderStateMap.keySet().iterator();
         while (it.hasNext()) {
             Component component = (Component) it.next();
             if (!component.isRegistered() || !component.isRenderVisible()) {
                 it.remove();
+                continue;
+            }
+
+            for (int i = 0; i < updates.length; ++i) {
+                if (updates[i].hasRemovedDescendant(component)) {
+                    it.remove();
+                    continue;
+                }
             }
         }
     }
