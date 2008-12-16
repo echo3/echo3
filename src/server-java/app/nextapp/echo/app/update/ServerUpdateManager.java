@@ -36,6 +36,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import nextapp.echo.app.ApplicationInstance;
@@ -88,15 +89,31 @@ implements Serializable {
         }
     };
     
+    /** Empty array of commands. */
     private static final Command[] EMPTY_COMMAND_ARRAY = new Command[0];
     
+    /** Map between application property names and <code>PropertyUpdate</code>s to the application. */
     private Map applicationUpdateMap;
-    private ArrayList commands;
+    
+    /** Enqueued commands to be executed. */
+    private List commands;
+    
+    /**
+     * Map between <code>Component</code>s and <code>ServerComponentUpdate</code>s.  The key is the parent component involved in 
+     * the update.
+     */
     private Map componentUpdateMap;
+    
+    /** Special <code>ServerComponentUpdate</code> used to describe a full-refresh of the application state being required. */
     private ServerComponentUpdate fullRefreshUpdate;
+    
+    /** The <code>ClientUpdateManager</code> that will be used to process input from the client. */
     private ClientUpdateManager clientUpdateManager;
+    
+    /** The updating <code>ApplicationInstance</code>. */
     private ApplicationInstance applicationInstance;
     
+    /** Cache of <code>ServerComponentUpdate</code>s (returned by multiple invocations of <code>getComponentUpdates()</code>.) */
     private ServerComponentUpdate[] cachedComponentUpdates;
     
     /**
