@@ -208,7 +208,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             y: this._resizeIncrement.y == -1 ? this._dragInit.y + e.clientY - this._dragOrigin.y : null,
             width: this._dragInit.width + (this._resizeIncrement.x * (e.clientX - this._dragOrigin.x)),
             height: this._dragInit.height + (this._resizeIncrement.y * (e.clientY - this._dragOrigin.y))
-        });
+        }, true);
     },
 
     _processBorderMouseUp: function(e) {
@@ -332,7 +332,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this.setBounds({
             x: this._dragInit.x + e.clientX - this._dragOrigin.x, 
             y: this._dragInit.y + e.clientY - this._dragOrigin.y
-        });
+        }, true);
     },
     
     _processTitleBarMouseUp: function(e) {
@@ -732,7 +732,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     
     renderDisplay: function() {
         this._loadContainerSize();
-        this.setBounds(this._requested);
+        this.setBounds(this._requested, false);
         Core.Web.VirtualPosition.redraw(this._contentDiv);
         Core.Web.VirtualPosition.redraw(this._maskDiv);
     },
@@ -772,7 +772,10 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._renderAddFrame();
     },
     
-    setBounds: function(bounds) {
+    /**
+     * 
+     */
+    setBounds: function(bounds, userAdjusting) {
         var c = this._coordinatesToPixels(bounds);
         
         if (this._rendered == null) {
@@ -781,13 +784,13 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
 
         if (c.width != null) {
             if (this._maximumWidth && c.width > this._maximumWidth) {
-                if (c.x != null) {
+                if (userAdjusting && c.x != null) {
                     c.x += (c.width - this._maximumWidth);
                 }
                 c.width = this._maximumWidth;
             }
             if (c.width < this._minimumWidth) {
-                if (c.x != null) {
+                if (userAdjusting && c.x != null) {
                     c.x += (c.width - this._minimumWidth);
                 }
                 c.width = this._minimumWidth;
@@ -797,13 +800,13 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         
         if (c.height != null) {
             if (this._maximumHeight && c.height > this._maximumHeight) {
-                if (c.y != null) {
+                if (userAdjusting && c.y != null) {
                     c.y += (c.height - this._maximumHeight);
                 }
                 c.height = this._maximumHeight;
             }
             if (c.height < this._minimumHeight) {
-                if (c.y != null) {
+                if (userAdjusting && c.y != null) {
                     c.y += (c.height - this._minimumHeight);
                 }
                 c.height = this._minimumHeight;
