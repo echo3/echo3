@@ -645,8 +645,7 @@ Echo.Sync.FillImage = {
         var isObject = typeof(fillImage) == "object";
         var url = isObject ? fillImage.url : fillImage;
 
-        if (Core.Web.Env.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED &&
-                flags && (flags & this.FLAG_ENABLE_IE_PNG_ALPHA_FILTER)) {
+        if (Core.Web.Env.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED && flags && (flags & this.FLAG_ENABLE_IE_PNG_ALPHA_FILTER)) {
             // IE6 PNG workaround required.
             element.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + url + "', sizingMethod='scale')";
         } else {
@@ -680,6 +679,9 @@ Echo.Sync.FillImage = {
         if (fillImage) {
             this.render(fillImage, element, flags);
         } else {
+            if (Core.Web.Env.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED) {
+                element.style.filter = "";
+            }
             element.style.backgroundImage = "";
             element.style.backgroundPosition = "";
             element.style.backgroundRepeat = "";
