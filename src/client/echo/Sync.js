@@ -255,6 +255,8 @@ Echo.Sync.Border = {
                 if (elements == null) {
                     throw new Error("Invalid border: \"" + border + "\"");
                 }
+                this.render(Echo.Sync.Extent.toPixels(elements[1]) + "px " + elements[2] + " " + elements[3], 
+                        element, styleAttribute);
             }
         } else {
             this.render(border.top, element, styleAttribute + "Top");
@@ -542,9 +544,9 @@ Echo.Sync.Extent = {
         if (extent == null) {
             return 0;
         } else if (typeof(extent) == "number") {
-            return extent;
+            return Math.round(extent);
         } else {
-            return Core.Web.Measure.extentToPixels(extent, horizontal);
+            return Math.round(Core.Web.Measure.extentToPixels(extent, horizontal));
         }
     }
 };

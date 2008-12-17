@@ -437,6 +437,15 @@ extends SplitPane {
                 });
             }
         });
+        controlsColumn.addButton("Set Border (4pt groove red)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setBorder(new Border(new Extent(4, Extent.PT), Color.RED, Border.STYLE_GROOVE));
+                    }
+                });
+            }
+        });
         controlsColumn.addButton("Set Border (All, Individual Sides)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator() {
