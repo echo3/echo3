@@ -31,11 +31,9 @@ package nextapp.echo.webcontainer;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
@@ -145,12 +143,6 @@ class OutputProcessor {
     private SynchronizationState syncState;
     
     /**
-     * Cached set of known-to-be-not-lazily-rendered components.
-     * Used to aid performance of isRendered().
-     */
-    private Set renderedComponents = new HashSet();
-    
-    /**
      * Creates a new <code>OutputProcessor</code>.
      * 
      * @param conn the <code>Connection</code> for which the output is 
@@ -167,40 +159,7 @@ class OutputProcessor {
         serverUpdateManager = userInstance.getUpdateManager().getServerUpdateManager();
         propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME temporary
     }
-    
-    /**
-     * Determines if the specified <code>component</code> has been rendered to
-     * the client by determining if it is a descendant of any
-     * <code>LazyRenderContainer</code>s and if so querying them to determine
-     * the hierarchy's render state. This method is recursively invoked.
-     *
-     * @param component the <code>Component</code> to analyze
-     * @return <code>true</code> if the <code>Component</code> has been
-     *         rendered to the client
-     */
-    private boolean isComponentRendered(Component component) {
-        //FIXME. This code is 98% untested in Echo3.
-        if (renderedComponents.contains(component)) {
-            return true;
-        }
-        Component parent = component.getParent();
-        if (parent == null) {
-            return true;
-        }
-        ComponentSynchronizePeer syncPeer = SynchronizePeerFactory.getPeerForComponent(parent.getClass());
-        if (syncPeer instanceof LazyRenderContainer) {
-            boolean rendered = ((LazyRenderContainer) syncPeer).isRendered(context, parent, component);
-            if (!rendered) {
-                return false;
-            }
-        }
-        boolean rendered = isComponentRendered(parent);
-        if (rendered) {
-            renderedComponents.add(component);
-        }
-        return rendered;
-    }
-    
+        
     /**
      * Processes pending output from the application, generating a server message and rendering it
      * to the output <code>PrintWriter</code> of the <code>Connection</code> specified in the constructor.
@@ -380,14 +339,6 @@ class OutputProcessor {
     throws SerialException {
         ServerComponentUpdate[] componentUpdates = serverUpdateManager.getComponentUpdates();
         
-        // Remove any updates whose updates are descendants of components which have not been rendered to the
-        // client yet due to lazy-loading containers.
-        for (int i = 0; i < componentUpdates.length; ++i) {
-            if (!isComponentRendered(componentUpdates[i].getParent())) {
-                componentUpdates[i] = null;
-            }
-        }
-        
         // Render Component Synchronization Removes
         for (int i = 0; i < componentUpdates.length; ++i) {
             if (componentUpdates[i] == null || !componentUpdates[i].hasRemovedChildren()) {
@@ -431,9 +382,7 @@ class OutputProcessor {
                     SortedMap indexedComponents = new TreeMap();
                     for (int j = 0; j < addedChildren.length; ++j) {
                         Component addedChild = addedChildren[j];
-                        if (isComponentRendered(addedChild)) {
-                            indexedComponents.put(new Integer((parentComponent.visibleIndexOf(addedChild))), addedChild);
-                        }
+                        indexedComponents.put(new Integer((parentComponent.visibleIndexOf(addedChild))), addedChild);
                     }
                     Iterator indexedComponentsIter = indexedComponents.entrySet().iterator();
                     int lastIndex = Integer.MIN_VALUE;
@@ -650,9 +599,7 @@ class OutputProcessor {
         // Render child components.
         Component[] children = c.getVisibleComponents();
         for (int i = 0; i < children.length; ++i) {
-            if (isComponentRendered(children[i])) {
-                renderComponentState(cElement, children[i]);
-            }
+            renderComponentState(cElement, children[i]);
         }
         
         // Append component element to parent.
