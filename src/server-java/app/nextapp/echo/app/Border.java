@@ -296,7 +296,7 @@ implements Serializable {
             return false;
         }
         for (int i = 0; i < this.sides.length; ++i) {
-            if (!this.sides[i].equals(that.sides[i])) {
+            if (!(this.sides[i] == that.sides[i] || (this.sides[i] != null && this.sides[i].equals(that.sides[i])))) {
                 return false;
             }
         }
