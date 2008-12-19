@@ -656,14 +656,9 @@ Echo.Sync.FillImage = {
         }
         
         if (isObject) {
-            if (this._REPEAT_VALUES[fillImage.repeat]) {
-                element.style.backgroundRepeat = this._REPEAT_VALUES[fillImage.repeat]; 
-            }
-            
             var position = Echo.Sync.FillImage.getPosition(fillImage);
-            if (position) {
-                element.style.backgroundPosition = position;
-            }
+            element.style.backgroundPosition = position ? position : "";
+            element.style.backgroundRepeat = this._REPEAT_VALUES[fillImage.repeat] ? this._REPEAT_VALUES[fillImage.repeat]: ""; 
         }
     },
     
