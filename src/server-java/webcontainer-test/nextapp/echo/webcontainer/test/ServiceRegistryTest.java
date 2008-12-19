@@ -56,11 +56,26 @@ public class ServiceRegistryTest extends TestCase {
     /**
      * Ensure that two services may not be added with the same service id.
      */
-    public void testConflict() {
+    public void testConflictSameType() {
         ServiceRegistry services = new ServiceRegistry();
         NullService alpha = new NullService("alpha");
         services.add(alpha);
         NullService anotherAlpha = new NullService("alpha");
+        try {
+            services.add(anotherAlpha);
+        } catch (IllegalArgumentException ex) {
+            fail();
+        }
+    }
+    
+    /**
+     * Ensure that two services may not be added with the same service id.
+     */
+    public void testConflictDifferentType() {
+        ServiceRegistry services = new ServiceRegistry();
+        NullService alpha = new NullService("alpha");
+        services.add(alpha);
+        NullService2 anotherAlpha = new NullService2("alpha");
         try {
             services.add(anotherAlpha);
             fail();
