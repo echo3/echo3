@@ -144,7 +144,11 @@ implements SerialPropertyPeer {
             Element borderElement = serialContext.getDocument().createElement("b");
             Border.Side[] sides = border.getSides();
             for (int i = 0; i < sides.length; ++i) {
-                borderElement.setAttribute(borderSideAttributeNames[i], toString(sides[i]));
+                if (sides[i] == null) {
+                    borderElement.setAttribute(borderSideAttributeNames[i], "");
+                } else {
+                    borderElement.setAttribute(borderSideAttributeNames[i], toString(sides[i]));
+                }
             }
             propertyElement.appendChild(borderElement);
         } else {

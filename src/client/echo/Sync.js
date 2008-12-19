@@ -282,6 +282,9 @@ Echo.Sync.Border = {
      */
     renderClear: function(border, element) {
         if (border) {
+            if (border instanceof Object) {
+                element.style.border = "";
+            }
             this.render(border, element);
         } else {
             element.style.border = "";

@@ -296,6 +296,27 @@ extends SplitPane {
                 });
             }
         });
+        controlsColumn.addButton("Four-sided Border Rollover/renderClear", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setBorder(new Border(new Border.Side[]{
+                           new Border.Side(1, Color.BLUE, Border.STYLE_SOLID),
+                           new Border.Side(1, Color.CYAN, Border.STYLE_SOLID),
+                           null,
+                           null
+                        }));
+                        button.setRolloverBorder(new Border(new Border.Side[]{
+                           new Border.Side(1, Color.RED, Border.STYLE_SOLID),
+                           null,
+                           new Border.Side(1, Color.YELLOW, Border.STYLE_SOLID),
+                           null
+                        }));
+                        button.setRolloverEnabled(true);
+                    }
+                });
+            }
+        });
         controlsColumn.addButton("Set Text = Short", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator() {
