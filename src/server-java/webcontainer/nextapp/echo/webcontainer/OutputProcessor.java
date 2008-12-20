@@ -561,6 +561,7 @@ class OutputProcessor {
         componentPeer.init(context, c);
 
         renderComponentStyleName(cElement, c, false);
+        renderComponentStyle(cElement, c);
         
         if (!c.isEnabled()) {
             Element enElement = document.createElement("en");
@@ -609,6 +610,19 @@ class OutputProcessor {
         parentElement.appendChild(cElement);
         
         return cElement;
+    }
+    
+    /**
+     * Sets the directly referenced style of a component.
+     * If the style has not been rendered in the current synchronization message,
+     * it will be added to it.
+     */
+    private void renderComponentStyle(Element element, Component c) 
+    throws SerialException {
+        Style style = c.getStyle();
+        if (style == null) {
+            return;
+        }
     }
 
     /**
@@ -683,6 +697,10 @@ class OutputProcessor {
         if (update.hasUpdatedProperties()) {
             if (update.hasUpdatedProperty(Component.STYLE_NAME_CHANGED_PROPERTY)) {
                 renderComponentStyleName(upElement, c, true);
+            }
+            
+            if (update.hasUpdatedProperty(Component.STYLE_CHANGED_PROPERTY)) {
+                renderComponentStyle(upElement, c);
             }
             
             // Render enabled state update.
