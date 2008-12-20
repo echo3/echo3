@@ -212,6 +212,9 @@ class OutputProcessor {
         }
     }
     
+    /**
+     * Renders application-level properties.
+     */
     private void renderApplicationState() {
         Element localeElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "AppSync", "locale");
         localeElement.appendChild(document.createTextNode(getClientLocaleString(
@@ -656,10 +659,12 @@ class OutputProcessor {
         }
     }
     
-    /**   
-     * @param upElement
-     * @param c
-     * @param update
+    /**
+     * Renders updated properties of a component.
+     * 
+     * @param upElement the "up" update element
+     * @param c the updating component
+     * @param update the <code>ServerComponentUpdate</code>
      * @throws SerialException
      */
     private void renderComponentUpdatedProperties(Element upElement, Component c, ServerComponentUpdate update) 
