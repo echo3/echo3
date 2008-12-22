@@ -1029,6 +1029,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
     },
 
     _referenceMap : null,
+    _styleMap: null,
     
     $construct: function(client) { 
         this._client = client;
@@ -1048,6 +1049,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                 case "ss": this._processStyleSheet(element); break;
                 case "up": this._processUpdate(element); break;
                 case "sp": this._processStoreProperties(element); break;
+                case "rs": this._processStoreStyles(element); break;
                 }
             }
             element = element.nextSibling;
@@ -1075,6 +1077,26 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                 this._referenceMap[propertyId] = propertyValue;
             }
             propertyElement = propertyElement.nextSibling;
+        }
+    },
+    
+    _processStoreStyles: function(rsElement) {
+        var styleElement = rsElement.firstChild;
+        while (styleElement) {
+            if (styleElement.nodeName == "s") {
+                var styleId = styleElement.getAttribute("i");
+                var style = { };
+                var propertyElement = styleElement.firstChild;
+                while (propertyElement) {
+                    Echo.Serial.loadProperty(this._client, propertyElement, null, style, this._referenceMap);
+                    propertyElement = propertyElement.nextSibling;
+                }
+                if (!this._styleMap) {
+                    this._styleMap = {};
+                }
+                this._styleMap[styleId] = style;
+            }
+            styleElement = styleElement.nextSibling;
         }
     },
     

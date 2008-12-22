@@ -139,7 +139,10 @@ class OutputProcessor {
     private Document document;
     private int nextPropertyKey = 0;
     private Map propertyValueToKeyMap = null;
+    private int nextStyleKey = 0;
+    private Map styleValueToKeyMap = null;
     private Element spElement;
+    private Element rsElement;
     private SynchronizationState syncState;
     
     /**
@@ -619,10 +622,36 @@ class OutputProcessor {
      */
     private void renderComponentStyle(Element element, Component c) 
     throws SerialException {
+        //FIXME untested/inprogress.
         Style style = c.getStyle();
         if (style == null) {
             return;
         }
+        
+        if (rsElement == null) {
+            rsElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSyncUp", "rs");
+        }
+
+        String styleKey = null;
+        if (styleValueToKeyMap == null) {
+            styleValueToKeyMap = new HashMap();
+        } else {
+            styleKey = (String) propertyValueToKeyMap.get(style);
+        }
+        
+        if (styleKey == null) {
+            styleKey = Integer.toString(nextStyleKey++);
+            styleValueToKeyMap.put(style, styleKey);
+
+            Element sElement = document.createElement("s");
+            sElement.setAttribute("i", styleKey);
+            renderStyle(c.getClass(), sElement, style);
+            rsElement.appendChild(sElement);
+        }
+        
+        Element srElement = document.createElement("sr");
+        srElement.appendChild(document.createTextNode(styleKey));
+        element.appendChild(srElement);
     }
 
     /**
@@ -751,7 +780,7 @@ class OutputProcessor {
         if (focusedComponent != null) {
             Element focusElement = serverMessage.addDirective(ServerMessage.GROUP_ID_UPDATE, "CFocus", "focus");
             focusElement.setAttribute("i", userInstance.getClientRenderId(focusedComponent));
-        }        
+        }
     }
     
     /**
