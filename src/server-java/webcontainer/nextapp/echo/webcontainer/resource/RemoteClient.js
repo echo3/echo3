@@ -1060,8 +1060,8 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         this._client.application.rootComponent.removeAll();
     },
     
-    _processReferencedProperties: function(spElement) {
-        var propertyElement = spElement.firstChild;
+    _processReferencedProperties: function(rpElement) {
+        var propertyElement = rpElement.firstChild;
         while (propertyElement) {
             if (propertyElement.nodeName == "p") {
                 var propertyId = propertyElement.getAttribute("i");

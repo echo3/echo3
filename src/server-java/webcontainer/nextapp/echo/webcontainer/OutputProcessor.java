@@ -667,7 +667,7 @@ class OutputProcessor {
         StyleSheet styleSheet = c.getApplicationInstance().getStyleSheet();
         String styleName = c.getStyleName();
         
-        if (!required && (styleSheet == null)) {
+        if (!required && (styleName == null || styleSheet == null)) {
             return;
         }
         
