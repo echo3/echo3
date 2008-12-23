@@ -6,8 +6,8 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     $static: {
     
         /**    
-         * @class Describes the configuration of a child pane of the SplitPane,
-         *        including the child component and scroll bar positions.
+         * Describes the configuration of a child pane of the SplitPane,
+         * including the child component and scroll bar positions.
          */
         ChildPane: Core.extend({
         
