@@ -201,7 +201,7 @@
    </p>
    <p n="insets" t="Insets">7px 10px</p>
    <p n="minimumSize" t="Extent">14em</p>
-   <p n="maximumSize" t="Extent">33%</p>
+   <p n="maximumSize" t="Extent">33.3%</p>
   </p>
  </s>
  <s n="TestControlsColumn" t="nextapp.echo.app.Column">
@@ -212,7 +212,7 @@
    </p>
    <p n="insets" t="Insets">7px 10px</p>
    <p n="minimumSize" t="Extent">14em</p>
-   <p n="maximumSize" t="Extent">33%</p>
+   <p n="maximumSize" t="Extent">33.3%</p>
   </p>
  </s>
  <s n="WelcomePane" t="nextapp.echo.app.ContentPane">

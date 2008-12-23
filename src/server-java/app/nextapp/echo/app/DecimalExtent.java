@@ -124,4 +124,14 @@ public class DecimalExtent extends Extent {
         }
         throw new IllegalStateException("Cannot convert to pt.");
     }
+
+    /**
+     * Returns a string describing the state of the Extent.  
+     * For debugging purposes only, do not rely on formatting.
+     * 
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return decimalValue + getUnitsString(getUnits());
+    }
 }

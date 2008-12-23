@@ -95,6 +95,26 @@ implements Comparable, Serializable {
     }
 
     /**
+     * Returns a string representation of a units type.
+     * 
+     * @param units the units
+     * @return the unit string
+     */
+    static String getUnitsString(int units) {
+        switch (units) {
+        case Extent.CM: return "cm";
+        case Extent.EM: return "em";
+        case Extent.EX: return "ex";
+        case Extent.IN: return "in";
+        case Extent.MM: return "mm";
+        case Extent.PC: return "pc";
+        case Extent.PERCENT: return "%";
+        case Extent.PT: return "pt";
+        default: return "px";
+        }
+    }
+    
+    /**
      * Pixel units.
      */
     public static final int PX = 1;
@@ -345,37 +365,6 @@ implements Comparable, Serializable {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        StringBuffer out = new StringBuffer();
-        out.append(value);
-        switch (units) {
-        case Extent.CM:
-            out.append("cm");
-            break;
-        case Extent.EM:
-            out.append("em");
-            break;
-        case Extent.EX:
-            out.append("ex");
-            break;
-        case Extent.IN:
-            out.append("in");
-            break;
-        case Extent.MM:
-            out.append("mm");
-            break;
-        case Extent.PC:
-            out.append("pc");
-            break;
-        case Extent.PERCENT:
-            out.append("%");
-            break;
-        case Extent.PT:
-            out.append("pt");
-            break;
-        case Extent.PX:
-            out.append("px");
-            break;
-        }
-        return out.toString();
+        return value + getUnitsString(units);
     }
 }
