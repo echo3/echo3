@@ -481,6 +481,7 @@ class OutputProcessor {
         Element propertyDataElement;
         if (propertyValue != null && componentPeer.isOutputPropertyReferenced(context, c, propertyName)) {
             if (rpElement == null) {
+                // Create "reference property" container element ("rp").
                 rpElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSyncUp", "rp");
             }
             
