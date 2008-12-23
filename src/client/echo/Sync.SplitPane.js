@@ -200,6 +200,10 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         return adjustment;
     },
     
+    /**
+     * Calculates the preferred rendered size of the SplitPane by measuring the sizes of its content and/or
+     * invoking getPreferredSize() on its content (if supported).
+     */
     getPreferredSize: function(dimension) {
         if (this.component.children.length === 0) {
             return null;
@@ -269,6 +273,8 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     
     /**
      * Retrieves the (potentially cached) dimensions of the SplitPane outer DIV.
+     * 
+     * @return {Core.Web.Measure.Bounds} the dimensions
      */
     _getSize: function() {
         if (!this._size) {
@@ -502,6 +508,11 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /**
+     * Updates the variable CSS attributes of the SplitPane.
+     * 
+     * @param {Number} position the pixel position of the separator
+     */
     _redraw: function(position) {
         var insetsAdjustment = 0;
         if (this.component.getComponentCount() > 0) {
@@ -524,6 +535,9 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /**
+     * Removes listeners from the separator used to monitor its state while it is being dragging.
+     */
     _removeSeparatorListeners: function() {
         Core.Web.Event.remove(document.body, "mousemove", this._processSeparatorMouseMoveRef, true);
         Core.Web.Event.remove(document.body, "mouseup", this._processSeparatorMouseUpRef, true);
