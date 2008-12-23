@@ -31,6 +31,7 @@ package nextapp.echo.app.serial.property;
 
 import org.w3c.dom.Element;
 
+import nextapp.echo.app.DecimalExtent;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
@@ -45,6 +46,9 @@ import nextapp.echo.app.util.DomUtil;
 public class ExtentPeer 
 implements SerialPropertyPeer {
 
+    /**
+     * <code>ConstantMap</code> between extent string values and integer constants.
+     */
     private static final ConstantMap suffixConstantMap = new ConstantMap();
     static {
         suffixConstantMap.add(Extent.PX, "px");
@@ -58,6 +62,13 @@ implements SerialPropertyPeer {
         suffixConstantMap.add(Extent.PERCENT, "%");
     }
     
+    /**
+     * Generates an <code>Extent</code> from a string value.
+     * 
+     * @param value the string value
+     * @return an <code>Extent</code> (may be a <code>DecimalExtent</code> if the value contains a fractional part)
+     * @throws SerialException
+     */
     public static Extent fromString(String value) 
     throws SerialException {
         if (value == null) {
@@ -67,7 +78,8 @@ implements SerialPropertyPeer {
         int separatorPoint = -1;
         int length = value.length();
         for (int i = length - 1; i >= 0; --i) {
-            if (Character.isDigit(value.charAt(i))) {
+            char ch = value.charAt(i);
+            if (Character.isDigit(ch) || ch == '.') {
                 separatorPoint = i + 1;
                 break;
             }
@@ -76,21 +88,42 @@ implements SerialPropertyPeer {
             throw new IllegalArgumentException(
                     "Cannot create extent from value: " + value);
         }
-        int extentValue = Integer.parseInt(value.substring(0, separatorPoint));
+
+        String valueString = value.substring(0, separatorPoint);
         String unitString = value.substring(separatorPoint);
-        
         int extentUnits = suffixConstantMap.get(unitString, -1);
-        if (extentUnits == -1) {
-            // Return pixel-based extent.
-            return new Extent(extentValue);
+
+        if (valueString.indexOf('.') == -1) {
+            int extentValue = Integer.parseInt(valueString);
+            if (extentUnits == -1) {
+                // Return pixel-based extent.
+                return new Extent(extentValue);
+            }
+            return new Extent(extentValue, extentUnits);
+        } else {
+            double decimalExtentValue = Double.parseDouble(valueString);
+            if (extentUnits == -1) {
+                // Return pixel-based extent.
+                return new DecimalExtent(decimalExtentValue);
+            }
+            return new DecimalExtent(decimalExtentValue, extentUnits);
         }
-        
-        return new Extent(extentValue, extentUnits);
     }
 
+    /**
+     * Returns a string representation of an <code>Extent</code> value.
+     * 
+     * @param extent the <code>Extent</code> (or <code>DecimalExtent</code>)
+     * @return a string representation
+     * @throws SerialException
+     */
     public static String toString(Extent extent) 
     throws SerialException {
-        return extent.getValue() + suffixConstantMap.get(extent.getUnits());
+        if (extent instanceof DecimalExtent) {
+            return ((DecimalExtent) extent).getDecimalValue() + suffixConstantMap.get(extent.getUnits());
+        } else {
+            return extent.getValue() + suffixConstantMap.get(extent.getUnits());
+        }
     }
 
     /**

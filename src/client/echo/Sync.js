@@ -473,6 +473,11 @@ Echo.Sync.Extent = {
     _FORMATTED_INT_PIXEL_TEST: /^(-?\d+px *)$/,
     
     /**
+     * Regular expression to determine if an extent value is already formatted to pixel units.
+     */
+    _FORMATTED_DECIMAL_PIXEL_TEST: /^(-?\d+(.\d+)?px *)$/,
+    
+    /**
      * Determines if an extent has percent units.
      * 
      * @param {#Extent} extent the Extent
@@ -523,6 +528,8 @@ Echo.Sync.Extent = {
             case "string":
                 if (this._FORMATTED_INT_PIXEL_TEST.test(extent)) {
                     return extent;
+                } else if (this._FORMATTED_DECIMAL_PIXEL_TEST.test(extent)) {
+                    return Math.round(parseFloat(extent)) + "px";
                 } else {
                     if (allowPercent && this.isPercent(extent)) {
                         return extent;
