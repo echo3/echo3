@@ -139,9 +139,8 @@ implements Comparable, Serializable {
      */
     public static final int PC = 256;
     
-    
-    private int value;
-    private int units;
+    private final int value;
+    private final int units;
     
     /**
      * Creates a new <code>Extent</code> with pixel units.
