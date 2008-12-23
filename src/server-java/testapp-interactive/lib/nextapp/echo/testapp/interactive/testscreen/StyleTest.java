@@ -51,35 +51,41 @@ public class StyleTest extends SplitPane {
         controlsColumn.setStyleName("TestControlsColumn");
         add(controlsColumn);
 
-        final Button testButton = new Button("Test button");
+        final Button testButton1 = new Button("Test button 1");
+        final Button testButton2 = new Button("Test button 2");
         
         final Column testColumn = new Column();
-        testColumn.add(testButton);
+        testColumn.add(testButton1);
+        testColumn.add(testButton2);
         add(testColumn);
         
         controlsColumn.addButton("Set Test Button Style", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 MutableStyle style = new MutableStyle();
                 style.set(Button.PROPERTY_BACKGROUND, Color.GREEN);
-                testButton.setStyle(style);
+                testButton1.setStyle(style);
+                testButton2.setStyle(style);
             }
         });
         
         controlsColumn.addButton("Clear Test Button Style", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                testButton.setStyle(null);
+                testButton1.setStyle(null);
+                testButton2.setStyle(null);
             }
         });
         
         controlsColumn.addButton("Set Test Button StyleName", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                testButton.setStyleName("Default");
+                testButton1.setStyleName("Default");
+                testButton2.setStyleName("Default");
             }
         });
         
         controlsColumn.addButton("Clear Test Button StyleName", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                testButton.setStyleName(null);
+                testButton1.setStyleName(null);
+                testButton2.setStyleName(null);
             }
         });
     }

@@ -1123,7 +1123,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
             if (element.nodeType == 1) {
                 switch (element.nodeName) {
                 case "c": // Added child.
-                    var component = Echo.Serial.loadComponent(this._client, element, this._referenceMap);
+                    var component = Echo.Serial.loadComponent(this._client, element, this._referenceMap, this._styleMap);
                     var index = element.getAttribute("x");
                     if (index == null) {
                         // No index specified, add children at current insertion cursor position.
@@ -1141,6 +1141,13 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                     break;
                 case "s": // Style name update.
                     parentComponent.setStyleName(element.firstChild ? element.firstChild.nodeValue : null);
+                    break;
+                case "sr":
+                    if (element.firstChild) {
+                        parentComponent.setStyle(this._styleMap ? this._styleMap[element.firstChild.nodeValue] : null);
+                    } else {
+                        parentComponent.setStyle(null);
+                    }
                     break;
                 case "e": // Event update.
                     var eventType = element.getAttribute("t");

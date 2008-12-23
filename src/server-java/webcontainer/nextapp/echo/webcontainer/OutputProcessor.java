@@ -564,7 +564,7 @@ class OutputProcessor {
         componentPeer.init(context, c);
 
         renderComponentStyleName(cElement, c, false);
-        renderComponentStyle(cElement, c);
+        renderComponentStyle(cElement, c, false);
         
         if (!c.isEnabled()) {
             Element enElement = document.createElement("en");
@@ -620,11 +620,14 @@ class OutputProcessor {
      * If the style has not been rendered in the current synchronization message,
      * it will be added to it.
      */
-    private void renderComponentStyle(Element element, Component c) 
+    private void renderComponentStyle(Element element, Component c, boolean required) 
     throws SerialException {
         //FIXME untested/inprogress.
         Style style = c.getStyle();
         if (style == null) {
+            if (required) {
+                element.appendChild(document.createElement("sr"));
+            }
             return;
         }
         
@@ -636,7 +639,7 @@ class OutputProcessor {
         if (styleValueToKeyMap == null) {
             styleValueToKeyMap = new HashMap();
         } else {
-            styleKey = (String) propertyValueToKeyMap.get(style);
+            styleKey = (String) styleValueToKeyMap.get(style);
         }
         
         if (styleKey == null) {
@@ -649,9 +652,9 @@ class OutputProcessor {
             rsElement.appendChild(sElement);
         }
         
-        Element rsElement = document.createElement("rs");
-        rsElement.appendChild(document.createTextNode(styleKey));
-        element.appendChild(rsElement);
+        Element srElement = document.createElement("sr");
+        srElement.appendChild(document.createTextNode(styleKey));
+        element.appendChild(srElement);
     }
 
     /**
@@ -729,7 +732,7 @@ class OutputProcessor {
             }
             
             if (update.hasUpdatedProperty(Component.STYLE_CHANGED_PROPERTY)) {
-                renderComponentStyle(upElement, c);
+                renderComponentStyle(upElement, c, true);
             }
             
             // Render enabled state update.

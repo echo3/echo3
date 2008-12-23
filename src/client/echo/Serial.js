@@ -78,7 +78,7 @@ Echo.Serial = {
      * @param cElement the 'c' DOM element to deserialize
      * @return the instantiated component.
      */
-    loadComponent: function(client, cElement, referenceMap) {
+    loadComponent: function(client, cElement, referenceMap, styleMap) {
         if (!cElement.nodeName == "c") {
             throw new Error("Element is not a component.");
         }
@@ -93,7 +93,7 @@ Echo.Serial = {
             if (element.nodeType == 1) {
                 switch (element.nodeName) {
                 case "c": // Child Component
-                    var childComponent = this.loadComponent(client, element, referenceMap);
+                    var childComponent = this.loadComponent(client, element, referenceMap, styleMap);
                     component.add(childComponent);
                     break;
                 case "p": // Property
@@ -101,6 +101,9 @@ Echo.Serial = {
                     break;
                 case "s": // Style name update.
                     component.setStyleName(element.firstChild ? element.firstChild.nodeValue : null);
+                    break;
+                case "sr":
+                    component.setStyle(styleMap ? styleMap[element.firstChild.nodeValue] : null);
                     break;
                 case "e": // Event
                     this._loadComponentEvent(client, element, component);
