@@ -470,7 +470,7 @@ Echo.Sync.Extent = {
     /**
      * Regular expression to determine if an extent value is already formatted to pixel units.
      */
-    _FORMATTED_PIXEL_TEST: /^(-?\d+px *)$/,
+    _FORMATTED_INT_PIXEL_TEST: /^(-?\d+px *)$/,
     
     /**
      * Determines if an extent has percent units.
@@ -519,9 +519,9 @@ Echo.Sync.Extent = {
     toCssValue: function(extent, horizontal, allowPercent) {
         switch(typeof(extent)) {
             case "number":
-                return extent + "px";
+                return Math.round(extent) + "px";
             case "string":
-                if (this._FORMATTED_PIXEL_TEST.test(extent)) {
+                if (this._FORMATTED_INT_PIXEL_TEST.test(extent)) {
                     return extent;
                 } else {
                     if (allowPercent && this.isPercent(extent)) {
