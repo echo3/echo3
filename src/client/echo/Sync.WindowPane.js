@@ -557,18 +557,16 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         }
     
         var title = this.component.render("title");
-        if (title) {
-            var titleTextDiv = document.createElement("div");
-            if (icon) {
-                titleTextDiv.style[Core.Web.Env.CSS_FLOAT] = this._rtl ? "right" : "left";
-            }
-            titleTextDiv.style.whiteSpace = "nowrap";
-            Echo.Sync.Font.render(this.component.render("titleFont"), titleTextDiv);
-            Echo.Sync.Insets.render(this.component.render("titleInsets", 
-                    Echo.Sync.WindowPane.DEFAULT_TITLE_INSETS), titleTextDiv, "padding");
-            titleTextDiv.appendChild(document.createTextNode(title));
-            this._titleBarDiv.appendChild(titleTextDiv);
+        var titleTextDiv = document.createElement("div");
+        if (icon) {
+            titleTextDiv.style[Core.Web.Env.CSS_FLOAT] = this._rtl ? "right" : "left";
         }
+        titleTextDiv.style.whiteSpace = "nowrap";
+        Echo.Sync.Font.render(this.component.render("titleFont"), titleTextDiv);
+        Echo.Sync.Insets.render(this.component.render("titleInsets", 
+                Echo.Sync.WindowPane.DEFAULT_TITLE_INSETS), titleTextDiv, "padding");
+        titleTextDiv.appendChild(document.createTextNode(title ? title : "\u00a0"));
+        this._titleBarDiv.appendChild(titleTextDiv);
         
         var titleBarHeight = this.component.render("titleHeight");
         if (titleBarHeight) {
