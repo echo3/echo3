@@ -1122,7 +1122,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         while (element) {
             if (element.nodeType == 1) {
                 switch (element.nodeName) {
-                case "c": // Added child.
+                case "c": // Added child
                     var component = Echo.Serial.loadComponent(this._client, element, this._referenceMap, this._styleMap);
                     var index = element.getAttribute("x");
                     if (index == null) {
@@ -1136,20 +1136,20 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                         cursorIndex = index + 1;
                     }
                     break;
-                case "p": // Property update.
+                case "p": // Property update
                     Echo.Serial.loadProperty(this._client, element, parentComponent, null, this._referenceMap);
                     break;
-                case "s": // Style name update.
+                case "s": // Style name update
                     parentComponent.setStyleName(element.firstChild ? element.firstChild.nodeValue : null);
                     break;
-                case "sr":
+                case "sr": // Style reference update
                     if (element.firstChild) {
                         parentComponent.setStyle(this._styleMap ? this._styleMap[element.firstChild.nodeValue] : null);
                     } else {
                         parentComponent.setStyle(null);
                     }
                     break;
-                case "e": // Event update.
+                case "e": // Event update
                     var eventType = element.getAttribute("t");
                     if (element.getAttribute("v") == "true") {
                         this._client.removeComponentListener(parentComponent, eventType);
@@ -1158,13 +1158,13 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                         this._client.removeComponentListener(parentComponent, eventType);
                     }
                     break;
-                case "en": // Enabled state update.
+                case "en": // Enabled state update
                     parentComponent.setEnabled(element.firstChild.nodeValue == "true");
                     break;
-                case "locale": // Locale update.
+                case "locale": // Locale update
                     parentComponent.setLocale(element.firstChild ? element.firstChild.nodeValue : null);
                     break;
-                case "dir": // Layout direction update.
+                case "dir": // Layout direction update
                     parentComponent.setLayoutDirection(element.firstChild ?
                             (element.firstChild.nodeValue == "rtl" ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR) : null);
                     break;

@@ -92,29 +92,29 @@ Echo.Serial = {
         while (element) {
             if (element.nodeType == 1) {
                 switch (element.nodeName) {
-                case "c": // Child Component
+                case "c": // Child component
                     var childComponent = this.loadComponent(client, element, referenceMap, styleMap);
                     component.add(childComponent);
                     break;
                 case "p": // Property
                     this.loadProperty(client, element, component, styleData, referenceMap);
                     break;
-                case "s": // Style name update.
+                case "s": // Style name
                     component.setStyleName(element.firstChild ? element.firstChild.nodeValue : null);
                     break;
-                case "sr":
+                case "sr": // Style reference
                     component.setStyle(styleMap ? styleMap[element.firstChild.nodeValue] : null);
                     break;
                 case "e": // Event
                     this._loadComponentEvent(client, element, component);
                     break;
-                case "en": // Enabled state update.
+                case "en": // Enabled state
                     component.setEnabled(element.firstChild.nodeValue == "true");
                     break;
-                case "locale": // Locale update.
+                case "locale": // Locale
                     component.setLocale(element.firstChild ? element.firstChild.nodeValue : null);
                     break;
-                case "dir": // Layout direction update.
+                case "dir": // Layout direction
                     component.setLayoutDirection(element.firstChild ?
                             (element.firstChild.nodeValue == "rtl" ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR) : null);
                 }
