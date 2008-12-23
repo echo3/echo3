@@ -622,7 +622,6 @@ class OutputProcessor {
      */
     private void renderComponentStyle(Element element, Component c, boolean required) 
     throws SerialException {
-        //FIXME untested/inprogress.
         Style style = c.getStyle();
         if (style == null) {
             if (required) {
