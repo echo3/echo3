@@ -32,10 +32,10 @@ package nextapp.echo.app;
 import java.io.Serializable;
 
 /**
- * A representation of a linear distance with units. <code>Extent</code>
+ * A representation of an integer linear distance with units. <code>Extent</code>
  * objects are immutable once constructed.
  * <p>
- * <strong>WARNING:</strong> Many <code>Component</code>s will have
+ * <strong>WARNING:</strong> Some <code>Component</code>s will have
  * <code>Extent</code>-based properties that allow only certain types of
  * units. Make certain to verify the API specification of any
  * <code>Component</code> to ensure that you are using <code>Extent</code>s
