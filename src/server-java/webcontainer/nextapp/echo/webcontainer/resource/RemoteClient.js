@@ -1028,7 +1028,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         }
     },
 
-    _referenceMap : null,
+    _propertyMap : null,
     _styleMap: null,
     
     $construct: function(client) { 
@@ -1071,10 +1071,10 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                     throw new Error("Translator not available for property type: " + propertyType);
                 }
                 var propertyValue = translator.toProperty(this._client, propertyElement);
-                if (!this._referenceMap) {
-                    this._referenceMap = {};
+                if (!this._propertyMap) {
+                    this._propertyMap = {};
                 }
-                this._referenceMap[propertyId] = propertyValue;
+                this._propertyMap[propertyId] = propertyValue;
             }
             propertyElement = propertyElement.nextSibling;
         }
@@ -1088,7 +1088,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                 var style = { };
                 var propertyElement = styleElement.firstChild;
                 while (propertyElement) {
-                    Echo.Serial.loadProperty(this._client, propertyElement, null, style, this._referenceMap);
+                    Echo.Serial.loadProperty(this._client, propertyElement, null, style, this._propertyMap);
                     propertyElement = propertyElement.nextSibling;
                 }
                 if (!this._styleMap) {
@@ -1123,7 +1123,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
             if (element.nodeType == 1) {
                 switch (element.nodeName) {
                 case "c": // Added child
-                    var component = Echo.Serial.loadComponent(this._client, element, this._referenceMap, this._styleMap);
+                    var component = Echo.Serial.loadComponent(this._client, element, this._propertyMap, this._styleMap);
                     var index = element.getAttribute("x");
                     if (index == null) {
                         // No index specified, add children at current insertion cursor position.
@@ -1137,7 +1137,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                     }
                     break;
                 case "p": // Property update
-                    Echo.Serial.loadProperty(this._client, element, parentComponent, null, this._referenceMap);
+                    Echo.Serial.loadProperty(this._client, element, parentComponent, null, this._propertyMap);
                     break;
                 case "s": // Style name update
                     parentComponent.setStyleName(element.firstChild ? element.firstChild.nodeValue : null);
