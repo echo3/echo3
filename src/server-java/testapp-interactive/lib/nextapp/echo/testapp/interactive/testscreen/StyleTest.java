@@ -53,13 +53,15 @@ public class StyleTest extends SplitPane {
 
         final Button testButton1 = new Button("Test button 1");
         final Button testButton2 = new Button("Test button 2");
+        final Button testButton3 = new Button("Test button 3");
         
         final Column testColumn = new Column();
         testColumn.add(testButton1);
         testColumn.add(testButton2);
+        testColumn.add(testButton3);
         add(testColumn);
         
-        controlsColumn.addButton("Set Test Button Style", new ActionListener() {
+        controlsColumn.addButton("Set Test Button Style (1,2)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 MutableStyle style = new MutableStyle();
                 style.set(Button.PROPERTY_BACKGROUND, Color.GREEN);
@@ -68,10 +70,31 @@ public class StyleTest extends SplitPane {
             }
         });
         
-        controlsColumn.addButton("Clear Test Button Style", new ActionListener() {
+        controlsColumn.addButton("Set Test Button Style (1,2:red, 3:blue)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                MutableStyle style12 = new MutableStyle();
+                style12.set(Button.PROPERTY_BACKGROUND, Color.RED);
+                testButton1.setStyle(style12);
+                testButton2.setStyle(style12);
+
+                MutableStyle style3 = new MutableStyle();
+                style3.set(Button.PROPERTY_BACKGROUND, Color.BLUE);
+                testButton3.setStyle(style3);
+            }
+        });
+        
+        controlsColumn.addButton("Clear Test Button Style (1,2)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testButton1.setStyle(null);
                 testButton2.setStyle(null);
+            }
+        });
+        
+        controlsColumn.addButton("Clear Test Button Style (1,2,3)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testButton1.setStyle(null);
+                testButton2.setStyle(null);
+                testButton3.setStyle(null);
             }
         });
         
@@ -79,6 +102,7 @@ public class StyleTest extends SplitPane {
             public void actionPerformed(ActionEvent e) {
                 testButton1.setStyleName("Default");
                 testButton2.setStyleName("Default");
+                testButton3.setStyleName("Default");
             }
         });
         
@@ -86,6 +110,7 @@ public class StyleTest extends SplitPane {
             public void actionPerformed(ActionEvent e) {
                 testButton1.setStyleName(null);
                 testButton2.setStyleName(null);
+                testButton3.setStyleName(null);
             }
         });
     }
