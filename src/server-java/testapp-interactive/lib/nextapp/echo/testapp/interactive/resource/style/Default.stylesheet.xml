@@ -58,7 +58,7 @@
   </p>
  </s>
  <s b="DefaultResizable" n="TestControls" t="nextapp.echo.app.SplitPane">
-  <p n="separatorPosition">20em</p>
+  <p n="separatorPosition">20.5em</p>
   <p n="orientation">ORIENTATION_HORIZONTAL</p> 
  </s> 
  <s n="TitleLabel" t="nextapp.echo.app.Label">
@@ -200,7 +200,7 @@
     <fi r="0" t="r">/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundDarkBlue.png</fi>
    </p>
    <p n="insets" t="Insets">7px 10px</p>
-   <p n="minimumSize" t="Extent">14em</p>
+   <p n="minimumSize" t="Extent">12.5em</p>
    <p n="maximumSize" t="Extent">33.3%</p>
   </p>
  </s>
@@ -211,7 +211,7 @@
     <fi r="0" t="r">/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundLightBlue.png</fi>
    </p>
    <p n="insets" t="Insets">7px 10px</p>
-   <p n="minimumSize" t="Extent">14em</p>
+   <p n="minimumSize" t="Extent">12.5em</p>
    <p n="maximumSize" t="Extent">33.3%</p>
   </p>
  </s>
