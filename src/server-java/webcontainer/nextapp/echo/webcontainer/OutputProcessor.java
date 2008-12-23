@@ -141,7 +141,7 @@ class OutputProcessor {
     private Map propertyValueToKeyMap = null;
     private int nextStyleKey = 0;
     private Map styleValueToKeyMap = null;
-    private Element spElement;
+    private Element rpElement;
     private Element rsElement;
     private SynchronizationState syncState;
     
@@ -480,8 +480,8 @@ class OutputProcessor {
         String propertyKey = null;
         Element propertyDataElement;
         if (propertyValue != null && componentPeer.isOutputPropertyReferenced(context, c, propertyName)) {
-            if (spElement == null) {
-                spElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSyncUp", "sp");
+            if (rpElement == null) {
+                rpElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSyncUp", "rp");
             }
             
             if (propertyValueToKeyMap == null) {
@@ -494,11 +494,10 @@ class OutputProcessor {
                 propertyKey = Integer.toString(nextPropertyKey++);
                 propertyValueToKeyMap.put(propertyValue, propertyKey);
 
-                Element rpElement = document.createElement("rp");
-                rpElement.setAttribute("i", propertyKey);
-                propertyDataElement = rpElement;
+                propertyDataElement = document.createElement("p");
+                propertyDataElement.setAttribute("i", propertyKey);
                 
-                spElement.appendChild(rpElement);
+                rpElement.appendChild(propertyDataElement);
             } else {
                 propertyDataElement = null;
             }
@@ -649,9 +648,9 @@ class OutputProcessor {
             rsElement.appendChild(sElement);
         }
         
-        Element srElement = document.createElement("sr");
-        srElement.appendChild(document.createTextNode(styleKey));
-        element.appendChild(srElement);
+        Element rsElement = document.createElement("rs");
+        rsElement.appendChild(document.createTextNode(styleKey));
+        element.appendChild(rsElement);
     }
 
     /**

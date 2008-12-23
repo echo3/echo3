@@ -1048,8 +1048,8 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                 case "fr": this._processFullRefresh(element); break;
                 case "ss": this._processStyleSheet(element); break;
                 case "up": this._processUpdate(element); break;
-                case "sp": this._processStoreProperties(element); break;
-                case "rs": this._processStoreStyles(element); break;
+                case "rp": this._processReferencedProperties(element); break;
+                case "rs": this._processReferencedStyles(element); break;
                 }
             }
             element = element.nextSibling;
@@ -1060,10 +1060,10 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         this._client.application.rootComponent.removeAll();
     },
     
-    _processStoreProperties: function(spElement) {
+    _processReferencedProperties: function(spElement) {
         var propertyElement = spElement.firstChild;
         while (propertyElement) {
-            if (propertyElement.nodeName == "rp") {
+            if (propertyElement.nodeName == "p") {
                 var propertyId = propertyElement.getAttribute("i");
                 var propertyType = propertyElement.getAttribute("t");
                 var translator = Echo.Serial.getPropertyTranslator(propertyType);
@@ -1080,7 +1080,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         }
     },
     
-    _processStoreStyles: function(rsElement) {
+    _processReferencedStyles: function(rsElement) {
         var styleElement = rsElement.firstChild;
         while (styleElement) {
             if (styleElement.nodeName == "s") {
