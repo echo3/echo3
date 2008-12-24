@@ -849,7 +849,7 @@ Echo.Sync.Insets = {
     render: function(insets, element, styleAttribute) {
         switch(typeof(insets)) {
             case "number":
-                element.style[styleAttribute] = insets + "px";
+                element.style[styleAttribute] = Math.round(insets) + "px";
                 break;
             case "string":
                 if (this._FORMATTED_PIXEL_INSETS.test(insets)) {
@@ -897,6 +897,7 @@ Echo.Sync.Insets = {
         if (insets == null) {
             return this._ZERO;
         } else if (typeof(insets) == "number") {
+            insets = Math.round(insets);
             return { top: insets, right: insets, bottom: insets, left: insets };
         }
         
