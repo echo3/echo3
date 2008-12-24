@@ -373,7 +373,7 @@ public class WindowPaneExamplesTest extends SplitPane {
                 }
             });
             
-            addButton("Add init() bug-fix test Window", new ActionListener() {
+            addButton("Add init() Bug-Fix Test Window", new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     WindowPane windowPane = new WindowPane();
                     windowPane.add(new Column() {
@@ -387,6 +387,21 @@ public class WindowPaneExamplesTest extends SplitPane {
                         }
                     });
                     targetContentPane.add(windowPane);
+                }
+            });
+            
+            addButton("Add Z-Index Test Windows", new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    WindowPane top = createSimpleWindow("Top");
+                    targetContentPane.add(top);
+                    WindowPane bottom = createSimpleWindow("Bottom");
+                    targetContentPane.add(bottom);
+                    WindowPane middle = createSimpleWindow("Middle");
+                    targetContentPane.add(middle);
+
+                    top.setZIndex(10);
+                    bottom.setZIndex(8);
+                    middle.setZIndex(9);
                 }
             });
         }
