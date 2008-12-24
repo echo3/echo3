@@ -29,11 +29,7 @@
 
 package nextapp.echo.app;
 
-//FIXME Experimental (update docs).
-
 /**
- * EXPERIMENTAL, Do not use.
- * 
  * A representation of an integer linear distance with units. <code>DecimalExtent</code>
  * objects are immutable once constructed.
  * This object should only be used when an extent requires a fractional (decimal) part, in all other
