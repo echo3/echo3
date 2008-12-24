@@ -34,6 +34,7 @@ import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
+import nextapp.echo.app.DecimalExtent;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
@@ -274,9 +275,19 @@ public class ColumnTest extends SplitPane {
                 testColumn.setInsets(new Insets(5));
             }
         });
+        controlsColumn.addButton("Insets -> 0.5em", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testColumn.setInsets(new Insets(new DecimalExtent(0.5, Extent.EM)));
+            }
+        });
         controlsColumn.addButton("Insets -> 10/20/30/40px", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testColumn.setInsets(new Insets(10, 20, 30, 40));
+            }
+        });
+        controlsColumn.addButton("Insets -> 0.5em/1.5em", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testColumn.setInsets(new Insets(new DecimalExtent(0.5, Extent.EM), new DecimalExtent(1.5, Extent.EM)));
             }
         });
         controlsColumn.addButton("Set Layout Data (of random item)", new ActionListener() {
