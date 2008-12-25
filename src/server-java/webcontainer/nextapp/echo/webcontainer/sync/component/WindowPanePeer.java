@@ -63,6 +63,7 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
         super();
         addEvent(new AbstractComponentSynchronizePeer.EventPeer(WindowPane.INPUT_CLOSE, null));
         addOutputProperty(WindowPane.MODAL_CHANGED_PROPERTY);
+        addOutputProperty(WindowPane.Z_INDEX_CHANGED_PROPERTY);
     }
     
     /**
@@ -88,6 +89,8 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
             return Extent.class;
         } else if (WindowPane.PROPERTY_HEIGHT.equals(propertyName)) {
             return Extent.class;
+        } else if (WindowPane.Z_INDEX_CHANGED_PROPERTY.equals(propertyName)) {
+            return Integer.class;
         } else {
             return null;
         }
@@ -101,6 +104,8 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
         WindowPane windowPane = (WindowPane) component;
         if (WindowPane.MODAL_CHANGED_PROPERTY.equals(propertyName)) {
             return Boolean.valueOf(windowPane.isModal());
+        } else if (WindowPane.Z_INDEX_CHANGED_PROPERTY.equals(propertyName)) {
+            return new Integer(windowPane.getZIndex());
         } else {
             return super.getOutputProperty(context, component, propertyName, propertyIndex);
         }
@@ -129,6 +134,8 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
             clientUpdateManager.setComponentProperty(component, WindowPane.PROPERTY_WIDTH, newValue);
         } else if (WindowPane.PROPERTY_HEIGHT.equals(propertyName)) {
             clientUpdateManager.setComponentProperty(component, WindowPane.PROPERTY_HEIGHT, newValue);
+        } else if (WindowPane.Z_INDEX_CHANGED_PROPERTY.equals(propertyName)) {
+            clientUpdateManager.setComponentProperty(component, WindowPane.Z_INDEX_CHANGED_PROPERTY, newValue);
         }
     }
 
