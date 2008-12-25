@@ -82,7 +82,6 @@ public abstract class WebContainerServlet extends HttpServlet {
      */
     public abstract ApplicationInstance newApplicationInstance();
     
-    
     /** 
      * A <code>ThreadLocal</code> reference to the 
      * <code>Connection</code> relevant to the current thread.
@@ -247,7 +246,8 @@ public abstract class WebContainerServlet extends HttpServlet {
         }
     }
     
-    private List startupScripts = null; 
+    private List initScripts = null; 
+    private List initStyleSheets = null;
     
     /**
      * Default constructor.
@@ -262,19 +262,43 @@ public abstract class WebContainerServlet extends HttpServlet {
     }
     
     /**
-     * Adds a JavaScript service to be loaded at startup.
+     * Adds a JavaScript service to be loaded at initialization.
      * 
      * @param service the service which will provide JavaScript content.
      */
-    protected void addStartupScript(Service service) {
-        if (startupScripts == null) {
-            startupScripts = new ArrayList();
-        } else if (startupScripts.contains(service)) {
+    protected void addInitScript(Service service) {
+        if (initScripts == null) {
+            initScripts = new ArrayList();
+        } else if (initScripts.contains(service)) {
             return;
         }
         
         services.add(service);
-        startupScripts.add(service);
+        initScripts.add(service);
+    }
+    
+    /**
+     * Adds a CSS style sheet to be loaded at initialization.
+     * 
+     * @param service the service which will provide the CSS content.
+     */
+    protected void addInitStyleSheet(Service service) {
+        if (initStyleSheets == null) {
+            initStyleSheets = new ArrayList();
+        } else if (initStyleSheets.contains(service)) {
+            return;
+        }
+
+        services.add(service);
+        initStyleSheets.add(service);
+    }
+    
+    /**
+     * @deprecated will be removed
+     * @see addInitScript
+     */
+    protected void addStartupScript(Service service) {
+        addInitScript(service);
     }
     
     /**
@@ -335,12 +359,21 @@ public abstract class WebContainerServlet extends HttpServlet {
     }
     
     /**
-     * Returns an iterator over startup script services.
+     * Returns an iterator over initialization script services.
      * 
      * @return the iterator
      */
-    public Iterator getStartupScripts() {
-        return startupScripts == null ? null : Collections.unmodifiableCollection(startupScripts).iterator();
+    public Iterator getInitScripts() {
+        return initScripts == null ? null : Collections.unmodifiableCollection(initScripts).iterator();
+    }
+    
+    /**
+     * Returns an iterator over initialization script services.
+     * 
+     * @return the iterator
+     */
+    public Iterator getInitStyleSheets() {
+        return initStyleSheets == null ? null : Collections.unmodifiableCollection(initStyleSheets).iterator();
     }
     
     /**
@@ -399,5 +432,4 @@ public abstract class WebContainerServlet extends HttpServlet {
             activeConnection.set(null);
         }
     }
-    
 }

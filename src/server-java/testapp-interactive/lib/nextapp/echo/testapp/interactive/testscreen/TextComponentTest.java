@@ -237,6 +237,13 @@ public class TextComponentTest extends SplitPane {
                 textArea.setBorder(border);
             }
         });
+        controlsColumn.addButton("Set Border = null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.setBorder(null);
+                passwordField.setBorder(null);
+                textArea.setBorder(null);
+            }
+        });
         controlsColumn.addButton("Change Border Color", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Border border = textField.getBorder();

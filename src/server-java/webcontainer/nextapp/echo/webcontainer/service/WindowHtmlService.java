@@ -72,7 +72,7 @@ implements Service {
         OUTPUT_PROPERTIES.setProperty(OutputKeys.DOCTYPE_PUBLIC, XHTML_1_0_TRANSITIONAL_PUBLIC_ID);
         OUTPUT_PROPERTIES.setProperty(OutputKeys.DOCTYPE_SYSTEM, XHTML_1_0_TRANSITIONAL_SYSTSEM_ID);
     }
-    
+
     public static final WindowHtmlService INSTANCE = new WindowHtmlService();
 
     /**
@@ -113,7 +113,9 @@ implements Service {
         headElement.appendChild(scriptElement);
         
         WebContainerServlet servlet = conn.getServlet();
-        Iterator scriptIt = servlet.getStartupScripts();
+        
+        // Include application-provided initialization scripts.
+        Iterator scriptIt = servlet.getInitScripts();
         if (scriptIt != null) {
             while (scriptIt.hasNext()) {
                 Service scriptService = (Service) scriptIt.next();
@@ -123,6 +125,19 @@ implements Service {
                 scriptElement.setAttribute("type", "text/javascript");
                 scriptElement.setAttribute("src", userInstance.getServiceUri(scriptService));
                 headElement.appendChild(scriptElement);
+            }
+        }
+        
+        // Include application-provided stylesheet(s).
+        Iterator styleSheetIt = servlet.getInitStyleSheets();
+        if (styleSheetIt != null) {
+            while (styleSheetIt.hasNext()) {
+                Service styleSheetService = (Service) styleSheetIt.next();
+                Element linkElement = document.createElement("link");
+                linkElement.setAttribute("rel", "StyleSheet");
+                linkElement.setAttribute("type", "text/css");
+                linkElement.setAttribute("href", userInstance.getServiceUri(styleSheetService));
+                headElement.appendChild(linkElement);
             }
         }
         
@@ -164,7 +179,6 @@ implements Service {
             UserInstance userInstance = (UserInstance) conn.getUserInstance();
             boolean debug = !("false".equals(conn.getServlet().getInitParameter("echo.debug")));
             Document document = createHtmlDocument(conn, userInstance, debug);
-            
             conn.setContentType(ContentType.TEXT_HTML);
             DomUtil.save(document, conn.getWriter(), OUTPUT_PROPERTIES);
         } catch (SAXException ex) {

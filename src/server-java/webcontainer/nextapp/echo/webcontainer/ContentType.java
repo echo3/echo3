@@ -51,6 +51,7 @@ implements Serializable {
     public static final ContentType TEXT_JAVASCRIPT = new ContentType("text/javascript", false);
     public static final ContentType TEXT_PLAIN = new ContentType("text/plain", false);
     public static final ContentType TEXT_XML = new ContentType("text/xml", false);
+    public static final ContentType TEXT_CSS = new ContentType("text/css", false);
 
     private String mimeType = null;
     private boolean binary = false;
