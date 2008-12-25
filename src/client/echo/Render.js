@@ -606,10 +606,20 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
         this.client.domainElement.dir = this.component.application.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl";
         
         if (update.hasUpdatedProperties()) {
-            var titleUpdate = update.getUpdatedProperty("title");
-            if (titleUpdate) {
-                document.title = titleUpdate.newValue;
+            var property;
+            if (property = update.getUpdatedProperty("title")) {
+                document.title = property.newValue;
             }
+            if (property = update.getUpdatedProperty("background")) {
+                Echo.Sync.Color.renderClear(property.newValue, this.client.domainElement, "backgroundColor");
+            }
+            if (property = update.getUpdatedProperty("foreground")) {
+                Echo.Sync.Color.renderClear(property.newValue, this.client.domainElement, "foreground");
+            }
+            if (property = update.getUpdatedProperty("font")) {
+                Echo.Sync.Font.renderClear(property.newValue, this.client.domainElement);
+            }
+            Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this.client.domainElement);
         }
         
         return fullRender;
