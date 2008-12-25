@@ -3,6 +3,11 @@
  */
 Echo.Sync.RemoteTable = Core.extend(Echo.Component, {
 
+    $static: {
+        DEFAULT_SELECTION_BACKGROUND: "#00006f",
+        DEFAULT_SELECTION_FOREGROUND: "#ffffff"
+    },
+    
     $load: function() {
         Echo.ComponentFactory.registerType("RemoteTable", this);
         Echo.ComponentFactory.registerType("RT", this);
@@ -39,6 +44,11 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         Echo.Render.registerPeer("RemoteTable", this);
     },
     
+    /**
+     * Flag indicating that no selection styling attributes have been set, thus default highlight should be used.
+     */
+    _useDefaultSelectionStyle: false,
+    
     $construct: function() {
         this.selectionModel = null;
         this.lastSelectedIndex = null;
@@ -49,6 +59,10 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         this._rowCount = parseInt(this.component.render("rowCount"), 10);
         this._selectionEnabled = this.component.render("selectionEnabled");
         this._rolloverEnabled = this.component.render("rolloverEnabled");
+        
+        this._useDefaultSelectionStyle = this._selectionEnabled && !this.component.render("selectionForeground") &&
+                !this.component.render("selectionBackground") && !this.component.render("selectionBackgroundImage") &&
+                !this.component.render("selectionFont");
         
         this._defaultInsets = this.component.render("insets", 0);
         this._defaultCellPadding = Echo.Sync.Insets.toCssValue(this._defaultInsets);
@@ -154,10 +168,15 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         
         while (td) {
             if (selected) {
-                Echo.Sync.Font.renderClear(this.component.render("selectionFont"), td);
-                Echo.Sync.Color.render(this.component.render("selectionForeground"), td, "color");
-                Echo.Sync.Color.render(this.component.render("selectionBackground"), td, "background");
-                Echo.Sync.FillImage.render(this.component.render("selectionBackgroundImage"), td);
+                if (this._useDefaultSelectionStyle) {
+                    Echo.Sync.Color.render(Echo.Sync.RemoteTable.DEFAULT_SELECTION_FOREGROUND, td, "color");
+                    Echo.Sync.Color.render(Echo.Sync.RemoteTable.DEFAULT_SELECTION_BACKGROUND, td, "background");
+                } else {
+                    Echo.Sync.Font.renderClear(this.component.render("selectionFont"), td);
+                    Echo.Sync.Color.render(this.component.render("selectionForeground"), td, "color");
+                    Echo.Sync.Color.render(this.component.render("selectionBackground"), td, "background");
+                    Echo.Sync.FillImage.render(this.component.render("selectionBackgroundImage"), td);
+                }
             } else {
                 td.style.color = "";
                 td.style.backgroundColor = "";
