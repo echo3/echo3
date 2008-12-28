@@ -107,11 +107,10 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.Event.add(this._div, "click", Core.method(this, this._processClick), false);
         Core.Web.Event.add(this._div, "keypress", Core.method(this, this._processKeyPress), false);
         if (this.component.render("rolloverEnabled")) {
-            var mouseEnterLeaveSupport = Core.Web.Env.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
-            var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
-            var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
-            Core.Web.Event.add(this._div, enterEvent, Core.method(this, this._processRolloverEnter), false);
-            Core.Web.Event.add(this._div, exitEvent, Core.method(this, this._processRolloverExit), false);
+            Core.Web.Event.add(this._div, Core.Web.Env.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED ? "mouseenter" : "mouseover", 
+                    Core.method(this, this._processRolloverEnter), false);
+            Core.Web.Event.add(this._div, Core.Web.Env.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED ? "mouseleave" : "mouseout", 
+                    Core.method(this, this._processRolloverExit), false);
         }
         if (this.component.render("pressedEnabled")) {
             Core.Web.Event.add(this._div, "mousedown", Core.method(this, this._processPress), false);
