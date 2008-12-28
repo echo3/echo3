@@ -2428,7 +2428,8 @@ Echo.Update.Manager = Core.extend({
  *
  * @sp {String} actionCommand the action command fired in action events 
  *     when the button is pushed
- * @sp {#Alignment} alignment the alignment of the button's content
+ * @sp {#Alignment} alignment the alignment of the button's content (only horizontal alignments are supported, any vertical
+ *     component of the alignment value will not be rendered)
  * @sp {#FillImage} backgroundImage the background image
  * @sp {#Border} border the default button border
  * @sp {#Color} disabledBackground the disabled background color
