@@ -7,16 +7,28 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         DEFAULT_TITLE_BACKGROUND: "#abcdef",
         DEFAULT_TITLE_INSETS: "5px 10px",
         ADJUSTMENT_OPACITY: 0.75,
+        
+        /** Array mapping CSS cursor types to indices of the _borderDivs property. */
         CURSORS: ["nw-resize", "n-resize", "ne-resize", "w-resize", "e-resize", "sw-resize", "s-resize", "se-resize"],
+        
+        /** Array mapping fill image border properties to indices of the _borderDivs property. */
         FIB_POSITIONS: ["topLeft", "top", "topRight", "left", "right", "bottomLeft", "bottom", "bottomRight"],
+        
+        /** Map containing properties whose update can be rendered without replacing component. */
         PARTIAL_PROPERTIES: {background: true, backgroundImage: true, border: true, closable: true, closeIcon: true, 
                 closeIconInsets: true, controlsInsets: true, font: true, foreground: true, height: true, icon: true, 
                 iconInsets: true, insets: true, maximizeEnabled: true, maximizeIcon: true, maximumHeight: true, 
                 maximumWidth: true, minimizeEnabled: true, minimizeIcon: true, minimumHeight: true, 
                 minimumWidth: true, movable: true, positionX: true, positionY: true, resizable: true, title: true, 
                 titleBackground: true, titleBackgroundImage: true, titleFont: true, 
-                titleForeground: true, titleHeight: true, titleInsets: true, width: true },  
+                titleForeground: true, titleHeight: true, titleInsets: true, width: true },
+                
+        /** 
+         * Map containing position/size-related properties whose update can be rendered without replacing component, 
+         * but will require adjusting size/position of window.
+         */
         PARTIAL_PROPERTIES_POSITION_SIZE: { positionX: true, positionY: true, width: true, height: true },
+        
         adjustOpacity: false
     },
     
@@ -436,6 +448,12 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         parentElement.appendChild(this._div);
     },
     
+    /**
+     * Renders the frame of the window.  Does not alter window content.  This method may be invoked after the window has 
+     * initially been rendered to update the window content.
+     * _renderDisposeFrame() must be invoked between invocations of _renderAddFrame() to dispose resources.
+     * _contentDiv will be appended to rendered DOM structure.
+     */
     _renderAddFrame: function() {
         this._loadPositionAndSize();
 
@@ -704,6 +722,9 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._contentDiv = null;
     },
     
+    /**
+     * Disposes state of rendered window frame.  This method disposes all resources initialized in _renderAddFrame().
+     */
     _renderDisposeFrame: function() {
         var i;
 
@@ -758,6 +779,9 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         return true;
     },
     
+    /**
+     * Renders an update to the window frame.  Disposes existing frame, removes rendered elements, adds new frame.
+     */
     _renderUpdateFrame: function() {
         this._renderDisposeFrame();
     
