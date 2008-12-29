@@ -24,8 +24,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 titleForeground: true, titleHeight: true, titleInsets: true, width: true },
                 
         /** 
-         * Map containing position/size-related properties whose update can be rendered without replacing component, 
-         * but will require adjusting size/position of window.
+         * Map containing position/size-related properties whose update can be rendered by moving/resizing the window.
          */
         PARTIAL_PROPERTIES_POSITION_SIZE: { positionX: true, positionY: true, width: true, height: true },
         
