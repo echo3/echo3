@@ -40,7 +40,6 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     _focused: false,
     
     _renderStyle: function() {
-        var container = this._container ? this._container : this._input;
         if (this.component.isRenderEnabled()) {
             Echo.Sync.renderComponentDefaults(this.component, this._input);
             Echo.Sync.Border.render(this.component.render("border"), this._input);
