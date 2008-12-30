@@ -76,25 +76,6 @@ public class ComponentTest extends TestCase {
     }
     
     /**
-     * Test <code>focusTraversalIndex</code> property.
-     */
-    public void testFocusTraversalIndex() {
-        Component c = new NullComponent();
-        PropertyChangeEvaluator pce = new PropertyChangeEvaluator();
-        c.addPropertyChangeListener(pce);
-        assertEquals(0, c.getFocusTraversalIndex());
-        c.setFocusTraversalIndex(5);
-        assertEquals(Component.FOCUS_TRAVERSAL_INDEX_CHANGED_PROPERTY, pce.lastEvent.getPropertyName());
-        assertEquals(5, c.getFocusTraversalIndex());
-        c.setVisible(false);
-        assertEquals(false, c.isVisible());
-        assertEquals(5, c.getFocusTraversalIndex());
-        c.setFocusTraversalIndex(70);
-        assertEquals(false, c.isVisible());
-        assertEquals(70, c.getFocusTraversalIndex());
-    }
-
-    /**
      * Test <code>font</code> property. 
      */
     public void testFont() {

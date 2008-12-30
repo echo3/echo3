@@ -157,11 +157,6 @@ implements RenderIdSupport, Serializable {
      */
     private static final int FLAG_REGISTERING = 0x8;
     
-    /**
-     * Flag mask of bits used for storage of focus traversal index.
-     */
-    private static final int FLAGS_FOCUS_TRAVERSAL_INDEX = 0x7fff0000;
-
     public static final String CHILDREN_CHANGED_PROPERTY = "children";
     public static final String ENABLED_CHANGED_PROPERTY = "enabled";
     public static final String FOCUS_TRAVERSAL_INDEX_CHANGED_PROPERTY = "focusTraversalIndex";
@@ -609,16 +604,10 @@ implements RenderIdSupport, Serializable {
     }
     
     /**
-     * Returns the focus traversal (tab) index of the component.
-     * Components with numerically lower indices will be focused before
-     * components with numerically higher indices.  The value 0 has special
-     * meaning, in that components with a value of 0 will be focused last.
-     * The default value is 0.
-     * 
-     * @return the focus traversal index, a value between 0 and 32767
+     * @deprecated Not supported.
      */
     public final int getFocusTraversalIndex() {
-        return (flags & FLAGS_FOCUS_TRAVERSAL_INDEX) >> 16;
+        return 0;
     }
     
     /**
@@ -1381,17 +1370,10 @@ implements RenderIdSupport, Serializable {
     }
     
     /**
-     * Sets the focus traversal (tab) index of the component.
-     * 
-     * @param newValue the new focus traversal index
+     * @deprecated Not supported.
      * @see #getFocusTraversalIndex()
      */
-    public void setFocusTraversalIndex(int newValue) {
-        int oldValue = getFocusTraversalIndex();
-        newValue &= 0x7fff;
-        flags = flags & ((~FLAGS_FOCUS_TRAVERSAL_INDEX)) | (newValue << 16);
-        firePropertyChange(FOCUS_TRAVERSAL_INDEX_CHANGED_PROPERTY, new Integer(oldValue), new Integer(newValue));
-    }
+    public void setFocusTraversalIndex(int newValue) { }
 
     /**
      * Sets whether the component participates in the focus traversal order 
