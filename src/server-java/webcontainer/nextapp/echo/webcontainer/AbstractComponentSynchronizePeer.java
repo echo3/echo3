@@ -349,17 +349,49 @@ implements ComponentSynchronizePeer {
         if (!update.hasUpdatedProperties()) {
             return Collections.EMPTY_SET.iterator();
         }
-
-        String[] updatedPropertyNames = update.getUpdatedPropertyNames();
-        Set propertyNames = new HashSet();
-        //FIXME. not particularly efficient.
-        for (int i = 0; i < updatedPropertyNames.length; ++i) {
-            if (stylePropertyNames.contains(updatedPropertyNames[i])
-                    || (additionalProperties != null && additionalProperties.contains(updatedPropertyNames[i]))) {
-                propertyNames.add(updatedPropertyNames[i]);
+        
+        final String[] updatedPropertyNames = update.getUpdatedPropertyNames();
+        return new Iterator() {
+            
+            private int i = 0;
+            private Object nextValue = null;
+            
+            {
+                loadNext();
             }
-        }
-        return propertyNames.iterator();
+        
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        
+            public Object next() {
+                if (nextValue == null) {
+                    throw new IndexOutOfBoundsException();
+                } else {
+                    Object value = nextValue;
+                    loadNext();
+                    return value;
+                }
+            }
+            
+            /**
+             * Load next value.
+             */
+            private void loadNext() {
+                nextValue = null;
+                while (nextValue == null && i < updatedPropertyNames.length) {
+                    if (stylePropertyNames.contains(updatedPropertyNames[i])
+                            || (additionalProperties != null && additionalProperties.contains(updatedPropertyNames[i]))) {
+                        nextValue = updatedPropertyNames[i];
+                    }
+                    ++i;
+                }
+            }
+        
+            public boolean hasNext() {
+                return nextValue != null;
+            }
+        };
     }
 
     /**

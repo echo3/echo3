@@ -180,5 +180,13 @@ public class PanelTest extends SplitPane {
                 panel.setInsets(new Insets(10, 20, 30, 40));
             }
         });
+        controlsColumn.addButton("Randomize", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setBorder(StyleUtil.randomBorder());
+                panel.setInsets(new Insets((int) (Math.random() * 50)));
+                panel.setBackground(StyleUtil.randomColor());
+                panel.setForeground(StyleUtil.randomColor());
+            }
+        });
     }
 }
