@@ -179,7 +179,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         return applicationInstance;
     }
     
-    //BUGBUG. current method of iterating weak-keyed map of task queues
+    //FIXME current method of iterating weak-keyed map of task queues
     // is not adequate.  If the application were to for whatever reason hold on
     // to a dead task queue, its interval setting would effect the
     // calculation.

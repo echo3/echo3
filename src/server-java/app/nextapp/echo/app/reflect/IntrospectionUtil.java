@@ -59,7 +59,7 @@ public class IntrospectionUtil {
         return (String[]) hierarchy.toArray(new String[hierarchy.size()]);
     }
     
-    //BUGBUG. doc.
+    //FIXME doc.
     public static boolean isAssignableFrom(String testType, String baseType, ClassLoader classLoader) 
     throws ClassNotFoundException {
         Class baseClass = Class.forName(baseType, true, classLoader);
