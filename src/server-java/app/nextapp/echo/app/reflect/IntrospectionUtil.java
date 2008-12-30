@@ -59,7 +59,15 @@ public class IntrospectionUtil {
         return (String[]) hierarchy.toArray(new String[hierarchy.size()]);
     }
     
-    //FIXME doc.
+    /**
+     * Determines if the type specified by <code>testType</code> can be assigned to objects of the type
+     * specified by <code>baseType</code>.
+     * This simply uses Class.isAssignableFrom after loading classes using the specified <code>ClassLoader</code>.
+     * 
+     * @param baseType the base type
+     * @param testType the test type
+     * @param classLoader the <code>ClassLoader</code> to use to load the classes for testing
+     */
     public static boolean isAssignableFrom(String testType, String baseType, ClassLoader classLoader) 
     throws ClassNotFoundException {
         Class baseClass = Class.forName(baseType, true, classLoader);
