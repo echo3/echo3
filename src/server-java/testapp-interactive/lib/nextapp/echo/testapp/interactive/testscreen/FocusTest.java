@@ -134,6 +134,17 @@ public class FocusTest extends SplitPane {
             }
         });
         testColumn.add(focusListBox);
+        
+        controlsColumn.addButton("Set TextField Focus Traversal Participant = false", new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                focusTextField.setFocusTraversalParticipant(false);
+            }
+        });
+        controlsColumn.addButton("Set TextField Focus Traversal Participant = true", new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                focusTextField.setFocusTraversalParticipant(true);
+            }
+        });
     }
     
     private void createFocusColumn() {
