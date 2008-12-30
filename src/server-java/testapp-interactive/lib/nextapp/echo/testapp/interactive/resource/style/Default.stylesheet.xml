@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- FIXME. Temporarily using full class names -->
+<!-- FIXME Temporarily using full class names -->
 <ss>
  <s n="TestPane" t="nextapp.echo.app.SplitPane">
   <p n="separatorHeight" t="Extent">1px</p>

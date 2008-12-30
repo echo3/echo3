@@ -99,7 +99,7 @@ public class InputProcessor {
         super();
         this.syncState = syncState;
         this.conn = conn;
-        propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME. temporary
+        propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME temporary
     }
     
     public void process() 
