@@ -12,6 +12,20 @@
  */
 Echo.Sync = { 
 
+    /**
+     * Retrieves an "effect-specific" property from a component (e.g., a rollover background) if it
+     * is available, or otherwise returns the default (non-effect) property value.
+     * 
+     * @param {Echo.Component} component the component to query
+     * @param {String} defaultPropertyName the name of the default (non-effect) property, e.g., "background"
+     * @param {String} effectPropertyName the name of the effect property, e.g., "rolloverBackground"
+     * @param {Boolean} effectState flag indicating whether the effect is enabled (if the effect is not enabled,
+     *        the default (non-effect) value will always be returned)
+     * @param defaultDefaultPropertyValue (optional) the default (non-effect) property value (this value will be returned
+     *        if no other value can be determined for the property)
+     * @param defaultEffectPropertyValue (optional) the default effect property value (this value will be returned if the
+     *        effectState is true and no value has been specifically set for the effect property) 
+     */
     getEffectProperty: function(component, defaultPropertyName, effectPropertyName, effectState,
             defaultDefaultPropertyValue, effectDefaultPropertyValue) {
         var property;
