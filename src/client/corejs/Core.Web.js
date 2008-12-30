@@ -1546,6 +1546,18 @@ Core.Web.Measure = {
         Core.Web.Measure._hEx = exDiv24.offsetWidth / 24;
         Core.Web.Measure._vEx = exDiv24.offsetHeight / 24;
         containerElement.removeChild(exDiv24);
+        
+        var scrollDiv = document.createElement("div");
+        scrollDiv.style.cssText = "width:500px;height:100px;overflow:auto;";
+        var largeDiv = document.createElement("div");
+        largeDiv.style.cssText = "width:100px;height:200px;";
+        scrollDiv.appendChild(largeDiv);
+        var testDiv = document.createElement("div");
+        testDiv.style.cssText = "width:100%;height:10px;";
+        scrollDiv.appendChild(testDiv);
+        containerElement.appendChild(scrollDiv);
+        Core.Web.Measure.SCROLL_WIDTH = Core.Web.Measure.SCROLL_HEIGHT = 500 - testDiv.offsetWidth;
+        containerElement.removeChild(scrollDiv);
     },
     
     /**
