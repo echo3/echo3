@@ -527,7 +527,9 @@ Echo.Component = Core.extend({
     $virtual: {
     
         /**
-         * Component type.  This must be set by implementors in order for peer discovery to work properly.
+         * Component type.  
+         * This value should be the fully-qualified name of the component, e.g. "Foo.ExampleComponent".
+         * This property must be set by implementors in order for peer discovery to work properly.
          */
         componentType: "Component",
 
@@ -622,8 +624,11 @@ Echo.Component = Core.extend({
     
     /**
      * Creates a new Component.
+     * The parent constructor MUST be invoked if it is overridden.  This is accomplished by including the statement
+     * "BaseComponent.call(this, properties)" in any derivative constructor, where "BaseComponent" is
+     * class from which the component is immediately derived (which may or may not be Echo.Component itself).
      *  
-     * @param {Object} properties associative mapping of initial property values (may be null)
+     * @param {Object} properties (Optional) associative mapping of initial property values (may be null)
      *        By default, all properties will be placed into the local style, except for the following:
      *        <ul>
      *         <li><code>styleName</code> specifies the component stylesheet style name</li>
