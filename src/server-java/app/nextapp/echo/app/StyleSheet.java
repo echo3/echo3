@@ -38,19 +38,31 @@ import java.util.Iterator;
 public interface StyleSheet
 extends Serializable {
 
+    /**
+     * Retrieves the names of all styles present in the <code>StyleSheet</code>
+     * 
+     * @return an iterator containing <code>String</code>s naming all styles present
+     */
     public Iterator getStyleNames();
     
+    /**
+     * Retrieves the names of all component types present in the <code>StyleSheet</code> with the specified name.
+     * 
+     * @param styleName the style name
+     * @return an iterator containing <code>Class</code>es providing the fully qualified names of all component types
+     *         which provide styles for the <code>styleName</code> value
+     */
     public Iterator getComponentTypes(String styleName);
     
     /**
      * Retrieves the appropriate style for the specified component class 
      * and style name.
-     * @param styleName the name of the <code>Component</code>'s specified
-     *        named style
-     * @param componentClass the <code>Class</code> of the 
-     *        <code>Component</code> for which style information is being
-     *        determined
-     * @param searchSuperClasses FIXME doc
+     * 
+     * @param styleName the name of the <code>Component</code>'s specified named style
+     * @param componentClass the <code>Class</code> of the <code>Component</code> for which style information is being determined
+     * @param searchSuperClasses flag indicating whether a style for a superclass should be returned in the event that no 
+     *        specific style can be found for the specified <code>componentClass</code>
+     *        
      * 
      * @return the appropriate <code>Style</code> if found, or null otherwise
      */

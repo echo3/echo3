@@ -40,7 +40,7 @@ import java.util.Map;
 public class MutableStyleSheet 
 implements StyleSheet {
 
-/** Serial Version UID. */
+    /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
     private Map namedStyleMap = new HashMap();
