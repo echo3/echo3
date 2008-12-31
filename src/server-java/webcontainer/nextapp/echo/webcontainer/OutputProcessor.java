@@ -54,6 +54,7 @@ import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.update.ServerUpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
+import nextapp.echo.app.util.Log;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -821,8 +822,8 @@ class OutputProcessor {
                     }
                     SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
                     if (propertySyncPeer == null) {
-                        System.err.println("No peer found for property class: " + propertyValue.getClass());
-                        //FIXME. figure out how these should be handled...ignoring is probably best.
+                        // Log and ignore property value that cannot be serialized. 
+                        Log.log("No peer found for property class: " + propertyValue.getClass());
                         continue;
                     }
                     Element pElement = document.createElement("p");
@@ -839,12 +840,11 @@ class OutputProcessor {
                 }
                 SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
                 if (propertySyncPeer == null) {
-                    System.err.println("No peer found for property class: " + propertyValue.getClass());
-                    //FIXME. figure out how these should be handled...ignoring is probably best.
+                    Log.log("No peer found for property class: " + propertyValue.getClass());
+                    // Log and ignore property value that cannot be serialized.
                     continue;
                 }
                 
-                //FIXME these need to handle indexed properties.
                 Element pElement = document.createElement("p");
                 pElement.setAttribute("n", propertyName);
                 propertySyncPeer.toXml(context, componentClass, pElement, propertyValue);
