@@ -40,6 +40,7 @@ import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.update.UpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
+import nextapp.echo.app.util.Log;
 import nextapp.echo.webcontainer.util.XmlRequestParser;
 
 public class InputProcessor {
@@ -119,7 +120,7 @@ public class InputProcessor {
             updateManager.getServerUpdateManager().processFullRefresh();
             this.syncState.setOutOfSync();
             if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
-                System.err.println("Client out of sync: client id = " + clientMessage.getTransactionId() + 
+                Log.log("Client out of sync: client id = " + clientMessage.getTransactionId() + 
                         ", server id = " + userInstance.getCurrentTransactionId());
             }
         }
