@@ -277,7 +277,7 @@ public class DomUtil {
             
             transformer.transform(source, output);
         } catch (TransformerException ex) {
-            throw new SAXException("Unable to write document to OutputStream: " + ex.toString());
+            throw new SAXException("Unable to write document to OutputStream.", ex);
         }
     }
 

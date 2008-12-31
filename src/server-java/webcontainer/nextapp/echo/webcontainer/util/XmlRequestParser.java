@@ -117,5 +117,4 @@ public class XmlRequestParser {
             if (in != null) { try { in.close(); } catch (IOException ex) { } }
         }
     }
-
 }

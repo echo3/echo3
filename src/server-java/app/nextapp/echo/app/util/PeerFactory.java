@@ -73,13 +73,13 @@ public class PeerFactory {
                 objectClassNameToPeerMap.put(objectClassName, peer);
             }
         } catch (ClassNotFoundException ex) {
-            throw new RuntimeException("Unable to load synchronize peer bindings: " + ex);
+            throw new RuntimeException("Unable to load synchronize peer bindings.", ex);
         } catch (IOException ex) {
-            throw new RuntimeException("Unable to load synchronize peer bindings: " + ex);
+            throw new RuntimeException("Unable to load synchronize peer bindings.", ex);
         } catch (InstantiationException ex) {
-            throw new RuntimeException("Unable to load synchronize peer bindings: " + ex);
+            throw new RuntimeException("Unable to load synchronize peer bindings.", ex);
         } catch (IllegalAccessException ex) {
-            throw new RuntimeException("Unable to load synchronize peer bindings: " + ex);
+            throw new RuntimeException("Unable to load synchronize peer bindings.", ex);
         }
     }
     
