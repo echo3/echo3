@@ -60,8 +60,6 @@ public class StyleSheetTest extends Column {
    
     public static class SpecialButton extends Button { }
     
-    //FIXME. Changing style sheet currently crashes application (full refresh bug).
-    
     private static final String DEFAULT_STYLE_SHEET_TEXT;
     static {
         InputStream in = null;
@@ -104,11 +102,11 @@ public class StyleSheetTest extends Column {
         });
         controlsColumn.add(defaultButton);
         
-        Button greenButton = new Button("Forest Green Style Sheet");
+        Button greenButton = new Button("Hideous Green Style Sheet");
         greenButton.setStyleName("Default");
         greenButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-      //          getApplicationInstance().setStyleSheet(Styles.GREEN_STYLE_SHEET);
+                getApplicationInstance().setStyleSheet(Styles.GREEN_STYLE_SHEET);
             }
         });
         controlsColumn.add(greenButton);

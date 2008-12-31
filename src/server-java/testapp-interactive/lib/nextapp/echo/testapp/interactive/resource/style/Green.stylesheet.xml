@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- FIXME. Temporarily using full class names -->
+<!-- FIXME Temporarily using full class names -->
 <ss>
  <s n="TestPane" t="nextapp.echo.app.SplitPane">
-  <p n="separatorPosition" t="Extent" v="40px"/>
-  <p n="separatorHeight" t="Extent" v="1px"/>
-  <p n="separatorColor" t="Color">#1d1d1d</p>
+  <p n="separatorHeight" t="Extent">1px</p>
+  <p n="separatorColor">#1d1d1d</p>
  </s>
  <s n="Default" t="nextapp.echo.app.Table">
-  <p n="insets" t="Insets" v="2px 5px"/>
-  <p n="border" t="Border" v="2px groove #afffaf"/>
+  <p n="insets" t="Insets">2px 5px</p>
+  <p n="border" t="Border">2px groove #afffaf</p>
+  <p n="width" t="Extent">100%</p>
  </s>
  <s n="EvenCellLabel" t="nextapp.echo.app.Label">
   <p n="layoutData" t="nextapp.echo.app.layout.TableLayoutData">
@@ -20,19 +20,24 @@
    <p n="background" t="Color">#ffffaf</p>
   </p>
  </s>
+ <s n="Default" t="nextapp.echo.testapp.interactive.testscreen.StyleSheetTest$SpecialButton">
+  <p n="background" t="Color">#ff7f00</p>
+  <p n="border" t="Border">10px double #6fff8f</p>
+  <p n="insets" t="Insets">3px 20px</p>
+ </s>
  <s n="Default" t="nextapp.echo.app.button.AbstractButton">
-  <p n="background" t="Color">#4f4f5f</p>
+  <p n="background" t="Color">#4f5f4f</p>
   <p n="foreground" t="Color">#efefff</p>
-  <p n="border" t="Border" v="1px outset #6f6f8f"/>
-  <p n="rolloverEnabled" t="b" v="true"/>
-  <p n="rolloverBackground" t="Color">#6f6f87</p>
+  <p n="border" t="Border">1px outset #6f6f8f</p>
+  <p n="rolloverEnabled" t="b">true</p>
+  <p n="rolloverBackground" t="Color">#6f876f</p>
   <p n="rolloverForeground" t="Color">#ffffaf</p>
-  <p n="rolloverBorder" t="Border" v="1px outset #8f8faf"/>
-  <p n="pressedEnabled" t="b" v="true"/>
-  <p n="pressedBackground" t="Color">#2f2f3f</p>
+  <p n="rolloverBorder" t="Border">1px outset #8f8faf</p>
+  <p n="pressedEnabled" t="b">true</p>
+  <p n="pressedBackground" t="Color">#2f3f2f</p>
   <p n="pressedForeground" t="Color">#ffafaf</p>
-  <p n="pressedBorder" t="Border" v="1px inset #4f4f6f"/>
-  <p n="insets" t="Insets" v="3px 20px"/>
+  <p n="pressedBorder" t="Border">1px inset #4f4f6f</p>
+  <p n="insets" t="Insets">3px 20px</p>
  </s>
  <s b="Default" n="Selected" t="nextapp.echo.app.Button">
   <p n="background" t="Color">#3f3f4f</p>
@@ -41,25 +46,25 @@
  <s n="Default" t="nextapp.echo.app.text.TextComponent">
   <p n="background" t="Color">#ffffdf</p>
   <p n="foreground" t="Color">#000000</p>
-  <p n="border" t="Border" v="1px inset #ffffaf"/>
+  <p n="border" t="Border">1px inset #ffffaf</p>
  </s>
  <s n="DefaultResizable" t="nextapp.echo.app.SplitPane">
-  <p n="resizable" t="b" v="true"/>
+  <p n="resizable" t="b">true</p>
   <p n="separatorHorizontalImage" t="FillImage">
-   <fi t="r">
-    <i r="/nextapp/echo/testapp/interactive/resource/image/SplitPaneHorizontalSeparator.png"/>
-   </fi>
+   <fi t="r">/nextapp/echo/testapp/interactive/resource/image/SplitPaneHorizontalSeparator.png</fi>
   </p>
   <p n="separatorVerticalImage" t="FillImage">
-   <fi t="r">
-    <i r="/nextapp/echo/testapp/interactive/resource/image/SplitPaneVerticalSeparator.png"/>
-   </fi>
+   <fi t="r">/nextapp/echo/testapp/interactive/resource/image/SplitPaneVerticalSeparator.png</fi>
   </p>
  </s>
+ <s b="DefaultResizable" n="TestControls" t="nextapp.echo.app.SplitPane">
+  <p n="separatorPosition">20.5em</p>
+  <p n="orientation">ORIENTATION_HORIZONTAL</p> 
+ </s> 
  <s n="TitleLabel" t="nextapp.echo.app.Label">
   <p n="font" t="Font">
-   <f sz="18px">
-    <tf n="Verdana"/>
+   <f sz="14pt">
+    <tf>Verdana</tf>
    </f>
   </p>
   <p n="foreground" t="Color">#ffffff</p>
@@ -69,193 +74,171 @@
    </p>
    <p n="background" t="Color">#1b1b21</p>
    <p n="backgroundImage" t="FillImage">
-    <fi r="0" t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/HeaderBackground.png"/>
-    </fi>
+    <fi t="r" y="50%" r="0">/nextapp/echo/testapp/interactive/resource/image/HeaderBackground.png</fi>
    </p>
-   <p n="insets" t="Insets" v="8px"/>
-   <p n="overflow" t="i" v="OVERFLOW_HIDDEN"/>
+   <p n="insets" t="Insets">8px</p>
+   <p n="overflow" t="i">OVERFLOW_HIDDEN</p>
   </p>
  </s>
  <s n="Default" t="nextapp.echo.app.WindowPane">
   <!-- Container-specific property to enable Internet Explorer PNG Alpha Renderer for shadow window border. -->
-  <p n="ieAlphaRenderBorder" t="b" v="true"/>
-  <p n="titleInsets" t="Insets" v="5px 10px"/>
-  <p n="titleBackground" t="Color">#2faf2f</p>
+  <p n="ieAlphaRenderBorder" t="b">true</p>
+  <p n="titleInsets" t="Insets">5px 10px</p>
+  <p n="titleBackground" t="Color">#2f2f4f</p>
+  <p n="titleBackgroundImage" t="FillImage">
+   <fi r="0" t="r" y="50%">/nextapp/echo/testapp/interactive/resource/image/window/simple/Header.png</fi>
+  </p>
   <p n="titleForeground" t="Color">#ffffff</p>
+  <p n="controlsInsets" t="Insets">-1px 5px</p>
+  <p n="maximizeIcon" t="ResourceImageReference">/nextapp/echo/testapp/interactive/resource/image/window/simple/ControlMaximize.png</p>
+  <p n="maximizeRolloverIcon" t="ResourceImageReference">/nextapp/echo/testapp/interactive/resource/image/window/simple/ControlMaximizeRollover.png</p>
+  <p n="minimizeIcon" t="ResourceImageReference">/nextapp/echo/testapp/interactive/resource/image/window/simple/ControlMinimize.png</p>
+  <p n="minimizeRolloverIcon" t="ResourceImageReference">/nextapp/echo/testapp/interactive/resource/image/window/simple/ControlMinimizeRollover.png</p>
+  <p n="closeIcon" t="ResourceImageReference">/nextapp/echo/testapp/interactive/resource/image/window/simple/ControlClose.png</p>
+  <p n="closeRolloverIcon" t="ResourceImageReference">/nextapp/echo/testapp/interactive/resource/image/window/simple/ControlCloseRollover.png</p>
   <p n="border" t="FillImageBorder">
    <fib bi="17px 23px 23px 17px" ci="8px 14px 14px 8px">
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTopLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTop.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTopRight.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderRight.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottomLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottom.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottomRight.png"/>
-    </fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTopLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTop.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderTopRight.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderRight.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottomLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottom.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/simple/BorderBottomRight.png</fi>
    </fib>
   </p>
  </s>
  <s n="GlassBlue" t="nextapp.echo.app.WindowPane">
   <!-- Container-specific property to enable Internet Explorer PNG Alpha Renderer for shadow window border. -->
-  <p n="ieAlphaRenderBorder" t="b" v="true"/>
-  <p n="titleInsets" t="Insets" v="5px 10px"/>
+  <p n="ieAlphaRenderBorder" t="b">true</p>
+  <p n="titleInsets" t="Insets">5px 10px</p>
   <p n="titleBackgroundImage" t="FillImage">
-   <fi r="x" t="r" y="100%">
-    <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/Header.png"/>
-   </fi>
+   <fi r="x" t="r" y="100%">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/Header.png</fi>
   </p>
   <p n="titleForeground" t="Color">#ffffff</p>
   <p n="border" t="FillImageBorder">
    <fib bi="34px 20px 20px 20px" ci="6px 15px 15px 12px">
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTopLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTop.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTopRight.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderRight.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottomLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottom.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottomRight.png"
-     />
-    </fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTopLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTop.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderTopRight.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderRight.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottomLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottom.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/glassblue/BorderBottomRight.png</fi>
    </fib>
   </p>
  </s>
  <s n="TransGreen" t="nextapp.echo.app.WindowPane">
   <!-- Container-specific property to enable Internet Explorer PNG Alpha Renderer for shadow window border. -->
-  <p n="ieAlphaRenderBorder" t="b" v="true"/>
-  <p n="titleInsets" t="Insets" v="5px 10px"/>
+  <p n="ieAlphaRenderBorder" t="b">true</p>
+  <p n="titleInsets" t="Insets">5px 10px</p>
   <p n="titleBackgroundImage" t="FillImage">
-   <fi r="x" t="r" y="100%">
-    <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/Header.png"/>
-   </fi>
+   <fi r="x" t="r" y="100%">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/Header.png</fi>
   </p>
   <p n="titleForeground" t="Color">#ffffff</p>
   <p n="border" t="FillImageBorder">
    <fib bi="34px 20px 20px 20px" ci="6px 15px 15px 12px">
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTopLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTop.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTopRight.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderLeft.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderRight.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottomLeft.png"
-     />
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottom.png"/>
-    </fi>
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottomRight.png"
-     />
-    </fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTopLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTop.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderTopRight.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderRight.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottomLeft.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottom.png</fi>
+    <fi t="r">/nextapp/echo/testapp/interactive/resource/image/window/transgreen/BorderBottomRight.png</fi>
    </fib>
   </p>
  </s>
+ <s n="Borderless" t="nextapp.echo.app.WindowPane">
+  <p n="border">
+   <fib bi="0px" c="#ffffff" ci="0px">
+    <null-fi/>
+    <null-fi/>
+    <null-fi/>
+    <null-fi/>
+    <null-fi/>
+    <null-fi/>
+    <null-fi/>
+    <null-fi/>
+   </fib> 
+  </p>
+ </s>
  <s n="ControlPane.Button" t="nextapp.echo.app.button.AbstractButton">
-  <p n="lineWrap" t="b" v="0"/>
-  <p n="insets" t="Insets" v="0px 8px"/>
+  <p n="lineWrap" t="b">false</p>
+  <p n="insets" t="Insets">3px 15px</p>
   <p n="foreground" t="Color">#000000</p>
-  <p n="rolloverEnabled" t="b" v="true"/>
-  <p n="rolloverForeground" t="Color">#6f0f0f</p>
+  <p n="rolloverEnabled" t="b">true</p>
+  <p n="rolloverForeground" t="Color">#ffffff</p>
+  <p n="rolloverBackground" t="Color">#3939d6</p>
+  <p n="rolloverBackgroundImage" t="FillImage">
+   <fi t="r" r="x" y="50%">/nextapp/echo/testapp/interactive/resource/image/ControlPaneHighlight.png</fi>
+  </p>
+  <p n="pressedEnabled" t="b">true</p>
+  <p n="pressedForeground" t="Color">#dfffff</p>
+  <p n="pressedBackground" t="Color">#3939d6</p>
+  <p n="pressedBackgroundImage" t="FillImage">
+   <fi t="r" r="x" y="50%">/nextapp/echo/testapp/interactive/resource/image/ControlPaneHighlightLight.png</fi>
+  </p>
  </s>
  <s n="ControlPane" t="nextapp.echo.app.Row">
-  <p n="insets" t="Insets" v="2px 10px"/>
-  <p n="cellSpacing" t="Extent" v="3px"/>
+  <p n="insets" t="Insets">0px 9px</p>
+  <p n="cellSpacing" t="Extent">3px</p>
   <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
-   <p n="overflow" t="i" v="OVERFLOW_HIDDEN"/>
+   <p n="overflow" t="i">OVERFLOW_HIDDEN</p>
    <p n="background" t="Color">#cfcfdf</p>
    <p n="backgroundImage" t="FillImage">
-    <fi t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/ControlPaneFill.png"/>
-    </fi>
+    <fi t="r" y="50%" r="x">/nextapp/echo/testapp/interactive/resource/image/ControlPaneFill.png</fi>
    </p>
-   <p n="insets" t="Insets" v="2px"/>
   </p>
  </s>
  <s n="ApplicationControlsColumn" t="nextapp.echo.app.Column">
   <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
    <p n="background" t="Color">#4f4f6f</p>
    <p n="backgroundImage" t="FillImage">
-    <fi r="0" t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundDarkBlue.png"/>
-    </fi>
+    <fi r="0" t="r">/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundDarkBlue.png</fi>
    </p>
-   <p n="insets" t="Insets" v="7px 10px"/>
-   <p n="minimumSize" t="Extent" v="200px"/>
-   <p n="maximumSize" t="Extent" v="300px"/>
+   <p n="insets" t="Insets">7px 10px</p>
+   <p n="minimumSize" t="Extent">12.5em</p>
+   <p n="maximumSize" t="Extent">33.3%</p>
   </p>
  </s>
  <s n="TestControlsColumn" t="nextapp.echo.app.Column">
   <p n="layoutData" t="nextapp.echo.app.layout.SplitPaneLayoutData">
    <p n="background" t="Color">#afafef</p>
    <p n="backgroundImage" t="FillImage">
-    <fi r="0" t="r">
-     <i r="/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundLightBlue.png"/>
-    </fi>
+    <fi r="0" t="r">/nextapp/echo/testapp/interactive/resource/image/ShadowBackgroundLightBlue.png</fi>
    </p>
-   <p n="insets" t="Insets" v="7px 10px"/>
-   <p n="minimumSize" t="Extent" v="200px"/>
-   <p n="maximumSize" t="Extent" v="300px"/>
+   <p n="insets" t="Insets">7px 10px</p>
+   <p n="minimumSize" t="Extent">12.5em</p>
+   <p n="maximumSize" t="Extent">33.3%</p>
   </p>
  </s>
  <s n="WelcomePane" t="nextapp.echo.app.ContentPane">
   <p n="backgroundImage" t="FillImage">
-   <fi r="y" t="r">
-    <i r="/nextapp/echo/testapp/interactive/resource/image/WelcomePaneBackground.png"/>
-   </fi>
+   <fi r="y" t="r">/nextapp/echo/testapp/interactive/resource/image/WelcomePaneBackground.png</fi>
   </p>
  </s>
  <s n="WelcomePane.Column" t="nextapp.echo.app.Column">
-  <p n="insets" t="Insets" v="0px 0px 0px 245px"/>
-  <p n="cellSpacing" t="Extent" v="40px"/>
+  <p n="insets" t="Insets">0px 0px 0px 245px</p>
+  <p n="cellSpacing" t="Extent">40px</p>
  </s>
  <s b="Default" n="WelcomePane" t="nextapp.echo.app.WindowPane">
-  <p n="width" t="Extent" v="550px"/>
-  <p n="height" t="Extent" v="300px"/>
-  <p n="resizable" t="b" v="true"/>
-  <p n="positionX" t="Extent" v="160px"/>
-  <p n="positionY" t="Extent" v="300px"/>
+  <p n="width" t="Extent">40em</p>
+  <p n="height" t="Extent">22em</p>
+  <p n="resizable" t="b">true</p>
+  <p n="positionX" t="Extent">160px</p>
+  <p n="positionY" t="Extent">300px</p>
+ </s>
+ <s n="Grid.StyleTest" t="nextapp.echo.app.Grid">
+  <p n="columnWidth" t="Extent" x="0">100px</p>
+  <p n="columnWidth" t="Extent" x="1">120px</p>
+  <p n="columnWidth" t="Extent" x="2">140px</p>
+  <p n="columnWidth" t="Extent" x="3">160px</p>
+ </s>
+ <s n="Test.GenericStyle" t="nextapp.echo.app.Component">
+  <p n="background" t="Color">#ff0000</p>
+  <p n="foreground" t="Color">#ffffff</p>
  </s>
 </ss>
