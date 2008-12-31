@@ -41,6 +41,7 @@ import nextapp.echo.app.StreamImageReference;
 import nextapp.echo.webcontainer.Connection;
 import nextapp.echo.webcontainer.ContentType;
 import nextapp.echo.webcontainer.Service;
+import nextapp.echo.webcontainer.SynchronizationException;
 import nextapp.echo.webcontainer.UserInstance;
 import nextapp.echo.webcontainer.util.PngEncoder;
 
@@ -103,7 +104,7 @@ implements Service {
         } else if (imageReference instanceof AwtImageReference) {
             renderAwtImage(conn, imageReference);
         } else {
-            throw new IOException("Unsupported image type: " + imageReference.getClass().getName());
+            throw new SynchronizationException("Unsupported image type: " + imageReference.getClass().getName(), null);
         }
     }
     

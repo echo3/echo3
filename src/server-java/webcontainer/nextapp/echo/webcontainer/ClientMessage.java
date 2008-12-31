@@ -90,16 +90,16 @@ public class ClientMessage {
             // Find processor class, first check local cache, then 
             Class processorClass = (Class) processorNameToClass.get(processorName);
             if (processorClass == null) {
-                throw new IOException("No processor exists for processor name: " + processorName);
+                throw new SynchronizationException("No processor exists for processor name: " + processorName, null);
             }
 
             try {
                 Processor processor = (Processor) processorClass.newInstance();
                 processor.process(context, dirElements[i]);
             } catch (InstantiationException ex) {
-                throw new IOException("Cannot instantiate process class: " + processorClass.getName() + ": " + ex);
+                throw new SynchronizationException("Cannot instantiate process class: " + processorClass.getName(), ex);
             } catch (IllegalAccessException ex) {
-                throw new IOException("Cannot instantiate process class: " + processorClass.getName() + ": " + ex);
+                throw new SynchronizationException("Cannot instantiate process class: " + processorClass.getName(), ex);
             }
         }
     }
