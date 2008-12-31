@@ -102,13 +102,13 @@ public class XmlRequestParser {
             }
             return DomUtil.getDocumentBuilder().parse(in);
         } catch (final SAXException ex) {
-            throw new IOException("Provided InputStream cannot be parsed." + ex) {
+            throw new IOException("Provided InputStream cannot be parsed.") {
                 public Throwable getCause() {
                     return ex;
                 }
             };
         } catch (final IOException ex) {
-            throw new IOException("Provided InputStream cannot be parsed." + ex) {
+            throw new IOException("Provided InputStream cannot be parsed.") {
                 public Throwable getCause() {
                     return ex;
                 }

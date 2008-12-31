@@ -100,8 +100,12 @@ implements Service {
                     out.write(buffer, 0, bytesRead);
                 }
             } while (bytesRead > 0);
-        } catch (IOException ex) {
-            throw new IllegalArgumentException("Cannot get resource: \"" + resourceName + "\": " + ex);
+        } catch (final IOException ex) {
+            throw new IllegalArgumentException("Cannot get resource: \"" + resourceName + "\".") {
+                public Throwable getCause() {
+                    return ex;
+                }
+            };
         } finally {
             if (in != null) { try { in.close(); } catch (IOException ex) { } } 
         }
