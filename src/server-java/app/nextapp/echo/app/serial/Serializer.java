@@ -67,8 +67,11 @@ public class Serializer {
         }
     }
     
-    //FIXME.  Hardcoding?  Maybe not too bad here, but these need to be spec'd in one place only.
+    /**
+     * Mapping for shorthands for java.lang types. 
+     */
     private static final Map javaLangTypeMap;
+    
     static {
         Map m = new HashMap();
         m.put("b", Boolean.class);
