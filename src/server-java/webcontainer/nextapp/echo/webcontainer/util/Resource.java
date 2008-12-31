@@ -54,8 +54,8 @@ public class Resource {
          *
          * @param description A description of the error.
          */
-        private ResourceException(String description) {
-            super(description);
+        private ResourceException(String message, Throwable cause) {
+            super(message, cause);
         }
     }
 
@@ -96,7 +96,7 @@ public class Resource {
         try {
             in = Resource.class.getClassLoader().getResourceAsStream(resourceName);
             if (in == null) {
-                throw new ResourceException("Resource does not exist: \"" + resourceName + "\"");
+                throw new ResourceException("Resource does not exist: \"" + resourceName + "\".", null);
             }
             out = new ByteArrayOutputStream();
             do {
@@ -106,7 +106,7 @@ public class Resource {
                 }
             } while (bytesRead > 0);
         } catch (IOException ex) {
-            throw new ResourceException("Cannot get resource: \"" + resourceName + "\": " + ex);
+            throw new ResourceException("Cannot get resource: \"" + resourceName + "\".", ex);
         } finally {
             if (in != null) { try { in.close(); } catch (IOException ex) { } } 
         }
