@@ -110,8 +110,16 @@ public class ObjectIntrospector {
         loadEventData();
         loadConstants();
     }
-
-    // FIXME do we want a getConstantNames()?
+    
+    /**
+     * Returns the constant names of the object.
+     * 
+     * @return a <code>Set</code> containing the constant names of the object
+     */
+    public Set getConstantNames() {
+        return Collections.unmodifiableSet(constants.keySet());
+    }
+    
     /**
      * Retrieves the value of the constant with the specified name.
      * 
@@ -148,19 +156,16 @@ public class ObjectIntrospector {
      * Returns the <code>EventSetDescriptor</code> for the specified event set.
      * 
      * @param eventSetName The name of the event set.
-     * @return the <code>EventSetDescriptor</code> associated with the event
-     *         set
+     * @return the <code>EventSetDescriptor</code> associated with the event set
      */
     public EventSetDescriptor getEventSetDescriptor(String eventSetName) {
         return (EventSetDescriptor) eventSetDescriptorMap.get(eventSetName);
     }
     
     /**
-     * Returns an <code>Iterator</code> over the event set names of the 
-     * object.
+     * Returns the event set names of the object.
      * 
-     * @return an <code>Iterator</code> over the event set names of the 
-     *         object
+     * @return a <code>Set</code> containing the event set names of the object
      */
     public Set getEventSetNames() {
         return Collections.unmodifiableSet(eventSetDescriptorMap.keySet());
