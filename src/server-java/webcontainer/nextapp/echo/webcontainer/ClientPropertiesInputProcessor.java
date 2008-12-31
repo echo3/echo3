@@ -119,7 +119,7 @@ implements ClientMessage.Processor {
                 String propertyName = pElements[i].getAttribute("n");
                 Class propertyClass = (Class) TYPE_MAP.get(propertyName);
                 if (propertyClass == null) {
-                    throw new IOException("Illegal property in ClientProperties message: " + propertyName);
+                    throw new SynchronizationException("Illegal property in ClientProperties message: " + propertyName, null);
                 }
                 SerialPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(propertyClass);
                 Object propertyValue = propertyPeer.toProperty(context, propertyClass, pElements[i]);

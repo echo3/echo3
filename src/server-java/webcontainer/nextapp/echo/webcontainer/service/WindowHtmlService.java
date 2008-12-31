@@ -45,6 +45,7 @@ import nextapp.echo.app.util.DomUtil;
 import nextapp.echo.webcontainer.Connection;
 import nextapp.echo.webcontainer.ContentType;
 import nextapp.echo.webcontainer.Service;
+import nextapp.echo.webcontainer.SynchronizationException;
 import nextapp.echo.webcontainer.UserInstance;
 import nextapp.echo.webcontainer.WebContainerServlet;
 
@@ -182,7 +183,7 @@ implements Service {
             conn.setContentType(ContentType.TEXT_HTML);
             DomUtil.save(document, conn.getWriter(), OUTPUT_PROPERTIES);
         } catch (SAXException ex) {
-            throw new IOException("Failed to write HTML document: " + ex);
+            throw new SynchronizationException("Failed to write HTML document.", ex);
         }
     }
 }
