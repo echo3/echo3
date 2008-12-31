@@ -34,7 +34,8 @@ import java.io.IOException;
 import nextapp.echo.app.ApplicationInstance;
 
 /**
- * A single client-server synchronization.
+ * The high-level object which encapsulates the core of the client-server synchronization process for 
+ * server-side applications.
  */
 public class Synchronization 
 implements SynchronizationState {
@@ -43,20 +44,46 @@ implements SynchronizationState {
     private UserInstance userInstance;
     private boolean outOfSync = false;
 
+    /**
+     * Creates a new <code>Synchronization</code>.
+     * 
+     * @param conn the synchronization <code>Connection</code> 
+     */
     public Synchronization(Connection conn) {
         super();
         this.conn = conn;
         this.userInstance = conn.getUserInstance();
     }
     
+    /**
+     * @see nextapp.echo.webcontainer.SynchronizationState#isOutOfSync()
+     */
     public boolean isOutOfSync() {
         return outOfSync;
     }
     
+    /**
+     * @see nextapp.echo.webcontainer.SynchronizationState#setOutOfSync()
+     */
     public void setOutOfSync() {
         outOfSync = true;
     }
 
+    /**
+     * Processes input from the connection and renders output.
+     * 
+     * Performs the following operations:
+     * <ul>
+     *  <li>Initializes the <code>UserInstance</code> if it is new.</li>
+     *  <li>Activates the <code>ApplicationInstance</code>.</li>
+     *  <li>Processes input to the connection using an <code>InputProcessor</code>.</li>
+     *  <li>Generates output for the connection using an <code>OutputProcessor</code>.</li>
+     *  <li>Purges updates from the <code>UpdateManager</code> (which were processed by the <code>OutputProcessor</code>.</li>
+     *  <li>Deactivates the <code>ApplicationInstance</code>.</li>
+     * </ul>
+     * 
+     * @throws IOException
+     */
     public void process() 
     throws IOException {
         synchronized(userInstance) {
