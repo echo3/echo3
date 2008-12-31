@@ -86,12 +86,13 @@ class OutputProcessor {
          */
         private SerialContext serialContext = new SerialContext() {
         
+            private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            
             /**
              * @see nextapp.echo.app.serial.SerialContext#getClassLoader()
              */
             public ClassLoader getClassLoader() {
-                //FIXME. temporary, not what we want.
-                return Thread.currentThread().getContextClassLoader();
+                return classLoader;
             }
         
             /**

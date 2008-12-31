@@ -54,9 +54,10 @@ public class InputProcessor {
         
         private SerialContext serialContext = new SerialContext() {
         
+            private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
             public ClassLoader getClassLoader() {
-                //FIXME. temporary, not what we want.
-                return Thread.currentThread().getContextClassLoader();
+                return classLoader;
             }
         
             public Document getDocument() {
