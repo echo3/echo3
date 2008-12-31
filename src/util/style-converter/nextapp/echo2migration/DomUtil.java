@@ -236,18 +236,35 @@ public class DomUtil {
         return null;
     }
     
-    //TODO. Doc/final impl/output props/etc.
+    /**
+     * Writes the <code>Document</code> to the specified <code>OutputStream</code>.
+     * 
+     * @param document the <code>Document</code>
+     * @param out the <code>OutputStream</code>
+     * @param outputProperties output properties passed to XML transformer
+     * @throws SAXException
+     */
     public static void save(Document document, OutputStream out, Properties outputProperties) 
     throws SAXException {
         saveImpl(document, new StreamResult(out), outputProperties);
     }
     
-    //TODO. Doc/final impl/output props/etc.
+    /**
+     * Writes the <code>Document</code> to the specified <code>PrintWriter</code>.
+     * 
+     * @param document the <code>Document</code>
+     * @param w the <code>PrintWriter</code>
+     * @param outputProperties output properties passed to XML transformer
+     * @throws SAXException
+     */
     public static void save(Document document, PrintWriter w, Properties outputProperties) 
     throws SAXException {
         saveImpl(document, new StreamResult(w), outputProperties);
     }
     
+    /**
+     * Work method for public save() methods.
+     */
     private static void saveImpl(Document document, StreamResult output, Properties outputProperties) 
     throws SAXException {
         try {
