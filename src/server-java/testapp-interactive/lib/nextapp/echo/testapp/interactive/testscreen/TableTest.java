@@ -692,13 +692,19 @@ public class TableTest extends SplitPane {
                 testTable.setDefaultRenderer(Object.class, backgroundImageCheckerCellRenderer);
             }
         });
+        controlsColumn.addButton("Toggle Visibility of Random Cell (re-renders model, no effect)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int count = testTable.getComponentCount();
+                if (count == 0) {
+                    return;
+                }
+                Component component = testTable.getComponent((int) (Math.random() * count));
+                component.setVisible(!component.isVisible());
+            }
+        });
         controlsColumn.addButton("Visibility Checker Cell Renderer", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //FIXME Re-enable visibility checker cell renderer when bug 39 is corrected.
-                InteractiveApp.getApp().consoleWrite("Visibility Checker disabled, known issue (bug #39).");
-                if (false) {
-                    testTable.setDefaultRenderer(Object.class, visibilityCheckerCellRenderer);
-                }
+                testTable.setDefaultRenderer(Object.class, visibilityCheckerCellRenderer);
             }
         });
         controlsColumn.addButton("Editing Cell Renderer (not bound to model)", new ActionListener() {

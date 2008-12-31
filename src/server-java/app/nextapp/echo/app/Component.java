@@ -157,6 +157,7 @@ implements RenderIdSupport, Serializable {
      */
     private static final int FLAG_REGISTERING = 0x8;
     
+    public static final String CHILD_VISIBLE_CHANGED_PROPERTY = "childVisible";
     public static final String CHILDREN_CHANGED_PROPERTY = "children";
     public static final String ENABLED_CHANGED_PROPERTY = "enabled";
     public static final String FOCUS_TRAVERSAL_INDEX_CHANGED_PROPERTY = "focusTraversalIndex";
@@ -1538,7 +1539,10 @@ implements RenderIdSupport, Serializable {
         boolean oldValue = (flags & FLAG_VISIBLE) != 0;
         if (oldValue != newValue) {
             flags ^= FLAG_VISIBLE; // Toggle FLAG_VISIBLE bit.
-            firePropertyChange(VISIBLE_CHANGED_PROPERTY, new Boolean(oldValue), new Boolean(newValue));
+            firePropertyChange(VISIBLE_CHANGED_PROPERTY, Boolean.valueOf(oldValue), Boolean.valueOf(newValue));
+        }
+        if (parent != null) {
+            parent.firePropertyChange(CHILD_VISIBLE_CHANGED_PROPERTY, newValue ? null : this, newValue ? this : null);
         }
     }
 

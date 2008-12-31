@@ -29,6 +29,8 @@
 
 package nextapp.echo.app;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Map;
@@ -219,6 +221,12 @@ public class Table extends Component {
         }
         setSelectionModel(new DefaultListSelectionModel());
         setModel(model);
+        
+        addPropertyChangeListener(CHILD_VISIBLE_CHANGED_PROPERTY, new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent e) {
+                invalidate();
+            }
+        });
     }
     
     /**
@@ -307,7 +315,7 @@ public class Table extends Component {
                 }
                 Component renderedComponent 
                         = headerRenderer.getTableCellRendererComponent(this, headerValue, modelColumnIndex, HEADER_ROW);
-                if (renderedComponent == null) {
+                if (renderedComponent == null || !renderedComponent.isVisible()) {
                     renderedComponent = new Label();
                 }
                 add(renderedComponent);
@@ -320,7 +328,7 @@ public class Table extends Component {
                 Object modelValue = model.getValueAt(modelColumnIndex, rowIndex);
                 Component renderedComponent 
                         = columnRenderers[columnIndex].getTableCellRendererComponent(this, modelValue, modelColumnIndex, rowIndex);
-                if (renderedComponent == null) {
+                if (renderedComponent == null || !renderedComponent.isVisible()) {
                     renderedComponent = new Label();
                 }
                 add(renderedComponent);
