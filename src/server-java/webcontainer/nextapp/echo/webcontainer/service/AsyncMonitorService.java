@@ -83,10 +83,8 @@ implements Service {
     public void service(Connection conn) throws IOException {
         conn.setContentType(ContentType.TEXT_XML);
         if (conn.getUserInstance().getApplicationInstance().hasQueuedTasks()) {
-//        System.err.println("Async Monitor: TRUE");
             conn.getWriter().write("<async-monitor request-sync=\"true\"/>");
         } else {
-//        System.err.println("Async Monitor: FALSE");
             conn.getWriter().write("<async-monitor request-sync=\"false\"/>");
         }
     }
