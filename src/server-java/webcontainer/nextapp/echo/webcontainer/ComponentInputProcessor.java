@@ -41,6 +41,7 @@ import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.update.UpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
+import nextapp.echo.app.util.Log;
 
 import org.w3c.dom.Element;
 
@@ -120,8 +121,7 @@ implements ClientMessage.Processor {
                 SerialPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(propertyClass);
                 
                 if (propertyPeer == null) {
-                    //FIXME. add ex handling.
-                    System.err.println("No peer available for property: " + propertyName + " of class: " + propertyClass);
+                    Log.log("No peer available for property: " + propertyName + " of class: " + propertyClass);
                     continue;
                 }
                 
@@ -129,8 +129,8 @@ implements ClientMessage.Processor {
                     Object propertyValue = propertyPeer.toProperty(context, component.getClass(), propertyElement);
                     componentPeer.storeInputProperty(context, component, propertyName, -1, propertyValue);
                 } catch (SerialException ex) {
-                    //FIXME. bad ex handling.
-                    throw new IOException(ex.toString());
+                    throw new SynchronizationException(
+                            "Unable to store input property: " + propertyName + " of class: " + propertyClass, ex);
                 }
             }
         }
@@ -144,16 +144,15 @@ implements ClientMessage.Processor {
             } else {
                 SerialPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(eventDataClass);
                 if (propertyPeer == null) {
-                    //FIXME. add ex handling.
-                    System.err.println("No peer available for event data for event type: " + getEventType() 
+                    Log.log("No peer available for event data for event type: " + getEventType() 
                             + " of class: " + eventDataClass);
                 }
                 try {
                     Object eventData = propertyPeer.toProperty(context, component.getClass(), getEvent());
                     componentPeer.processEvent(context, component, getEventType(), eventData);
                 } catch (SerialException ex) {
-                    //FIXME. bad ex handling.
-                    throw new IOException(ex.toString());
+                    throw new SynchronizationException(
+                            "Unable to store event data for event type: " + getEventType() + " of class: " + eventDataClass, ex);
                 }
             }
         }
