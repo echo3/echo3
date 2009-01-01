@@ -81,10 +81,31 @@ implements Serializable {
      * @see #setColor(nextapp.echo.app.Color)
      */
     public FillImageBorder(Color color, Insets borderInsets, Insets contentInsets) {
+        this(color, borderInsets, contentInsets, null);
+    }
+    
+    /**
+     * Creates a new <code>FillImageBorder</code> with the specified color,
+     * border inset, and content inset.
+     *
+     * @param color the solid color background of the border
+     * @param borderInsets the border inset
+     * @param contentInsets the content inset
+     * @param fillImages the fill images, provided in the following order:
+     *        top-left, top, top-right, left, right, bottom-left, bottom, bottom-right
+     * @see #setBorderInsets(nextapp.echo.app.Insets)
+     * @see #setContentInsets(nextapp.echo.app.Insets)
+     * @see #setColor(nextapp.echo.app.Color)
+     */
+    public FillImageBorder(Color color, Insets borderInsets, Insets contentInsets, FillImage[] fillImages) {
         super();
         this.color = color;
         this.borderInsets = borderInsets;
         this.contentInsets = contentInsets;
+        if (fillImages != null) {
+            this.fillImages = new FillImage[8];
+            System.arraycopy(fillImages, 0, this.fillImages, 0, fillImages.length < 8 ? fillImages.length : 8);
+        }
     }
     
     /**

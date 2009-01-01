@@ -41,6 +41,64 @@ import junit.framework.TestCase;
  */
 public class FillImageBorderTest extends TestCase {
     
+    public void testContructorEmpty() {
+        FillImageBorder fib = new FillImageBorder(null, new Insets(5), new Insets(7), new FillImage[]{ });
+        for (int i = 0; i < 8; ++i) {
+            assertNull(fib.getFillImage(i));
+        }
+    }
+    public void testContructorHalf() {
+        FillImageBorder fib = new FillImageBorder(null, new Insets(5), new Insets(7), new FillImage[]{ 
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png"))
+        });
+        
+        for (int i = 0; i < 4; ++i) {
+            assertNotNull(fib.getFillImage(i));
+        }
+        
+        for (int i = 4; i < 8; ++i) {
+            assertNull(fib.getFillImage(i));
+        }
+    }
+    
+    public void testContructorFull() {
+        FillImageBorder fib = new FillImageBorder(null, new Insets(5), new Insets(7), new FillImage[]{ 
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png"))
+        });
+
+        for (int i = 0; i < 8; ++i) {
+            assertNotNull(fib.getFillImage(i));
+        }
+    }
+    
+    public void testContructorOver() {
+        FillImageBorder fib = new FillImageBorder(null, new Insets(5), new Insets(7), new FillImage[]{ 
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png")),
+            new FillImage(new ResourceImageReference("test.png"))
+        });
+
+        for (int i = 0; i < 8; ++i) {
+            assertNotNull(fib.getFillImage(i));
+        }
+    }
+    
     public void testEquals() {
         assertTrue(new FillImageBorder().equals(new FillImageBorder()));
         assertTrue(new FillImageBorder(Color.RED, new Insets(10), new Insets(20))
