@@ -67,6 +67,14 @@ import org.xml.sax.SAXException;
  */
 class OutputProcessor {
     
+    /**
+     * Returns the client locale string for the specified <code>Locale</code> object.
+     * The client locale contains the language first, and if set, the country code with a preceding hyphen.
+     * For example, US English would be rendered as "en-US".
+     * 
+     * @param locale the locale
+     * @return the client-side locale string
+     */
     public static String getClientLocaleString(Locale locale) {
         String language = locale.getLanguage();
         String country = locale.getCountry();
@@ -150,8 +158,8 @@ class OutputProcessor {
     /**
      * Creates a new <code>OutputProcessor</code>.
      * 
-     * @param conn the <code>Connection</code> for which the output is 
-     * being generated.
+     * @param syncState the <code>SynchronizationState</code> of the current synchronization
+     * @param conn the <code>Connection</code> for which the output is being generated.
      */
     public OutputProcessor(SynchronizationState syncState, Connection conn) {
         super();

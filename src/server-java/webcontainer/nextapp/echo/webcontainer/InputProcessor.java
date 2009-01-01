@@ -43,6 +43,11 @@ import nextapp.echo.app.util.DomUtil;
 import nextapp.echo.app.util.Log;
 import nextapp.echo.webcontainer.util.XmlRequestParser;
 
+/**
+ * Parses an XML <code>ClientMessage</code> describing client-side changes to the
+ * state of an application that is sent to the remote client as the request
+ * of a synchronization HTTP connection.
+ */
 public class InputProcessor {
     
     static {
@@ -51,20 +56,35 @@ public class InputProcessor {
         ClientMessage.register("CFocus", ComponentFocusInputProcessor.class);
     }
     
+    /**
+     * <code>Context</code> implementation.
+     */
     private class InputContext implements Context {
         
+        /**
+         * <code>SerialContext</code> implementation.
+         */
         private SerialContext serialContext = new SerialContext() {
         
             private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
+            /**
+             * @see nextapp.echo.app.serial.SerialContext#getClassLoader()
+             */
             public ClassLoader getClassLoader() {
                 return classLoader;
             }
         
+            /**
+             * @see nextapp.echo.app.serial.SerialContext#getDocument()
+             */
             public Document getDocument() {
                 return clientMessage.getDocument();
             }
 
+            /**
+             * @see nextapp.echo.app.serial.SerialContext#getFlags()
+             */
             public int getFlags() {
                 return 0;
             }
@@ -97,6 +117,12 @@ public class InputProcessor {
     private ClientMessage clientMessage;
     private PropertyPeerFactory propertyPeerFactory;
 
+    /**
+     * Creates a new <code>InputProcessor</code>.
+     * 
+     * @param syncState the <code>SynchronizationState</code> of the current synchronization
+     * @param conn the <code>Connection</code> for which the input is being parsed
+     */
     public InputProcessor(SynchronizationState syncState, Connection conn) {
         super();
         this.syncState = syncState;
@@ -104,6 +130,9 @@ public class InputProcessor {
         propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME temporary
     }
     
+    /**
+     * Processes input to the application, parsing a client message provided in the <code>Connection</code>.
+     */
     public void process() 
     throws IOException {
         Document document = XmlRequestParser.parse(conn.getRequest(), conn.getUserInstance().getCharacterEncoding());        
