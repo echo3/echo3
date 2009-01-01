@@ -47,6 +47,13 @@ import nextapp.echo.app.util.DomUtil;
 public class InsetsPeer 
 implements SerialPropertyPeer {
     
+    /**
+     * Generates an <code>Insets</code> property from a string representation.
+     * 
+     * @param value the string representation
+     * @return the generated <code>Insets</code> value
+     * @throws SerialException if the provided string representation is not valid
+     */
     public static Insets fromString(String value) 
     throws SerialException {
         if (value == null) {
@@ -74,6 +81,13 @@ implements SerialPropertyPeer {
         }
     }
     
+    /**
+     * Determines if two extent values are equivalent.
+     * 
+     * @param extent1 the first extent
+     * @param extent2 the second extent
+     * @return true if the extents are equivalent.
+     */
     private static boolean equals(Extent extent1, Extent extent2) {
        if (extent1 == null && extent2 == null) {
            return true;
@@ -83,14 +97,25 @@ implements SerialPropertyPeer {
        return extent1.equals(extent2);
     }
     
+    /**
+     * Utility method; converts an extent to a string, returning 0 for null values.
+     * 
+     * @param extent the <code>extent</code>
+     * @return a string representation of the extent, or 0 if the extent is null
+     * @throws SerialException
+     */
     private static String toString(Extent extent) 
     throws SerialException {
-        if (extent == null) {
-            return "0px";
-        }
-        return ExtentPeer.toString(extent);
+        return extent == null ? "0px" : ExtentPeer.toString(extent); 
     }
     
+    /**
+     * Generates a string representation of an <code>Insets</code> property.
+     * 
+     * @param insets the <code>Insets</code> property
+     * @return a string representation
+     * @throws SerialException
+     */
     public static String toString(Insets insets) 
     throws SerialException {
         if (equals(insets.getTop(), insets.getBottom())) {
