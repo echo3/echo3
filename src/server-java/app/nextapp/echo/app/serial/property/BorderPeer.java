@@ -64,11 +64,25 @@ implements SerialPropertyPeer {
 
     private static final String[] borderSideAttributeNames = new String[]{"t", "r", "b", "l"};
     
+    /**
+     * Generates a string representation of a <code>Border</code>
+     * 
+     * @param border the border
+     * @return the string representation
+     * @throws SerialException
+     */
     public static final String toString(Border border) 
     throws SerialException {
         return toString(border.getSides()[0]);
     }
     
+    /**
+     * Generates a string representation of a <code>Border.Side</code>
+     * 
+     * @param side the border side
+     * @return the string representation
+     * @throws SerialException
+     */
     public static final String toString(Border.Side side) 
     throws SerialException {
         StringBuffer out = new StringBuffer();
@@ -80,6 +94,15 @@ implements SerialPropertyPeer {
         return out.toString();
     }
     
+    /**
+     * Generates a <code>Border.Side</code> from a string representation.
+     * To create a non-multisided border from a string, simply pass the returned
+     * <code>Border.Side</code> to the constructor of a new <code>Border</code>.
+     * 
+     * @param value the string representation
+     * @return the generated <code>Border.Side</code>
+     * @throws SerialException if the string is not a valid representation of a <code>Border.Side</code>
+     */
     public static final Border.Side fromString(String value) 
     throws SerialException {
         StringTokenizer st = new StringTokenizer(value, " ");
