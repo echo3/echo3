@@ -46,6 +46,9 @@ package nextapp.echo.app;
  */
 public abstract class Composite extends Component {
 
+    /**
+     * Default constructor.
+     */
     public Composite() {
         super();
     }

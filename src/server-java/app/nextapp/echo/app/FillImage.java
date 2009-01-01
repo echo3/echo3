@@ -42,9 +42,16 @@ implements Serializable {
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
+    /** Repeat constant value indicating no repetition. */
     public static final int NO_REPEAT = 0;
+
+    /** Repeat constant value indicating horizontal repetition. */
     public static final int REPEAT_HORIZONTAL = 1;
+
+    /** Repeat constant value indicating vertical repetition. */
     public static final int REPEAT_VERTICAL = 2;
+
+    /** Repeat constant value indicating both horizontal and vertical repetition. */
     public static final int REPEAT = 3;
     
     private ImageReference image;
