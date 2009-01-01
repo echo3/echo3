@@ -40,9 +40,16 @@ implements Serializable {
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
+    /** Index of top side in returned array of sides. */
     public static final int SIDE_TOP = 0;
+
+    /** Index of right side in returned array of sides. */
     public static final int SIDE_RIGHT = 1;
+
+    /** Index of bottom side in returned array of sides. */
     public static final int SIDE_BOTTOM = 2;
+
+    /** Index of left side in returned array of sides. */
     public static final int SIDE_LEFT = 3;
     
     /**
@@ -343,10 +350,20 @@ implements Serializable {
         return sides[0].getStyle();
     }
     
+    /**
+     * Returns the sides of the border.  Do not modify; modification of returned array will result in indeterminate behavior.
+     * 
+     * @return the array of sides
+     */
     public Side[] getSides() {
         return sides;
     }
     
+    /**
+     * Determines if the border is multisided.
+     * 
+     * @return true if the border is multisided
+     */
     public boolean isMultisided() {
         return sides.length > 1;
     }
