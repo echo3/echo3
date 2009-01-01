@@ -35,7 +35,7 @@ import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
 
 /**
- * Additional interface for <code>ImageReference</code> <code>XmlPropertyPeer</code>s.
+ * Additional interface for <code>ImageReference</code> <code>SerialPropertyPeer</code>s.
  * This interface is necessary for objects such as <code>FillImagePeer</code> in order
  * to compactly render images.
  */

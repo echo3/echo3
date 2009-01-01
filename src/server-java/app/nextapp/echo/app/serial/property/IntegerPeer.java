@@ -40,7 +40,7 @@ import nextapp.echo.app.util.DomUtil;
 import org.w3c.dom.Element;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>Integer</code> properties.
+ * <code>SerialPropertyPeer</code> for <code>Integer</code> properties.
  */
 public class IntegerPeer 
 implements SerialPropertyPeer {

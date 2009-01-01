@@ -39,13 +39,20 @@ import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>Color</code> properties.
+ * <code>SerialPropertyPeer</code> for <code>Color</code> properties.
  */
 public class ColorPeer 
 implements SerialPropertyPeer {
 
     private static final String COLOR_MASK = "#000000";
     
+    /**
+     * Generates a <code>Color</code> based on a string representation.
+     * 
+     * @param value the string value
+     * @return the generated <code>Color</code>
+     * @throws SerialException if the string is not a valid representation of a color
+     */
     public static final Color fromString(String value) 
     throws SerialException {
         try {
@@ -58,6 +65,13 @@ implements SerialPropertyPeer {
         }
     }
 
+    /**
+     * Generates a string representation of a <code>Color</code>.
+     * 
+     * @param color the <code>Color</code>
+     * @return a string representation
+     * @throws SerialException
+     */
     public static final String toString(Color color) 
     throws SerialException {
         int rgb = color.getRgb();

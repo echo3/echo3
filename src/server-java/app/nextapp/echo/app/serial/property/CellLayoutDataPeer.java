@@ -38,7 +38,7 @@ import nextapp.echo.app.serial.SerialUtil;
 import nextapp.echo.app.util.Context;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>CellLayoutData</code> properties.
+ * <code>SerialPropertyPeer</code> for <code>CellLayoutData</code> properties.
  */
 public class CellLayoutDataPeer
 extends LayoutDataPeer {

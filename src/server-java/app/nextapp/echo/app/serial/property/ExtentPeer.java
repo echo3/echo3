@@ -41,7 +41,7 @@ import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>Extent</code> properties.
+ * <code>SerialPropertyPeer</code> for <code>Extent</code> properties.
  */
 public class ExtentPeer 
 implements SerialPropertyPeer {

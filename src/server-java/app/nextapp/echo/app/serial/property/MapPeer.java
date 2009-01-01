@@ -40,6 +40,9 @@ import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
 
+/**
+ * <code>SerialPropertyPeer</code> for <code>Map</code> properties.
+ */
 public class MapPeer 
 implements SerialPropertyPeer {
 

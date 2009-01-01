@@ -37,7 +37,7 @@ import nextapp.echo.app.util.Context;
 import org.w3c.dom.Element;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>RowLayoutData</code> properties.
+ * <code>SerialPropertyPeer</code> for <code>RowLayoutData</code> properties.
  */
 public class RowLayoutDataPeer
 extends CellLayoutDataPeer {

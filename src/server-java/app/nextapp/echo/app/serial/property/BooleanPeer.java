@@ -38,7 +38,7 @@ import nextapp.echo.app.util.DomUtil;
 import org.w3c.dom.Element;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>Boolean</code> properties.
+ * <code>SerialPropertyPeer</code> for <code>Boolean</code> properties.
  */
 public class BooleanPeer 
 implements SerialPropertyPeer {

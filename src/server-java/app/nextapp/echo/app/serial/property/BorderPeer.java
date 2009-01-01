@@ -44,7 +44,7 @@ import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>Border</code> properties.
+ * <code>SerialPropertyPeer</code> for <code>Border</code> properties.
  */
 public class BorderPeer 
 implements SerialPropertyPeer {

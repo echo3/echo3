@@ -45,7 +45,7 @@ import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>FillImage</code> properties.
+ * <code>SerialPropertyPeer</code> for <code>FillImage</code> properties.
  */
 public class FillImagePeer
 implements SerialPropertyPeer {
@@ -58,6 +58,16 @@ implements SerialPropertyPeer {
         REPEAT_CONSTANTS.add(FillImage.REPEAT, "xy");
     }
 
+    /**
+     * Generates a &lt;fi&gt; DOM element representing a fill image.
+     * This method is used internally and for <code>FillImageBorder</code> serialization.
+     * 
+     * @param context a <code>Context</code> object which provides a 
+     *        <code>SerialContext</code> and <code>PropertyPeerFactory</code>
+     * @param fillImage the <code>FillImage</code> to render
+     * @return a generated &lt;fi&gt; element representing the fill image
+     * @throws SerialException
+     */
     public Element createFillImageElement(Context context, FillImage fillImage) 
     throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
@@ -85,6 +95,16 @@ implements SerialPropertyPeer {
         return fiElement;
     }
     
+    /**
+     * Generates a <code>FillImage</code> based on a &lt;fi&gt; DOM element.
+     * This method is used internally and for <code>FillImageBorder</code> serialization.
+     * 
+     * @param context a <code>Context</code> object which provides a 
+     *        <code>SerialContext</code> and <code>PropertyPeerFactory</code>
+     * @param fiElement the <code>fi</code> element to parse
+     * @return a <code>FillImage</code> representation of the element
+     * @throws SerialException
+     */
     public FillImage parseFillImageElement(Context context, Element fiElement) 
     throws SerialException {
         String imageType = fiElement.getAttribute("t");

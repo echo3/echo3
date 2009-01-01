@@ -46,7 +46,7 @@ import nextapp.echo.app.serial.Serializer;
 import nextapp.echo.app.util.Context;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>LayoutData</code> properties.
+ * <code>SerialPropertyPeer</code> for <code>LayoutData</code> properties.
  */
 public class LayoutDataPeer 
 implements SerialPropertyPeer {

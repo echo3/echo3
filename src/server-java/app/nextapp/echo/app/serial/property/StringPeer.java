@@ -37,7 +37,7 @@ import nextapp.echo.app.util.DomUtil;
 import org.w3c.dom.Element;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>String</code> properties.
+ * <code>SerialPropertyPeer</code> for <code>String</code> properties.
  */
 public class StringPeer 
 implements SerialPropertyPeer {

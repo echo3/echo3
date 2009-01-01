@@ -40,7 +40,7 @@ import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>Font</code> properties.
+ * <code>SerialPropertyPeer</code> for <code>Font</code> properties.
  */
 public class FontPeer 
 implements SerialPropertyPeer {

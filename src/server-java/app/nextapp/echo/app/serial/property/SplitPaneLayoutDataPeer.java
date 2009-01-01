@@ -38,7 +38,7 @@ import nextapp.echo.app.serial.SerialUtil;
 import nextapp.echo.app.util.Context;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>SplitPane</code> properties.
+ * <code>SerialPropertyPeer</code> for <code>SplitPane</code> properties.
  */
 public class SplitPaneLayoutDataPeer
 extends LayoutDataPeer {
