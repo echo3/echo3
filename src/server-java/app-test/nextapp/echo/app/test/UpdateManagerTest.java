@@ -550,7 +550,9 @@ public class UpdateManagerTest extends TestCase  {
         assertEquals(column, componentUpdates[0].getParent());
         assertFalse(componentUpdates[0].hasAddedChildren());
         assertTrue(componentUpdates[0].hasRemovedChildren());
-        assertFalse(componentUpdates[0].hasUpdatedProperties());
+        assertTrue(componentUpdates[0].hasUpdatedProperties());
+        assertEquals(1, componentUpdates[0].getUpdatedPropertyNames().length);
+        assertEquals(Component.CHILD_VISIBLE_CHANGED_PROPERTY, componentUpdates[0].getUpdatedPropertyNames()[0]);
         assertFalse(componentUpdates[0].hasUpdatedLayoutDataChildren());
         
         Component[] components = componentUpdates[0].getRemovedChildren();
@@ -565,7 +567,9 @@ public class UpdateManagerTest extends TestCase  {
         assertEquals(column, componentUpdates[0].getParent());
         assertTrue(componentUpdates[0].hasAddedChildren());
         assertFalse(componentUpdates[0].hasRemovedChildren());
-        assertFalse(componentUpdates[0].hasUpdatedProperties());
+        assertTrue(componentUpdates[0].hasUpdatedProperties());
+        assertEquals(1, componentUpdates[0].getUpdatedPropertyNames().length);
+        assertEquals(Component.CHILD_VISIBLE_CHANGED_PROPERTY, componentUpdates[0].getUpdatedPropertyNames()[0]);
         assertFalse(componentUpdates[0].hasUpdatedLayoutDataChildren());
 
         components = componentUpdates[0].getAddedChildren();
