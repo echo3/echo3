@@ -59,16 +59,16 @@ implements SerialPropertyPeer {
     }
 
     /**
-     * Generates a &lt;fi&gt; DOM element representing a fill image.
+     * Generates a <code>&lt;fi&gt;</code> DOM element representing a fill image.
      * This method is used internally and for <code>FillImageBorder</code> serialization.
      * 
      * @param context a <code>Context</code> object which provides a 
      *        <code>SerialContext</code> and <code>PropertyPeerFactory</code>
      * @param fillImage the <code>FillImage</code> to render
-     * @return a generated &lt;fi&gt; element representing the fill image
+     * @return a generated <code>&lt;fi&gt;</code> element representing the fill image
      * @throws SerialException
      */
-    public Element toElement(Context context, FillImage fillImage) 
+    public Element createFillImageElement(Context context, FillImage fillImage) 
     throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         Element fiElement = serialContext.getDocument().createElement("fi");
@@ -96,16 +96,16 @@ implements SerialPropertyPeer {
     }
     
     /**
-     * Generates a <code>FillImage</code> based on a &lt;fi&gt; DOM element.
+     * Generates a <code>FillImage</code> based on a <code>&lt;fi&gt;</code> DOM element.
      * This method is used internally and for <code>FillImageBorder</code> serialization.
      * 
      * @param context a <code>Context</code> object which provides a 
      *        <code>SerialContext</code> and <code>PropertyPeerFactory</code>
-     * @param fiElement the <code>fi</code> element to parse
+     * @param fiElement the <code>&lt;fi&gt;</code> element to parse
      * @return a <code>FillImage</code> representation of the element
      * @throws SerialException
      */
-    public FillImage fromElement(Context context, Element fiElement) 
+    public FillImage parseFillImageElement(Context context, Element fiElement) 
     throws SerialException {
         String imageType = fiElement.getAttribute("t");
         PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
@@ -141,7 +141,7 @@ implements SerialPropertyPeer {
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws SerialException {
         Element fiElement = DomUtil.getChildElementByTagName(propertyElement, "fi");
-        return fromElement(context, fiElement);
+        return parseFillImageElement(context, fiElement);
     }
 
     /**
@@ -154,6 +154,6 @@ implements SerialPropertyPeer {
         FillImage fillImage = (FillImage) propertyValue;
         propertyElement.setAttribute("t", 
                 (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "FillImage" : "FI");
-        propertyElement.appendChild(toElement(context, fillImage));
+        propertyElement.appendChild(createFillImageElement(context, fillImage));
     }
 }
