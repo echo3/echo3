@@ -1570,9 +1570,9 @@ implements RenderIdSupport, Serializable {
         if (oldValue != newValue) {
             flags ^= FLAG_VISIBLE; // Toggle FLAG_VISIBLE bit.
             firePropertyChange(VISIBLE_CHANGED_PROPERTY, Boolean.valueOf(oldValue), Boolean.valueOf(newValue));
-        }
-        if (parent != null) {
-            parent.firePropertyChange(CHILD_VISIBLE_CHANGED_PROPERTY, newValue ? null : this, newValue ? this : null);
+            if (parent != null) {
+                parent.firePropertyChange(CHILD_VISIBLE_CHANGED_PROPERTY, newValue ? null : this, newValue ? this : null);
+            }
         }
     }
 
