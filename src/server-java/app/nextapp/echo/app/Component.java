@@ -122,6 +122,9 @@ implements RenderIdSupport, Serializable {
      */
     private static final Component[] EMPTY_COMPONENT_ARRAY = new Component[0];
 
+    /**
+     * Flag indicating the <code>Component</code> is currently in the process of being disposed.
+     */
     private static final int FLAG_DISPOSE_IN_PROGRESS = 0x20;
     
     /**
@@ -157,15 +160,42 @@ implements RenderIdSupport, Serializable {
      */
     private static final int FLAG_REGISTERING = 0x8;
     
+    /** 
+     * Property change event name for immediate children being made visible/invisible.
+     * When used, the <code>newValue</code> of the event will represent a child made visible,
+     * OR the <code>oldValue</code> will represent a child made invisible.
+     */
     public static final String CHILD_VISIBLE_CHANGED_PROPERTY = "childVisible";
+
+    /** 
+     * Property change event name for immediate children being added/removed.
+     * When used, the <code>newValue</code> of the event will represent an added child,
+     * OR the <code>oldValue</code> will represent a removed child.
+     */
     public static final String CHILDREN_CHANGED_PROPERTY = "children";
+
+    /** Property change event name for enabled state changes. */
     public static final String ENABLED_CHANGED_PROPERTY = "enabled";
+
+    /** @deprecated */
     public static final String FOCUS_TRAVERSAL_INDEX_CHANGED_PROPERTY = "focusTraversalIndex";
+    
+    /** Property change event name for focus traversal participation changes. */
     public static final String FOCUS_TRAVERSAL_PARTICIPANT_CHANGED_PROPERTY = "focusTraversalParticipant";
+
+    /** Property change event name for layout direction changes. */
     public static final String LAYOUT_DIRECTION_CHANGED_PROPERTY = "layoutDirection";
+
+    /** Property change event name for locale changes. */
     public static final String LOCALE_CHANGED_PROPERTY = "locale";
+
+    /** Property change event name for referenced <code>Style</code> changes. */
     public static final String STYLE_CHANGED_PROPERTY = "style";
+
+    /** Property change event name for named <code>Style</code> changes. */
     public static final String STYLE_NAME_CHANGED_PROPERTY = "styleName";
+    
+    /** Property change event name for visibility changes. */
     public static final String VISIBLE_CHANGED_PROPERTY = "visible";
     
     public static final String PROPERTY_BACKGROUND = "background";
