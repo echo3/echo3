@@ -44,8 +44,7 @@ public class SerialException extends Exception {
      * Creates a new <code>ComponentXmlException</code>.
      * 
      * @param message A message describing the problem
-     * @param cause the exception which caused this exception, 
-     *        if applicable
+     * @param cause the exception which caused this exception, if applicable
      */
     public SerialException(String message, Throwable cause) {
         super(message);

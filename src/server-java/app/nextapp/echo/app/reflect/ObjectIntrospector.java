@@ -94,6 +94,7 @@ public class ObjectIntrospector {
      * type.
      * 
      * @param typeName the object type name
+     * @param classLoader the <code>ClassLoader</code> to use for introspection
      */
     protected ObjectIntrospector(String typeName, ClassLoader classLoader) 
     throws ClassNotFoundException {
@@ -273,11 +274,9 @@ public class ObjectIntrospector {
     }
     
     /**
-     * Returns an <code>Iterator</code> over the property names of the
-     * object.
+     * Returns an <code>Iterator</code> over the property names of the object.
      * 
-     * @return an <code>Iterator</code> over the property names of the
-     *         object
+     * @return an <code>Iterator</code> over the property names of the object
      */
     public Iterator getPropertyNames() {
         return propertyDescriptorMap.keySet().iterator();

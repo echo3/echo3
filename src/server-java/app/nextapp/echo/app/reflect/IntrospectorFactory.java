@@ -34,14 +34,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Factory for creating <code>ClassLoader</code>-specific
- * <code>ObjectIntrospector</code> instances.
+ * Factory for creating <code>ClassLoader</code>-specific <code>ObjectIntrospector</code> instances.
  */
 public class IntrospectorFactory {
 
     /**
-     * A map containing weak references from class loaders to 
-     * <code>ObjectIntrospector</code> instances.
+     * A map containing references from class loaders to <code>ObjectIntrospector</code> instances.
      */
     private static final Map classLoaderCache = new HashMap();
     

@@ -50,24 +50,30 @@ implements PropertyPeerFactory {
     private static final Map classLoaderToPropertyLoaderMap = new HashMap();
     
     /**
-     * Creates or retrieves a <code>XmlPeerFactory</code>.
+     * Creates or retrieves a <code>SerialPeerFactory</code>.
      * 
      * @param classLoader the <code>ClassLoader</code> to use for 
      *        dynamically loading peer classes
-     * @return the <code>XmlPeerFactory</code>
+     * @return the <code>SerialPeerFactory</code>
      */
     public static SerialPeerFactory forClassLoader(ClassLoader classLoader) {
         synchronized(classLoaderToPropertyLoaderMap) {
-            SerialPeerFactory xmlPeerFactory = (SerialPeerFactory) classLoaderToPropertyLoaderMap.get(classLoader);
-            if (xmlPeerFactory == null) {
-                xmlPeerFactory = new SerialPeerFactory(classLoader);
-                classLoaderToPropertyLoaderMap.put(classLoader, xmlPeerFactory);
+            SerialPeerFactory factory = (SerialPeerFactory) classLoaderToPropertyLoaderMap.get(classLoader);
+            if (factory == null) {
+                factory = new SerialPeerFactory(classLoader);
+                classLoaderToPropertyLoaderMap.put(classLoader, factory);
             }
-            return xmlPeerFactory;
+            return factory;
         }
     }
     
+    /**
+     * Creates a new <code>SerialPeerFactory</code>.
+     * 
+     * @param classLoader the class loader to use for instantiation
+     */
     private SerialPeerFactory(ClassLoader classLoader) {
+        super();
         peerFactory = new PeerFactory(RESOURCE_NAME, classLoader);
     }
     

@@ -101,7 +101,7 @@ public class IntrospectionUtil {
      * @param superType a class name which may/may not be a superclass of
      *        <code>testClass</code>
      * @param classLoader a <code>ClassLoader</code> to use for the analysis.
-     * @return True if <code>superClass</code> is a superclass of 
+     * @return true if <code>superClass</code> is a superclass of 
      *         <code>testClass</code>
      */
     public static boolean isSuperType(String testType, String superType, ClassLoader classLoader) {
