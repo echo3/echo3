@@ -67,7 +67,7 @@ implements SerialPropertyPeer {
         for (int i = 0; i < fibChildNodes.getLength() && fiCount < 8; ++i) {
             Node fiNode = fibChildNodes.item(i);
             if ("fi".equals(fiNode.getNodeName())) {
-                border.setFillImage(fiCount, fillImagePeer.parseFillImageElement(context, (Element)fiNode));
+                border.setFillImage(fiCount, fillImagePeer.fromElement(context, (Element) fiNode));
                 fiCount++;
             } else if ("null-fi".equals(fiNode.getNodeName())) {
                 fiCount++;
@@ -111,7 +111,7 @@ implements SerialPropertyPeer {
                 if (fillImage == null) {
                     fibElement.appendChild(serialContext.getDocument().createElement("null-fi"));
                 } else {
-                    fibElement.appendChild(fillImagePeer.createFillImageElement(context, fillImage));
+                    fibElement.appendChild(fillImagePeer.toElement(context, fillImage));
                 }
             }
         }

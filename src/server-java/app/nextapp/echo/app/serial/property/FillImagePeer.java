@@ -68,7 +68,7 @@ implements SerialPropertyPeer {
      * @return a generated &lt;fi&gt; element representing the fill image
      * @throws SerialException
      */
-    public Element createFillImageElement(Context context, FillImage fillImage) 
+    public Element toElement(Context context, FillImage fillImage) 
     throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
         Element fiElement = serialContext.getDocument().createElement("fi");
@@ -105,7 +105,7 @@ implements SerialPropertyPeer {
      * @return a <code>FillImage</code> representation of the element
      * @throws SerialException
      */
-    public FillImage parseFillImageElement(Context context, Element fiElement) 
+    public FillImage fromElement(Context context, Element fiElement) 
     throws SerialException {
         String imageType = fiElement.getAttribute("t");
         PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
@@ -141,7 +141,7 @@ implements SerialPropertyPeer {
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
     throws SerialException {
         Element fiElement = DomUtil.getChildElementByTagName(propertyElement, "fi");
-        return parseFillImageElement(context, fiElement);
+        return fromElement(context, fiElement);
     }
 
     /**
@@ -154,6 +154,6 @@ implements SerialPropertyPeer {
         FillImage fillImage = (FillImage) propertyValue;
         propertyElement.setAttribute("t", 
                 (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "FillImage" : "FI");
-        propertyElement.appendChild(createFillImageElement(context, fillImage));
+        propertyElement.appendChild(toElement(context, fillImage));
     }
 }
