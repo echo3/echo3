@@ -42,6 +42,9 @@ import nextapp.echo.app.reflect.ObjectIntrospector;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 
+/**
+ * Front-end for translating XML component/style to <code>Style</code> instances. 
+ */
 public class Serializer {
     
     /**
@@ -84,6 +87,11 @@ public class Serializer {
     private Map typeMap;
     private ClassLoader classLoader;
     
+    /**
+     * Creates a new <code>Serializer</code>
+     * 
+     * @param classLoader the <code>ClassLoader</code> to use for instantiation
+     */
     private Serializer(final ClassLoader classLoader) {
         super();
         
@@ -93,6 +101,17 @@ public class Serializer {
         typeMap = new HashMap();
     }
 
+    /**
+     * Returns a <code>Class</code> based on an XML type value.
+     * The provided type may be a java.lang shorthand, e.g., "s" for string, "b" for boolean.
+     * If the provided type is not fully qualified, a standard Echo property type is assumed, e.g.
+     * "Extent" will return the nextapp.echo.app.Extent class.
+     * If the property type is fully qualified, it will simply be loaded by the classloader. 
+     * 
+     * @param type the XML type value
+     * @return the represented <code>Class</code>
+     * @throws ClassNotFoundException in the event that no class exists with the specified type
+     */
     public Class getClass(String type) 
     throws ClassNotFoundException {
         // Attempt to retrieve class from core types.
@@ -125,6 +144,15 @@ public class Serializer {
         return clazz;
     }
     
+    /**
+     * Creates a <code>Style</code> object based on an XML property container.
+     * 
+     * @param serialContext the <code>SerialContext</code> providing contextual information about the serialization
+     * @param componentType the component type for which the <code>Style</code> will be used
+     * @param containerElement the DOM element containing the style properties
+     * @return the generated <code>Style</code>
+     * @throws SerialException
+     */
     public Style loadStyle(final SerialContext serialContext, String componentType, Element containerElement) 
     throws SerialException {
         try {
@@ -146,7 +174,7 @@ public class Serializer {
             for (int i = 0; i < pElements.length; ++i) {
                 // Retrieve property name.
                 if (!pElements[i].hasAttribute("n")) {
-                    throw new SerialException("Found property without type in component \"" + componentType + "\".", null);
+                    throw new SerialException("Found property without name in component \"" + componentType + "\".", null);
                 }
                 String name = pElements[i].getAttribute("n");
 
