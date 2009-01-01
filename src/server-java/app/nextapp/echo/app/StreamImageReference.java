@@ -33,7 +33,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * 
+ * Base class for <code>ImageReference</code>s whose content is delivered by an <code>OutputStream</code>.
+ * Some internal <code>ImageReference</code> types are based on this class, and it may also be used for
+ * images streamed by an application.
  */
 public abstract class StreamImageReference 
 implements ImageReference {

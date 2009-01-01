@@ -46,6 +46,7 @@ public class Grid extends Component {
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
+    /** Default grid column (or row) size (2). */
     public static final int DEFAULT_SIZE = 2;
     
     /**
@@ -79,7 +80,7 @@ public class Grid extends Component {
     }
     
     /**
-     * Creates a new hoirzontally-oriented <code>Grid</code> with the 
+     * Creates a new horizontally-oriented <code>Grid</code> with the 
      * specified size.
      * 
      * @param size the number of columns
