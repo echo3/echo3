@@ -10,11 +10,19 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     $abstract: true,
     
     $static: {
+    
+        /**
+         * Array containing properties that may be updated without full re-render.
+         */
         _supportedPartialProperties: ["text", "editable"]
     },
     
     $virtual: {
         
+        /**
+         * Invoked to ensure that input meets requirements of text field.  Default implementation ensures input
+         * does not exceed maximum length.
+         */
         sanitizeInput: function() {
             var maximumLength = this.component.render("maximumLength", -1);
             if (maximumLength >= 0) {
@@ -39,6 +47,9 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      */
     _focused: false,
     
+    /**
+     * Renders style information: colors, borders, font, insets, etc.
+     */
     _renderStyle: function() {
         if (this.component.isRenderEnabled()) {
             Echo.Sync.renderComponentDefaults(this.component, this._input);
@@ -73,6 +84,9 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /**
+     * Registers event handlers on the text component.
+     */
     _addEventHandlers: function() {
         Core.Web.Event.add(this._input, "click", Core.method(this, this._processClick), false);
         Core.Web.Event.add(this._input, "focus", Core.method(this, this._processFocus), false);
@@ -81,11 +95,17 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.Event.add(this._input, "keyup", Core.method(this, this._processKeyUp), false);
     },
     
+    /**
+     * Reduces a percentage width by a number of pixels based on the container size.
+     */
     _adjustPercentWidth: function(percentValue, reducePixels, containerPixels) {
         var value = (100 - Math.ceil(100 * reducePixels / containerPixels)) * percentValue / 100;
         return value > 0 ? value : 0;
     },
     
+    /**
+     * Processes a focus blur event.
+     */
     _processBlur: function(e) {
         this._focused = false;
         if (!this.client || !this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
@@ -95,6 +115,10 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         this.component.set("text", e.registeredTarget.value);
     },
     
+    /**
+     * Processes a mouse click event.
+     * Notifies application of focus.
+     */
     _processClick: function(e) {
         if (!this.client || !this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
             return true;
@@ -102,6 +126,10 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         this.component.application.setFocusedComponent(this.component);
     },
 
+    /**
+     * Processes a focus event.
+     * Notifies application of focus.
+     */
     _processFocus: function(e) {
         this._focused = true;
         if (!this.client || !this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
@@ -110,6 +138,10 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         this.component.application.setFocusedComponent(this.component);
     },
     
+    /**
+     * Processes a key press event.  
+     * Prevents input when client is not ready. 
+     */
     _processKeyPress: function(e) {
         if (!this.client || !this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
             Core.Web.DOM.preventEventDefault(e);
@@ -117,6 +149,10 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /**
+     * Processes a key up event.  
+     * Prevents input when client is not ready, sanitizes input.  Stores updated form value in <code>Component</code> instance.
+     */
     _processKeyUp: function(e) {
         if (!this.client || !this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
             Core.Web.DOM.preventEventDefault(e);
@@ -136,6 +172,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         return true;
     },
 
+    /** @see Echo.Render.ComponentSync#renderDisplay */
     renderDisplay: function() {
         var width = this.component.render("width");
         if (width && Echo.Sync.Extent.isPercent(width) && this._input.parentNode.offsetWidth) {
@@ -158,6 +195,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
         Core.Web.Event.removeAll(this._input);
         this._focused = false;
@@ -165,6 +203,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         this._container = null;
     },
     
+    /** @see Echo.Render.ComponentSync#renderFocus */
     renderFocus: function() {
         if (this._focused) {
             return;
@@ -174,6 +213,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.DOM.focusElement(this._input);
     },
     
+    /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
         var fullRender = !Core.Arrays.containsAll(Echo.Sync.TextComponent._supportedPartialProperties, 
                     update.getUpdatedPropertyNames(), true);
@@ -213,6 +253,7 @@ Echo.Sync.TextArea = Core.extend(Echo.Sync.TextComponent, {
         Echo.Render.registerPeer("TextArea", this);
     },
 
+    /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         // Render text areas inside of a div to accommodate bugs with IE6 where text areas grow when
         // text is entered if they are set to percent widths.
@@ -243,13 +284,17 @@ Echo.Sync.TextField = Core.extend(Echo.Sync.TextComponent, {
     },
     
     $virtual: {
+        
+        /** Input element type, either "text" or "password" */
         _type: "text"
     },
 
+    /** @see Echo.Render.ComponentSync#getFocusFlags */
     getFocusFlags: function() {
         return Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_UP | Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_DOWN;
     },
 
+    /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         this._input = document.createElement("input");
         this._input.id = this.component.renderId;
@@ -269,6 +314,10 @@ Echo.Sync.TextField = Core.extend(Echo.Sync.TextComponent, {
         parentElement.appendChild(this._input);
     },
 
+    /** 
+     * Allows all input.
+     * @see Echo.Sync.TextComponent#sanitizeInput
+     */
     sanitizeInput: function() {
         // allow all input
     }
@@ -283,5 +332,6 @@ Echo.Sync.PasswordField = Core.extend(Echo.Sync.TextField, {
         Echo.Render.registerPeer("PasswordField", this);
     },
     
+    /** @see Echo.Sync.TextField#_type */
     _type: "password"
 });
