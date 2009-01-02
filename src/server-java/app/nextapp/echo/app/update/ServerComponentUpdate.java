@@ -56,42 +56,29 @@ implements Serializable {
     private static final Component[] EMPTY_COMPONENT_ARRAY = new Component[0];
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
     
-    /**
-     * The set of child <code>Component</code>s added to the <code>parent</code>.
-     */
+    /** The set of child <code>Component</code>s added to the <code>parent</code>. */
     private Set addedChildren;
     
-    /**
-     * The parent component represented in this <code>ServerComponentUpdate</code>.
-     */
+    /** The parent component represented in this <code>ServerComponentUpdate</code>. */
     private Component parent;
     
-    /**
-     * A mapping between property names of the <code>parent</code> component and 
-     * <code>PropertyUpdate</code>s.
-     */
+    /**A mapping between property names of the <code>parent</code> component and <code>PropertyUpdate</code>s. */
     private Map propertyUpdates;
     
-    /**
-     * The set of child <code>Component</code>s removed from the <code>parent</code>.
-     */
+    /** The set of child <code>Component</code>s removed from the <code>parent</code>. */
     private Set removedChildren;
     
-    /**
-     * The set of descendant <code>Component</code>s which are implicitly removed 
-     * as they were children of removed children.
-     */
+    /** The set of descendant <code>Component</code>s which are implicitly removed as they were children of removed children. */
     private Set removedDescendants;
 
-    /**
-     * The set of child <code>Component</code>s whose <code>LayoutData</code> 
-     * was updated. 
-     */
+    /** The set of child <code>Component</code>s whose <code>LayoutData</code> was updated. */
     private Set updatedLayoutDataChildren;
     
     /**
      * Creates a new <code>ServerComponentUpdate</code> representing the given
      * <code>parent</code> <code>Component</code>.
+     * 
+     * @param parent the updating parent <code>Component</code>
      */
     public ServerComponentUpdate(Component parent) {
         this.parent = parent;
@@ -128,18 +115,13 @@ implements Serializable {
     }
     
     /**
-     * Appends the removed child and descendant components of the given 
-     * <code>ServerComponentUpdate</code> to this 
-     * <code>ServerComponentUpdate</code>'s list of removed descendants.
-     * This method is invoked by the <code>ServerUpdateManager</code> when
-     * a component is removed that is an ancestor of a component that has
-     * been updated.  In such a case, the descendant 
-     * <code>ServerComponentUpdate</code> is destroyed,
-     * and thus its removed descendant components must be stored in the
-     * ancestor <code>ServerComponentUpdate</code>.
+     * Appends the removed child and descendant components of the given <code>ServerComponentUpdate</code> to this
+     * <code>ServerComponentUpdate</code>'s list of removed descendants. This method is invoked by the
+     * <code>ServerUpdateManager</code> when a component is removed that is an ancestor of a component that has been updated. In
+     * such a case, the descendant <code>ServerComponentUpdate</code> is destroyed, and thus its removed descendant components must
+     * be stored in the ancestor <code>ServerComponentUpdate</code>.
      * 
-     * @param update the <code>ServerComponentUpdate</code> whose removed
-     *        descendants are to be appended
+     * @param update the <code>ServerComponentUpdate</code> whose removed descendants are to be appended
      */
     public void appendRemovedDescendants(ServerComponentUpdate update) {
         // Append removed descendants.
