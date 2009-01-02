@@ -49,11 +49,22 @@ implements Serializable {
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
+    /** Map between <code>Component</code>s and <code>ClientComponentUpdate</code>s. */
     private Map clientComponentUpdateMap = new HashMap();
+    
+    /** Map between updated application property names and values. */
     private Map applicationUpdateMap = new HashMap();
+    
+    /** The action-providing component. */
     private Component actionComponent;
+    
+    /** The action name. */
     private String actionName;
+    
+    /** The action value. */
     private Object actionValue;
+    
+    /** The relevant <code>ApplicationInstance</code>. */ 
     private ApplicationInstance applicationInstance;
     
     /**

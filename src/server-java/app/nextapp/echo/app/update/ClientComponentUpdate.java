@@ -47,7 +47,10 @@ implements Serializable {
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
+    /** The updated component. */
     private Component component;
+    
+    /** Mapping between input names and input values. */
     private Map inputs;
     
     /**
