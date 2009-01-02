@@ -360,6 +360,9 @@ Echo.Application = Core.extend({
      * Informs the application of the modal state of a specific component.
      * When modal components are unregistered, this method must be executed
      * in order to avoid a memory leak.
+     * 
+     * @param component the component
+     * @param modal the modal state
      */
     _setModal: function(component, modal) {
         Core.Arrays.remove(this._modalComponents, component);
@@ -1461,14 +1464,21 @@ Echo.FocusManager = Core.extend({
         return component;
     },
     
-    _getDescendantIndex: function(parentComponent, descendant) {
-        while (descendant.parent != parentComponent && descendant.parent != null) {
+    /**
+     * Determines the index of the child of <code>parent</code> in which
+     * <code>descendant</code> is contained.
+     * 
+     * @param parent the parent <code>component</code>
+     * @param descendant the descendant <code>component</code>
+     */
+    _getDescendantIndex: function(parent, descendant) {
+        while (descendant.parent != parent && descendant.parent != null) {
             descendant = descendant.parent;
         }
         if (descendant.parent == null) {
             return -1;
         }
-        return parentComponent.indexOf(descendant);
+        return parent.indexOf(descendant);
     }
 });
 
@@ -2944,19 +2954,13 @@ Echo.SplitPane = Core.extend(Echo.Component, {
         DEFAULT_SEPARATOR_SIZE_RESIZABLE: 4,
         DEFAULT_SEPARATOR_COLOR: "#3f3f4f",
         
-        /**
-         * Setting for <code>overflow</code> property that scrollbars should be displayed when content overflows.
-         */
+        /** Setting for <code>overflow</code> property that scrollbars should be displayed when content overflows. */
         OVERFLOW_AUTO: 0,
 
-        /**
-         * Setting for <code>overflow</code> property indicating that overflowing content should be hidden.
-         */
+        /** Setting for <code>overflow</code> property indicating that overflowing content should be hidden. */
         OVERFLOW_HIDDEN: 1,
 
-        /**
-         * Setting for <code>overflow</code> property indicating that scrollbars should always be displayed.
-         */
+        /** Setting for <code>overflow</code> property indicating that scrollbars should always be displayed. */
         OVERFLOW_SCROLL: 2
     },
 
