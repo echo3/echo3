@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------
 Echo Web Application Framework, version 3.0
-Copyright (C) 2002-2008 NextApp, Inc.
+Copyright (C) 2002-2009 NextApp, Inc.
 
 http://echo.nextapp.com/site/echo3/
 
