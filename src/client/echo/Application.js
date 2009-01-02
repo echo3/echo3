@@ -2729,6 +2729,8 @@ Echo.Panel = Core.extend(Echo.Composite, {
 /**
  * A content pane is a high-level container/layout object which provides
  * layout for a content region and floating WindowPanes.
+ * Floating panes should have a property, <code>floatingPane</code>, set to true
+ * on their <code>Echo.Component</code> instance.
  *
  * @sp {#FillImage} backgroundImage the background image
  * @sp {#Extent} horizontalScroll the horizontal scroll position
