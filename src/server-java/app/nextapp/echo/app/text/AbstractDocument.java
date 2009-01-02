@@ -44,7 +44,7 @@ public abstract class AbstractDocument
 implements Document, Serializable {
 
     /**
-     * A listener storage facility.
+     * Listener storage facility.
      */
     protected EventListenerList listenerList = new EventListenerList();
 
@@ -58,8 +58,7 @@ implements Document, Serializable {
     /**
      * Adds a listener which will be notified of changes to the document.
      *
-     * @param l The listener to add.
-     *
+     * @param l the listener to add
      * @see nextapp.echo.app.text.Document#addDocumentListener(DocumentListener)
      */
     public void addDocumentListener(DocumentListener l) {
@@ -69,7 +68,7 @@ implements Document, Serializable {
     /**
      * Notifies listeners about an update to the document.
      *
-     * @param e An event describing the changes to the document.
+     * @param e an event describing the changes to the document
      */
     public void fireDocumentUpdate(DocumentEvent e) {
         EventListener[] listeners = listenerList.getListeners(DocumentListener.class);
@@ -82,8 +81,7 @@ implements Document, Serializable {
     /**
      * Removes a listener from being notified of changes to the document.
      *
-     * @param l The listener to remove.
-     * 
+     * @param l the listener to remove
      * @see nextapp.echo.app.text.Document#removeDocumentListener(DocumentListener)
      */
     public void removeDocumentListener(DocumentListener l) {

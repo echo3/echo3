@@ -51,8 +51,7 @@ public class StringDocument extends AbstractDocument {
     /**
      * Returns the text held in the document.
      *
-     * @return The text.
-     *
+     * @return the text
      * @see nextapp.echo.app.text.Document#getText()
      */
     public String getText() {
@@ -62,8 +61,7 @@ public class StringDocument extends AbstractDocument {
     /**
      * Sets the text held in the document.
      *
-     * @param text The new text.
-     *
+     * @param text the new text
      * @see nextapp.echo.app.text.Document#setText(String)
      */
     public void setText(String text) {

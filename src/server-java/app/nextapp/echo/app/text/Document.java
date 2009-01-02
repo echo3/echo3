@@ -42,7 +42,7 @@ extends Serializable {
     /**
      * Adds a listener which will be notified of changes to the document.
      *
-     * @param l The listener to add.
+     * @param l the listener to add
      */
     public void addDocumentListener(DocumentListener l);
     
@@ -51,21 +51,21 @@ extends Serializable {
      * This method should return ab empty string in the event the document
      * contains no text.  Null may not be returned.
      *
-     * @return The text of the document.
+     * @return the text of the document
      */
     public String getText();
     
     /** 
      * Sets the text of the document.
      * 
-     * @param text The new text of the document.
+     * @param text the new text of the document
      */
     public void setText(String text);
     
     /**
      * Removes a listener from being notified of changes to the document.
      *
-     * @param l The listener to remove.
+     * @param l the listener to remove
      */
     public void removeDocumentListener(DocumentListener l);
 }
