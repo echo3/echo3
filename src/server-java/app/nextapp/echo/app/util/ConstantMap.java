@@ -32,20 +32,46 @@ package nextapp.echo.app.util;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Mapping between constant names and integer constant values and vice-versa
+ * (values can be queried by name, and names queried by value).
+ */
 public class ConstantMap {
     
+    /**
+     * Storage (only one map required, keys have different types).
+     */
     private Map dualMap = new HashMap();
     
+    /**
+     * Adds a constant to the map
+     * 
+     * @param constantValue the value of the constant
+     * @param constantName the name of the constant
+     */
     public void add(int constantValue, String constantName) {
         Integer constantInteger = new Integer(constantValue);
         dualMap.put(constantName, constantInteger);
         dualMap.put(constantInteger, constantName);
     }
     
+    /**
+     * Returns a constant name for a given constant value, if available.
+     * 
+     * @param constantValue the constant value
+     * @return the constant name
+     */
     public String get(int constantValue) {
         return (String) dualMap.get(new Integer(constantValue));
     }
     
+    /**
+     * Returns a constant value for a given constant name, if available.
+     * 
+     * @param constantName the constant name
+     * @param defaultValue the default value to return if a value is not found
+     * @return the constant value
+     */
     public int get(String constantName, int defaultValue) {
         Integer constantValue = (Integer) dualMap.get(constantName);
         return constantValue == null ? defaultValue : constantValue.intValue();

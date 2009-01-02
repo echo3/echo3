@@ -31,7 +31,7 @@ package nextapp.echo.app.util;
 
 /**
  * Generic context object.
- * Specific contexts are obtained by inovking <code>get()</code> method. 
+ * Specific contexts are obtained by invoking <code>get()</code> method. 
  */
 public interface Context {
 
