@@ -8,8 +8,7 @@
  * Main namespace of Echo framework.
  * @namespace
  */
-Echo = {
-};
+Echo = { };
 
 /**
  * Representation of a single application instance.
@@ -535,6 +534,9 @@ Echo.Component = Core.extend({
          * This property must be set by implementors in order for peer discovery to work properly.
          */
         componentType: "Component",
+        
+        /** Flag indicating whether or not the component is focusable. */
+        focusable: false,
 
         /**
          * Returns the child component at the specified index
@@ -552,7 +554,10 @@ Echo.Component = Core.extend({
          */
         getFocusComponent: function(index) {
             return this.children[index];
-        }
+        },
+        
+        /** Flag indicating whether component is rendered as a pane (pane components consume available height). */
+        pane: false
     },
     
     /**
@@ -1532,8 +1537,13 @@ Echo.LayoutDirection.RTL = new Echo.LayoutDirection(false);
  */
 Echo.StyleSheet = Core.extend({
 
+    /** Map between style names and type-name to style maps. */
     _nameToStyleMap: null,
 
+    /** 
+     * Style cache mapping style names and type-name to style maps.  Behaves identically to _nameToStyleMap except styles are 
+     * stored explicitly for every component type.  This provides quick access to style information for the renderer. 
+     */
     _renderCache: null,
     
     /**
@@ -1558,10 +1568,10 @@ Echo.StyleSheet = Core.extend({
     /**
      * Returns the style that should be used for a component.
      * 
-     *  @param {String} name the component's style name
-     *  @param {String} componentType the type of the component
-     *  @return the style
-     *  @type Object
+     * @param {String} name the component's style name
+     * @param {String} componentType the type of the component
+     * @return the style
+     * @type Object
      */
     getRenderStyle: function(name, componentType) {
         // Retrieve style from cache.
@@ -1578,6 +1588,10 @@ Echo.StyleSheet = Core.extend({
         }
     },
     
+    /**
+     * Creates a rendered style object for a specific style name and componentType and stores it in
+     * the cache.  This method is invoked by <code>getRenderStyle()</code> when a cached style cannot be found. 
+     */
     _loadRenderStyle: function(name, componentType) {
         // Retrieve value (type-to-style-map) from name-to-style-map with specified name key.
         var typeToStyleMap = this._nameToStyleMap[name];
@@ -2496,7 +2510,10 @@ Echo.AbstractButton = Core.extend(Echo.Component, {
         Echo.ComponentFactory.registerType("AB", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "AbstractButton",
+
+    /** @see Echo.Component#focusable */
     focusable: true,
     
     $virtual: {
@@ -2520,6 +2537,7 @@ Echo.Button = Core.extend(Echo.AbstractButton, {
         Echo.ComponentFactory.registerType("B", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "Button"
 });
 
@@ -2546,6 +2564,8 @@ Echo.ToggleButton = Core.extend(Echo.AbstractButton, {
     },
 
     $abstract: true,
+
+    /** @see Echo.Component#componentType */
     componentType: "ToggleButton"
 });
 
@@ -2559,6 +2579,7 @@ Echo.CheckBox = Core.extend(Echo.ToggleButton, {
         Echo.ComponentFactory.registerType("CB", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "CheckBox"
 });
 
@@ -2575,6 +2596,7 @@ Echo.RadioButton = Core.extend(Echo.ToggleButton, {
         Echo.ComponentFactory.registerType("RB", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "RadioButton"
 });
 
@@ -2612,7 +2634,10 @@ Echo.AbstractListComponent = Core.extend(Echo.Component, {
         Echo.ComponentFactory.registerType("LC", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "AbstractListComponent",
+
+    /** @see Echo.Component#focusable */
     focusable: true,
     
     $virtual: {
@@ -2655,6 +2680,7 @@ Echo.ListBox = Core.extend(Echo.AbstractListComponent, {
         Echo.ComponentFactory.registerType("LB", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "ListBox"
 });
 
@@ -2668,6 +2694,7 @@ Echo.SelectField = Core.extend(Echo.AbstractListComponent, {
         Echo.ComponentFactory.registerType("SF", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "SelectField"
 });
 
@@ -2692,6 +2719,7 @@ Echo.Column = Core.extend(Echo.Component, {
         Echo.ComponentFactory.registerType("C", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "Column"
 });
 
@@ -2706,6 +2734,7 @@ Echo.Composite = Core.extend(Echo.Component, {
         Echo.ComponentFactory.registerType("CM", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "Composite"
 });
 
@@ -2723,6 +2752,7 @@ Echo.Panel = Core.extend(Echo.Composite, {
         Echo.ComponentFactory.registerType("P", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "Panel"
 });
 
@@ -2748,19 +2778,13 @@ Echo.ContentPane = Core.extend(Echo.Component, {
 
     $static: {
     
-        /**
-         * Setting for <code>overflow</code> property that scrollbars should be displayed when content overflows.
-         */
+        /** Setting for <code>overflow</code> property that scrollbars should be displayed when content overflows. */
         OVERFLOW_AUTO: 0,
 
-        /**
-         * Setting for <code>overflow</code> property indicating that overflowing content should be hidden.
-         */
+        /** Setting for <code>overflow</code> property indicating that overflowing content should be hidden. */
         OVERFLOW_HIDDEN: 1,
 
-        /**
-         * Setting for <code>overflow</code> property indicating that scrollbars should always be displayed.
-         */
+        /** Setting for <code>overflow</code> property indicating that scrollbars should always be displayed. */
         OVERFLOW_SCROLL: 2
     },
 
@@ -2769,7 +2793,10 @@ Echo.ContentPane = Core.extend(Echo.Component, {
         Echo.ComponentFactory.registerType("CP", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "ContentPane",
+    
+    /** @see Echo.Component#pane */
     pane: true
 });
 
@@ -2844,6 +2871,7 @@ Echo.Grid = Core.extend(Echo.Component, {
         Echo.ComponentFactory.registerType("G", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "Grid"
 });
 
@@ -2870,6 +2898,7 @@ Echo.Label = Core.extend(Echo.Component, {
         Echo.ComponentFactory.registerType("L", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "Label"
 });
 
@@ -2894,6 +2923,7 @@ Echo.Row = Core.extend(Echo.Component, {
         Echo.ComponentFactory.registerType("R", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "Row"
 });
 
@@ -2971,7 +3001,10 @@ Echo.SplitPane = Core.extend(Echo.Component, {
         Echo.ComponentFactory.registerType("SP", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "SplitPane",
+
+    /** @see Echo.Component#pane */
     pane: true
 });
 
@@ -3016,7 +3049,10 @@ Echo.TextComponent = Core.extend(Echo.Component, {
         }
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "TextComponent",
+
+    /** @see Echo.Component#focusable */
     focusable: true
 });
 
@@ -3030,6 +3066,7 @@ Echo.TextArea = Core.extend(Echo.TextComponent, {
         Echo.ComponentFactory.registerType("TA", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "TextArea"
 });
 
@@ -3043,6 +3080,7 @@ Echo.TextField = Core.extend(Echo.TextComponent, {
         Echo.ComponentFactory.registerType("TF", this);
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "TextField"
 });
 
@@ -3056,6 +3094,7 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
         Echo.ComponentFactory.registerType("PF", this);
     },
     
+    /** @see Echo.Component#componentType */
     componentType: "PasswordField"
 });
 
@@ -3124,11 +3163,28 @@ Echo.WindowPane = Core.extend(Echo.Component, {
         DEFAULT_WIDTH: "30em"
     },
 
+    /** @see Echo.Component#componentType */
     componentType: "WindowPane",
+    
+    /** @see Echo.Component#modalSupport */
     modalSupport: true,
+    
+    /**
+     * Render as floating pane in ContentPanes. 
+     * @see Echo.ContentPane 
+     */
     floatingPane: true,
+
+    /** @see Echo.Component#pane */
     pane: true,
+    
+    /** @see Echo.Component#focusable */
     focusable: true,
+    
+    /** 
+     * Object specifying state of window pane before it was maximized,
+     * May contain x, y, width, height integer properties or be null.
+     */
     _preMaximizedState: null,
     
     /**
