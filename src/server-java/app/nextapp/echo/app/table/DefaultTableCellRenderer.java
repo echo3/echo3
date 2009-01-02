@@ -46,7 +46,8 @@ implements TableCellRenderer {
      * Returns a <code>Label</code> containing the toString() value of the 
      * model value.  Returns null in the event the model value is null.
      * 
-     * @see nextapp.echo.app.table.TableCellRenderer#getTableCellRendererComponent(nextapp.echo.app.Table, java.lang.Object, int, int)
+     * @see nextapp.echo.app.table.TableCellRenderer#getTableCellRendererComponent(
+     *      nextapp.echo.app.Table, java.lang.Object, int, int)
      */
     public Component getTableCellRendererComponent(Table table, Object value, int column, int row) {
         if (value == null) {
