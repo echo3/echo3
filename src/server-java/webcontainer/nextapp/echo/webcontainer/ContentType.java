@@ -53,7 +53,10 @@ implements Serializable {
     public static final ContentType TEXT_XML = new ContentType("text/xml", false);
     public static final ContentType TEXT_CSS = new ContentType("text/css", false);
 
+    /** The mime type. */
     private String mimeType = null;
+    
+    /** Flag indicating whether the content type is binary (true) or text (false). */
     private boolean binary = false;
     
     /**
