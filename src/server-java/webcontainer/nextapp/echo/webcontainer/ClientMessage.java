@@ -39,48 +39,111 @@ import nextapp.echo.app.util.DomUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/**
+ * The incoming XML message which synchronizes the state of the server to that of the client.
+ */
 public class ClientMessage {
     
     public static final String TYPE_INITIALIZE = "init";
     
+    /**
+     * Interface for <code>Processor</code>s which may be associated with a specific type of <code>&lt;dir&gt;</code>
+     * (directive) element in the XML message.  Registered processors will be invoked by <code>ClientMessage.process()</code>.
+     */
     public static interface Processor {
         
+        /**
+         * Processes a client message directive.
+         * 
+         * @param context the relevant <code>Context</code>
+         * @param dirElement the <code>&lt;dir&gt;</code> (directive) element
+         * @throws IOException if the directive contains invalid information
+         */
         public void process(Context context, Element dirElement)
         throws IOException ;
     }
 
+    /**
+     * Mapping between <code>Processor</code> names and classes.
+     */
     private static final Map processorNameToClass = new HashMap();
     
+    /**
+     * Registers a <code>ClientMessage.Processor</code>.  
+     * 
+     * @param name the directive name for which the processor will be invoked
+     * @param processorClass the <code>Class</code> of the processor which should be instantiated to process
+     *        the specified directive name
+     */
     public static void register(String name, Class processorClass) {
-        processorNameToClass.put(name, processorClass);
+        synchronized(processorNameToClass) {
+            if (processorNameToClass.containsKey(name)) {
+                throw new IllegalStateException("A ClientMessage Processor has already been registered for the directive \""
+                        + name + "\"");
+            }
+            processorNameToClass.put(name, processorClass);
+        }
     }
     
+    /** The XML DOM. */
     private Document document;
+    
+    /** The request type. */
     private String type;
+    
+    /** The sequential transaction identifier, used for determining if the client has the current application state. */
     private int transactionId;
     
+    /**
+     * Creates a new <Code>ClientMessage</code>.
+     * 
+     * @param document the XML DOM received from the client
+     * @throws IOException
+     */
     public ClientMessage(Document document) 
     throws IOException {
         super();
-
-        // Retrieve message type.
         this.document = document;
+
+        // Retrieve message type, transaction id.
         type = document.getDocumentElement().getAttribute("t");
         transactionId = Integer.parseInt(document.getDocumentElement().getAttribute("i"));
     }
     
+    /**
+     * Returns the XML DOM received from the client.
+     * 
+     * @return the XML DOM
+     */
     public Document getDocument() {
         return document;
     }
     
+    /**
+     * Returns the transaction identifier, used for determining if the client has the current application state.
+     * 
+     * @return the transaction identifier
+     */
     public int getTransactionId() {
         return transactionId;
     }
     
+    /**
+     * Returns the request type, if provided, e.g., <code>TYPE_INITIALIZE</code> to indicate the initial synchronization.
+     * 
+     * @return the request type
+     */
     public String getType() {
         return type;
     }
     
+    /**
+     * Processes the top-level directives of the <code>ClientMessage</code>, invoking the registered 
+     * <code>ClientMesage.Processor</code>s associated with each top-level directive type.
+     * 
+     * @param context the <code>Context</code>
+     * @throws IOException
+     */
     public void process(Context context)
     throws IOException {
         Element[] dirElements = DomUtil.getChildElementsByTagName(document.getDocumentElement(), "dir");
