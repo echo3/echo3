@@ -114,9 +114,8 @@ Echo.Render = {
      */
     _loadPeer: function(client, component) {
         if (component.peer) {
+            // If peer already loaded, do nothing.
             return;
-    // FIXME. which behavior is correct for this scenario: ignore or fail?    
-    //        throw new Error("Peer already installed: " + component);
         }
         
         var peerClass = Echo.Render._peers[component.componentType];
