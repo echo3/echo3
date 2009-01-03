@@ -142,9 +142,6 @@ implements SerialPropertyPeer {
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
-        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
-        propertyElement.setAttribute("t", 
-                (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Extent" : "X");
-        propertyElement.appendChild(serialContext.getDocument().createTextNode(toString((Extent) propertyValue)));
+        propertyElement.appendChild(propertyElement.getOwnerDocument().createTextNode(toString((Extent) propertyValue)));
     }
 }

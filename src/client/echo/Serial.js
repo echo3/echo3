@@ -475,25 +475,6 @@ Echo.Serial.Border = {
 Echo.Serial.addPropertyTranslator("Border", Echo.Serial.Border);
 Echo.Serial.addPropertyTranslator("BO", Echo.Serial.Border);
 
-//FIXME delete
-/**
- * Extent Property Translator Singleton.
- * @class
- */
-Echo.Serial.Extent = {
-
-    toProperty: function(client, pElement) {
-        return  pElement.firstChild.data;
-    },
-    
-    toXml: function(client, pElement, value) {
-        pElement.appendChild(pElement.ownerDocument.createTextNode(value.toString()));
-    }
-};
-
-Echo.Serial.addPropertyTranslator("Extent", Echo.Serial.Extent);
-Echo.Serial.addPropertyTranslator("X", Echo.Serial.Extent);
-
 /**
  * FillImage Property Translator Singleton.
  * @class
