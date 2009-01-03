@@ -759,7 +759,6 @@ Echo.RemoteClient.ClientMessage = Core.extend({
         for (var componentId in this._componentIdToPropertyMap) {
             var propertyMap = this._componentIdToPropertyMap[componentId];
             var component = this._client.application.getComponentByRenderId(componentId);
-            var peerClass = Echo.Render.getPeerClass(component);
             for (var propertyName in propertyMap) {
                 var propertyValue = propertyMap[propertyName];
                 var pElement = this._document.createElement("p");

@@ -100,10 +100,6 @@ Echo.Render = {
         return depth;
     },
     
-    getPeerClass: function(component) {
-        return Echo.Render._peers[component.componentType];
-    },
-    
     /**
      * Creates a component synchronization peer for a component.
      * The peer will be stored in the "peer" property of the component.
@@ -584,12 +580,19 @@ Echo.Render.ComponentSync = Core.extend({
  */
 Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, { 
 
+    $load: function() {
+        Echo.Render.registerPeer("Root", this);
+    },
+    
+    /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         throw new Error("Unsupported operation: renderAdd().");
     },
     
+    /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) { },
     
+    /** @see Echo.Render.ComponentSync#renderDispose */
     renderUpdate: function(update) {
         var fullRender = false;
         if (update.hasAddedChildren() || update.hasRemovedChildren()) {
@@ -623,4 +626,3 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
     }
 });
 
-Echo.Render.registerPeer("Root", Echo.Render.RootSync);
