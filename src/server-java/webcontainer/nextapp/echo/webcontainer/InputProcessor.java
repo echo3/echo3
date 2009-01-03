@@ -66,6 +66,7 @@ public class InputProcessor {
          */
         private SerialContext serialContext = new SerialContext() {
         
+            /** The <code>ClassLoader</code> for this context. */
             private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
             /**
@@ -112,9 +113,16 @@ public class InputProcessor {
         }
     }
     
+    /** The <code>Connection</code> being processed. */
     private Connection conn;
+    
+    /** The <code>SynchronizationState</code> used to determine if this client/server are out-of-sync. */
     private SynchronizationState syncState;
+    
+    /** The incoming <code>ClientMessage</code> provided to the context. */
     private ClientMessage clientMessage;
+    
+    /** The <code>PropertyPeerFactory</code> provided to the context. */
     private PropertyPeerFactory propertyPeerFactory;
 
     /**
@@ -132,6 +140,9 @@ public class InputProcessor {
     
     /**
      * Processes input to the application, parsing a client message provided in the <code>Connection</code>.
+     * Verifies client/server are in sync, and performs full refresh if they are not.
+     * Writes incoming XML message to <code>System.err</code> in the event debug flag is enabled.
+     * Invokes <code>ClientMessage.process()</code> to begin client-message processing (assuming client/server are synchronized).
      */
     public void process() 
     throws IOException {

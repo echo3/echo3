@@ -95,6 +95,7 @@ class OutputProcessor {
          */
         private SerialContext serialContext = new SerialContext() {
         
+            /** The <code>ClassLoader</code> for this context. */
             private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             
             /**
