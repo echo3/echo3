@@ -54,7 +54,7 @@ implements CommandSynchronizePeer {
          * Returns the property value.
          * 
          * @param context the relevant <code>Context</code>
-         * @param command the <code>Comand</code> being rendered
+         * @param command the <code>Command</code> being rendered
          */
         public Object getProperty(Context context, Command command);
     }
@@ -69,7 +69,7 @@ implements CommandSynchronizePeer {
          * which indices of the property are currently set.
          * 
          * @param context the relevant <code>Context</code>
-         * @param command the <code>Comand</code> being rendered
+         * @param command the <code>Command</code> being rendered
          * @return an iterator indicating indices of properties that are set.
          */
         public Iterator getPropertyIndices(Context context, Command command);
@@ -78,7 +78,7 @@ implements CommandSynchronizePeer {
          * Returns the property value of a specific index.
          * 
          * @param context the relevant <code>Context</code>
-         * @param command the <code>Comand</code> being rendered
+         * @param command the <code>Command</code> being rendered
          * @param propertyIndex the property index
          * @return the property value.
          */

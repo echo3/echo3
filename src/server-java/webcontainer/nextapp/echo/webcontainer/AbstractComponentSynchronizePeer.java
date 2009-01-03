@@ -67,46 +67,99 @@ implements ComponentSynchronizePeer {
      */
     public static class EventPeer {
         
+        /**
+         * The <code>Class</code> type of the event data that will be received from the client (used to determine serialization
+         * peer to use for processing).
+         */
         private Class eventDataClass;
         
-        private String eventName;
+        /** The client side event type name. */
+        private String eventType;
         
+        /** The listener property name, defined in the server-side <code>Component</code>. */
         private String listenerPropertyName;
         
+        /** Default constructor. */
         public EventPeer() {
             this(null, null, null);
         }
         
-        public EventPeer(String eventName, String listenerPropertyName) {
-            this(eventName, listenerPropertyName, null);
+        /**
+         * @param eventType the name of the event, as serialized to the client
+         * @param listenerPropertyName the name of the event property in the <code>Component</code>, i.e., the property name of the
+         *        <code>PropertyChangeEvent</code> fired when listeners are added/removed
+         */ 
+        public EventPeer(String eventType, String listenerPropertyName) {
+            this(eventType, listenerPropertyName, null);
         }
         
-        public EventPeer(String eventName, String listenerPropertyName, Class eventDataClass) {
+        /**
+         * @param eventType the name of the event, as serialized to the client
+         * @param listenerPropertyName the name of the event property in the <code>Component</code>, i.e., the property name of the
+         *        <code>PropertyChangeEvent</code> fired when listeners are added/removed 
+         * @param eventDataClass the <code>Class</code> type of the event data that will be received from the client (used to
+         *        determine serialization peer to use for processing)
+         */
+        public EventPeer(String eventType, String listenerPropertyName, Class eventDataClass) {
             super();
-            this.eventName = eventName;
+            this.eventType = eventType;
             this.listenerPropertyName = listenerPropertyName;
             this.eventDataClass = eventDataClass;
         }
         
-        public String getEventName() {
-            return eventName;
+        /**
+         * Returns the client-side event type name.
+         * 
+         * @return the client-side event type name
+         */
+        public String getEventType() {
+            return eventType;
         }
         
+        /**
+         * Returns the name of the event property in the <code>Component</code>, i.e., the property name of the
+         * <code>PropertyChangeEvent</code> fired when listeners are added/removed.
+         * 
+         * @return the name of the event property 
+         */
         public String getListenerPropertyName() {
             return listenerPropertyName;
         }
         
+        /**
+         * Returns the <code>Class</code> type of the event data that will be received from the client (used to
+         * determine serialization peer to use for processing)
+         * 
+         * @return the event data <code>Class</code>
+         */
         public Class getEventDataClass() {
             return eventDataClass;
         }
         
+        /**
+         * Determines if the <code>Component</code> has any listeners of this type.
+         * Default implementation simply returns true, should be overridden by derived implementations
+         * when possible to return false when no listeners of the this type exist.
+         * 
+         * @param context the relevant <code>Context</code>
+         * @param c the <code>Component</code>
+         * @return true if the <code>Component</code> has registered listeners of this type
+         */
         public boolean hasListeners(Context context, Component c) {
             return true;
         }
 
+        /**
+         * Processes an event received from the client-side component.
+         * 
+         * @param context the relevant contextual information
+         * @param component the server-side <code>Component</code>
+         * @param eventData the serialized event data from the client (will be of type specified by
+         *        <code>getEventDataClass()</code>)
+         */
         public void processEvent(Context context, Component component, Object eventData) {
             ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
-            clientUpdateManager.setComponentAction(component, eventName, eventData);
+            clientUpdateManager.setComponentAction(component, eventType, eventData);
         }
     }
     
@@ -165,7 +218,7 @@ implements ComponentSynchronizePeer {
         if (eventTypeToEventPeer == null) {
             eventTypeToEventPeer = new HashMap();
         }
-        eventTypeToEventPeer.put(eventPeer.getEventName(), eventPeer);
+        eventTypeToEventPeer.put(eventPeer.getEventType(), eventPeer);
     }
     
     /**
@@ -235,7 +288,7 @@ implements ComponentSynchronizePeer {
     }
 
     /**
-     * Returns an iterator containing all event types registered using <code>addEvent()</code>.
+     * Returns an iterator of <code>String</code>s containing all event types registered using <code>addEvent()</code>.
      * 
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getEventTypes(Context, Component)
      */
