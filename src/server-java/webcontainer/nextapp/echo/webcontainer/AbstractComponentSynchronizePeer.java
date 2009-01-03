@@ -59,11 +59,11 @@ implements ComponentSynchronizePeer {
      * <code>addEvent()</code> method of the <code>AbstractComponentSynchronizePeer</code>
      * object.
      * 
-     *  This object will often be derived with overriding implementations of the
-     *  <code>hasListeners()</code> method to return true in cases where the supported
-     *  server-side <code>Component</code> has registered listeners of the appropriate type,
-     *  such that only events that actually will result in code being executed will cause
-     *  immediate server interactions.
+     * This object will often be derived with overriding implementations of the
+     * <code>hasListeners()</code> method to return true in cases where the supported
+     * server-side <code>Component</code> has registered listeners of the appropriate type,
+     * such that only events that actually will result in code being executed will cause
+     * immediate server interactions.
      */
     public static class EventPeer {
         
@@ -163,27 +163,22 @@ implements ComponentSynchronizePeer {
         }
     }
     
-    /**
-     * A <code>Set</code> containing the names of all additional properties to be
-     * rendered to the client.
-     */
+    /** A <code>Set</code> containing the names of all additional properties to be rendered to the client. */
     private Set additionalProperties = null;
     
-    /**
-     * A <code>Set</code> containing the names of all style properties.
-     */
+    /** A <code>Set</code> containing the names of all style properties. */
     private Set stylePropertyNames = null;
     
-    /**
-     * A <code>Set</code> containing the names of all properties which are indexed.
-     */
+    /** A <code>Set</code> containing the names of all properties which are indexed. */
     private Set indexedPropertyNames = null;
     
-    
+    /** A <code>Set</code> containing the names of properties which should be rendered-by-reference. */
     private Set referencedProperties = null;
     
+    /** Mapping between event types (<code>String</code>s) and <code>EventPeer</code>s. */
     private Map eventTypeToEventPeer;
     
+    /** Set of <code>Component</code> <code>Class</code>es whose peers must be initialized in order for the component to render. */
     private Set requiredComponentClasses;
 
     /**
@@ -214,6 +209,11 @@ implements ComponentSynchronizePeer {
         }
     }
     
+    /**
+     * Adds an <code>EventPeer</code> to process client-side events.
+     * 
+     * @param eventPeer the <code>EventPeer</code> to add
+     */
     public void addEvent(EventPeer eventPeer) {
         if (eventTypeToEventPeer == null) {
             eventTypeToEventPeer = new HashMap();
