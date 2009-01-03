@@ -23,8 +23,6 @@ Echo.Render = {
 
     /**
      * Mapping between component type names and instantiable peer classes.
-     * 
-     * @type Object
      */
     _peers: {},
     
@@ -36,7 +34,7 @@ Echo.Render = {
      */
     _disposedComponents: null,
     
-    //FIXME.  Scrollbar position tracking code in SplitPane appears to suggest that
+    //FIXME  Scrollbar position tracking code in SplitPane appears to suggest that
     // disposed states are not in good shape....SplitPane is being disposed when
     // parent contentPane is redrawn.
     
