@@ -624,20 +624,6 @@ Echo.Serial.addPropertyTranslator("ImageReference", Echo.Serial.ImageReference);
 Echo.Serial.addPropertyTranslator("I", Echo.Serial.ImageReference);
 
 /**
- * Insets Property Translator Singleton.
- * @class
- */
-Echo.Serial.Insets = {
-
-    toProperty: function(client, pElement) {
-        return pElement.firstChild.data;
-    }
-};
-
-Echo.Serial.addPropertyTranslator("Insets", Echo.Serial.Insets);
-Echo.Serial.addPropertyTranslator("N", Echo.Serial.Insets);
-
-/**
  * LayoutData Property Translator Singleton.
  * @class
  */

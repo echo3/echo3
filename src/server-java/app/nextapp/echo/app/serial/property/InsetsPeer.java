@@ -35,7 +35,6 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Insets;
-import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.Context;
@@ -151,9 +150,6 @@ implements SerialPropertyPeer {
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
-        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
-        propertyElement.setAttribute("t", 
-                (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Insets" : "N");
-        propertyElement.appendChild(serialContext.getDocument().createTextNode(toString((Insets) propertyValue)));
+        propertyElement.appendChild(propertyElement.getOwnerDocument().createTextNode(toString((Insets) propertyValue)));
     }
 }

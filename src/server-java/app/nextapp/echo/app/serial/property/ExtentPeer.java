@@ -33,7 +33,6 @@ import org.w3c.dom.Element;
 
 import nextapp.echo.app.DecimalExtent;
 import nextapp.echo.app.Extent;
-import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.ConstantMap;
