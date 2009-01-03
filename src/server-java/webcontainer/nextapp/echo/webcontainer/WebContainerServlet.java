@@ -72,8 +72,6 @@ public abstract class WebContainerServlet extends HttpServlet {
         DEBUG_PRINT_MESSAGES_TO_CONSOLE = value;
     }
     
-    public static final String ROOT_HTML_ELEMENT_ID = "root";
-    
     /**
      * Creates a new <code>ApplicationInstance</code> for visitor to an 
      * application.
