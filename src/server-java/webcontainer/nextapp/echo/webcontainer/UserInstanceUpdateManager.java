@@ -43,7 +43,10 @@ implements Serializable {
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
+    /** Zero length string array. */
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
+    
+    /** Names of updated properties. */
     private Set updatedPropertyNames = new HashSet();
     
     /**
