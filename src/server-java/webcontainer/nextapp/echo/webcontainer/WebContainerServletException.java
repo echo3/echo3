@@ -39,40 +39,36 @@ public class WebContainerServletException extends RuntimeException {
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
+    /** Causal exception, if applicable. */
     private Throwable cause;
     
     /**
      * Creates a new EchoServletException with a description of its cause.
      *
-     * @param message A message describing the exception.
+     * @param message a message describing the exception
      */
     public WebContainerServletException(String message) {
         super(message);
-        
-        cause = this;
     }
 
     /**
      * Creates a new EchoServletException with a description of its cause that
      * wraps another exception.
      *
-     * @param message A message describing the exception.
-     * @param cause The exception which caused this exception to be thrown.
+     * @param message a message describing the exception
+     * @param cause the exception which caused this exception to be thrown
      */
     public WebContainerServletException(String message, Throwable cause) {
         super(message);
-        
         this.cause = cause;
     }
     
     /**
-     * Returns the wrapped exception that caused this exception to be thrown.
-     * If the root cause was not a wrapped exception or is this object, null
-     * is returned.
+     * Returns the wrapped exception that caused this exception to be thrown, if applicable.
      *
-     * @return The cause of this exception.
+     * @return the cause of this exception
      */
     public Throwable getCause() {
-        return cause == this ? null : cause;
+        return cause;
     }
 }

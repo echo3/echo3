@@ -80,10 +80,7 @@ public abstract class WebContainerServlet extends HttpServlet {
      */
     public abstract ApplicationInstance newApplicationInstance();
     
-    /** 
-     * A <code>ThreadLocal</code> reference to the 
-     * <code>Connection</code> relevant to the current thread.
-     */ 
+    /** A <code>ThreadLocal</code> reference to the <code>Connection</code> relevant to the current thread. */ 
     private static final ThreadLocal activeConnection = new ThreadLocal();
     
     /**
@@ -93,14 +90,10 @@ public abstract class WebContainerServlet extends HttpServlet {
      */
     public static final boolean DISABLE_CACHING = false;
     
-    /**
-     * Flag indicating whether client-side debug console should be enabled.
-     */
+    /** Flag indicating whether client-side debug console should be enabled. */
     public static final boolean ENABLE_CLIENT_DEBUG_CONSOLE = true;
     
-    /**
-     * Request parameter identifying requested <code>Service</code>.
-     */
+    /** Request parameter identifying requested <code>Service</code>. */
     public static final String SERVICE_ID_PARAMETER = "sid";
     
     /**
@@ -110,9 +103,7 @@ public abstract class WebContainerServlet extends HttpServlet {
      */
     public static final String SERVICE_ID_DEFAULT = "Echo.Default";
     
-    /**
-     * <code>Service</code> identifier of the blank document service.
-     */
+    /** <code>Service</code> identifier of the blank document service. */
     public static final String SERVICE_ID_BLANK_DOCUMENT = "Echo.BlankDocument";
     
     /**
@@ -130,30 +121,28 @@ public abstract class WebContainerServlet extends HttpServlet {
      */
     public static final String SERVICE_ID_SESSION_EXPIRED = "Echo.Expired";
     
-    /**
-     * Global handler for multipart/form-data encoded HTTP requests.
-     */
+    /** Global handler for multipart/form-data encoded HTTP requests. */
     private static MultipartRequestWrapper multipartRequestWrapper;
     
+    /** Time at which servlet was loaded by class loader. */
     private static final long startupTime = System.currentTimeMillis();
     
-    /**
-     * Global <code>ResourceRegistry</code>.
-     */
+    /** Global <code>ResourceRegistry</code>. */
     private static final ResourceRegistry resources = new ResourceRegistry();
     
-    /**
-     * Global <code>ServiceRegistry</code>.
-     */
+    /** Global <code>ServiceRegistry</code>. */
     private static final ServiceRegistry services = new ServiceRegistry();
 
     static {
+        // Install bootstrap JavaScript service.
         BootService.install(services);
         
+        // Register "Echo" package, add standard resources.
         resources.addPackage("Echo", "nextapp/echo/webcontainer/resource/");
         resources.add("Echo", "resource/Transparent.gif", ContentType.IMAGE_GIF);
         resources.add("Echo", "resource/Blank.html", ContentType.TEXT_HTML);
         
+        // Add standard services.
         services.add(ResourceService.INSTANCE);
         services.add(new StaticTextService(SERVICE_ID_BLANK_DOCUMENT, "text/html", "<html></html>"));
     }
@@ -244,7 +233,10 @@ public abstract class WebContainerServlet extends HttpServlet {
         }
     }
     
+    /** Collection of JavaScript <code>Service</code>s which should be initially loaded. */
     private List initScripts = null; 
+    
+    /** Collection of CSS style sheet <code>Service</code>s which should be initially loaded. */
     private List initStyleSheets = null;
     
     /**
