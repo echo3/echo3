@@ -107,6 +107,7 @@ implements ClientMessage.Processor {
             Component component = userInstance.getComponentByClientRenderId(componentId);
             ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
             
+            // Process updated properties.
             Iterator updatedPropertyIt = getUpdatedPropertyNames(componentId);
             while (updatedPropertyIt.hasNext()) {
                 String propertyName = (String) updatedPropertyIt.next();
@@ -118,14 +119,17 @@ implements ClientMessage.Processor {
                     continue;
                 }
                 
+                // Retrieve peer for property class.
                 SerialPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(propertyClass);
                 
                 if (propertyPeer == null) {
+                    // Property peer not available, log error, continue.
                     Log.log("No peer available for property: " + propertyName + " of class: " + propertyClass);
                     continue;
                 }
                 
                 try {
+                    // Invoke storeInputProperty() method on component peer.
                     Object propertyValue = propertyPeer.toProperty(context, component.getClass(), propertyElement);
                     componentPeer.storeInputProperty(context, component, propertyName, -1, propertyValue);
                 } catch (SerialException ex) {
@@ -135,6 +139,7 @@ implements ClientMessage.Processor {
             }
         }
         
+        // Process event which caused client-server synchronization request, if applicable.
         if (getEvent() != null) {
             Component component = userInstance.getComponentByClientRenderId(getEventComponentId());
             ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());

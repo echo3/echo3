@@ -41,6 +41,8 @@ import org.w3c.dom.Element;
 
 /**
  * The incoming XML message which synchronizes the state of the server to that of the client.
+ * Provides global facility to register processors to handle directive types.
+ * Processes DOm and invokes registered processors on individual messages.
  */
 public class ClientMessage {
     
