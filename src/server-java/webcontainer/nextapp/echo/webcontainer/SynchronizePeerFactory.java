@@ -36,7 +36,10 @@ import nextapp.echo.app.util.PeerFactory;
  */
 public class SynchronizePeerFactory {
 
+    /** Resource location of synchronization peer. */
     private static final String RESOURCE_NAME = "META-INF/nextapp/echo/SynchronizePeerBindings.properties";
+    
+    /** Peer factory for retrieving synchronization peers. */
     private static final PeerFactory peerFactory 
             = new PeerFactory(RESOURCE_NAME, Thread.currentThread().getContextClassLoader());
     
@@ -79,15 +82,4 @@ public class SynchronizePeerFactory {
     public static ComponentSynchronizePeer getPeerForComponent(Class componentClass, boolean searchSuperClasses) {
         return (ComponentSynchronizePeer) peerFactory.getPeerForObject(componentClass, searchSuperClasses);
     }
-    
-//    /**
-//     * Retrieves the appropriate <code>PropertySynchronizePeer</code> for a given 
-//     * property class.
-//     * 
-//     * @param propertyClass the property class
-//     * @return the appropriate <code>PropertySynchronizePeer</code>
-//     */
-//    public static PropertySynchronizePeer getPeerForProperty(Class propertyClass) {
-//        return (PropertySynchronizePeer) peerFactory.getPeerForObject(propertyClass, true);
-//    }
 }

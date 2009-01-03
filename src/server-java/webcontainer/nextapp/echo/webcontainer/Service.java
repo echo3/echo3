@@ -51,7 +51,7 @@ public interface Service {
     /**
      * Returns the unique identifier of this service.
      * 
-     * @return The unique identifier of this service.
+     * @return the unique identifier of this service
      */
     public String getId();
 
@@ -61,7 +61,7 @@ public interface Service {
      * <code>getVersion()</code> should return distinct values whenever the 
      * service's content may have changed.
      *
-     * @return The current version number of the service.
+     * @return the current version number of the service
      */
     public int getVersion();
     
@@ -70,12 +70,12 @@ public interface Service {
      * as methods for issuing a response are available from the provided
      * Connection object.
      *
-     * @param conn A <code>Connection</code> object which wraps 
+     * @param conn a <code>Connection</code> object which wraps 
      *        <code>HttpServletRequest</code> and 
      *        <code>HttpServletResponse</code> objects and provides
-     *        access to the facilities of the Echo application container.
+     *        access to the facilities of the Echo application container
      * @throws IOException in the event of errors related to processing the
-     *         HTTP request or producing a response.
+     *         HTTP request or producing a response
      */
     public void service(Connection conn)
     throws IOException;

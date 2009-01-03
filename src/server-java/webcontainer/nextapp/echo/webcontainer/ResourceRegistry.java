@@ -32,6 +32,7 @@ package nextapp.echo.webcontainer;
 import java.util.HashMap;
 import java.util.Map;
 
+//FIXME no docs.
 public class ResourceRegistry {
 
     private Map packageToLocationMap = new HashMap();

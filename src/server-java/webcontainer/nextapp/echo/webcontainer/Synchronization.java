@@ -40,8 +40,13 @@ import nextapp.echo.app.ApplicationInstance;
 public class Synchronization 
 implements SynchronizationState {
 
+    /** The <code>Connection</code> being processed. */
     private Connection conn;
+    
+    /** The relevant <code>UserInstance</code>. */
     private UserInstance userInstance;
+    
+    /** Flag indicating whether synchronization is coming from an out-of-sync client. */
     private boolean outOfSync = false;
 
     /**

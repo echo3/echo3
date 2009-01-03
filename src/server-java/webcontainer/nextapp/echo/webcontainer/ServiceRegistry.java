@@ -29,10 +29,8 @@
 
 package nextapp.echo.webcontainer;
 
-
 import java.util.HashMap;
 import java.util.Map;
-
 
 /**
  * A registry of <code>Service</code> objects that may be recalled based
@@ -75,7 +73,7 @@ public class ServiceRegistry {
      */
     public synchronized void add(Service service) {
         if (serviceMap.containsKey(service.getId()) 
-        		&& serviceMap.get(service.getId()).getClass().getName() != service.getClass().getName()) {
+                && serviceMap.get(service.getId()).getClass().getName() != service.getClass().getName()) {
             throw new IllegalArgumentException("Identifier already in use by another service.");
         }
         serviceMap.put(service.getId(), service);

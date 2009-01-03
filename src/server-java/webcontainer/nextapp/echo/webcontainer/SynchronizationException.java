@@ -36,6 +36,7 @@ import java.io.IOException;
  */
 public class SynchronizationException extends IOException {
     
+    /** The causal exception, if applicable. */
     private Throwable cause;
     
     /**

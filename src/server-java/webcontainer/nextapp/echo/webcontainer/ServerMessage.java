@@ -69,9 +69,7 @@ public class ServerMessage {
     /** Root DOM <code>server-message</code> element. */
     private Element serverMessageElement;
     
-    /**
-     * The XML DOM.
-     */
+    /** The XML DOM. */
     private Document document;
 
     /**
