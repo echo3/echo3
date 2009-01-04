@@ -38,6 +38,7 @@ import java.io.InputStream;
  */
 public class Resource {
     
+    /** Buffer size for use in streaming an <code>InputStream</code> to an <code>OutputStream</code>. */
     private static final int BUFFER_SIZE = 4096;
     
     /**

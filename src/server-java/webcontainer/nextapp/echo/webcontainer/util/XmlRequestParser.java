@@ -41,6 +41,10 @@ import org.xml.sax.SAXException;
 
 import nextapp.echo.app.util.DomUtil;
 
+/**
+ * Utilities for parsing XML <code>InputStream</code>s from browsers.
+ * This object is necessary to accommodate certain browsers that provide invalid information.
+ */
 public class XmlRequestParser {
     
     /**
