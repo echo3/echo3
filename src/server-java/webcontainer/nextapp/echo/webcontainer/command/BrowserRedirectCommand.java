@@ -40,6 +40,7 @@ import nextapp.echo.app.Command;
 public class BrowserRedirectCommand 
 implements Command {
     
+    /** The target URI. */
     private String uri;
     
     /**

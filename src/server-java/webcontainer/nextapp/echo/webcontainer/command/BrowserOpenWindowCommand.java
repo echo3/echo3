@@ -41,17 +41,43 @@ import nextapp.echo.app.Extent;
 public class BrowserOpenWindowCommand 
 implements Command {
     
+    /** 
+     * Flag to replace entry in browser's navigation history with new window content.  
+     * Note that some browsers may ignore this flag. 
+     */
     public static final int FLAG_REPLACE = 0x1;
+    
+    /** Flag to enable the browser's menu bar. */
     public static final int FLAG_MENUBAR = 0x2;
+    
+    /** Flag to enable the browser's tool bar. */
     public static final int FLAG_TOOLBAR = 0x4;
+    
+    /** Flag to enable the browser's location input field. */
     public static final int FLAG_LOCATION = 0x8;
+    
+    /** Flag to enable the browser's status field. */
     public static final int FLAG_STATUS = 0x10;
+    
+    /** 
+     * Flag to recommend that the browser allow resizing of the window.  
+     * Some environments may always allow the window to be resized.
+     */
     public static final int FLAG_RESIZABLE = 0x20;
     
+    /** The URI to display. */
     private String uri;
+    
+    /** The window name. */
     private String name;
+    
+    /** The width of the window. */
     private Extent width;
+    
+    /** The height of the window. */
     private Extent height;
+    
+    /** Bitwise settings for the window. */
     private int flags;
     
     /**
