@@ -31,6 +31,9 @@ package nextapp.echo.webcontainer.sync.component;
 
 import nextapp.echo.app.PasswordField;
 
+/**
+ * Synchronization peer for <code>PasswordField</code>s.
+ */
 public class PasswordFieldPeer extends TextComponentPeer {
 
     /**

@@ -46,6 +46,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
  */
 public class WindowPanePeer extends AbstractComponentSynchronizePeer {
 
+    /** The associated client-side JavaScript module <code>Service</code>. */
     private static final Service WINDOW_PANE_SERVICE = JavaScriptService.forResource("Echo.WindowPane", 
             "nextapp/echo/webcontainer/resource/Sync.WindowPane.js");
     
@@ -80,6 +81,9 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
         return WindowPane.class;
     }
     
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getInputPropertyClass(java.lang.String)
+     */
     public Class getInputPropertyClass(String propertyName) {
         if (WindowPane.PROPERTY_POSITION_X.equals(propertyName)) {
             return Extent.class;
@@ -140,7 +144,8 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#processEvent(nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, java.lang.Object)
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#processEvent(nextapp.echo.app.util.Context
+     *      nextapp.echo.app.Component, java.lang.String, java.lang.Object)
      */
     public void processEvent(Context context, Component component, String eventType, Object eventData) {
         if (WindowPane.INPUT_CLOSE.equals(eventType)) {

@@ -31,6 +31,9 @@ package nextapp.echo.webcontainer.sync.component;
 
 import nextapp.echo.app.TextArea;
 
+/**
+ * Synchronization peer for <code>TextArea</code>s.
+ */
 public class TextAreaPeer extends TextComponentPeer {
 
     /**
@@ -40,6 +43,9 @@ public class TextAreaPeer extends TextComponentPeer {
         return shortType ? "TA" : "TextArea";
     }
     
+    /**
+     * @see nextapp.echo.webcontainer.sync.component.TextComponentPeer#getComponentClass()
+     */
     public Class getComponentClass() {
         return TextArea.class;
     }

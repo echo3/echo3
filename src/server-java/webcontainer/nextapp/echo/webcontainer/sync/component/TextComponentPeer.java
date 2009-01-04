@@ -39,8 +39,12 @@ import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
 
+/**
+ * Base synchronization peer for <code>TextComponent</code>s.
+ */
 public class TextComponentPeer extends AbstractComponentSynchronizePeer {
 
+    /** The associated client-side JavaScript module <code>Service</code>. */
     private static final Service TEXT_COMPONENT_SERVICE = JavaScriptService.forResource("Echo.TextComponent", 
             "nextapp/echo/webcontainer/resource/Sync.TextComponent.js");
     
@@ -48,6 +52,7 @@ public class TextComponentPeer extends AbstractComponentSynchronizePeer {
         WebContainerServlet.getServiceRegistry().add(TEXT_COMPONENT_SERVICE);
     }
     
+    /** Default constructor. */
     public TextComponentPeer() {
         super();
         addOutputProperty(TextComponent.TEXT_CHANGED_PROPERTY);

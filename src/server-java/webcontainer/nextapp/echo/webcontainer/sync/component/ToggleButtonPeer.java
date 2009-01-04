@@ -42,6 +42,7 @@ import nextapp.echo.webcontainer.ComponentSynchronizePeer;
  */
 public class ToggleButtonPeer extends AbstractButtonPeer {
 
+    /** Default constructor. */
     public ToggleButtonPeer() {
         super();
         addOutputProperty(ToggleButton.SELECTED_CHANGED_PROPERTY);

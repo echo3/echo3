@@ -31,6 +31,9 @@ package nextapp.echo.webcontainer.sync.component;
 
 import nextapp.echo.app.TextField;
 
+/**
+ * Synchronization peer for <code>TextField</code>s.
+ */
 public class TextFieldPeer extends TextComponentPeer {
 
     /**
