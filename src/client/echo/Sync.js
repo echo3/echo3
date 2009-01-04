@@ -537,22 +537,22 @@ Echo.Sync.Extent = {
      */
     toCssValue: function(extent, horizontal, allowPercent) {
         switch(typeof(extent)) {
-            case "number":
-                return Math.round(extent) + "px";
-            case "string":
-                if (this._FORMATTED_INT_PIXEL_TEST.test(extent)) {
+        case "number":
+            return Math.round(extent) + "px";
+        case "string":
+            if (this._FORMATTED_INT_PIXEL_TEST.test(extent)) {
+                return extent;
+            } else if (this._FORMATTED_DECIMAL_PIXEL_TEST.test(extent)) {
+                return Math.round(parseFloat(extent)) + "px";
+            } else {
+                if (allowPercent && this.isPercent(extent)) {
                     return extent;
-                } else if (this._FORMATTED_DECIMAL_PIXEL_TEST.test(extent)) {
-                    return Math.round(parseFloat(extent)) + "px";
                 } else {
-                    if (allowPercent && this.isPercent(extent)) {
-                        return extent;
-                    } else {
-                        var pixels = this.toPixels(extent, horizontal);
-                        return pixels == null ? "" : this.toPixels(extent, horizontal) + "px";
-                    }
+                    var pixels = this.toPixels(extent, horizontal);
+                    return pixels == null ? "" : this.toPixels(extent, horizontal) + "px";
                 }
-                break;
+            }
+            break;
         }
         return "";
     },
@@ -862,18 +862,18 @@ Echo.Sync.Insets = {
      */
     render: function(insets, element, styleAttribute) {
         switch(typeof(insets)) {
-            case "number":
-                element.style[styleAttribute] = Math.round(insets) + "px";
-                break;
-            case "string":
-                if (this._FORMATTED_PIXEL_INSETS.test(insets)) {
-                    element.style[styleAttribute] = insets;
-                } else {
-                    var pixelInsets = this.toPixels(insets);
-                    element.style[styleAttribute] = pixelInsets.top + "px " + pixelInsets.right + "px " +
-                            pixelInsets.bottom + "px " + pixelInsets.left + "px";
-                }
-                break;
+        case "number":
+            element.style[styleAttribute] = Math.round(insets) + "px";
+            break;
+        case "string":
+            if (this._FORMATTED_PIXEL_INSETS.test(insets)) {
+                element.style[styleAttribute] = insets;
+            } else {
+                var pixelInsets = this.toPixels(insets);
+                element.style[styleAttribute] = pixelInsets.top + "px " + pixelInsets.right + "px " +
+                        pixelInsets.bottom + "px " + pixelInsets.left + "px";
+            }
+            break;
         }
     },
     
@@ -886,17 +886,17 @@ Echo.Sync.Insets = {
      */
     toCssValue: function(insets) {
         switch(typeof(insets)) {
-            case "number":
-                return insets + "px";
-            case "string":
-                if (this._FORMATTED_PIXEL_INSETS.test(insets)) {
-                    return insets;
-                } else {
-                    var pixelInsets = this.toPixels(insets);
-                    return pixelInsets.top + "px " + pixelInsets.right + "px " +
-                            pixelInsets.bottom + "px " + pixelInsets.left + "px";
-                }
-                break;
+        case "number":
+            return insets + "px";
+        case "string":
+            if (this._FORMATTED_PIXEL_INSETS.test(insets)) {
+                return insets;
+            } else {
+                var pixelInsets = this.toPixels(insets);
+                return pixelInsets.top + "px " + pixelInsets.right + "px " +
+                        pixelInsets.bottom + "px " + pixelInsets.left + "px";
+            }
+            break;
         }
         return "";
     },
