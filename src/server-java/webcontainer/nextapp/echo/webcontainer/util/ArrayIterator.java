@@ -31,12 +31,23 @@ package nextapp.echo.webcontainer.util;
 
 import java.util.Iterator;
 
+/**
+ * An <code>Iterator</code> to iterate over the elements of an array. 
+ */
 public class ArrayIterator 
 implements Iterator {
 
+    /** Current index. */
     private int index = 0;
+    
+    /** The iterated array. */
     private Object[] array;
     
+    /**
+     * Creates a new <code>ArrayIterator</code>.
+     * 
+     * @param array the array
+     */
     public ArrayIterator(Object[] array) {
         super();
         this.array = array;
