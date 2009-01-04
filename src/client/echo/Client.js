@@ -14,6 +14,7 @@ Echo.Client = Core.extend({
 
         /**
          * Global array containing all active client instances in the current browser window.
+         * @type Array
          */
         _activeClients: [],
 
@@ -38,30 +39,31 @@ Echo.Client = Core.extend({
     /**
      * Flag indicating the user interface should be rendered in design-mode, where all rendered component elements are
      * assigned an id.
+     * @type Boolean
      */
     designMode: false,
     
     /**
      * The root DOM element in which the application is contained.
+     * @type Element
      */
     domainElement: null,
     
     /**
      * The application being managed by this client.
+     * @type Echo.Application
      */
     application: null,
     
     /**
      * Id of last issued input restriction id (incremented to deliver unique identifiers). 
-     * @type Integer
-     * @private
+     * @type Number
      */
     _lastInputRestrictionId: 0,
     
     /**
      * Number of currently registered input restrictions.
-     * @type Integer
-     * @private
+     * @type Number
      */
     _inputRestrictionCount: 0,
     
@@ -70,16 +72,24 @@ Echo.Client = Core.extend({
      * Values are booleans, true indicating property updates are NOT restricted, and false
      * indicated all updates are restricted.
      * @type Object
-     * @private
      */
     _inputRescriptionMap: null,
     
-    _keyPressListener: null,
+    /**
+     * Method reference to this._processKeyPressRef().
+     * @type Function
+     */
+    _processKeyPressRef: null,
     
-    _applicationFocusListener: null,
+    /**
+     * Method reference to this._processApplicationFocus().
+     * @type Function
+     */
+    _processApplicationFocusRef: null,
     
     /**
      * The parent client.
+     * @type Echo.Client
      */
     parent: null,
 
@@ -88,8 +98,8 @@ Echo.Client = Core.extend({
      */
     $construct: function() { 
         this._inputRestrictionMap = { };
-        this._keyPressListener = Core.method(this, this._processKeyPress);
-        this._applicationFocusListener = Core.method(this, this._processApplicationFocus);
+        this._processKeyPressRef = Core.method(this, this._processKeyPress);
+        this._processApplicationFocusRef = Core.method(this, this._processApplicationFocus);
     },
     
     $abstract: true,
@@ -123,14 +133,15 @@ Echo.Client = Core.extend({
          * This method should be overridden by client implementations as needed, returning the value
          * from this implementation if the client has no other reason to disallow input.
          * 
-         * @param component optional parameter indicating the component to query (if omitted, only the
+         * @param {Echo.Component} component optional parameter indicating the component to query (if omitted, only the
          *        applications readiness state will be investigated)
-         * @param flags optional flags describing the property update, one or more of the following flags
+         * @param {Number} flags optional flags describing the property update, one or more of the following flags
          *        ORed together:
          *        <ul>
          *         <li><code>FLAG_INPUT_PROPERTY</code></li>
          *        </ul>
          * @return true if the application/component are ready to receive input
+         * @type Boolean
          */
         verifyInput: function(component, flags) {
             // Check for input restrictions.
@@ -169,26 +180,26 @@ Echo.Client = Core.extend({
      * the client is used, and invoked with null values before it is
      * disposed (in order to clean up resources).
      * 
-     * @param application the application the client will support (if configuring)
+     * @param {Echo.Application} application the application the client will support (if configuring)
      *        or null (if deconfiguring)
-     * @param domainElement the DOM element into which the client will be rendered (if configuring),
+     * @param {Element} domainElement the DOM element into which the client will be rendered (if configuring),
      *        or null (if deconfiguring)
      */
     configure: function(application, domainElement) {
         if (this.application) {
             Core.Arrays.remove(Echo.Client._activeClients, this);
             Core.Web.Event.remove(this.domainElement, 
-                    Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._keyPressListener, false);
-            this.application.removeListener("focus", this._applicationFocusListener);
+                    Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._processKeyPressRef, false);
+            this.application.removeListener("focus", this._processApplicationFocusRef);
         }
         
         this.application = application;
         this.domainElement = domainElement;
     
         if (this.application) {
-            this.application.addListener("focus", this._applicationFocusListener);
+            this.application.addListener("focus", this._processApplicationFocusRef);
             Core.Web.Event.add(this.domainElement, 
-                    Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._keyPressListener, false);
+                    Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._processKeyPressRef, false);
             Echo.Client._activeClients.push(this);
         }
     },
@@ -213,7 +224,7 @@ Echo.Client = Core.extend({
      * Listener for application change of component focus:
      * invokes focus() method on focused component's peer.
      * 
-     * @param {Event} e the event
+     * @param e the event
      */
     _processApplicationFocus: function(e) {
         var focusedComponent = this.application.getFocusedComponent();
@@ -226,7 +237,7 @@ Echo.Client = Core.extend({
      * Root KeyDown event handler.
      * Specifically processes tab key events for focus management.
      * 
-     * @param {Event} e the event
+     * @param e the event
      */
     _processKeyPress: function(e) {
         if (e.keyCode == 9) { // Tab
@@ -240,7 +251,7 @@ Echo.Client = Core.extend({
     /**
      * Removes an input restriction.
      *
-     * @param id the id (handle) of the input restriction to remove
+     * @param {String} id the id (handle) of the input restriction to remove
      */
     removeInputRestriction: function(id) {
         if (this._inputRestrictionMap[id] === undefined) {
@@ -266,12 +277,15 @@ Echo.Client = Core.extend({
 });
 
 /**
- * Provides a tool for measuring performance of the Echo3 client engine.
+ * Provides a debugging tool for measuring performance of the Echo3 client engine.
+ * This is generally best used to measure performance before/after modifications. 
  */
 Echo.Client.Timer = Core.extend({
 
+    /** Array of times. */
     _times: null,
     
+    /** Array of labels. */
     _labels: null,
     
     /**
@@ -312,4 +326,3 @@ Echo.Client.Timer = Core.extend({
         return out;
     }
 });
-
