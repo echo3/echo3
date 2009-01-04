@@ -44,7 +44,9 @@ public class BootService {
     /** Root path to core service <code>CLASSPATH</code> script resources. */
     private static final String JS_RESOURCE_PATH = "nextapp/echo/webcontainer/resource/";
     
+    /** The singleton instance. */
     public static final Service SERVICE;
+
     static {
         List resourceList = new ArrayList();
         resourceList.add(JS_RESOURCE_PATH + "Core.js");

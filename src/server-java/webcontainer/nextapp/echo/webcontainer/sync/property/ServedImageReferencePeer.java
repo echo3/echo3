@@ -51,7 +51,6 @@ public class ServedImageReferencePeer implements ImageReferencePeer {
 
     static {
         WebContainerServlet.getServiceRegistry().add(ImageService.INSTANCE);
-        ImageService.install();
     }
     
     /**

@@ -30,8 +30,6 @@
 package nextapp.echo.webcontainer.service;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -45,6 +43,10 @@ import nextapp.echo.webcontainer.SynchronizationException;
 import nextapp.echo.webcontainer.UserInstance;
 import nextapp.echo.webcontainer.util.PngEncoder;
 
+/**
+ * A <code>Service</code> which renders stream image references (including <code>ResourceImageReference</code>s and
+ * <code>AwtImageReference</code>s.
+ */
 public class ImageService 
 implements Service {
 
@@ -54,13 +56,11 @@ implements Service {
     /** Singleton instance of this <code>Service</code>. */
     public static final ImageService INSTANCE = new ImageService();
     
+    /** Image identifier URL parameter. */
     private static final String PARAMETER_IMAGE_UID = "iid"; 
 
+    /** URL parameters (used for creating URIs). */
     private static final String[] URL_PARAMETERS = new String[]{PARAMETER_IMAGE_UID}; 
-    
-    private static final Map globalImages = new HashMap();
-    
-    public static void install() { }
     
     /**
      * @see nextapp.echo.webcontainer.Service#getId()
@@ -108,6 +108,13 @@ implements Service {
         }
     }
     
+    /**
+     * Renders an <code>AwtImageReference</code>.
+     * 
+     * @param conn the <code>Connection</code> to which the image should be rendered
+     * @param imageReference the image to render
+     * @throws IOException
+     */
     private void renderAwtImage(Connection conn, ImageReference imageReference) 
     throws IOException {
         try {
@@ -122,6 +129,13 @@ implements Service {
         }
     }
 
+    /**
+     * Renders a <code>StreamImageReference</code>.
+     * 
+     * @param conn the <code>Connection</code> to which the image should be rendered
+     * @param imageReference the image to render
+     * @throws IOException
+     */
     private void renderStreamImage(Connection conn, ImageReference imageReference)
     throws IOException {
         try {
@@ -144,11 +158,7 @@ implements Service {
      * @return the image if found, <code>null</code> otherwise.
      */
     public ImageReference getImage(UserInstance userInstance, String imageId) {
-        ImageReference image = (ImageReference) globalImages.get(imageId);
-        if (image == null) {
-            image = (ImageReference) userInstance.getIdTable().getObject(imageId);
-        }
-        return image;
+        return (ImageReference) userInstance.getIdTable().getObject(imageId);
     }
     
     /**
@@ -176,7 +186,13 @@ implements Service {
         renderImage(conn, imageReference);
     }
     
-    public void serviceBadRequest(Connection conn, String message) {
+    /**
+     * Services a bad request.
+     * 
+     * @param conn the <code>Connection</code>
+     * @param message the error message
+     */
+    private void serviceBadRequest(Connection conn, String message) {
         conn.getResponse().setStatus(HttpServletResponse.SC_BAD_REQUEST);
         conn.setContentType(ContentType.TEXT_PLAIN);
         conn.getWriter().write(message);
