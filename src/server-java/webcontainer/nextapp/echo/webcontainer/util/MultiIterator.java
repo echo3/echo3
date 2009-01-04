@@ -39,7 +39,10 @@ import java.util.NoSuchElementException;
 public class MultiIterator 
 implements Iterator {
 
+    /** The iterators to iterate. */
     private Iterator[] iterators;
+    
+    /** The index of the currently iterated iterator. */
     private int index = 0;
 
     /**
