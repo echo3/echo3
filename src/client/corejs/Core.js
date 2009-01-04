@@ -32,7 +32,6 @@ Core = {
      *
      * @param f the function
      * @return an effectively identical copy
-     * @private
      */
     _copyFunction: function(f) {
         return function() {
@@ -42,8 +41,6 @@ Core = {
     
     /**
      * Creates an empty function.
-     *
-     * @private
      */
     _createFunction: function() {
         return function() { };
@@ -300,7 +297,6 @@ Core = {
      * @param destination the destination object
      * @param soruce the source object
      * @param virtualProperties (optional) collection of virtual properties from base class.
-     * @private  
      */
     _inherit: function(destination, source, virtualProperties) {
         for (var name in source) {
@@ -589,7 +585,6 @@ Core.Arrays.LargeMap = Core.extend({
     /**
      * Number of removes since last associative array re-creation.
      * @type Number
-     * @private
      */
     _removeCount: 0,
     
