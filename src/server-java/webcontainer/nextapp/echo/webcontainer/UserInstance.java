@@ -244,13 +244,13 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * @return the client-side render id
      */
     public String getClientRenderId(Component component) {
-        return "c_" + component.getRenderId();
+        return "C." + component.getRenderId();
     }
     
     /**
      * Retrieves the <code>Component</code> with the specified client-side render id.
      * 
-     * @param clientRenderId client-side element render id, e.g., "c_42323"
+     * @param clientRenderId client-side element render id, e.g., "C.42323"
      * @return the component (e.g., the component whose id is "42323")
      */
     public Component getComponentByClientRenderId(String clientRenderId) {

@@ -725,7 +725,7 @@ Echo.RemoteClient.ClientMessage = Core.extend({
             return;
         }
         var focusedComponent = this._client.application.getFocusedComponent();
-        if (focusedComponent && focusedComponent.renderId.substring(0,2) == "c_") {
+        if (focusedComponent && focusedComponent.renderId.substring(0,2) == "C.") {
             var cFocusElement = this._document.createElement("dir");
             cFocusElement.setAttribute("proc", "CFocus");
             var focusElement = this._document.createElement("focus");

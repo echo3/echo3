@@ -204,25 +204,25 @@ implements RenderIdSupport, Serializable {
     public static final String PROPERTY_LAYOUT_DATA = "layoutData";
     
     /**
-     * Verifies a character is a (7-bit ASCII) letter.
-     * Used for renderId verification.
+     * Verifies a character can be used as initial character in a renderId
+     * Character must be a (7-bit ASCII) letter.
      * 
      * @param ch the character to verify
      * @return true if the character is a (7-bit ASCII) letter.
      */
-    private static final boolean isLetter(char ch) {
+    private static final boolean isRenderIdStart(char ch) {
         return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z');
     }
     
     /**
-     * Verifies a character is a (7-bit ASCII) letter or digit.
-     * Used for renderId verification.
+     * Verifies a character can be used as a non-initial character in a renderId.
+     * Character must be a (7-bit ASCII) letter, digit, or underscore.
      * 
      * @param ch the character to verify
-     * @return true if the character is a (7-bit ASCII) letter or digit
+     * @return true if the character is a (7-bit ASCII) letter, digit, or underscore.
      */
-    private static final boolean isLetterOrDigit(char ch) {
-        return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9');
+    private static final boolean isRenderIdPart(char ch) {
+        return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch == '_';
     }
     
     /** The <code>ApplicationInstance</code> to which the component is registered. */
@@ -1517,11 +1517,11 @@ implements RenderIdSupport, Serializable {
         }
         if (renderId != null) {
             int length = renderId.length();
-            if (!isLetter(renderId.charAt(0))) {
+            if (!isRenderIdStart(renderId.charAt(0))) {
                 throw new IllegalArgumentException("Invalid identifier:" + renderId);
             }
             for (int i = 1; i < length; ++i) {
-                if (!isLetterOrDigit(renderId.charAt(i))) {
+                if (!isRenderIdPart(renderId.charAt(i))) {
                     throw new IllegalArgumentException("Invalid identifier:" + renderId);
                 }
             }

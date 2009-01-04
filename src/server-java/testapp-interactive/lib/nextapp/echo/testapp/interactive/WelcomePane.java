@@ -79,6 +79,7 @@ public class WelcomePane extends ContentPane {
         loginWindow.setMaximizeEnabled(true);
         loginWindow.setTitle("Welcome to the NextApp Echo Test Application");
         loginWindow.setStyleName("WelcomePane");
+        loginWindow.setRenderId("WelcomePane_Window");
         loginWindow.setClosable(false);
         add(loginWindow);
         
@@ -90,7 +91,7 @@ public class WelcomePane extends ContentPane {
         splitPane.add(controlRow);
         
         continueButton = new Button("Continue", Styles.ICON_24_YES);
-        continueButton.setRenderId("WelcomePaneEnter");
+        continueButton.setRenderId("WelcomePane_Enter");
         continueButton.setId("EnterTestApplication");
         continueButton.setStyleName("ControlPane.Button");
         continueButton.addActionListener(new ActionListener() {

@@ -1025,7 +1025,7 @@ Echo.Component = Core.extend({
         if (application) { // registering
             // Assign render id if required.
             if (this.renderId == null) {
-                this.renderId = "cl_" + (++Echo.Component._nextRenderId);
+                this.renderId = "CL." + (++Echo.Component._nextRenderId);
             }
     
             // Notify application.
