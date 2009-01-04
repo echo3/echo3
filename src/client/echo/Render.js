@@ -592,7 +592,7 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) { },
     
-    /** @see Echo.Render.ComponentSync#renderDispose */
+    /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
         var fullRender = false;
         if (update.hasAddedChildren() || update.hasRemovedChildren()) {
