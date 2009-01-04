@@ -134,13 +134,13 @@ Echo.Client = Core.extend({
          * from this implementation if the client has no other reason to disallow input.
          * 
          * @param {Echo.Component} component optional parameter indicating the component to query (if omitted, only the
-         *        applications readiness state will be investigated)
-         * @param {Number} flags optional flags describing the property update, one or more of the following flags
+         *        application's readiness state will be investigated)
+         * @param {Number} flags optional flags describing the type of input, one or more of the following flags
          *        ORed together:
          *        <ul>
          *         <li><code>FLAG_INPUT_PROPERTY</code></li>
          *        </ul>
-         * @return true if the application/component are ready to receive input
+         * @return true if the application/component are ready to receive the input
          * @type Boolean
          */
         verifyInput: function(component, flags) {
