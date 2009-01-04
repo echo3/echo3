@@ -58,7 +58,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 import nextapp.echo.webcontainer.util.MultiIterator;
 
 /**
- * Abstract base synchronization peer for <code>AbstractListComponent</code>s.
+ * Base synchronization peer for <code>AbstractListComponent</code>s.
  */
 public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer  {
     
@@ -68,10 +68,20 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
      */
     private class ListData {
 
+        /** The <code>ListModel</code>. */
         private ListModel model;
+        
+        /** The <code>ListCellRenderer</code>. */
         private ListCellRenderer renderer;
+        
+        /** The <code>AbstractListComponent</code>. */
         private AbstractListComponent listComponent;
 
+        /** 
+         * Creates a new <code>ListData</code>.
+         * 
+         * @param component the list component
+         */
         ListData(AbstractListComponent component) {
             super();
             this.listComponent = component;
@@ -167,13 +177,20 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
         }
     }
 
+    /** The associated client-side JavaScript module <code>Service</code>. */
     private static final Service LIST_COMPONENT_SERVICE = JavaScriptService.forResources("Echo.ListComponent",
             new String[] { "nextapp/echo/webcontainer/resource/Sync.List.js",
                            "nextapp/echo/webcontainer/resource/Sync.RemoteList.js" });
 
+    /** The non-style virtual "data" property, a <code>ListData</code> which represents rendered model information. */
     private static final String PROPERTY_DATA = "data";
+    
+    /** The non-style selection state property. */
     private static final String PROPERTY_SELECTION = "selection";
+    
+    /** The non-style selection mode property. */
     private static final String PROPERTY_SELECTION_MODE = "selectionMode";
+    
     static {
         WebContainerServlet.getServiceRegistry().add(LIST_COMPONENT_SERVICE);
     }
