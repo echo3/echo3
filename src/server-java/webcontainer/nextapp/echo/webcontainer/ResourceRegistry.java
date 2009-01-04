@@ -32,16 +32,55 @@ package nextapp.echo.webcontainer;
 import java.util.HashMap;
 import java.util.Map;
 
-//FIXME no docs.
+/**
+ *  A registry of CLASSPATH resources which are provided to the client via the <code>ResourceService</code>.
+ *  Only specifically added resources are provided, for obvious security reasons.
+ */
 public class ResourceRegistry {
 
-    private Map packageToLocationMap = new HashMap();
-    private Map packageToResourceMap = new HashMap();
+    /**
+     * Describes a specific resource package.
+     */
+    private class PackageData {
+        
+        /** The package identifier. */
+        String id;
+        
+        /** The package root location. */
+        String location;
+        
+        /** Mapping between resource names and content types. */
+        Map resourceNameToContentType = new HashMap();
+        
+        /**
+         * Creates a new <code>PackageData</code>.
+         * 
+         * @param id the package identifier
+         * @param location the package root location
+         */
+        PackageData(String id, String location) {
+            this.id = id;
+            this.location = location;
+        }
+    }
     
+    /**
+     * Mapping between package names and <code>PackageData</code> descriptors.
+     */
+    private Map packageMap = new HashMap();
+    
+    /**
+     * Registers a new resource package.
+     * 
+     * @param packageId the identifier to use for the package, e.g., "Echo" is used for core resources.
+     * @param location the root location from which package resources can be retrieved (resource locations
+     *        are relative to this location)
+     */
     public synchronized void addPackage(String packageId, String location) {
-        String existingLocation = (String) packageToLocationMap.get(packageId);
-        if (existingLocation != null) {
-            if (existingLocation.equals(location)) {
+        // Ensure existing package data is not being overwritten. 
+        PackageData packageData = (PackageData) packageMap.get(packageId);
+        if (packageData != null) {
+            if (packageData.location.equals(location)) {
                 // Do nothing.
                 return;
             } else {
@@ -49,41 +88,67 @@ public class ResourceRegistry {
             }
         }
         
-        packageToLocationMap.put(packageId, location);
-        packageToResourceMap.put(packageId, new HashMap());
+        // Store new package data object.
+        packageMap.put(packageId, new PackageData(packageId, location));
     }
     
+    /**
+     * Adds a resource to a package.
+     * 
+     * @param packageId the package identifier
+     * @param resourceName the name of the resource (the location of the resource relative to the package root location)
+     * @param contentType the content type of the resource
+     */
     public synchronized void add(String packageId, String resourceName, ContentType contentType) {
-        Map resourceMap = (Map) packageToResourceMap.get(packageId);
-        if (resourceMap == null) {
+        // Retrieve package data.
+        PackageData packageData = (PackageData) packageMap.get(packageId);
+        
+        // Ensure package exists.
+        if (packageData == null) {
             throw new IllegalArgumentException("Resource package \"" + packageId + "\" has not been registered."); 
         }
         
-        if (resourceMap.get(resourceName) != null) {
+        // Ensure another resource is not being overwritten.
+        if (packageData.resourceNameToContentType.get(resourceName) != null) {
             throw new IllegalArgumentException("Resource \"" + packageId + ":" + resourceName + "\" already registered.");
         }
-        resourceMap.put(resourceName, contentType);
-    }
-    
-    public ContentType getContentType(String packageId, String resourceName) {
-        Map resourceMap = (Map) packageToResourceMap.get(packageId);
-        if (resourceMap == null) {
-            return null;
-        }
-        return (ContentType) resourceMap.get(resourceName);
+        
+        // Store content type.
+        packageData.resourceNameToContentType.put(resourceName, contentType);
     }
 
+    /**
+     * Determines the content type of a resource.
+     * 
+     * @param packageId the package identifier
+     * @param resourceName the resource name
+     * @return the content type of the resource (or null if none exists)
+     */
+    public ContentType getContentType(String packageId, String resourceName) {
+        PackageData packageData = (PackageData) packageMap.get(packageId);
+        if (packageData == null) {
+            return null;
+        }
+        return (ContentType) packageData.resourceNameToContentType.get(resourceName);
+    }
+
+    /**
+     * Determines the location of a resource.
+     * 
+     * @param packageId the package identifier
+     * @param resourceName the resource name
+     * @return the location of the resource
+     */
     public String getLocation(String packageId, String resourceName) {
-        String packageLocation = (String) packageToLocationMap.get(packageId);
-        if (packageLocation == null) {
+        PackageData packageData = (PackageData) packageMap.get(packageId);
+        if (packageData == null) {
             throw new IllegalArgumentException("Resource package \"" + packageId + "\" has not been registered."); 
         }
         
-        Map resourceMap = (Map) packageToResourceMap.get(packageId);
-        if (!resourceMap.containsKey(resourceName)) {
+        if (!packageData.resourceNameToContentType.containsKey(resourceName)) {
             throw new IllegalArgumentException("Resource \"" + packageId + ":" + resourceName + "\" has not been registered.");
         }
         
-        return packageLocation + resourceName;
+        return packageData.location + resourceName;
     }
 }
