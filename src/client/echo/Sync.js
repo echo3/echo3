@@ -402,11 +402,11 @@ Echo.Sync.Color = {
      * 
      * @param {#Color} color the color
      * @param {#Element} element the target element
-     * @param {String} styleProperty the name of the style property, e.g., "color", "backgroundColor" 
+     * @param {String} styleAttribute the name of the style attribute, e.g., "color", "backgroundColor" 
      */
-    render: function(color, element, styleProperty) {
+    render: function(color, element, styleAttribute) {
         if (color) {
-            element.style[styleProperty] = color;
+            element.style[styleAttribute] = color;
         }
     },
     
@@ -415,10 +415,10 @@ Echo.Sync.Color = {
      * 
      * @param {#Color} color the color
      * @param {#Element} element the target element
-     * @param {String} styleProperty the name of the style property, e.g., "color", "backgroundColor" 
+     * @param {String} styleAttribute the name of the style attribute, e.g., "color", "backgroundColor" 
      */
-    renderClear: function(color, element, styleProperty) {
-        element.style[styleProperty] = color ? color : "";
+    renderClear: function(color, element, styleAttribute) {
+        element.style[styleAttribute] = color ? color : "";
     },
     
     /**
