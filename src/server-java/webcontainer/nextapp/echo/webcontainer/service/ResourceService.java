@@ -40,16 +40,21 @@ import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 
 /**
- * Serves a static resource.
+ * Serves a static resource that has been added to the <code>ResourceRegistry</code>.
  */
 public class ResourceService 
 implements Service {
     
+    /** Singleton instance. */
     public static final ResourceService INSTANCE = new ResourceService();
 
-    private static final String PARAMETER_PACKAGE = "pkg"; 
+    /** URL parameter used to specify package. */
+    private static final String PARAMETER_PACKAGE = "pkg";
+    
+    /** URL parameter used to specify resource name. */
     private static final String PARAMETER_RESOURCE = "res";
     
+    /** Default constructor. */
     private ResourceService() { }
     
     /**
