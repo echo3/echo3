@@ -1265,21 +1265,23 @@ Echo.RemoteClient.ServerMessage = Core.extend({
 });
 
 /**
- * Wait indicator base class.
+ * Abstract base class for "Wait Indicators" which are displayed when the application is not available (e.g., due to in-progress
+ * client/server synchronization.
+ * A single wait indicator will be used by the application.
  */
 Echo.RemoteClient.WaitIndicator = Core.extend({
-
-    $construct: function() { },
 
     $abstract: {
         
         /**
          * Wait indicator activation method.  Invoked when the wait indicator should be activated.
+         * The implementation should add the wait indicator to the DOM and begin any animation (if applicable).
          */
         activate: function() { },
         
         /**
          * Wait indicator deactivation method.  Invoked when the wait indicator should be deactivated.
+         * The implementation should remove the wait indicator from the DOM, cancel any animations, and dispose of any resources. 
          */
         deactivate: function() { }
     }
@@ -1290,6 +1292,7 @@ Echo.RemoteClient.WaitIndicator = Core.extend({
  */
 Echo.RemoteClient.DefaultWaitIndicator = Core.extend(Echo.RemoteClient.WaitIndicator, {
 
+    /** Creates a new DefaultWaitIndicator. */
     $construct: function() {
         this._divElement = document.createElement("div");
         this._divElement.style.cssText = "display: none;z-index:32767;position:absolute;top:30px;right:30px;" +
@@ -1299,17 +1302,22 @@ Echo.RemoteClient.DefaultWaitIndicator = Core.extend(Echo.RemoteClient.WaitIndic
         document.body.appendChild(this._divElement);
     },
     
+    /** @see Echo.RemoteClient.WaitIndicator#activate */
     activate: function() {
         this._divElement.style.display = "block";
         Core.Web.Scheduler.add(this._fadeRunnable);
         this._opacity = 0;
     },
     
+    /** @see Echo.RemoteClient.WaitIndicator#deactivate */
     deactivate: function() {
         this._divElement.style.display = "none";
         Core.Web.Scheduler.remove(this._fadeRunnable);
     },
     
+    /**
+     * Runnable-invoked method to animate (fade in/out) wait indicator.
+     */
     _tick: function() {
         ++this._opacity;
         // Formula explained:
