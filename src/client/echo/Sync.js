@@ -202,7 +202,8 @@ Echo.Sync.Border = {
     _PARSER: new RegExp("^(-?\\d+(?:px|pt|pc|cm|mm|in|em|ex))?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|" +
             "double|groove|ridge|inset|outset)?(?:^|$|(?= )) ?(#[0-9a-fA-F]{6})?$"),
             
-    _TEST_EXTENT_PX: /^(-?\d+px*)$/,
+    /** Regular expression to test whether an extent string is a properly formatted integer pixel value. */
+    _TEST_EXTENT_PX: /^-?\d+px$/,
     
     /**
      * Creates a border property from a size, style, and color.
