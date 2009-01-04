@@ -555,6 +555,15 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
     }
 
     /**
+     * Sets the URI of the servlet managing this <code>UserInstance</code>.
+     * 
+     * @param servletUri the URI
+     */
+    void setServletUri(String servletUri) {
+        this.servletUri = servletUri;
+    }
+
+    /**
      * Sets the interval between asynchronous callbacks from the client to check
      * for queued tasks for a given <code>TaskQueue</code>.  If multiple 
      * <code>TaskQueue</code>s are active, the smallest specified interval should
@@ -574,15 +583,6 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         taskQueueToCallbackIntervalMap.put(taskQueue, new Integer(ms));
     }
     
-    /**
-     * Sets the URI of the servlet managing this <code>UserInstance</code>.
-     * 
-     * @param servletUri the URI
-     */
-    void setServletUri(String servletUri) {
-        this.servletUri = servletUri;
-    }
-
     /**
      * Listener implementation of <code>HttpSessionBindingListener</code>.
      * Stores reference to session when invoked.

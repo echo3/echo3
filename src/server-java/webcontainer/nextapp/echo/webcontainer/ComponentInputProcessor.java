@@ -55,10 +55,69 @@ import org.w3c.dom.Element;
 public class ComponentInputProcessor
 implements ClientMessage.Processor {
     
+    private Map componentUpdateMap = new HashMap();
+    private String eventComponentId;
     private Element eventElement;
     private String eventType;
-    private String eventComponentId;
-    private Map componentUpdateMap = new HashMap();
+    
+    /**
+     * Returns the event element of the event that resulted in the client-server interaction.
+     * 
+     * @return the event element
+     */
+    private Element getEvent() {
+        return eventElement;
+    }
+    
+    /**
+     * Returns the id of the component that fired the event that resulted in the client-server interaction.
+     * 
+     * @return the event component id
+     */
+    private String getEventComponentId() {
+        return eventComponentId;
+    }
+
+    /**
+     * Returns the event type.
+     * 
+     * @return the event type
+     */
+    private String getEventType() {
+        return eventType;
+    }
+    
+    /**
+     * Returns the ids of all updated components.
+     * 
+     * @return the ids of all updated components.
+     */
+    private Iterator getUpdatedComponentIds() {
+        return componentUpdateMap.keySet().iterator(); 
+    }
+    
+    /**
+     * Returns the "p" element of a specific updated property of a specific component
+     * 
+     * @param componentId the id of the component
+     * @param propertyName the name of the property
+     * @return the property element
+     */
+    private Element getUpdatedProperty(String componentId, String propertyName) {
+        Map propertyMap = (Map) componentUpdateMap.get(componentId);
+        return (Element) propertyMap.get(propertyName);
+    }
+    
+    /**
+     * Returns the names of updated properties for a specific component.
+     * 
+     * @param componentId the id of the component
+     * @return the updated property names
+     */
+    private Iterator getUpdatedPropertyNames(String componentId) {
+        Map propertyMap = (Map) componentUpdateMap.get(componentId);
+        return propertyMap.keySet().iterator();
+    }
     
     /**
      * Parses the component synchronize directive element, storing
@@ -164,64 +223,5 @@ implements ClientMessage.Processor {
 
         updateManager.processClientUpdates();
         
-    }
-
-    /**
-     * Returns the ids of all updated components.
-     * 
-     * @return the ids of all updated components.
-     */
-    private Iterator getUpdatedComponentIds() {
-        return componentUpdateMap.keySet().iterator(); 
-    }
-    
-    /**
-     * Returns the names of updated properties for a specific component.
-     * 
-     * @param componentId the id of the component
-     * @return the updated property names
-     */
-    private Iterator getUpdatedPropertyNames(String componentId) {
-        Map propertyMap = (Map) componentUpdateMap.get(componentId);
-        return propertyMap.keySet().iterator();
-    }
-    
-    /**
-     * Returns the "p" element of a specific updated property of a specific component
-     * 
-     * @param componentId the id of the component
-     * @param propertyName the name of the property
-     * @return the property element
-     */
-    private Element getUpdatedProperty(String componentId, String propertyName) {
-        Map propertyMap = (Map) componentUpdateMap.get(componentId);
-        return (Element) propertyMap.get(propertyName);
-    }
-    
-    /**
-     * Returns the event element of the event that resulted in the client-server interaction.
-     * 
-     * @return the event element
-     */
-    private Element getEvent() {
-        return eventElement;
-    }
-    
-    /**
-     * Returns the event type.
-     * 
-     * @return the event type
-     */
-    private String getEventType() {
-        return eventType;
-    }
-    
-    /**
-     * Returns the id of the component that fired the event that resulted in the client-server interaction.
-     * 
-     * @return the event component id
-     */
-    private String getEventComponentId() {
-        return eventComponentId;
     }
 }
