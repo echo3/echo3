@@ -115,6 +115,12 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
     private boolean initialized = false;
 
     /**
+     * Flag indicating whether the application has been initialized, i.e., whether <code>ApplicationInstance.doInit()</code>
+     * has been invoked.
+     */
+    private boolean applicationInitialized = false; 
+        
+    /**
      * Map containing HTTP URL parameters provided on initial HTTP request to application.
      */
     private Map initialRequestParameterMap;
@@ -170,11 +176,26 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
     
     /**
      * Returns the corresponding <code>ApplicationInstance</code>
-     * for this user instance.
+     * for this user instance.  Initializes the <code>ApplicationInstance</code>
+     * if it has not already been done.
      * 
      * @return the relevant <code>ApplicationInstance</code>
      */
     public ApplicationInstance getApplicationInstance() {
+        if (!applicationInitialized) {
+            boolean alreadyActive = ApplicationInstance.getActive() != null;
+            try {
+                if (!alreadyActive) {
+                    ApplicationInstance.setActive(applicationInstance);
+                }
+                applicationInstance.doInit();
+            } finally {
+                applicationInitialized = true;
+                if (!alreadyActive) {
+                    ApplicationInstance.setActive(null);
+                }
+            }
+        }
         return applicationInstance;
     }
     
@@ -215,10 +236,9 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         return characterEncoding;
     }
     
-    /**the <code>ServerDelayMessage</code> displayed during 
-     * client/server-interactions.
-     * Retrieves the <code>ClientConfiguration</code> information containing
-     * application-specific client behavior settings.
+    /** 
+     * The <code>ServerDelayMessage</code> displayed during client/server-interactions.
+     * Retrieves the <code>ClientConfiguration</code> information containing application-specific client behavior settings.
      * 
      * @return the relevant <code>ClientProperties</code>
      */
@@ -413,8 +433,9 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
 
     /**
      * Initializes the <code>UserInstance</code>, creating an instance
-     * of the target <code>ApplicationInstance</code> and initializing the state
-     * of the application.
+     * of the target <code>ApplicationInstance</code>.
+     * The <code>ApplicationInstance</code> will not be initialized until
+     * <code>getApplicationInstance()</code> is invoked for the first time.
      *
      * @param conn the relevant <code>Connection</code>
      */
@@ -428,12 +449,6 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         ContainerContext containerContext = new ContainerContextImpl(this);
         applicationInstance.setContextProperty(ContainerContext.CONTEXT_PROPERTY_NAME, containerContext);
         
-        try {
-            ApplicationInstance.setActive(applicationInstance);
-            applicationInstance.doInit();
-        } finally {
-            ApplicationInstance.setActive(null);
-        }
         initialized = true;
     }
 
