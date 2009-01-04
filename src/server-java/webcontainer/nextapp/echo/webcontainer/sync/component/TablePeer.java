@@ -54,22 +54,36 @@ import nextapp.echo.webcontainer.util.MultiIterator;
  */
 public class TablePeer extends AbstractComponentSynchronizePeer {
 
+    /** The associated client-side JavaScript module <code>Service</code>. */
     private static final Service TABLE_SERVICE = JavaScriptService.forResource("Echo.RemoteTable", 
             "nextapp/echo/webcontainer/resource/Sync.RemoteTable.js");
     
+    /** Non-style column count property, describing number of columns in <code>TableModel</code>. */
     private static final String PROPERTY_COLUMN_COUNT = "columnCount";
+    
+    /** Non-style column width(s) indexed property, describing widths of columns from <code>TableColumnModel</code>. */
     private static final String PROPERTY_COLUMN_WIDTH = "columnWidth";
+    
+    /** Non-style property indicating whether header row is visible. */
     private static final String PROPERTY_HEADER_VISIBLE = "headerVisible";
+
+    /** Non-style row count property, describing number of row in <code>TableModel</code>. */
     private static final String PROPERTY_ROW_COUNT = "rowCount";
+    
+    /** Non-style property describing current selection. */
     private static final String PROPERTY_SELECTION = "selection";
+    
+    /** Non-style property describing selection mode. */
     private static final String PROPERTY_SELECTION_MODE = "selectionMode";
     
+    /** Array of properties to force update when <code>TableModel</code> is updated. */
     private static final String[] MODEL_CHANGED_UPDATE_PROPERTIES = new String[] { PROPERTY_ROW_COUNT, PROPERTY_COLUMN_COUNT };
     
     static {
         WebContainerServlet.getServiceRegistry().add(TABLE_SERVICE);
     }
     
+    /** Default constructor. */
     public TablePeer() {
         super();
         

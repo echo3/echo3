@@ -43,6 +43,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
  */
 public class LabelPeer extends AbstractComponentSynchronizePeer {
 
+    /** The associated client-side JavaScript module <code>Service</code>. */
     private static final Service LABEL_SERVICE = JavaScriptService.forResource("Echo.Label", 
             "nextapp/echo/webcontainer/resource/Sync.Label.js");
     

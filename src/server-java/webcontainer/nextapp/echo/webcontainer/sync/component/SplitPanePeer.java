@@ -45,6 +45,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
  */
 public class SplitPanePeer extends AbstractComponentSynchronizePeer {
 
+    /** The associated client-side JavaScript module <code>Service</code>. */
     private static final Service SPLIT_PANE_SERVICE = JavaScriptService.forResource("Echo.SplitPane", 
             "nextapp/echo/webcontainer/resource/Sync.SplitPane.js");
     
@@ -66,6 +67,9 @@ public class SplitPanePeer extends AbstractComponentSynchronizePeer {
         return SplitPane.class;
     }
     
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getInputPropertyClass(java.lang.String)
+     */
     public Class getInputPropertyClass(String propertyName) {
         if (SplitPane.PROPERTY_SEPARATOR_POSITION.equals(propertyName)) {
             return Extent.class;

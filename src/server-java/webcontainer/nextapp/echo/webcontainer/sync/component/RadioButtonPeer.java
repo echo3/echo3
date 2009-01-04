@@ -42,8 +42,10 @@ import nextapp.echo.webcontainer.ComponentSynchronizePeer;
  */
 public class RadioButtonPeer extends ToggleButtonPeer {
     
+    /** The non-style "group" output property name, which describes the id of a group of exclusive radio-buttons. */
     private static final String PROPERTY_GROUP = "group";
     
+    /** Default constructor. */
     public RadioButtonPeer() {
         super();
         addOutputProperty(PROPERTY_GROUP);
