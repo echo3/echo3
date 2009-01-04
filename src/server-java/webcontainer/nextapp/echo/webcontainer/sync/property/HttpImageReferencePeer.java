@@ -43,7 +43,7 @@ import nextapp.echo.app.util.Context;
 import nextapp.echo.app.util.DomUtil;
 
 /**
- * <code>XmlPropertyPeer</code> for <code>HttpImageReference</code> properties.
+ * <code>ImageReferencePeer</code> for <code>HttpImageReference</code> properties.
  */
 public class HttpImageReferencePeer 
 implements ImageReferencePeer {

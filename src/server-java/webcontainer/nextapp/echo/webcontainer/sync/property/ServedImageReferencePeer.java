@@ -44,8 +44,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 /**
- * <code>ImageReferencePeer</code> implementation to provide
- * <code>StreamImage</code>s to remote web clients.
+ * <code>ImageReferencePeer</code> implementation to provide <code>StreamImage</code>s to remote web clients.
  */
 public class ServedImageReferencePeer implements ImageReferencePeer {
 
