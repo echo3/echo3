@@ -285,7 +285,7 @@ public abstract class WebContainerServlet extends HttpServlet {
     
     /**
      * @deprecated will be removed
-     * @see addInitScript
+     * @see #addInitScript
      */
     protected void addStartupScript(Service service) {
         addInitScript(service);

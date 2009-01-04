@@ -53,7 +53,8 @@ public class Resource {
         /**
          * Creates a resource exception.
          *
-         * @param description A description of the error.
+         * @param message a description of the error
+         * @param cause the causal exception
          */
         private ResourceException(String message, Throwable cause) {
             super(message, cause);
@@ -63,8 +64,8 @@ public class Resource {
     /**
      * Retrieves the specified resource as a <code>String</code>.
      *
-     * @param resourceName The name of the resource to be retrieved.
-     * @return The specified resource as a <code>String</code>.
+     * @param resourceName the name of the resource to be retrieved
+     * @return the specified resource as a <code>String</code>
      */
     public static String getResourceAsString(String resourceName) {
         return getResource(resourceName).toString();
@@ -73,8 +74,8 @@ public class Resource {
     /**
      * Retrieves the specified resource as an array of <code>byte</code>s.
      *
-     * @param resourceName The name of the resource to be retrieved.
-     * @return The specified resource as an array of <code>byte<code>s.
+     * @param resourceName the name of the resource to be retrieved
+     * @return the specified resource as an array of <code>byte<code>s
      */
     public static byte[] getResourceAsByteArray(String resourceName) {
         return getResource(resourceName).toByteArray();
@@ -84,9 +85,9 @@ public class Resource {
      * An internal method used to retrieve a resource as a
      * <code>ByteArrayOutputStream</code>.
      *
-     * @param resourceName The name of the resource to be retrieved.
-     * @return A <code>ByteArrayOutputStream</code> of the content of the
-     *         resource.
+     * @param resourceName the name of the resource to be retrieved
+     * @return a <code>ByteArrayOutputStream</code> of the content of the
+     *         resource
      */
     private static ByteArrayOutputStream getResource(String resourceName) {
         InputStream in = null;

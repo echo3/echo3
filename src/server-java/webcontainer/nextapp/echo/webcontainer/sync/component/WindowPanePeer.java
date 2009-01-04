@@ -144,7 +144,7 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
     }
 
     /**
-     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#processEvent(nextapp.echo.app.util.Context
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#processEvent(nextapp.echo.app.util.Context, 
      *      nextapp.echo.app.Component, java.lang.String, java.lang.Object)
      */
     public void processEvent(Context context, Component component, String eventType, Object eventData) {

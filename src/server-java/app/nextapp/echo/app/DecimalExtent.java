@@ -45,7 +45,7 @@ public class DecimalExtent extends Extent {
     /**
      * Creates a new <code>DecimalExtent</code> with pixel units.
      * 
-     * @param value the value of the extent in pixels
+     * @param decimalValue the value of the extent in pixels
      */
     public DecimalExtent(double decimalValue) {
         this(decimalValue, Extent.PX);
@@ -54,7 +54,7 @@ public class DecimalExtent extends Extent {
     /**
      * Creates a new <code>DecimalExtent</code>.
      * 
-     * @param value the value of the extent
+     * @param decimalValue the value of the extent
      * @param units the units of the value, one of the following constants:
      *        <ul>
      *         <li><code>PC</code>: Pixels</li>
