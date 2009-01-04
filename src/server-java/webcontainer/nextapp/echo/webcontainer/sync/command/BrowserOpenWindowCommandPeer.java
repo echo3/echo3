@@ -44,6 +44,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class BrowserOpenWindowCommandPeer 
 extends AbstractCommandSynchronizePeer {
     
+    /** The associated client-side JavaScript module <code>Service</code>. */
     private static final Service BROWSER_OPEN_WINDOW_SERVICE = JavaScriptService.forResource("Echo.BrowserOpenWindow", 
             "nextapp/echo/webcontainer/resource/RemoteClient.BrowserOpenWindow.js");
     

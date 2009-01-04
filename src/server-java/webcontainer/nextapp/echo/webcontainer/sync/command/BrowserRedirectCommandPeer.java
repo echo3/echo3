@@ -44,6 +44,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 public class BrowserRedirectCommandPeer 
 extends AbstractCommandSynchronizePeer {
     
+    /** The associated client-side JavaScript module <code>Service</code>. */
     private static final Service BROWSER_REDIRECT_SERVICE = JavaScriptService.forResource("Echo.BrowserRedirect", 
             "nextapp/echo/webcontainer/resource/RemoteClient.BrowserRedirect.js");
     
