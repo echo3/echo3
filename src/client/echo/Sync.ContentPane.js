@@ -296,7 +296,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
             this._floatingPaneManager.addZIndexListener(Core.method(this, this._processZIndexChanged));
         }
 
-        // Retrive z-index/child-index sorted foating panes.
+        // Retrieve z-index/child-index sorted floating panes.
         var floatingPanes = this._getOrderedFloatingPanes();
         for (i = 0; i < floatingPanes.length; ++i) {
             this._floatingPaneManager.add(floatingPanes[i].renderId);

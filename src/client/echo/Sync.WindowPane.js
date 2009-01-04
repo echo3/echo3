@@ -23,6 +23,9 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 titleBackground: true, titleBackgroundImage: true, titleFont: true, 
                 titleForeground: true, titleHeight: true, titleInsets: true, width: true },
                 
+        /** Map containing properties whose update should not result in any rendering. */
+        NON_RENDERED_PROPERTIES: { zIndex: true },
+                
         /** 
          * Map containing position/size-related properties whose update can be rendered by moving/resizing the window.
          */
@@ -762,12 +765,15 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     renderUpdate: function(update) {
         if (update.hasAddedChildren() || update.hasRemovedChildren()) {
             // Children added/removed: perform full render.
+        } else if (update.isUpdatedPropertySetIn(Echo.Sync.WindowPane.NON_RENDERED_PROPERTIES)) {
+            // Do nothing.
+            return false;
         } else if (update.isUpdatedPropertySetIn(Echo.Sync.WindowPane.PARTIAL_PROPERTIES_POSITION_SIZE)) {
             this._loadPositionAndSize();
-            return;
+            return false;
         } else if (update.isUpdatedPropertySetIn(Echo.Sync.WindowPane.PARTIAL_PROPERTIES)) {
             this._renderUpdateFrame();
-            return;
+            return false;
         }
 
         var element = this._div;
