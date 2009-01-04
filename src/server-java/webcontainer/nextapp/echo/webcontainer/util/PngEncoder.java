@@ -55,8 +55,18 @@ import javax.swing.ImageIcon;
  */
 public class PngEncoder {
 
+    /**
+     * Utility class for converting <code>Image</code>s to <code>BufferedImage</code>s.
+     */
     private static class ImageToBufferedImage {
     
+        /**
+         * Converts an <code>Image</code> to a <code>BufferedImage</code>.
+         * If the image is already a <code>BufferedImage</code>, the original is returned.
+         * 
+         * @param image the image to convert
+         * @return the image as a <code>BufferedImage</code>
+         */
         static BufferedImage toBufferedImage(Image image) {
             if (image instanceof BufferedImage) {
                 // Return image unchanged if it is already a BufferedImage.
@@ -75,6 +85,12 @@ public class PngEncoder {
             return bufferedImage;
         }
         
+        /**
+         * Determines if an image has an alpha channel.
+         * 
+         * @param image the <code>Image</code>
+         * @return true if the image has an alpha channel
+         */
         static boolean hasAlpha(Image image) {
             PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
             try {
@@ -84,29 +100,59 @@ public class PngEncoder {
         }
     }
 
+    /** <code>SubFilter</code> singleton. */
     public static final Filter SUB_FILTER = new SubFilter();
+    
+    /** <code>UpFilter</code> singleton. */
     public static final Filter UP_FILTER = new UpFilter();
+    
+    /** <code>AverageFilter</code> singleton. */
     public static final Filter AVERAGE_FILTER = new AverageFilter();
+
+    /** <code>PaethFilter</code> singleton. */
     public static final Filter PAETH_FILTER = new PaethFilter();
     
+    /** PNG signature bytes. */
     private static final byte[] SIGNATURE = { (byte)0x89, (byte)0x50, (byte)0x4e, (byte)0x47, 
                                               (byte)0x0d, (byte)0x0a, (byte)0x1a, (byte)0x0a };
+    
+    /** Image header (IHDR) chunk header. */
     private static final byte[] IHDR = { (byte) 'I', (byte) 'H', (byte) 'D', (byte) 'R' };
+    
+    /** Palate (PLTE) chunk header. */
     private static final byte[] PLTE = { (byte) 'P', (byte) 'L', (byte) 'T', (byte) 'E' };
+    
+    /** Image Data (IDAT) chunk header. */
     private static final byte[] IDAT = { (byte) 'I', (byte) 'D', (byte) 'A', (byte) 'T' };
+    
+    /** End-of-file (IEND) chunk header. */
     private static final byte[] IEND = { (byte) 'I', (byte) 'E', (byte) 'N', (byte) 'D' };
     
+    /** Sub filter type constant. */
     private static final int SUB_FILTER_TYPE = 1;
+
+    /** Up filter type constant. */
     private static final int UP_FILTER_TYPE = 2;
+    
+    /** Average filter type constant. */
     private static final int AVERAGE_FILTER_TYPE = 3;
+
+    /** Paeth filter type constant. */
     private static final int PAETH_FILTER_TYPE = 4;
 
+    /** Image bit depth. */
     private static final byte BIT_DEPTH = (byte) 8;
 
+    /** Indexed color type rendered value. */
     private static final byte COLOR_TYPE_INDEXED  = (byte) 3;
+    
+    /** RGB color type rendered value. */
     private static final byte COLOR_TYPE_RGB      = (byte) 2;
+    
+    /** RGBA color type rendered value. */
     private static final byte COLOR_TYPE_RGBA     = (byte) 6;
 
+    /** Integer-to-integer map used for RGBA/ARGB conversion. */
     private static final int[] INT_TRANSLATOR_CHANNEL_MAP = new int[]{2, 1, 0, 3};
     
     /**
@@ -337,8 +383,9 @@ public class PngEncoder {
         
             image.getRGB(0, row, width, 1, inputPixelQueue, 0, width);
 
-            // Line below replaces line above, almost halving time to encode, but doesn't work with certain pixel arrangements.
-            // Need to find method of determining pixel order (BGR vs RGB, ARGB, etc)
+            // Line below (commented out) replaces line above, almost halving time to encode, but doesn't work with certain pixel 
+            // arrangements.  Need to find method of determining pixel order (BGR vs RGB, ARGB, etc)
+            //
             // raster.getDataElements(0, row, width, 1, inputPixelQueue);
 
             for (column = 0; column < width; ++column) {
@@ -350,15 +397,34 @@ public class PngEncoder {
         }
     }
     
+    /** The image being encoded. */
     private BufferedImage image;
+    
+    /** The PNG encoding filter to be used. */
     private Filter filter;
+    
+    /** The the deflater compression level. */
     private int compressionLevel;
+    
+    /** The pixel width of the image. */
     private int width;
+    
+    /** The pixel height of the image. */
     private int height;
+    
+    /** The image <code>Raster</code> transfer type. */
     private int transferType;
+    
+    /** The image <code>Raster</code> data. */
     private Raster raster;
+    
+    /** The source image bits-per-pixel. */
     private int inputBpp;
+    
+    /** The encoded image bits-per-pixel. */
     private int outputBpp;
+    
+    /** The <code>Translator</code> being used for encoding. */
     private Translator translator;
     
     /**
@@ -546,7 +612,7 @@ public class PngEncoder {
     }
     
     /**
-     * Writes the PLTE (Palette) chunk to the output stream.
+     * Writes the PLTE (Palate) chunk to the output stream.
      *
      * @param out the OutputStream to write the chunk to
      * @param csum the Checksum that is updated as data is written
