@@ -48,6 +48,9 @@ import nextapp.echo.app.RenderIdSupport;
  * A table which provides an identifier-to-object mapping, with the objects 
  * being weakly referenced (i.e., the fact that they are held within this table
  * will not prevent them from being garbage collected).
+ * 
+ * When deserialized by Java serialization API, the references will be hard until
+ * <code>purge()</code> is invoked for the first time.
  */
 public class IdTable 
 implements Serializable {
@@ -55,8 +58,16 @@ implements Serializable {
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
+    /** 
+     * Flag indicating whether hard references need to be converted to weak references (as a result of the object having been
+     * recently deserialized. 
+     */
     private boolean hasHardReferences = false;
+    
+    /** Mapping between identifiers and <code>WeakReference</code>s. */
     private transient Map idToReferenceMap = new HashMap();
+    
+    /** <code>ReferenceQueue</code> for garbage collected <code>WeakReference</code>s. */
     private transient ReferenceQueue referenceQueue = new ReferenceQueue();
     
     /**
