@@ -577,6 +577,12 @@ Core.Arrays = {
 Core.Arrays.LargeMap = Core.extend({
     
     $static: {
+    
+        /** 
+         * Flag indicating whether forced garbage collection should be enabled.
+         * This flag should be manually set in environments where it is required.
+         * (The web module does this automatically for IE6.)
+         */
         garbageCollectEnabled: false
     },
     
@@ -634,6 +640,12 @@ Core.Arrays.LargeMap = Core.extend({
         }
     },
     
+    /**
+     * Returns a string representation, for debugging purposes only.
+     * 
+     * @return a string representation of the map
+     * @type String
+     */
     toString: function() {
         return Core.Debug.toString(this.map);
     }
@@ -792,10 +804,7 @@ Core.ListenerList = Core.extend({
         }
     },
     
-    /**
-     * Creates a string representation of the listener list.
-     * This should be used for debugging purposes only.
-     */
+    /** @see Object#toString */
     toString: function() {
         var out = "";
         for (var i = 0; i < this._data.length; i += 2) {
@@ -809,7 +818,11 @@ Core.ListenerList = Core.extend({
 });
 
 /**
- * A collection of locale-specific resources.
+ * Provides locale-specific resources for multiple localizations.
+ * A default resource map and locale-specific resource maps may be added to a resource bundle.
+ * The resource bundle may then be queried to return a complete resource map for a specific locale.
+ * When a locale-specific map is requested, any entries not available specifically in that map will be provided
+ * by more generic resource maps that have been added to the bundle.
  */
 Core.ResourceBundle = Core.extend({
 
@@ -838,78 +851,98 @@ Core.ResourceBundle = Core.extend({
 
     /**
      * Association between RFC 1766 language codes and resource maps.
+     * These are the maps which have been added using the <code>set()</code> method.
+     * The contents of these maps may not be modified.
      */
-    _sourceBundles: null,
-    
-    _generatedBundles: null,
+    _sourceMaps: null,
     
     /**
-     * The default resource map that should be utilized in the event that a
+     * Cache of generated resource maps which fill omissions in more-specific resource maps
+     * with those from less-specific resource maps.  A generated map is returned
+     * when the user requests a locale-specific map.
+     */
+    _generatedMaps: null,
+    
+    /**
+     * The default resource map that should be used in the event that a
      * locale-specific map is not available for a particular language code.
      */
-    _defaultBundle: null,
+    _defaultMap: null,
 
-    $construct: function(defaultBundle) {
-        this._sourceBundles = {};
-        this._generatedBundles = {};
-        this._defaultBundle = defaultBundle;
+    /**
+     * Creates a new <code>ResourceBundle</code>.
+     * 
+     * @param defaultMap the default resource map
+     */
+    $construct: function(defaultMap) {
+        this._sourceMaps = {};
+        this._generatedMaps = {};
+        this._defaultMap = defaultMap;
     },
     
     /**
-     * Returns a locale-specific map.
+     * Returns a locale-specific resource map.  The returned map will contain entries from less-specific and/or the default map
+     * if they are not available from the map for the specified language code. 
+     * 
+     * @param {String} languageCode an RFC 1766 language code, or null to return the default map
+     * @return a locale-specific map for the language code
      */
     get: function(languageCode) {
-        var bundle = languageCode ? this._generatedBundles[languageCode] : this._defaultBundle;
-        if (bundle) {
-            return bundle;
+        var map = languageCode ? this._generatedMaps[languageCode] : this._defaultMap;
+        if (map) {
+            return map;
         }
     
-        bundle = {};
+        map = {};
         var x;
 
-        // Copy items from exact language bundle into new bundle.
-        var sourceBundle = this._sourceBundles[languageCode];
-        if (sourceBundle) {
-            for (x in sourceBundle) {
-                bundle[x] = sourceBundle[x];
+        // Copy items from exact language resource map into generated resource map.
+        var sourceMap = this._sourceMaps[languageCode];
+        if (sourceMap) {
+            for (x in sourceMap) {
+                map[x] = sourceMap[x];
             }
         }
 
-        // Copy any missing items found in parent language bundle (if it exists) into new bundle.
+        // Copy any missing items found in parent language resource map (if it exists) into new resource map.
         var parentLanguageCode = Core.ResourceBundle.getParentLanguageCode(languageCode);
         if (parentLanguageCode) {
-            sourceBundle = this._sourceBundles[parentLanguageCode];
-            if (sourceBundle) {
-                for (x in sourceBundle) {
-                    if (bundle[x] === undefined) {
-                        bundle[x] = sourceBundle[x];
+            sourceMap = this._sourceMaps[parentLanguageCode];
+            if (sourceMap) {
+                for (x in sourceMap) {
+                    if (map[x] === undefined) {
+                        map[x] = sourceMap[x];
                     }
                 }
             }
         }
 
-        // Copy any missing items found in default bundle into new bundle.
-        for (x in this._defaultBundle) {
-            if (bundle[x] === undefined) {
-                bundle[x] = this._defaultBundle[x];
+        // Copy any missing items found in default resource map into new resource map.
+        for (x in this._defaultMap) {
+            if (map[x] === undefined) {
+                map[x] = this._defaultMap[x];
             }
         }
         
-        this._generatedBundles[languageCode] = bundle;
-        return bundle;
+        this._generatedMaps[languageCode] = map;
+        return map;
     },
 
     /**
-     * Adds a new locale-specific map to the bundle. 
+     * Adds a new locale-specific map to the bundle.
+     * 
+     *  @param languageCode the language code
+     *  @param map the key-value resource map for the language code
      */
     set: function(languageCode, map) {
-        this._generatedBundles = {};
-        this._sourceBundles[languageCode] = map;
+        this._generatedMaps = {};
+        this._sourceMaps[languageCode] = map;
     },
     
+    /** @see Object#toString */
     toString: function() {
         var out = "ResourceBundle: ";
-        for (var x in this._sourceBundles) {
+        for (var x in this._sourceMaps) {
             out += " " + x;
         }
         return out;
