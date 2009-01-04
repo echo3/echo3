@@ -32,14 +32,17 @@ package nextapp.echo.app;
 /**
  * A single-child container.
  */
-public class Panel extends Composite {
+public class Panel extends Composite 
+implements PaneContainer {
 
     /** Serial Version UID. */
-    private static final long serialVersionUID = 20070101L;
+    private static final long serialVersionUID = 20090103L;
 
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
     public static final String PROPERTY_BORDER = "border";
     public static final String PROPERTY_INSETS = "insets";
+    public static final String PROPERTY_WIDTH = "width";
+    public static final String PROPERTY_HEIGHT = "height";
 
     /**
      * Returns the background image.
@@ -58,6 +61,18 @@ public class Panel extends Composite {
     public Border getBorder() {
         return (Border) get(PROPERTY_BORDER);
     }
+
+    /**
+     * Returns the height of the panel.
+     * If unset, the <code>Panel</code> will be sized by the height of its content, unless it contains a <code>Pane</code> 
+     * component of indeterminate size.
+     * This property only supports <code>Extent</code>s with fixed (i.e., not percent) units.
+     * 
+     * @return the height
+     */
+    public Extent getHeight() {
+        return (Extent) get(PROPERTY_HEIGHT);
+    }
     
     /**
      * Returns the default inset between the border and cells of the
@@ -68,6 +83,16 @@ public class Panel extends Composite {
      */
     public Insets getInsets() {
         return (Insets) get(PROPERTY_INSETS);
+    }
+    
+    /**
+     * Returns the width.
+     * If unset, the <code>Panel</code> will expand to the width of its container.
+     * 
+     * @return the width
+     */
+    public Extent getWidth() {
+        return (Extent) get(PROPERTY_WIDTH);
     }
     
     /**
@@ -89,6 +114,18 @@ public class Panel extends Composite {
     }
     
     /**
+     * Sets the height.
+     * If unset, the <code>Panel</code> will be sized by the height of its content, unless it contains a <code>Pane</code> 
+     * component of indeterminate size.
+     * This property only supports <code>Extent</code>s with fixed (i.e., not percent) units.
+     * 
+     * @param newValue the new height
+     */
+    public void setHeight(Extent newValue) {
+        set(PROPERTY_HEIGHT, newValue);
+    }
+
+    /**
      * Sets the inset between the border and cells of the <code>Column</code>.
      * This value will be overridden for a child component if a setting is
      * specified in its <code>ColumnLayoutData</code>.
@@ -97,5 +134,15 @@ public class Panel extends Composite {
      */
     public void setInsets(Insets newValue) {
         set(PROPERTY_INSETS, newValue);
+    }
+    
+    /**
+     * Sets the width.
+     * If unset, the <code>Panel</code> will expand to the width of its container.
+     * 
+     * @param newValue the new width
+     */
+    public void setWidth(Extent newValue) {
+        set(PROPERTY_WIDTH, newValue);
     }
 }

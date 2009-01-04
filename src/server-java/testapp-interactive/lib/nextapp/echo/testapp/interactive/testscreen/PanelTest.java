@@ -112,6 +112,18 @@ public class PanelTest extends SplitPane {
                 panel.add(grid);
             }
         });
+        controlsColumn.addButton("Set Content (SplitPane)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (panel.getComponentCount() > 0) {
+                    panel.removeAll();
+                }
+                SplitPane sp = new SplitPane();
+                sp.setResizable(true);
+                sp.add(new Label("A pane component..."));
+                sp.add(new Label("...in a Panel"));
+                panel.add(sp);
+            }
+        });
         controlsColumn.addButton("Clear Content", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 panel.removeAll();
@@ -178,6 +190,56 @@ public class PanelTest extends SplitPane {
         controlsColumn.addButton("Insets -> 10/20/30/40px", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 panel.setInsets(new Insets(10, 20, 30, 40));
+            }
+        });
+        controlsColumn.addButton("Width", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setInsets(new Insets(5));
+            }
+        });
+        controlsColumn.addButton("Insets -> 5px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setInsets(new Insets(5));
+            }
+        });
+        controlsColumn.addButton("Insets -> 5px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setInsets(new Insets(5));
+            }
+        });
+        controlsColumn.addButton("Insets -> 5px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setInsets(new Insets(5));
+            }
+        });
+        controlsColumn.addButton("Set Width = null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setWidth(null);
+            }
+        });
+        controlsColumn.addButton("Set Width = 500px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setWidth(new Extent(500));
+            }
+        });
+        controlsColumn.addButton("Set Width = 100%", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setWidth(new Extent(100, Extent.PERCENT));
+            }
+        });
+        controlsColumn.addButton("Set Height = null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setHeight(null);
+            }
+        });
+        controlsColumn.addButton("Set Height = 500px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setHeight(new Extent(500));
+            }
+        });
+        controlsColumn.addButton("Set Height = 100% (Invalid)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setHeight(new Extent(100, Extent.PERCENT));
             }
         });
         controlsColumn.addButton("Randomize", new ActionListener() {
