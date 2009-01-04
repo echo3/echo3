@@ -43,6 +43,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
  */
 public class AbstractButtonPeer extends AbstractComponentSynchronizePeer {
     
+    /** The associated client-side JavaScript module <code>Service</code>. */
     protected static final Service BUTTON_SERVICE = JavaScriptService.forResource("Echo.Button", 
             "nextapp/echo/webcontainer/resource/Sync.Button.js");
     

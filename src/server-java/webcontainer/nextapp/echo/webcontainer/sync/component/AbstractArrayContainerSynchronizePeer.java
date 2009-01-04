@@ -42,6 +42,7 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
  */
 abstract class AbstractArrayContainerSynchronizePeer extends AbstractComponentSynchronizePeer {
 
+    /** The associated client-side JavaScript module <code>Service</code>. */
     private static final Service ARRAY_CONTAINER_SERVICE = JavaScriptService.forResource("Echo.ArrayContainer", 
             "nextapp/echo/webcontainer/resource/Sync.ArrayContainer.js");
 
