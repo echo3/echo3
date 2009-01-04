@@ -59,8 +59,13 @@ implements Service {
         return new StaticBinaryService(id, contentType, data);
     }
 
+    /** The <code>Service</code> identifier. */
     private String id;
+    
+    /** The binary data to be served. */
     private byte[] data;
+    
+    /** The content type of the data. */
     private String contentType;
     
     /**

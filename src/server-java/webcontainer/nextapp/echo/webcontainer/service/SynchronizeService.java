@@ -36,15 +36,22 @@ import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.Synchronization;
 import nextapp.echo.webcontainer.WebContainerServlet;
 
+/**
+ * A <code>Service</code> which processes a client-server synchronization request.
+ * This service simply creates a <code>Synchronization</code> object and invokes its
+ * <code>process()</code> method.
+ */
 public class SynchronizeService 
 implements Service {
 
+    /** Singleton instance. */
     public static final Service INSTANCE = new SynchronizeService();
     
     static {
         WebContainerServlet.getServiceRegistry().add(INSTANCE);
     }
     
+    /** Default constructor. */
     private SynchronizeService() {
         super();
     }

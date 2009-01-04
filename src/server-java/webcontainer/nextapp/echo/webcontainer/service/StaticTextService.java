@@ -59,8 +59,13 @@ implements Service {
         return new StaticTextService(id, contentType, content);
     }
 
+    /** The <code>Service</code> identifier. */
     private String id;
+    
+    /** The text content to be served. */
     private String content;
+    
+    /** The content type of the data. */
     private String contentType;
     
     /**

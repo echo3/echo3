@@ -56,10 +56,16 @@ import nextapp.echo.webcontainer.WebContainerServlet;
 public class WindowHtmlService 
 implements Service {
     
+    /** The XHTML 1.0 Transitional Public ID. */
     public static final String XHTML_1_0_TRANSITIONAL_PUBLIC_ID = "-//W3C//DTD XHTML 1.0 Transitional//EN";
+
+    /** The XHTML 1.0 Transitional System ID. */
     public static final String XHTML_1_0_TRANSITIONAL_SYSTSEM_ID = "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd";
+    
+    /** The XHTML 1.0 Namespace URI. */
     public static final String XHTML_1_0_NAMESPACE_URI = "http://www.w3.org/1999/xhtml";
     
+    /** DOM identifier to use for root element. */
     public static final String ROOT_ELEMENT_ID = "root";
 
     /**
@@ -74,6 +80,7 @@ implements Service {
         OUTPUT_PROPERTIES.setProperty(OutputKeys.DOCTYPE_SYSTEM, XHTML_1_0_TRANSITIONAL_SYSTSEM_ID);
     }
 
+    /** Singleton instance. */
     public static final WindowHtmlService INSTANCE = new WindowHtmlService();
 
     /**
