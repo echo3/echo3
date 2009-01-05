@@ -70,7 +70,6 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
             var childElement = this._childIdToElementMap[this.component.children[i].renderId];
             if (childElement) {
                 childElement.style.zIndex = index + 1;
-                this.component.children[i].set("zIndex", index + 1);
             }
         }
     },
