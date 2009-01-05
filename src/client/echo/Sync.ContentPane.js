@@ -102,12 +102,6 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         if (child.floatingPane) {
             childDiv.style.zIndex = "1";
             childDiv.style.left = childDiv.style.top = 0;
-            if (!this._floatingPaneManager) {
-                // Lazily create floating pane manager, add listener.
-                this._floatingPaneManager = new Echo.Sync.FloatingPaneManager();
-                this._floatingPaneManager.addZIndexListener(Core.method(this, this._processZIndexChanged));
-            }
-            this._floatingPaneManager.add(child.renderId);
             this._floatingPanesChanged = true;
         } else {
             var insets = this.component.render("insets", 0);
@@ -272,6 +266,19 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
      * Processes an update where floating panes have been added.
      */
     _updateFloatingPanes: function() {
+        if (!this._floatingPaneManager) {
+            // Initialize floating pane manager.
+            this._floatingPaneManager = new Echo.Sync.FloatingPaneManager();
+            this._floatingPaneManager.addZIndexListener(Core.method(this, this._processZIndexChanged));
+            
+            // Add all floating pane children of compnoent to manager.
+            for (var i = 0; i < this.component.children.length; ++i) {
+                if (this.component.children[i].floatingPane) {
+                    this._floatingPaneManager.add(this.component.children[i].renderId);
+                }
+            }
+        }
+        
         // Update floating pane z-index order.
         this._floatingPaneManager.arrange(Core.method(this, this._zIndexSort));
         
