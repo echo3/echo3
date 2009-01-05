@@ -975,6 +975,21 @@ Echo.Sync.FloatingPaneManager = Core.extend({
     },
     
     /**
+     * Arrange z-indices of floating panes based on specified array sort function.
+     * 
+     * @param sortFunction the array sorting function
+     */
+    arrange: function(sortFunction) {
+        if (!this._floatingPanes) {
+            return;
+        }
+        this._floatingPanes.sort(sortFunction);
+        if (this._listeners) {
+            this._listeners.fireEvent({type: "zIndex", source: this});
+        }
+    },
+    
+    /**
      * Notifies listeners of a z-index change.
      */
     _fireZIndexEvent: function() {
@@ -1010,6 +1025,16 @@ Echo.Sync.FloatingPaneManager = Core.extend({
         }
         Core.Arrays.remove(this._floatingPanes, renderId);
         this._fireZIndexEvent();
+    },
+    
+    /**
+     * Returns the number of managed floating panes.
+     * 
+     * @return the number of managed floating panes
+     * @type Number
+     */
+    size: function() {
+        return this._floatingPanes ? this._floatingPanes.length : 0;
     },
     
     /**

@@ -5,21 +5,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
 
     $static: {
     
-        DEFAULT_BACKGROUND: "#ffffff",
-        
-        /**
-         * Sort method to order floating panes, first by z-index and then by position within container component.
-         * Lower indices of sorted array should appear below higher indices.
-         */
-        _zIndexSort: function(a, b) {
-            var aIndex = a.render("zIndex", 0);
-            var bIndex = b.render("zIndex", 0);
-            if (aIndex === bIndex) {
-                return a.parent.indexOf(a) - b.parent.indexOf(b);
-            } else {
-                return aIndex - bIndex;
-            }
-        }
+        DEFAULT_BACKGROUND: "#ffffff"
     },
 
     $load: function() {
@@ -43,21 +29,6 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /**
-     * Returns array of floating panes, sorted first by z-index and then by position within container component.
-     * Lower indices in returned array should appear below higher indices.
-     */
-    _getOrderedFloatingPanes: function() {
-        var floatingPanes = [];
-        for (var i = 0; i < this.component.children.length; ++i) {
-            if (this.component.children[i].floatingPane) {
-                floatingPanes.push(this.component.children[i]);
-            }
-        }
-        floatingPanes.sort(Echo.Sync.ContentPane._zIndexSort);
-        return floatingPanes;
-    },
-    
-    /**
      * Processes a z-index change as reported by the floating pane manager.
      * Updates CSS style of floating pane DIV appropriately.
      */
@@ -69,6 +40,11 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
             var index = this._floatingPaneManager.getIndex(this.component.children[i].renderId);
             var childElement = this._childIdToElementMap[this.component.children[i].renderId];
             if (childElement) {
+                if (this._floatingPaneManager.size() > 1) {
+                    // Update z-index component property, but only if more than one floating pane is present.
+//FIXME breaking because window peer not installed.                    
+//                  this.component.children[i].set("zIndex", index + 1);
+                }
                 childElement.style.zIndex = index + 1;
             }
         }
@@ -126,6 +102,12 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         if (child.floatingPane) {
             childDiv.style.zIndex = "1";
             childDiv.style.left = childDiv.style.top = 0;
+            if (!this._floatingPaneManager) {
+                // Lazily create floating pane manager, add listener.
+                this._floatingPaneManager = new Echo.Sync.FloatingPaneManager();
+                this._floatingPaneManager.addZIndexListener(Core.method(this, this._processZIndexChanged));
+            }
+            this._floatingPaneManager.add(child.renderId);
             this._floatingPanesChanged = true;
         } else {
             var insets = this.component.render("insets", 0);
@@ -290,19 +272,28 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
      * Processes an update where floating panes have been added.
      */
     _updateFloatingPanes: function() {
-        // Lazily-create floating pane manager.
-        if (!this._floatingPaneManager) {
-            this._floatingPaneManager = new Echo.Sync.FloatingPaneManager();
-            this._floatingPaneManager.addZIndexListener(Core.method(this, this._processZIndexChanged));
-        }
-
-        // Retrieve z-index/child-index sorted floating panes.
-        var floatingPanes = this._getOrderedFloatingPanes();
-        for (i = 0; i < floatingPanes.length; ++i) {
-            this._floatingPaneManager.add(floatingPanes[i].renderId);
-        }
+        // Update floating pane z-index order.
+        this._floatingPaneManager.arrange(Core.method(this, this._zIndexSort));
         
         // Update status flag as floating pane changes have been processed.
         this._floatingPanesChanged = false;
+    },
+
+    /** 
+     * Array sort method for <code>Echo.Sync.FloatingPaneManager.arrange()</code>.
+     * 
+     * @see Echo.Sync.FloatingPaneManager#arrange
+     */
+    _zIndexSort: function(idA, idB) {
+        var cA = this.client.application.getComponentByRenderId(idA);
+        var cB = this.client.application.getComponentByRenderId(idB);
+        var zA = cA.render("zIndex");
+        var zB = cB.render("zIndex");
+
+        if (zA === zB || zA == null) {
+            return cA.parent.indexOf(cA) - cB.parent.indexOf(cB);
+        } else {
+            return zA - zB;
+        }
     }
 });
