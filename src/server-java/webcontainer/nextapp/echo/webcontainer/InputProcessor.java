@@ -168,7 +168,9 @@ public class InputProcessor {
         if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
             // Print ClientMessage to console. 
             try {
+                System.err.println("======== Request: " + userInstance.getCurrentTransactionId() + " ========");
                 DomUtil.save(clientMessage.getDocument(), System.err, DomUtil.OUTPUT_PROPERTIES_INDENT);
+                System.err.println();
             } catch (SAXException ex) {
                 throw new SynchronizationException("Cannot render XML sync message to console.", ex);
             }

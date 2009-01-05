@@ -208,7 +208,9 @@ class OutputProcessor {
         if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
             // Print ServerMessage DOM to console. 
             try {
+                System.err.println("======== Response: " + userInstance.getCurrentTransactionId() + " ========");
                 DomUtil.save(document, System.err, DomUtil.OUTPUT_PROPERTIES_INDENT);
+                System.err.println();
             } catch (SAXException ex) {
                 // Should not generally occur.
                 throw new SynchronizationException("Cannot render XML sync message to console.", ex);
