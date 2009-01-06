@@ -321,7 +321,7 @@ class OutputProcessor {
         // add directive to add the Window's child ContentPane to the root.   
         // Render all properties of Window. 
         Window window = userInstance.getApplicationInstance().getDefaultWindow();
-        serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSyncUp", "cl");
+        serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSyncIn", "cl");
         serverMessage.setAttribute("root", userInstance.getRootHtmlElementId());
         
         // Render Style Sheet

@@ -941,7 +941,45 @@ Echo.RemoteClient.ComponentFocusProcessor = Core.extend({
 });
 
 /**
+ * ServerMessage directive processor for component synchronizations (initialization phase).
+ * 
+ * Processes initialization directives related to component hierarchy.
+ * Currently limited to clearing entire hierarchy.
+ */
+Echo.RemoteClient.ComponentSyncInitProcessor = Core.extend({
+
+    $construct: function(client) { 
+        this._client = client;
+    },
+    
+    /**
+     * Directive processor process() implementation.
+     */
+    process: function(dirElement) {
+        var element = dirElement.firstChild;
+        while (element) {
+            if (element.nodeType == 1 && element.nodeName == "cl") {
+                this._processClear(element);
+            }
+            element = element.nextSibling;
+        }
+    },
+    
+    /** 
+     * Process a "cl" directive to clear the component hierarchy, removing all components from root.
+     * 
+     * @param {Element} clElement the directive element 
+     */
+    _processClear: function(clElement) {
+        this._client.application.rootComponent.removeAll();
+    }
+});
+    
+/**
  * ServerMessage directive processor for component synchronizations (remove phase).
+ * 
+ * Processes directives to remove components.  Performed before update phase to 
+ * bring component hierarchy to a minimal state before updates occur.
  */
 Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend({
 
@@ -1015,6 +1053,10 @@ Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend({
 
 /**
  * ServerMessage directive processor for component synchronizations (update phase).
+ * 
+ * Processes directives to update components (add children, update properties), 
+ * clear entire component hierarchy (for full-rerender), set stylesheet,
+ * and store referenced properties/styles.
  */
 Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
 
@@ -1051,15 +1093,6 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
             }
             element = element.nextSibling;
         }
-    },
-    
-    /** 
-     * Process a "cl" directive to clear the component hierarchy, removing all components from root.
-     * 
-     * @param {Element} clElement the directive element 
-     */
-    _processClear: function(clElement) {
-        this._client.application.rootComponent.removeAll();
     },
     
     /** 
@@ -1358,6 +1391,7 @@ Echo.RemoteClient.DefaultWaitIndicator = Core.extend(Echo.RemoteClient.WaitIndic
 
 Echo.RemoteClient.ServerMessage.addProcessor("AppSync", Echo.RemoteClient.ApplicationSyncProcessor);
 Echo.RemoteClient.ServerMessage.addProcessor("CFocus", Echo.RemoteClient.ComponentFocusProcessor);
-Echo.RemoteClient.ServerMessage.addProcessor("CSyncUp", Echo.RemoteClient.ComponentSyncUpdateProcessor);
+Echo.RemoteClient.ServerMessage.addProcessor("CSyncIn", Echo.RemoteClient.ComponentSyncInitProcessor);
 Echo.RemoteClient.ServerMessage.addProcessor("CSyncRm", Echo.RemoteClient.ComponentSyncRemoveProcessor);
+Echo.RemoteClient.ServerMessage.addProcessor("CSyncUp", Echo.RemoteClient.ComponentSyncUpdateProcessor);
 Echo.RemoteClient.ServerMessage.addProcessor("CmdExec", Echo.RemoteClient.CommandExecProcessor);
