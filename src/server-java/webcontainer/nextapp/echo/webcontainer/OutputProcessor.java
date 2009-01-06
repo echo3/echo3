@@ -317,11 +317,11 @@ class OutputProcessor {
      */
     private void renderComponentFullRefresh()
     throws SerialException {
-        // Special case: full refresh.  Render entire component hierarchy by rendering an
+        // Special case: clear/full redraw.  Render entire component hierarchy by rendering an
         // add directive to add the Window's child ContentPane to the root.   
         // Render all properties of Window. 
         Window window = userInstance.getApplicationInstance().getDefaultWindow();
-        serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSyncUp", "fr");
+        serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "CSyncUp", "cl");
         serverMessage.setAttribute("root", userInstance.getRootHtmlElementId());
         
         // Render Style Sheet

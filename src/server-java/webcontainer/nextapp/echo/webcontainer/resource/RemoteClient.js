@@ -1042,7 +1042,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         while (element) {
             if (element.nodeType == 1) {
                 switch (element.nodeName) {
-                case "fr": this._processFullRefresh(element); break;
+                case "cl": this._processClear(element); break;
                 case "ss": this._processStyleSheet(element); break;
                 case "up": this._processUpdate(element); break;
                 case "rp": this._processReferencedProperties(element); break;
@@ -1053,7 +1053,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         }
     },
     
-    _processFullRefresh: function(frElement) {
+    _processClear: function(frElement) {
         this._client.application.rootComponent.removeAll();
     },
     
