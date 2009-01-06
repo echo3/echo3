@@ -589,37 +589,48 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
         throw new Error("Unsupported operation: renderAdd().");
     },
     
+    _renderContent: function(update) {
+        Core.Web.DOM.removeAllChildren(this.client.domainElement);
+        for (var i = 0; i < update.parent.children.length; ++i) {
+            Echo.Render.renderComponentAdd(update, update.parent.children[i], this.client.domainElement);
+        }
+    },
+    
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) { },
     
     /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
         var fullRender = false;
-        if (update.hasAddedChildren() || update.hasRemovedChildren()) {
-            Core.Web.DOM.removeAllChildren(this.client.domainElement);
-            for (var i = 0; i < update.parent.children.length; ++i) {
-                Echo.Render.renderComponentAdd(update, update.parent.children[i], this.client.domainElement);
-            }
+
+        if (update.fullRefresh) {
+            Echo.Sync.renderComponentDefaults(this.component, this.client.domainElement);
+            document.title = this.component.render("title");
+            this._renderContent(update);
             fullRender = true;
-        }
-        
-        this.client.domainElement.dir = this.component.application.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl";
-        
-        if (update.hasUpdatedProperties()) {
-            var property;
-            if (property = update.getUpdatedProperty("title")) {
-                document.title = property.newValue;
+        } else {
+            if (update.fullRefresh || update.hasAddedChildren() || update.hasRemovedChildren()) {
+                this._renderContent(update);
+                fullRender = true;
             }
-            if (property = update.getUpdatedProperty("background")) {
-                Echo.Sync.Color.renderClear(property.newValue, this.client.domainElement, "backgroundColor");
+            
+            this.client.domainElement.dir = this.component.application.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl";
+            if (update.hasUpdatedProperties()) {
+                var property;
+                if (property = update.getUpdatedProperty("title")) {
+                    document.title = property.newValue;
+                }
+                if (property = update.getUpdatedProperty("background")) {
+                    Echo.Sync.Color.renderClear(property.newValue, this.client.domainElement, "backgroundColor");
+                }
+                if (property = update.getUpdatedProperty("foreground")) {
+                    Echo.Sync.Color.renderClear(property.newValue, this.client.domainElement, "foreground");
+                }
+                if (property = update.getUpdatedProperty("font")) {
+                    Echo.Sync.Font.renderClear(property.newValue, this.client.domainElement);
+                }
+                Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this.client.domainElement);
             }
-            if (property = update.getUpdatedProperty("foreground")) {
-                Echo.Sync.Color.renderClear(property.newValue, this.client.domainElement, "foreground");
-            }
-            if (property = update.getUpdatedProperty("font")) {
-                Echo.Sync.Font.renderClear(property.newValue, this.client.domainElement);
-            }
-            Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this.client.domainElement);
         }
         
         return fullRender;

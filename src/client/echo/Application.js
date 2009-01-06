@@ -344,7 +344,7 @@ Echo.Application = Core.extend({
      */
     setLayoutDirection: function(newValue) {
         this._layoutDirection = newValue;
-        this.updateManager._processApplicationUpdate();
+        this.updateManager._processFullRefresh();
     },
     
     /**
@@ -354,7 +354,7 @@ Echo.Application = Core.extend({
      */
     setLocale: function(newValue) {
         this._locale = newValue;
-        this.updateManager._processApplicationUpdate();
+        this.updateManager._processFullRefresh();
     },
     
     /**
@@ -393,7 +393,7 @@ Echo.Application = Core.extend({
      */
     setStyleSheet: function(newValue) {
         this._styleSheet = newValue;
-        this.updateManager._processApplicationUpdate();
+        this.updateManager._processFullRefresh();
     },
     
     /**
@@ -2390,11 +2390,13 @@ Echo.Update.Manager = Core.extend({
     },
     
     /**
-     * Processes a (major) application-level update.
-     * Current implementation simply enables fullRefreshRequired.
+     * Processes an event requiring a full-refresh.
      */
-    _processApplicationUpdate: function() {
-//        this.fullRefreshRequired = true;
+    _processFullRefresh: function() {
+        this.purge();
+        this.fullRefreshRequired = true;
+        var update = this._createComponentUpdate(this.application.rootComponent);
+        update.fullRefresh = true;
     },
     
     /**

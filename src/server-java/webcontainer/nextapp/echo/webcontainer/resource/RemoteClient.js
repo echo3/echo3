@@ -916,7 +916,7 @@ Echo.RemoteClient.ComponentFocusProcessor = Core.extend({
 
     _client: null,
 
-    $construct: function(client) { 
+    $construct: function(client) {
         this._client = client;
     },
     
