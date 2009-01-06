@@ -610,7 +610,7 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
 
         if (update.fullRefresh) {
             Echo.Sync.renderComponentDefaults(this.component, this.client.domainElement);
-            document.title = this.component.render("title");
+            document.title = this.component.render("title", "");
             this._renderContent(update);
             fullRender = true;
         } else {
