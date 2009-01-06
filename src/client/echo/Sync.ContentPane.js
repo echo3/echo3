@@ -3,11 +3,6 @@
  */
 Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
 
-    $static: {
-    
-        DEFAULT_BACKGROUND: "#ffffff"
-    },
-
     $load: function() {
         Echo.Render.registerPeer("ContentPane", this);
     },
@@ -22,6 +17,11 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         this._floatingPaneStack = [];
     },
     
+    /**
+     * Raises a floating pane child to the top.
+     * 
+     * @param {Echo.Component} the child component to raise
+     */
     raise: function(child) {
         if (this._floatingPaneStack[this._floatingPaneStack.length - 1] == child) {
             // Already on top, do nothing.
@@ -33,6 +33,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         this._storeFloatingPaneZIndices();
     },
     
+    /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         var i;
         
@@ -129,6 +130,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         this._div.appendChild(childDiv);
     },
     
+    /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
         this._childIdToElementMap = null;
         this._div = null;
@@ -219,6 +221,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         this._zIndexRenderRequired = false;
     },
 
+    /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
         var i, fullRender = false;
         if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()) {
