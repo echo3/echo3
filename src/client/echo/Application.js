@@ -2397,6 +2397,7 @@ Echo.Update.Manager = Core.extend({
         this.fullRefreshRequired = true;
         var update = this._createComponentUpdate(this.application.rootComponent);
         update.fullRefresh = true;
+        this._fireUpdate();
     },
     
     /**

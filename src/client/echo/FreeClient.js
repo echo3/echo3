@@ -97,8 +97,6 @@ Echo.FreeClient = Core.extend(Echo.Client, {
         this.application.updateManager.addUpdateListener(this._processUpdateRef);
     },
     
-    //FIXME This method is asynchronous, first autoupdate might want to wait on it being completed.
-    // This currently causes occassional bugginess in the freeclient test app (race).
     /**
      * Loads an XML style sheet into the client application from a URL.
      * 
