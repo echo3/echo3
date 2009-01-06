@@ -987,6 +987,14 @@ Echo.RemoteClient.ComponentFocusProcessor = Core.extend({
  */
 Echo.RemoteClient.ComponentSyncInitProcessor = Core.extend({
 
+    /** The remote client. */
+    _client: null,
+
+    /** 
+     * Creates a new ComponentSyncInitProcessor.
+     * 
+     * @param {Echo.RemoteClient} client the remote client
+     */
     $construct: function(client) { 
         this._client = client;
     },
@@ -998,19 +1006,10 @@ Echo.RemoteClient.ComponentSyncInitProcessor = Core.extend({
         var element = dirElement.firstChild;
         while (element) {
             if (element.nodeType == 1 && element.nodeName == "cl") {
-                this._processClear(element);
+                this._client.application.rootComponent.removeAll();
             }
             element = element.nextSibling;
         }
-    },
-    
-    /** 
-     * Process a "cl" directive to clear the component hierarchy, removing all components from root.
-     * 
-     * @param {Element} clElement the directive element 
-     */
-    _processClear: function(clElement) {
-        this._client.application.rootComponent.removeAll();
     }
 });
     
@@ -1022,12 +1021,21 @@ Echo.RemoteClient.ComponentSyncInitProcessor = Core.extend({
  */
 Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend({
 
+    /** The remote client. */
     _client: null,
 
+    /** 
+     * Creates a new ComponentSyncInitProcessor.
+     * 
+     * @param {Echo.RemoteClient} client the remote client
+     */
     $construct: function(client) { 
         this._client = client;
     },
     
+    /**
+     * Directive processor process() implementation.
+     */
     process: function(dirElement) {
         var rmElement = dirElement.firstChild;
         while (rmElement) {
