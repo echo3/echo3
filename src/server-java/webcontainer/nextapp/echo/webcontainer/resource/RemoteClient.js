@@ -246,9 +246,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         return Echo.RemoteClient._libraryServerUrl + "?sid=" + serviceId;
     },
     
-    /**
-     * @see Echo.Client#getResoruceUrl
-     */
+    /** @see Echo.Client#getResoruceUrl */
     getResourceUrl: function(packageName, resourceName) {
         return this._getServiceUrl("Echo.Resource") + "&pkg=" + packageName + "&res=" + resourceName;
     },

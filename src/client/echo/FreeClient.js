@@ -1,7 +1,7 @@
 /**
  * @fileoverview
  * Freestanding Client Implementation.
- * Provides capapbility to develop server-independent applications.
+ * Provides capability to develop server-independent applications.
  * Requires Core, Core.Web, Application, Render, Serial, Client.
  */
  
@@ -13,7 +13,10 @@
  */ 
 Echo.FreeClient = Core.extend(Echo.Client, {
 
+    /** Method reference to <code>Echo.FreeClient._processUpdate</code> */
     _processUpdateRef: null,
+    
+    /** Resource package name to base URL mapping for resource paths. */
     _resourcePaths: null,
 
     /**
@@ -54,10 +57,8 @@ Echo.FreeClient = Core.extend(Echo.Client, {
         Echo.Render.renderComponentDispose(null, this.application.rootComponent);
         Echo.Client.prototype.dispose.call(this);
     },
-
-    /**
-     * @override
-     */    
+    
+    /** @see Echo.Client#getResoruceUrl */
     getResourceUrl: function(packageName, resourceName) {
         if (this._resourcePaths && this._resourcePaths[packageName]) {
             return this._resourcePaths[packageName] + resourceName;
@@ -104,6 +105,7 @@ Echo.FreeClient = Core.extend(Echo.Client, {
         this.application.setStyleSheet(styleSheet);
     },
 
+    /** Schedules new <code>AutoUpdate</code> runnable after updates have completed. */  
     _processUpdate: function(e) {
         if (!this._autoUpdate) {
             this._autoUpdate = new Echo.FreeClient.AutoUpdate(this);
@@ -117,10 +119,16 @@ Echo.FreeClient = Core.extend(Echo.Client, {
  */
 Echo.FreeClient.AutoUpdate = Core.extend(Core.Web.Scheduler.Runnable, {
 
+    /** @see Core.Web.Scheduler.Runnable#timeInterval */
     timeInterval: 0,
     
+    /** @see Core.Web.Scheduler.Runnable#repeat */
     repeat: false,
     
+    /**
+     * The supported client.
+     * @type Echo.FreeClient
+     */
     _client: null,
 
     /**
@@ -132,9 +140,7 @@ Echo.FreeClient.AutoUpdate = Core.extend(Core.Web.Scheduler.Runnable, {
         this._client = client;
     },
     
-    /**
-     * Runnable run() implementation.
-     */
+    /** @see Core.Web.Scheduler.Runnable#run */
     run: function() {
         if (this._client.application) {
             // Only execute updates in the event client has not been deconfigured, which can
