@@ -34,10 +34,6 @@ Echo.Render = {
      */
     _disposedComponents: null,
     
-    //FIXME  Scrollbar position tracking code in SplitPane appears to suggest that
-    // disposed states are not in good shape....SplitPane is being disposed when
-    // parent contentPane is redrawn.
-    
     /**
      * An array sorting implementation to organize an array by component depth.
      */
