@@ -6,11 +6,11 @@
   <p t="b" n="pressedEnabled">true</p>
   <p n="pressedBackground">#ffafff</p>
   <p n="foreground">#00007f</p>
-  <p t="Insets" n="insets">5px</p>
+  <p n="insets">5px</p>
  </s>
  <s n="DefaultSpaced" t="Row">
-  <p t="Extent" n="cellSpacing">5px</p>
-  <p t="Insets" n="padding">5px</p>
+  <p n="cellSpacing">5px</p>
+  <p n="padding">5px</p>
  </s>
  <s n="DefaultResizable" t="SplitPane">
   <p t="b" n="resizable">true</p>
