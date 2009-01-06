@@ -589,6 +589,11 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
         throw new Error("Unsupported operation: renderAdd().");
     },
     
+    /**
+     * Removes all content from root container and adds current content.
+     * 
+     * @param {Echo.Update.ComponentUpdate} update the causing update 
+     */
     _renderContent: function(update) {
         Core.Web.DOM.removeAllChildren(this.client.domainElement);
         for (var i = 0; i < update.parent.children.length; ++i) {
