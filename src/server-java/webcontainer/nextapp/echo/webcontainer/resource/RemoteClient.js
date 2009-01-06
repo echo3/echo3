@@ -31,6 +31,9 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         
         initialized: false,
         
+        /**
+         * Resource bundle containing (error/issue) messages displayed to user.
+         */
         resource: new Core.ResourceBundle({
             "ResyncMessage": "This window was not synchronized with the web server and has been reset.  " + 
                     "Please try your last request again.",
@@ -38,7 +41,10 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             "InvalidResponseMessagePost": ".\nPress the browser reload or refresh button.",
             "WaitMessage": "Waiting on server response.  Press the browser reload or refresh button if server fails to respond."
         }),
-        
+
+        /**
+         * Initializes the remote-client-based application.
+         */
         init: function() {
             if (Echo.RemoteClient.initialized) {
                 return;
@@ -67,6 +73,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     
     /**
      * Identifier for input restriction registered with client during transactions.
+     * @type String
      */
     _inputRestrictionId: null,
 
@@ -136,7 +143,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     
     /**
      * Creates a new RemoteClient instance.
-     * @constructor
+     * 
      * @param serverUrl the URL of the server
      */
     $construct: function(serverUrl) {
@@ -203,6 +210,10 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         }
     },
     
+    /**
+     * Displays a notification to the user that the client and server were out of sync causing the entire
+     * application state had to be resynchronized. 
+     */
     _displayResyncNotification: function() {
         alert(this._msg["ResyncMessage"]);
     },
@@ -622,14 +633,22 @@ Echo.RemoteClient.ClientMessage = Core.extend({
          */
         _ClientProperties: Core.extend({
         
+            /** 
+             * The directive element
+             * @type Element 
+             */
             _element: null,
             
+            /** 
+             * The client message on which the client properties directive will be sent.
+             * @type Echo.RemoteClient.ClientMessage 
+             */
             _clientMessage: null,
 
             /**        
              * Creates a new ClientProperties directive object.
              * 
-             * @param clientMessage the client message object
+             * @param {Echo.RemoteClient.ClientMessage} clientMessage the client message object
              * @param map initial properties to store (key/value pairs)
              */
             $construct: function(clientMessage, map) {
@@ -724,7 +743,6 @@ Echo.RemoteClient.ClientMessage = Core.extend({
     /**
      * Queries the application for the currently focused component and renders
      * this information to the client message DOM.
-     *
      */
     _renderCFocus: function() {
         if (!this._client.application) {
@@ -877,6 +895,7 @@ Echo.RemoteClient.CommandExecProcessor = Core.extend({
 
     $static: {
     
+        /** Mapping between command type names and command peer objects */
         _typeToPeerMap: {},
         
         /**
@@ -889,13 +908,23 @@ Echo.RemoteClient.CommandExecProcessor = Core.extend({
             Echo.RemoteClient.CommandExecProcessor._typeToPeerMap[type] = commandPeer;
         }
     },
+    
+    /** The remote client. */
+    _client: null,
 
+    /** 
+     * Creates a new CommandExecProcessor.
+     * 
+     * @param {Echo.RemoteClient} client the remote client
+     */
     $construct: function(client) { 
         this._client = client;
     },
     
     /**
      * Directive processor process() implementation.
+     * 
+     * @param {Element} dirElement the directive element
      */
     process: function(dirElement) {
         var cmdElement = dirElement.firstChild;
@@ -922,29 +951,31 @@ Echo.RemoteClient.CommandExecProcessor = Core.extend({
  */
 Echo.RemoteClient.ComponentFocusProcessor = Core.extend({
 
+    /** The remote client. */
     _client: null,
 
+    /** 
+     * Creates a new ComponentFocusProcessor.
+     * 
+     * @param {Echo.RemoteClient} client the remote client
+     */
     $construct: function(client) {
         this._client = client;
     },
     
     /**
      * Directive processor process() implementation.
+     * 
+     * @param {Element} dirElement the directive element
      */
     process: function(dirElement) {
         var element = dirElement.firstChild;
         while (element) {
-            if (element.nodeType == 1) {
-                if (element.nodeName == "focus") {
-                    this._processFocus(element);
-                }
+            if (element.nodeType == 1 && element.nodeName == "focus") {
+                this._client._focusedComponent = this._client.application.getComponentByRenderId(element.getAttribute("i"));
             }
             element = element.nextSibling;
         }
-    },
-    
-    _processFocus: function(focusElement) {
-        this._client._focusedComponent = this._client.application.getComponentByRenderId(focusElement.getAttribute("i"));
     }
 });
 
