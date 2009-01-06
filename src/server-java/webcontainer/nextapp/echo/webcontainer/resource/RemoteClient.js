@@ -628,13 +628,21 @@ Echo.RemoteClient.ClientMessage = Core.extend({
 
             /**        
              * Creates a new ClientProperties directive object.
+             * 
              * @param clientMessage the client message object
+             * @param map initial properties to store (key/value pairs)
              */
-            $construct: function(clientMessage) {
+            $construct: function(clientMessage, map) {
                 this._element = clientMessage._document.createElement("dir");
                 this._element.setAttribute("proc", "ClientProperties");
                 clientMessage._document.documentElement.appendChild(this._element);
                 this._clientMessage = clientMessage;
+                
+                if (map) {
+                    for (var key in map) {
+                        this._add(key, map[key]);
+                    }
+                }
             },
             
             /**
@@ -775,40 +783,40 @@ Echo.RemoteClient.ClientMessage = Core.extend({
      * This information is rendered only in the first client message to the server.
      */
     _renderClientProperties: function() {
-        var cp = new Echo.RemoteClient.ClientMessage._ClientProperties(this);
-        
-        cp._add("screenWidth", screen.width);
-        cp._add("screenHeight", screen.height);
-        cp._add("screenColorDepth", screen.colorDepth);
-        cp._add("utcOffset", 0 - parseInt(new Date().getTimezoneOffset(), 10));
-        
-        cp._add("navigatorAppName", window.navigator.appName);
-        cp._add("navigatorAppVersion", window.navigator.appVersion);
-        cp._add("navigatorAppCodeName", window.navigator.appCodeName);
-        cp._add("navigatorCookieEnabled", window.navigator.cookieEnabled);
-        cp._add("navigatorJavaEnabled", window.navigator.javaEnabled());
-        cp._add("navigatorLanguage", window.navigator.language ? window.navigator.language : window.navigator.userLanguage);
-        cp._add("navigatorPlatform", window.navigator.platform);
-        cp._add("navigatorUserAgent", window.navigator.userAgent);
-        
         var env = Core.Web.Env;
-        cp._add("browserChrome", env.BROWSER_CHROME);
-        cp._add("browserOpera", env.BROWSER_OPERA);
-        cp._add("browserSafari", env.BROWSER_SAFARI);
-        cp._add("browserKonqueror", env.BROWSER_KONQUEROR);
-        cp._add("browserMozillaFirefox", env.BROWSER_FIREFOX);
-        cp._add("browserMozilla", env.BROWSER_MOZILLA);
-        cp._add("browserInternetExplorer", env.BROWSER_INTERNET_EXPLORER);
-        cp._add("browserVersionMajor", env.BROWSER_VERSION_MAJOR);
-        cp._add("browserVersionMinor", env.BROWSER_VERSION_MINOR);
-        
-        cp._add("engineGecko", env.ENGINE_GECKO);
-        cp._add("engineKHTML", env.ENGINE_KHTML);
-        cp._add("engineMSHTML", env.ENGINE_MSHTML);
-        cp._add("enginePresto", env.ENGINE_PRESTO);
-        cp._add("engineWebKit", env.ENGINE_WEBKIT);
-        cp._add("engineVersionMajor", env.ENGINE_VERSION_MAJOR);
-        cp._add("engineVersionMinor", env.ENGINE_VERSION_MINOR);
+        var cp = new Echo.RemoteClient.ClientMessage._ClientProperties(this, {
+            screenWidth: screen.width,
+            screenHeight: screen.height,
+            screenColorDepth: screen.colorDepth,
+            utcOffset: 0 - parseInt(new Date().getTimezoneOffset(), 10),
+
+            navigatorAppName: window.navigator.appName,
+            navigatorAppVersion: window.navigator.appVersion,
+            navigatorAppCodeName: window.navigator.appCodeName,
+            navigatorCookieEnabled: window.navigator.cookieEnabled,
+            navigatorJavaEnabled: window.navigator.javaEnabled(),
+            navigatorLanguage: window.navigator.language ? window.navigator.language : window.navigator.userLanguage,
+            navigatorPlatform: window.navigator.platform,
+            navigatorUserAgent: window.navigator.userAgent,
+
+            browserChrome: env.BROWSER_CHROME,
+            browserOpera: env.BROWSER_OPERA,
+            browserSafari: env.BROWSER_SAFARI,
+            browserKonqueror: env.BROWSER_KONQUEROR,
+            browserMozillaFirefox: env.BROWSER_FIREFOX,
+            browserMozilla: env.BROWSER_MOZILLA,
+            browserInternetExplorer: env.BROWSER_INTERNET_EXPLORER,
+            browserVersionMajor: env.BROWSER_VERSION_MAJOR,
+            browserVersionMinor: env.BROWSER_VERSION_MINOR,
+
+            engineGecko: env.ENGINE_GECKO,
+            engineKHTML: env.ENGINE_KHTML,
+            engineMSHTML: env.ENGINE_MSHTML,
+            enginePresto: env.ENGINE_PRESTO,
+            engineWebKit: env.ENGINE_WEBKIT,
+            engineVersionMajor: env.ENGINE_VERSION_MAJOR,
+            engineVersionMinor: env.ENGINE_VERSION_MINOR
+        });
     },
     
     /**
