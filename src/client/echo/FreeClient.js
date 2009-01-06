@@ -13,11 +13,16 @@
  */ 
 Echo.FreeClient = Core.extend(Echo.Client, {
 
-    /** Method reference to <code>Echo.FreeClient._processUpdate</code> */
+    /** Method reference to <code>_processUpdate()</code> */
     _processUpdateRef: null,
+    
+    /** Method reference to <code>_doRender()</code> */
+    _doRenderRef: null,
     
     /** Resource package name to base URL mapping for resource paths. */
     _resourcePaths: null,
+    
+    _renderPending: false,
 
     /**
      * Creates a new FreeClient.
@@ -27,6 +32,7 @@ Echo.FreeClient = Core.extend(Echo.Client, {
      */
     $construct: function(application, domainElement) {
         Echo.Client.call(this);
+        this._doRenderRef = Core.method(this, this._doRender);
         this._processUpdateRef = Core.method(this, this._processUpdate);
         this.configure(application, domainElement);
         this._processUpdate();
@@ -56,6 +62,16 @@ Echo.FreeClient = Core.extend(Echo.Client, {
         this.application.updateManager.removeUpdateListener(this._processUpdateRef);
         Echo.Render.renderComponentDispose(null, this.application.rootComponent);
         Echo.Client.prototype.dispose.call(this);
+    },
+    
+    _doRender: function() {
+        if (this.application) {
+            // Only execute updates in the event client has not been deconfigured, which can
+            // occur before auto-update fires if other operations were scheduled for immediate
+            // execution.
+            Echo.Render.processUpdates(this);
+            this._renderPending = false;
+        }
     },
     
     /** @see Echo.Client#getResoruceUrl */
@@ -105,49 +121,11 @@ Echo.FreeClient = Core.extend(Echo.Client, {
         this.application.setStyleSheet(styleSheet);
     },
 
-    /** Schedules new <code>AutoUpdate</code> runnable after updates have completed. */  
+    /** Schedules doRender() to run in next execution context. */  
     _processUpdate: function(e) {
-        if (!this._autoUpdate) {
-            this._autoUpdate = new Echo.FreeClient.AutoUpdate(this);
-            Core.Web.Scheduler.add(this._autoUpdate);
-        }
-    }
-});
-
-/**
- * <code>Core.Web.Scheduler.Runnable</code> to automatically update client when application state has changed.
- */
-Echo.FreeClient.AutoUpdate = Core.extend(Core.Web.Scheduler.Runnable, {
-
-    /** @see Core.Web.Scheduler.Runnable#timeInterval */
-    timeInterval: 0,
-    
-    /** @see Core.Web.Scheduler.Runnable#repeat */
-    repeat: false,
-    
-    /**
-     * The supported client.
-     * @type Echo.FreeClient
-     */
-    _client: null,
-
-    /**
-     * Creates a new automatic render update runnable.
-     * 
-     * @param client the supported client
-     */
-    $construct: function(client) {
-        this._client = client;
-    },
-    
-    /** @see Core.Web.Scheduler.Runnable#run */
-    run: function() {
-        if (this._client.application) {
-            // Only execute updates in the event client has not been deconfigured, which can
-            // occur before auto-update fires if other operations were scheduled for immediate
-            // execution.
-            Echo.Render.processUpdates(this._client);
-            this._client._autoUpdate = null;
+        if (!this._renderPending) {
+            this._renderPending = true;
+            Core.Web.Scheduler.run(this._doRenderRef);
         }
     }
 });
