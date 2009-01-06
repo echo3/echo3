@@ -344,6 +344,7 @@ Echo.Application = Core.extend({
      */
     setLayoutDirection: function(newValue) {
         this._layoutDirection = newValue;
+        this.updateManager._processApplicationUpdate();
     },
     
     /**
@@ -353,6 +354,7 @@ Echo.Application = Core.extend({
      */
     setLocale: function(newValue) {
         this._locale = newValue;
+        this.updateManager._processApplicationUpdate();
     },
     
     /**
@@ -390,10 +392,8 @@ Echo.Application = Core.extend({
      * @param {Echo.StyleSheet} newValue the new style sheet
      */
     setStyleSheet: function(newValue) {
-        var oldValue = this._styleSheet;
         this._styleSheet = newValue;
-    // FIXME updatemanager can't handle this yet.    
-    //    this.notifyComponentUpdate(null, "styleSheet", oldValue, newValue);
+        this.updateManager._processApplicationUpdate();
     },
     
     /**
@@ -2141,7 +2141,7 @@ Echo.Update.Manager = Core.extend({
      * Flag indicating whether any updates are pending.
      * @type Boolean
      */
-    _hasUpdates: true,
+    _hasUpdates: false,
     
     /**
      * Internal listener list for update listeners.
@@ -2387,6 +2387,14 @@ Echo.Update.Manager = Core.extend({
         }
         var update = this._createComponentUpdate(component);
         update._updateProperty(propertyName, oldValue, newValue);
+    },
+    
+    /**
+     * Processes a (major) application-level update.
+     * Current implementation simply enables fullRefreshRequired.
+     */
+    _processApplicationUpdate: function() {
+//        this.fullRefreshRequired = true;
     },
     
     /**
