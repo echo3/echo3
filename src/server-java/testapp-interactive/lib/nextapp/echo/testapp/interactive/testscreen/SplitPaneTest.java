@@ -35,12 +35,14 @@ import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
+import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.SplitPane;
+import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.SplitPaneLayoutData;
@@ -256,6 +258,7 @@ public class SplitPaneTest extends SplitPane {
     }
 
     private SplitPane testPane;
+    private ContentPane contentPane;
     
     public SplitPaneTest() {
         super();
@@ -483,12 +486,39 @@ public class SplitPaneTest extends SplitPane {
             }
         });
         
+        controlsColumn = new ButtonColumn();
+        controlsColumn.add(new Label("Configure Containing ContentPane"));
+        groupContainerColumn.add(controlsColumn);
+        
+        controlsColumn.addButton("Set Background", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                contentPane.setBackground(StyleUtil.randomColor());
+            }
+        });
+        
+        controlsColumn.addButton("Clear Background", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                contentPane.setBackground(null);
+            }
+        });
+
+        controlsColumn.addButton("Add WindowPane", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                WindowPane windowPane = new WindowPane();
+                windowPane.setStyleName("Default");
+                contentPane.add(windowPane);
+            }
+        });
+
         groupContainerColumn.add(new PaneControlsColumn(0));
         groupContainerColumn.add(new PaneControlsColumn(1));
+        
+        contentPane = new ContentPane();
+        add(contentPane);
 
         testPane = new SplitPane(ORIENTATION_VERTICAL, new Extent(200, Extent.PX));
         testPane.setStyleName("DefaultResizable");
-        add(testPane);
+        contentPane.add(testPane);
     }
     
     private Label createPaneLabel(String text) {
