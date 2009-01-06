@@ -231,9 +231,9 @@ Echo.Render = {
                     }
                 }
             }
-    
-            //FIXME ....moved after loop, ensure this is okay (evaluate use of dispose).
-            // Set disposed state of peer to false.
+
+            // Invoke _setPeerDisposedState() to ensure that peer is marked as non-disposed.
+            // (A full-re-render may have invoked renderComponentDispose()).
             Echo.Render._setPeerDisposedState(updates[i].parent, false);
         }
         
