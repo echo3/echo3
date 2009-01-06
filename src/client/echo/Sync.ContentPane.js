@@ -12,46 +12,24 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         Echo.Render.registerPeer("ContentPane", this);
     },
     
-    /**
-     * Flag indicating floating pane state has changed (floating panes have been added).
-     */
-    _floatingPanesChanged: false,
+    /** Array of child floating panes components, organized by z-index. */
+    _floatingPaneStack: null,
     
-    /**
-     * Floating pane manager instance.
-     * 
-     * @type Echo.Sync.FloatingPaneManager
-     */
-    _floatingPaneManager: null,
+    /** Flag indicating that the rendered z-indices are not synchronized with the order of <code>_floatingPaneStack</code>. */
+    _zIndexRenderRequired: false,
 
     $construct: function() {
-        this._floatingPaneManager = null;
-    },
-    
-    /**
-     * Processes a z-index change as reported by the floating pane manager.
-     * Updates CSS style of floating pane DIV appropriately.
-     */
-    _processZIndexChanged: function(e) {
-        for (var i = 0; i < this.component.children.length; ++i) {
-            if (!this.component.children[i].floatingPane) {
-                continue;
-            }
-            var index = this._floatingPaneManager.getIndex(this.component.children[i].renderId);
-            var childElement = this._childIdToElementMap[this.component.children[i].renderId];
-            if (childElement) {
-                if (this._floatingPaneManager.size() > 1) {
-                    // Update z-index component property, but only if more than one floating pane is present.
-//FIXME breaking because window peer not installed.                    
-//                  this.component.children[i].set("zIndex", index + 1);
-                }
-                childElement.style.zIndex = index + 1;
-            }
-        }
+        this._floatingPaneStack = [];
     },
     
     raise: function(child) {
-        this._floatingPaneManager.add(child.renderId);
+        if (this._floatingPaneStack[this._floatingPaneStack.length - 1] == child) {
+            // Already on top, do nothing.
+            return;
+        }
+        Core.Arrays.remove(this._floatingPaneStack, child);
+        this._floatingPaneStack.push(child);
+        this._renderFloatingPaneZIndices();
     },
     
     renderAdd: function(update, parentElement) {
@@ -90,8 +68,8 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         
         parentElement.appendChild(this._div);
 
-        if (this._floatingPanesChanged) {
-            this._updateFloatingPanes();
+        if (this._zIndexRenderRequired) {
+            this._renderFloatingPaneZIndices();
         }
     },
 
@@ -100,9 +78,30 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         this._childIdToElementMap[child.renderId] = childDiv;
         childDiv.style.position = "absolute";
         if (child.floatingPane) {
+            if (child.floatingPane) {
+                var zIndex = child.render("zIndex");
+                if (zIndex) {
+                    var added = false;
+                    var i = 0;
+                    
+                    while (i < this._floatingPaneStack.length && !added) {
+                        var testZIndex = this._floatingPaneStack[i].render("zIndex");
+                        if (testZIndex != null && testZIndex > zIndex) {
+                            this._floatingPaneStack.splice(i, 0, child);
+                            added = true;
+                        }
+                        ++i;
+                    }
+                    if (!added) {
+                        this._floatingPaneStack.push(child);
+                    }
+                } else {
+                    this._floatingPaneStack.push(child);
+                }
+            }
             childDiv.style.zIndex = "1";
             childDiv.style.left = childDiv.style.top = 0;
-            this._floatingPanesChanged = true;
+            this._zIndexRenderRequired = true;
         } else {
             var insets = this.component.render("insets", 0);
             var pixelInsets = Echo.Sync.Insets.toPixels(insets);
@@ -132,14 +131,13 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     renderDispose: function(update) {
-        this._floatingPaneManager = null;
         this._childIdToElementMap = null;
         this._div = null;
     },
     
     _renderRemoveChild: function(update, child) {
-        if (child.floatingPane && this._floatingPaneManager) {
-            this._floatingPaneManager.remove(child.renderId);
+        if (child.floatingPane) {
+            Core.Arrays.remove(this._floatingPaneStack, child);
         }
         
         var childDiv = this._childIdToElementMap[child.renderId];
@@ -214,6 +212,14 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    _renderFloatingPaneZIndices: function() {
+        for (var i = 0; i < this._floatingPaneStack.length; ++i) {
+            var childElement = this._childIdToElementMap[this._floatingPaneStack[i].renderId];
+            childElement.style.zIndex = 2 + i;
+        }
+        this._zIndexRenderRequired = false;
+    },
+
     renderUpdate: function(update) {
         var i, fullRender = false;
         if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()) {
@@ -246,12 +252,13 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
                     }
                 }
 
-                if (this._floatingPanesChanged) {
-                    this._updateFloatingPanes();
+                if (this._zIndexRenderRequired) {
+                    this._renderFloatingPaneZIndices();
                 }
             }
         }
         if (fullRender) {
+            this._floatingPaneStack = [];
             var element = this._div;
             var containerElement = element.parentNode;
             Echo.Render.renderComponentDispose(update, update.parent);
@@ -262,45 +269,9 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         return fullRender;
     },
     
-    /**
-     * Processes an update where floating panes have been added.
-     */
-    _updateFloatingPanes: function() {
-        if (!this._floatingPaneManager) {
-            // Initialize floating pane manager.
-            this._floatingPaneManager = new Echo.Sync.FloatingPaneManager();
-            this._floatingPaneManager.addZIndexListener(Core.method(this, this._processZIndexChanged));
-            
-            // Add all floating pane children of compnoent to manager.
-            for (var i = 0; i < this.component.children.length; ++i) {
-                if (this.component.children[i].floatingPane) {
-                    this._floatingPaneManager.add(this.component.children[i].renderId);
-                }
-            }
-        }
-        
-        // Update floating pane z-index order.
-        this._floatingPaneManager.arrange(Core.method(this, this._zIndexSort));
-        
-        // Update status flag as floating pane changes have been processed.
-        this._floatingPanesChanged = false;
-    },
-
-    /** 
-     * Array sort method for <code>Echo.Sync.FloatingPaneManager.arrange()</code>.
-     * 
-     * @see Echo.Sync.FloatingPaneManager#arrange
-     */
-    _zIndexSort: function(idA, idB) {
-        var cA = this.client.application.getComponentByRenderId(idA);
-        var cB = this.client.application.getComponentByRenderId(idB);
-        var zA = cA.render("zIndex");
-        var zB = cB.render("zIndex");
-
-        if (zA === zB || zA == null) {
-            return cA.parent.indexOf(cA) - cB.parent.indexOf(cB);
-        } else {
-            return zA - zB;
+    _storeFloatingPaneZIndices: function() {
+        for (var i = 0; i < this._floatingPaneStack.length; ++i) {
+            this._floatingPaneStack[i].set("zIndex", i);
         }
     }
 });
