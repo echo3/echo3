@@ -505,25 +505,49 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
 });
 
 /**
- * SerevrMessage directive processor for general application-related synchronization.
+ * Abstract base class for server message directive processors.
  */
-Echo.RemoteClient.ApplicationSyncProcessor = Core.extend({
+Echo.RemoteClient.DirectiveProcessor = Core.extend({
+    
+    /** 
+     * The remote client instance.
+     * @type Echo.RemoteClient
+     */
+    client: null,
 
-    $construct: function(client) { 
-        this._client = client;
+    /**
+     * Constructor.
+     * @param {Echo.RemoteClient} client the remote client instance
+     */
+    $construct: function(client) {
+        this.client = client;
     },
     
-    /**
-     * Directive processor process() implementation.
-     */
+    $abstract: {
+        
+        /**
+         * Process a server message directive.
+         * 
+         * @param {Element} dirElement the directive element 
+         */
+        process: function(dirElement) { }
+    }
+});
+
+/**
+ * SerevrMessage directive processor for general application-related synchronization.
+ */
+Echo.RemoteClient.ApplicationSyncProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
+    
+    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
     process: function(dirElement) {
         var propertyElement = dirElement.firstChild;
         while (propertyElement) {
             if (propertyElement.nodeName == "locale") {
-                this._client.application.setLocale(propertyElement.firstChild.nodeValue);
+                this.client.application.setLocale(propertyElement.firstChild.nodeValue);
             }
             if (propertyElement.nodeName == "dir") {
-                this._client.application.setLayoutDirection(propertyElement.firstChild.nodeValue === "rtl"
+                this.client.application.setLayoutDirection(propertyElement.firstChild.nodeValue === "rtl"
                     ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR);
             }
             propertyElement = propertyElement.nextSibling;
@@ -891,7 +915,7 @@ Echo.RemoteClient.CommandExec = { };
 /**
  * SerevrMessage directive processor for command executions.
  */
-Echo.RemoteClient.CommandExecProcessor = Core.extend({
+Echo.RemoteClient.CommandExecProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
 
     $static: {
     
@@ -909,23 +933,7 @@ Echo.RemoteClient.CommandExecProcessor = Core.extend({
         }
     },
     
-    /** The remote client. */
-    _client: null,
-
-    /** 
-     * Creates a new CommandExecProcessor.
-     * 
-     * @param {Echo.RemoteClient} client the remote client
-     */
-    $construct: function(client) { 
-        this._client = client;
-    },
-    
-    /**
-     * Directive processor process() implementation.
-     * 
-     * @param {Element} dirElement the directive element
-     */
+    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
     process: function(dirElement) {
         var cmdElement = dirElement.firstChild;
         while (cmdElement) {
@@ -937,10 +945,10 @@ Echo.RemoteClient.CommandExecProcessor = Core.extend({
             var commandData = {};
             var pElement = cmdElement.firstChild;
             while (pElement) {
-                Echo.Serial.loadProperty(this._client, pElement, null, commandData, null);
+                Echo.Serial.loadProperty(this.client, pElement, null, commandData, null);
                 pElement = pElement.nextSibling;
             }
-            this._client._enqueueCommand(commandPeer, commandData);
+            this.client._enqueueCommand(commandPeer, commandData);
             cmdElement = cmdElement.nextSibling;
         }
     }
@@ -949,30 +957,14 @@ Echo.RemoteClient.CommandExecProcessor = Core.extend({
 /**
  * ServerMessage directive processor for component focus.
  */
-Echo.RemoteClient.ComponentFocusProcessor = Core.extend({
+Echo.RemoteClient.ComponentFocusProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
 
-    /** The remote client. */
-    _client: null,
-
-    /** 
-     * Creates a new ComponentFocusProcessor.
-     * 
-     * @param {Echo.RemoteClient} client the remote client
-     */
-    $construct: function(client) {
-        this._client = client;
-    },
-    
-    /**
-     * Directive processor process() implementation.
-     * 
-     * @param {Element} dirElement the directive element
-     */
+    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
     process: function(dirElement) {
         var element = dirElement.firstChild;
         while (element) {
             if (element.nodeType == 1 && element.nodeName == "focus") {
-                this._client._focusedComponent = this._client.application.getComponentByRenderId(element.getAttribute("i"));
+                this.client._focusedComponent = this.client.application.getComponentByRenderId(element.getAttribute("i"));
             }
             element = element.nextSibling;
         }
@@ -985,28 +977,14 @@ Echo.RemoteClient.ComponentFocusProcessor = Core.extend({
  * Processes initialization directives related to component hierarchy.
  * Currently limited to clearing entire hierarchy.
  */
-Echo.RemoteClient.ComponentSyncInitProcessor = Core.extend({
+Echo.RemoteClient.ComponentSyncInitProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
 
-    /** The remote client. */
-    _client: null,
-
-    /** 
-     * Creates a new ComponentSyncInitProcessor.
-     * 
-     * @param {Echo.RemoteClient} client the remote client
-     */
-    $construct: function(client) { 
-        this._client = client;
-    },
-    
-    /**
-     * Directive processor process() implementation.
-     */
+    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
     process: function(dirElement) {
         var element = dirElement.firstChild;
         while (element) {
             if (element.nodeType == 1 && element.nodeName == "cl") {
-                this._client.application.rootComponent.removeAll();
+                this.client.application.rootComponent.removeAll();
             }
             element = element.nextSibling;
         }
@@ -1019,23 +997,9 @@ Echo.RemoteClient.ComponentSyncInitProcessor = Core.extend({
  * Processes directives to remove components.  Performed before update phase to 
  * bring component hierarchy to a minimal state before updates occur.
  */
-Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend({
-
-    /** The remote client. */
-    _client: null,
-
-    /** 
-     * Creates a new ComponentSyncInitProcessor.
-     * 
-     * @param {Echo.RemoteClient} client the remote client
-     */
-    $construct: function(client) { 
-        this._client = client;
-    },
+Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
     
-    /**
-     * Directive processor process() implementation.
-     */
+    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
     process: function(dirElement) {
         var rmElement = dirElement.firstChild;
         while (rmElement) {
@@ -1046,10 +1010,10 @@ Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend({
             // Determine parent component.
             var parentComponent;
             if (rmElement.getAttribute("r") == "true") {
-                parentComponent = this._client.application.rootComponent;
+                parentComponent = this.client.application.rootComponent;
             } else {
                 var parentId = rmElement.getAttribute("i");
-                parentComponent = this._client.application.getComponentByRenderId(parentId);
+                parentComponent = this.client.application.getComponentByRenderId(parentId);
             }
     
             // Retrieve child ids and remove.
@@ -1089,7 +1053,7 @@ Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend({
             }
         } else {
             for (i = 0; i < childElementIds.length; ++i) {
-                var component = this._client.application.getComponentByRenderId(childElementIds[i]);
+                var component = this.client.application.getComponentByRenderId(childElementIds[i]);
                 if (component) {
                     parentComponent.remove(component);
                 }
@@ -1105,8 +1069,8 @@ Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend({
  * clear entire component hierarchy (for full-rerender), set stylesheet,
  * and store referenced properties/styles.
  */
-Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
-
+Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
+    
     $static: {
         
         _numericReverseSort: function(a, b) {
@@ -1117,13 +1081,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
     _propertyMap : null,
     _styleMap: null,
     
-    $construct: function(client) { 
-        this._client = client;
-    },
-    
-    /**
-     * Directive processor process() implementation.
-     */
+    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
     process: function(dirElement) {
         var element;
         
@@ -1157,7 +1115,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                 if (!translator) {
                     throw new Error("Translator not available for property type: " + propertyType);
                 }
-                var propertyValue = translator.toProperty(this._client, propertyElement);
+                var propertyValue = translator.toProperty(this.client, propertyElement);
                 if (!this._propertyMap) {
                     this._propertyMap = {};
                 }
@@ -1180,7 +1138,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                 var style = { };
                 var propertyElement = styleElement.firstChild;
                 while (propertyElement) {
-                    Echo.Serial.loadProperty(this._client, propertyElement, null, style, this._propertyMap);
+                    Echo.Serial.loadProperty(this.client, propertyElement, null, style, this._propertyMap);
                     propertyElement = propertyElement.nextSibling;
                 }
                 if (!this._styleMap) {
@@ -1198,8 +1156,8 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
      * @param {Element} ssElement the directive element 
      */
     _processStyleSheet: function(ssElement) {
-        var styleSheet = Echo.Serial.loadStyleSheet(this._client, ssElement);
-        this._client.application.setStyleSheet(styleSheet);
+        var styleSheet = Echo.Serial.loadStyleSheet(this.client, ssElement);
+        this.client.application.setStyleSheet(styleSheet);
     },
     
     /** 
@@ -1211,10 +1169,10 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         // Determine parent component
         var parentComponent;
         if (upElement.getAttribute("r") == "true") {
-            parentComponent = this._client.application.rootComponent;
+            parentComponent = this.client.application.rootComponent;
         } else {
             var parentId = upElement.getAttribute("i");
-            parentComponent = this._client.application.getComponentByRenderId(parentId);
+            parentComponent = this.client.application.getComponentByRenderId(parentId);
         }
     
         // Child insertion cursor index (if index is omitted, children are added at this position).
@@ -1225,7 +1183,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
             if (element.nodeType == 1) {
                 switch (element.nodeName) {
                 case "c": // Added child
-                    var component = Echo.Serial.loadComponent(this._client, element, this._propertyMap, this._styleMap);
+                    var component = Echo.Serial.loadComponent(this.client, element, this._propertyMap, this._styleMap);
                     var index = element.getAttribute("x");
                     if (index == null) {
                         // No index specified, add children at current insertion cursor position.
@@ -1239,7 +1197,7 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                     }
                     break;
                 case "p": // Property update
-                    Echo.Serial.loadProperty(this._client, element, parentComponent, null, this._propertyMap);
+                    Echo.Serial.loadProperty(this.client, element, parentComponent, null, this._propertyMap);
                     break;
                 case "s": // Style name update
                     parentComponent.setStyleName(element.firstChild ? element.firstChild.nodeValue : null);
@@ -1254,10 +1212,10 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
                 case "e": // Event update
                     var eventType = element.getAttribute("t");
                     if (element.getAttribute("v") == "true") {
-                        this._client.removeComponentListener(parentComponent, eventType);
-                        this._client.addComponentListener(parentComponent, eventType);
+                        this.client.removeComponentListener(parentComponent, eventType);
+                        this.client.addComponentListener(parentComponent, eventType);
                     } else {
-                        this._client.removeComponentListener(parentComponent, eventType);
+                        this.client.removeComponentListener(parentComponent, eventType);
                     }
                     break;
                 case "en": // Enabled state update
@@ -1283,6 +1241,12 @@ Echo.RemoteClient.ServerMessage = Core.extend({
     
         _processorClasses: { },
         
+        /**
+         * Registers a server message processor.
+         * 
+         * @param {String} name the processor name
+         * @param {Echo.RemoteClient.DirectiveProcessor} the processor
+         */
         addProcessor: function(name, processor) {
             this._processorClasses[name] = processor;
         }
