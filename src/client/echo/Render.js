@@ -233,7 +233,7 @@ Echo.Render = {
             }
     
             //FIXME ....moved after loop, ensure this is okay (evaluate use of dispose).
-            // Set disposed set of peer to false.
+            // Set disposed state of peer to false.
             Echo.Render._setPeerDisposedState(updates[i].parent, false);
         }
         
@@ -637,4 +637,3 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
         return fullRender;
     }
 });
-
