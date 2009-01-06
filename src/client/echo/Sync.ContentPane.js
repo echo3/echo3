@@ -30,6 +30,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         Core.Arrays.remove(this._floatingPaneStack, child);
         this._floatingPaneStack.push(child);
         this._renderFloatingPaneZIndices();
+        this._storeFloatingPaneZIndices();
     },
     
     renderAdd: function(update, parentElement) {
@@ -78,26 +79,24 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         this._childIdToElementMap[child.renderId] = childDiv;
         childDiv.style.position = "absolute";
         if (child.floatingPane) {
-            if (child.floatingPane) {
-                var zIndex = child.render("zIndex");
-                if (zIndex) {
-                    var added = false;
-                    var i = 0;
-                    
-                    while (i < this._floatingPaneStack.length && !added) {
-                        var testZIndex = this._floatingPaneStack[i].render("zIndex");
-                        if (testZIndex != null && testZIndex > zIndex) {
-                            this._floatingPaneStack.splice(i, 0, child);
-                            added = true;
-                        }
-                        ++i;
+            var zIndex = child.render("zIndex");
+            if (zIndex != null) {
+                var added = false;
+                var i = 0;
+                
+                while (i < this._floatingPaneStack.length && !added) {
+                    var testZIndex = this._floatingPaneStack[i].render("zIndex");
+                    if (testZIndex != null && testZIndex > zIndex) {
+                        this._floatingPaneStack.splice(i, 0, child);
+                        added = true;
                     }
-                    if (!added) {
-                        this._floatingPaneStack.push(child);
-                    }
-                } else {
+                    ++i;
+                }
+                if (!added) {
                     this._floatingPaneStack.push(child);
                 }
+            } else {
+                this._floatingPaneStack.push(child);
             }
             childDiv.style.zIndex = "1";
             childDiv.style.left = childDiv.style.top = 0;
@@ -235,7 +234,6 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
             }
             var addedChildren = update.getAddedChildren();
 
-            // FIXME experimental, nonfinal API
             update.renderContext.displayRequired = [];
             
             if (addedChildren) {
