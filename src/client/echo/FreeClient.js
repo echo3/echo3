@@ -22,6 +22,7 @@ Echo.FreeClient = Core.extend(Echo.Client, {
     /** Resource package name to base URL mapping for resource paths. */
     _resourcePaths: null,
     
+    /** Flag indicating that a runnable has been enqueued to invoke _doRender(). */
     _renderPending: false,
 
     /**
@@ -64,6 +65,10 @@ Echo.FreeClient = Core.extend(Echo.Client, {
         Echo.Client.prototype.dispose.call(this);
     },
     
+    /**
+     * Performs rendering operations by invoking Echo.Render.processUpdates().
+     * Invoked in separate execution context (scheduled).
+     */
     _doRender: function() {
         if (this.application) {
             // Only execute updates in the event client has not been deconfigured, which can
