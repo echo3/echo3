@@ -16,7 +16,11 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             component: null,
             layoutData: null,
             scrollLeft: 0,
-            scrolltop: 0,
+            scrollTop: 0,
+            
+            /** Flag indicating that scroll position should be reset on next renderDisplay() invocation. */
+            scrollRequired: false,
+            
             _permanentSizes: false,
             _peer: null,
         
@@ -663,7 +667,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         this._splitPaneDiv.appendChild(paneDiv);
     
         if (this._childPanes[index] && this._childPanes[index].component == child) {
-            this._childPanes[index].loadScrollPositions(paneDiv);
+            this._childPanes[index].scrollRequired = true;
         } else {
             this._childPanes[index] = new Echo.Sync.SplitPane.ChildPane(this, child);
         }
@@ -739,6 +743,14 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         // IE Virtual positioning updates.
         Core.Web.VirtualPosition.redraw(this._paneDivs[0]);
         Core.Web.VirtualPosition.redraw(this._paneDivs[1]);
+
+        // Update scroll bar positions for scenario where pane has been disposed and redrawn.
+        for (var i = 0; i < this._childPanes.length; ++i) {
+            if (this._childPanes[i] && this._childPanes[i].scrollRequired && this._paneDivs[i]) {
+                this._childPanes[i].loadScrollPositions(this._paneDivs[i]);
+                this._childPanes[i].scrollRequired = false;
+            }
+        }
     },
     
     renderDispose: function(update) {
