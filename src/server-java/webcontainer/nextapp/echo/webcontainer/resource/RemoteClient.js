@@ -1053,10 +1053,20 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         }
     },
     
-    _processClear: function(frElement) {
+    /** 
+     * Process a "cl" directive to clear the component hierarchy, removing all components from root.
+     * 
+     * @param {Element} clElement the directive element 
+     */
+    _processClear: function(clElement) {
         this._client.application.rootComponent.removeAll();
     },
     
+    /** 
+     * Process an "rp" directive to store referenced properties during the synchronization. 
+     * 
+     * @param {Element} rpElement the directive element 
+     */
     _processReferencedProperties: function(rpElement) {
         var propertyElement = rpElement.firstChild;
         while (propertyElement) {
@@ -1077,6 +1087,11 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         }
     },
     
+    /** 
+     * Process an "rs" directive to store referenced styles during the synchronization. 
+     * 
+     * @param {Element} rsElement the directive element 
+     */
     _processReferencedStyles: function(rsElement) {
         var styleElement = rsElement.firstChild;
         while (styleElement) {
@@ -1097,11 +1112,21 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend({
         }
     },
     
+    /** 
+     * Process an "ss" directive to load and install a new stylesheet onto the application.
+     * 
+     * @param {Element} ssElement the directive element 
+     */
     _processStyleSheet: function(ssElement) {
         var styleSheet = Echo.Serial.loadStyleSheet(this._client, ssElement);
         this._client.application.setStyleSheet(styleSheet);
     },
     
+    /** 
+     * Process an "up" directive to update properties and/or add children to a component.
+     * 
+     * @param {Element} upElement the directive element 
+     */
     _processUpdate: function(upElement) {
         // Determine parent component
         var parentComponent;
