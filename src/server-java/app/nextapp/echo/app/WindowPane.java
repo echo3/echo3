@@ -88,7 +88,9 @@ implements FloatingPane, ModalSupport, PaneContainer {
     public static final String PROPERTY_TITLE_HEIGHT = "titleHeight";
     public static final String PROPERTY_TITLE_INSETS = "titleInsets";
     public static final String PROPERTY_WIDTH = "width";
+    public static final String PROPERTY_Z_INDEX = "zIndex";
     
+    /** @deprecated */
     public static final String Z_INDEX_CHANGED_PROPERTY = "zIndex";
 
     /**
@@ -113,7 +115,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
     public static final int DISPOSE_ON_CLOSE = 2;
     
     private boolean modal = false;
-    private int zIndex = 0;
     
     /**
      * Creates a  new <code>WindowPane</code>.
@@ -500,7 +501,8 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @return the z-index 
      */
     public int getZIndex() {
-        return zIndex;
+        Integer value = (Integer) get(PROPERTY_Z_INDEX);
+        return value == null ? -1 : value.intValue();
     }
     
     /**
@@ -595,8 +597,8 @@ implements FloatingPane, ModalSupport, PaneContainer {
             setWidth((Extent) inputValue);
         } else if (PROPERTY_HEIGHT.equals(inputName)) {
             setHeight((Extent) inputValue);
-        } else if (Z_INDEX_CHANGED_PROPERTY.equals(inputName)) {
-            setZIndex(((Integer) inputValue).intValue());
+        } else if (PROPERTY_Z_INDEX.equals(inputName)) {
+            set(PROPERTY_Z_INDEX, (Integer) inputValue);
         }
     }
     
@@ -1003,9 +1005,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * @param newValue the new z-index 
      */
     public void setZIndex(int newValue) {
-        int oldValue = zIndex;
-        zIndex = newValue;
-        firePropertyChange(Z_INDEX_CHANGED_PROPERTY, new Integer(oldValue), new Integer(newValue));
+        set(PROPERTY_Z_INDEX, new Integer(newValue));
     }
     
     /**
