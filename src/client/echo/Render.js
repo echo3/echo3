@@ -472,6 +472,13 @@ Echo.Render.ComponentSync = Core.extend({
      * @type Echo.Component
      */
     component: null,
+    
+    /**
+     * Flag indicating that the component has been disposed, i.e., the peer's <code>renderDispose()</code> method 
+     * has run since the last time <code>renderAdd()</code> was last invoked.
+     * @type Boolean
+     */
+    disposed: false,
 
     /**
      * Creates a new component synchronization peer.
