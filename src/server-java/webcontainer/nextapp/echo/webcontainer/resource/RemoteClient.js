@@ -999,6 +999,14 @@ Echo.RemoteClient.ComponentSyncInitProcessor = Core.extend(Echo.RemoteClient.Dir
  */
 Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
     
+    $static: {
+        
+        /** Reverse array sorter for removing components by index from last to first. */
+        _numericReverseSort: function(a, b) {
+            return b - a;
+        }
+    },
+
     /** @see #Echo.RemoteClient.DirectiveProcessor#process */
     process: function(dirElement) {
         var rmElement = dirElement.firstChild;
@@ -1051,7 +1059,7 @@ Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend(Echo.RemoteClient.D
                     indicesToRemove.push(parseInt(index, 10));
                 }
             }
-            indicesToRemove.sort(Echo.RemoteClient.ComponentSyncUpdateProcessor._numericReverseSort);
+            indicesToRemove.sort(Echo.RemoteClient.ComponentSyncRemoveProcessor._numericReverseSort);
     
             // Remove components (last to first).
             for (i = 0; i < indicesToRemove.length; ++i) {
@@ -1077,14 +1085,10 @@ Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend(Echo.RemoteClient.D
  */
 Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
     
-    $static: {
-        
-        _numericReverseSort: function(a, b) {
-            return b - a;
-        }
-    },
-
+    /** Mapping between referenced property ids and values. */
     _propertyMap : null,
+
+    /** Mapping between referenced style ids and values. */
     _styleMap: null,
     
     /** @see #Echo.RemoteClient.DirectiveProcessor#process */
