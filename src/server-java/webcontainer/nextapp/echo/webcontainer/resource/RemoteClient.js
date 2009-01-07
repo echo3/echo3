@@ -1245,14 +1245,22 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend(Echo.RemoteClient.D
     }
 });
 
+/**
+ * Server message processing facility.
+ * Parses XML DOM of message received from server, first loading required modules and then delegating to registered server message
+ * directive processors. 
+ */
 Echo.RemoteClient.ServerMessage = Core.extend({
 
     $static: {
     
+        /**
+         * Mapping between processor names and instantiable <code>Echo.RemoteClient.DirectiveProcessor</code> types.
+         */
         _processorClasses: { },
         
         /**
-         * Registers a server message processor.
+         * Registers a server message directive processor.
          * 
          * @param {String} name the processor name
          * @param {Echo.RemoteClient.DirectiveProcessor} the processor
@@ -1262,8 +1270,42 @@ Echo.RemoteClient.ServerMessage = Core.extend({
         }
     },
     
+    /**
+     * @type Echo.RemoteClient
+     */
+    client: null,
+    
+    /** Provided transaction id. */
     transactionId: null,
+    
+    /** 
+     * The server message DOM. 
+     * @type Document
+     */
+    document: null,
+    
+    /**
+     * Listener storage facility.
+     * @type Core.ListenerList
+     */
+    _listenerList: null,
+    
+    /**
+     * Mapping between directive processor names and processor instances.
+     */
+    _processorInstances: null,
+    
+    /**
+     * Flag indicating whether full-resynchronization is required.
+     */
+    resync: false,
 
+    /**
+     * Creates a new <code>ServerMessage</code>.
+     * 
+     * @param {Echo.RemoteClient} the client
+     * @param {Document} the received server message DOM
+     */
     $construct: function(client, xmlDocument) { 
         this.client = client;
         this.document = xmlDocument;
@@ -1275,10 +1317,19 @@ Echo.RemoteClient.ServerMessage = Core.extend({
         }
     },
     
+    /**
+     * Adds a completion listener to be notified when the server message has been processed.
+     * 
+     * @param {Function} l the listener to add
+     */
     addCompletionListener: function(l) {
         this._listenerList.addListener("completion", l);
     },
     
+    /**
+     * Begins processing.  This method may return asynchronously, completion listeners should be registered to determine
+     * when processing has completed.
+     */
     process: function() {
         // Processing phase 1: load libraries.
         var libsElement = Core.Web.DOM.getChildElementByTagName(this.document.documentElement, "libs");
@@ -1305,6 +1356,11 @@ Echo.RemoteClient.ServerMessage = Core.extend({
         }
     },
     
+    /**
+     * Performs processing operations after required JavaScript modules have been loaded.
+     * May have been invoked directly by <code>process()</code> or as a Core.Web.LibraryGroup loadListener.
+     * Notifies completion listeners of processing completion.
+     */
     _processPostLibraryLoad: function() {
         Echo.Client.profilingTimer.mark("lib"); // Library Loading
         // Processing phase 2: invoke directives.
@@ -1336,6 +1392,11 @@ Echo.RemoteClient.ServerMessage = Core.extend({
         }
     },
     
+    /**
+     * Removes a completion listener to be notified when the server message has been processed.
+     * 
+     * @param {Function} l the listener to remove
+     */
     removeCompletionListener: function(l) {
         this._listenerList.removeListener("completion", l);
     }
