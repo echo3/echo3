@@ -6,7 +6,6 @@
  */
 
 /**
- * @class 
  * A client which provides a remote view of an Echo application being executed on the server.
  * This client exchanges data with the remote server in the form of XML messages containing
  * serialized components and events.
@@ -909,6 +908,7 @@ Echo.RemoteClient.ClientMessage = Core.extend({
 
 /**
  * Namespace for built-in command execution peers.
+ * @namespace
  */
 Echo.RemoteClient.CommandExec = { };
 
@@ -1018,13 +1018,19 @@ Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend(Echo.RemoteClient.D
     
             // Retrieve child ids and remove.
             var childElementIds = rmElement.getAttribute("rm").split(",");
-            this._processComponentRemove(parentComponent, childElementIds);
+            this._removeComponents(parentComponent, childElementIds);
             
             rmElement = rmElement.nextSibling;
         }
     },
     
-    _processComponentRemove: function(parentComponent, childElementIds) {
+    /**
+     * Removes components with specified ids from specified parent component.
+     * 
+     * @param {Echo.Component} parentComponent the parent component
+     * @param {Array} childElementIds array containing ids of child elements to remove.  
+     */
+    _removeComponents: function(parentComponent, childElementIds) {
         var i;
 
         if (childElementIds.length > 5) {
