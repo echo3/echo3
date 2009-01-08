@@ -142,6 +142,16 @@ public class ColumnTest extends SplitPane {
                 }
             }
         });
+        controlsColumn.addButton("Rotate", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (testColumn.getComponentCount() == 0) {
+                    return;
+                }
+                Component component = testColumn.getComponent(testColumn.getComponentCount() - 1);
+                testColumn.remove(component);
+                testColumn.add(component, 0);
+            }
+        });
         controlsColumn.addButton("Add-Remove Container (at end)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Column subColumn = new Column();
