@@ -347,7 +347,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      */
     _processClientUpdate: function(e) {
         if (this._transactionInProgress) {
-            //FIXME need to work on scenarios where clientmessage is null, for both this and events too.
             return;
         }
         
