@@ -1103,7 +1103,6 @@ Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend(Echo.RemoteClient.D
         while (element) {
             if (element.nodeType == 1) {
                 switch (element.nodeName) {
-                case "cl": this._processClear(element); break;
                 case "ss": this._processStyleSheet(element); break;
                 case "up": this._processUpdate(element); break;
                 case "rp": this._processReferencedProperties(element); break;
