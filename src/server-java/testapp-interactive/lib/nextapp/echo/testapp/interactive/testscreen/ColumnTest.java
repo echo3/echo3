@@ -142,6 +142,21 @@ public class ColumnTest extends SplitPane {
                 }
             }
         });
+        controlsColumn.addButton("Add-Remove Container (at end)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Column subColumn = new Column();
+                subColumn.add(new Label());
+                testColumn.add(subColumn);
+                testColumn.remove(subColumn);
+            }
+        });
+        controlsColumn.addButton("Add-Remove Item (at end)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Label label = new Label("Never Added item [" + nextValue++ + "]");
+                testColumn.add(label);
+                testColumn.remove(label);
+            }
+        });
         controlsColumn.addButton("Add-Remove-Add Item (at end)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Label label = new Label("Added item [" + nextValue++ + "]");

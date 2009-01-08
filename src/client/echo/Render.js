@@ -21,6 +21,16 @@
  */
 Echo.Render = {
 
+//FIXME Debug Code        
+    _loadedPeers: 0,
+//FIXME Debug Code        
+    _unloadedPeers: 0,
+
+    /**
+     * Next sequentially assigned unique peer identifier.
+     */
+    _nextPeerId: 0,
+    
     /**
      * Mapping between component type names and instantiable peer classes.
      */
@@ -116,7 +126,10 @@ Echo.Render = {
             throw new Error("Peer not found for: " + component.componentType);
         }
         
+//FIXME Debug        
+++this._loadedPeers;        
         component.peer = new peerClass();
+        component.peer._peerId = this._nextPeerId++;
         component.peer.component = component;
         component.peer.client = client;
     },
@@ -267,8 +280,8 @@ Echo.Render = {
         }
     
         // Unload peers for truly removed components, destroy mapping.
-        for (var componentId in Echo.Render._disposedComponents) {
-            var component = Echo.Render._disposedComponents[componentId];
+        for (var peerId in Echo.Render._disposedComponents) {
+            var component = Echo.Render._disposedComponents[peerId];
             Echo.Render._unloadPeer(component);
         }
 
@@ -374,14 +387,15 @@ Echo.Render = {
     _setPeerDisposedState: function(component, disposed) {
         if (disposed) {
             component.peer.disposed = true;
-            Echo.Render._disposedComponents[component.renderId] = component;
+            Echo.Render._disposedComponents[component.peer._peerId] = component;
         } else {
             component.peer.disposed = false;
-            delete Echo.Render._disposedComponents[component.renderId];
+            delete Echo.Render._disposedComponents[component.peer._peerId];
         }
     },
     
     // FIXME. Ensure this is properly invoked and no peers are being leaked.
+    // Still occurring in case of stylesheet change (full refreshes).
     /**
      * Destroys a component synchronization peer for a specific components.
      * The peer will be removed from the "peer" property of the component.
@@ -394,6 +408,8 @@ Echo.Render = {
         component.peer.client = null;
         component.peer.component = null;
         component.peer = null;
+//FIXME Debug code.
+++this._unloadedPeers;        
     },
 
     /**
@@ -459,6 +475,14 @@ Echo.Render.ComponentSync = Core.extend({
          */
         SIZE_WIDTH: 0x2
     },
+    
+    /**
+     * Unique peer identifier, for internal use only.
+     * Using component renderId is inadequate, as two unique component instances may have same id across
+     * add-remove-add operations.
+     * @type Number
+     */
+    _peerId: null,
 
     /**
      * The client supported by this peer.
@@ -598,6 +622,7 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
      * @param {Echo.Update.ComponentUpdate} update the causing update 
      */
     _renderContent: function(update) {
+        Echo.Render.renderComponentDispose(update, update.parent);
         Core.Web.DOM.removeAllChildren(this.client.domainElement);
         for (var i = 0; i < update.parent.children.length; ++i) {
             Echo.Render.renderComponentAdd(update, update.parent.children[i], this.client.domainElement);
