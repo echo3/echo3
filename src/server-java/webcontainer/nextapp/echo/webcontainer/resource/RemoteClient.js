@@ -283,7 +283,11 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         } else if (e.source.getResponseText()) {
             Core.Debug.consoleWrite(msg + ": \"" + e.source.getResponseText() + "\"");
         }
-        alert(msg + this._msg["InvalidResponseMessagePost"]);
+        try {
+            this.fail();
+        } finally {
+            alert(msg + this._msg["InvalidResponseMessagePost"]);
+        }
     },
     
     /**
@@ -409,7 +413,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         
         // Verify that response document exists and is valid.
         if (!e.valid || !responseDocument || !responseDocument.documentElement) {
-            //FIXME Shut down further client input with secondary "you're beating a dead horse" error message.
             this._handleInvalidResponse(e); 
             return;
         }
@@ -603,7 +606,6 @@ Echo.RemoteClient.AsyncManager = Core.extend({
     _processPollResponse: function(e) {
         var responseDocument = e.source.getResponseXml();
         if (!e.valid || !responseDocument || !responseDocument.documentElement) {
-            //FIXME Central error handling for things like this.
             this._client._handleInvalidResponse(e); 
             return;
         }

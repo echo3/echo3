@@ -221,6 +221,46 @@ Echo.Client = Core.extend({
     },
     
     /**
+     * Handles an application failure, refusing future input and displaying an error message over the entirety of the domain 
+     * element.
+     * 
+     * @param {String} msg the message to display (a generic message will be used if omitted) 
+     */
+    fail: function(msg) {
+        // Block future input.
+        this.createInputRestriction(false);
+        
+        // Default message.
+        msg = msg || "This application has been stopped due to an error. Press the reload or refresh button.";
+        
+        // Darken screen.
+        if (!Core.Web.Env.NOT_SUPPORTED_CSS_OPACITY) {
+            var blackoutDiv = document.createElement("div");
+            blackoutDiv.style.cssText = "position:absolute;z-index:32766;width:100%;height:100%;background-color:#000000;"
+                    + "opacity:0.75;"
+            this.domainElement.appendChild(blackoutDiv);
+        }
+
+        // Display fail message.
+        var div = document.createElement("div");
+        div.style.cssText = "position:absolute;z-index:32767;width:100%;height:100%;"
+        this.domainElement.appendChild(div);
+        var msgDiv = document.createElement("div");
+        msgDiv.style.cssText = "border:#5f1f1f outset 1px;background-color:#5f1f1f;color:#ffffff;padding:2px 10px;";
+        msgDiv.appendChild(document.createTextNode(msg));
+        div.appendChild(msgDiv);
+        var xDiv = document.createElement("div");
+        xDiv.style.cssText = "color:red;line-height:90%;font-size:" + 
+                (new Core.Web.Measure.Bounds(this.domainElement).height || 100) + 
+                "px;text-align:center;overflow:hidden;";
+        xDiv.appendChild(document.createTextNode("X"));
+        div.appendChild(xDiv);
+        
+        // Attempt to dispose.
+        this.dispose();
+    },
+    
+    /**
      * Listener for application change of component focus:
      * invokes focus() method on focused component's peer.
      * 
