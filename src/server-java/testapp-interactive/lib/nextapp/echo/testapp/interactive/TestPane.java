@@ -82,6 +82,8 @@ public class TestPane extends ContentPane {
     public TestPane() {
         super();
         
+        setRenderId("TestPane");
+        
         SplitPane verticalPane = new SplitPane(SplitPane.ORIENTATION_VERTICAL, true);
         verticalPane.setStyleName("TestPane");
         add(verticalPane);
