@@ -168,7 +168,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
-        if (e.keyCode == 13) { // FIXME This will fail in IE (I think)
+        if (e.keyCode == 13) {
             this.doAction();
             return false;
         } else {
