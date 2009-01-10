@@ -11,7 +11,13 @@ init = function() {
 TestApp = Core.extend(Echo.Application, {
 
     $static: {
-        Tests: { }
+        Tests: { },
+
+        randomColor: function() {
+            var colorValue = parseInt(Math.random() * 0x1000000).toString(16);
+            colorValue = "#" + "000000".substring(colorValue.length) + colorValue;
+            return colorValue;
+        }
     },
 
     $construct: function() {
@@ -22,13 +28,7 @@ TestApp = Core.extend(Echo.Application, {
         testScreen.addTest("TextComponent");
         testScreen.addTest("WindowPane");
         this.rootComponent.add(testScreen);
-    },
-
-    randomColor: function() {
-        var colorValue = parseInt(Math.random() * 0x1000000).toString(16);
-        colorValue = "#" + "000000".substring(colorValue.length) + colorValue;
-        return colorValue;
-    },
+    }
 });
 
 TestApp.TestScreen = Core.extend(Echo.ContentPane, {

@@ -107,6 +107,14 @@ public class ColumnTest extends SplitPane {
                 testColumn.add(new Label("Added item [" + nextValue++ + "]"));
             }
         });
+        controlsColumn.addButton("Add Item, Remove/Add Column Itself", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testColumn.add(new Label("Added item [" + nextValue++ + "]"));
+                Component parent = testColumn.getParent();
+                parent.remove(testColumn);
+                parent.add(testColumn);
+            }
+        });
         controlsColumn.addButton("Remove Item 0", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (testColumn.getComponentCount() > 0) {
