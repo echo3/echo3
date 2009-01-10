@@ -209,7 +209,6 @@ Echo.Application = Core.extend({
      * @type Echo.LayoutDirection 
      */
     getLayoutDirection: function() {
-        // FIXME ensure layout direction gets set upon application instantiation
         return this._layoutDirection ? this._layoutDirection : Echo.LayoutDirection.LTR;
     },
         
