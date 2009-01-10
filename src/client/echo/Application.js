@@ -2393,10 +2393,19 @@ Echo.Update.Manager = Core.extend({
      * Processes an event requiring a full-refresh.
      */
     _processFullRefresh: function() {
-        this.purge();
+        // Mark all components as having being removed from root.
+        for (var i = 0; i < this.application.rootComponent.children.length; ++i) {
+            this._processComponentRemove(this.application.rootComponent, this.application.rootComponent.children[i]);
+        }
+
+        // Flag full refresh as required, such that all future property updates bounce.
         this.fullRefreshRequired = true;
+        
+        // Retrieve root component update and mark as full refresh.
         var update = this._createComponentUpdate(this.application.rootComponent);
         update.fullRefresh = true;
+        
+        // Notify container.
         this._fireUpdate();
     },
     
