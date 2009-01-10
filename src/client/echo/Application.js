@@ -1432,11 +1432,18 @@ Echo.FocusManager = Core.extend({
      * be a descendant of the specified parent component.  The search will
      * be limited to descendants of the parent component, i.e., if a suitable descendant
      * component cannot be found, null will be returned.
+     * 
+     * The <code>minimumDistance</code> property may be used to skip a number of siblings.
+     * This is used by components such as "Grid" which may want to find a focusable component
+     * in the next row, skipping over all columns of the current row.  
+     * If omitted the default value of this property is 1.  As an example, a value of 2
+     * would skip the immediately adjacent sibling of the current focused component.
      *
      * @param parentComponent the parent component to search
      * @param reverse the search direction, false indicating to search forward, true
      *        indicating reverse
-     * @param minimumDistance FIXME
+     * @param minimumDistance the fewest number of lateral focus moves to make before
+     *        returning a focusable component (optional, default value of 1)
      */
     findInParent: function(parentComponent, reverse, minimumDistance) {
         if (!minimumDistance) {
