@@ -145,6 +145,14 @@ TestApp.Tests.Column = Core.extend(TestApp.TestPane, {
         this.addTestButton("Add child, i=1", Core.method(this, this._addChild1));
         this.addTestButton("Add child, i=2", Core.method(this, this._addChild2));
         this.addTestButton("Add child, i=END", Core.method(this, this._addChildEnd));
+        this.addTestButton("Add two children", Core.method(this, this._addTwoChildren));
+        this.addTestButton("Add children, remove/add column", Core.method(this, function() {
+            var parent = this.column.parent;
+            parent.remove(this.column);
+            parent.add(this.column);
+            this.column.add(new Echo.Label({ text: "[" + ++this.childCount + "] added at end" }));
+            this.column.add(new Echo.Label({ text: "[" + ++this.childCount + "] added at end" }));
+        }));
         this.addTestButton("Remove child, i=0", Core.method(this, this._removeChild0));
         this.addTestButton("Remove child, i=1", Core.method(this, this._removeChild1));
         this.addTestButton("Remove child, i=2", Core.method(this, this._removeChild2));
@@ -193,6 +201,11 @@ TestApp.Tests.Column = Core.extend(TestApp.TestPane, {
     },
 
     _addChildEnd: function() {
+        this.column.add(new Echo.Label({ text: "[" + ++this.childCount + "] added at end" }));
+    },
+
+    _addTwoChildren: function() {
+        this.column.add(new Echo.Label({ text: "[" + ++this.childCount + "] added at end" }));
         this.column.add(new Echo.Label({ text: "[" + ++this.childCount + "] added at end" }));
     },
 
