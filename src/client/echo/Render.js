@@ -21,10 +21,10 @@
  */
 Echo.Render = {
 
-//FIXME Debug Code        
-    _loadedPeers: 0,
-//FIXME Debug Code        
-    _unloadedPeers: 0,
+    /**
+     * Count of loaded/unloaded peers.  Used for testing purposes to ensure peers are not being leaked.
+     */
+    _loadedPeerCount: 0,
 
     /**
      * Next sequentially assigned unique peer identifier.
@@ -126,8 +126,7 @@ Echo.Render = {
             throw new Error("Peer not found for: " + component.componentType);
         }
         
-//FIXME Debug        
-++this._loadedPeers;        
+        ++this._loadedPeerCount;        
         component.peer = new peerClass();
         component.peer._peerId = this._nextPeerId++;
         component.peer.component = component;
@@ -394,8 +393,6 @@ Echo.Render = {
         }
     },
     
-    // FIXME. Ensure this is properly invoked and no peers are being leaked.
-    // Still occurring in case of stylesheet change (full refreshes).
     /**
      * Destroys a component synchronization peer for a specific components.
      * The peer will be removed from the "peer" property of the component.
@@ -408,8 +405,7 @@ Echo.Render = {
         component.peer.client = null;
         component.peer.component = null;
         component.peer = null;
-//FIXME Debug code.
-++this._unloadedPeers;        
+        --this._loadedPeerCount;        
     },
 
     /**

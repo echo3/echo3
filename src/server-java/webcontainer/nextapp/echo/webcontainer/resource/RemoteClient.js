@@ -388,11 +388,8 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             this.application.setFocusedComponent(this._focusedComponent);
         }
     
-//FIXME debug code.        
-Core.Debug.consoleWrite("ld=" + Echo.Render._loadedPeers + "un= " + Echo.Render._unloadedPeers + " current=" + 
-        (Echo.Render._loadedPeers - Echo.Render._unloadedPeers));         
         if (Echo.Client.profilingTimer) {
-            Core.Debug.consoleWrite(Echo.Client.profilingTimer);
+            Core.Debug.consoleWrite(Echo.Client.profilingTimer + " /pc:" + Echo.Render._loadedPeerCount);
             Echo.Client.profilingTimer = null;
         }
         
