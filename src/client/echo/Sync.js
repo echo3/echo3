@@ -961,27 +961,20 @@ Echo.Sync.TriCellTable = Core.extend({
         TOP_BOTTOM: 2,       // VERTICAL
         BOTTOM_TOP: 3,       // VERTICAL | INVERTED
 
-        //FIXME. verify this method will work with  RTL settings (not tested)
         getOrientation: function(component, propertyName) {
             var position = component.render(propertyName);
             var orientation;
             if (position) {
                 switch (Echo.Sync.Alignment.getRenderedHorizontal(position, component)) {
-                case "leading":  orientation = this.LEADING_TRAILING; break;
-                case "trailing": orientation = this.TRAILING_LEADING; break;
-                case "left":     orientation = this.LEADING_TRAILING; break;
-                case "right":    orientation = this.TRAILING_LEADING; break;
-                default:
-                    switch (Echo.Sync.Alignment.getVertical(position, component)) {
-                    case "top":    orientation = this.TOP_BOTTOM;       break;
-                    case "bottom": orientation = this.BOTTOM_TOP;       break;
-                    default:       orientation = this.TRAILING_LEADING; break;
-                    }
+                case "left":     return this.LEADING_TRAILING;
+                case "right":    return this.TRAILING_LEADING;
                 }
-            } else {
-                orientation = this.TRAILING_LEADING;
+                switch (Echo.Sync.Alignment.getVertical(position, component)) {
+                case "top":    return this.TOP_BOTTOM;
+                case "bottom": return this.BOTTOM_TOP;
+                }
             }
-            return orientation;
+            return component.getRenderLayoutDirection().isLeftToRight() ? this.TRAILING_LEADING : this.LEADING_TRAILING; 
         },
         
         _createTablePrototype: function() {
