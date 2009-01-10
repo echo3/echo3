@@ -2164,6 +2164,8 @@ Echo.Update.Manager = Core.extend({
      * The id of the last parent component whose child was analyzed by
      * _isAncestorBeingAdded() that resulted in that method returning false.
      * This id is stored for performance optimization purposes.
+     * This performance optimization relies on the fact that _isAncestorBeingAdded()
+     * will be invoked for each attempt to modify the hierarchy.
      * @type String
      */
     _lastAncestorTestParentId: null,
@@ -2250,6 +2252,7 @@ Echo.Update.Manager = Core.extend({
     
     /**
      * Determines if an ancestor of the specified component is being added.
+     * This method must be invoked by all hierarchy modification operations.
      * 
      * @param {Echo.Component} component the component to evaluate
      * @return true if the component or an ancestor of the component is being added
@@ -2261,6 +2264,8 @@ Echo.Update.Manager = Core.extend({
         
         var originalParentId = parent ? parent.renderId : null;
         if (originalParentId && this._lastAncestorTestParentId == originalParentId) {
+            // If last invocation of _isAncestorBeingAdded for the same component returned false, it is safe
+            // to assume that this invocation will return false as well.
             return false;
         }
         
@@ -2289,9 +2294,11 @@ Echo.Update.Manager = Core.extend({
      */
     _processComponentAdd: function(parent, child) {
         if (this.fullRefreshRequired) {
+            // A full refresh indicates an update already exists which encompasses this update.
             return;
         }
         if (this._isAncestorBeingAdded(child)) {
+            // An ancestor being added indicates an update already exists which encompasses this update.
             return;
         }
         var update = this._createComponentUpdate(parent);
@@ -2305,10 +2312,12 @@ Echo.Update.Manager = Core.extend({
      */
     _processComponentLayoutDataUpdate: function(updatedComponent) {
         if (this.fullRefreshRequired) {
+            // A full refresh indicates an update already exists which encompasses this update.
             return;
         }
         var parent = updatedComponent.parent;
         if (parent == null || this._isAncestorBeingAdded(parent)) {
+            // An ancestor being added indicates an update already exists which encompasses this update.
             return;
         }
         var update = this._createComponentUpdate(parent);
@@ -2322,9 +2331,11 @@ Echo.Update.Manager = Core.extend({
      */
     _processComponentListenerUpdate: function(parent, listenerType) {
         if (this.fullRefreshRequired) {
+            // A full refresh indicates an update already exists which encompasses this update.
             return;
         }
         if (this._isAncestorBeingAdded(parent)) {
+            // An ancestor being added indicates an update already exists which encompasses this update.
             return;
         }
         var update = this._createComponentUpdate(parent);
@@ -2339,9 +2350,11 @@ Echo.Update.Manager = Core.extend({
      */
     _processComponentRemove: function(parent, child) {
         if (this.fullRefreshRequired) {
+            // A full refresh indicates an update already exists which encompasses this update.
             return;
         }
         if (this._isAncestorBeingAdded(parent)) {
+            // An ancestor being added indicates an update already exists which encompasses this update.
             return;
         }
         var update = this._createComponentUpdate(parent);
@@ -2380,9 +2393,11 @@ Echo.Update.Manager = Core.extend({
      */
     _processComponentPropertyUpdate: function(component, propertyName, oldValue, newValue) {
         if (this.fullRefreshRequired) {
+            // A full refresh indicates an update already exists which encompasses this update.
             return;
         }
         if (this._isAncestorBeingAdded(component)) {
+            // An ancestor being added indicates an update already exists which encompasses this update.
             return;
         }
         var update = this._createComponentUpdate(component);
@@ -2410,20 +2425,26 @@ Echo.Update.Manager = Core.extend({
     },
     
     /**
-     * Processes component updates received from the application instance.
+     * Processes component update notification received from the application instance.
      */
     _processComponentUpdate: function(parent, propertyName, oldValue, newValue) {
         if (propertyName == "children") {
+            // Child added/removed.
             if (newValue == null) {
+                // Process child removal.
                 this._processComponentRemove(parent, oldValue);
             } else {
+                // Process child addition.
                 this._processComponentAdd(parent, newValue);
             }
         } else if (propertyName == "layoutData") {
+            // Process a layout data update.
             this._processComponentLayoutDataUpdate(parent);
         } else if (propertyName == "listeners") {
+            // Process listeners addition/removal.
             this._processComponentListenerUpdate(parent, oldValue || newValue);
         } else {
+            // Process property update.
             this._processComponentPropertyUpdate(parent, propertyName, oldValue, newValue);
         }
         this._fireUpdate();
