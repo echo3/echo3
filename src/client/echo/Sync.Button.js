@@ -1,4 +1,3 @@
-// FIXME TriCellTable orientations
 // FIXME alignment
 
 /**
