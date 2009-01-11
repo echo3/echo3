@@ -475,10 +475,12 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
                 this._div.appendChild(this._stateElement);
             }
         } else if (entityCount == 2) {
-            orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
             if (this._stateElement) {
+                orientation = Echo.Sync.TriCellTable.getInvertedOrientation(this.component, "statePosition", 
+                        "leading");
                 margin = this.component.render("stateMargin", Echo.Sync.Button._defaultIconTextMargin);
             } else {
+                orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
                 margin = this.component.render("iconTextMargin", Echo.Sync.Button._defaultIconTextMargin);
             }
             tct = new Echo.Sync.TriCellTable(orientation, Echo.Sync.Extent.toPixels(margin));
@@ -497,7 +499,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         } else if (entityCount == 3) {
             orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
             margin = this.component.render("iconTextMargin", Echo.Sync.Button._defaultIconTextMargin);
-            var stateOrientation = Echo.Sync.TriCellTable.TRAILING_LEADING;
+            var stateOrientation = Echo.Sync.TriCellTable.getInvertedOrientation(this.component, "statePosition", "leading");
             var stateMargin = this.component.render("stateMargin", Echo.Sync.Button._defaultIconTextMargin);
             tct = new Echo.Sync.TriCellTable(orientation, 
                     Echo.Sync.Extent.toPixels(margin), stateOrientation, Echo.Sync.Extent.toPixels(stateMargin));

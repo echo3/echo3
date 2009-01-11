@@ -961,13 +961,13 @@ Echo.Sync.TriCellTable = Core.extend({
         TOP_BOTTOM: 2,       // VERTICAL
         BOTTOM_TOP: 3,       // VERTICAL | INVERTED
 
-        getOrientation: function(component, propertyName) {
-            var position = component.render(propertyName);
+        getOrientation: function(component, propertyName, defaultValue) {
+            var position = component.render(propertyName, defaultValue);
             var orientation;
             if (position) {
                 switch (Echo.Sync.Alignment.getRenderedHorizontal(position, component)) {
-                case "left":     return this.LEADING_TRAILING;
-                case "right":    return this.TRAILING_LEADING;
+                case "left":   return this.LEADING_TRAILING;
+                case "right":  return this.TRAILING_LEADING;
                 }
                 switch (Echo.Sync.Alignment.getVertical(position, component)) {
                 case "top":    return this.TOP_BOTTOM;
@@ -975,6 +975,10 @@ Echo.Sync.TriCellTable = Core.extend({
                 }
             }
             return component.getRenderLayoutDirection().isLeftToRight() ? this.TRAILING_LEADING : this.LEADING_TRAILING; 
+        },
+        
+        getInvertedOrientation: function(component, propertyName, defaultValue) {
+            return this.getOrientation(component, propertyName, defaultValue) ^ this.INVERTED;
         },
         
         _createTablePrototype: function() {
