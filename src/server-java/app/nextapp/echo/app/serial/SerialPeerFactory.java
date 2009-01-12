@@ -35,7 +35,7 @@ import java.util.Map;
 import nextapp.echo.app.util.PeerFactory;
 
 /**
- * Factory for obtaining XML peer implementations.
+ * Factory for obtaining XML serial peer implementations for specific property classes.
  */
 public class SerialPeerFactory 
 implements PropertyPeerFactory {
@@ -45,9 +45,9 @@ implements PropertyPeerFactory {
     private PeerFactory peerFactory;
     
     /**
-     * Map of <code>ClassLoader</code>s to <code>PropertyLoader</code>s.
+     * Map of <code>ClassLoader</code>s to <code>SerialPeerFactory</code>s.
      */
-    private static final Map classLoaderToPropertyLoaderMap = new HashMap();
+    private static final Map classLoaderToFactoryMap = new HashMap();
     
     /**
      * Creates or retrieves a <code>SerialPeerFactory</code>.
@@ -57,11 +57,11 @@ implements PropertyPeerFactory {
      * @return the <code>SerialPeerFactory</code>
      */
     public static SerialPeerFactory forClassLoader(ClassLoader classLoader) {
-        synchronized(classLoaderToPropertyLoaderMap) {
-            SerialPeerFactory factory = (SerialPeerFactory) classLoaderToPropertyLoaderMap.get(classLoader);
+        synchronized(classLoaderToFactoryMap) {
+            SerialPeerFactory factory = (SerialPeerFactory) classLoaderToFactoryMap.get(classLoader);
             if (factory == null) {
                 factory = new SerialPeerFactory(classLoader);
-                classLoaderToPropertyLoaderMap.put(classLoader, factory);
+                classLoaderToFactoryMap.put(classLoader, factory);
             }
             return factory;
         }

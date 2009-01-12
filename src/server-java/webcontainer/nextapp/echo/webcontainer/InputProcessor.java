@@ -65,9 +65,6 @@ public class InputProcessor {
          * <code>SerialContext</code> implementation.
          */
         private SerialContext serialContext = new SerialContext() {
-        
-            /** The <code>ClassLoader</code> for this context. */
-            private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
             /**
              * @see nextapp.echo.app.serial.SerialContext#getClassLoader()
@@ -124,6 +121,9 @@ public class InputProcessor {
     
     /** The <code>PropertyPeerFactory</code> provided to the context. */
     private PropertyPeerFactory propertyPeerFactory;
+    
+    /** The <code>ClassLoader</code> for this context. */
+    private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
     /**
      * Creates a new <code>InputProcessor</code>.
@@ -135,7 +135,7 @@ public class InputProcessor {
         super();
         this.syncState = syncState;
         this.conn = conn;
-        propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME temporary
+        propertyPeerFactory = PropertySerialPeerFactory.forClassLoader(classLoader);
     }
     
     /**

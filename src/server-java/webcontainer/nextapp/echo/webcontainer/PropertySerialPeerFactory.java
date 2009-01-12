@@ -29,29 +29,62 @@
 
 package nextapp.echo.webcontainer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import nextapp.echo.app.serial.PropertyPeerFactory;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.util.PeerFactory;
 
-//FIXME.  This is a temporary class to be used in refactoring the peer stuff between app and webcontainer.
-// this code will be exterminated.
-//FIXME. replace with an XmlPropertyPeerFactory from app...that's the good one, with the 1-per-classloader stuff.
-
+/**
+ * Factory for obtaining XML serial peer implementations for specific property classes )for the web container)
+ */
 class PropertySerialPeerFactory 
 implements PropertyPeerFactory {
 
     private static final String RESOURCE_NAME = "META-INF/nextapp/echo/SynchronizePeerBindings.properties";
-    private static final PeerFactory peerFactory 
-            = new PeerFactory(RESOURCE_NAME, Thread.currentThread().getContextClassLoader());
 
-    public static final PropertySerialPeerFactory INSTANCE = new PropertySerialPeerFactory();
+    private PeerFactory peerFactory;
     
     /**
-     * Retrieves the appropriate <code>PropertySynchronizePeer</code> for a given 
+     * Map of <code>ClassLoader</code>s to <code>SerialPeerFactory</code>s.
+     */
+    private static final Map classLoaderToFactoryMap = new HashMap();
+    
+    /**
+     * Creates or retrieves a <code>SerialPeerFactory</code>.
+     * 
+     * @param classLoader the <code>ClassLoader</code> to use for 
+     *        dynamically loading peer classes
+     * @return the <code>SerialPeerFactory</code>
+     */
+    public static PropertySerialPeerFactory forClassLoader(ClassLoader classLoader) {
+        synchronized(classLoaderToFactoryMap) {
+            PropertySerialPeerFactory factory = (PropertySerialPeerFactory) classLoaderToFactoryMap.get(classLoader);
+            if (factory == null) {
+                factory = new PropertySerialPeerFactory(classLoader);
+                classLoaderToFactoryMap.put(classLoader, factory);
+            }
+            return factory;
+        }
+    }
+    
+    /**
+     * Creates a new <code>SerialPeerFactory</code>.
+     * 
+     * @param classLoader the class loader to use for instantiation
+     */
+    private PropertySerialPeerFactory(ClassLoader classLoader) {
+        super();
+        peerFactory = new PeerFactory(RESOURCE_NAME, classLoader);
+    }
+    
+    /**
+     * Retrieves the appropriate <code>XmlPropertyPeer</code> for a given 
      * property class.
      * 
      * @param propertyClass the property class
-     * @return the appropriate <code>PropertySynchronizePeer</code>
+     * @return the appropriate <code>XmlPropertyPeer</code>
      */
     public SerialPropertyPeer getPeerForProperty(Class propertyClass) {
         return (SerialPropertyPeer) peerFactory.getPeerForObject(propertyClass, true);

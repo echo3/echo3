@@ -94,9 +94,6 @@ class OutputProcessor {
          * <code>SerialContext</code> implementation.
          */
         private SerialContext serialContext = new SerialContext() {
-        
-            /** The <code>ClassLoader</code> for this context. */
-            private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             
             /**
              * @see nextapp.echo.app.serial.SerialContext#getClassLoader()
@@ -156,6 +153,8 @@ class OutputProcessor {
     private Element rsElement;
     private SynchronizationState syncState;
     
+    private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
     /**
      * Creates a new <code>OutputProcessor</code>.
      * 
@@ -171,7 +170,7 @@ class OutputProcessor {
         document = serverMessage.getDocument();
         userInstance = conn.getUserInstance();
         serverUpdateManager = userInstance.getUpdateManager().getServerUpdateManager();
-        propertyPeerFactory = PropertySerialPeerFactory.INSTANCE; //FIXME temporary
+        propertyPeerFactory = PropertySerialPeerFactory.forClassLoader(classLoader);
     }
         
     /**
