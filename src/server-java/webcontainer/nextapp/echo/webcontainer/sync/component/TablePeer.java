@@ -44,9 +44,6 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
 import nextapp.echo.webcontainer.util.ArrayIterator;
 import nextapp.echo.webcontainer.util.MultiIterator;
 
-//FIXME have a renderState-like object register itself for
-// tablecolumnmodel events and re-render sizes as required.
-
 /**
  * Synchronization peer for <code>Table</code>s.
  * 

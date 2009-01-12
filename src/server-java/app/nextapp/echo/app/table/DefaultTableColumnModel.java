@@ -48,9 +48,6 @@ implements Serializable, TableColumnModel {
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
-    //FIXME. add prop change listeners to table columns, fire resize events when widths change.
-    // modify tablecolumnmodellistener interface to include resize() method.
-    
     /**
      * A collection of all columns in the column model in order.
      */

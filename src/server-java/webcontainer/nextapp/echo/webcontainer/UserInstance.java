@@ -199,11 +199,6 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         return applicationInstance;
     }
     
-    //FIXME current method of iterating weak-keyed map of task queues
-    // is not adequate.  If the application were to for whatever reason hold on
-    // to a dead task queue, its interval setting would effect the
-    // calculation.
-    // One solution: add a getTaskQueues() method to ApplicationInstance
     /**
      * Determines the application-specified asynchronous monitoring
      * service callback interval.

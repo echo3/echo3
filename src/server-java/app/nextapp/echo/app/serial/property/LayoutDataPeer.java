@@ -103,7 +103,6 @@ implements SerialPropertyPeer {
      */
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
-        //FIXME.
         throw new UnsupportedOperationException();
     }
 }
