@@ -4,8 +4,19 @@
 Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
 
     $abstract: {
-        cellElementNodeName: true,
+
+        /**
+         * The DOM element name of child container cells.
+         * @type String
+         */
+        cellElementNodeName: null,
         
+        /** 
+         * Abstract method which renders layout data on child cell element.
+         * 
+         * @param {Echo.Component} child the child component
+         * @param {Element} the DOM element containing the child
+         */
         renderChildLayoutData: function(child, cellElement) { }
     },
     
@@ -15,6 +26,11 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
     cellSpacing: null,
     _childIdToElementMap: null,
 
+    /**
+     * Processes a key press event.  Provides support for adjusting focus via arrow keys.
+     * 
+     * @param e the event
+     */
     processKeyPress: function(e) {
         switch (e.keyCode) {
         case this.prevFocusKey:
@@ -97,6 +113,7 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
                 Core.method(this, this.processKeyPress), false);
     },
 
+    /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) { 
         Core.Web.Event.removeAll(this.element);
         this.element = null;
@@ -126,6 +143,7 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
         delete this._childIdToElementMap[child.renderId];
     },
 
+    /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
         var i, fullRender = false;
         if (update.hasUpdatedProperties() || update.hasUpdatedLayoutDataChildren()) {
@@ -168,12 +186,15 @@ Echo.Sync.Column = Core.extend(Echo.Sync.ArrayContainer, {
         Echo.Render.registerPeer("Column", this);
     },
 
+    /** @see Echo.Render.ComponentSync#cellElementNodeName */
     cellElementNodeName: "div",
+    
     prevFocusKey: 38,
     prevFocusFlag: Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_UP,
     nextFocusKey: 40,
     nextFocusFlag: Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_DOWN,
     
+    /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         this.element = this.containerElement = document.createElement("div");
         this.element.id = this.component.renderId;
@@ -197,6 +218,7 @@ Echo.Sync.Column = Core.extend(Echo.Sync.ArrayContainer, {
         parentElement.appendChild(this.element);
     },
     
+    /** @see Echo.Sync.ArrayContainer#renderChildLayoutData */
     renderChildLayoutData: function(child, cellElement) {
         var layoutData = child.render("layoutData");
         if (layoutData) {
@@ -242,13 +264,16 @@ Echo.Sync.Row = Core.extend(Echo.Sync.ArrayContainer, {
         Echo.Render.registerPeer("Row", this);
     },
 
+    /** @see Echo.Render.ComponentSync#cellElementNodeName */
     cellElementNodeName: "td",
+
     prevFocusKey: 37,
     prevFocusFlag: Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_LEFT,
     nextFocusKey: 39,
     nextFocusFlag: Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT,
     invertFocusRtl: true,
     
+    /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         this.element = Echo.Sync.Row._rowPrototype.cloneNode(true);
         this.element.id = this.component.renderId;
@@ -273,6 +298,7 @@ Echo.Sync.Row = Core.extend(Echo.Sync.ArrayContainer, {
         parentElement.appendChild(this.element);
     },
 
+    /** @see Echo.Sync.ArrayContainer#renderChildLayoutData */
     renderChildLayoutData: function(child, cellElement) {
         var layoutData = child.render("layoutData");
         var insets;
