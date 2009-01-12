@@ -20,10 +20,34 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
         renderChildLayoutData: function(child, cellElement) { }
     },
     
+    /**
+     * The root DOM element of the rendered array container.
+     * @type Element
+     */
     element: null,
+
+    /**
+     * The DOM element to which child elements should be added.  May be equivalent to <code>element</code>.
+     * @type Element
+     */
     containerElement: null,
+    
+    /**
+     * Prototype Element to be cloned and added between cells of the array container.
+     * 
+     * @type Element
+     */
     spacingPrototype: null,
+
+    /** 
+     * Number of pixels to be rendered as spacing between child cells of the container.
+     * @type Number
+     */
     cellSpacing: null,
+
+    /**
+     * Mapping between child render ids and child container cell elements. 
+     */
     _childIdToElementMap: null,
 
     /**
@@ -56,7 +80,14 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
         return true;
     },
 
-    renderAddChild: function(update, child, index) {
+    /**
+     * Renders the specified child to the containerElement.
+     * 
+     * @param {Echo.Update.ComponentUpdate} the update
+     * @param {Echo.Component} the child component
+     * @param {Number} index the index of the child within the parent 
+     */
+    _renderAddChild: function(update, child, index) {
         var cellElement = document.createElement(this.cellElementNodeName);
         this._childIdToElementMap[child.renderId] = cellElement;
         Echo.Render.renderComponentAdd(update, child, cellElement);
@@ -99,13 +130,18 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /**
+     * Renders all children.  Must be invoked by derived <code>renderAdd()</code> implementations.
+     * 
+     * @param {Echo.Update.ComponentUpdate} the update
+     */
     renderAddChildren: function(update) {
         this._childIdToElementMap = {};
     
         var componentCount = this.component.getComponentCount();
         for (var i = 0; i < componentCount; ++i) {
             var child = this.component.getComponent(i);
-            this.renderAddChild(update, child);
+            this._renderAddChild(update, child);
         }
         
         Core.Web.Event.add(this.element, 
@@ -161,7 +197,7 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
             if (addedChildren) {
                 // Add children.
                 for (i = 0; i < addedChildren.length; ++i) {
-                    this.renderAddChild(update, addedChildren[i], this.component.indexOf(addedChildren[i])); 
+                    this._renderAddChild(update, addedChildren[i], this.component.indexOf(addedChildren[i])); 
                 }
             }
         }
