@@ -43,8 +43,6 @@ public class IntrospectorFactory {
      */
     private static final Map classLoaderCache = new HashMap();
     
-    private static boolean manualInitialization = false;
-    
     /**
      * Creates a <b>new</b> <code>ObjectIntrospector</code> for a specific type
      * and <code>ClassLoader</code>.
@@ -95,12 +93,8 @@ public class IntrospectorFactory {
         synchronized (classLoaderCache) {
             oiStore = (Map) classLoaderCache.get(classLoader);
             if (oiStore == null) {
-                if (manualInitialization) {
-                    throw new IllegalStateException("ObjectIntrospectorFactory does not exist for specified ClassLoader.");
-                } else {
-                    init(classLoader);
-                    oiStore = (Map) classLoaderCache.get(classLoader);
-                }
+                init(classLoader);
+                oiStore = (Map) classLoaderCache.get(classLoader);
             }
         }
         
@@ -133,19 +127,5 @@ public class IntrospectorFactory {
             oiStore = new HashMap();
             classLoaderCache.put(classLoader, oiStore);
         }
-    }
-
-    //FIXME. Verify manual initialization flag still makes sense for purposes like EchoStudio.
-    /**
-     * Sets whether the init() method must be invoked with a specific <code>ClassLoader</code> before
-     * introspecting types at the behest of that <code>ClassLoader</code>.  Initial value is false.
-     * When true, <code>get()</code> will throw an exception if the <code>IntrospectorFactory</codE>
-     * has not been initialized.  Requiring manual initialization (and disposal) is important in
-     * environments where multiple classloaders are being managed.
-     * 
-     * @param newValue the new manual initialization state
-     */
-    public static void setManualInitialization(boolean newValue) {
-        manualInitialization = newValue;
     }
 }
