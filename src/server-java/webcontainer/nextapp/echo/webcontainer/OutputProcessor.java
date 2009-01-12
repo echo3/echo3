@@ -223,7 +223,6 @@ class OutputProcessor {
      */
     private void renderAsyncState() {
         if (userInstance.getApplicationInstance().hasTaskQueues()) {
-             //FIXME ...not sure I want this in the root of the smsg again.
             serverMessage.setAttribute("async-interval", Integer.toString(userInstance.getCallbackInterval()));
         }
     }
