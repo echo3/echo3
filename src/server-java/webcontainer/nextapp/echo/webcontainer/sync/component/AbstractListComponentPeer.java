@@ -164,8 +164,7 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
                     }
                     if (styledCell.getFont() != null) {
                         if (fontPeer == null) {
-                            PropertyPeerFactory propertyPeerFactory 
-                            = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
+                            PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
                             fontPeer = propertyPeerFactory.getPeerForProperty(Font.class);
                         }
                         Element fontElement = document.createElement("p");

@@ -132,7 +132,8 @@ Echo.Sync.RemoteListDataTranslator = {
             if (eElement.firstChild) {
                 var childElement = eElement.firstChild;
                 while (childElement) {
-                    if (childElement.nodeName == "p" && childElement.getAttribute("t") == "Font") {
+                    if (childElement.nodeName == "p" && 
+                            (childElement.getAttribute("t") == "F" || childElement.getAttribute("t") == "Font")) {
                         item.font = Echo.Serial.Font.toProperty(client, childElement);
                     }
                     childElement = childElement.nextSibling;
