@@ -307,12 +307,7 @@ Echo.Client = Core.extend({
      * @param e the DOM resize event
      */
     _windowResizeListener: function(e) {
-        if (Core.Web.Env.QUIRK_OPERA_WINDOW_RESIZE_POSITIONING) {
-            // FIXME Opera currently fails to redraw screen in certain scenarios.
-            Echo.Render.notifyResize(this.application.rootComponent);
-        } else {
-            Echo.Render.notifyResize(this.application.rootComponent);
-        }
+        Echo.Render.notifyResize(this.application.rootComponent);
     }
 });
 
