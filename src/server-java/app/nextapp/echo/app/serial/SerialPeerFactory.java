@@ -40,7 +40,7 @@ import nextapp.echo.app.util.PeerFactory;
 public class SerialPeerFactory 
 implements PropertyPeerFactory {
 
-    private static final String RESOURCE_NAME = "META-INF/nextapp/echo/XmlPeers.properties";
+    private static final String RESOURCE_NAME = "META-INF/nextapp/echo/SerialPeers.properties";
 
     private PeerFactory peerFactory;
     
