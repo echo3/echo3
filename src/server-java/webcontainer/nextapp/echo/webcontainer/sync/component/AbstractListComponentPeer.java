@@ -282,9 +282,9 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
             additionalPropertyNames.add(PROPERTY_SELECTION);
             additionalPropertyNames.add(PROPERTY_SELECTION_MODE);
         }
-        if (update.hasUpdatedProperty(AbstractListComponent.LIST_MODEL_CHANGED_PROPERTY)) {
-            additionalPropertyNames.add(PROPERTY_DATA);
-        } else if (update.hasUpdatedProperty(AbstractListComponent.LIST_DATA_CHANGED_PROPERTY)) {
+        if (update.hasUpdatedProperty(AbstractListComponent.LIST_MODEL_CHANGED_PROPERTY) ||
+                update.hasUpdatedProperty(AbstractListComponent.LIST_DATA_CHANGED_PROPERTY) ||
+                update.hasUpdatedProperty(AbstractListComponent.LIST_CELL_RENDERER_CHANGED_PROPERTY)) {
             additionalPropertyNames.add(PROPERTY_DATA);
         }
         return new MultiIterator(new Iterator[]{
