@@ -563,6 +563,24 @@ Echo.Render.ComponentSync = Core.extend({
     
     $virtual: {
     
+        /**
+         * Returns the focus flags for the component, one or more of the following values, ORed together.
+         * <ul>
+         *  <li><code>FOCUS_PERMIT_ARROW_UP</code>: indicates that the container may change focus from the current component if
+         *   the up arrow key is pressed.</li>
+         *  <li><code>FOCUS_PERMIT_ARROW_DOWN</code>: indicates that the container may change focus from the current component if
+         *   the down arrow key is pressed.</li>
+         *  <li><code>FOCUS_PERMIT_ARROW_LEFT</code>: indicates that the container may change focus from the current component if
+         *   the left arrow key is pressed.</li>
+         *  <li><code>FOCUS_PERMIT_ARROW_RIGHT</code>: indicates that the container may change focus from the current component if
+         *   the right arrow key is pressed.</li>
+         *  <li><code>FOCUS_PERMIT_ARROW_ALL</code>: indicates that the container may change focus from the current component if
+         *   any arrow key is pressed (this is a shorthand for up, left, down, and right ORed together).</li>
+         * </ul>
+         * 
+         * @return the focus flags
+         * @type Number
+         */
         getFocusFlags: null,
         
         /**

@@ -7,10 +7,22 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
 
     $static: {
 
+        /**
+         * Default margin between icon and text elements.
+         * @type Number
+         */
         _defaultIconTextMargin: 5,
         
+        /**
+         * Prototype DOM hierarchy for a rendered button.
+         * @type Element
+         */
         _prototypeButton: null,
         
+        /**
+         * Creates the prototype DOM hierarchy for a rendered button.
+         * @type Element
+         */
         _createPrototypeButton: function() {
             var div = document.createElement("div");
             div.tabIndex = "0";
@@ -27,44 +39,59 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     
     /**
      * Outer DIV containing button.
+     * @type Element
      */
     _div: null,
     
     /**
      * Text-containing element, upon which font styles should be set.
+     * @type Element
      */
     _textElement: null,
     
     /**
      * IMG element representing buttons icon.
+     * @type Element
      */
     _iconImg: null,
     
     /**
      * Method reference to _processRolloverExit.
+     * @type Function
      */
     _processRolloverExitRef: null,
     
     /**
      * Method reference to _processInitEvent.
+     * @type Function
      */
     _processInitEventRef: null,
     
     /**
      * The rendered focus state of the button.
+     * @type Boolean
      */
     _focused: false,
     
+    /** Creates a new Echo.Sync.Button */
     $construct: function() { 
         this._processInitEventRef = Core.method(this, this._processInitEvent);
     },
     
     $virtual: {
         
+        /**
+         * Processes a user action (i.e., clicking or pressing enter when button is focused).
+         * Default implementation invokes <code>doAction()</code> on supported <code>Echo.Component</code>.
+         */
         doAction: function() {
             this.component.doAction();
         },
         
+        /**
+         * Renders the content (e.g. text and/or icon) of the button.
+         * Appends rendered content to bounding element (<code>this._div</code>).
+         */
         renderContent: function() {
             var text = this.component.render("text");
             var icon = Echo.Sync.getEffectProperty(this.component, "icon", "disabledIcon", !this._enabled);
@@ -91,10 +118,10 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /**
-     * Registers listners on the button.  This method is invoked lazily, i.e., the first time the button
-     * is focused or moused over.  The initial focus/mouseover listeners are removed by this method.
+     * Registers event listeners on the button.  This method is invoked lazily, i.e., the first time the button
+     * is focused or rolled over with the mouse.  The initial focus/mouseover listeners are removed by this method.
      * This strategy is used for performance reasons due to the fact that many buttons may be present 
-     * on the screen, and each button has many event listeners.
+     * on the screen, and each button has many event listeners, which would otherwise need to be registered on the initial render.
      */
     _addEventListeners: function() {
         this._processRolloverExitRef = Core.method(this, this._processRolloverExit);
@@ -121,14 +148,17 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.Event.Selection.disable(this._div);
     },
     
+    /** @see Echo.Render.ComponentSync#getFocusFlags */ 
     getFocusFlags: function() {
         return Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_ALL;
     },
     
+    /** Processes a focus blur event. */
     _processBlur: function(e) {
         this._renderFocusStyle(false);
     },
     
+    /** Processes a mouse click event. */
     _processClick: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
@@ -137,6 +167,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         this.doAction();
     },
     
+    /** Processes a focus event. */
     _processFocus: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
@@ -145,7 +176,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /**
-     * Initial focus/mouseover listener.
+     * The Initial focus/mouseover listener.
      * This listener is invoked the FIRST TIME the button is focused or moused over.
      * It invokes the addListeners() method to lazily add the full listener set to the button.
      */
@@ -163,6 +194,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /** Processes a key press event.  Invokes <code>doAction()</code> in the case of enter being pressed. */
     _processKeyPress: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
@@ -175,6 +207,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /** Processes a mouse button press event, displaying the button's pressed appearance. */
     _processPress: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
@@ -183,6 +216,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         this._setPressedState(true);
     },
     
+    /** Processes a mouse button release event on the button, displaying the button's normal appearance. */
     _processRelease: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
@@ -190,6 +224,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         this._setPressedState(false);
     },
     
+    /** Processes a mouse roll over event, displaying the button's rollover appearance. */
     _processRolloverEnter: function(e) {
         if (!this.client || !this.client.verifyInput(this.component) || Core.Web.dragInProgress) {
             return true;
@@ -198,6 +233,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         this._setRolloverState(true);
     },
     
+    /** Processes a mouse roll over exit event, displaying the button's normal appearance. */
     _processRolloverExit: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
@@ -208,6 +244,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         this._setRolloverState(false);
     },
     
+    /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         this._enabled = this.component.isRenderEnabled();
         
@@ -289,6 +326,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         return imgElement;
     },
     
+    /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
         if (this._processRolloverExitRef) {
             this.client.application.removeListener("focus", this._processRolloverExitRef);
@@ -302,6 +340,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         this._iconImg = null;
     },
 
+    /** @see Echo.Render.ComponentSync#renderFocus */
     renderFocus: function() {
         if (this._focused) {
             return;
@@ -311,6 +350,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.DOM.focusElement(this._div);
     },
     
+    /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
         var element = this._div;
         var containerElement = element.parentNode;
