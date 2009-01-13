@@ -22,6 +22,11 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         /**
          * Performs processing on layout of grid, determining rendered cell sizes, and
          * eliminating conflicting row/column spans.
+         * 
+         * This object describes coordinates in terms of x and y, rather than column/row.
+         * The translation between x/y and column/row varies based on the grid's orientation.
+         * For horizontally oriented grids, the x-axis represents columns and the y-axis rows.
+         * For vertically oriented grids, the x-axis represents rows and the y-axis columns.
          */
         Processor: Core.extend({
         
@@ -73,25 +78,49 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                 })
             },
             
+            /**
+             * Two dimensional array which contains <code>Cell</code>s.
+             * Each index of this array contains an array which represents a y-index of the grid.
+             * Each index in a contained arrays represents a cell of the grid.
+             * @type Array
+             */
+            cellArrays: null,
+            
+            /**
+             * The Grid being rendered.
+             * @type Echo.Grid
+             */
+            grid: null,
+            
             /** 
              * The size of the grid's x-axis.
-             * For horizontally oriented grids, the x-axis is horizontal.
-             * For vertically oriented grids, the x-axis is vertical.
              * @type Number
              */ 
             gridXSize: null,
             
             /** 
              * The size of the grid's x-axis.
-             * For horizontally oriented grids, the y-axis is vertical.
-             * For vertically oriented grids, the y-axis is horizontal.
              * @type Number
              */ 
             gridYSize: null,
             
+            /**
+             * Array of extents representing cell sizes on x-axis.
+             * @type Array
+             */
             xExtents: null,
             
+            /**
+             * Array of extents representing cell sizes on y-axis.
+             * @type Array
+             */
             yExtents: null,
+            
+            /**
+             * Flag indicating whether the grid is horizontally oriented.
+             * @type Boolean
+             */
+            horizontalOrientation: null,
             
             /**
              * Creates a new Processor instance.
