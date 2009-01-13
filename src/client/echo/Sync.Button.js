@@ -297,6 +297,12 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         parentElement.appendChild(this._div);
     },
     
+    /**
+     * Renders the button text.  Configures text alignment, and font.
+     * 
+     * @param element the element which should contain the text.
+     * @param text the text to render
+     */
     _renderButtonText: function(element, text) {
         this._textElement = element;
         var textAlignment = this.component.render("textAlignment"); 
@@ -315,6 +321,12 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /** 
+     * Renders the button icon.
+     * 
+     * @param elemnt the element which should contain the icon.
+     * @param icon the icon property to render
+     */
     _renderButtonIcon: function(element, icon) {
         var alignment = this.component.render("alignment"); 
         if (alignment) {
@@ -362,6 +374,8 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     
     /**
      * Enables/disables focused appearance of button.
+     * 
+     * @param {Boolean} focusState the new focus state.
      */
     _renderFocusStyle: function(focusState) {
         if (this._focused == focusState) {
@@ -404,6 +418,11 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /**
+     * Enables/disables pressed appearance of button.
+     * 
+     * @param {Boolean} pressedState the new pressed state.
+     */
     _setPressedState: function(pressedState) {
         var foreground = Echo.Sync.getEffectProperty(this.component, "foreground", "pressedForeground", pressedState);
         var background = Echo.Sync.getEffectProperty(this.component, "background", "pressedBackground", pressedState);
@@ -429,6 +448,11 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /**
+     * Enables/disables rollover appearance of button.
+     * 
+     * @param {Boolean} rolloverState the new rollover state.
+     */
     _setRolloverState: function(rolloverState) {
         var foreground = Echo.Sync.getEffectProperty(this.component, "foreground", "rolloverForeground", rolloverState);
         var background = Echo.Sync.getEffectProperty(this.component, "background", "rolloverBackground", rolloverState);
@@ -464,7 +488,17 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         Echo.Render.registerPeer("ToggleButton", this);
     },
     
+    /** 
+     * Selection state.
+     * @type Boolean
+     */
     _selected: false,
+    
+    /**
+     * The DOM element which represents the button's state.
+     * 
+     * @type Element
+     */
     _stateElement: null,
     
     $abstract: {
@@ -473,11 +507,10 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         updateStateElement: function() { }
     },
     
-    $virtual: {
-        doAction: function() {
-            this.setSelected(!this._selected);
-            Echo.Sync.Button.prototype.doAction.call(this);
-        }
+    /** @see Echo.Sync.Button#doAction */
+    doAction: function() {
+        this.setSelected(!this._selected);
+        Echo.Sync.Button.prototype.doAction.call(this);
     },
     
     getStateIcon: function() {
@@ -492,6 +525,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         return icon;
     },
     
+    /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         this._selected = this.component.render("selected");
         
@@ -549,6 +583,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         }
     },
     
+    /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
         Echo.Sync.Button.prototype.renderDispose.call(this, update);
         if (this._stateElement) {
@@ -638,6 +673,7 @@ Echo.Sync.RadioButton = Core.extend(Echo.Sync.ToggleButton, {
         Echo.Sync.ToggleButton.call(this);
     },
 
+    /** @see Echo.Sync.Button#doAction */
     doAction: function() {
         if (this._group) {
             this._group.deselect();
