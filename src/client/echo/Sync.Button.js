@@ -119,7 +119,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     
     /**
      * Registers event listeners on the button.  This method is invoked lazily, i.e., the first time the button
-     * is focused or rolled over with the mouse.  The initial focus/mouseover listeners are removed by this method.
+     * is focused or rolled over with the mouse.  The initial focus/mouse rollover listeners are removed by this method.
      * This strategy is used for performance reasons due to the fact that many buttons may be present 
      * on the screen, and each button has many event listeners, which would otherwise need to be registered on the initial render.
      */
@@ -176,8 +176,8 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /**
-     * The Initial focus/mouseover listener.
-     * This listener is invoked the FIRST TIME the button is focused or moused over.
+     * The Initial focus/mouse rollover listener.
+     * This listener is invoked the FIRST TIME the button is focused or mouse rolled over.
      * It invokes the addListeners() method to lazily add the full listener set to the button.
      */
     _processInitEvent: function(e) {
@@ -287,7 +287,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         this.renderContent();
         
         if (this._enabled) {
-            // Add event listeners for focus and mouseover.  When invoked, these listeners will register the full gamut
+            // Add event listeners for focus and mouse rollover.  When invoked, these listeners will register the full gamut
             // of button event listeners.  There may be a large number of such listeners depending on how many effects
             // are enabled, and as such we do this lazily for performance reasons.
             Core.Web.Event.add(this._div, "focus", this._processInitEventRef, false);
@@ -488,6 +488,11 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         Echo.Render.registerPeer("ToggleButton", this);
     },
     
+    $abstract: {
+        
+        inputType: null
+    },
+    
     /** 
      * Selection state.
      * @type Boolean
@@ -501,12 +506,27 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
      */
     _stateElement: null,
     
-    $abstract: {
-        createStateElement: function() { },
-    
-        updateStateElement: function() { }
+    /**
+     * Creates the state element.
+     */
+    _createStateElement: function() {
+        var stateIcon = this.getStateIcon();
+        var stateElement;
+        if (stateIcon) {
+            stateElement = document.createElement("img");
+            Echo.Sync.ImageReference.renderImg(stateIcon, stateElement);
+        } else {
+            stateElement = document.createElement("input");
+            stateElement.type = this.inputType;
+            if (this.inputType == "radio") {
+                stateElement.name = "__echo_" + Echo.Sync.RadioButton._nextNameId++;
+            }
+            stateElement.defaultChecked = this._selected ? true : false;
+            Core.Web.Event.add(stateElement, "change", Core.method(this, this._processStateChange), false);
+        }
+        return stateElement;
     },
-    
+
     /** @see Echo.Sync.Button#doAction */
     doAction: function() {
         this.setSelected(!this._selected);
@@ -525,6 +545,10 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         return icon;
     },
     
+    _processStateChange: function(e) {
+        this._updateStateElement();
+    },
+    
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         this._selected = this.component.render("selected");
@@ -535,7 +559,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
     renderContent: function() {
         var text = this.component.render("text");
         var icon = this.component.render("icon");
-        this._stateElement = this.createStateElement();
+        this._stateElement = this._createStateElement();
         var orientation, margin, tct;
         
         var entityCount = (text ? 1 : 0) + (icon ? 1 : 0) + (this._stateElement ? 1 : 0);
@@ -604,7 +628,16 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         this._selected = newState;
         this.component.set("selected", newState);
         
-        this.updateStateElement();
+        this._updateStateElement();
+    },
+
+    _updateStateElement: function() {
+        var stateIcon = this.getStateIcon();
+        if (stateIcon) {
+            this._stateElement.src = Echo.Sync.ImageReference.getUrl(stateIcon);
+        } else {
+            this._stateElement.checked = this._selected ? true : false;
+        }
     }
 });
 
@@ -617,33 +650,7 @@ Echo.Sync.CheckBox = Core.extend(Echo.Sync.ToggleButton, {
         Echo.Render.registerPeer("CheckBox", this);
     },
     
-    createStateElement: function() {
-        var stateIcon = this.getStateIcon();
-        var stateElement;
-        if (stateIcon) {
-            stateElement = document.createElement("img");
-            Echo.Sync.ImageReference.renderImg(stateIcon, stateElement);
-        } else {
-            stateElement = document.createElement("input");
-            stateElement.type = "checkbox";
-            stateElement.defaultChecked = this._selected ? true : false;
-            Core.Web.Event.add(stateElement, "change", Core.method(this, this._processStateChange), false);
-        }
-        return stateElement;
-    },
-    
-    _processStateChange: function(e) {
-        this.updateStateElement();
-    },
-        
-    updateStateElement: function() {
-        var stateIcon = this.getStateIcon();
-        if (stateIcon) {
-            this._stateElement.src = Echo.Sync.ImageReference.getUrl(stateIcon);
-        } else {
-            this._stateElement.checked = this._selected ? true : false;
-        }
-    }
+    inputType: "checkbox"
 });
 
 /**
@@ -666,6 +673,8 @@ Echo.Sync.RadioButton = Core.extend(Echo.Sync.ToggleButton, {
     $load: function() {
         Echo.Render.registerPeer("RadioButton", this);
     },
+    
+    inputType: "radio",
     
     _group: null,
 
@@ -695,26 +704,6 @@ Echo.Sync.RadioButton = Core.extend(Echo.Sync.ToggleButton, {
         Echo.Sync.ToggleButton.prototype.renderAdd.call(this, update, parentElement);
     },
     
-    createStateElement: function() {
-        var stateIcon = this.getStateIcon();
-        var stateElement;
-        if (stateIcon) {
-            stateElement = document.createElement("img");
-            Echo.Sync.ImageReference.renderImg(stateIcon, stateElement);
-        } else {
-            stateElement = document.createElement("input");
-            stateElement.type = "radio";
-            stateElement.name = "__echo_" + Echo.Sync.RadioButton._nextNameId++;
-            stateElement.defaultChecked = this._selected ? true : false;
-            Core.Web.Event.add(stateElement, "change", Core.method(this, this._processStateChange), false);
-        }
-        return stateElement;
-    },
-    
-    _processStateChange: function(e) {
-        this.updateStateElement();
-    },
-    
     renderDispose: function(update) {
         Echo.Sync.ToggleButton.prototype.renderDispose.call(this, update);
         if (this._group) {
@@ -723,15 +712,6 @@ Echo.Sync.RadioButton = Core.extend(Echo.Sync.ToggleButton, {
                 Echo.Sync.RadioButton._groups.remove(this._group.id);
             }
             this._group = null;
-        }
-    },
-    
-    updateStateElement: function() {
-        var stateIcon = this.getStateIcon();
-        if (stateIcon) {
-            this._stateElement.src = Echo.Sync.ImageReference.getUrl(stateIcon);
-        } else {
-            this._stateElement.checked = this._selected ? true : false;
         }
     }
 });
