@@ -650,17 +650,12 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
     renderUpdate: function(update) {
         var fullRender = false;
 
-        if (update.fullRefresh) {
+        if (update.fullRefresh || update.hasAddedChildren() || update.hasRemovedChildren()) {
             Echo.Sync.renderComponentDefaults(this.component, this.client.domainElement);
             document.title = this.component.render("title", "");
             this._renderContent(update);
             fullRender = true;
         } else {
-            if (update.fullRefresh || update.hasAddedChildren() || update.hasRemovedChildren()) {
-                this._renderContent(update);
-                fullRender = true;
-            }
-            
             this.client.domainElement.dir = this.component.application.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl";
             if (update.hasUpdatedProperties()) {
                 var property;
