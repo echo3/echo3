@@ -150,6 +150,20 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
             },
             
             /**
+             * Adds two extents.
+             * 
+             * @param {#Extent} a the first extent
+             * @param {#Extent} b the second extent
+             * @return the sum of the extents
+             * @type #Extent
+             */
+            addExtents: function(a, b) {
+//FIXME implement extent addition.                
+//Core.Debug.consoleWrite("add:" + a + "+" + b);                
+                return a;
+            },
+            
+            /**
              * Calculates sizes of columns and rows.
              */
             calculateExtents: function() {
@@ -279,7 +293,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                     return;
                 }
                 
-                for (var removedX = this.gridXSize - 1; removedX >= 0; --removedX) {
+                for (var removedX = this.gridXSize - 1; removedX >= 1; --removedX) {
                     if (!xRemoves[removedX]) {
                         continue;
                     }
@@ -294,7 +308,10 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                         this.cellArrays[y].splice(removedX, 1);
                     }
                     
-                    //FIXME. Add extent-size recalc.
+                    var removedXExtent = this.xExtents.splice(removedX, 1);
+                    if (removedXExtent) {
+                        this.xExtents[removedX - 1] = this.addExtents(this.xExtents[removedX - 1], removedXExtent);
+                    }
                     
                     --this.gridXSize;
                 }
