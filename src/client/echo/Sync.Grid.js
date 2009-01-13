@@ -291,9 +291,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                                 --this.cellArrays[y][removedX - 1].xSpan;
                             }
                         }
-                        for (x = removedX; x < this.gridXSize - 1; ++x) {
-                            this.cellArrays[y][x] = this.cellArrays[y][x + 1];
-                        }
+                        this.cellArrays[y].splice(removedX, 1);
                     }
                     
                     //FIXME. Add extent-size recalc.
