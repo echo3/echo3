@@ -20,6 +20,24 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
         renderChildLayoutData: function(child, cellElement) { }
     },
     
+    $virtual: {
+        
+        /** The key code which should move focus to the previous child cell. */
+        prevFocusKey: null,
+        
+        /** The Echo.Render.ComponentSync focus flag indicating which keys should trigger focus changes to the previous child. */
+        prevFocusFlag: null,
+        
+        /** The key code which should move focus to the next child cell. */
+        nextFocusKey: null,
+
+        /** The Echo.Render.ComponentSync focus flag indicating which keys should trigger focus changes to the next child. */
+        nextFocusFlag: null,
+        
+        /** Flag indicating whether focus key should be inverted when the component is rendered with an RTL layout direction. */
+        invertFocusRtl: false
+    },
+    
     /**
      * The root DOM element of the rendered array container.
      * @type Element
@@ -158,7 +176,13 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
         this.spacingPrototype = null;
     },
 
-    renderRemoveChild: function(update, child) {
+    /**
+     * Removes a child cell.
+     * 
+     * @param {Echo.Update.ComponentUpdate} the update
+     * @param {Echo.Component} the child to remove
+     */
+    _renderRemoveChild: function(update, child) {
         var childElement = this._childIdToElementMap[child.renderId];
         if (!childElement) {
             return;
@@ -190,7 +214,7 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
             if (removedChildren) {
                 // Remove children.
                 for (i = 0; i < removedChildren.length; ++i) {
-                    this.renderRemoveChild(update, removedChildren[i]);
+                    this._renderRemoveChild(update, removedChildren[i]);
                 }
             }
             var addedChildren = update.getAddedChildren();
@@ -225,9 +249,16 @@ Echo.Sync.Column = Core.extend(Echo.Sync.ArrayContainer, {
     /** @see Echo.Render.ComponentSync#cellElementNodeName */
     cellElementNodeName: "div",
     
+    /** @see Echo.Sync.ArrayContainer#prevFocusKey */
     prevFocusKey: 38,
+    
+    /** @see Echo.Sync.ArrayContainer#prevFocusFlag */
     prevFocusFlag: Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_UP,
+
+    /** @see Echo.Sync.ArrayContainer#nextFocusKey */
     nextFocusKey: 40,
+
+    /** @see Echo.Sync.ArrayContainer#nextFocusFlag */
     nextFocusFlag: Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_DOWN,
     
     /** @see Echo.Render.ComponentSync#renderAdd */
@@ -276,6 +307,12 @@ Echo.Sync.Row = Core.extend(Echo.Sync.ArrayContainer, {
 
     $static: {
     
+        /** 
+         * Creates a prototype DOM element hierarchy to be cloned when rendering.   
+         * 
+         * @return the prototype Element
+         * @type Element
+         */
         _createRowPrototype: function() {
             var div = document.createElement("div");
             div.style.outlineStyle = "none";
@@ -292,7 +329,13 @@ Echo.Sync.Row = Core.extend(Echo.Sync.ArrayContainer, {
             tbody.appendChild(document.createElement("tr"));
         
             return div;
-        }
+        },
+        
+        /** 
+         * The prototype DOM element hierarchy to be cloned when rendering.
+         * @type Element 
+         */
+        _rowPrototype: null
     },
     
     $load: function() {
@@ -303,10 +346,19 @@ Echo.Sync.Row = Core.extend(Echo.Sync.ArrayContainer, {
     /** @see Echo.Render.ComponentSync#cellElementNodeName */
     cellElementNodeName: "td",
 
+    /** @see Echo.Sync.ArrayContainer#prevFocusKey */
     prevFocusKey: 37,
+    
+    /** @see Echo.Sync.ArrayContainer#prevFocusFlag */
     prevFocusFlag: Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_LEFT,
+    
+    /** @see Echo.Sync.ArrayContainer#nextFocusKey */
     nextFocusKey: 39,
+
+    /** @see Echo.Sync.ArrayContainer#nextFocusFlag */
     nextFocusFlag: Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT,
+    
+    /** @see Echo.Sync.ArrayContainer#invertFocusRtl */
     invertFocusRtl: true,
     
     /** @see Echo.Render.ComponentSync#renderAdd */
