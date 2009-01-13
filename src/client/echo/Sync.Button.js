@@ -490,6 +490,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
     
     $abstract: {
         
+        /** The type setting for the input form element (i.e. "radio" or "checkbox"). */
         inputType: null
     },
     
@@ -508,6 +509,9 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
     
     /**
      * Creates the state element.
+     * 
+     * @return the state element
+     * @type element
      */
     _createStateElement: function() {
         var stateIcon = this.getStateIcon();
@@ -533,6 +537,12 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         Echo.Sync.Button.prototype.doAction.call(this);
     },
     
+    /** 
+     * Returns the appropriate state icon for the given state of the control (based on disabled and selected state).
+     * 
+     * @return the state icon
+     * @type #ImageReference
+     */
     getStateIcon: function() {
         var icon;
         if (this._selected) {
@@ -545,6 +555,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         return icon;
     },
     
+    /** Processes a change event from the state INPUT element (checkbox/radio form control itself). */
     _processStateChange: function(e) {
         this._updateStateElement();
     },
@@ -556,6 +567,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         Echo.Sync.Button.prototype.renderAdd.call(this, update, parentElement);
     },
     
+    /** @see Echo.Sync.Button.renderContent */
     renderContent: function() {
         var text = this.component.render("text");
         var icon = this.component.render("icon");
@@ -631,6 +643,9 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         this._updateStateElement();
     },
 
+    /**
+     * Updates the image/checked state of the state element in response to the state having changed.
+     */
     _updateStateElement: function() {
         var stateIcon = this.getStateIcon();
         if (stateIcon) {
@@ -650,6 +665,7 @@ Echo.Sync.CheckBox = Core.extend(Echo.Sync.ToggleButton, {
         Echo.Render.registerPeer("CheckBox", this);
     },
     
+    /** @see Echo.Sync.ToggleButton#inputType */
     inputType: "checkbox"
 });
 
@@ -660,6 +676,7 @@ Echo.Sync.RadioButton = Core.extend(Echo.Sync.ToggleButton, {
 
     $static: {
     
+        /** Next sequentially assigned identifier for radio button groups. */
         _nextNameId: 0,
         
         /**
@@ -674,13 +691,14 @@ Echo.Sync.RadioButton = Core.extend(Echo.Sync.ToggleButton, {
         Echo.Render.registerPeer("RadioButton", this);
     },
     
+    /** @see Echo.Sync.ToggleButton#inputType */
     inputType: "radio",
     
+    /** 
+     * The group to which this radio button belongs.
+     * @type Echo.Sync.RadioButton.Group
+     */
     _group: null,
-
-    $construct: function() {
-        Echo.Sync.ToggleButton.call(this);
-    },
 
     /** @see Echo.Sync.Button#doAction */
     doAction: function() {
@@ -689,7 +707,8 @@ Echo.Sync.RadioButton = Core.extend(Echo.Sync.ToggleButton, {
         }
         Echo.Sync.ToggleButton.prototype.doAction.call(this);
     },
-    
+
+    /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         var groupId = this.component.render("group");
         if (groupId != null) {
@@ -704,6 +723,7 @@ Echo.Sync.RadioButton = Core.extend(Echo.Sync.ToggleButton, {
         Echo.Sync.ToggleButton.prototype.renderAdd.call(this, update, parentElement);
     },
     
+    /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
         Echo.Sync.ToggleButton.prototype.renderDispose.call(this, update);
         if (this._group) {
@@ -716,10 +736,16 @@ Echo.Sync.RadioButton = Core.extend(Echo.Sync.ToggleButton, {
     }
 });
 
+/**
+ * Representation of a collection of radio buttons, only one of which
+ * may be selected at a given time.
+ */
 Echo.Sync.RadioButton.Group = Core.extend({
 
+    /** Group id. */
     id: null,
     
+    /** Array of buttons (peers) in this group. */
     _buttons: null,
 
     /**
@@ -735,7 +761,7 @@ Echo.Sync.RadioButton.Group = Core.extend({
     /**
      * Adds the specified button to this button group.
      *
-     * @param button {Echo.Render.ComponentSync.ToggleButton} the button
+     * @param {Echo.Render.ComponentSync.ToggleButton} button the button
      */
     add: function(button) {
         this._buttons.push(button);
@@ -753,7 +779,7 @@ Echo.Sync.RadioButton.Group = Core.extend({
     /**
      * Removes the specified button from this button group.
      * 
-     * @param button {Echo.Render.ComponentSync.ToggleButton} the button
+     * @param {Echo.Render.ComponentSync.ToggleButton} button the button
      */
     remove: function(button) {
         // Find index of button in array.
@@ -781,9 +807,9 @@ Echo.Sync.RadioButton.Group = Core.extend({
     },
 
     /**
-     * Gets the amount of buttons contained by this button group.
+     * Returns the number of buttons contained by this button group.
      * 
-     * @return the number of buttons.
+     * @return the number of buttons
      * @type {Number}
      */
     size: function() {
