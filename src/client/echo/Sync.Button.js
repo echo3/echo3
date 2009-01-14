@@ -620,6 +620,11 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
             Core.Web.Event.add(stateElement, "change", Core.method(this, this._processStateChange), false);
         }
         parent.appendChild(stateElement);
+        var stateAlignment = this.component.render("stateAlignment"); 
+        if (stateAlignment) {
+            Echo.Sync.Alignment.render(stateAlignment, parent, true, this.component);
+        }
+        
         return stateElement;
     },
 
