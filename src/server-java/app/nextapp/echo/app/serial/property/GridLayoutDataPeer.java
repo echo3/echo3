@@ -50,10 +50,10 @@ extends CellLayoutDataPeer {
     throws SerialException {
         super.toXml(context, objectClass, propertyElement, propertyValue);
         GridLayoutData layoutData = (GridLayoutData) propertyValue;
-        if (layoutData.getColumnSpan() > 1) {
+        if (layoutData.getColumnSpan() != 0 && layoutData.getColumnSpan() != 1) {
             SerialUtil.toXml(context, GridLayoutData.class, propertyElement, "columnSpan", new Integer(layoutData.getColumnSpan()));
         }
-        if (layoutData.getRowSpan() > 1) {
+        if (layoutData.getRowSpan() != 0 && layoutData.getRowSpan() != 1) {
             SerialUtil.toXml(context, GridLayoutData.class, propertyElement, "rowSpan", new Integer(layoutData.getRowSpan()));
         }
     }
