@@ -231,22 +231,35 @@ Echo.Sync.Border = {
         return out.join(" ");
     },
     
+    /** 
+     * Determines if a border is multisided.
+     * 
+     * @param {#Border} border the border to analyze
+     * @return true if the border is multisided
+     * @type Boolean
+     */
+    isMultisided: function(border) {
+        return (border && (border.top || border.bottom || border.left || border.right)) ? true : false;
+    },
+    
     /**
      * Parses a border into size, style, and color components.
      * 
-     * @param border the border to parse
+     * @param {#Border} border the border to parse
      * @return an object containing size, style, and color properties of the border
      */
     parse: function(border) {
         if (!border) {
+            // Return an empty object if border evaluates false.
             return { };
         }
         if (typeof(border) == "string") {
+            // Parse the border.
             var parts = this._PARSER.exec(border);
             return { size: parts[1], style: parts[2], color: parts[3] }; 
         } else {
-            // FIXME support multisided borders.
-            return { };
+            // Parse an individual border side.
+            return Echo.Sync.Border.parse(border.top || border.right || border.bottom || border.left);
         }
     },
 
