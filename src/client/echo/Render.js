@@ -255,26 +255,12 @@ Echo.Render = {
         }
         
         // Display Phase: Invoke renderDisplay on all updates.
-        var displayed = [];
         for (i = 0; i < updates.length; ++i) {
             if (updates[i] == null) {
                 // Skip removed updates.
                 continue;
             }
-            
-            var cancelDisplay = false;
-            for (j = 0; j < displayed.length; ++j) {
-                if (displayed[j].isAncestorOf(updates[i].parent)) {
-                    cancelDisplay = true;
-                    break;
-                }
-            }
-            if (cancelDisplay) {
-                continue;
-            } else {
-                displayed.push(updates[i].parent);
-            }
-            
+
             if (updates[i].renderContext.displayRequired) {
                 // The renderContext has specified only certain child components should have their
                 // renderDisplay() methods invoked.
