@@ -248,7 +248,7 @@ Echo.Serial = {
      */
     storeProperty: function(client, pElement, value) {
         if (value == null) {
-            //FIXME.  Send nulled values.
+            // Set no value to indicate null.
         } else if (typeof (value) == "object") {
             var translator = null;
             if (value.className) {
