@@ -114,6 +114,13 @@ public class TextComponentTest extends SplitPane {
         textArea.setBorder(new Border(1, Color.BLUE, Border.STYLE_SOLID));
         testColumn.add(textArea);
         
+        controlsColumn.addButton("Query TextField State", new ActionListener(){
+        
+            public void actionPerformed(ActionEvent e) {
+                ((InteractiveApp) getApplicationInstance()).consoleWrite("TextField Value:" + textField.getText());
+            }
+        });
+        
         controlsColumn.addButton("Set Text to Multiple Lines", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String text = "This\nis\na\ntest.";
