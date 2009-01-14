@@ -1064,7 +1064,7 @@ Echo.Sync.TriCellTable = Core.extend({
     /**
      * Creates a new <code>TriCellTable</code>
      * 
-     * @param orientation0_1 the orientation of element 0 with respect to element 1, one of 
+     * @param {Number} orientation0_1 the orientation of element 0 with respect to element 1, one of 
      *        the following values:
      *        <ul>
      *        <li>LEADING_TRAILING (element 0 is leading element 1)</li>
@@ -1072,8 +1072,8 @@ Echo.Sync.TriCellTable = Core.extend({
      *        <li>TOP_BOTTOM (element 0 is above element 1)</li>
      *        <li>BOTTOM_TOP (element 1 is above element 0)</li>
      *        </ul>
-     * @param margin0_1 the margin size between element 0 and element 1
-     * @param orientation01_2 (omitted for two-cell tables)
+     * @param {Number} margin0_1 the margin size between element 0 and element 1
+     * @param {Number} orientation01_2 (omitted for two-cell tables)
      *        the orientation of Elements 0 and 1 with 
      *        respect to Element 2, one of the following values:
      *        <ul>
@@ -1082,9 +1082,9 @@ Echo.Sync.TriCellTable = Core.extend({
      *        <li>TOP_BOTTOM (elements 0 and 1 are above element 2)</li>
      *        <li>BOTTOM_TOP (element 2 is above elements 0 and 1)</li>
      *        </ul>
-     * @param margin01_2 (omitted for two-cell tables)
-     *        The margin size between the combination
-     *        of elements 0 and 1 and element 2.
+     * @param {Number} margin01_2 (omitted for two-cell tables)
+     *        the margin size between the combination
+     *        of elements 0 and 1 and element 2
      */
     $construct: function(orientation0_1, margin0_1, orientation01_2, margin01_2) {
         this.tableElement = Echo.Sync.TriCellTable._tablePrototype.cloneNode(true);
@@ -1097,12 +1097,23 @@ Echo.Sync.TriCellTable = Core.extend({
         }
     },
     
+    /**
+     * Appends tdElement to trElement, if tdElement is not null.
+     * 
+     * @param {Element} trElement the table row element
+     * @param {Element} tdElement the table cell element
+     */
     _addColumn: function(trElement, tdElement) {
         if (tdElement != null) {
             trElement.appendChild(tdElement);
         }
     },
     
+    /**
+     * If tdElement is not null, creates a row, appends tdElement to it, then appends the row to the table body.
+     * 
+     * @param {Element} tdElement the table cell element
+     */
     _addRow: function(tdElement) {
         if (tdElement == null) {
             return;
@@ -1112,6 +1123,14 @@ Echo.Sync.TriCellTable = Core.extend({
         this.tbodyElement.appendChild(trElement);
     },
     
+    /**
+     * Adds a spacer DIV to the specified parent element.
+     * 
+     * @param {Element} parentElement the parent element to which the spacer DIV should be added
+     * @param {Number} size the pixel size of the spacer
+     * @param {Boolean} vertical boolean flag indicating the orientation of the spacer, 
+     *        true for vertical spacers, false for horizontal
+     */
     _addSpacer: function(parentElement, size, vertical) {
         var divElement = document.createElement("div");
         if (vertical) {
@@ -1122,6 +1141,12 @@ Echo.Sync.TriCellTable = Core.extend({
         parentElement.appendChild(divElement);
     },
     
+    /**
+     * Configures a two-celled TriCellTable.
+     * 
+     * @param {Number} orientation0_1 the orientation of element 0 with respect to element 1
+     * @param {Number} margin0_1 the margin size between element 0 and element 1
+     */
     _configure2: function(orientation0_1, margin0_1) {
         this.tdElements = [document.createElement("td"), document.createElement("td")];
         this.tdElements[0].style.padding = "0";
@@ -1171,6 +1196,14 @@ Echo.Sync.TriCellTable = Core.extend({
         }
     },
     
+    /**
+     * Configures a two-celled TriCellTable.
+     * 
+     * @param {Number} orientation0_1 the orientation of element 0 with respect to element 1
+     * @param {Number} margin0_1 the margin size between element 0 and element 1
+     * @param {Number} orientation01_2 the orientation of Elements 0 and 1 with respect to Element 2
+     * @param {Number} margin01_2 the margin size between the combination of elements 0 and 1 and element 2
+     */
     _configure3: function(orientation0_1, margin0_1, orientation01_2, margin01_2) {
         this.tdElements = new Array(3);
         for (var i = 0; i < 3; ++i) {
