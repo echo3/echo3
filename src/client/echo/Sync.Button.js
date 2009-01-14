@@ -607,7 +607,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         var stateElement;
         if (stateIcon) {
             stateElement = document.createElement("img");
-            Echo.Sync.ImageReference.renderImg(stateIcon, this._stateElement);
+            Echo.Sync.ImageReference.renderImg(stateIcon, stateElement);
         } else {
             stateElement = document.createElement("input");
             stateElement.type = this.inputType;
