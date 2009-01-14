@@ -154,13 +154,23 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
              * 
              * @param {#Extent} a the first extent
              * @param {#Extent} b the second extent
+             * @param {Boolean} flag indicating whether extents are horizontal
              * @return the sum of the extents
              * @type #Extent
              */
-            addExtents: function(a, b) {
-//FIXME implement extent addition.                
-//Core.Debug.consoleWrite("add:" + a + "+" + b);                
-                return a;
+            addExtents: function(a, b, horizontal) {
+                var ap = Echo.Sync.Extent.isPercent(a), bp = Echo.Sync.Extent.isPercent(b);
+                if (ap || bp) {
+                    if (ap && bp) {
+                        // Both are percents, add them.
+                        return (parseFloat(ap) + parseFloat(bp)) + "%";
+                    } else {
+                        // One extent is percent, the other is not: return the percent extent.
+                        return ap ? a : b;
+                    }
+                } else {
+                    return Echo.Sync.Extent.toPixels(a) + Echo.Sync.Extent.toPixels(b);
+                }
             },
             
             /**
@@ -310,7 +320,8 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                     
                     var removedXExtent = this.xExtents.splice(removedX, 1);
                     if (removedXExtent) {
-                        this.xExtents[removedX - 1] = this.addExtents(this.xExtents[removedX - 1], removedXExtent);
+                        this.xExtents[removedX - 1] = this.addExtents(this.xExtents[removedX - 1], removedXExtent,
+                                this.horizontalOrientation ? true : false);
                     }
                     
                     --this.gridXSize;
@@ -378,7 +389,8 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                     // Remove size data for removed row, add value to previous if necessary.
                     var removedYExtent = this.yExtents.splice(removedY, 1);
                     if (removedYExtent) {
-                        this.yExtents[removedY - 1] = this.addExtents(this.yExtents[removedY - 1], removedYExtent);
+                        this.yExtents[removedY - 1] = this.addExtents(this.yExtents[removedY - 1], removedYExtent,
+                                this.horizontalOrientation ? false : true);
                     }
                     
                     // Decrement the grid size to reflect cell array removal.
