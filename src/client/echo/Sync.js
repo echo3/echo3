@@ -595,6 +595,7 @@ Echo.Sync.Extent = {
  */
 Echo.Sync.FillImage = { 
 
+    /** Mapping between repeat property values and rendered CSS repeat values. */
     _REPEAT_VALUES: {
         "0": "no-repeat",
         "x": "repeat-x",
