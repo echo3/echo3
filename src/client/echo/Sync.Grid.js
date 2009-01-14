@@ -5,6 +5,13 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
 
     $static: {
 
+        /**
+         * Creates a prototype rendering of the basic DOM structure of a Grid which may be cloned
+         * for enhanced rendering performance.
+         * 
+         * @return the prototype DOM hierarchy
+         * @type Element
+         */
         _createPrototypeTable: function() {
             var table = document.createElement("table");
             table.style.outlineStyle = "none";
@@ -547,6 +554,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         
         this._columnCount = gridProcessor.getColumnCount();
         this._rowCount = gridProcessor.getRowCount();
+        
         this._table = Echo.Sync.Grid._prototypeTable.cloneNode(true);
         this._table.id = this.component.renderId;
         
@@ -554,11 +562,13 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         Echo.Sync.Border.render(defaultBorder, this._table);
         this._table.style.padding = defaultInsets;
         
+        // Render percent widths using measuring for IE to avoid potential horizontal scrollbars.
         if (width && Core.Web.Env.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && Echo.Sync.Extent.isPercent(width)) {
             this._renderPercentWidthByMeasure = parseInt(width, 10);
             width = null;
         }
         
+        // Set overall width/height.
         if (width) {
             if (Echo.Sync.Extent.isPercent(width)) {
                 this._table.style.width = width;
@@ -566,7 +576,6 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                 this._table.style.width = Echo.Sync.Extent.toCssValue(width, true);
             }
         }
-        
         if (height) {
             if (Echo.Sync.Extent.isPercent(height)) {
                 this._table.style.height = height;
@@ -574,7 +583,8 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                 this._table.style.height = Echo.Sync.Extent.toCssValue(height, false);
             }
         }
-        
+
+        // Render column widths into colgroup element.
         var colGroup = this._table.firstChild;
         for (columnIndex = 0; columnIndex < this._columnCount; ++columnIndex) {
             var col = document.createElement("col");
@@ -610,6 +620,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         tdPrototype.style.padding = defaultInsets;
         tdPrototype.style.overflow = "hidden";
         
+        // Render grid layout.
         for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
             tr = document.createElement("tr");
             height = gridProcessor.yExtents[rowIndex];
