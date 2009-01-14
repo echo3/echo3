@@ -514,16 +514,32 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
     /** 
      * Returns the appropriate state icon for the given state of the control (based on disabled and selected state).
      * 
+     * @param {Boolean} rollover flag indicating whether the rollover icon should be retrieved
+     * @param {Boolean} pressed flag indicating whether the pressed icon should be retrieved
      * @return the state icon
      * @type #ImageReference
      */
-    getStateIcon: function() {
+    getStateIcon: function(rollover, pressed) {
         var icon;
         if (this._selected) {
             icon = Echo.Sync.getEffectProperty(this.component, "selectedStateIcon", "disabledSelectedStateIcon", !this._enabled);
+            if (icon) {
+                if (pressed) {
+                    icon = this.component.render("pressedSelectedStateIcon", icon); 
+                } else if (rollover) {
+                    icon = this.component.render("rolloverSelectedStateIcon", icon);
+                }
+            }
         }
         if (!icon) {
             icon = Echo.Sync.getEffectProperty(this.component, "stateIcon", "disabledStateIcon", !this._enabled);
+            if (icon) {
+                if (pressed) {
+                    icon = this.component.render("pressedStateIcon", icon); 
+                } else if (rollover) {
+                    icon = this.component.render("rolloverStateIcon", icon);
+                }
+            }
         }
         return icon;
     },
@@ -627,12 +643,26 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
 
     /** @see Echo.Sync.Button#setPressedState */
     setPressedState: function(pressedState) {
-        Echo.Sync.Button.setPressedState.call(this, pressedState);
+        Echo.Sync.Button.prototype.setPressedState.call(this, pressedState);
+        var stateIcon = this.getStateIcon(false, pressedState);
+        if (stateIcon) {
+            var url = Echo.Sync.ImageReference.getUrl(stateIcon);
+            if (this._stateElement.src != url) {
+                this._stateElement.src = url;
+            }
+        }
     },
     
     /** @see Echo.Sync.Button#setRolloverState */
     setRolloverState: function(rolloverState) {
-        Echo.Sync.Button.setRolloverState.call(this, pressedState);
+        Echo.Sync.Button.prototype.setRolloverState.call(this, rolloverState);
+        var stateIcon = this.getStateIcon(rolloverState, false);
+        if (stateIcon) {
+            var url = Echo.Sync.ImageReference.getUrl(stateIcon);
+            if (this._stateElement.src != url) {
+                this._stateElement.src = url;
+            }
+        }
     },
     
     /**
