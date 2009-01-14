@@ -140,6 +140,21 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.DOM.preventEventDefault(e);
     },
 
+    /** @see Echo.Render.ComponentSync#renderAdd */
+    renderAdd: function(update, parentElement) {
+        this._multipleSelect = this.component.get("selectionMode") == Echo.ListBox.MULTIPLE_SELECTION;
+        if (this.listBox && Core.Web.Env.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
+            this._alternateRender = true;
+        }
+        this._enabled = this.component.isRenderEnabled();
+        
+        if (this._alternateRender) {
+            this._renderMainAsDiv(update, parentElement);
+        } else {
+            this._renderMainAsSelect(update, parentElement);
+        }
+    },
+
     /**
      * Renders the list selection component as a standard SELECT element.
      * This strategy is always used in all browsers except IE6, and is used in IE6
@@ -275,23 +290,6 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         }
         
         parentElement.appendChild(this._element);
-    },
-    
-    /**
-     * Delegates to _renderMainAsSelect() or _renderMainAsDiv() depending on type of list selection component and browser bugs.
-     */
-    _renderMain: function(update, parentElement) {
-        this._multipleSelect = this.component.get("selectionMode") == Echo.ListBox.MULTIPLE_SELECTION;
-        if (this.listBox && Core.Web.Env.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
-            this._alternateRender = true;
-        }
-        this._enabled = this.component.isRenderEnabled();
-        
-        if (this._alternateRender) {
-            this._renderMainAsDiv(update, parentElement);
-        } else {
-            this._renderMainAsSelect(update, parentElement);
-        }
     },
     
     renderDisplay: function() {
@@ -447,10 +445,6 @@ Echo.Sync.ListBox = Core.extend(Echo.Sync.ListComponent, {
 
     $load: function() {
         Echo.Render.registerPeer("ListBox", this);
-    },
-
-    renderAdd: function(update, parentElement) {
-        this._renderMain(update, parentElement, true);
     }
 });
 
@@ -461,9 +455,5 @@ Echo.Sync.SelectField = Core.extend(Echo.Sync.ListComponent, {
 
     $load: function() {
         Echo.Render.registerPeer("SelectField", this);
-    },
-    
-    renderAdd: function(update, parentElement) {
-        this._renderMain(update, parentElement, false);
     }
 });
