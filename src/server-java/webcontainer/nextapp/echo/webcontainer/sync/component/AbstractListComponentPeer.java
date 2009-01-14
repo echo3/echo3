@@ -275,10 +275,8 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
      */
     public Iterator getUpdatedOutputPropertyNames(Context context, Component component, ServerComponentUpdate update) {
         Set additionalPropertyNames = new HashSet();
-        if (update.hasUpdatedProperty(AbstractListComponent.SELECTION_CHANGED_PROPERTY)) {
-            additionalPropertyNames.add(PROPERTY_SELECTION);
-        }
-        if (update.hasUpdatedProperty(AbstractListComponent.SELECTION_MODEL_CHANGED_PROPERTY)) {
+        if (update.hasUpdatedProperty(AbstractListComponent.SELECTION_CHANGED_PROPERTY) || 
+                update.hasUpdatedProperty(AbstractListComponent.SELECTION_MODEL_CHANGED_PROPERTY)) {
             additionalPropertyNames.add(PROPERTY_SELECTION);
             additionalPropertyNames.add(PROPERTY_SELECTION_MODE);
         }
