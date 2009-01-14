@@ -487,14 +487,11 @@ Core.Web.Env = {
         // - Opera UA field typically contains "MSIE"
         // If this flag is set, browser is not GECKO/MSHTML
         this.DECEPTIVE_USER_AGENT = this.BROWSER_OPERA || this.BROWSER_SAFARI || this.BROWSER_CHROME || this.BROWSER_KONQUEROR;
-
-        //FIXME Quirk flags not refined yet, some quirk flags from Echo 2.0/1 will/may be deprecated/removed.
         
         this.MEASURE_OFFSET_EXCLUDES_BORDER = false;
                 
         // Set IE Quirk Flags
         if (this.BROWSER_INTERNET_EXPLORER) {
-            //FIXME IE8 quirks have not been properly analyzed yet.
             // Internet Explorer Flags (all versions).
             this.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED = true;
             this.PROPRIETARY_EVENT_SELECT_START_SUPPORTED = true;
