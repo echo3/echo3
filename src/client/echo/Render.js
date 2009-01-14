@@ -255,19 +255,36 @@ Echo.Render = {
         }
         
         // Display Phase: Invoke renderDisplay on all updates.
+        // The "displayed" array holds component who have already had renderDisplay() invoked on themselves (and their descendants).
+        // This is done to avoid invoking renderDisplay() multiple times on a single component during a single rendering.
+        var displayed = [];
         for (i = 0; i < updates.length; ++i) {
             if (updates[i] == null) {
                 // Skip removed updates.
                 continue;
             }
-
+            
+            // Determine if component hierarchy has already had renderDisplay() invoked, skipping to next update if necessary.
+            var cancelDisplay = false;
+            for (j = 0; j < displayed.length; ++j) {
+                if (displayed[j].isAncestorOf(updates[i].parent)) {
+                    cancelDisplay = true;
+                    break;
+                }
+            }
+            if (cancelDisplay) {
+                continue;
+            }
+            
             if (updates[i].renderContext.displayRequired) {
                 // The renderContext has specified only certain child components should have their
                 // renderDisplay() methods invoked.
                 for (j = 0; j < updates[i].renderContext.displayRequired.length; ++j) {
+                    displayed.push(updates[i].renderContext.displayRequired[j]);
                     Echo.Render._doRenderDisplay(updates[i].renderContext.displayRequired[j], true);
                 }
             } else {
+                displayed.push(updates[i].parent);
                 Echo.Render._doRenderDisplay(updates[i].parent, true);
             }
         }
