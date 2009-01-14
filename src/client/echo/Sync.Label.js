@@ -5,6 +5,7 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
 
     $static: {
     
+       /** Default spacing between label icon/text. */
        _defaultIconTextMargin: 5
     },
     
@@ -14,6 +15,7 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
     
     /**
      * The text node or element representing the label.
+     * @type Node
      */
     _node: null,
     
@@ -39,6 +41,7 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         this._containerElement = parentElement;
         var icon = this.component.render("icon"),
@@ -119,11 +122,13 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
         this._containerElement = null;
         this._node = null;
     },
     
+    /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
         if (this._node) {
             this._node.parentNode.removeChild(this._node);
