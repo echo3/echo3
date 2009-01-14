@@ -507,30 +507,6 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
      */
     _stateElement: null,
     
-    /**
-     * Creates the state element.
-     * 
-     * @return the state element
-     * @type element
-     */
-    _createStateElement: function() {
-        var stateIcon = this.getStateIcon();
-        var stateElement;
-        if (stateIcon) {
-            stateElement = document.createElement("img");
-            Echo.Sync.ImageReference.renderImg(stateIcon, stateElement);
-        } else {
-            stateElement = document.createElement("input");
-            stateElement.type = this.inputType;
-            if (this.inputType == "radio") {
-                stateElement.name = "__echo_" + Echo.Sync.RadioButton._nextNameId++;
-            }
-            stateElement.defaultChecked = this._selected ? true : false;
-            Core.Web.Event.add(stateElement, "change", Core.method(this, this._processStateChange), false);
-        }
-        return stateElement;
-    },
-
     /** @see Echo.Sync.Button#doAction */
     doAction: function() {
         this.setSelected(!this._selected);
@@ -571,38 +547,31 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
     renderContent: function() {
         var text = this.component.render("text");
         var icon = this.component.render("icon");
-        this._stateElement = this._createStateElement();
         var orientation, margin, tct;
         
-        var entityCount = (text ? 1 : 0) + (icon ? 1 : 0) + (this._stateElement ? 1 : 0);
+        var entityCount = (text ? 1 : 0) + (icon ? 1 : 0) + 1; // +1 for state element.
         if (entityCount == 1) {
             if (text != null) {
                 this._renderButtonText(this._div, text);
             } else if (icon) {
                 this._iconImg = this._renderButtonIcon(this._div, icon);
             } else {
-                this._div.appendChild(this._stateElement);
+                this._stateElement = this._renderButtonState(this._div);
             }
         } else if (entityCount == 2) {
-            if (this._stateElement) {
-                orientation = Echo.Sync.TriCellTable.getInvertedOrientation(this.component, "statePosition", 
-                        "leading");
-                margin = this.component.render("stateMargin", Echo.Sync.Button._defaultIconTextMargin);
-            } else {
-                orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
-                margin = this.component.render("iconTextMargin", Echo.Sync.Button._defaultIconTextMargin);
-            }
+            orientation = Echo.Sync.TriCellTable.getInvertedOrientation(this.component, "statePosition", "leading");
+            margin = this.component.render("stateMargin", Echo.Sync.Button._defaultIconTextMargin);
             tct = new Echo.Sync.TriCellTable(orientation, Echo.Sync.Extent.toPixels(margin));
             if (text != null) {
                 this._renderButtonText(tct.tdElements[0], text);
                 if (icon) {
                     this._iconImg = this._renderButtonIcon(tct.tdElements[1], icon);
                 } else {
-                    tct.tdElements[1].appendChild(this._stateElement);
+                    this._stateElement = this._renderButtonState(tct.tdElements[1]);
                 }
             } else {
                 this._iconImg = this._renderButtonIcon(tct.tdElements[0], icon);
-                tct.tdElements[1].appendChild(this._stateElement);
+                this._stateElement = this._renderButtonState(tct.tdElements[1]);
             }
             this._div.appendChild(tct.tableElement);
         } else if (entityCount == 3) {
@@ -614,7 +583,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
                     Echo.Sync.Extent.toPixels(margin), stateOrientation, Echo.Sync.Extent.toPixels(stateMargin));
             this._renderButtonText(tct.tdElements[0], text);
             this._iconImg = this._renderButtonIcon(tct.tdElements[1], icon);
-            tct.tdElements[2].appendChild(this._stateElement);
+            this._stateElement = this._renderButtonState(tct.tdElements[2]);
             this._div.appendChild(tct.tableElement);
         }
     },
@@ -628,6 +597,32 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         }
     },
     
+    /**
+     * Renders the state element, appending it to the specified parent.
+     *
+     * @param {Element} parent the parent DOM element in which the state element should be rendered
+     * @return the created state element
+     * @type Element
+     */
+    _renderButtonState: function(parent) {
+        var stateIcon = this.getStateIcon();
+        var stateElement;
+        if (stateIcon) {
+            stateElement = document.createElement("img");
+            Echo.Sync.ImageReference.renderImg(stateIcon, this._stateElement);
+        } else {
+            stateElement = document.createElement("input");
+            stateElement.type = this.inputType;
+            if (this.inputType == "radio") {
+                stateElement.name = "__echo_" + Echo.Sync.RadioButton._nextNameId++;
+            }
+            stateElement.defaultChecked = this._selected ? true : false;
+            Core.Web.Event.add(stateElement, "change", Core.method(this, this._processStateChange), false);
+        }
+        parent.appendChild(stateElement);
+        return stateElement;
+    },
+
     /**
      * Selects or deselects this button.
      * 
