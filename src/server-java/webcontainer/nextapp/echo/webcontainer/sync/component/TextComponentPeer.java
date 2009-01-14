@@ -114,6 +114,11 @@ public class TextComponentPeer extends AbstractComponentSynchronizePeer {
      */
     public void storeInputProperty(Context context, Component component, String propertyName, int propertyIndex, Object newValue) {
         if (propertyName.equals(TextComponent.TEXT_CHANGED_PROPERTY)) {
+            if (newValue == null) {
+                // Set input value to empty string if null such that property will not be sent back to client as an update
+                // when it is changed to an empty string by the document model.
+                newValue = "";
+            }
             ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
             if (!Boolean.FALSE.equals(component.getRenderProperty(TextComponent.PROPERTY_EDITABLE))) {
                 clientUpdateManager.setComponentProperty(component, TextComponent.TEXT_CHANGED_PROPERTY, newValue);
