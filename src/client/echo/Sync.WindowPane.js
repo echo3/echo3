@@ -147,9 +147,11 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 this._requested.contentHeight ? null : Echo.WindowPane.DEFAULT_HEIGHT);
     },
 
+    /**
+     * Determines size of container and stores in this._containerSize property.
+     */
     _loadContainerSize: function() {
-        //FIXME. the "parentnode.parentnode" business needs to go.
-        this._containerSize = new Core.Web.Measure.Bounds(this._div.parentNode.parentNode);
+        this._containerSize = this.component.parent.peer.getSize();
     },
     
     /**
