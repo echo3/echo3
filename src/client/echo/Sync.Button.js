@@ -112,6 +112,66 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
                 // Icon only.
                 this._iconImg = this._renderButtonIcon(this._div, icon);
             }
+        },
+    
+        /**
+         * Enables/disables pressed appearance of button.
+         * 
+         * @param {Boolean} pressedState the new pressed state.
+         */
+        setPressedState: function(pressedState) {
+            var foreground = Echo.Sync.getEffectProperty(this.component, "foreground", "pressedForeground", pressedState);
+            var background = Echo.Sync.getEffectProperty(this.component, "background", "pressedBackground", pressedState);
+            var backgroundImage = Echo.Sync.getEffectProperty(
+                    this.component, "backgroundImage", "pressedBackgroundImage", pressedState);
+            var font = Echo.Sync.getEffectProperty(this.component, "font", "pressedFont", pressedState);
+            var border = Echo.Sync.getEffectProperty(this.component, "border", "pressedBorder", pressedState);
+            
+            Echo.Sync.Color.renderClear(foreground, this._div, "color");
+            Echo.Sync.Color.renderClear(background, this._div, "backgroundColor");
+            Echo.Sync.FillImage.renderClear(backgroundImage, this._div, "backgroundColor");
+            Echo.Sync.Border.renderClear(border, this._div);
+            if (this._textElement) {
+                Echo.Sync.Font.renderClear(font, this._textElement);
+            }
+            
+            if (this._iconImg) {
+                var iconUrl = Echo.Sync.ImageReference.getUrl(
+                        Echo.Sync.getEffectProperty(this.component, "icon", "pressedIcon", pressedState));
+                if (iconUrl != this._iconImg.src) {
+                    this._iconImg.src = iconUrl;
+                }
+            }
+        },
+        
+        /**
+         * Enables/disables rollover appearance of button.
+         * 
+         * @param {Boolean} rolloverState the new rollover state.
+         */
+        setRolloverState: function(rolloverState) {
+            var foreground = Echo.Sync.getEffectProperty(this.component, "foreground", "rolloverForeground", rolloverState);
+            var background = Echo.Sync.getEffectProperty(this.component, "background", "rolloverBackground", rolloverState);
+            var backgroundImage = Echo.Sync.getEffectProperty(
+                    this.component, "backgroundImage", "rolloverBackgroundImage", rolloverState);
+            var font = Echo.Sync.getEffectProperty(this.component, "font", "rolloverFont", rolloverState);
+            var border = Echo.Sync.getEffectProperty(this.component, "border", "rolloverBorder", rolloverState);
+            
+            Echo.Sync.Color.renderClear(foreground, this._div, "color");
+            Echo.Sync.Color.renderClear(background, this._div, "backgroundColor");
+            Echo.Sync.FillImage.renderClear(backgroundImage, this._div, "backgroundColor");
+            Echo.Sync.Border.renderClear(border, this._div);
+            if (this._textElement) {
+                Echo.Sync.Font.renderClear(font, this._textElement);
+            }
+        
+            if (this._iconImg) {
+                var iconUrl = Echo.Sync.ImageReference.getUrl(
+                        Echo.Sync.getEffectProperty(this.component, "icon", "rolloverIcon", rolloverState));
+                if (iconUrl != this._iconImg.src) {
+                    this._iconImg.src = iconUrl;
+                }
+            }
         }
     },
     
@@ -211,7 +271,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             return true;
         }
         Core.Web.DOM.preventEventDefault(e);
-        this._setPressedState(true);
+        this.setPressedState(true);
     },
     
     /** Processes a mouse button release event on the button, displaying the button's normal appearance. */
@@ -219,7 +279,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
-        this._setPressedState(false);
+        this.setPressedState(false);
     },
     
     /** Processes a mouse roll over event, displaying the button's rollover appearance. */
@@ -228,7 +288,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             return true;
         }
         this.component.application.addListener("focus", this._processRolloverExitRef);
-        this._setRolloverState(true);
+        this.setRolloverState(true);
     },
     
     /** Processes a mouse roll over exit event, displaying the button's normal appearance. */
@@ -239,7 +299,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         if (this._processRolloverExitRef) {
             this.component.application.removeListener("focus", this._processRolloverExitRef);
         }
-        this._setRolloverState(false);
+        this.setRolloverState(false);
     },
     
     /** @see Echo.Render.ComponentSync#renderAdd */
@@ -414,66 +474,6 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
                 }
             }
         }
-    },
-    
-    /**
-     * Enables/disables pressed appearance of button.
-     * 
-     * @param {Boolean} pressedState the new pressed state.
-     */
-    _setPressedState: function(pressedState) {
-        var foreground = Echo.Sync.getEffectProperty(this.component, "foreground", "pressedForeground", pressedState);
-        var background = Echo.Sync.getEffectProperty(this.component, "background", "pressedBackground", pressedState);
-        var backgroundImage = Echo.Sync.getEffectProperty(
-                this.component, "backgroundImage", "pressedBackgroundImage", pressedState);
-        var font = Echo.Sync.getEffectProperty(this.component, "font", "pressedFont", pressedState);
-        var border = Echo.Sync.getEffectProperty(this.component, "border", "pressedBorder", pressedState);
-        
-        Echo.Sync.Color.renderClear(foreground, this._div, "color");
-        Echo.Sync.Color.renderClear(background, this._div, "backgroundColor");
-        Echo.Sync.FillImage.renderClear(backgroundImage, this._div, "backgroundColor");
-        Echo.Sync.Border.renderClear(border, this._div);
-        if (this._textElement) {
-            Echo.Sync.Font.renderClear(font, this._textElement);
-        }
-        
-        if (this._iconImg) {
-            var iconUrl = Echo.Sync.ImageReference.getUrl(
-                    Echo.Sync.getEffectProperty(this.component, "icon", "pressedIcon", pressedState));
-            if (iconUrl != this._iconImg.src) {
-                this._iconImg.src = iconUrl;
-            }
-        }
-    },
-    
-    /**
-     * Enables/disables rollover appearance of button.
-     * 
-     * @param {Boolean} rolloverState the new rollover state.
-     */
-    _setRolloverState: function(rolloverState) {
-        var foreground = Echo.Sync.getEffectProperty(this.component, "foreground", "rolloverForeground", rolloverState);
-        var background = Echo.Sync.getEffectProperty(this.component, "background", "rolloverBackground", rolloverState);
-        var backgroundImage = Echo.Sync.getEffectProperty(
-                this.component, "backgroundImage", "rolloverBackgroundImage", rolloverState);
-        var font = Echo.Sync.getEffectProperty(this.component, "font", "rolloverFont", rolloverState);
-        var border = Echo.Sync.getEffectProperty(this.component, "border", "rolloverBorder", rolloverState);
-        
-        Echo.Sync.Color.renderClear(foreground, this._div, "color");
-        Echo.Sync.Color.renderClear(background, this._div, "backgroundColor");
-        Echo.Sync.FillImage.renderClear(backgroundImage, this._div, "backgroundColor");
-        Echo.Sync.Border.renderClear(border, this._div);
-        if (this._textElement) {
-            Echo.Sync.Font.renderClear(font, this._textElement);
-        }
-    
-        if (this._iconImg) {
-            var iconUrl = Echo.Sync.ImageReference.getUrl(
-                    Echo.Sync.getEffectProperty(this.component, "icon", "rolloverIcon", rolloverState));
-            if (iconUrl != this._iconImg.src) {
-                this._iconImg.src = iconUrl;
-            }
-        }
     }
 });
 
@@ -520,8 +520,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
     getStateIcon: function() {
         var icon;
         if (this._selected) {
-            icon = Echo.Sync.getEffectProperty(this.component, "selectedStateIcon", "disabledSelectedStateIcon", 
-                    !this._enabled);
+            icon = Echo.Sync.getEffectProperty(this.component, "selectedStateIcon", "disabledSelectedStateIcon", !this._enabled);
         }
         if (!icon) {
             icon = Echo.Sync.getEffectProperty(this.component, "stateIcon", "disabledStateIcon", !this._enabled);
@@ -626,6 +625,16 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         return stateElement;
     },
 
+    /** @see Echo.Sync.Button#setPressedState */
+    setPressedState: function(pressedState) {
+        Echo.Sync.Button.setPressedState.call(this, pressedState);
+    },
+    
+    /** @see Echo.Sync.Button#setRolloverState */
+    setRolloverState: function(rolloverState) {
+        Echo.Sync.Button.setRolloverState.call(this, pressedState);
+    },
+    
     /**
      * Selects or deselects this button.
      * 
