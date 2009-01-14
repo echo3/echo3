@@ -993,14 +993,14 @@ Echo.Sync.TriCellTable = Core.extend({
          * @type Element
          */
         _createTablePrototype: function() {
-            var tableElement = document.createElement("table");
-            tableElement.style.borderCollapse = "collapse";
-            tableElement.style.padding = "0";
+            var table = document.createElement("table");
+            table.style.borderCollapse = "collapse";
+            table.style.padding = "0";
             
-            var tbodyElement = document.createElement("tbody");
-            tableElement.appendChild(tbodyElement);
+            var tbody = document.createElement("tbody");
+            table.appendChild(tbody);
             
-            return tableElement;
+            return table;
         },
         
         /**
@@ -1098,29 +1098,30 @@ Echo.Sync.TriCellTable = Core.extend({
     },
     
     /**
-     * Appends tdElement to trElement, if tdElement is not null.
+     * Appends a TD element to a TR element, if TD element is not null.
      * 
-     * @param {Element} trElement the table row element
-     * @param {Element} tdElement the table cell element
+     * @param {Element} tr the table row (TR) element
+     * @param {Element} td the table cell (TD) element
      */
-    _addColumn: function(trElement, tdElement) {
-        if (tdElement != null) {
-            trElement.appendChild(tdElement);
+    _addColumn: function(tr, td) {
+        if (td != null) {
+            tr.appendChild(td);
         }
     },
     
     /**
-     * If tdElement is not null, creates a row, appends tdElement to it, then appends the row to the table body.
+     * If the TD element is not null, creates a TR row element and appends the TD element to it;
+     * then appends the TR element to the table body.
      * 
-     * @param {Element} tdElement the table cell element
+     * @param {Element} td the table cell element
      */
-    _addRow: function(tdElement) {
-        if (tdElement == null) {
+    _addRow: function(td) {
+        if (td == null) {
             return;
         }
-        var trElement = document.createElement("tr");
-        trElement.appendChild(tdElement);
-        this.tbodyElement.appendChild(trElement);
+        var tr = document.createElement("tr");
+        tr.appendChild(td);
+        this.tbodyElement.appendChild(tr);
     },
     
     /**
@@ -1180,19 +1181,19 @@ Echo.Sync.TriCellTable = Core.extend({
             }
         } else {
             // Horizontally oriented.
-            var trElement = document.createElement("tr");
+            var tr = document.createElement("tr");
             if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
                 // Trailing to leading.
-                this._addColumn(trElement, this.tdElements[1]);
-                this._addColumn(trElement, this.marginTdElements[0]);
-                this._addColumn(trElement, this.tdElements[0]);
+                this._addColumn(tr, this.tdElements[1]);
+                this._addColumn(tr, this.marginTdElements[0]);
+                this._addColumn(tr, this.tdElements[0]);
             } else {
                 // Leading to trailing.
-                this._addColumn(trElement, this.tdElements[0]);
-                this._addColumn(trElement, this.marginTdElements[0]);
-                this._addColumn(trElement, this.tdElements[1]);
+                this._addColumn(tr, this.tdElements[0]);
+                this._addColumn(tr, this.marginTdElements[0]);
+                this._addColumn(tr, this.tdElements[1]);
             }
-            this.tbodyElement.appendChild(trElement);
+            this.tbodyElement.appendChild(tr);
         }
     },
     
@@ -1274,25 +1275,25 @@ Echo.Sync.TriCellTable = Core.extend({
                     this.marginTdElements[1].rowSpan = rows;
                 }
                 
-                var trElement = document.createElement("tr");
+                var tr = document.createElement("tr");
                 if (orientation01_2 & Echo.Sync.TriCellTable.INVERTED) {
-                    this._addColumn(trElement, this.tdElements[2]);
-                    this._addColumn(trElement, this.marginTdElements[1]);
+                    this._addColumn(tr, this.tdElements[2]);
+                    this._addColumn(tr, this.marginTdElements[1]);
                     if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
-                        this._addColumn(trElement, this.tdElements[1]);
+                        this._addColumn(tr, this.tdElements[1]);
                     } else {
-                        this._addColumn(trElement, this.tdElements[0]);
+                        this._addColumn(tr, this.tdElements[0]);
                     }
                 } else {
                     if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
-                        this._addColumn(trElement, this.tdElements[1]);
+                        this._addColumn(tr, this.tdElements[1]);
                     } else {
-                        this._addColumn(trElement, this.tdElements[0]);
+                        this._addColumn(tr, this.tdElements[0]);
                     }
-                    this._addColumn(trElement, this.marginTdElements[1]);
-                    this._addColumn(trElement, this.tdElements[2]);
+                    this._addColumn(tr, this.marginTdElements[1]);
+                    this._addColumn(tr, this.tdElements[2]);
                 }
-                this.tbodyElement.appendChild(trElement);
+                this.tbodyElement.appendChild(tr);
                 
                 this._addRow(this.marginTdElements[0]);
                 if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
@@ -1320,19 +1321,19 @@ Echo.Sync.TriCellTable = Core.extend({
                 }
                 
                 // Render 01
-                trElement = document.createElement("tr");
+                tr = document.createElement("tr");
                 if ((orientation0_1 & Echo.Sync.TriCellTable.INVERTED) === 0) {
                     // normal (left to right)
-                    this._addColumn(trElement, this.tdElements[0]);
-                    this._addColumn(trElement, this.marginTdElements[0]);
-                    this._addColumn(trElement, this.tdElements[1]);
+                    this._addColumn(tr, this.tdElements[0]);
+                    this._addColumn(tr, this.marginTdElements[0]);
+                    this._addColumn(tr, this.tdElements[1]);
                 } else {
                     // inverted (right to left)
-                    this._addColumn(trElement, this.tdElements[1]);
-                    this._addColumn(trElement, this.marginTdElements[0]);
-                    this._addColumn(trElement, this.tdElements[0]);
+                    this._addColumn(tr, this.tdElements[1]);
+                    this._addColumn(tr, this.marginTdElements[0]);
+                    this._addColumn(tr, this.tdElements[0]);
                 }
-                this.tbodyElement.appendChild(trElement);
+                this.tbodyElement.appendChild(tr);
                 
                 if (!(orientation01_2 & Echo.Sync.TriCellTable.INVERTED)) {
                     // 01 before 2: render margin and #2 at end of TR.
@@ -1341,32 +1342,32 @@ Echo.Sync.TriCellTable = Core.extend({
                 }
             } else {
                 // horizontally oriented 01/2
-                trElement = document.createElement("tr");
+                tr = document.createElement("tr");
                 if (orientation01_2 & Echo.Sync.TriCellTable.INVERTED) {
                     // 2 before 01: render #2 and margin at beginning of TR.
-                    this._addColumn(trElement, this.tdElements[2]);
-                    this._addColumn(trElement, this.marginTdElements[1]);
+                    this._addColumn(tr, this.tdElements[2]);
+                    this._addColumn(tr, this.marginTdElements[1]);
                 }
                 
                 // Render 01
                 if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
                     // inverted (right to left)
-                    this._addColumn(trElement, this.tdElements[1]);
-                    this._addColumn(trElement, this.marginTdElements[0]);
-                    this._addColumn(trElement, this.tdElements[0]);
+                    this._addColumn(tr, this.tdElements[1]);
+                    this._addColumn(tr, this.marginTdElements[0]);
+                    this._addColumn(tr, this.tdElements[0]);
                 } else {
                     // normal (left to right)
-                    this._addColumn(trElement, this.tdElements[0]);
-                    this._addColumn(trElement, this.marginTdElements[0]);
-                    this._addColumn(trElement, this.tdElements[1]);
+                    this._addColumn(tr, this.tdElements[0]);
+                    this._addColumn(tr, this.marginTdElements[0]);
+                    this._addColumn(tr, this.tdElements[1]);
                 }
                 
                 if (!(orientation01_2 & Echo.Sync.TriCellTable.INVERTED)) {
-                    this._addColumn(trElement, this.marginTdElements[1]);
-                    this._addColumn(trElement, this.tdElements[2]);
+                    this._addColumn(tr, this.marginTdElements[1]);
+                    this._addColumn(tr, this.tdElements[2]);
                 }
                 
-                this.tbodyElement.appendChild(trElement);        
+                this.tbodyElement.appendChild(tr);        
             }
         }
     }
