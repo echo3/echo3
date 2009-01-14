@@ -1,5 +1,3 @@
-// FIXME alignment
-
 /**
  * Component rendering peer: Button
  */
