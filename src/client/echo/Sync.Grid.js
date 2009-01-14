@@ -375,7 +375,11 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                     // Remove the duplicate cell array.
                     this.cellArrays.splice(removedY, 1);
                     
-                    //FIXME. insert code here for extent adjustment.
+                    // Remove size data for removed row, add value to previous if necessary.
+                    var removedYExtent = this.yExtents.splice(removedY, 1);
+                    if (removedYExtent) {
+                        this.yExtents[removedY - 1] = this.addExtents(this.yExtents[removedY - 1], removedYExtent);
+                    }
                     
                     // Decrement the grid size to reflect cell array removal.
                     --this.gridYSize;

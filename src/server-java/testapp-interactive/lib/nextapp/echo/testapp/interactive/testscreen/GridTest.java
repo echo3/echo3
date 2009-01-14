@@ -445,6 +445,16 @@ public class GridTest extends SplitPane {
             }
         });
         
+        controlsColumn.addButton("Set First 16 Columns to 100px/200px Alternating Widths", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Extent width100 = new Extent(100);
+                Extent width200 = new Extent(200);
+                for (int i = 0; i < 16; ++i) {
+                    grid.setColumnWidth(i, i % 2 == 0 ? width100 : width200);
+                }
+            }
+        });
+        
         controlsColumn.addButton("Set First 16 Columns to Random Width", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 for (int i = 0; i < 16; ++i) {
@@ -470,6 +480,16 @@ public class GridTest extends SplitPane {
             }
         });
 
+        controlsColumn.addButton("Set First 16 Rows to 100px/200px Alternating Height", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Extent height100 = new Extent(100);
+                Extent height200 = new Extent(200);
+                for (int i = 0; i < 16; ++i) {
+                    grid.setRowHeight(i, i % 2 == 0 ? height100 : height200);
+                }
+            }
+        });
+        
         controlsColumn.addButton("Set First 16 Rows to Random Height", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 for (int i = 0; i < 16; ++i) {
