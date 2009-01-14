@@ -29,7 +29,9 @@
 
 package nextapp.echo.webcontainer.sync.component;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Table;
@@ -41,7 +43,6 @@ import nextapp.echo.webcontainer.ServerMessage;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
-import nextapp.echo.webcontainer.util.ArrayIterator;
 import nextapp.echo.webcontainer.util.MultiIterator;
 
 /**
@@ -72,9 +73,6 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     
     /** Non-style property describing selection mode. */
     private static final String PROPERTY_SELECTION_MODE = "selectionMode";
-    
-    /** Array of properties to force update when <code>TableModel</code> is updated. */
-    private static final String[] MODEL_CHANGED_UPDATE_PROPERTIES = new String[] { PROPERTY_ROW_COUNT, PROPERTY_COLUMN_COUNT };
     
     static {
         WebContainerServlet.getServiceRegistry().add(TABLE_SERVICE);
@@ -181,14 +179,18 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
     public Iterator getUpdatedOutputPropertyNames(Context context, Component component, 
             ServerComponentUpdate update) {
         Iterator normalPropertyIterator = super.getUpdatedOutputPropertyNames(context, component, update);
+        Set additionalPropertyNames = new HashSet();
         
-        if (update.hasUpdatedProperty(Table.MODEL_CHANGED_PROPERTY)
-                || update.hasAddedChildren() || update.hasRemovedChildren()) {
-            return new MultiIterator(
-                    new Iterator[]{ normalPropertyIterator, new ArrayIterator(MODEL_CHANGED_UPDATE_PROPERTIES) });
-        } else {
-            return normalPropertyIterator;
+        if (update.hasUpdatedProperty(Table.MODEL_CHANGED_PROPERTY) || update.hasAddedChildren() || update.hasRemovedChildren()) {
+            additionalPropertyNames.add(PROPERTY_ROW_COUNT);
+            additionalPropertyNames.add(PROPERTY_COLUMN_COUNT);
         }
+        if (update.hasUpdatedProperty(PROPERTY_SELECTION)) {
+            additionalPropertyNames.add(PROPERTY_SELECTION_MODE);
+        }
+        
+        return additionalPropertyNames.size() == 0 ? normalPropertyIterator : 
+                new MultiIterator(new Iterator[] { normalPropertyIterator, additionalPropertyNames.iterator() });  
     }
     
     /**

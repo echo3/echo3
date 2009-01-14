@@ -31,8 +31,6 @@ Echo.Sync.RemoteTable = Core.extend(Echo.Component, {
  */
 Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     
-    //FIXME setting selection mode on existing table causes exception "this.selctionModel has no properties".
-    
     $static: {
     
         _HEADER_ROW: -1,
