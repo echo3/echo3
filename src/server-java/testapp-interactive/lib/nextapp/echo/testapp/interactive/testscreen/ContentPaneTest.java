@@ -90,7 +90,14 @@ public class ContentPaneTest extends SplitPane {
         });
         
         controlsColumn.add(new Label("Test Content Pane"));
-        
+
+        controlsColumn.addButton("Add WindowPane (Root + Test)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                rootContentPane.add(new WindowPane());
+                testContentPane.add(new WindowPane());
+            }
+        });
+
         controlsColumn.addButton("Reset", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testContentPane.setBackground(null);

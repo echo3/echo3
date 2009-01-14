@@ -139,6 +139,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
     
     /** @see Echo.Render.ComponentSync#renderDisplay */
     renderDisplay: function() {
+Core.Debug.consoleWrite("RENDERDISPLAY: " + this.component.renderId);        
         var child = this._div.firstChild;
         while (child) {
             Core.Web.VirtualPosition.redraw(child);
@@ -255,19 +256,19 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
             }
             var addedChildren = update.getAddedChildren();
 
-            update.renderContext.displayRequired = [];
+//            update.renderContext.displayRequired = [];
             
             if (addedChildren) {
                 // Add children.
                 for (i = 0; i < addedChildren.length; ++i) {
                     if (!addedChildren[i].floatingPane) {
                         // Content updated: renderDisplay() invocation required on ContentPane itself.
-                        update.renderContext.displayRequired = null;
+//                        update.renderContext.displayRequired = null;
                     }
                     this._renderAddChild(update, addedChildren[i], this.component.indexOf(addedChildren[i]));
                     if (update.renderContext.displayRequired) {
                         // If only floating panes are being updated, invoke renderDisplay() only on children.
-                        update.renderContext.displayRequired.push(addedChildren[i]); 
+//                        update.renderContext.displayRequired.push(addedChildren[i]); 
                     }
                 }
 
