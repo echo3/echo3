@@ -11,17 +11,57 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
          */
         ChildPane: Core.extend({
         
+            /** 
+             * Minimum pixel size of the child pane.
+             * @type Number
+             */
             minimumSize: 0,
+            
+            /** 
+             * Maximum pixel size of the child pane.
+             * @type Number
+             */
             maximumSize: null,
+            
+            /**
+             * The child pane <code>Echo.Component</code> instance.
+             * @type Echo.Component
+             */
             component: null,
+            
+            /**
+             * The value of the child pane <code>Echo.Component</code>'s <code>layoutData</code> property.
+             */
             layoutData: null,
+            
+            /** 
+             * Horizontal scroll position, in pixels.
+             * @type Number.
+             */
             scrollLeft: 0,
+
+            /** 
+             * Vertical scroll position, in pixels.
+             * @type Number.
+             */
             scrollTop: 0,
             
-            /** Flag indicating that scroll position should be reset on next renderDisplay() invocation. */
+            /** 
+             * Flag indicating that scroll position should be reset on next renderDisplay() invocation.
+             * @type Boolean
+             */
             scrollRequired: false,
             
+            /**
+             * Flag indicating whether sizing information is permanent (fixed pixel-based) or variable (percent-based).
+             * @type Boolean
+             */
             _permanentSizes: false,
+            
+            /**
+             * The SplitPane component rendering peer using this <code>ChildPane</code> object.
+             * @type Echo.Sync.SplitPane
+             */
             _peer: null,
         
             /**
@@ -74,11 +114,21 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
                 }
             },
             
+            /**
+             * Update pane DIV element's scroll positions to reflect those stored in this object.
+             *  
+             * @param paneDiv the pane's DIV element
+             */
             loadScrollPositions: function(paneDiv) {
                 paneDiv.scrollLeft = this.scrollLeft;
                 paneDiv.scrollTop = this.scrollTop;
             },
             
+            /**
+             * Retrieve scroll bar positions from pane DIV element and store in object.
+             * 
+             * @param paneDiv the pane's DIV element
+             */
             storeScrollPositions: function(paneDiv) {
                 this.scrollLeft = paneDiv.scrollLeft;
                 this.scrollTop = paneDiv.scrollTop;
