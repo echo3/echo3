@@ -40,10 +40,17 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     
     _container: null,
     
+    /**
+     * Last processed text value.  The text value is stored in this property each time the peer successfully updates the
+     * supported Echo.TextComponent object.  This value is used to ensure that the user is allowed to keep typing even when
+     * the client is not ready for input.
+     * @type String
+     */
     _text: null,
     
     /**
      * Actual focus state of component, based on received DOM focus/blur events.
+     * @type Boolean
      */
     _focused: false,
     
