@@ -10,12 +10,10 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         DEFAULT_SELECTED_FOREGROUND: "#ffffff"
     },
 
-    $abstract: true,
-    
-    $virtual: {
-        listBox: false
+    $abstract: {
+        listBox: null
     },
-
+    
     _hasRenderedSelectedItems: false,
     
     _multipleSelect: false,
@@ -292,10 +290,12 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         parentElement.appendChild(this._element);
     },
     
+    /** @see Echo.Render.ComponentSync#renderDisplay */
     renderDisplay: function() {
         this._renderSelection();
     },
     
+    /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) { 
         Core.Web.Event.removeAll(this._element);
         this._element = null;
@@ -305,6 +305,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /** @see Echo.Render.ComponentSync#renderFocus */
     renderFocus: function() {
         if (this._focused) {
             return;
@@ -390,6 +391,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         this._hasRenderedSelectedItems = true;
     },
     
+    /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
         if (update.getUpdatedProperty("selectedId") && !update.getUpdatedProperty("selection")) {
             this._selectedIdPriority = true;
@@ -452,6 +454,8 @@ Echo.Sync.ListBox = Core.extend(Echo.Sync.ListComponent, {
  * Component rendering peer: SelectField
  */
 Echo.Sync.SelectField = Core.extend(Echo.Sync.ListComponent, { 
+
+    listBox: false,
 
     $load: function() {
         Echo.Render.registerPeer("SelectField", this);
