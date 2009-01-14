@@ -854,6 +854,7 @@ Echo.Sync.Insets = {
      */
     _FORMATTED_PIXEL_INSETS: /^(-?\d+px *){1,4}$/,
 
+    /** toPixels() return value when insets are 0/null. */
     _ZERO: { top: 0, right: 0, bottom: 0, left: 0 },
     
     /**
@@ -966,14 +967,67 @@ Echo.Sync.TriCellTable = Core.extend({
 
     $static: {
         
+        /** Orientation flag indicating inverted (trailing-leading or bottom-top) orientation. */
         INVERTED: 1,
+        
+        /** Orientation flag indicating vertical (top-bottom or bottom-top) orientation. */
         VERTICAL: 2,
         
+        /** Orientation value indicating horizontal orientation, leading first, trailing second. */
         LEADING_TRAILING: 0,
+        
+        /** Orientation value indicating horizontal orientation, trailing first, leading second. */
         TRAILING_LEADING: 1, // INVERTED
+        
+        /** Orientation value indicating vertical orientation, top first, bottom second. */
         TOP_BOTTOM: 2,       // VERTICAL
+        
+        /** Orientation value indicating vertical orientation, bottom first, top second. */
         BOTTOM_TOP: 3,       // VERTICAL | INVERTED
+        
+        /**
+         * Creates a prototype DOM element hierarchy for a TriCellTable, which may
+         * be cloned for purposes of performance enhancement.
+         * 
+         * @return the prototype DOM element hierarchy
+         * @type Element
+         */
+        _createTablePrototype: function() {
+            var tableElement = document.createElement("table");
+            tableElement.style.borderCollapse = "collapse";
+            tableElement.style.padding = "0";
+            
+            var tbodyElement = document.createElement("tbody");
+            tableElement.appendChild(tbodyElement);
+            
+            return tableElement;
+        },
+        
+        /**
+         * Returns the inverted orientation value which should be used for a component (the opposite of that which
+         * would be returned by getOrientation().
+         * The rendered layout direction of the component will be factored when determining horizontal orientations.
+         * 
+         * @param {Echo.Component} component the component
+         * @param {String} propertyName the alignment property name
+         * @param {#Alignment} defaultValue default alignment value to use if component does not have specified property
+         * @return the (inverted) orientation
+         * @type Number
+         */
+        getInvertedOrientation: function(component, propertyName, defaultValue) {
+            return this.getOrientation(component, propertyName, defaultValue) ^ this.INVERTED;
+        },
 
+        /**
+         * Determines the orientation value which should be used to a component.
+         * The rendered layout direction of the component will be factored when determining horizontal orientations.
+         * 
+         * @param {Echo.Component} component the component
+         * @param {String} propertyName the alignment property name
+         * @param {#Alignment} defaultValue default alignment value to use if component does not have specified property
+         * @return the orientation
+         * @type Number
+         */
         getOrientation: function(component, propertyName, defaultValue) {
             var position = component.render(propertyName, defaultValue);
             var orientation;
@@ -988,21 +1042,6 @@ Echo.Sync.TriCellTable = Core.extend({
                 }
             }
             return component.getRenderLayoutDirection().isLeftToRight() ? this.TRAILING_LEADING : this.LEADING_TRAILING; 
-        },
-        
-        getInvertedOrientation: function(component, propertyName, defaultValue) {
-            return this.getOrientation(component, propertyName, defaultValue) ^ this.INVERTED;
-        },
-        
-        _createTablePrototype: function() {
-            var tableElement = document.createElement("table");
-            tableElement.style.borderCollapse = "collapse";
-            tableElement.style.padding = "0";
-            
-            var tbodyElement = document.createElement("tbody");
-            tableElement.appendChild(tbodyElement);
-            
-            return tableElement;
         }
     },
     
@@ -1052,19 +1091,19 @@ Echo.Sync.TriCellTable = Core.extend({
         this.tbodyElement = this.tableElement.firstChild;
         
         if (orientation01_2 == null) {
-            this.configure2(orientation0_1, margin0_1);
+            this._configure2(orientation0_1, margin0_1);
         } else {
-            this.configure3(orientation0_1, margin0_1, orientation01_2, margin01_2);
+            this._configure3(orientation0_1, margin0_1, orientation01_2, margin01_2);
         }
     },
     
-    addColumn: function(trElement, tdElement) {
+    _addColumn: function(trElement, tdElement) {
         if (tdElement != null) {
             trElement.appendChild(tdElement);
         }
     },
     
-    addRow: function(tdElement) {
+    _addRow: function(tdElement) {
         if (tdElement == null) {
             return;
         }
@@ -1073,7 +1112,7 @@ Echo.Sync.TriCellTable = Core.extend({
         this.tbodyElement.appendChild(trElement);
     },
     
-    addSpacer: function(parentElement, size, vertical) {
+    _addSpacer: function(parentElement, size, vertical) {
         var divElement = document.createElement("div");
         if (vertical) {
             divElement.style.cssText = "width:1px;height:" + size + "px;font-size:1px;line-height:0;";
@@ -1083,7 +1122,7 @@ Echo.Sync.TriCellTable = Core.extend({
         parentElement.appendChild(divElement);
     },
     
-    configure2: function(orientation0_1, margin0_1) {
+    _configure2: function(orientation0_1, margin0_1) {
         this.tdElements = [document.createElement("td"), document.createElement("td")];
         this.tdElements[0].style.padding = "0";
         this.tdElements[1].style.padding = "0";
@@ -1094,10 +1133,10 @@ Echo.Sync.TriCellTable = Core.extend({
             this.marginTdElements[0].style.padding = "0";
             if ((orientation0_1 & Echo.Sync.TriCellTable.VERTICAL) === 0) {
                 this.marginTdElements[0].style.width = margin0_1 + "px";
-                this.addSpacer(this.marginTdElements[0], margin0_1, false);
+                this._addSpacer(this.marginTdElements[0], margin0_1, false);
             } else {
                 this.marginTdElements[0].style.height = margin0_1 + "px";
-                this.addSpacer(this.marginTdElements[0], margin0_1, true);
+                this._addSpacer(this.marginTdElements[0], margin0_1, true);
             }
         }
         
@@ -1105,34 +1144,34 @@ Echo.Sync.TriCellTable = Core.extend({
             // Vertically oriented.
             if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
                 // Inverted (bottom to top).
-                this.addRow(this.tdElements[1]);
-                this.addRow(this.marginTdElements[0]);
-                this.addRow(this.tdElements[0]);
+                this._addRow(this.tdElements[1]);
+                this._addRow(this.marginTdElements[0]);
+                this._addRow(this.tdElements[0]);
             } else {
                 // Normal (top to bottom).
-                this.addRow(this.tdElements[0]);
-                this.addRow(this.marginTdElements[0]);
-                this.addRow(this.tdElements[1]);
+                this._addRow(this.tdElements[0]);
+                this._addRow(this.marginTdElements[0]);
+                this._addRow(this.tdElements[1]);
             }
         } else {
             // Horizontally oriented.
             var trElement = document.createElement("tr");
             if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
                 // Trailing to leading.
-                this.addColumn(trElement, this.tdElements[1]);
-                this.addColumn(trElement, this.marginTdElements[0]);
-                this.addColumn(trElement, this.tdElements[0]);
+                this._addColumn(trElement, this.tdElements[1]);
+                this._addColumn(trElement, this.marginTdElements[0]);
+                this._addColumn(trElement, this.tdElements[0]);
             } else {
                 // Leading to trailing.
-                this.addColumn(trElement, this.tdElements[0]);
-                this.addColumn(trElement, this.marginTdElements[0]);
-                this.addColumn(trElement, this.tdElements[1]);
+                this._addColumn(trElement, this.tdElements[0]);
+                this._addColumn(trElement, this.marginTdElements[0]);
+                this._addColumn(trElement, this.tdElements[1]);
             }
             this.tbodyElement.appendChild(trElement);
         }
     },
     
-    configure3: function(orientation0_1, margin0_1, orientation01_2, margin01_2) {
+    _configure3: function(orientation0_1, margin0_1, orientation01_2, margin01_2) {
         this.tdElements = new Array(3);
         for (var i = 0; i < 3; ++i) {
             this.tdElements[i] = document.createElement("td");
@@ -1145,20 +1184,20 @@ Echo.Sync.TriCellTable = Core.extend({
                 this.marginTdElements[0] = document.createElement("td");
                 if (orientation0_1 & Echo.Sync.TriCellTable.VERTICAL) {
                     this.marginTdElements[0].style.height = margin0_1 + "px";
-                    this.addSpacer(this.marginTdElements[0], margin0_1, true);
+                    this._addSpacer(this.marginTdElements[0], margin0_1, true);
                 } else {
                     this.marginTdElements[0].style.width = margin0_1 + "px";
-                    this.addSpacer(this.marginTdElements[0], margin0_1, false);
+                    this._addSpacer(this.marginTdElements[0], margin0_1, false);
                 }
             }
             if (margin01_2 != null && margin01_2 > 0) {
                 this.marginTdElements[1] = document.createElement("td");
                 if (orientation0_1 & Echo.Sync.TriCellTable.VERTICAL) {
                     this.marginTdElements[1].style.height = margin01_2 + "px";
-                    this.addSpacer(this.marginTdElements[1], margin01_2, true);
+                    this._addSpacer(this.marginTdElements[1], margin01_2, true);
                 } else {
                     this.marginTdElements[1].style.width = margin01_2 + "px";
-                    this.addSpacer(this.marginTdElements[1], margin01_2, false);
+                    this._addSpacer(this.marginTdElements[1], margin01_2, false);
                 }
             }
         }
@@ -1170,27 +1209,27 @@ Echo.Sync.TriCellTable = Core.extend({
                 
                 if (orientation01_2 & Echo.Sync.TriCellTable.INVERTED) {
                     // 2 before 01: render #2 and margin at beginning of TABLE.
-                    this.addRow(this.tdElements[2]);
-                    this.addRow(this.marginTdElements[1]);
+                    this._addRow(this.tdElements[2]);
+                    this._addRow(this.marginTdElements[1]);
                 }
                 
                 // Render 01
                 if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
                     // Inverted (bottom to top)
-                    this.addRow(this.tdElements[1]);
-                    this.addRow(this.marginTdElements[0]);
-                    this.addRow(this.tdElements[0]);
+                    this._addRow(this.tdElements[1]);
+                    this._addRow(this.marginTdElements[0]);
+                    this._addRow(this.tdElements[0]);
                 } else {
                     // Normal (top to bottom)
-                    this.addRow(this.tdElements[0]);
-                    this.addRow(this.marginTdElements[0]);
-                    this.addRow(this.tdElements[1]);
+                    this._addRow(this.tdElements[0]);
+                    this._addRow(this.marginTdElements[0]);
+                    this._addRow(this.tdElements[1]);
                 }
     
                 if (!(orientation01_2 & Echo.Sync.TriCellTable.INVERTED)) {
                     // 01 before 2: render #2 and margin at end of TABLE.
-                    this.addRow(this.marginTdElements[1]);
-                    this.addRow(this.tdElements[2]);
+                    this._addRow(this.marginTdElements[1]);
+                    this._addRow(this.tdElements[2]);
                 }
             } else {
                 // Horizontally oriented 01/2
@@ -1204,29 +1243,29 @@ Echo.Sync.TriCellTable = Core.extend({
                 
                 var trElement = document.createElement("tr");
                 if (orientation01_2 & Echo.Sync.TriCellTable.INVERTED) {
-                    this.addColumn(trElement, this.tdElements[2]);
-                    this.addColumn(trElement, this.marginTdElements[1]);
+                    this._addColumn(trElement, this.tdElements[2]);
+                    this._addColumn(trElement, this.marginTdElements[1]);
                     if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
-                        this.addColumn(trElement, this.tdElements[1]);
+                        this._addColumn(trElement, this.tdElements[1]);
                     } else {
-                        this.addColumn(trElement, this.tdElements[0]);
+                        this._addColumn(trElement, this.tdElements[0]);
                     }
                 } else {
                     if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
-                        this.addColumn(trElement, this.tdElements[1]);
+                        this._addColumn(trElement, this.tdElements[1]);
                     } else {
-                        this.addColumn(trElement, this.tdElements[0]);
+                        this._addColumn(trElement, this.tdElements[0]);
                     }
-                    this.addColumn(trElement, this.marginTdElements[1]);
-                    this.addColumn(trElement, this.tdElements[2]);
+                    this._addColumn(trElement, this.marginTdElements[1]);
+                    this._addColumn(trElement, this.tdElements[2]);
                 }
                 this.tbodyElement.appendChild(trElement);
                 
-                this.addRow(this.marginTdElements[0]);
+                this._addRow(this.marginTdElements[0]);
                 if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
-                    this.addRow(this.tdElements[0]);
+                    this._addRow(this.tdElements[0]);
                 } else {
-                    this.addRow(this.tdElements[1]);
+                    this._addRow(this.tdElements[1]);
                 }
             }
         } else {
@@ -1243,55 +1282,55 @@ Echo.Sync.TriCellTable = Core.extend({
                 
                 if (orientation01_2 & Echo.Sync.TriCellTable.INVERTED) {
                     // 2 before 01: render #2 and margin at beginning of TR.
-                    this.addRow(this.tdElements[2]);
-                    this.addRow(this.marginTdElements[1]);
+                    this._addRow(this.tdElements[2]);
+                    this._addRow(this.marginTdElements[1]);
                 }
                 
                 // Render 01
                 trElement = document.createElement("tr");
                 if ((orientation0_1 & Echo.Sync.TriCellTable.INVERTED) === 0) {
                     // normal (left to right)
-                    this.addColumn(trElement, this.tdElements[0]);
-                    this.addColumn(trElement, this.marginTdElements[0]);
-                    this.addColumn(trElement, this.tdElements[1]);
+                    this._addColumn(trElement, this.tdElements[0]);
+                    this._addColumn(trElement, this.marginTdElements[0]);
+                    this._addColumn(trElement, this.tdElements[1]);
                 } else {
                     // inverted (right to left)
-                    this.addColumn(trElement, this.tdElements[1]);
-                    this.addColumn(trElement, this.marginTdElements[0]);
-                    this.addColumn(trElement, this.tdElements[0]);
+                    this._addColumn(trElement, this.tdElements[1]);
+                    this._addColumn(trElement, this.marginTdElements[0]);
+                    this._addColumn(trElement, this.tdElements[0]);
                 }
                 this.tbodyElement.appendChild(trElement);
                 
                 if (!(orientation01_2 & Echo.Sync.TriCellTable.INVERTED)) {
                     // 01 before 2: render margin and #2 at end of TR.
-                    this.addRow(this.marginTdElements[1]);
-                    this.addRow(this.tdElements[2]);
+                    this._addRow(this.marginTdElements[1]);
+                    this._addRow(this.tdElements[2]);
                 }
             } else {
                 // horizontally oriented 01/2
                 trElement = document.createElement("tr");
                 if (orientation01_2 & Echo.Sync.TriCellTable.INVERTED) {
                     // 2 before 01: render #2 and margin at beginning of TR.
-                    this.addColumn(trElement, this.tdElements[2]);
-                    this.addColumn(trElement, this.marginTdElements[1]);
+                    this._addColumn(trElement, this.tdElements[2]);
+                    this._addColumn(trElement, this.marginTdElements[1]);
                 }
                 
                 // Render 01
                 if (orientation0_1 & Echo.Sync.TriCellTable.INVERTED) {
                     // inverted (right to left)
-                    this.addColumn(trElement, this.tdElements[1]);
-                    this.addColumn(trElement, this.marginTdElements[0]);
-                    this.addColumn(trElement, this.tdElements[0]);
+                    this._addColumn(trElement, this.tdElements[1]);
+                    this._addColumn(trElement, this.marginTdElements[0]);
+                    this._addColumn(trElement, this.tdElements[0]);
                 } else {
                     // normal (left to right)
-                    this.addColumn(trElement, this.tdElements[0]);
-                    this.addColumn(trElement, this.marginTdElements[0]);
-                    this.addColumn(trElement, this.tdElements[1]);
+                    this._addColumn(trElement, this.tdElements[0]);
+                    this._addColumn(trElement, this.marginTdElements[0]);
+                    this._addColumn(trElement, this.tdElements[1]);
                 }
                 
                 if (!(orientation01_2 & Echo.Sync.TriCellTable.INVERTED)) {
-                    this.addColumn(trElement, this.marginTdElements[1]);
-                    this.addColumn(trElement, this.tdElements[2]);
+                    this._addColumn(trElement, this.marginTdElements[1]);
+                    this._addColumn(trElement, this.tdElements[2]);
                 }
                 
                 this.tbodyElement.appendChild(trElement);        
