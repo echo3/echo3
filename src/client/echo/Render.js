@@ -265,7 +265,6 @@ Echo.Render = {
             var cancelDisplay = false;
             for (j = 0; j < displayed.length; ++j) {
                 if (displayed[j].isAncestorOf(updates[i].parent)) {
-Core.Debug.consoleWrite("CD");                    
                     cancelDisplay = true;
                     break;
                 }
@@ -276,8 +275,6 @@ Core.Debug.consoleWrite("CD");
                 displayed.push(updates[i].parent);
             }
             
-            //FIXME. this does needless work....resizing twice is quite possible.
-            // if property updates are present.
             if (updates[i].renderContext.displayRequired) {
                 // The renderContext has specified only certain child components should have their
                 // renderDisplay() methods invoked.
