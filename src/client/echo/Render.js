@@ -23,11 +23,13 @@ Echo.Render = {
 
     /**
      * Count of loaded/unloaded peers.  Used for testing purposes to ensure peers are not being leaked.
+     * @type Number
      */
     _loadedPeerCount: 0,
 
     /**
      * Next sequentially assigned unique peer identifier.
+     * @type Number
      */
     _nextPeerId: 0,
     
@@ -39,13 +41,12 @@ Echo.Render = {
     /**
      * Map containing removed components.  Maps component ids to removed components.
      * Created and destroyed during each render.
-     * 
-     * @type Object
      */
     _disposedComponents: null,
     
     /**
      * An array sorting implementation to organize an array by component depth.
+     * @see Array#sort
      */
     _componentDepthArraySort: function(a, b) {
         return Echo.Render._getComponentDepth(a.parent) - Echo.Render._getComponentDepth(b.parent);
@@ -56,8 +57,8 @@ Echo.Render = {
      * component hierarchy.  If a peer does not provide a renderDisplay() implementation,
      * it is skipped (although its descendants will NOT be skipped).
      * 
-     * @param the root component of the sub-hierarchy on which renderDisplay() should be invoked
-     * @param includeSelf flag indicating whether renderDisplay() should be invoked on the
+     * @param {Echo.Component} the root component of the sub-hierarchy on which renderDisplay() should be invoked
+     * @param {Boolean} includeSelf flag indicating whether renderDisplay() should be invoked on the
      *        specified component (if false, it will only be invoked on child components)
      */
     _doRenderDisplay: function(component, includeSelf) {
@@ -73,7 +74,7 @@ Echo.Render = {
     /**
      * Recursive work method for _doRenderDisplay().  
      * 
-     * @param component the component on which to invoke renderDisplay()
+     * @param {Echo.Component} component the component on which to invoke renderDisplay()
      */
     _doRenderDisplayImpl: function(component) {
         if (component.peer) {
@@ -94,8 +95,9 @@ Echo.Render = {
      * The root component is at depth 0, its immediate children are
      * at depth 1, their children are at depth 2, and so on.
      *
-     * @param component the component whose depth is to be calculated
+     * @param {Echo.Component} component the component whose depth is to be calculated
      * @return the depth of the component
+     * @type Number
      */
     _getComponentDepth: function(component) {
         var depth = -1;
@@ -350,7 +352,7 @@ Echo.Render = {
      * hierarchy outside of processUpdates().  This method is only used in special cases,
      * e.g., by in the case of Application Rendered Components that need to render children.
      * 
-     * @param parent the parent component of the sub-hierarchy on which renderDisplay() should
+     * @param {Echo.Component} parent the parent component of the sub-hierarchy on which renderDisplay() should
      *        be invoked (note that renderDisplay WILL be invoked on the parent as well 
      *        as its descendants)
      */
@@ -364,8 +366,8 @@ Echo.Render = {
      * a fashion that it will be destroying the rendering of its children and re-rendering them.
      * It is not necessary to invoke this method on components that may not contain children.
      *
-     * @param update the <code>ComponentUpdate</code> for which this change is being performed
-     * @param component the <code>Component</code> to be disposed
+     * @param {Echo.Update.ComponentUpdate} update the <code>ComponentUpdate</code> for which this change is being performed
+     * @param {Echo.Component} component the <code>Component</code> to be disposed
      */
     renderComponentDispose: function(update, component) {
         this._renderComponentDisposeImpl(update, component);
@@ -375,8 +377,8 @@ Echo.Render = {
      * Recursive implementation of renderComponentDispose.  Invokes
      * renderDispose() on all child peers, sets disposed state on each.
      * 
-     * @param update the <code>ComponentUpdate</code> for which this change is being performed
-     * @param component the <code>Component</code> to be disposed
+     * @param {Echo.Update.ComponentUpdate} update the <code>ComponentUpdate</code> for which this change is being performed
+     * @param {Echo.Component} component the <code>Component</code> to be disposed
      */
     _renderComponentDisposeImpl: function(update, component) {
         if (!component.peer || component.peer.disposed) {
@@ -429,7 +431,9 @@ Echo.Render = {
      *
      * This method may be necessary to invoke manually by component renderers
      * that use animation and may be hiding the focused component (such that
-     * the client browser will not focus it) when processUpdates() completes. 
+     * the client browser will not focus it) when processUpdates() completes.
+     * 
+     * @param {Echo.Client} client the client 
      */
     updateFocus: function(client) {
         var focusedComponent = client.application.getFocusedComponent();
@@ -450,40 +454,47 @@ Echo.Render.ComponentSync = Core.extend({
         /**
          * Focus flag indicating up arrow keypress events should be handled by focus manager when
          * the component is focused.
+         * @type Number
          */
         FOCUS_PERMIT_ARROW_UP: 0x1,
 
         /**
          * Focus flag indicating down arrow keypress events should be handled by focus manager when
          * the component is focused.
+         * @type Number
          */
         FOCUS_PERMIT_ARROW_DOWN: 0x2, 
 
         /**
          * Focus flag indicating left arrow keypress events should be handled by focus manager when
          * the component is focused.
+         * @type Number
          */
         FOCUS_PERMIT_ARROW_LEFT: 0x4,
         
         /**
          * Focus flag indicating right arrow keypress events should be handled by focus manager when
          * the component is focused.
+         * @type Number
          */
         FOCUS_PERMIT_ARROW_RIGHT: 0x8, 
 
         /**
          * Focus flag indicating all arrow keypress events should be handled by focus manager when
          * the component is focused.
+         * @type Number
          */
         FOCUS_PERMIT_ARROW_ALL: 0xf,
         
         /**
          * Dimension value for <code>getPreferredSize()</code> indicating height should be calculated.
+         * @type Number
          */
         SIZE_HEIGHT: 0x1,
         
         /**
          * Dimension value for <code>getPreferredSize()</code> indicating width should be calculated.
+         * @type Number
          */
         SIZE_WIDTH: 0x2
     },
@@ -573,6 +584,7 @@ Echo.Render.ComponentSync = Core.extend({
          *
          * @param {Echo.Update.ComponentUpdate} update the update being rendered
          * @return true if this invocation has re-rendered all child components, false otherwise
+         * @type Boolean
          */
         renderUpdate: function(update) { }
     },
@@ -612,6 +624,7 @@ Echo.Render.ComponentSync = Core.extend({
          *         <li><code>SIZE_HEIGHT</code></li>
          *        </ul>
          * @return the preferred rendered size of the component
+         * @type {Number}
          */
         getPreferredSize: null,
         
