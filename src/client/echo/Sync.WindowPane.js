@@ -6,7 +6,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     $static: {
         DEFAULT_TITLE_BACKGROUND: "#abcdef",
         DEFAULT_TITLE_INSETS: "5px 10px",
-        ADJUSTMENT_OPACITY: 0.75,
         
         /** Array mapping CSS cursor types to indices of the _borderDivs property. */
         CURSORS: ["nw-resize", "n-resize", "ne-resize", "w-resize", "e-resize", "sw-resize", "s-resize", "se-resize"],
@@ -29,9 +28,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         /** 
          * Map containing position/size-related properties whose update can be rendered by moving/resizing the window.
          */
-        PARTIAL_PROPERTIES_POSITION_SIZE: { positionX: true, positionY: true, width: true, height: true },
-        
-        adjustOpacity: false
+        PARTIAL_PROPERTIES_POSITION_SIZE: { positionX: true, positionY: true, width: true, height: true }
     },
     
     $load: function() {
@@ -211,11 +208,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             
         Core.Web.Event.add(document.body, "mousemove", this._processBorderMouseMoveRef, true);
         Core.Web.Event.add(document.body, "mouseup", this._processBorderMouseUpRef, true);
-    
-        // Reduce opacity.   
-        if (Echo.Sync.WindowPane.adjustOpacity) {
-            this._div.style.opacity = Echo.Sync.WindowPane.ADJUSTMENT_OPACITY;
-        }
     },
     
     _processBorderMouseMove: function(e) {
@@ -232,9 +224,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         
         Core.Web.dragInProgress = false;
         this._overlayRemove();
-    
-        // Set opaque.
-        this._div.style.opacity = 1;
     
         this._removeBorderListeners();
         
@@ -335,11 +324,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._dragInit = { x: this._rendered.x, y: this._rendered.y };
         this._dragOrigin = { x: e.clientX, y: e.clientY };
     
-        // Reduce opacity.   
-        if (Echo.Sync.WindowPane.adjustOpacity) {
-            this._div.style.opacity = Echo.Sync.WindowPane.ADJUSTMENT_OPACITY;
-        }
-        
         Core.Web.Event.add(document.body, "mousemove", this._processTitleBarMouseMoveRef, true);
         Core.Web.Event.add(document.body, "mouseup", this._processTitleBarMouseUpRef, true);
     },
@@ -354,9 +338,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     _processTitleBarMouseUp: function(e) {
         Core.Web.dragInProgress = false;
         this._overlayRemove();
-    
-        // Set opaque.
-        this._div.style.opacity = 1;
     
         this._removeTitleBarListeners();
     
