@@ -191,6 +191,7 @@ Echo.Sync.Border = {
     /**
      * Regular expression to validate/parse a CSS border expression, e.g., "1px solid #abcdef".
      * Supports omission of any term, or empty strings.
+     * @type RegExp
      */
     _PARSER_PX: new RegExp("^(-?\\d+px)?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|" + 
             "double|groove|ridge|inset|outset)?(?:^|$|(?= )) ?(#[0-9a-fA-F]{6})?$"),
@@ -198,11 +199,15 @@ Echo.Sync.Border = {
     /**
      * Regular expression to validate/parse a pixel-based CSS border expression, e.g., "1px solid #abcdef".
      * Supports omission of any term, or empty strings.
+     * @type RegExp
      */
     _PARSER: new RegExp("^(-?\\d+(?:px|pt|pc|cm|mm|in|em|ex))?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|" +
             "double|groove|ridge|inset|outset)?(?:^|$|(?= )) ?(#[0-9a-fA-F]{6})?$"),
             
-    /** Regular expression to test whether an extent string is a properly formatted integer pixel value. */
+    /** 
+     * Regular expression to test whether an extent string is a properly formatted integer pixel value.
+     * @type RegExp 
+     */
     _TEST_EXTENT_PX: /^-?\d+px$/,
     
     /**
@@ -492,16 +497,19 @@ Echo.Sync.Extent = {
 
     /**
      * Regular expression to parse an extent value, e.g., "12px" into its value and unit components.
+     * @type RegExp
      */
     _PARSER: /^(-?\d+(?:\.\d+)?)(.+)?$/,
 
     /**
      * Regular expression to determine if an extent value is already formatted to pixel units.
+     * @type RegExp
      */
     _FORMATTED_INT_PIXEL_TEST: /^(-?\d+px *)$/,
     
     /**
      * Regular expression to determine if an extent value is already formatted to pixel units.
+     * @type RegExp
      */
     _FORMATTED_DECIMAL_PIXEL_TEST: /^(-?\d+(.\d+)?px *)$/,
     
@@ -609,6 +617,7 @@ Echo.Sync.FillImage = {
 
     /**
      * Flag indicating that the Internet Explorer 6-specific PNG alpha filter should be used to render PNG alpha (transparency).
+     * @type Number
      */
     FLAG_ENABLE_IE_PNG_ALPHA_FILTER: 0x1,
     
@@ -672,7 +681,7 @@ Echo.Sync.FillImage = {
      * 
      * @param {#FillImage} fillImage the FillImage (may be null)
      * @param {Element} element the target element
-     * @param flags (optional) the rendering flags, one or more of the following values:
+     * @param {Number} flags (optional) the rendering flags, one or more of the following values:
      *        <ul>
      *         <li><code>FLAG_ENABLE_IE_PNG_ALPHA_FILTER</code></li>
      *        <ul>
@@ -706,7 +715,7 @@ Echo.Sync.FillImage = {
      * 
      * @param {#FillImage} fillImage the FillImage (may be null)
      * @param {Element} element the target element
-     * @param flags (optional) the rendering flags, one or more of the following values:
+     * @param {Number} flags (optional) the rendering flags, one or more of the following values:
      *        <ul>
      *         <li><code>FLAG_ENABLE_IE_PNG_ALPHA_FILTER</code></li>
      *        <ul>
@@ -852,6 +861,7 @@ Echo.Sync.Insets = {
     /**
      * Regular expression to test extents which are entirely presented in pixels
      * and may thus be directly added to CSS.
+     * @type RegExp
      */
     _FORMATTED_PIXEL_INSETS: /^(-?\d+px *){1,4}$/,
 
@@ -968,22 +978,40 @@ Echo.Sync.TriCellTable = Core.extend({
 
     $static: {
         
-        /** Orientation flag indicating inverted (trailing-leading or bottom-top) orientation. */
+        /** 
+         * Orientation flag indicating inverted (trailing-leading or bottom-top) orientation.
+         * @type Number 
+         */
         INVERTED: 1,
         
-        /** Orientation flag indicating vertical (top-bottom or bottom-top) orientation. */
+        /** 
+         * Orientation flag indicating vertical (top-bottom or bottom-top) orientation. 
+         * @type Number 
+         */
         VERTICAL: 2,
         
-        /** Orientation value indicating horizontal orientation, leading first, trailing second. */
+        /** 
+         * Orientation value indicating horizontal orientation, leading first, trailing second. 
+         * @type Number 
+         */
         LEADING_TRAILING: 0,
         
-        /** Orientation value indicating horizontal orientation, trailing first, leading second. */
+        /** 
+         * Orientation value indicating horizontal orientation, trailing first, leading second.
+         * @type Number 
+         */
         TRAILING_LEADING: 1, // INVERTED
         
-        /** Orientation value indicating vertical orientation, top first, bottom second. */
+        /** 
+         * Orientation value indicating vertical orientation, top first, bottom second. 
+         * @type Number 
+         */
         TOP_BOTTOM: 2,       // VERTICAL
         
-        /** Orientation value indicating vertical orientation, bottom first, top second. */
+        /** 
+         * Orientation value indicating vertical orientation, bottom first, top second.
+         * @type Number 
+         */
         BOTTOM_TOP: 3,       // VERTICAL | INVERTED
         
         /**
