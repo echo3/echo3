@@ -130,13 +130,17 @@ Echo.Serial = {
     },
     
     /**
+     * Processes an event registration directive element.
+     * 
      * @param {Echo.Client} client the client
      * @param {Element} eventElement the event element
      * @param {Echo.Component} the component
      */
     _loadComponentEvent: function(client, eventElement, component) {
-        var eventType = eventElement.getAttribute("t");
-        client.addComponentListener(component, eventType);
+        if (client.addComponentListener) {
+            var eventType = eventElement.getAttribute("t");
+            client.addComponentListener(component, eventType);
+        }
     },
     
     /**
