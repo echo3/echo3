@@ -543,27 +543,6 @@ Echo.RemoteClient.DirectiveProcessor = Core.extend({
 });
 
 /**
- * SerevrMessage directive processor for general application-related synchronization.
- */
-Echo.RemoteClient.ApplicationSyncProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
-    
-    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
-    process: function(dirElement) {
-        var propertyElement = dirElement.firstChild;
-        while (propertyElement) {
-            if (propertyElement.nodeName == "locale") {
-                this.client.application.setLocale(propertyElement.firstChild.nodeValue);
-            }
-            if (propertyElement.nodeName == "dir") {
-                this.client.application.setLayoutDirection(propertyElement.firstChild.nodeValue === "rtl"
-                    ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR);
-            }
-            propertyElement = propertyElement.nextSibling;
-        }
-    }
-});
-
-/**
  * Manages server-pushed updates to the client. 
  */
 Echo.RemoteClient.AsyncManager = Core.extend({
@@ -934,342 +913,6 @@ Echo.RemoteClient.CommandExec = Core.extend({
 });
 
 /**
- * SerevrMessage directive processor for command executions.
- */
-Echo.RemoteClient.CommandExecProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
-
-    $static: {
-    
-        /** Mapping between command type names and command peer objects */
-        _typeToPeerMap: {},
-        
-        /**
-         * Registers a command execution peer.
-         *
-         * @param {String} type the command type name
-         * @param {Echo.RemoteClient.CommandExec} commandPeer an object providing an 'execute()' method which be invoked to 
-         *        execute the command.
-         */
-        registerPeer: function(type, commandPeer) {
-            Echo.RemoteClient.CommandExecProcessor._typeToPeerMap[type] = commandPeer;
-        }
-    },
-    
-    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
-    process: function(dirElement) {
-        var cmdElement = dirElement.firstChild;
-        while (cmdElement) {
-            var type = cmdElement.getAttribute("t");
-            var commandPeer = Echo.RemoteClient.CommandExecProcessor._typeToPeerMap[type];
-            if (!commandPeer) {
-                throw new Error("Peer not found for: " + type);
-            }
-            var commandData = {};
-            var pElement = cmdElement.firstChild;
-            while (pElement) {
-                Echo.Serial.loadProperty(this.client, pElement, null, commandData, null);
-                pElement = pElement.nextSibling;
-            }
-            this.client._enqueueCommand(commandPeer, commandData);
-            cmdElement = cmdElement.nextSibling;
-        }
-    }
-});
-
-/**
- * ServerMessage directive processor for component focus.
- */
-Echo.RemoteClient.ComponentFocusProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
-
-    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
-    process: function(dirElement) {
-        var element = dirElement.firstChild;
-        while (element) {
-            if (element.nodeType == 1 && element.nodeName == "focus") {
-                this.client._focusedComponent = this.client.application.getComponentByRenderId(element.getAttribute("i"));
-            }
-            element = element.nextSibling;
-        }
-    }
-});
-
-/**
- * ServerMessage directive processor for component synchronizations (initialization phase).
- * 
- * Processes initialization directives related to component hierarchy.
- * Currently limited to clearing entire hierarchy.
- */
-Echo.RemoteClient.ComponentSyncInitProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
-
-    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
-    process: function(dirElement) {
-        var element = dirElement.firstChild;
-        while (element) {
-            if (element.nodeType == 1 && element.nodeName == "cl") {
-                this.client.application.rootComponent.removeAll();
-            }
-            element = element.nextSibling;
-        }
-    }
-});
-    
-/**
- * ServerMessage directive processor for component synchronizations (remove phase).
- * 
- * Processes directives to remove components.  Performed before update phase to 
- * bring component hierarchy to a minimal state before updates occur.
- */
-Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
-    
-    $static: {
-        
-        /** 
-         * Reverse array sorter for removing components by index from last to first. 
-         * @see Array#sort
-         */
-        _numericReverseSort: function(a, b) {
-            return b - a;
-        }
-    },
-
-    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
-    process: function(dirElement) {
-        var rmElement = dirElement.firstChild;
-        while (rmElement) {
-            if (rmElement.nodeType != 1) {
-                continue;
-            }
-            
-            // Determine parent component.
-            var parentComponent;
-            if (rmElement.getAttribute("r") == "true") {
-                parentComponent = this.client.application.rootComponent;
-            } else {
-                var parentId = rmElement.getAttribute("i");
-                parentComponent = this.client.application.getComponentByRenderId(parentId);
-            }
-    
-            // Retrieve child ids and remove.
-            var childElementIds = rmElement.getAttribute("rm").split(",");
-            this._removeComponents(parentComponent, childElementIds);
-            
-            rmElement = rmElement.nextSibling;
-        }
-    },
-    
-    /**
-     * Removes components with specified ids from specified parent component.
-     * 
-     * @param {Echo.Component} parentComponent the parent component
-     * @param {Array} childElementIds array containing ids of child elements to remove.  
-     */
-    _removeComponents: function(parentComponent, childElementIds) {
-        var i;
-
-        if (childElementIds.length > 5) {
-            // Special case: many children being removed: create renderId -> index map and remove by index
-            // in order to prevent Component.indexOf() of from being invoked n times.
-            
-            // Create map between ids and indices.
-            var idToIndexMap = {};
-            for (i = 0; i < parentComponent.children.length; ++i) {
-                idToIndexMap[parentComponent.children[i].renderId] = i;
-            }
-            
-            // Create array of indices to remove.
-            var indicesToRemove = [];
-            for (i = 0; i <  childElementIds.length; ++i) {
-                var index = idToIndexMap[childElementIds[i]];
-                if (index != null) {
-                    indicesToRemove.push(parseInt(index, 10));
-                }
-            }
-            indicesToRemove.sort(Echo.RemoteClient.ComponentSyncRemoveProcessor._numericReverseSort);
-    
-            // Remove components (last to first).
-            for (i = 0; i < indicesToRemove.length; ++i) {
-                parentComponent.remove(indicesToRemove[i]);
-            }
-        } else {
-            for (i = 0; i < childElementIds.length; ++i) {
-                var component = this.client.application.getComponentByRenderId(childElementIds[i]);
-                if (component) {
-                    parentComponent.remove(component);
-                }
-            }
-        }
-    }
-});
-
-/**
- * ServerMessage directive processor for component synchronizations (update phase).
- * 
- * Processes directives to update components (add children, update properties), 
- * clear entire component hierarchy (for full-rerender), set stylesheet,
- * and store referenced properties/styles.
- */
-Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
-    
-    /** Mapping between referenced property ids and values. */
-    _propertyMap : null,
-
-    /** Mapping between referenced style ids and values. */
-    _styleMap: null,
-    
-    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
-    process: function(dirElement) {
-        var element;
-        
-        element = dirElement.firstChild;
-        while (element) {
-            if (element.nodeType == 1) {
-                switch (element.nodeName) {
-                case "ss": this._processStyleSheet(element); break;
-                case "up": this._processUpdate(element); break;
-                case "rp": this._processReferencedProperties(element); break;
-                case "rs": this._processReferencedStyles(element); break;
-                }
-            }
-            element = element.nextSibling;
-        }
-    },
-    
-    /** 
-     * Process an "rp" directive to store referenced properties during the synchronization. 
-     * 
-     * @param {Element} rpElement the directive element 
-     */
-    _processReferencedProperties: function(rpElement) {
-        var propertyElement = rpElement.firstChild;
-        while (propertyElement) {
-            if (propertyElement.nodeName == "p") {
-                var propertyId = propertyElement.getAttribute("i");
-                var propertyType = propertyElement.getAttribute("t");
-                var translator = Echo.Serial.getPropertyTranslator(propertyType);
-                if (!translator) {
-                    throw new Error("Translator not available for property type: " + propertyType);
-                }
-                var propertyValue = translator.toProperty(this.client, propertyElement);
-                if (!this._propertyMap) {
-                    this._propertyMap = {};
-                }
-                this._propertyMap[propertyId] = propertyValue;
-            }
-            propertyElement = propertyElement.nextSibling;
-        }
-    },
-    
-    /** 
-     * Process an "rs" directive to store referenced styles during the synchronization. 
-     * 
-     * @param {Element} rsElement the directive element 
-     */
-    _processReferencedStyles: function(rsElement) {
-        var styleElement = rsElement.firstChild;
-        while (styleElement) {
-            if (styleElement.nodeName == "s") {
-                var styleId = styleElement.getAttribute("i");
-                var style = { };
-                var propertyElement = styleElement.firstChild;
-                while (propertyElement) {
-                    Echo.Serial.loadProperty(this.client, propertyElement, null, style, this._propertyMap);
-                    propertyElement = propertyElement.nextSibling;
-                }
-                if (!this._styleMap) {
-                    this._styleMap = {};
-                }
-                this._styleMap[styleId] = style;
-            }
-            styleElement = styleElement.nextSibling;
-        }
-    },
-    
-    /** 
-     * Process an "ss" directive to load and install a new stylesheet onto the application.
-     * 
-     * @param {Element} ssElement the directive element 
-     */
-    _processStyleSheet: function(ssElement) {
-        var styleSheet = Echo.Serial.loadStyleSheet(this.client, ssElement);
-        this.client.application.setStyleSheet(styleSheet);
-    },
-    
-    /** 
-     * Process an "up" directive to update properties and/or add children to a component.
-     * 
-     * @param {Element} upElement the directive element 
-     */
-    _processUpdate: function(upElement) {
-        // Determine parent component
-        var parentComponent;
-        if (upElement.getAttribute("r") == "true") {
-            parentComponent = this.client.application.rootComponent;
-        } else {
-            var parentId = upElement.getAttribute("i");
-            parentComponent = this.client.application.getComponentByRenderId(parentId);
-        }
-    
-        // Child insertion cursor index (if index is omitted, children are added at this position).
-        var cursorIndex = 0;
-
-        var element = upElement.firstChild;
-        while (element) {
-            if (element.nodeType == 1) {
-                switch (element.nodeName) {
-                case "c": // Added child
-                    var component = Echo.Serial.loadComponent(this.client, element, this._propertyMap, this._styleMap);
-                    var index = element.getAttribute("x");
-                    if (index == null) {
-                        // No index specified, add children at current insertion cursor position.
-                        parentComponent.add(component, cursorIndex);
-                        ++cursorIndex;
-                    } else {
-                        // Index specified, add child at index, set insertion cursor position to index + 1.
-                        index = parseInt(index, 10);
-                        parentComponent.add(component, index);
-                        cursorIndex = index + 1;
-                    }
-                    break;
-                case "p": // Property update
-                    Echo.Serial.loadProperty(this.client, element, parentComponent, null, this._propertyMap);
-                    break;
-                case "s": // Style name update
-                    parentComponent.setStyleName(element.firstChild ? element.firstChild.nodeValue : null);
-                    break;
-                case "sr": // Style reference update
-                    if (element.firstChild) {
-                        parentComponent.setStyle(this._styleMap ? this._styleMap[element.firstChild.nodeValue] : null);
-                    } else {
-                        parentComponent.setStyle(null);
-                    }
-                    break;
-                case "e": // Event update
-                    var eventType = element.getAttribute("t");
-                    if (element.getAttribute("v") == "true") {
-                        this.client.removeComponentListener(parentComponent, eventType);
-                        this.client.addComponentListener(parentComponent, eventType);
-                    } else {
-                        this.client.removeComponentListener(parentComponent, eventType);
-                    }
-                    break;
-                case "en": // Enabled state update
-                    parentComponent.setEnabled(element.firstChild.nodeValue == "true");
-                    break;
-                case "locale": // Locale update
-                    parentComponent.setLocale(element.firstChild ? element.firstChild.nodeValue : null);
-                    break;
-                case "dir": // Layout direction update
-                    parentComponent.setLayoutDirection(element.firstChild ?
-                            (element.firstChild.nodeValue == "rtl" ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR) : null);
-                    break;
-                }
-            }
-            element = element.nextSibling;
-        }
-    }
-});
-
-/**
  * Server message processing facility.
  * Parses XML DOM of message received from server, first loading required modules and then delegating to registered server message
  * directive processors. 
@@ -1495,9 +1138,385 @@ Echo.RemoteClient.DefaultWaitIndicator = Core.extend(Echo.RemoteClient.WaitIndic
     }
 });
 
-Echo.RemoteClient.ServerMessage.addProcessor("AppSync", Echo.RemoteClient.ApplicationSyncProcessor);
-Echo.RemoteClient.ServerMessage.addProcessor("CFocus", Echo.RemoteClient.ComponentFocusProcessor);
-Echo.RemoteClient.ServerMessage.addProcessor("CSyncIn", Echo.RemoteClient.ComponentSyncInitProcessor);
-Echo.RemoteClient.ServerMessage.addProcessor("CSyncRm", Echo.RemoteClient.ComponentSyncRemoveProcessor);
-Echo.RemoteClient.ServerMessage.addProcessor("CSyncUp", Echo.RemoteClient.ComponentSyncUpdateProcessor);
-Echo.RemoteClient.ServerMessage.addProcessor("CmdExec", Echo.RemoteClient.CommandExecProcessor);
+// Echo.RemoteClient.DirectiveProcessor Implementations
+
+/**
+ * SerevrMessage directive processor for general application-related synchronization.
+ */
+Echo.RemoteClient.ApplicationSyncProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
+    
+    $load: function() {
+        Echo.RemoteClient.ServerMessage.addProcessor("AppSync", this);
+    },
+    
+    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
+    process: function(dirElement) {
+        var propertyElement = dirElement.firstChild;
+        while (propertyElement) {
+            if (propertyElement.nodeName == "locale") {
+                this.client.application.setLocale(propertyElement.firstChild.nodeValue);
+            }
+            if (propertyElement.nodeName == "dir") {
+                this.client.application.setLayoutDirection(propertyElement.firstChild.nodeValue === "rtl"
+                    ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR);
+            }
+            propertyElement = propertyElement.nextSibling;
+        }
+    }
+});
+
+/**
+ * SerevrMessage directive processor for command executions.
+ */
+Echo.RemoteClient.CommandExecProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
+
+    $static: {
+    
+        /** Mapping between command type names and command peer objects */
+        _typeToPeerMap: {},
+        
+        /**
+         * Registers a command execution peer.
+         *
+         * @param {String} type the command type name
+         * @param {Echo.RemoteClient.CommandExec} commandPeer an object providing an 'execute()' method which be invoked to 
+         *        execute the command.
+         */
+        registerPeer: function(type, commandPeer) {
+            Echo.RemoteClient.CommandExecProcessor._typeToPeerMap[type] = commandPeer;
+        }
+    },
+    
+    $load: function() {
+        Echo.RemoteClient.ServerMessage.addProcessor("CmdExec", this);
+    },
+    
+    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
+    process: function(dirElement) {
+        var cmdElement = dirElement.firstChild;
+        while (cmdElement) {
+            var type = cmdElement.getAttribute("t");
+            var commandPeer = Echo.RemoteClient.CommandExecProcessor._typeToPeerMap[type];
+            if (!commandPeer) {
+                throw new Error("Peer not found for: " + type);
+            }
+            var commandData = {};
+            var pElement = cmdElement.firstChild;
+            while (pElement) {
+                Echo.Serial.loadProperty(this.client, pElement, null, commandData, null);
+                pElement = pElement.nextSibling;
+            }
+            this.client._enqueueCommand(commandPeer, commandData);
+            cmdElement = cmdElement.nextSibling;
+        }
+    }
+});
+
+/**
+ * ServerMessage directive processor for component focus.
+ */
+Echo.RemoteClient.ComponentFocusProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
+
+    $load: function() {
+        Echo.RemoteClient.ServerMessage.addProcessor("CFocus", this);
+    },
+    
+    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
+    process: function(dirElement) {
+        var element = dirElement.firstChild;
+        while (element) {
+            if (element.nodeType == 1 && element.nodeName == "focus") {
+                this.client._focusedComponent = this.client.application.getComponentByRenderId(element.getAttribute("i"));
+            }
+            element = element.nextSibling;
+        }
+    }
+});
+
+/**
+ * ServerMessage directive processor for component synchronizations (initialization phase).
+ * 
+ * Processes initialization directives related to component hierarchy.
+ * Currently limited to clearing entire hierarchy.
+ */
+Echo.RemoteClient.ComponentSyncInitProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
+
+    $load: function() {
+        Echo.RemoteClient.ServerMessage.addProcessor("CSyncIn", this);
+    },
+
+    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
+    process: function(dirElement) {
+        var element = dirElement.firstChild;
+        while (element) {
+            if (element.nodeType == 1 && element.nodeName == "cl") {
+                this.client.application.rootComponent.removeAll();
+            }
+            element = element.nextSibling;
+        }
+    }
+});
+    
+/**
+ * ServerMessage directive processor for component synchronizations (remove phase).
+ * 
+ * Processes directives to remove components.  Performed before update phase to 
+ * bring component hierarchy to a minimal state before updates occur.
+ */
+Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
+    
+    $static: {
+        
+        /** 
+         * Reverse array sorter for removing components by index from last to first. 
+         * @see Array#sort
+         */
+        _numericReverseSort: function(a, b) {
+            return b - a;
+        }
+    },
+    
+    $load: function() {
+        Echo.RemoteClient.ServerMessage.addProcessor("CSyncRm", this);
+    },
+
+    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
+    process: function(dirElement) {
+        var rmElement = dirElement.firstChild;
+        while (rmElement) {
+            if (rmElement.nodeType != 1) {
+                continue;
+            }
+            
+            // Determine parent component.
+            var parentComponent;
+            if (rmElement.getAttribute("r") == "true") {
+                parentComponent = this.client.application.rootComponent;
+            } else {
+                var parentId = rmElement.getAttribute("i");
+                parentComponent = this.client.application.getComponentByRenderId(parentId);
+            }
+    
+            // Retrieve child ids and remove.
+            var childElementIds = rmElement.getAttribute("rm").split(",");
+            this._removeComponents(parentComponent, childElementIds);
+            
+            rmElement = rmElement.nextSibling;
+        }
+    },
+    
+    /**
+     * Removes components with specified ids from specified parent component.
+     * 
+     * @param {Echo.Component} parentComponent the parent component
+     * @param {Array} childElementIds array containing ids of child elements to remove.  
+     */
+    _removeComponents: function(parentComponent, childElementIds) {
+        var i;
+
+        if (childElementIds.length > 5) {
+            // Special case: many children being removed: create renderId -> index map and remove by index
+            // in order to prevent Component.indexOf() of from being invoked n times.
+            
+            // Create map between ids and indices.
+            var idToIndexMap = {};
+            for (i = 0; i < parentComponent.children.length; ++i) {
+                idToIndexMap[parentComponent.children[i].renderId] = i;
+            }
+            
+            // Create array of indices to remove.
+            var indicesToRemove = [];
+            for (i = 0; i <  childElementIds.length; ++i) {
+                var index = idToIndexMap[childElementIds[i]];
+                if (index != null) {
+                    indicesToRemove.push(parseInt(index, 10));
+                }
+            }
+            indicesToRemove.sort(Echo.RemoteClient.ComponentSyncRemoveProcessor._numericReverseSort);
+    
+            // Remove components (last to first).
+            for (i = 0; i < indicesToRemove.length; ++i) {
+                parentComponent.remove(indicesToRemove[i]);
+            }
+        } else {
+            for (i = 0; i < childElementIds.length; ++i) {
+                var component = this.client.application.getComponentByRenderId(childElementIds[i]);
+                if (component) {
+                    parentComponent.remove(component);
+                }
+            }
+        }
+    }
+});
+
+/**
+ * ServerMessage directive processor for component synchronizations (update phase).
+ * 
+ * Processes directives to update components (add children, update properties), 
+ * clear entire component hierarchy (for full-rerender), set stylesheet,
+ * and store referenced properties/styles.
+ */
+Echo.RemoteClient.ComponentSyncUpdateProcessor = Core.extend(Echo.RemoteClient.DirectiveProcessor, {
+    
+    $load: function() {
+        Echo.RemoteClient.ServerMessage.addProcessor("CSyncUp", this);
+    },
+    
+    /** Mapping between referenced property ids and values. */
+    _propertyMap : null,
+
+    /** Mapping between referenced style ids and values. */
+    _styleMap: null,
+    
+    /** @see #Echo.RemoteClient.DirectiveProcessor#process */
+    process: function(dirElement) {
+        var element;
+        
+        element = dirElement.firstChild;
+        while (element) {
+            if (element.nodeType == 1) {
+                switch (element.nodeName) {
+                case "ss": this._processStyleSheet(element); break;
+                case "up": this._processUpdate(element); break;
+                case "rp": this._processReferencedProperties(element); break;
+                case "rs": this._processReferencedStyles(element); break;
+                }
+            }
+            element = element.nextSibling;
+        }
+    },
+    
+    /** 
+     * Process an "rp" directive to store referenced properties during the synchronization. 
+     * 
+     * @param {Element} rpElement the directive element 
+     */
+    _processReferencedProperties: function(rpElement) {
+        var propertyElement = rpElement.firstChild;
+        while (propertyElement) {
+            if (propertyElement.nodeName == "p") {
+                var propertyId = propertyElement.getAttribute("i");
+                var propertyType = propertyElement.getAttribute("t");
+                var translator = Echo.Serial.getPropertyTranslator(propertyType);
+                if (!translator) {
+                    throw new Error("Translator not available for property type: " + propertyType);
+                }
+                var propertyValue = translator.toProperty(this.client, propertyElement);
+                if (!this._propertyMap) {
+                    this._propertyMap = {};
+                }
+                this._propertyMap[propertyId] = propertyValue;
+            }
+            propertyElement = propertyElement.nextSibling;
+        }
+    },
+    
+    /** 
+     * Process an "rs" directive to store referenced styles during the synchronization. 
+     * 
+     * @param {Element} rsElement the directive element 
+     */
+    _processReferencedStyles: function(rsElement) {
+        var styleElement = rsElement.firstChild;
+        while (styleElement) {
+            if (styleElement.nodeName == "s") {
+                var styleId = styleElement.getAttribute("i");
+                var style = { };
+                var propertyElement = styleElement.firstChild;
+                while (propertyElement) {
+                    Echo.Serial.loadProperty(this.client, propertyElement, null, style, this._propertyMap);
+                    propertyElement = propertyElement.nextSibling;
+                }
+                if (!this._styleMap) {
+                    this._styleMap = {};
+                }
+                this._styleMap[styleId] = style;
+            }
+            styleElement = styleElement.nextSibling;
+        }
+    },
+    
+    /** 
+     * Process an "ss" directive to load and install a new stylesheet onto the application.
+     * 
+     * @param {Element} ssElement the directive element 
+     */
+    _processStyleSheet: function(ssElement) {
+        var styleSheet = Echo.Serial.loadStyleSheet(this.client, ssElement);
+        this.client.application.setStyleSheet(styleSheet);
+    },
+    
+    /** 
+     * Process an "up" directive to update properties and/or add children to a component.
+     * 
+     * @param {Element} upElement the directive element 
+     */
+    _processUpdate: function(upElement) {
+        // Determine parent component
+        var parentComponent;
+        if (upElement.getAttribute("r") == "true") {
+            parentComponent = this.client.application.rootComponent;
+        } else {
+            var parentId = upElement.getAttribute("i");
+            parentComponent = this.client.application.getComponentByRenderId(parentId);
+        }
+    
+        // Child insertion cursor index (if index is omitted, children are added at this position).
+        var cursorIndex = 0;
+
+        var element = upElement.firstChild;
+        while (element) {
+            if (element.nodeType == 1) {
+                switch (element.nodeName) {
+                case "c": // Added child
+                    var component = Echo.Serial.loadComponent(this.client, element, this._propertyMap, this._styleMap);
+                    var index = element.getAttribute("x");
+                    if (index == null) {
+                        // No index specified, add children at current insertion cursor position.
+                        parentComponent.add(component, cursorIndex);
+                        ++cursorIndex;
+                    } else {
+                        // Index specified, add child at index, set insertion cursor position to index + 1.
+                        index = parseInt(index, 10);
+                        parentComponent.add(component, index);
+                        cursorIndex = index + 1;
+                    }
+                    break;
+                case "p": // Property update
+                    Echo.Serial.loadProperty(this.client, element, parentComponent, null, this._propertyMap);
+                    break;
+                case "s": // Style name update
+                    parentComponent.setStyleName(element.firstChild ? element.firstChild.nodeValue : null);
+                    break;
+                case "sr": // Style reference update
+                    if (element.firstChild) {
+                        parentComponent.setStyle(this._styleMap ? this._styleMap[element.firstChild.nodeValue] : null);
+                    } else {
+                        parentComponent.setStyle(null);
+                    }
+                    break;
+                case "e": // Event update
+                    var eventType = element.getAttribute("t");
+                    if (element.getAttribute("v") == "true") {
+                        this.client.removeComponentListener(parentComponent, eventType);
+                        this.client.addComponentListener(parentComponent, eventType);
+                    } else {
+                        this.client.removeComponentListener(parentComponent, eventType);
+                    }
+                    break;
+                case "en": // Enabled state update
+                    parentComponent.setEnabled(element.firstChild.nodeValue == "true");
+                    break;
+                case "locale": // Locale update
+                    parentComponent.setLocale(element.firstChild ? element.firstChild.nodeValue : null);
+                    break;
+                case "dir": // Layout direction update
+                    parentComponent.setLayoutDirection(element.firstChild ?
+                            (element.firstChild.nodeValue == "rtl" ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR) : null);
+                    break;
+                }
+            }
+            element = element.nextSibling;
+        }
+    }
+});
