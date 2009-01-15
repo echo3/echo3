@@ -7,10 +7,16 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         Echo.Render.registerPeer("ContentPane", this);
     },
     
-    /** Array of child floating panes components, organized by z-index. */
+    /** 
+     * Array of child floating panes components, organized by z-index. 
+     * @type Array
+     */
     _floatingPaneStack: null,
     
-    /** Flag indicating that the rendered z-indices are not synchronized with the order of <code>_floatingPaneStack</code>. */
+    /** 
+     * Flag indicating that the rendered z-indices are not synchronized with the order of <code>_floatingPaneStack</code>.
+     * @type Boolean
+     */
     _zIndexRenderRequired: false,
 
     /** Constructor. */
