@@ -4,10 +4,17 @@
 Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
 
     $static: {
-        /** Array mapping CSS cursor types to indices of the _borderDivs property. */
+    
+        /** 
+         * Array mapping CSS cursor types to indices of the _borderDivs property.
+         * @type Array 
+         */
         CURSORS: ["nw-resize", "n-resize", "ne-resize", "w-resize", "e-resize", "sw-resize", "s-resize", "se-resize"],
         
-        /** Array mapping fill image border properties to indices of the _borderDivs property. */
+        /** 
+         * Array mapping fill image border properties to indices of the _borderDivs property.
+         * @type Array 
+         */
         FIB_POSITIONS: ["topLeft", "top", "topRight", "left", "right", "bottomLeft", "bottom", "bottomRight"],
         
         /** Map containing properties whose update can be rendered without replacing component. */
@@ -186,8 +193,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /**
-     * Adds an overlay DIV at maximum z-index to cover any objects that will not provide move mouseup freedback.
-     */ 
+     * Adds an overlay DIV at maximum z-index to cover any objects that will not provide mouseup feedback (e.g., IFRAMEs).
+     */
     _overlayAdd: function() {
         if (this._overlay) {
             return;
