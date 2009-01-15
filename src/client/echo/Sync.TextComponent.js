@@ -35,9 +35,15 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     
     /**
      * The rendered "input" element (may be a textarea).
+     * @type Element
      */
     _input: null,
     
+    /**
+     * Container element which wraps the input element.
+     * This element is only rendered for text areas, to mitigate IE "growing" text area bug.
+     * @type Element
+     */
     _container: null,
     
     /**
