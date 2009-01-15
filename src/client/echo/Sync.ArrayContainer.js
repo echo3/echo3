@@ -22,19 +22,34 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
     
     $virtual: {
         
-        /** The key code which should move focus to the previous child cell. */
+        /** 
+         * The key code which should move focus to the previous child cell. 
+         * @type Number
+         */
         prevFocusKey: null,
         
-        /** The Echo.Render.ComponentSync focus flag indicating which keys should trigger focus changes to the previous child. */
+        /** 
+         * The Echo.Render.ComponentSync focus flag indicating which keys should trigger focus changes to the previous child. 
+         * @type Boolean
+         */
         prevFocusFlag: null,
         
-        /** The key code which should move focus to the next child cell. */
+        /** 
+         * The key code which should move focus to the next child cell. 
+         * @type Number
+         */
         nextFocusKey: null,
 
-        /** The Echo.Render.ComponentSync focus flag indicating which keys should trigger focus changes to the next child. */
+        /** 
+         * The Echo.Render.ComponentSync focus flag indicating which keys should trigger focus changes to the next child.
+         * @type Boolean
+         */
         nextFocusFlag: null,
         
-        /** Flag indicating whether focus key should be inverted when the component is rendered with an RTL layout direction. */
+        /** 
+         * Flag indicating whether focus key should be inverted when the component is rendered with an RTL layout direction.
+         * @type Boolean 
+         */
         invertFocusRtl: false
     },
     

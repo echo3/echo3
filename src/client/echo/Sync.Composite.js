@@ -13,7 +13,7 @@ Echo.Sync.Composite = Core.extend(Echo.Render.ComponentSync, {
          * Renders style attributes on the created DIV.
          * Overridden by <code>Echo.Sync.Panel</code> to provide additional features.
          * 
-         * @param element the 
+         * @param {Element} element the element
          */
         renderStyle: function(element) {
             Echo.Sync.renderComponentDefaults(this.component, element);
