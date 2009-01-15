@@ -226,6 +226,7 @@ Echo.Application = Core.extend({
      * Returns the root component of the modal context.
      *
      * @return the root component of the modal context
+     * @type Echo.Component
      */
     getModalContextRoot: function() {
         if (this._modalComponents.length === 0) {
@@ -419,8 +420,6 @@ Echo.ComponentFactory = {
     
     /**
      * Mapping between type names and object constructors.
-     * 
-     * @type Object
      */
     _typeToConstructorMap: {},
     
@@ -497,7 +496,7 @@ Echo.ComponentFactory = {
  * @sp {#Color} background the background color
  * @sp {#Font} font the component font
  * @sp {#Color} foreground the foreground color
- * @sp {Object} layoutData layout data information, describing how the component should be rendered by its container 
+ * @sp layoutData layout data information, describing how the component should be rendered by its container 
  * @event property An event fired when the a property of the component changes.  The <code>propertyName</code> property
  *        will specify the name of the changed property.  The <code>oldValue</code> and <code>newValue</code> properties
  *        (may) describe the previous and current states of the property, respectively.
@@ -531,31 +530,37 @@ Echo.Component = Core.extend({
          * Component type.  
          * This value should be the fully-qualified name of the component, e.g. "Foo.ExampleComponent".
          * This property must be set by implementors in order for peer discovery to work properly.
+         * @type String
          */
         componentType: "Component",
         
-        /** Flag indicating whether or not the component is focusable. */
+        /** 
+         * Flag indicating whether or not the component is focusable.
+         * @type Boolean 
+         */
         focusable: false,
 
         /**
-         * Returns the child component at the specified index
-         * after sorting the children in the order which they 
-         * should be focused.  The default implementation simply
-         * returns the same value as getComponent().
-         * Implementations should override this method when
-         * the natural order to focus child components is
-         * different than their normal ordering (e.g., when
-         * the component at index 1 is positioned above the 
-         * component at index 0).
+         * Returns the child component at the specified index after sorting the
+         * children in the order which they should be focused. The default
+         * implementation simply returns the same value as getComponent().
+         * Implementations should override this method when the natural order to
+         * focus child components is different than their normal ordering (e.g.,
+         * when the component at index 1 is positioned above the component at
+         * index 0).
          * 
-         * @param index the index of the child (in focus order)
+         * @param {Number} index the index of the child (in focus order)
          * @return the child component
+         * @type Echo.Component
          */
         getFocusComponent: function(index) {
             return this.children[index];
         },
         
-        /** Flag indicating whether component is rendered as a pane (pane components consume available height). */
+        /**
+         *  Flag indicating whether component is rendered as a pane (pane components consume available height).
+         *  @type Boolean 
+         */
         pane: false
     },
     
@@ -600,7 +605,6 @@ Echo.Component = Core.extend({
     
     /**
      * Referenced external style
-     * @type Object
      */
     _style: null,
     
@@ -625,7 +629,6 @@ Echo.Component = Core.extend({
     
     /**
      * Internal style used to store properties set directly on component.
-     * @type Object
      */
     _localStyle: null,
     
@@ -635,7 +638,7 @@ Echo.Component = Core.extend({
      * "BaseComponent.call(this, properties)" in any derivative constructor, where "BaseComponent" is
      * class from which the component is immediately derived (which may or may not be Echo.Component itself).
      *  
-     * @param {Object} properties (Optional) associative mapping of initial property values (may be null)
+     * @param properties (Optional) associative mapping of initial property values (may be null)
      *        By default, all properties will be placed into the local style, except for the following:
      *        <ul>
      *         <li><code>styleName</code> specifies the component stylesheet style name</li>
@@ -644,7 +647,6 @@ Echo.Component = Core.extend({
      *         <li><code>children</code> an array specifying the initial children of the component</li>
      *         <li><code>events</code> an associative mapping between event names and listener methods</li>
      *        </ul>
-     * @constructor
      */
     $construct: function(properties) {
         this.children = [];
@@ -768,7 +770,7 @@ Echo.Component = Core.extend({
     },
     
     /**
-     * Returns the number of child components
+     * Returns the number of child components.
      * 
      * @return the number of child components
      * @type Number
@@ -791,8 +793,7 @@ Echo.Component = Core.extend({
     
     /**
      * Returns the component layout direction.
-     * Note that in most cases it is preferable to set the layout direction of the Application, 
-     * rather than individual components.
+     * Note that in most cases it is preferable to set the layout direction of the Application, rather than individual components.
      * 
      * @return the component layout direction
      * @type Echo.LayoutDirection
@@ -803,8 +804,7 @@ Echo.Component = Core.extend({
     
     /**
      * Returns the component locale.
-     * Note that in most cases it is preferable to set the locale of the Application, 
-     * rather than individual components.
+     * Note that in most cases it is preferable to set the locale of the Application, rather than individual components.
      * 
      * @return the component locale
      * @type String
@@ -814,22 +814,18 @@ Echo.Component = Core.extend({
     },
     
     /**
-     * Retrieves local style property map associations.
-     * This method should only be used by a de-serialized for
-     * the purpose of rapidly loading properties into a new
-     * component.
+     * Retrieves local style property map associations.  This method should only be used by a de-serialized for
+     * the purpose of rapidly loading properties into a new component.
      * 
      * @return the internal style property map associations
-     *         (an associative array).
      */
     getLocalStyleData: function() {
         return this._localStyle;
     },
     
     /**
-     * Returns the layout direction with which the component should be
-     * rendered, based on analyzing the component's layout direction,
-     * its parent's, and/or the application's.
+     * Returns the layout direction with which the component should be rendered, based on analyzing the component's layout 
+     * direction, its parent's, and/or the application's.
      * 
      * @return the rendering layout direction
      * @type Echo.LayoutDirection
@@ -849,8 +845,7 @@ Echo.Component = Core.extend({
     },
     
     /**
-     * Returns the locale  with which the component should be
-     * rendered, based on analyzing the component's locale,
+     * Returns the locale  with which the component should be rendered, based on analyzing the component's locale,
      * its parent's, and/or the application's.
      * 
      * @return the rendering locale
@@ -874,7 +869,6 @@ Echo.Component = Core.extend({
      * Returns the style assigned to this component, if any.
      * 
      * @return the assigned style
-     * @type Object
      */
     getStyle: function() {
         return this._style;
@@ -951,8 +945,7 @@ Echo.Component = Core.extend({
     
     /**
      * Determines the enabled state of this component.
-     * Use isRenderEnabled() to determine whether a component
-     * should be RENDERED as enabled.
+     * Use isRenderEnabled() to determine whether a component should be rendered as enabled.
      * 
      * @return the enabled state of this specific component
      */
@@ -965,7 +958,7 @@ Echo.Component = Core.extend({
      * an enabled state.
      * Disabled <code>Component</code>s are not eligible to receive user input.
      * 
-     * @return true if the component should be rendered enabled.
+     * @return true if the component should be rendered enabled
      * @type Boolean
      */
     isRenderEnabled: function() {
@@ -980,12 +973,10 @@ Echo.Component = Core.extend({
     },
     
     /**
-     * Registers / unregisters a component that has been 
-     * added/removed to/from a registered hierarchy
+     * Registers / unregisters a component that has been added/removed to/from a registered hierarchy
      * (a hierarchy that is registered to an application).
      * 
-     * @param {Echo.Application} application the application 
-     *        (null to unregister the component)
+     * @param {Echo.Application} application the application (null to unregister the component)
      */
     register: function(application) {
         // Sanity check.
@@ -1105,8 +1096,7 @@ Echo.Component = Core.extend({
     /**
      * Removes a child component.
      * 
-     * @param componentOrIndex 
-     *        the index of the component to remove, or the component to remove
+     * @param componentOrIndex the index of the component to remove, or the component to remove
      *        (values may be of type Echo.Component or Number)
      */
     remove: function(componentOrIndex) {
@@ -1269,7 +1259,7 @@ Echo.Component = Core.extend({
     /**
      * Sets the style of the component.
      * 
-     * @param {Object} newValue the new style
+     * @param newValue the new style
      */
     setStyle: function(newValue) {
         var oldValue = this._style;
@@ -1322,11 +1312,17 @@ Echo.Component = Core.extend({
  */
 Echo.FocusManager = Core.extend({
 
+    /**
+     * The managed application.
+     * @type Echo.Application
+     */
     _application: null,
 
     /**
      * Focus management handler for a specific application instance.
      * One FocusManager is created for each application.
+     * 
+     * @param {Echo.Application} the managed application
      */
     $construct: function(application) { 
         this._application = application;
@@ -1438,11 +1434,13 @@ Echo.FocusManager = Core.extend({
      * If omitted the default value of this property is 1.  As an example, a value of 2
      * would skip the immediately adjacent sibling of the current focused component.
      *
-     * @param parentComponent the parent component to search
-     * @param reverse the search direction, false indicating to search forward, true
+     * @param {Echo.Component} parentComponent the parent component to search
+     * @param {Boolean} reverse the search direction, false indicating to search forward, true
      *        indicating reverse
-     * @param minimumDistance the fewest number of lateral focus moves to make before
+     * @param {Number} minimumDistance the fewest number of lateral focus moves to make before
      *        returning a focusable component (optional, default value of 1)
+     * @return the focusable descendant, or null if one cannot be found
+     * @type Echo.Component
      */
     findInParent: function(parentComponent, reverse, minimumDistance) {
         if (!minimumDistance) {
@@ -1479,8 +1477,10 @@ Echo.FocusManager = Core.extend({
      * Determines the index of the child of <code>parent</code> in which
      * <code>descendant</code> is contained.
      * 
-     * @param parent the parent <code>component</code>
-     * @param descendant the descendant <code>component</code>
+     * @param {Echo.Component} parent the parent component
+     * @param {Echo.Component} descendant the descendant component
+     * @return the descendant index, or -1 if the component is not a descendant of <code>parent</code>
+     * @type Number
      */
     _getDescendantIndex: function(parent, descendant) {
         while (descendant.parent != parent && descendant.parent != null) {
@@ -1507,7 +1507,8 @@ Echo.LayoutDirection = Core.extend({
     
     /**
      * LayoutDirection property.  Do not instantiate, use LTR/RTL constants.
-     * @constructor
+     * 
+     * @param {Boolean} ltr true if the layout direction is left-to-right 
      */
     $construct: function(ltr) {
         this._ltr = ltr;
@@ -1577,7 +1578,6 @@ Echo.StyleSheet = Core.extend({
      * @param {String} name the component's style name
      * @param {String} componentType the type of the component
      * @return the style
-     * @type Object
      */
     getRenderStyle: function(name, componentType) {
         // Retrieve style from cache.
@@ -1596,7 +1596,11 @@ Echo.StyleSheet = Core.extend({
     
     /**
      * Creates a rendered style object for a specific style name and componentType and stores it in
-     * the cache.  This method is invoked by <code>getRenderStyle()</code> when a cached style cannot be found. 
+     * the cache.  This method is invoked by <code>getRenderStyle()</code> when a cached style cannot be found.
+     *
+     * @param {String} name the style name
+     * @param {String} componentType the type of the component
+     * @return the style
      */
     _loadRenderStyle: function(name, componentType) {
         // Retrieve value (type-to-style-map) from name-to-style-map with specified name key.
@@ -1632,7 +1636,6 @@ Echo.StyleSheet = Core.extend({
      * @param {String} name the style name
      * @param {String} componentType the component type
      * @return the style
-     * @type Object
      */
     getStyle: function(name, componentType) {
         var typeToStyleMap = this._nameToStyleMap[name];
@@ -1647,7 +1650,7 @@ Echo.StyleSheet = Core.extend({
      * 
      * @param {String} name the style name
      * @param {String} componentType the component type
-     * @param {Object} the style
+     * @param the style
      */
     setStyle: function(name, componentType, style) {
         // Create or clear cache entry for name.
@@ -1719,7 +1722,6 @@ Echo.Update.ComponentUpdate = Core.extend({
     /**
      * A mapping between property names of the parent component and 
      * <code>PropertyUpdate</code>s.
-     * @type Object
      */
     _propertyUpdates: null,
     
@@ -1747,15 +1749,13 @@ Echo.Update.ComponentUpdate = Core.extend({
      * The set of listener types which have been added to/removed from the component.
      * Associative mapping between listener type names and boolean values, true representing
      * the notion that listeners of a type have been added or removed.
-     * @type Object
      */
     _listenerUpdates: null,
 
     /**
      * Creates a new ComponentUpdate.
      * 
-     * @constructor
-     * @param parent the updated component
+     * @param {Echo.Component} parent the updated component
      */
     $construct: function(manager, parent) {
     
@@ -1942,6 +1942,7 @@ Echo.Update.ComponentUpdate = Core.extend({
      * 
      * @param name the name of the property being updated
      * @return the <code>PropertyUpdate</code>, or null if none exists
+     * @type Echo.Update.ComponentUpdate.PropertyUpdate
      */
     getUpdatedProperty: function(name) {
         if (this._propertyUpdates == null) {
@@ -1983,7 +1984,11 @@ Echo.Update.ComponentUpdate = Core.extend({
      * updated in this update.  The provided object should have
      * have keys for the desired property names and  values that evaluate 
      * to true, e.g. to determine if either the "text" and/or "icon" properties
-     * changed, specify {text: true, icon: true}. 
+     * changed, specify {text: true, icon: true}.
+     * 
+     * @param updatedPropertySet the updated property set
+     * @return true if any of the specified properties has been updated in this update
+     * @type Boolean
      */
     hasUpdatedPropertyIn: function(updatedPropertySet) {
         for (var x in this._propertyUpdates) {
@@ -2000,6 +2005,10 @@ Echo.Update.ComponentUpdate = Core.extend({
      * have keys for the desired property names and  values that evaluate 
      * to true, e.g. to determine if no properties other than "text" and "icon"
      * changed, specify {text: true, icon: true}. 
+     * 
+     * @param updatedPropertySet the updated property set
+     * @return true if the set of updated property names is contained within the specified set
+     * @type Boolean
      */
     isUpdatedPropertySetIn: function(updatedPropertySet) {
         for (var x in this._propertyUpdates) {
@@ -2104,7 +2113,7 @@ Echo.Update.ComponentUpdate = Core.extend({
     /**
      * Records the update of a property of the parent component.
      * 
-     * @param propertyName the name of the property
+     * @param {String} propertyName the name of the property
      * @param oldValue the previous value of the property
      * @param newValue the new value of the property
      */
@@ -2127,7 +2136,6 @@ Echo.Update.Manager = Core.extend({
     /**
      * Associative mapping between component ids and Echo.Update.ComponentUpdate
      * instances.
-     * @type Object
      */
     _componentUpdateMap: null,
     
@@ -2392,10 +2400,10 @@ Echo.Update.Manager = Core.extend({
     /**
      * Processes a property update to a component.
      * 
-     * @component {Echo.Component} the updated component
-     * @propertyName {String} the updated property name
-     * @oldValue the previous value of the property
-     * @newValue the new value of the property
+     * @param {Echo.Component} component the updated component
+     * @param {String} propertyName the updated property name
+     * @param oldValue the previous value of the property
+     * @param newValue the new value of the property
      */
     _processComponentPropertyUpdate: function(component, propertyName, oldValue, newValue) {
         if (this.fullRefreshRequired) {
@@ -2432,6 +2440,11 @@ Echo.Update.Manager = Core.extend({
     
     /**
      * Processes component update notification received from the application instance.
+     * 
+     * @param {Echo.Component} component the updated component
+     * @param {String} propertyName the updated property name
+     * @param oldValue the previous value of the property
+     * @param newValue the new value of the property
      */
     _processComponentUpdate: function(parent, propertyName, oldValue, newValue) {
         if (propertyName == "children") {
@@ -2713,11 +2726,13 @@ Echo.ListBox = Core.extend(Echo.AbstractListComponent, {
 
         /**
          * Constant for <code>selectionMode</code> property indicating single selection.
+         * @type Number
          */
         SINGLE_SELECTION: 0,
         
         /**
          * Constant for <code>selectionMode</code> property indicating multiple selection.
+         * @type Number
          */
         MULTIPLE_SELECTION: 2
     },
@@ -2825,13 +2840,22 @@ Echo.ContentPane = Core.extend(Echo.Component, {
 
     $static: {
     
-        /** Setting for <code>overflow</code> property that scrollbars should be displayed when content overflows. */
+        /**
+         * Setting for <code>overflow</code> property that scrollbars should be displayed when content overflows.
+         * @type Number
+         */
         OVERFLOW_AUTO: 0,
 
-        /** Setting for <code>overflow</code> property indicating that overflowing content should be hidden. */
+        /** 
+         * Setting for <code>overflow</code> property indicating that overflowing content should be hidden.
+         * @type Number 
+         */
         OVERFLOW_HIDDEN: 1,
 
-        /** Setting for <code>overflow</code> property indicating that scrollbars should always be displayed. */
+        /** 
+         * Setting for <code>overflow</code> property indicating that scrollbars should always be displayed.
+         * @type Number 
+         */
         OVERFLOW_SCROLL: 2
     },
 
@@ -2891,12 +2915,14 @@ Echo.Grid = Core.extend(Echo.Component, {
          * Constant value for <code>orientation</code> property indicating cells 
          * should be laid out horizontally and then vertically.
          * <code>ORIENTATION_HORIZONTAL</code> is the default orientation setting.
+         * @type Number
          */
         ORIENTATION_HORIZONTAL: 0,
     
         /**
          * Constant value for <code>orientation</code> property indicating cells 
          * should be laid out vertically and then horizontally. 
+         * @type Number
          */
         ORIENTATION_VERTICAL: 1,
 
@@ -2909,6 +2935,7 @@ Echo.Grid = Core.extend(Echo.Component, {
          * direction of the layout of the <code>Grid</code>, i.e., it may only be 
          * used for column-spans if the orientation is horizontal, and it may only
          * be used for row-spans if the orientation is vertical.
+         * @type Number
          */
         SPAN_FILL: -1
     },
@@ -3021,25 +3048,83 @@ Echo.Row = Core.extend(Echo.Component, {
 Echo.SplitPane = Core.extend(Echo.Component, {
 
     $static: {
+    
+        /**
+         * Orientation property value indicating a leading / trailing layout.
+         * @type Number
+         */
         ORIENTATION_HORIZONTAL_LEADING_TRAILING: 0,
+
+        /**
+         * Orientation property value indicating a trailing / leading layout.
+         * @type Number
+         */
         ORIENTATION_HORIZONTAL_TRAILING_LEADING: 1,
+        
+        /**
+         * Orientation property value indicating a left / right layout.
+         * @type Number
+         */
         ORIENTATION_HORIZONTAL_LEFT_RIGHT: 2,
+        
+        /**
+         * Orientation property value indicating a right / left layout.
+         * @type Number
+         */
         ORIENTATION_HORIZONTAL_RIGHT_LEFT: 3,
+        
+        /**
+         * Orientation property value indicating a top / bottom layout.
+         * @type Number
+         */
         ORIENTATION_VERTICAL_TOP_BOTTOM: 4,
+
+        /**
+         * Orientation property value indicating a bottom / top layout.
+         * @type Number
+         */
         ORIENTATION_VERTICAL_BOTTOM_TOP: 5,
         
+        /**
+         * Default separator position.
+         * @type {#Extent}
+         */
         DEFAULT_SEPARATOR_POSITION: "50%",
+        
+        /**
+         * Default separator size for fixed SplitPanes.
+         * @type {#Extent}
+         */
         DEFAULT_SEPARATOR_SIZE_FIXED: 0,
+
+        /**
+         * Default separator size for resizable SplitPanes.
+         * @type {#Extent}
+         */
         DEFAULT_SEPARATOR_SIZE_RESIZABLE: 4,
+        
+        /** 
+         * Default separator color.
+         * @type {#Color}
+         */
         DEFAULT_SEPARATOR_COLOR: "#3f3f4f",
         
-        /** Setting for <code>overflow</code> property that scrollbars should be displayed when content overflows. */
+        /** 
+         * Setting for <code>overflow</code> property that scrollbars should be displayed when content overflows. 
+         * @type Number
+         */
         OVERFLOW_AUTO: 0,
 
-        /** Setting for <code>overflow</code> property indicating that overflowing content should be hidden. */
+        /** 
+         * Setting for <code>overflow</code> property indicating that overflowing content should be hidden.
+         * @type Number
+         */
         OVERFLOW_HIDDEN: 1,
 
-        /** Setting for <code>overflow</code> property indicating that scrollbars should always be displayed. */
+        /** 
+         * Setting for <code>overflow</code> property indicating that scrollbars should always be displayed. 
+         * @type Number
+         */
         OVERFLOW_SCROLL: 2
     },
 
@@ -3198,17 +3283,77 @@ Echo.WindowPane = Core.extend(Echo.Component, {
     },
 
     $static: {
+        
+        /** 
+         * Default WindowPane border.
+         * @type #FillImageBorder
+         */
         DEFAULT_BORDER: { color: "#36537a", borderInsets: 20, contentInsets: 3 },
+        
+        /** 
+         * Default WindowPane content background color.
+         * @type #Color
+         */
         DEFAULT_BACKGROUND: "#ffffff",
+        
+        /** 
+         * Default WindowPane content background color.
+         * @type #Color
+         */
         DEFAULT_FOREGROUND: "#000000",
+        
+        /** 
+         * Default insets around WindowPane controls.
+         * @type #Insets
+         */
         DEFAULT_CONTROLS_INSETS: 4,
+        
+        /** 
+         * Default spacing between WindowPane controls.
+         * @type #Extent
+         */
         DEFAULT_CONTROLS_SPACING: 4,
+        
+        /** 
+         * Default WindowPane height.
+         * @type #Extent
+         */
         DEFAULT_HEIGHT: "15em",
+        
+        /** 
+         * Default WindowPane minimum width.
+         * @type #Extent
+         */
         DEFAULT_MINIMUM_WIDTH: 100,
+        
+        /** 
+         * Default WindowPane minimum height.
+         * @type #Extent
+         */
         DEFAULT_MINIMUM_HEIGHT: 100,
+        
+        /** 
+         * Default WindowPane title background color.
+         * @type #Color
+         */
         DEFAULT_TITLE_BACKGROUND: "#becafe",
+        
+        /** 
+         * Default WindowPane title height.
+         * @type #Extent
+         */
         DEFAULT_TITLE_HEIGHT: 30,
+        
+        /** 
+         * Default WindowPane title insets.
+         * @type #Insets
+         */
         DEFAULT_TITLE_INSETS: "5px 10px",
+        
+        /** 
+         * Default WindowPane width.
+         * @type #Extent
+         */
         DEFAULT_WIDTH: "30em"
     },
 
