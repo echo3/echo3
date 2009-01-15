@@ -233,7 +233,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
              * 
              * @param {Integer} y the y-index
              * @return the array of cells.
-             * @type {Array}
+             * @type Array
              */
             _getCellArray: function(y) {
                 while (y >= this.cellArrays.length) {
@@ -409,6 +409,8 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
              * Iterates over cells to create the cell matrix, adjusting column and row spans as of cells to ensure
              * that no overlap occurs between column and row spans.
              * Additionally determines actual y-size of grid.   
+             * 
+             * @param {Array} cells array of <code>Echo.Sync.Grid.Processor.Cell</code> instances 
              */
             renderCellMatrix: function(cells) {
                 this.gridXSize = parseInt(this.grid.render("size", 2), 10);
@@ -486,11 +488,13 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
     
     /**
      * The number of columns.
+     * @type Number
      */
     _columnCount: null,
     
     /**
      * The number of rows.
+     * @type Number
      */
     _rowCount: null,
     
