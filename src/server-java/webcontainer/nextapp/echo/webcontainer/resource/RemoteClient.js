@@ -23,15 +23,19 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
          * Base URL from which libraries should be retrieved.
          * Libraries are loaded into global scope, and are thus not
          * bound to any particular client instance.
-         * 
          * @type String
          */
         libraryServerUrl: null,
         
+        /**
+         * Flag indicating whether global remote client initialization has been performed.
+         * @type Boolean 
+         */
         initialized: false,
         
         /**
          * Resource bundle containing (error/issue) messages displayed to user.
+         * @type Core.ResourceBundle
          */
         resource: new Core.ResourceBundle({
             "ResyncMessage": "This window was not synchronized with the web server and has been reset.  " + 
@@ -120,7 +124,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     
     /**
      * Network delay before raising wait indicator, in milliseconds.
-     * @type Integer
+     * @type Number
      */
     _preWaitIndicatorDelay: 500,
     
@@ -132,11 +136,13 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     
     /**
      * Flag indicating whether the remote client has been initialized.
+     * @type Boolean
      */
     _initialized: false,
     
     /**
      * Current client/server transaction id.
+     * @type Number
      */
     transactionId: 0,
     
@@ -245,7 +251,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     /**
      * Returns the URL of a library service based on the serviceId.
      * 
-     * @param serviceId the serviceId
+     * @param {String} serviceId the serviceId
      * @return the full library URL
      * @type String
      */
@@ -264,8 +270,9 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     /**
      * Returns the URL of a remote server-side service.
      *
-     * @param serviceId the service id
+     * @param {String} serviceId the service id
      * @return the URL
+     * @type String
      */
     _getServiceUrl: function(serviceId) {
         return this._serverUrl + "?sid=" + serviceId;
@@ -622,7 +629,7 @@ Echo.RemoteClient.AsyncManager = Core.extend({
     /**
      * Sets the interval at which the server should be polled.
      * 
-     * @param interval the new polling interval, in milliseconds
+     * @param {Number} interval the new polling interval, in milliseconds
      */
     _setInterval: function(interval) {
         this._runnable.timeInterval = interval;
@@ -692,7 +699,7 @@ Echo.RemoteClient.ClientMessage = Core.extend({
              * Constructs a property element with the given key-value pair and adds that to the 
              * client properties directive in the client message.
              * 
-             * @param key the key
+             * @param {String} key the key
              * @param value the value
              */
             _add: function(key, value) {
@@ -709,7 +716,7 @@ Echo.RemoteClient.ClientMessage = Core.extend({
     
     /**
      * The RemoteClient which generated this message.
-     * @type {Echo.RemoteClient}
+     * @type Echo.RemoteClient
      */
     _client: null,
     
@@ -717,7 +724,6 @@ Echo.RemoteClient.ClientMessage = Core.extend({
      * Mapping between component ids and updated property values.
      * Values in this map are updated by the storeProperty() method.
      * These values will be rendered to XML when required.
-     * @type {Object}
      */
     _componentIdToPropertyMap: null,
 
@@ -736,7 +742,6 @@ Echo.RemoteClient.ClientMessage = Core.extend({
     
     /**
      * Event data object of event responsible for server interaction.
-     * @type Object
      */
     _eventData: null,
     
@@ -749,8 +754,8 @@ Echo.RemoteClient.ClientMessage = Core.extend({
     /**
      * Creates a new client message.
      *
-     * @param client the RemoteClient
-     * @param initialize flag indicating whether this is the initial client message, which will 
+     * @param {Echo.RemoteClient} client the RemoteClient
+     * @param {Boolean} initialize flag indicating whether this is the initial client message, which will 
      *        gather data about the client environment
      */
     $construct: function(client, initialize) {
@@ -882,7 +887,7 @@ Echo.RemoteClient.ClientMessage = Core.extend({
      *
      * @param {String} componentId the renderId of the event-firing component
      * @param {String} eventType the type of the event
-     * @param {Object} the event data object
+     * @param the event data object
      */
     setEvent: function(componentId, eventType, eventData) {
         this._eventComponentId = componentId;
@@ -895,7 +900,7 @@ Echo.RemoteClient.ClientMessage = Core.extend({
      *
      * @param {String} componentId the renderId of the component
      * @param {String} propertyName the name of the property
-     * @param {Object} the new property value
+     * @param the new property value
      */
     storeProperty: function(componentId, propertyName, propertyValue) {
         var propertyMap = this._componentIdToPropertyMap[componentId];
@@ -942,7 +947,8 @@ Echo.RemoteClient.CommandExecProcessor = Core.extend(Echo.RemoteClient.Directive
          * Registers a command execution peer.
          *
          * @param {String} type the command type name
-         * @param commandPeer an object providing an 'execute()' method which be invoked to execute the command.
+         * @param {Echo.RemoteClient.CommandExec} commandPeer an object providing an 'execute()' method which be invoked to 
+         *        execute the command.
          */
         registerPeer: function(type, commandPeer) {
             Echo.RemoteClient.CommandExecProcessor._typeToPeerMap[type] = commandPeer;
@@ -1017,7 +1023,10 @@ Echo.RemoteClient.ComponentSyncRemoveProcessor = Core.extend(Echo.RemoteClient.D
     
     $static: {
         
-        /** Reverse array sorter for removing components by index from last to first. */
+        /** 
+         * Reverse array sorter for removing components by index from last to first. 
+         * @see Array#sort
+         */
         _numericReverseSort: function(a, b) {
             return b - a;
         }
