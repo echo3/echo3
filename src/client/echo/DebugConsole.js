@@ -5,22 +5,40 @@
  */
 Echo.DebugConsole = {
         
-    /** Flag indicating whether the debug console has been installed. */
+    /** 
+     * Flag indicating whether the debug console has been installed. 
+     * @type Boolean
+     */
     _installed: false,
     
-    /** Flag indicating whether the console has been rendered on screen. */
+    /** 
+     * Flag indicating whether the console has been rendered on screen. 
+     * @type Boolean
+     */
     _rendered: false,
     
-    /** The DOM element to which log messages should be appended. */
+    /** 
+     * The DOM element to which log messages should be appended. 
+     * @type Element
+     */
     _contentElement: null,
     
-    /** The outer container DOM element of the rendered console. */
+    /** 
+     * The outer container DOM element of the rendered console. 
+     * @type Element
+     */
     _windowElement: null,
     
-    /** Flag indicating whether the console is logging/processing output. */
+    /** 
+     * Flag indicating whether the console is logging/processing output.
+     * @type Boolean 
+     */
     _logging: false,
     
-    /** Flag indicating whether the console is maximized. */
+    /** 
+     * Flag indicating whether the console is maximized.
+     * @type Boolean 
+     */
     _maximized: false,
     
     /**
@@ -78,6 +96,8 @@ Echo.DebugConsole = {
     
     /**
      * Method which will overwrite Core.Debug.consoleWrite().
+     * 
+     * @text {String} the text to output
      */
     _consoleWrite: function(text) {
         if (!Echo.DebugConsole._logging) {

@@ -71,7 +71,6 @@ Echo.Client = Core.extend({
      * Id (String) map containing input restrictions.
      * Values are booleans, true indicating property updates are NOT restricted, and false
      * indicated all updates are restricted.
-     * @type Object
      */
     _inputRescriptionMap: null,
     
