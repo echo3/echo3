@@ -13,6 +13,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     
         /**
          * Array containing properties that may be updated without full re-render.
+         * @type Array
          */
         _supportedPartialProperties: ["text", "editable"]
     },
@@ -110,6 +111,10 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     
     /**
      * Reduces a percentage width by a number of pixels based on the container size.
+     * 
+     * @param {Number} percentValue the percent span
+     * @param {Number} reducePixels the number of pixels by which the percent span should be reduced
+     * @param {Number} containerPixels the size of the container element 
      */
     _adjustPercentWidth: function(percentValue, reducePixels, containerPixels) {
         var value = (100 - Math.ceil(100 * reducePixels / containerPixels)) * percentValue / 100;
@@ -129,8 +134,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /**
-     * Processes a mouse click event.
-     * Notifies application of focus.
+     * Processes a mouse click event. Notifies application of focus.
      */
     _processClick: function(e) {
         if (!this.client || !this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
@@ -140,8 +144,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     },
 
     /**
-     * Processes a focus event.
-     * Notifies application of focus.
+     * Processes a focus event. Notifies application of focus.
      */
     _processFocus: function(e) {
         this._focused = true;
@@ -152,8 +155,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /**
-     * Processes a key press event.  
-     * Prevents input when client is not ready. 
+     * Processes a key press event.  Prevents input when client is not ready. 
      */
     _processKeyPress: function(e) {
         if (!this.client || !this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
@@ -298,7 +300,10 @@ Echo.Sync.TextField = Core.extend(Echo.Sync.TextComponent, {
     
     $virtual: {
         
-        /** Input element type, either "text" or "password" */
+        /** 
+         * Input element type, either "text" or "password"
+         * @type String 
+         */
         _type: "text"
     },
 
