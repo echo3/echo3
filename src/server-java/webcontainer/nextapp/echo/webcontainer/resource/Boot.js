@@ -6,16 +6,20 @@
 
 /**
  * Boot namespace.  Do not instantiate.
+ * @namespace
  */
 Echo.Boot = { 
 
     /**
      * Array of methods which should be invoked at boot.
+     * @type Array
      */
     _initMethods: [],
     
     /**
      * Adds a method to be invoked at boot.
+     * 
+     * @param {Function} initMethod the method to invoke
      */
     addInitMethod: function(initMethod) {
         Echo.Boot._initMethods.push(initMethod);
@@ -24,7 +28,7 @@ Echo.Boot = {
     /**
      * Boots a remote client.
      * 
-     * @param serverBaseUrl the servlet URL
+     * @param {String} serverBaseUrl the servlet URL
      */
     boot: function(serverBaseUrl, debug) {
         Core.Web.init();
