@@ -908,10 +908,25 @@ Echo.RemoteClient.ClientMessage = Core.extend({
 });
 
 /**
- * Namespace for built-in command execution peers.
+ * Namespace/base class for command execution peers.
  * @namespace
  */
-Echo.RemoteClient.CommandExec = { };
+Echo.RemoteClient.CommandExec = Core.extend({ 
+    
+    $abstract: true,
+
+    $static: {
+
+        /** 
+         * Executes the command.
+         * Command implementations should overide.  Not inherited, provided for documentation purposes.
+         * 
+         * @param {Echo.Client} client the client
+         * @param commandData object containing command properties provided from server
+         */
+        execute: function(client, commandData) { }
+    }
+});
 
 /**
  * SerevrMessage directive processor for command executions.

@@ -1,15 +1,21 @@
 /**
- * Command exeecution peer: Browser Redirect
+ * Command execution peer: Browser Redirect
  */
-Echo.RemoteClient.CommandExec.BrowserRedirect = {
+Echo.RemoteClient.CommandExec.BrowserRedirect = Core.extend(Echo.RemoteClient.CommandExec, {
+    
+    $static: {
 
-    execute: function(client, commandData) {
-        if (!commandData.uri) {
-            throw new Error("URI not specified in BrowserOpenWindowCommand.");
+        /** @see Echo.RemoteClient.CommandExecProcessor#execute */
+        execute: function(client, commandData) {
+            if (!commandData.uri) {
+                throw new Error("URI not specified in BrowserOpenWindowCommand.");
+            }
+            window.location.href = commandData.uri;
         }
-        window.location.href = commandData.uri;
-    }    
-};
+    },
+    
+    $load: function() {
+        Echo.RemoteClient.CommandExecProcessor.registerPeer("nextapp.echo.webcontainer.command.BrowserRedirectCommand", this);
+    }
+});
 
-Echo.RemoteClient.CommandExecProcessor.registerPeer("nextapp.echo.webcontainer.command.BrowserRedirectCommand", 
-        Echo.RemoteClient.CommandExec.BrowserRedirect);
