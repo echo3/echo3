@@ -24,8 +24,8 @@ Echo.Serial = {
     /**
      * Adds a property translator for a specific class name.
      *
-     * @param className the class name
-     * @param translator the property translator 
+     * @param {String} className the class name
+     * @param {Echo.Serial.PropertyTranslator} translator the property translator singleton (static class)
      */
     addPropertyTranslator: function(className, translator) {
         this._translatorMap[className] = translator;
@@ -34,8 +34,8 @@ Echo.Serial = {
     /**
      * Adds a property translator for a specific constructor.
      *
-     * @param type the constructor
-     * @param translator the property translator 
+     * @param {Function} type the constructor
+     * @param {Echo.Serial.PropertyTranslator} translator the property translator singleton (static class) 
      */
     addPropertyTranslatorByType: function(type, translator) {
         this._translatorTypeData.push(type, translator);
@@ -44,8 +44,8 @@ Echo.Serial = {
     /**
      * Retrieves a property translator for a specific class name.
      *
-     * @param className the class name
-     * @return the property translator
+     * @param {String} className the class name
+     * @return {Echo.Serial.PropertyTranslator} the property translator
      */
     getPropertyTranslator: function(className) {
         return this._translatorMap[className];
@@ -54,8 +54,8 @@ Echo.Serial = {
     /**
      * Retrieves a property translator for a specific constructor.
      *
-     * @param type the constructor
-     * @return the property translator
+     * @param {Function} type the constructor
+     * @return {Echo.Serial.PropertyTranslator} the property translator
      */
     getPropertyTranslatorByType: function(type) {
         for (var i = 0; i < this._translatorTypeData.length; i += 2) {
@@ -74,13 +74,13 @@ Echo.Serial = {
      * the properties 'component' (the component instance) and 'event' (the event
      * type as a string).
      * 
-     * @param client {Echo.Client} the containing client
-     * @param cElement {Element} the 'c' DOM element to deserialize
+     * @param {Echo.Client} client the containing client
+     * @param {Element} cElement the 'c' DOM element to deserialize
      * @param propertyMap (optional) a mapping between property identifiers and property values for referenced properties 
      *        (properties which were rendered elsewhere in the document and are potentially referenced by multiple components)
      * @param styleMap (optional) a mapping between style identifiers and style values for referenced styles (styles which were 
      *        rendered elsewhere in the document and are potentially referenced by multiple components)
-     * @return the instantiated component.
+     * @return the instantiated component
      */
     loadComponent: function(client, cElement, propertyMap, styleMap) {
         if (!cElement.nodeName == "c") {
@@ -129,6 +129,11 @@ Echo.Serial = {
         return component;
     },
     
+    /**
+     * @param {Echo.Client} client the client
+     * @param {Element} eventElement the event element
+     * @param {Echo.Component} the component
+     */
     _loadComponentEvent: function(client, eventElement, component) {
         var eventType = eventElement.getAttribute("t");
         client.addComponentListener(component, eventType);
