@@ -5,7 +5,10 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
 
     $static: {
     
-       /** Default spacing between label icon/text. */
+       /** 
+        * Default spacing between label icon/text. 
+        * @type #Extent
+        */
        _defaultIconTextMargin: 5
     },
     

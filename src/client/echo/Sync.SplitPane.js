@@ -125,7 +125,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             },
             
             /**
-             * Retrieve scroll bar positions from pane DIV element and store in object.
+             * Retrieve scroll bar positions from pane DIV element and store in this object.
              * 
              * @param paneDiv the pane's DIV element
              */
@@ -362,7 +362,8 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     /**
      * Retrieves the (potentially cached) dimensions of the SplitPane outer DIV.
      * 
-     * @return {Core.Web.Measure.Bounds} the dimensions
+     * @return the dimensions
+     * @type Core.Web.Measure.Bounds
      */
     _getSize: function() {
         if (!this._size) {
@@ -878,6 +879,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     
     /**
      * Renders the removal a single child component.
+     * 
      * @param {Echo.Update.ComponentUpdate} update the update
      * @param {Echo.Component} child the removed child
      */

@@ -4,16 +4,23 @@
 Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
 
     $static: {
-        /** Alternate rendering: default height. */
-        DEFAULT_DIV_HEIGHT: "6em",
+    
+        /** 
+         * Alternate rendering: default border style.
+         * @type #Border
+         */
+        DEFAULT_DIV_BORDER: "1px solid #7f7f7f",
         
-        /** Alternate rendering: default border style. */
-        DEFAULT_DIV_BORDER: "1px solid",
-        
-        /** Alternate rendering: default selected item background. */
+        /** 
+         * Alternate rendering: default selected item background.
+         * @type #Color
+         */
         DEFAULT_SELECTED_BACKGROUND: "#0a246a",
         
-        /** Alternate rendering: default selected item foreground. */
+        /** 
+         * Alternate rendering: default selected item foreground.
+         * @type #Color
+         */
         DEFAULT_SELECTED_FOREGROUND: "#ffffff"
     },
 
@@ -256,6 +263,9 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
      * Renders a list box as a DIV element containing DIV elements of selectable items.
      * This strategy is used on IE6 due to bugs in this browser's rendering engine.
      * This strategy is used when the _alternateRender flag is true.
+     * 
+     * @param {Echo.Update.ComponentUpdate} update the update
+     * @param {Element} parent the parent DOM element 
      */
     _renderMainAsDiv: function(update, parentElement) {
         this._element = document.createElement("table");
@@ -329,6 +339,9 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
      * do to major bugs in this browser (listboxes randomly change back into selectfields
      * when rendered by DOM manipulation).
      * This strategy is used when the _alternateRender flag is false.
+     * 
+     * @param {Echo.Update.ComponentUpdate} update the update
+     * @param {Element} parent the parent DOM element 
      */
     _renderMainAsSelect: function(update, parentElement) {
         this._element = document.createElement("select");
