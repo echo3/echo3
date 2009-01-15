@@ -251,7 +251,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      * Processes a mouse-move event on the window border (resize drag).
      */
     _processBorderMouseMove: function(e) {
-        this.setBounds({
+        this._setBounds({
             x: this._resizeIncrement.x == -1 ? this._dragInit.x + e.clientX - this._dragOrigin.x : null,
             y: this._resizeIncrement.y == -1 ? this._dragInit.y + e.clientY - this._dragOrigin.y : null,
             width: this._dragInit.width + (this._resizeIncrement.x * (e.clientX - this._dragOrigin.x)),
@@ -396,7 +396,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      * Processes a mouse move event on the window title bar (move drag).
      */
     _processTitleBarMouseMove: function(e) {
-        this.setBounds({
+        this._setBounds({
             x: this._dragInit.x + e.clientX - this._dragOrigin.x, 
             y: this._dragInit.y + e.clientY - this._dragOrigin.y
         }, true);
@@ -422,7 +422,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      * Repositions and resizes the window based on the current bounds specified in this._rendered.
      * Performs no operation if this._rendered does not have width/height data.
      */
-    redraw: function() {
+    _redraw: function() {
         if (this._rendered.width <= 0 || this._rendered.height <= 0) {
             // Do not render if window does not have set dimensions.
             return;
@@ -793,7 +793,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     /** @see Echo.Render.ComponentSync#renderDisplay */
     renderDisplay: function() {
         this._loadContainerSize();
-        this.setBounds(this._requested, false);
+        this._setBounds(this._requested, false);
         Core.Web.VirtualPosition.redraw(this._contentDiv);
         Core.Web.VirtualPosition.redraw(this._maskDiv);
     },
@@ -879,12 +879,13 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     
     /**
      * Sets the bounds of the window.  Constrains the specified bounds to within the available area.
+     * Invokes _redraw().
      * 
      * @param bounds an object containing extent properties x, y, width, and height
      * @param {Boolean} userAdjusting flag indicating whether this bounds adjustment is a result of the user moving/resizing
      *        the window (true) or is programmatic (false)
      */
-    setBounds: function(bounds, userAdjusting) {
+    _setBounds: function(bounds, userAdjusting) {
         var c = this._coordinatesToPixels(bounds);
         
         if (this._rendered == null) {
@@ -943,6 +944,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             this._rendered.y = Math.round(c.y);
         }
 
-        this.redraw();
+        this._redraw();
     }
 });
