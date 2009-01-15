@@ -4,9 +4,6 @@
 Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
 
     $static: {
-        DEFAULT_TITLE_BACKGROUND: "#abcdef",
-        DEFAULT_TITLE_INSETS: "5px 10px",
-        
         /** Array mapping CSS cursor types to indices of the _borderDivs property. */
         CURSORS: ["nw-resize", "n-resize", "ne-resize", "w-resize", "e-resize", "sw-resize", "s-resize", "se-resize"],
         
@@ -567,7 +564,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         titleTextDiv.style.whiteSpace = "nowrap";
         Echo.Sync.Font.render(this.component.render("titleFont"), titleTextDiv);
         Echo.Sync.Insets.render(this.component.render("titleInsets", 
-                Echo.Sync.WindowPane.DEFAULT_TITLE_INSETS), titleTextDiv, "padding");
+                Echo.WindowPane.DEFAULT_TITLE_INSETS), titleTextDiv, "padding");
         titleTextDiv.appendChild(document.createTextNode(title ? title : "\u00a0"));
         this._titleBarDiv.appendChild(titleTextDiv);
         
@@ -606,7 +603,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         }
     
         if (!titleBackground && !titleBackgroundImage) {
-            this._titleBarDiv.style.backgroundColor = Echo.Sync.WindowPane.DEFAULT_TITLE_BACKGROUND;
+            this._titleBarDiv.style.backgroundColor = Echo.WindowPane.DEFAULT_TITLE_BACKGROUND;
         }
         
         if (hasControlIcons) {

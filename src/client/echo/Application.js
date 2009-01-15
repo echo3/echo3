@@ -3198,7 +3198,7 @@ Echo.WindowPane = Core.extend(Echo.Component, {
     },
 
     $static: {
-        DEFAULT_BORDER: { color: "#4f4faf", borderInsets: 20, contentInsets: 3 },
+        DEFAULT_BORDER: { color: "#36537a", borderInsets: 20, contentInsets: 3 },
         DEFAULT_BACKGROUND: "#ffffff",
         DEFAULT_FOREGROUND: "#000000",
         DEFAULT_CONTROLS_INSETS: 4,
@@ -3206,7 +3206,9 @@ Echo.WindowPane = Core.extend(Echo.Component, {
         DEFAULT_HEIGHT: "15em",
         DEFAULT_MINIMUM_WIDTH: 100,
         DEFAULT_MINIMUM_HEIGHT: 100,
+        DEFAULT_TITLE_BACKGROUND: "#becafe",
         DEFAULT_TITLE_HEIGHT: 30,
+        DEFAULT_TITLE_INSETS: "5px 10px",
         DEFAULT_WIDTH: "30em"
     },
 
