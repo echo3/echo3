@@ -33,6 +33,7 @@ import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.testapp.interactive.ButtonColumn;
+import nextapp.echo.testapp.interactive.InteractiveApp;
 import nextapp.echo.testapp.interactive.StyleUtil;
 
 /**
@@ -82,6 +83,24 @@ public class WindowTest extends SplitPane {
         controlsColumn.addButton("Clear Font", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().getDefaultWindow().setFont(null);
+            }
+        });
+        controlsColumn.addButton("Multiple Content Changes", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                InteractiveApp.getApp().displayWelcomePane();
+                InteractiveApp.getApp().displayTestPane();
+                InteractiveApp.getApp().displayWelcomePane();
+                InteractiveApp.getApp().displayTestPane();
+                InteractiveApp.getApp().displayWelcomePane();
+                InteractiveApp.getApp().displayTestPane();
+                InteractiveApp.getApp().displayTestPane();
+                InteractiveApp.getApp().displayTestPane();
+                InteractiveApp.getApp().displayWelcomePane();
+                InteractiveApp.getApp().displayWelcomePane();
+                InteractiveApp.getApp().displayWelcomePane();
+                InteractiveApp.getApp().displayTestPane();
+                InteractiveApp.getApp().displayWelcomePane();
+                InteractiveApp.getApp().displayTestPane();
             }
         });
     }
