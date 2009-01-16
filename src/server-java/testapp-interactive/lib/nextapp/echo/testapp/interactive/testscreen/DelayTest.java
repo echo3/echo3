@@ -37,6 +37,7 @@ import nextapp.echo.app.TextField;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.SplitPaneLayoutData;
+import nextapp.echo.testapp.interactive.InteractiveApp;
 /**
  * A test for handling of long-running server-interactions.
  */
@@ -100,6 +101,12 @@ public class DelayTest extends Column {
         add(blockedButton);
         
         textField = new TextField();
+        textField.addActionListener(new ActionListener() {
+        
+            public void actionPerformed(ActionEvent e) {
+                InteractiveApp.getApp().consoleWrite("TextField Action Event: " + e);
+            }
+        });
         add(textField);
         
         CheckBox checkBox = new CheckBox();
