@@ -4,7 +4,17 @@
 Echo.Sync.RemoteTable = Core.extend(Echo.Component, {
 
     $static: {
+        
+        /** 
+         * Default selection background color.  Used only when no selection style properties have been set.
+         * @type Color
+         */
         DEFAULT_SELECTION_BACKGROUND: "#00006f",
+
+        /** 
+         * Default selection foreground color.  Used only when no selection style properties have been set.
+         * @type Color
+         */
         DEFAULT_SELECTION_FOREGROUND: "#ffffff"
     },
     
@@ -13,12 +23,13 @@ Echo.Sync.RemoteTable = Core.extend(Echo.Component, {
         Echo.ComponentFactory.registerType("RT", this);
     },
 
+    /** @see Echo.Component#compnoentType */
     componentType: "RemoteTable",
 
     $virtual: {
         
         /**
-         * Programatically performs a button action.
+         * Programmatically performs a button action.
          */
         doAction: function() {
             this.fireEvent({type: "action", source: this, data: this.get("actionCommand")});
@@ -33,8 +44,16 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     
     $static: {
     
+        /**
+         * Constant describing header row index.
+         * @type Number
+         */
         _HEADER_ROW: -1,
         
+        /**
+         * Array of properties which may be updated without full re-render.
+         * @type Array
+         */
         _supportedPartialProperties: ["selection"]
     },
     
@@ -44,14 +63,167 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     
     /**
      * Flag indicating that no selection styling attributes have been set, thus default highlight should be used.
+     * @type Boolean
      */
     _useDefaultSelectionStyle: false,
     
+    /** Constructor. */
     $construct: function() {
         this.selectionModel = null;
         this.lastSelectedIndex = null;
     },
     
+    /**
+     * Adds event listeners.
+     */
+    _addEventListeners: function() {
+        if (!this.component.isRenderEnabled()) {
+            return;
+        }
+        
+        if (this._selectionEnabled || this._rolloverEnabled) {
+            if (this._rowCount === 0) {
+                return;
+            }
+            var mouseEnterLeaveSupport = Core.Web.Env.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
+            var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
+            var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
+            var rowOffset = (this._headerVisible ? 1 : 0);
+            var rolloverEnterRef = Core.method(this, this._processRolloverEnter);
+            var rolloverExitRef = Core.method(this, this._processRolloverExit);
+            var clickRef = Core.method(this, this._processClick);
+            
+            for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
+                var tr = this._table.rows[rowIndex + rowOffset];
+                if (this._rolloverEnabled) {
+                    Core.Web.Event.add(tr, enterEvent, rolloverEnterRef, false);
+                    Core.Web.Event.add(tr, exitEvent, rolloverExitRef, false);
+                }
+                if (this._selectionEnabled) {
+                    Core.Web.Event.add(tr, "click", clickRef, false);
+                    Core.Web.Event.Selection.disable(tr);
+                }
+            }
+        }
+    },
+    
+    /**
+     * Deselects all selected rows.
+     */
+    _clearSelected: function() {
+        for (var i = 0; i < this._rowCount; ++i) {
+            if (this.selectionModel.isSelectedIndex(i)) {
+                this._setSelected(i, false);
+            }
+        }
+    },
+    
+    _createRowPrototype: function() {
+        var tr = document.createElement("tr");
+    
+        var tdPrototype = document.createElement("td");
+        Echo.Sync.Border.render(this.component.render("border"), tdPrototype);
+        tdPrototype.style.overflow = "hidden";
+        tdPrototype.style.padding = this._defaultCellPadding;
+    
+        for (var columnIndex = 0; columnIndex < this._columnCount; columnIndex++) {
+            var td = tdPrototype.cloneNode(false);
+            tr.appendChild(td);
+        }
+        return tr;
+    },
+    
+    _doAction: function() {
+        this.component.doAction();
+    },
+    
+    _getRowIndex: function(element) {
+        var testElement = this._tbody.firstChild;
+        var index = this._headerVisible ? -1 : 0;
+        while (testElement) {
+            if (testElement == element) {
+                return index;
+            }
+            testElement = testElement.nextSibling;
+            ++index;
+        }
+        return -1;
+    },
+    
+    _processClick: function(e) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
+            return true;
+        }
+        var tr = e.registeredTarget;
+        var rowIndex = this._getRowIndex(tr);
+        if (rowIndex == -1) {
+            return;
+        }
+        
+        Core.Web.DOM.preventEventDefault(e);
+    
+        if (this.selectionModel.getSelectionMode() == Echo.Sync.RemoteTable.ListSelectionModel.SINGLE_SELECTION || 
+                !(e.shiftKey || e.ctrlKey || e.metaKey || e.altKey)) {
+            this._clearSelected();
+        }
+    
+        if (!this.selectionModel.getSelectionMode() == Echo.Sync.RemoteTable.ListSelectionModel.SINGLE_SELECTION && 
+                e.shiftKey && this.lastSelectedIndex != -1) {
+            var startIndex;
+            var endIndex;
+            if (this.lastSelectedIndex < rowIndex) {
+                startIndex = this.lastSelectedIndex;
+                endIndex = rowIndex;
+            } else {
+                startIndex = rowIndex;
+                endIndex = this.lastSelectedIndex;
+            }
+            for (var i = startIndex; i <= endIndex; ++i) {
+                this._setSelected(i, true);
+            }
+        } else {
+            this.lastSelectedIndex = rowIndex;
+            this._setSelected(rowIndex, !this.selectionModel.isSelectedIndex(rowIndex));
+        }
+        
+        this.component.set("selection", this.selectionModel.getSelectionString());
+        
+        this._doAction();
+    },
+    
+    _processRolloverEnter: function(e) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
+            return true;
+        }
+        var tr = e.registeredTarget;
+        var rowIndex = this._getRowIndex(tr);
+        if (rowIndex == -1) {
+            return;
+        }
+        
+        for (var i = 0; i < tr.cells.length; ++i) {
+            var cell = tr.cells[i];
+            Echo.Sync.Font.renderClear(this.component.render("rolloverFont"), cell);
+            Echo.Sync.Color.render(this.component.render("rolloverForeground"), cell, "color");
+            Echo.Sync.Color.render(this.component.render("rolloverBackground"), cell, "background");
+            Echo.Sync.FillImage.render(this.component.render("rolloverBackgroundImage"), cell); 
+        }
+    },
+    
+    _processRolloverExit: function(e) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
+            return true;
+        }
+        var tr = e.registeredTarget;
+        var rowIndex = this._getRowIndex(tr);
+        if (rowIndex == -1) {
+            return;
+        }
+    
+        this._renderRowStyle(rowIndex);
+    },
+    
+    /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         this._columnCount = parseInt(this.component.render("columnCount"), 10);
         this._rowCount = parseInt(this.component.render("rowCount"), 10);
@@ -148,6 +320,42 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         this._addEventListeners();
     },
     
+    /** @see Echo.Render.ComponentSync#renderDisplay */
+    renderDisplay: function() {
+        if (this._renderPercentWidthByMeasure) {
+            this._table.style.width = "";
+            var tableParent = this._table.parentNode;
+            var availableWidth = tableParent.offsetWidth;
+            if (tableParent.style.paddingLeft) {
+                availableWidth -= parseInt(tableParent.style.paddingLeft, 10);
+            }
+            if (tableParent.style.paddingRight) {
+                availableWidth -= parseInt(tableParent.style.paddingRight, 10);
+            }
+            var width = ((availableWidth * this._renderPercentWidthByMeasure) / 100) - Core.Web.Measure.SCROLL_WIDTH;
+            if (width > 0) {
+                this._table.style.width = width + "px";
+            }
+        }
+    },
+    
+    /** @see Echo.Render.ComponentSync#renderDispose */
+    renderDispose: function(update) {
+        if (this._rolloverEnabled || this._selectionEnabled) {
+            var tr = this._tbody.firstChild;
+            if (this._headerVisible) {
+                tr = tr.nextSibling;
+            }
+            while (tr) {
+                Core.Web.Event.removeAll(tr);
+                tr = tr.nextSibling;
+            }
+        }
+        this._table = null;
+        this._tbody = null;
+        this._renderPercentWidthByMeasure = null;
+    },
+    
     /**
      * Renders an appropriate style for a row (i.e. selected or deselected).
      *
@@ -230,39 +438,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         return tr;
     },
     
-    _createRowPrototype: function() {
-        var tr = document.createElement("tr");
-    
-        var tdPrototype = document.createElement("td");
-        Echo.Sync.Border.render(this.component.render("border"), tdPrototype);
-        tdPrototype.style.overflow = "hidden";
-        tdPrototype.style.padding = this._defaultCellPadding;
-    
-        for (var columnIndex = 0; columnIndex < this._columnCount; columnIndex++) {
-            var td = tdPrototype.cloneNode(false);
-            tr.appendChild(td);
-        }
-        return tr;
-    },
-    
-    renderDisplay: function() {
-        if (this._renderPercentWidthByMeasure) {
-            this._table.style.width = "";
-            var tableParent = this._table.parentNode;
-            var availableWidth = tableParent.offsetWidth;
-            if (tableParent.style.paddingLeft) {
-                availableWidth -= parseInt(tableParent.style.paddingLeft, 10);
-            }
-            if (tableParent.style.paddingRight) {
-                availableWidth -= parseInt(tableParent.style.paddingRight, 10);
-            }
-            var width = ((availableWidth * this._renderPercentWidthByMeasure) / 100) - Core.Web.Measure.SCROLL_WIDTH;
-            if (width > 0) {
-                this._table.style.width = width + "px";
-            }
-        }
-    },
-    
+    /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
         if (!update.hasUpdatedLayoutDataChildren() && !update.getAddedChildren() && !update.getRemovedChildren()) {
             if (Core.Arrays.containsAll(Echo.Sync.RemoteTableSync._supportedPartialProperties, 
@@ -284,35 +460,6 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         containerElement.removeChild(element);
         this.renderAdd(update, containerElement);
         return true;
-    },
-    
-    renderDispose: function(update) {
-        if (this._rolloverEnabled || this._selectionEnabled) {
-            var tr = this._tbody.firstChild;
-            if (this._headerVisible) {
-                tr = tr.nextSibling;
-            }
-            while (tr) {
-                Core.Web.Event.removeAll(tr);
-                tr = tr.nextSibling;
-            }
-        }
-        this._table = null;
-        this._tbody = null;
-        this._renderPercentWidthByMeasure = null;
-    },
-    
-    _getRowIndex: function(element) {
-        var testElement = this._tbody.firstChild;
-        var index = this._headerVisible ? -1 : 0;
-        while (testElement) {
-            if (testElement == element) {
-                return index;
-            }
-            testElement = testElement.nextSibling;
-            ++index;
-        }
-        return -1;
     },
     
     /**
@@ -345,130 +492,6 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
      */
     _setSelected: function(rowIndex, newValue) {
         this.selectionModel.setSelectedIndex(rowIndex, newValue);
-        this._renderRowStyle(rowIndex);
-    },
-    
-    /**
-     * Deselects all selected rows.
-     */
-    _clearSelected: function() {
-        for (var i = 0; i < this._rowCount; ++i) {
-            if (this.selectionModel.isSelectedIndex(i)) {
-                this._setSelected(i, false);
-            }
-        }
-    },
-    
-    // action & event handling
-    
-    /**
-     * Adds event listeners.
-     */
-    _addEventListeners: function() {
-        if (!this.component.isRenderEnabled()) {
-            return;
-        }
-        
-        if (this._selectionEnabled || this._rolloverEnabled) {
-            if (this._rowCount === 0) {
-                return;
-            }
-            var mouseEnterLeaveSupport = Core.Web.Env.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED;
-            var enterEvent = mouseEnterLeaveSupport ? "mouseenter" : "mouseover";
-            var exitEvent = mouseEnterLeaveSupport ? "mouseleave" : "mouseout";
-            var rowOffset = (this._headerVisible ? 1 : 0);
-            var rolloverEnterRef = Core.method(this, this._processRolloverEnter);
-            var rolloverExitRef = Core.method(this, this._processRolloverExit);
-            var clickRef = Core.method(this, this._processClick);
-            
-            for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
-                var tr = this._table.rows[rowIndex + rowOffset];
-                if (this._rolloverEnabled) {
-                    Core.Web.Event.add(tr, enterEvent, rolloverEnterRef, false);
-                    Core.Web.Event.add(tr, exitEvent, rolloverExitRef, false);
-                }
-                if (this._selectionEnabled) {
-                    Core.Web.Event.add(tr, "click", clickRef, false);
-                    Core.Web.Event.Selection.disable(tr);
-                }
-            }
-        }
-    },
-    
-    _doAction: function() {
-        this.component.doAction();
-    },
-    
-    _processClick: function(e) {
-        if (!this.client || !this.client.verifyInput(this.component)) {
-            return true;
-        }
-        var tr = e.registeredTarget;
-        var rowIndex = this._getRowIndex(tr);
-        if (rowIndex == -1) {
-            return;
-        }
-        
-        Core.Web.DOM.preventEventDefault(e);
-    
-        if (this.selectionModel.getSelectionMode() == Echo.Sync.RemoteTable.ListSelectionModel.SINGLE_SELECTION || 
-                !(e.shiftKey || e.ctrlKey || e.metaKey || e.altKey)) {
-            this._clearSelected();
-        }
-    
-        if (!this.selectionModel.getSelectionMode() == Echo.Sync.RemoteTable.ListSelectionModel.SINGLE_SELECTION && 
-                e.shiftKey && this.lastSelectedIndex != -1) {
-            var startIndex;
-            var endIndex;
-            if (this.lastSelectedIndex < rowIndex) {
-                startIndex = this.lastSelectedIndex;
-                endIndex = rowIndex;
-            } else {
-                startIndex = rowIndex;
-                endIndex = this.lastSelectedIndex;
-            }
-            for (var i = startIndex; i <= endIndex; ++i) {
-                this._setSelected(i, true);
-            }
-        } else {
-            this.lastSelectedIndex = rowIndex;
-            this._setSelected(rowIndex, !this.selectionModel.isSelectedIndex(rowIndex));
-        }
-        
-        this.component.set("selection", this.selectionModel.getSelectionString());
-        
-        this._doAction();
-    },
-    
-    _processRolloverEnter: function(e) {
-        if (!this.client || !this.client.verifyInput(this.component)) {
-            return true;
-        }
-        var tr = e.registeredTarget;
-        var rowIndex = this._getRowIndex(tr);
-        if (rowIndex == -1) {
-            return;
-        }
-        
-        for (var i = 0; i < tr.cells.length; ++i) {
-            var cell = tr.cells[i];
-            Echo.Sync.Font.renderClear(this.component.render("rolloverFont"), cell);
-            Echo.Sync.Color.render(this.component.render("rolloverForeground"), cell, "color");
-            Echo.Sync.Color.render(this.component.render("rolloverBackground"), cell, "background");
-            Echo.Sync.FillImage.render(this.component.render("rolloverBackgroundImage"), cell); 
-        }
-    },
-    
-    _processRolloverExit: function(e) {
-        if (!this.client || !this.client.verifyInput(this.component)) {
-            return true;
-        }
-        var tr = e.registeredTarget;
-        var rowIndex = this._getRowIndex(tr);
-        if (rowIndex == -1) {
-            return;
-        }
-    
         this._renderRowStyle(rowIndex);
     }
 });
@@ -527,6 +550,25 @@ Echo.Sync.RemoteTable.ListSelectionModel = Core.extend({
     },
     
     /**
+     * Gets a comma-delimited list containing the selected indices.
+     * 
+     * @return the list
+     * @type String
+     */
+    getSelectionString: function() {
+        var selection = "";
+        for (var i = 0; i < this._selectionState.length; i++) {
+            if (this._selectionState[i]) {
+                if (selection.length > 0) {
+                    selection += ",";
+                }
+                selection += i;
+            }
+        }
+        return selection;
+    },
+    
+    /**
      * Determines whether an index is selected.
      * 
      * @param {Number} index the index
@@ -549,24 +591,5 @@ Echo.Sync.RemoteTable.ListSelectionModel = Core.extend({
      */
     setSelectedIndex: function(index, selected) {
         this._selectionState[index] = selected;
-    },
-    
-    /**
-     * Gets a comma-delimited list containing the selected indices.
-     * 
-     * @return the list
-     * @type String
-     */
-    getSelectionString: function() {
-        var selection = "";
-        for (var i = 0; i < this._selectionState.length; i++) {
-            if (this._selectionState[i]) {
-                if (selection.length > 0) {
-                    selection += ",";
-                }
-                selection += i;
-            }
-        }
-        return selection;
     }
 });
