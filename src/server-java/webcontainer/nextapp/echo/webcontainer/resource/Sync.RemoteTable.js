@@ -1,5 +1,5 @@
 /**
- * @class Remote Table implementation.
+ * @class Remote Table component.
  */
 Echo.Sync.RemoteTable = Core.extend(Echo.Component, {
 
@@ -118,6 +118,14 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /**
+     * Creates a prototype TR element for the rendered table, containing style information
+     * and TD elements representing the table cells.  This prototype may be cloned to
+     * quickly generate the table DOM.
+     * 
+     * @return the prototype TR row element hierarchy
+     * @type Element
+     */
     _createRowPrototype: function() {
         var tr = document.createElement("tr");
     
@@ -132,11 +140,15 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         }
         return tr;
     },
-    
-    _doAction: function() {
-        this.component.doAction();
-    },
-    
+
+    /**
+     * Returns the table row index of the given TR element,
+     * accounting for header visibility.
+     * 
+     * @param {Element} element the TR table row element
+     * @return the index of the specified row, or -1 if it cannot be found
+     * @type Number
+     */
     _getRowIndex: function(element) {
         var testElement = this._tbody.firstChild;
         var index = this._headerVisible ? -1 : 0;
@@ -150,6 +162,9 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         return -1;
     },
     
+    /**
+     * Processes a mouse click event on the table.
+     */
     _processClick: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
@@ -188,9 +203,12 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         
         this.component.set("selection", this.selectionModel.getSelectionString());
         
-        this._doAction();
+        this.component.doAction();
     },
     
+    /**
+     * Processes a mouse rollover enter event on a table row.
+     */
     _processRolloverEnter: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
@@ -210,6 +228,9 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         }
     },
     
+    /**
+     * Processes a mouse rollover exit event on a table row.
+     */
     _processRolloverExit: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
@@ -359,7 +380,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     /**
      * Renders an appropriate style for a row (i.e. selected or deselected).
      *
-     * @param rowIndex {Number} the index of the row
+     * @param {Number} rowIndex the index of the row
      */
     _renderRowStyle: function(rowIndex) {
         var tableRowIndex = rowIndex + (this._headerVisible ? 1 : 0);
@@ -407,11 +428,13 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     /**
      * Renders a single row.
      *
-     * @param update the update
-     * @param rowIndex {Number} the index of the row
-     * @param trPrototype {Element} a TR element containing the appropriate number of TD elements with default
+     * @param {Echo.Update.ComponentUpdate} update the update
+     * @param {Number} rowIndex the index of the row
+     * @param {Element} trPrototype a TR element containing the appropriate number of TD elements with default
      *        styles applied (This is created by _renderRowStyle().  Providing this attribute is optional,
      *        and is specified for performance reasons.  If omitted one is created automatically.)
+     * @return the created row
+     * @type Element
      */
     _renderRow: function(update, rowIndex, trPrototype) {
         var tr = trPrototype ? trPrototype.cloneNode(true) : this._createRowPrototype();
