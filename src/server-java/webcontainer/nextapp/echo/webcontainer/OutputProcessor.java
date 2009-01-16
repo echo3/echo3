@@ -31,9 +31,11 @@ package nextapp.echo.webcontainer;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
@@ -369,12 +371,18 @@ class OutputProcessor {
             setComponentId(rmElement, parentComponent);
                 
             Component[] removedChildren = componentUpdates[i].getRemovedChildren();
+            Set removedIdSet = new HashSet(); // Set containing removed ids, to avoid removing same id multiple times.
             StringBuffer out = new StringBuffer();
             for (int j = 0; j < removedChildren.length; ++j) {
+                String renderId = userInstance.getClientRenderId(removedChildren[j]);
+                if (removedIdSet.contains(renderId)) {
+                    continue;
+                }
                 if (j > 0) {
                     out.append(",");
                 }
-                out.append(userInstance.getClientRenderId(removedChildren[j]));
+                out.append(renderId);
+                removedIdSet.add(renderId);
             }
             rmElement.setAttribute("rm", out.toString());
         }
