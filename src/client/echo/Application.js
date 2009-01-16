@@ -1106,7 +1106,7 @@ Echo.Component = Core.extend({
             index = componentOrIndex;
             component = this.children[index];
             if (!component) {
-                throw new Error("Index out of bounds: " + index);
+                throw new Error("Component.remove(): index out of bounds: " + index + ", parent: " + this);
             }
         } else {
             component = componentOrIndex;
