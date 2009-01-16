@@ -43,6 +43,7 @@ import nextapp.echo.app.layout.SplitPaneLayoutData;
 public class DelayTest extends Column {
     
     private int clickCount = 0;
+    private TextField textField;
     
     public DelayTest() {
         super();
@@ -63,6 +64,32 @@ public class DelayTest extends Column {
         });
         add(delayButton);
         
+        delayButton = new Button("Test 3 second delay, remove text field");
+        delayButton.setStyleName("Default");
+        delayButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Thread.sleep(3000);
+                    remove(textField);
+                } catch (InterruptedException ex) {
+                }
+            }
+        });
+        add(delayButton);
+        
+        delayButton = new Button("Test 3 second delay, disable text field");
+        delayButton.setStyleName("Default");
+        delayButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Thread.sleep(3000);
+                    textField.setEnabled(false);
+                } catch (InterruptedException ex) {
+                }
+            }
+        });
+        add(delayButton);
+        
         final Button blockedButton = new Button("This button has been clicked 0 times");
         blockedButton.setStyleName("Default");
         blockedButton.addActionListener(new ActionListener() {
@@ -72,7 +99,7 @@ public class DelayTest extends Column {
         });
         add(blockedButton);
         
-        TextField textField = new TextField();
+        textField = new TextField();
         add(textField);
         
         CheckBox checkBox = new CheckBox();
