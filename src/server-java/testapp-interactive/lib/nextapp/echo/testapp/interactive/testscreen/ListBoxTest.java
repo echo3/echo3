@@ -501,6 +501,25 @@ public class ListBoxTest extends SplitPane {
                 });
             }
         });
+        controlsColumn.addButton("Set Width: null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractListComponent listComponent) {
+                        listComponent.setWidth(null);
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set Width: 100%", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                final Extent width = new Extent(100, Extent.PERCENT);
+                apply(new Applicator() {
+                    public void apply(AbstractListComponent listComponent) {
+                        listComponent.setWidth(width);
+                    }
+                });
+            }
+        });
         controlsColumn.addButton("Increase Width (15 px)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 final Extent width = listBox1.getWidth() == null ? new Extent(75) : listBox1.getWidth();
