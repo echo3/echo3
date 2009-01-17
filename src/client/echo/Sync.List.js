@@ -208,7 +208,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
     /** Processes a focus event */
     _processFocus: function(e) {
         this._focused = true;
-        if (!this.client || !this.client.verifyInput(this.component, Echo.Client.FLAG_INPUT_PROPERTY)) {
+        if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
         this.component.application.setFocusedComponent(this.component);
