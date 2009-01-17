@@ -283,7 +283,10 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         
         this._div.style.cssText = "cursor:default;overflow:auto;";
         this._div.style.height = Echo.Sync.Extent.toCssValue(this.component.render("height", "6em"), false, false);
-        this._div.style.width = Echo.Sync.Extent.toCssValue(this.component.render("width"), true, false);
+        var width = this.component.render("width");
+        if (!Echo.Sync.Extent.isPercent(width)) {
+            this._div.style.width = Echo.Sync.Extent.toCssValue(width, true, false);
+        }
         if (this._enabled) {
             Echo.Sync.renderComponentDefaults(this.component, this._element);
         } else {
@@ -362,8 +365,10 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         var width = this.component.render("width");
         if (width) {
             if (Echo.Sync.Extent.isPercent(width)) {
-                this._div.style.width = width;
-                this._element.style.width = "100%";
+                if (!Core.Web.Env.QUIRK_IE_SELECT_PERCENT_WIDTH) {
+                    this._div.style.width = width;
+                    this._element.style.width = "100%";
+                }
             } else {
                 this._element.style.width = Echo.Sync.Extent.toCssValue(width, true, false);
             }
