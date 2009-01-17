@@ -380,17 +380,18 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         if (Echo.Client.profilingTimer) {
             Echo.Client.profilingTimer.mark("ser");
         }
+
+        this.processUpdates();
+        this._executeCommands();
+
+        // Register component update listener 
+        this.application.addListener("componentUpdate", this._processClientUpdateRef);
         
         // Flag transaction as being complete.
         this._transactionInProgress = false;
         this.removeInputRestriction(this._inputRestrictionId);
         
-        // Register component update listener 
-        this.application.addListener("componentUpdate", this._processClientUpdateRef);
-        Echo.Render.processUpdates(this);
-        
-        this._executeCommands();
-        
+        // Focus component
         if (this._focusedComponent) {
             this.application.setFocusedComponent(this._focusedComponent);
         }
@@ -400,10 +401,12 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             Echo.Client.profilingTimer = null;
         }
         
+        // Disable wait indicator.
         if (this._waitIndicatorActive) {
             this._waitIndicatorActive = false;
             this._waitIndicator.deactivate();
         }
+
     },
     
     /**

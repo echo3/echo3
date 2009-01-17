@@ -83,7 +83,7 @@ Echo.FreeClient = Core.extend(Echo.Client, {
             // Only execute updates in the event client has not been deconfigured, which can
             // occur before auto-update fires if other operations were scheduled for immediate
             // execution.
-            Echo.Render.processUpdates(this);
+            this.processUpdates();
             this._renderPending = false;
         }
     },

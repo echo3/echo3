@@ -7,12 +7,6 @@ Echo.Client = Core.extend({
     $static: {
     
         /**
-         * Flag for verifyInput() flags parameter, indicating that input is 
-         * a property update.
-         */
-        FLAG_INPUT_PROPERTY: 0x1,
-
-        /**
          * Global array containing all active client instances in the current browser window.
          * @type Array
          */
@@ -66,6 +60,11 @@ Echo.Client = Core.extend({
      * @type Number
      */
     _inputRestrictionCount: 0,
+    
+    /** 
+     * Echo.Component renderId-to-restriction listener mapping.
+     */
+    _inputRestrictionListeners: null,
     
     /**
      * Id (String) map containing input restrictions.
@@ -134,27 +133,13 @@ Echo.Client = Core.extend({
          * 
          * @param {Echo.Component} component optional parameter indicating the component to query (if omitted, only the
          *        application's readiness state will be investigated)
-         * @param {Number} flags optional flags describing the type of input, one or more of the following flags
-         *        ORed together:
-         *        <ul>
-         *         <li><code>FLAG_INPUT_PROPERTY</code></li>
-         *        </ul>
-         * @return true if the application/component are ready to receive the input
+         * @return true if the application/component are ready to receive input
          * @type Boolean
          */
-        verifyInput: function(component, flags) {
+        verifyInput: function(component) {
             // Check for input restrictions.
             if (this._inputRestrictionCount !== 0) {
-                if (!flags & Echo.Client.FLAG_INPUT_PROPERTY) {
-                    // Input is not a property update, automatically return false if any input restrictions present.
-                    return false;
-                }
-                for (var x in this._inputRestrictionMap) {
-                    if (this._inputRestrictionMap[x] === false) {
-                        // Input restriction set to false, indicating no updates, not even property updates.
-                        return false;
-                    }
-                }
+                return false;
             }
         
             if (component) {
@@ -207,15 +192,13 @@ Echo.Client = Core.extend({
      * Registers a new input restriction.  Input will be restricted until this and all other
      * input restrictions are removed.
      *
-     * @param {Boolean} allowPropertyUpdates flag indicating whether property updates should be
-     *        allowed (if true) or whether all input should be restricted (if false)
      * @return a handle identifier for the input restriction, which will be used to unregister
      *         the restriction by invoking removeInputRestriction()
      */
-    createInputRestriction: function(allowPropertyUpdates) {
+    createInputRestriction: function() {
         var id = (++this._lastInputRestrictionId).toString();
         ++this._inputRestrictionCount;
-        this._inputRestrictionMap[id] = allowPropertyUpdates;
+        this._inputRestrictionMap[id] = true;
         return id;
     },
     
@@ -288,6 +271,33 @@ Echo.Client = Core.extend({
     },
     
     /**
+     * Processes updates to the component hierarchy.
+     * Invokes <code>Echo.Render.processUpdates()</code>.
+     */
+    processUpdates: function() {
+        var ir = null;
+        try {
+            ir = this.createInputRestriction();
+            Echo.Render.processUpdates(this);
+        } finally {
+            this.removeInputRestriction(ir);
+        }
+    },
+    
+    /**
+     * Registers a listener to be notified when all input restrictions have been removed.
+     * 
+     * @param {Echo.Component} component the component for which the restriction listener is being registered
+     * @param {Function} l the method to notify when all input restrictions have been cleared 
+     */
+    registerRestrictionListener: function(component, l) {
+        if (!this._inputRestrictionListeners) {
+            this._inputRestrictionListeners = { };
+        }
+        this._inputRestrictionListeners[component.renderId] = l;
+    },
+    
+    /**
      * Removes an input restriction.
      *
      * @param {String} id the id (handle) of the input restriction to remove
@@ -298,6 +308,14 @@ Echo.Client = Core.extend({
         }
         delete this._inputRestrictionMap[id];
         --this._inputRestrictionCount;
+        
+        if (this._inputRestrictionCount == 0 && this._inputRestrictionListeners) {
+            // Last input restriction removed: notify input restriction listeners.
+            for (var x in this._inputRestrictionListeners) {
+                this._inputRestrictionListeners[x]();
+            }
+            this._inputRestrictionListeners = null;
+        }
     },
     
     /**

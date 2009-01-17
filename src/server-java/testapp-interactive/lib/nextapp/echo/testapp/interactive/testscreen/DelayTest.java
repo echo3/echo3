@@ -91,6 +91,28 @@ public class DelayTest extends Column {
         });
         add(delayButton);
         
+        delayButton = new Button("Test 3 second delay, set text field editable = false");
+        delayButton.setStyleName("Default");
+        delayButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Thread.sleep(3000);
+                    textField.setEditable(false);
+                } catch (InterruptedException ex) {
+                }
+            }
+        });
+        add(delayButton);
+        
+        Button queryButton = new Button("Query Text");
+        queryButton.setStyleName("Default");
+        queryButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                InteractiveApp.getApp().consoleWrite("\"" + textField.getText() + "\"");
+            }
+        });
+        add(queryButton);
+        
         final Button blockedButton = new Button("This button has been clicked 0 times");
         blockedButton.setStyleName("Default");
         blockedButton.addActionListener(new ActionListener() {

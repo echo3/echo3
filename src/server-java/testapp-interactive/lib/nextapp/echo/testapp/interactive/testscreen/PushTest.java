@@ -36,9 +36,11 @@ import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.TaskQueueHandle;
 import nextapp.echo.app.Column;
+import nextapp.echo.app.TextField;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.SplitPaneLayoutData;
+import nextapp.echo.testapp.interactive.InteractiveApp;
 
 /**
  * Test for asynchronous (server push) operations.
@@ -57,6 +59,12 @@ public class PushTest extends Column {
     extends Thread {
         
         private int percentComplete = 0;
+        private boolean slow;
+        
+        SimulatedServerOperation(boolean slow) {
+            super();
+            this.slow = slow;
+        }
         
         public void run() {
             while (percentComplete < 100) {
@@ -66,7 +74,7 @@ public class PushTest extends Column {
                 }
                 ApplicationInstance app = getApplicationInstance();
                 if (app != null) {
-                    app.enqueueTask(taskQueue, new ProgressUpdateTask(percentComplete));
+                    app.enqueueTask(taskQueue, new ProgressUpdateTask(percentComplete, slow));
                     try {
                         Thread.sleep((long) (Math.random() * 1000));
                     } catch (InterruptedException ex) { }
@@ -79,20 +87,27 @@ public class PushTest extends Column {
     implements Runnable {
         
         private int percentComplete;
+        private boolean slow;
         
-        private ProgressUpdateTask(int percentComplete) {
+        private ProgressUpdateTask(int percentComplete, boolean slow) {
             this.percentComplete = percentComplete;
+            this.slow = slow;
         }
         
         /**
          * @see java.lang.Runnable#run()
          */
         public void run() {
+            if (slow) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) { }  
+            }
             if (percentComplete < 100) {
                 statusLabel.setText("Asynchronous operation in progress; " + percentComplete 
-                        + "% complete.");
+                        + "% complete, text field value=" + textField.getText());
             } else {
-                statusLabel.setText("Asynchronous operation complete.");
+                statusLabel.setText("Asynchronous operation complete, text field value=" + textField.getText());
                 getApplicationInstance().removeTaskQueue(taskQueue);
                 taskQueue = null;
             }
@@ -101,6 +116,7 @@ public class PushTest extends Column {
     
     private TaskQueueHandle taskQueue;
     private Label statusLabel;
+    private TextField textField;
     
     public PushTest() {
         super();
@@ -121,11 +137,36 @@ public class PushTest extends Column {
                 if (taskQueue == null) {
                     // Only start new operation if taskQueue is null, indicating that last operation has completed.
                     taskQueue = getApplicationInstance().createTaskQueue();
-                    new SimulatedServerOperation().start();
+                    new SimulatedServerOperation(false).start();
                 }
             }
         });
         add(startButton);
+        
+        Button startDelayButton = new Button("Start Asynchronous (Server Push) Operation, SLOW Syncs");
+        startDelayButton.setStyleName("Default");
+        startDelayButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (taskQueue == null) {
+                    // Only start new operation if taskQueue is null, indicating that last operation has completed.
+                    taskQueue = getApplicationInstance().createTaskQueue();
+                    new SimulatedServerOperation(true).start();
+                }
+            }
+        });
+        add(startDelayButton);
+        
+        Button queryTextButton = new Button("Query Text Field");
+        queryTextButton.setStyleName("Default");
+        queryTextButton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                InteractiveApp.getApp().consoleWrite("Text Value: \"" + textField.getText() + "\"");
+            }
+        });
+        add(queryTextButton);
+        
+        textField = new TextField();
+        add(textField);
     }
     
     /**
