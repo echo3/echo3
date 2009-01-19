@@ -34,6 +34,10 @@ import nextapp.echo.app.button.ToggleButton;
 import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.ComponentSynchronizePeer;
+import nextapp.echo.webcontainer.ServerMessage;
+import nextapp.echo.webcontainer.Service;
+import nextapp.echo.webcontainer.WebContainerServlet;
+import nextapp.echo.webcontainer.service.JavaScriptService;
 
 /**
  * Synchronization peer for <code>ToggleButton</code>s.
@@ -42,6 +46,14 @@ import nextapp.echo.webcontainer.ComponentSynchronizePeer;
  */
 public class ToggleButtonPeer extends AbstractButtonPeer {
 
+    /** The associated client-side JavaScript module <code>Service</code>. */
+    protected static final Service TOGGLE_BUTTON_SERVICE = JavaScriptService.forResource("Echo.ToggleButton", 
+            "nextapp/echo/webcontainer/resource/Sync.ToggleButton.js");
+    
+    static {
+        WebContainerServlet.getServiceRegistry().add(TOGGLE_BUTTON_SERVICE);
+    }
+    
     /** Default constructor. */
     public ToggleButtonPeer() {
         super();
@@ -83,6 +95,15 @@ public class ToggleButtonPeer extends AbstractButtonPeer {
         return super.getInputPropertyClass(propertyName);
     }
     
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(Context, Component)
+     */
+    public void init(Context context, Component component) {
+        super.init(context, component);
+        ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
+        serverMessage.addLibrary(TOGGLE_BUTTON_SERVICE.getId());
+    }
+
     /**
      * @see ComponentSynchronizePeer#storeInputProperty(Context, Component, String, int, Object)
      */
