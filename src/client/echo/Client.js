@@ -243,6 +243,23 @@ Echo.Client = Core.extend({
     },
     
     /**
+     * Forces IE browser to re-render entire document if the height of the application's domain element measures zero.
+     * This is a workaround for an Internet Explorer bug where the browser's rendering engine fundamentally fails and simply
+     * displays a blank screen (commonly referred to on bug-tracker/forum as the "blank screen of death"/BSOD).
+     * This bug appears to be most prevalent in IE7. 
+     */
+    _forceIERedraw: function() {
+        if (Core.Web.Env.BROWSER_INTERNET_EXPLORER && this.domainElement.offsetHeight === 0) {
+            var displayState = document.documentElement.style.display;
+            if (!displayState) {
+                displayState = "";
+            }
+            document.documentElement.style.display = "none";
+            document.documentElement.style.display = displayState;
+        }
+    },
+    
+    /**
      * Listener for application change of component focus:
      * invokes focus() method on focused component's peer.
      * 
@@ -281,6 +298,7 @@ Echo.Client = Core.extend({
             Echo.Render.processUpdates(this);
         } finally {
             this.removeInputRestriction(ir);
+            this._forceIERedraw();
         }
     },
     
