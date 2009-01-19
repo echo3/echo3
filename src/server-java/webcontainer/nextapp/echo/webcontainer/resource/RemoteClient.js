@@ -406,7 +406,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             this._waitIndicatorActive = false;
             this._waitIndicator.deactivate();
         }
-
     },
     
     /**
@@ -1053,7 +1052,9 @@ Echo.RemoteClient.ServerMessage = Core.extend({
      * Notifies completion listeners of processing completion.
      */
     _processPostLibraryLoad: function() {
-        Echo.Client.profilingTimer.mark("lib"); // Library Loading
+        if (Echo.Client.profilingTimer) {
+            Echo.Client.profilingTimer.mark("lib"); // Library Loading
+        }
         // Processing phase 2: invoke directives.
         var groupElements = Core.Web.DOM.getChildElementsByTagName(this.document.documentElement, "group");
         for (var i = 0; i < groupElements.length; ++i) {

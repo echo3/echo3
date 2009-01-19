@@ -242,6 +242,18 @@ Echo.Client = Core.extend({
         this.dispose();
     },
     
+    _forceIERedraw: function() {
+        if (Core.Web.Env.BROWSER_INTERNET_EXPLORER && this.domainElement.offsetHeight === 0) {
+Core.Debug.consoleWrite("[firing]");
+            var displayState = document.documentElement.style.display;
+            if (!displayState) {
+                displayState = "";
+            }
+            document.documentElement.style.display = "none";
+            document.documentElement.style.display = displayState;
+        }
+    },
+    
     /**
      * Listener for application change of component focus:
      * invokes focus() method on focused component's peer.
@@ -281,6 +293,7 @@ Echo.Client = Core.extend({
             Echo.Render.processUpdates(this);
         } finally {
             this.removeInputRestriction(ir);
+            this._forceIERedraw();
         }
     },
     
