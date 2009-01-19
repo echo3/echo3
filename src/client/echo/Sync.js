@@ -526,7 +526,7 @@ Echo.Sync.Extent = {
         } else {
             var parts = this._PARSER.exec(extent);
             if (!parts) {
-                throw new Error("Invalid Extent: \"" + extent + "\"");
+                return false;
             }
             return parts[2] == "%";
         }
