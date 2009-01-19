@@ -48,6 +48,7 @@ public class GhostTask {
     private String[] script;
     private int scriptIndex = 0;
     private String[] startupScript;
+    private boolean countOnly = false;
     
     private TaskQueueHandle taskQueue;
     
@@ -61,30 +62,36 @@ public class GhostTask {
          * @see java.lang.Runnable#run()
          */
         public void run() {
-            for (int i = 0; i < clicksPerIteration; ++i) {
-                if (script == null) {
-                    RandomClick.clickRandomButton();
-                } else {
-                    Button button = (Button) app.getDefaultWindow().getComponent(script[scriptIndex]);
-                    button.doAction();
-                    ++scriptIndex;
-                    if (scriptIndex >= script.length) {
-                        scriptIndex = 0;
-                    }
-                }
-            }
-            if (stopTime != -1 && System.currentTimeMillis() > stopTime) {
-                app.setGhostIterationWindowTitle(-1);
-                // Test complete.
-                app.stopGhostTest();
-            } else if (totalIterations != -1 && iteration >= totalIterations) {
-                app.setGhostIterationWindowTitle(-1);
-                // Test complete.
-                app.stopGhostTest();
-            } else if (indefiniteAllowed) {
+            if (countOnly) {
                 ++iteration;
                 app.setGhostIterationWindowTitle(iteration);
                 app.enqueueTask(taskQueue, this);
+            } else {
+                for (int i = 0; i < clicksPerIteration; ++i) {
+                    if (script == null) {
+                        RandomClick.clickRandomButton();
+                    } else {
+                        Button button = (Button) app.getDefaultWindow().getComponent(script[scriptIndex]);
+                        button.doAction();
+                        ++scriptIndex;
+                        if (scriptIndex >= script.length) {
+                            scriptIndex = 0;
+                        }
+                    }
+                }
+                if (stopTime != -1 && System.currentTimeMillis() > stopTime) {
+                    app.setGhostIterationWindowTitle(-1);
+                    // Test complete.
+                    app.stopGhostTest();
+                } else if (totalIterations != -1 && iteration >= totalIterations) {
+                    app.setGhostIterationWindowTitle(-1);
+                    // Test complete.
+                    app.stopGhostTest();
+                } else if (indefiniteAllowed) {
+                    ++iteration;
+                    app.setGhostIterationWindowTitle(iteration);
+                    app.enqueueTask(taskQueue, this);
+                }
             }
         }
     };
@@ -120,9 +127,17 @@ public class GhostTask {
     public int getTotalIterations() {
         return totalIterations;
     }
+    
+    public boolean isCountOnly() {
+        return countOnly;
+    }
 
     public void setClicksPerIteration(int clicksPerIteration) {
         this.clicksPerIteration = clicksPerIteration;
+    }
+    
+    public void setCountOnly(boolean countOnly) {
+        this.countOnly = countOnly;
     }
 
     public void setScript(String[] script) {

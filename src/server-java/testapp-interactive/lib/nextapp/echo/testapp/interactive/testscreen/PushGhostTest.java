@@ -99,7 +99,15 @@ public class PushGhostTest extends Column {
             addTestButton(0, 600, 100);
             addTestButton(0, 3600, 100);
             addTestButton(0, 0, 100);
+
+            addCountTestButton(0, 60);
+            addCountTestButton(10, 60);
+            addCountTestButton(20, 60);
+            addCountTestButton(100, 60);
+            addCountTestButton(1000, 60);
+            addCountTestButton(3000, 60);
         }
+        
     }
     
     private void addTestButton(final int callbackInterval, final int runTimeInSeconds, final int clicksPerIteration) {
@@ -116,6 +124,28 @@ public class PushGhostTest extends Column {
                 InteractiveApp app = (InteractiveApp)getApplicationInstance();
                 GhostTask ghostTask = new GhostTask();
                 ghostTask.setClicksPerIteration(clicksPerIteration);
+                if (runTimeInSeconds > 0) {
+                    ghostTask.setRunTime(runTimeInSeconds * 1000);
+                }
+                app.startGhostTask(ghostTask, callbackInterval);
+            }
+        });
+        add(startButton);
+    }
+    
+    private void addCountTestButton(final int callbackInterval, final int runTimeInSeconds) {
+        StringBuffer text = new StringBuffer("COUNT ONLY (Runtime: ");
+        text.append(runTimeInSeconds == 0 ? "Indefinite" : (runTimeInSeconds + "s"));
+        text.append(", Callback interval: ");
+        text.append(callbackInterval);
+        text.append("ms");
+        Button startButton = new Button(text.toString());
+        startButton.setStyleName("Default");
+        startButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                InteractiveApp app = (InteractiveApp)getApplicationInstance();
+                GhostTask ghostTask = new GhostTask();
+                ghostTask.setCountOnly(true);
                 if (runTimeInSeconds > 0) {
                     ghostTask.setRunTime(runTimeInSeconds * 1000);
                 }
