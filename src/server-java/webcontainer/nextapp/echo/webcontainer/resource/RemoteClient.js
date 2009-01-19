@@ -550,12 +550,29 @@ Echo.RemoteClient.DirectiveProcessor = Core.extend({
  */
 Echo.RemoteClient.AsyncManager = Core.extend({
 
+    $static: {
+        
+        /**
+         * Number of times the client should attempt to contact the server.
+         * 
+         * @type Number
+         */
+        MAX_CONNECT_ATTEMPTS: 3
+    },
+    
     /**
      * The supported client.
      *
      * @type Echo.RemoteClient
      */
     _client: null,
+    
+    /**
+     * The number of times the client has unsuccessfully attempted to contact the server.
+     *
+     * @type Number
+     */
+    _failedConnectAttempts: null,
     
     /**
      * The repeating runnable used for server polling.
@@ -594,18 +611,21 @@ Echo.RemoteClient.AsyncManager = Core.extend({
      */
     _processPollResponse: function(e) {
         var responseDocument = e.source.getResponseXml();
-        if (!e.valid || !responseDocument || !responseDocument.documentElement) {
+        if (e.valid && responseDocument && responseDocument.documentElement) {
+            this._failedConnectAttempts = 0;
+            if (responseDocument.documentElement.getAttribute("request-sync") == "true") {
+                if (!this._client._transactionInProgress) {
+                    this._client.sync();
+                }
+                return;
+            }
+        } else if (++this._failedConnectAttempts >= Echo.RemoteClient.AsyncManager.MAX_CONNECT_ATTEMPTS) {
             this._client._handleInvalidResponse(e); 
+            this._failedConnectAttempts = 0;
             return;
         }
         
-        if (responseDocument.documentElement.getAttribute("request-sync") == "true") {
-            if (!this._client._transactionInProgress) {
-                this._client.sync();
-            }
-        } else {
-            Core.Web.Scheduler.add(this._runnable);
-        }
+        Core.Web.Scheduler.add(this._runnable);
     },
     
     /**
@@ -621,6 +641,7 @@ Echo.RemoteClient.AsyncManager = Core.extend({
      * Starts server polling for asynchronous tasks.
      */
     _start: function() {
+        this._failedConnectAttempts = 0;
         Core.Web.Scheduler.add(this._runnable);
     },
     
