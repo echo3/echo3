@@ -4954,6 +4954,55 @@ Copyright (c) 2002 Douglas Crockford  (www.JSLint.com) Rhino Edition
 
 /*extern JSLINT */
 
+// From http://workingrhino.blogspot.com/
+readDir = /* string[] */ function ( /* string */ path, /* opt RegExp */ filterRx) {
+    var f = new java.io.File( path );
+    var jlist = f.list(); // a java String[]
+    if (jlist === null) {
+        return null; // path is not a directory
+    }
+    var list = [];
+    if ( arguments.length > 1 ) {
+        list = jlist.filter( RegExp.prototype.test, filterRx );
+    } else {
+        list = [].concat( jlist );
+    }
+    list = list.map(String);
+    return list; // a js array of js strings
+};
+
+(function (a) {
+    if (!a[0]) {
+        print("Usage: jslint.js directory");
+        quit(1);
+    }
+    
+    var files = readDir(a[0], new RegExp("\.js$"));
+    for (var fi = 0; fi < files.length; ++fi) { 
+        var input = readFile(a[0] + files[fi]);
+        if (!input) {
+            print("jslint: Couldn't open file '" + files[fi] + "'.");
+            quit(1);
+        }
+        if (!JSLINT(input, {evil: true, forin: true, browser: true, passfail: false})) {
+            for (var i = 0; i < JSLINT.errors.length; i += 1) {
+                var e = JSLINT.errors[i];
+                if (e) {
+                    print('Lint at line ' + (e.line + 1) + ' character ' +
+                            (e.character + 1) + ': ' + e.reason);
+                    print((e.evidence || '').
+                            replace(/^\s*(\S*(\s+\S+)*)\s*$/, "$1"));
+                    print('');
+                }
+            }
+        } else {
+            print("jslint: No problems found in " + files[fi]);
+        }
+    }
+})(arguments);
+
+// Original single-file version.
+/*
 (function (a) {
     if (!a[0]) {
         print("Usage: jslint.js file.js");
@@ -4982,3 +5031,4 @@ Copyright (c) 2002 Douglas Crockford  (www.JSLint.com) Rhino Edition
         }
     }
 })(arguments);
+*/
