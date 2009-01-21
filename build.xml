@@ -444,5 +444,41 @@
             <arg value="-Dfile=dist${file.separator}lib${file.separator}Echo3_WebContainer.jar"/>
         </exec>
     </target>
+    
+    <target name="lint.corejs">
+        <java fork="true" jar="${dir.resource.jslint}/rhino.jar">
+         <arg value="${dir.resource.jslint}/jslint.js"/>
+         <arg value="${dir.src.client.corejs}/Core.js"/>
+         <arg value="${dir.src.client.corejs}/Core.Web.js"/>
+        </java>
+    </target>
+
+    <target name="lint.echo">
+        <java fork="true" jar="${dir.resource.jslint}/rhino.jar">
+         <arg value="${dir.resource.jslint}/jslint.js"/>
+         <arg value="${dir.src.client.echo}/Application.js"/>
+         <arg value="${dir.src.client.echo}/Arc.js"/>
+         <arg value="${dir.src.client.echo}/Client.js"/>
+         <arg value="${dir.src.client.echo}/DebugConsole.js"/>
+         <arg value="${dir.src.client.echo}/FreeClient.js"/>
+         <arg value="${dir.src.client.echo}/Render.js"/>
+         <arg value="${dir.src.client.echo}/Serial.js"/>
+         <arg value="${dir.src.client.echo}/Sync.ArrayContainer.js"/>
+         <arg value="${dir.src.client.echo}/Sync.Button.js"/>
+         <arg value="${dir.src.client.echo}/Sync.Composite.js"/>
+         <arg value="${dir.src.client.echo}/Sync.ContentPane.js"/>
+         <arg value="${dir.src.client.echo}/Sync.Grid.js"/>
+         <arg value="${dir.src.client.echo}/Sync.js"/>
+         <arg value="${dir.src.client.echo}/Sync.Label.js"/>
+         <arg value="${dir.src.client.echo}/Sync.List.js"/>
+         <arg value="${dir.src.client.echo}/Sync.SplitPane.js"/>
+         <arg value="${dir.src.client.echo}/Sync.TextComponent.js"/>
+         <arg value="${dir.src.client.echo}/Sync.ToggleButton.js"/>
+         <arg value="${dir.src.client.echo}/Sync.WindowPane.js"/>
+        </java>
+    </target>
+
+    <target name="lint" depends="lint.corejs,lint.echo">
+    </target>
 
 </project>
