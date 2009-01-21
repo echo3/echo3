@@ -218,14 +218,14 @@ Echo.Client = Core.extend({
         // Darken screen.
         if (!Core.Web.Env.NOT_SUPPORTED_CSS_OPACITY) {
             var blackoutDiv = document.createElement("div");
-            blackoutDiv.style.cssText = "position:absolute;z-index:32766;width:100%;height:100%;background-color:#000000;"
-                    + "opacity:0.75;"
+            blackoutDiv.style.cssText = "position:absolute;z-index:32766;width:100%;height:100%;background-color:#000000;" +
+                    "opacity:0.75;";
             this.domainElement.appendChild(blackoutDiv);
         }
 
         // Display fail message.
         var div = document.createElement("div");
-        div.style.cssText = "position:absolute;z-index:32767;width:100%;height:100%;"
+        div.style.cssText = "position:absolute;z-index:32767;width:100%;height:100%;";
         this.domainElement.appendChild(div);
         var msgDiv = document.createElement("div");
         msgDiv.style.cssText = "border:#5f1f1f outset 1px;background-color:#5f1f1f;color:#ffffff;padding:2px 10px;";
@@ -327,7 +327,7 @@ Echo.Client = Core.extend({
         delete this._inputRestrictionMap[id];
         --this._inputRestrictionCount;
         
-        if (this._inputRestrictionCount == 0 && this._inputRestrictionListeners) {
+        if (this._inputRestrictionCount === 0 && this._inputRestrictionListeners) {
             // Last input restriction removed: notify input restriction listeners.
             for (var x in this._inputRestrictionListeners) {
                 this._inputRestrictionListeners[x]();
