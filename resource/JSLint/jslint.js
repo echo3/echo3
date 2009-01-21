@@ -4984,6 +4984,7 @@ readDir = /* string[] */ function ( /* string */ path, /* opt RegExp */ filterRx
             print("jslint: Couldn't open file '" + files[fi] + "'.");
             quit(1);
         }
+        print("jslint: Processing: " + files[fi]);
         if (!JSLINT(input, {evil: true, forin: true, browser: true, passfail: false})) {
             for (var i = 0; i < JSLINT.errors.length; i += 1) {
                 var e = JSLINT.errors[i];
