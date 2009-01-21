@@ -677,7 +677,7 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
     
     /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
-        var fullRender = false;
+        var property, fullRender = false;
 
         if (update.fullRefresh || update.hasAddedChildren() || update.hasRemovedChildren()) {
             Echo.Sync.renderComponentDefaults(this.component, this.client.domainElement);
@@ -687,17 +687,20 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
         } else {
             this.client.domainElement.dir = this.component.application.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl";
             if (update.hasUpdatedProperties()) {
-                var property;
-                if (property = update.getUpdatedProperty("title")) {
+                property = update.getUpdatedProperty("title");
+                if (property) {
                     document.title = property.newValue;
                 }
-                if (property = update.getUpdatedProperty("background")) {
+                property = update.getUpdatedProperty("background");
+                if (property) {
                     Echo.Sync.Color.renderClear(property.newValue, this.client.domainElement, "backgroundColor");
                 }
-                if (property = update.getUpdatedProperty("foreground")) {
+                property = update.getUpdatedProperty("foreground");
+                if (property) {
                     Echo.Sync.Color.renderClear(property.newValue, this.client.domainElement, "foreground");
                 }
-                if (property = update.getUpdatedProperty("font")) {
+                property = update.getUpdatedProperty("font");
+                if (property) {
                     Echo.Sync.Font.renderClear(property.newValue, this.client.domainElement);
                 }
                 Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this.client.domainElement);
