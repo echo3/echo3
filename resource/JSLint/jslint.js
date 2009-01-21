@@ -4990,8 +4990,11 @@ readDir = /* string[] */ function ( /* string */ path, /* opt RegExp */ filterRx
             quit(1);
         }
         print("jslint: Processing: " + files[fi]);
-        var result = JSLINT(input, {sub: true, ec_eqnull: true, evil: true,  forin: true, browser: true, passfail: false});
-        print(JSLINT.getImplied());                
+        var result = JSLINT(input, {sub: true, ec_eqnull: true, evil: true, forin: true, browser: true, passfail: false,
+                predef: ["Core", "Echo", "ActiveXObject", "DOMParser", "Document"]});
+        if (JSLINT.getImplied().length > 0) {
+            print("Unexpected globals: " + JSLINT.getImplied());
+        }
         if (!result) {
             for (var i = 0; i < JSLINT.errors.length; i += 1) {
                 var e = JSLINT.errors[i];
