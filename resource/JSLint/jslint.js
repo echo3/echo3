@@ -4798,6 +4798,10 @@ JSLINT = function () {
 
 // Report generator.
 
+    itself.getImplied = function() {
+        return to_array(implied);
+    }
+
     itself.report = function (option, sep) {
         var a = [], c, e, f, i, k, l, m = '', n, o = [], s, v, cl, va, un, ou, gl, la;
 
@@ -4986,7 +4990,10 @@ readDir = /* string[] */ function ( /* string */ path, /* opt RegExp */ filterRx
             quit(1);
         }
         print("jslint: Processing: " + files[fi]);
-        if (!JSLINT(input, {sub: true, ec_eqnull: true, evil: true, forin: true, browser: true, passfail: false})) {
+        var result = JSLINT(input, {globals: {Coxre: true, Echo: true}, sub: true, ec_eqnull: true, evil: true, 
+                forin: true, browser: true, passfail: false});
+        print(JSLINT.getImplied());                
+        if (!result) {
             for (var i = 0; i < JSLINT.errors.length; i += 1) {
                 var e = JSLINT.errors[i];
                 if (e) {
