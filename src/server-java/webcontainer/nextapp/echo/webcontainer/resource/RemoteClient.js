@@ -1182,8 +1182,8 @@ Echo.RemoteClient.ApplicationSyncProcessor = Core.extend(Echo.RemoteClient.Direc
                 this.client.application.setLocale(propertyElement.firstChild.nodeValue);
             }
             if (propertyElement.nodeName == "dir") {
-                this.client.application.setLayoutDirection(propertyElement.firstChild.nodeValue === "rtl"
-                    ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR);
+                this.client.application.setLayoutDirection(propertyElement.firstChild.nodeValue === "rtl" ?
+                        Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR);
             }
             propertyElement = propertyElement.nextSibling;
         }

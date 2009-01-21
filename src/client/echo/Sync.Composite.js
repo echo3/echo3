@@ -25,7 +25,7 @@ Echo.Sync.Composite = Core.extend(Echo.Render.ComponentSync, {
         this._div = document.createElement("div");
         this._div.id = this.component.renderId;
         
-        if (this.component.children.length != 0) {
+        if (this.component.children.length !== 0) {
             this.renderStyle(this._div);
             Echo.Render.renderComponentAdd(update, this.component.children[0], this._div);
         }
@@ -60,7 +60,7 @@ Echo.Sync.Panel = Core.extend(Echo.Sync.Composite, {
 
     /** @see Echo.Sync.Composite#renderStyle */
     renderStyle: function(element) {
-        var child = this.component.children.length != 0 ? this.component.children[0] : null;
+        var child = this.component.children.length !== 0 ? this.component.children[0] : null;
         var width = this.component.render("width");
         var height = this.component.render("height");
         if (child && child.pane) {
