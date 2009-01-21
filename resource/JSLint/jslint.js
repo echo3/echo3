@@ -4986,7 +4986,7 @@ readDir = /* string[] */ function ( /* string */ path, /* opt RegExp */ filterRx
             quit(1);
         }
         print("jslint: Processing: " + files[fi]);
-        if (!JSLINT(input, {ec_eqnull: true, evil: true, forin: true, browser: true, passfail: false})) {
+        if (!JSLINT(input, {sub: true, ec_eqnull: true, evil: true, forin: true, browser: true, passfail: false})) {
             for (var i = 0; i < JSLINT.errors.length; i += 1) {
                 var e = JSLINT.errors[i];
                 if (e) {
