@@ -454,7 +454,7 @@ Core.Web.Env = {
             } else if (this._testUAString("trident")) {
                 this.ENGINE_MSHTML = true;
             } else if (this._testUAString("gecko")) {
-                this.BROWSER_MOZILLA = ENGINE_GECKO = true;
+                this.BROWSER_MOZILLA = this.ENGINE_GECKO = true;
             }
         }
         

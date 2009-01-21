@@ -4990,8 +4990,7 @@ readDir = /* string[] */ function ( /* string */ path, /* opt RegExp */ filterRx
             quit(1);
         }
         print("jslint: Processing: " + files[fi]);
-        var result = JSLINT(input, {globals: {Coxre: true, Echo: true}, sub: true, ec_eqnull: true, evil: true, 
-                forin: true, browser: true, passfail: false});
+        var result = JSLINT(input, {sub: true, ec_eqnull: true, evil: true,  forin: true, browser: true, passfail: false});
         print(JSLINT.getImplied());                
         if (!result) {
             for (var i = 0; i < JSLINT.errors.length; i += 1) {
