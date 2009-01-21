@@ -39,6 +39,7 @@ import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.SplitPane;
+import nextapp.echo.app.TextField;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.GridLayoutData;
@@ -105,6 +106,21 @@ public class GridTest extends SplitPane {
                 Button button = createGridCellButton(); 
                 grid.add(button);
                 selectCellButton(button);
+            }
+        });
+
+        controlsColumn.addButton("Append TextField", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                TextField tf = new TextField(); 
+                grid.add(tf);
+            }
+        });
+
+        controlsColumn.addButton("Append 100% Width TextField", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                TextField tf = new TextField();
+                tf.setWidth(new Extent(100, Extent.PERCENT));
+                grid.add(tf);
             }
         });
 
