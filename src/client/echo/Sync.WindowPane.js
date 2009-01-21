@@ -550,7 +550,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         
         this._div.style.cssText = "outline-style:none;position:absolute;z-index:1;overflow:hidden;";
         
-        this._borderDivs = new Array(8);
+        this._borderDivs = [];
         
         var borderBaseCss = "z-index:2;font-size:1px;position:absolute;";
         // Render top row
@@ -822,7 +822,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
 
         Core.Web.Event.removeAll(this._div);
 
-        for (i = 0; i < this._borderDivs.length; ++i) {
+        for (i = 0; i < 8; ++i) {
             if (this._borderDivs[i]) {
                 Core.Web.Event.removeAll(this._borderDivs[i]);
             }

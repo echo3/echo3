@@ -1181,7 +1181,7 @@ Echo.Sync.TriCellTable = Core.extend({
         this.tdElements = [document.createElement("td"), document.createElement("td")];
         this.tdElements[0].style.padding = "0";
         this.tdElements[1].style.padding = "0";
-        this.marginTdElements = new Array(1);
+        this.marginTdElements = [];
         
         if (margin0_1) {
             this.marginTdElements[0] = document.createElement("td");
@@ -1235,12 +1235,12 @@ Echo.Sync.TriCellTable = Core.extend({
      * @param {Number} margin01_2 the margin size between the combination of elements 0 and 1 and element 2
      */
     _configure3: function(orientation0_1, margin0_1, orientation01_2, margin01_2) {
-        this.tdElements = new Array(3);
+        this.tdElements = [];
         for (var i = 0; i < 3; ++i) {
             this.tdElements[i] = document.createElement("td");
             this.tdElements[i].style.padding = "0";
         }
-        this.marginTdElements = new Array(2);
+        this.marginTdElements = [];
         
         if (margin0_1 || margin01_2 != null) {
             if (margin0_1 && margin0_1 > 0) {

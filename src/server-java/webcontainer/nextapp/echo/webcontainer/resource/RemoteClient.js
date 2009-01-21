@@ -231,7 +231,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      */
     _enqueueCommand: function(commandPeer, commandData) {
         if (this._commandQueue == null) {
-            this._commandQueue = new Array();
+            this._commandQueue = [];
         }
         this._commandQueue.push(commandPeer, commandData);
     },

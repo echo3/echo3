@@ -681,7 +681,7 @@ Echo.Serial.Font = Core.extend(Echo.Serial.PropertyTranslator, {
             var font = { };
             
             if (tfElements.length > 1) {
-                font.typeface = new Array(tfElements.length);
+                font.typeface = [];
                 for (var i = 0; i < tfElements.length; ++i) {
                     font.typeface[i] = tfElements[i].firstChild.data;
                 }

@@ -237,7 +237,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
              */
             _getCellArray: function(y) {
                 while (y >= this.cellArrays.length) {
-                    this.cellArrays.push(new Array(this.gridXSize));
+                    this.cellArrays.push([]);
                 }
                 return this.cellArrays[y]; 
             },

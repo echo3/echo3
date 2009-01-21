@@ -1833,7 +1833,7 @@ Echo.Update.ComponentUpdate = Core.extend({
         if (!this._addedChildIds) {
             return null;
         }
-        var components = new Array(this._addedChildIds.length);
+        var components = [];
         for (var i = 0; i < this._addedChildIds.length; ++i) {
             components[i] = this._manager._idMap[this._addedChildIds[i]];
         }
@@ -1851,7 +1851,7 @@ Echo.Update.ComponentUpdate = Core.extend({
         if (!this._removedChildIds) {
             return null;
         }
-        var components = new Array(this._removedChildIds.length);
+        var components = [];
         for (var i = 0; i < this._removedChildIds.length; ++i) {
             components[i] = this._manager._removedIdMap[this._removedChildIds[i]];
         }
@@ -1870,7 +1870,7 @@ Echo.Update.ComponentUpdate = Core.extend({
         if (!this._removedDescendantIds) {
             return null;
         }
-        var components = new Array(this._removedDescendantIds.length);
+        var components = [];
         for (var i = 0; i < this._removedDescendantIds.length; ++i) {
             components[i] = this._manager._removedIdMap[this._removedDescendantIds[i]];
         }
@@ -1889,7 +1889,7 @@ Echo.Update.ComponentUpdate = Core.extend({
         if (!this._updatedLayoutDataChildIds) {
             return null;
         }
-        var components = new Array(this._updatedLayoutDataChildIds.length);
+        var components = [];
         for (var i = 0; i < this._updatedLayoutDataChildIds.length; ++i) {
             components[i] = this._manager._idMap[this._updatedLayoutDataChildIds[i]];
         }

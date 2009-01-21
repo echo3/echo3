@@ -224,8 +224,8 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
 
     /** Constructor. */
     $construct: function() {
-        this._childPanes = new Array(2);
-        this._paneDivs = new Array(2);
+        this._childPanes = [];
+        this._paneDivs = [];
         this._processSeparatorMouseMoveRef = Core.method(this, this._processSeparatorMouseMove);
         this._processSeparatorMouseUpRef = Core.method(this, this._processSeparatorMouseUp);
     },
