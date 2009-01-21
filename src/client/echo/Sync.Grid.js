@@ -325,7 +325,8 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                         this.cellArrays[y].splice(removedX, 1);
                     }
                     
-                    var removedXExtent = this.xExtents.splice(removedX, 1);
+                    var removedXExtent = this.xExtents.splice(removedX, 1)[0];
+
                     if (removedXExtent) {
                         this.xExtents[removedX - 1] = this.addExtents(this.xExtents[removedX - 1], removedXExtent,
                                 this.horizontalOrientation ? true : false);
@@ -394,7 +395,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                     this.cellArrays.splice(removedY, 1);
                     
                     // Remove size data for removed row, add value to previous if necessary.
-                    var removedYExtent = this.yExtents.splice(removedY, 1);
+                    var removedYExtent = this.yExtents.splice(removedY, 1)[0];
                     if (removedYExtent) {
                         this.yExtents[removedY - 1] = this.addExtents(this.yExtents[removedY - 1], removedYExtent,
                                 this.horizontalOrientation ? false : true);
