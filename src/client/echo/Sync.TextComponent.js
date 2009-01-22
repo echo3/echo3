@@ -230,6 +230,23 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.DOM.focusElement(this.input);
     },
     
+    /**
+     * Adds the input element to its parent in the DOM.
+     * Wraps the element in a special container DIV if necessary to appease Internet Explorer's various text field/area bugs,
+     * including percent-based text areas inducing scroll bars and the IE6 percentage width "growing" text area bug.
+     * 
+     * @param parentElement the parent element
+     */
+    renderAddToParent: function(parentElement) {
+        if (Core.Web.Env.BROWSER_INTERNET_EXPLORER && this.percentWidth) {
+            this.container = document.createElement("div");
+            this.container.appendChild(this.input);
+            parentElement.appendChild(this.container);
+        } else {
+            parentElement.appendChild(this.input);
+        }
+    },
+    
     /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
         var fullRender = !Core.Arrays.containsAll(Echo.Sync.TextComponent._supportedPartialProperties, 
@@ -313,9 +330,6 @@ Echo.Sync.TextArea = Core.extend(Echo.Sync.TextComponent, {
 
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
-        // Render text areas inside of a div to accommodate bugs with IE6 where text areas grow when
-        // text is entered if they are set to percent widths.
-        this.container = document.createElement("div");
         this.input = document.createElement("textarea");
         this.input.id = this.component.renderId;
         if (!this.component.render("editable", true)) {
@@ -327,8 +341,7 @@ Echo.Sync.TextArea = Core.extend(Echo.Sync.TextComponent, {
         if (this.component.get("text")) {
             this.input.value = this.component.get("text");
         }
-        this.container.appendChild(this.input);
-        parentElement.appendChild(this.container);
+        this.renderAddToParent(parentElement);
     }
 });
 
@@ -373,14 +386,7 @@ Echo.Sync.TextField = Core.extend(Echo.Sync.TextComponent, {
             this.input.value = this.component.get("text");
         }
         
-        if (Core.Web.Env.BROWSER_INTERNET_EXPLORER && this.percentWidth) {
-            this.container = document.createElement("div");
-            this.container.style.width = "100%";
-            this.container.appendChild(this.input);
-            parentElement.appendChild(this.container);
-        } else {
-            parentElement.appendChild(this.input);
-        }
+        this.renderAddToParent(parentElement);
     },
 
     /** 
