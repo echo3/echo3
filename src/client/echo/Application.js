@@ -462,7 +462,8 @@ Echo.ComponentFactory = {
     getSuperType: function(typeName) {
         var typeConstructor = this._typeToConstructorMap[typeName];
         if (!typeConstructor) {
-            throw new Error("Type not registered with ComponentFactory: " + typeName);
+            // Type not registered, return Component base class name.
+            return "Component";
         }
         if (typeConstructor.$super) {
             return typeConstructor.$super.prototype.componentType;
