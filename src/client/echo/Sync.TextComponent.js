@@ -27,8 +27,8 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         sanitizeInput: function() {
             var maximumLength = this.component.render("maximumLength", -1);
             if (maximumLength >= 0) {
-                if (this._input.value && this._input.value.length > maximumLength) {
-                    this._input.value = this._input.value.substring(0, maximumLength);
+                if (this.input.value && this.input.value.length > maximumLength) {
+                    this.input.value = this.input.value.substring(0, maximumLength);
                 }
             }
         }
@@ -38,14 +38,14 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      * The rendered "input" element (may be a textarea).
      * @type Element
      */
-    _input: null,
+    input: null,
     
     /**
      * Container element which wraps the input element.
      * This element is only rendered for text areas, to mitigate IE "growing" text area bug.
      * @type Element
      */
-    _container: null,
+    container: null,
     
     /**
      * Actual focus state of component, based on received DOM focus/blur events.
@@ -54,39 +54,52 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     _focused: false,
     
     /**
+     * Flag indicating whether width has been set as a percentage.
+     * @type Boolean
+     */
+    percentWidth: false,
+    
+    /**
      * Renders style information: colors, borders, font, insets, etc.
+     * Sets percentWidth flag.
      */
     _renderStyle: function() {
         if (this.component.isRenderEnabled()) {
-            Echo.Sync.renderComponentDefaults(this.component, this._input);
-            Echo.Sync.Border.render(this.component.render("border"), this._input);
-            Echo.Sync.FillImage.render(this.component.render("backgroundImage"), this._input);
+            Echo.Sync.renderComponentDefaults(this.component, this.input);
+            Echo.Sync.Border.render(this.component.render("border"), this.input);
+            Echo.Sync.FillImage.render(this.component.render("backgroundImage"), this.input);
         } else {
-            Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this._input);
+            Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this.input);
             Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
-                    this._input, "color");
+                    this.input, "color");
             Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "background", "disabledBackground", true), 
-                    this._input, "backgroundColor");
+                    this.input, "backgroundColor");
             Echo.Sync.Border.render(Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", true), 
-                    this._input);
+                    this.input);
             Echo.Sync.Font.render(Echo.Sync.getEffectProperty(this.component, "font", "disabledFont", true), 
-                    this._input);
+                    this.input);
             Echo.Sync.FillImage.render(Echo.Sync.getEffectProperty(this.component, 
-                    "backgroundImage", "disabledBackgroundImage", true), this._input);
+                    "backgroundImage", "disabledBackgroundImage", true), this.input);
         }
-        Echo.Sync.Alignment.render(this.component.render("alignment"), this._input, false, null);
-        Echo.Sync.Insets.render(this.component.render("insets"), this._input, "padding");
+        Echo.Sync.Alignment.render(this.component.render("alignment"), this.input, false, null);
+        Echo.Sync.Insets.render(this.component.render("insets"), this.input, "padding");
         var width = this.component.render("width");
-        if (width && !Echo.Sync.Extent.isPercent(width)) {
-            this._input.style.width = Echo.Sync.Extent.toCssValue(width, true);
+        this.percentWidth = Echo.Sync.Extent.isPercent(width);
+        if (width) {
+            if (this.percentWidth) {
+                // Set width very small temporarily, renderDisplay will correct.
+                this.input.style.width = "5px";
+            } else {
+                this.input.style.width = Echo.Sync.Extent.toCssValue(width, true);
+            }
         }
         var height = this.component.render("height");
         if (height) {
-            this._input.style.height = Echo.Sync.Extent.toCssValue(height, false);
+            this.input.style.height = Echo.Sync.Extent.toCssValue(height, false);
         }
         var toolTipText = this.component.render("toolTipText");
         if (toolTipText) {
-            this._input.title = toolTipText;
+            this.input.title = toolTipText;
         }
     },
     
@@ -94,11 +107,11 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      * Registers event handlers on the text component.
      */
     _addEventHandlers: function() {
-        Core.Web.Event.add(this._input, "click", Core.method(this, this._processClick), false);
-        Core.Web.Event.add(this._input, "focus", Core.method(this, this._processFocus), false);
-        Core.Web.Event.add(this._input, "blur", Core.method(this, this._processBlur), false);
-        Core.Web.Event.add(this._input, "keypress", Core.method(this, this._processKeyPress), false);
-        Core.Web.Event.add(this._input, "keyup", Core.method(this, this._processKeyUp), false);
+        Core.Web.Event.add(this.input, "click", Core.method(this, this._processClick), false);
+        Core.Web.Event.add(this.input, "focus", Core.method(this, this._processFocus), false);
+        Core.Web.Event.add(this.input, "blur", Core.method(this, this._processBlur), false);
+        Core.Web.Event.add(this.input, "keypress", Core.method(this, this._processKeyPress), false);
+        Core.Web.Event.add(this.input, "keyup", Core.method(this, this._processKeyUp), false);
     },
     
     /**
@@ -165,21 +178,21 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             return;
         }
 
-        if (!this.client.verifyInput(this.component) || this._input.readOnly) {
+        if (!this.client.verifyInput(this.component) || this.input.readOnly) {
             // Client is unwilling to accept input or component has been made read-only:
             // Reset value of text field to text property of component.
-            this._input.value = this.component.get("text");
+            this.input.value = this.component.get("text");
             return;
         }
 
         // All-clear, store current text value.
-        this.component.set("text", this._input.value);
+        this.component.set("text", this.input.value);
     },
 
     /** @see Echo.Render.ComponentSync#renderDisplay */
     renderDisplay: function() {
         var width = this.component.render("width");
-        if (width && Echo.Sync.Extent.isPercent(width) && this._input.parentNode.offsetWidth) {
+        if (width && Echo.Sync.Extent.isPercent(width) && this.input.parentNode.offsetWidth) {
             // If width is a percentage, reduce rendered percent width based on measured container size and border width,
             // such that border pixels will not make the component wider than specified percentage.
             var border = this.component.render("border");
@@ -187,24 +200,24 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
                     Echo.Sync.Border.getPixelSize(this.component.render("border", "2px solid #000000"), "right") + 1;
             if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
                 // Add default windows scroll bar width to border size for Internet Explorer browsers.
-                if (this._container) {
-                    this._container.style.width = this._adjustPercentWidth(100, Core.Web.Measure.SCROLL_WIDTH, 
-                            this._input.parentNode.offsetWidth) + "%";
+                if (this.container) {
+                    this.container.style.width = this._adjustPercentWidth(100, Core.Web.Measure.SCROLL_WIDTH, 
+                            this.input.parentNode.offsetWidth) + "%";
                 } else {
                     borderSize += Core.Web.Measure.SCROLL_WIDTH;
                 }
             }
-            this._input.style.width = this._adjustPercentWidth(parseInt(width, 10), borderSize, 
-                    this._input.parentNode.offsetWidth) + "%";
+            this.input.style.width = this._adjustPercentWidth(parseInt(width, 10), borderSize, 
+                    this.input.parentNode.offsetWidth) + "%";
         }
     },
     
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
-        Core.Web.Event.removeAll(this._input);
+        Core.Web.Event.removeAll(this.input);
         this._focused = false;
-        this._input = null;
-        this._container = null;
+        this.input = null;
+        this.container = null;
     },
     
     /** @see Echo.Render.ComponentSync#renderFocus */
@@ -214,7 +227,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         }
             
         this._focused = true;
-        Core.Web.DOM.focusElement(this._input);
+        Core.Web.DOM.focusElement(this.input);
     },
     
     /** @see Echo.Render.ComponentSync#renderUpdate */
@@ -223,7 +236,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
                     update.getUpdatedPropertyNames(), true);
     
         if (fullRender) {
-            var element = this._container ? this._container : this._input;
+            var element = this.container ? this.container : this.input;
             var containerElement = element.parentNode;
             this.renderDispose(update);
             containerElement.removeChild(element);
@@ -235,12 +248,12 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
                     // Update text value, but only if server-provided property differs from client.
                     var newValue = textUpdate.newValue == null ? "" : textUpdate.newValue;
                     if (newValue != this.component.get("text")) {
-                        this._input.value = newValue;
+                        this.input.value = newValue;
                     }
                 }
                 var editableUpdate = update.getUpdatedProperty("editable");
                 if (editableUpdate != null) {
-                    this._input.readOnly = !editableUpdate.newValue;
+                    this.input.readOnly = !editableUpdate.newValue;
                 }
             }
         }
@@ -280,7 +293,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         }
 
         // Component and client are ready to receive input, set the component property and/or fire action event.
-        this.component.set("text", this._input.value);
+        this.component.set("text", this.input.value);
         if (keyEvent && keyEvent.keyCode == 13) {
             this.component.doAction();
         }
@@ -302,20 +315,20 @@ Echo.Sync.TextArea = Core.extend(Echo.Sync.TextComponent, {
     renderAdd: function(update, parentElement) {
         // Render text areas inside of a div to accommodate bugs with IE6 where text areas grow when
         // text is entered if they are set to percent widths.
-        this._container = document.createElement("div");
-        this._input = document.createElement("textarea");
-        this._input.id = this.component.renderId;
+        this.container = document.createElement("div");
+        this.input = document.createElement("textarea");
+        this.input.id = this.component.renderId;
         if (!this.component.render("editable", true)) {
-            this._input.readOnly = true;
+            this.input.readOnly = true;
         }
-        this._renderStyle(this._input);
-        this._input.style.overflow = "auto";
-        this._addEventHandlers(this._input);
+        this._renderStyle(this.input);
+        this.input.style.overflow = "auto";
+        this._addEventHandlers(this.input);
         if (this.component.get("text")) {
-            this._input.value = this.component.get("text");
+            this.input.value = this.component.get("text");
         }
-        this._container.appendChild(this._input);
-        parentElement.appendChild(this._container);
+        this.container.appendChild(this.input);
+        parentElement.appendChild(this.container);
     }
 });
 
@@ -344,22 +357,30 @@ Echo.Sync.TextField = Core.extend(Echo.Sync.TextComponent, {
 
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
-        this._input = document.createElement("input");
-        this._input.id = this.component.renderId;
+        this.input = document.createElement("input");
+        this.input.id = this.component.renderId;
         if (!this.component.render("editable", true)) {
-            this._input.readOnly = true;
+            this.input.readOnly = true;
         }
-        this._input.type = this._type;
+        this.input.type = this._type;
         var maximumLength = this.component.render("maximumLength", -1);
         if (maximumLength >= 0) {
-            this._input.maxLength = maximumLength;
+            this.input.maxLength = maximumLength;
         }
-        this._renderStyle(this._input);
-        this._addEventHandlers(this._input);
+        this._renderStyle(this.input);
+        this._addEventHandlers(this.input);
         if (this.component.get("text")) {
-            this._input.value = this.component.get("text");
+            this.input.value = this.component.get("text");
         }
-        parentElement.appendChild(this._input);
+        
+        if (Core.Web.Env.BROWSER_INTERNET_EXPLORER && this.percentWidth) {
+            this.container = document.createElement("div");
+            this.container.style.width = "100%";
+            this.container.appendChild(this.input);
+            parentElement.appendChild(this.container);
+        } else {
+            parentElement.appendChild(this.input);
+        }
     },
 
     /** 

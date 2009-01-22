@@ -125,6 +125,15 @@ public class GridTest extends SplitPane {
             }
         });
 
+        controlsColumn.addButton("Append 100% Width TextField (styled)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                TextField tf = new TextField();
+                tf.setBorder(new Border(1, Color.RED, Border.STYLE_SOLID));
+                tf.setWidth(new Extent(100, Extent.PERCENT));
+                grid.add(tf);
+            }
+        });
+
         controlsColumn.addButton("Append Column of 100% Width TextField", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Column column = new Column();
