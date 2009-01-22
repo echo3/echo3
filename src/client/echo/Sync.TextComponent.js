@@ -54,6 +54,13 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     _focused: false,
     
     /**
+     * The last processed value of the text field, i.e., the last value of the input field
+     * that was stored in the component hierarchy.  When input is provided while restrictions
+     * are in place, this value is not updated.
+     */
+    _lastProcessedValue: null,
+    
+    /**
      * Flag indicating whether width has been set as a percentage.
      * @type Boolean
      */
@@ -262,9 +269,8 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             if (update.hasUpdatedProperties()) {
                 var textUpdate = update.getUpdatedProperty("text");
                 if (textUpdate) {
-                    // Update text value, but only if server-provided property differs from client.
                     var newValue = textUpdate.newValue == null ? "" : textUpdate.newValue;
-                    if (newValue != this.component.get("text")) {
+                    if (newValue != this._lastProcessedValue) {
                         this.input.value = newValue;
                     }
                 }
@@ -311,6 +317,8 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
 
         // Component and client are ready to receive input, set the component property and/or fire action event.
         this.component.set("text", this.input.value);
+        this._lastProcessedValue = this.input.value;
+        
         if (keyEvent && keyEvent.keyCode == 13) {
             this.component.doAction();
         }
