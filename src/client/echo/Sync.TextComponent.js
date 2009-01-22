@@ -196,6 +196,23 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         this.component.set("text", this.input.value);
     },
 
+    /**
+     * Adds the input element to its parent in the DOM.
+     * Wraps the element in a special container DIV if necessary to appease Internet Explorer's various text field/area bugs,
+     * including percent-based text areas inducing scroll bars and the IE6 percentage width "growing" text area bug.
+     * 
+     * @param parentElement the parent element
+     */
+    renderAddToParent: function(parentElement) {
+        if (Core.Web.Env.BROWSER_INTERNET_EXPLORER && this.percentWidth) {
+            this.container = document.createElement("div");
+            this.container.appendChild(this.input);
+            parentElement.appendChild(this.container);
+        } else {
+            parentElement.appendChild(this.input);
+        }
+    },
+    
     /** @see Echo.Render.ComponentSync#renderDisplay */
     renderDisplay: function() {
         var width = this.component.render("width");
@@ -235,23 +252,6 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             
         this._focused = true;
         Core.Web.DOM.focusElement(this.input);
-    },
-    
-    /**
-     * Adds the input element to its parent in the DOM.
-     * Wraps the element in a special container DIV if necessary to appease Internet Explorer's various text field/area bugs,
-     * including percent-based text areas inducing scroll bars and the IE6 percentage width "growing" text area bug.
-     * 
-     * @param parentElement the parent element
-     */
-    renderAddToParent: function(parentElement) {
-        if (Core.Web.Env.BROWSER_INTERNET_EXPLORER && this.percentWidth) {
-            this.container = document.createElement("div");
-            this.container.appendChild(this.input);
-            parentElement.appendChild(this.container);
-        } else {
-            parentElement.appendChild(this.input);
-        }
     },
     
     /** @see Echo.Render.ComponentSync#renderUpdate */
