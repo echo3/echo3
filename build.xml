@@ -445,28 +445,28 @@
         </exec>
     </target>
     
-    <target name="lint.corejs">
+    <target name="jslint.corejs">
         <java fork="true" jar="${dir.resource.jslint}/rhino.jar">
             <arg value="${dir.resource.jslint}/jslint.js"/>
             <arg value="${dir.src.client.corejs}/"/>
         </java>
     </target>
 
-    <target name="lint.echo">
+    <target name="jslint.echo">
         <java fork="true" jar="${dir.resource.jslint}/rhino.jar">
             <arg value="${dir.resource.jslint}/jslint.js"/>
             <arg value="${dir.src.client.echo}/"/>
         </java>
     </target>
 
-    <target name="lint.webcontainer">
+    <target name="jslint.webcontainer">
         <java fork="true" jar="${dir.resource.jslint}/rhino.jar">
             <arg value="${dir.resource.jslint}/jslint.js"/>
             <arg value="${dir.src.server-java.webcontainer.res}/"/>
         </java>
     </target>
     
-    <target name="lint" depends="lint.corejs,lint.echo,lint.webcontainer">
+    <target name="jslint" depends="jslint.corejs,jslint.echo,jslint.webcontainer">
     </target>
 
 </project>
