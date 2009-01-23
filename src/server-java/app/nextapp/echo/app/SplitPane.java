@@ -30,8 +30,9 @@
 package nextapp.echo.app;
 
 /**
- * A container which displays two components horizontally or vertically
- * adjacent to one another.
+ * SplitPane component: a pane component which displays two components horizontally or vertically
+ * adjacent to one another, optionally allowing the user to apportion space between the two using a resize handle.
+ * May have at most two child components.  Supports <code>Pane</code> components as children. 
  * <p>
  * <b>Child LayoutData</b>: Children of this component may provide
  * layout information using the 

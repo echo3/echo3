@@ -3003,8 +3003,9 @@ Echo.Row = Core.extend(Echo.Component, {
 });
 
 /**
- * SplitPane component.
- * Splits a pane into two regions.  A maximum of two components may be added as children.
+ * SplitPane component: a pane component which displays two components horizontally or vertically
+ * adjacent to one another, optionally allowing the user to apportion space between the two using a resize handle.
+ * May have at most two child components.  Supports <code>Pane</code> components as children. 
  *
  * @sp {Boolean} autoPositioned flag indicating whether the pane should set the separator position automatically
  *     based on size of first child.  This feature is only available on vertically oriented panes, where the
@@ -3142,7 +3143,7 @@ Echo.SplitPane = Core.extend(Echo.Component, {
 });
 
 /**
- * Abstract base class for text components.
+ * Abstract base class for text-entry components.
  *
  * @sp {String} actionCommand the action command fired when the enter key is pressed
  *     within the text component
@@ -3190,7 +3191,7 @@ Echo.TextComponent = Core.extend(Echo.Component, {
 });
 
 /**
- * TextArea component.
+ * TextArea component: a multiple-line text input field.  May not contain child components.
  */
 Echo.TextArea = Core.extend(Echo.TextComponent, {
 

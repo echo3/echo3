@@ -34,7 +34,7 @@ import nextapp.echo.app.text.StringDocument;
 import nextapp.echo.app.text.TextComponent;
 
 /**
- * A multiple-line text input field.
+ * TextArea component: a multiple-line text input field.  May not contain child components.
  */
 public class TextArea extends TextComponent {
     
