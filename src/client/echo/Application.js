@@ -2873,40 +2873,45 @@ Echo.ContentPane = Core.extend(Echo.Component, {
 });
 
 /**
- * A container component which displays children in a grid.
- * Cells may be configured to span multiple rows and/or columns.
- *
+ * Grid component: a layout container which displays children in a grid.
+ * Individual child component cells may be configured to span multiple rows or
+ * columns using layout data.  May contain zero or more components as children.
+ * May not contain panes as children.
+ * 
  * @sp {#Border} border the border displayed around the grid, and between cells
- * @sp {#Extent} columnWidth an indexed property whose indices represent the width 
- *     of each column of the grid
+ * @sp {#Extent} columnWidth an indexed property whose indices represent the
+ *     width of each column of the grid
  * @sp {#Extent} height the overall height of the grid
  * @sp {#Insets} insets the default inset margin displayed in each cell
  * @sp {Number} orientation a value indicating whether the grid will be laid out
- *     horizontally and then vertically or vice-versa, one of the
- *     following values:
+ *     horizontally and then vertically or vice-versa, one of the following
+ *     values:
  *     <ul>
- *      <li><code>ORIENTATION_HORIZONTAL</code> (the default) lay children out horizontally, then vertically</li> 
- *      <li><code>ORIENTATION_VERTICAL</code> lay children out vertically, then horizontally</li> 
+ *     <li><code>ORIENTATION_HORIZONTAL</code> (the default) lay children out
+ *     horizontally, then vertically</li>
+ *     <li><code>ORIENTATION_VERTICAL</code> lay children out vertically,
+ *     then horizontally</li>
  *     </ul>
- * @sp {#Extent} rowWidth an indexed property whose indices represent the height 
+ * @sp {#Extent} rowWidth an indexed property whose indices represent the height
  *     of each row of the grid
  * @sp {Number} size the number of cells to render before wrapping to the next
  *     column/row (default 2)
  * @sp {#Extent} width the overall width of the grid
- *
- * @ldp {#Alignment} alignment the alignment of the child component within its cell
+ * @ldp {#Alignment} alignment the alignment of the child component within its
+ *      cell
  * @ldp {#Color} background the background of the child component's cell
- * @ldp {#FillImage} backrgoundImage the background image of the child component's cell
+ * @ldp {#FillImage} backrgoundImage the background image of the child
+ *      component's cell
  * @ldp {Number} columnSpan the number of column the containing cell should span
- *      (a value of <code>SPAN_FILL</code> indicates that cell should fill all columns until
- *      the end of the grid is reached; this value may only be used in
- *      this property for horizontally oriented grids)
- * @ldp {#Insets} insets the insets margin of the child component's cell 
- *      (this inset is added to any inset set on the container component)
- * @ldp {Number} rowSpan the number of rows the containing cell should span
- *      (a value of <code>SPAN_FILL</code> indicates that cell should fill all rows until
- *      the end of the grid is reached; this value may only be used in
- *      this property for vertically oriented grids)
+ *      (a value of <code>SPAN_FILL</code> indicates that cell should fill all
+ *      columns until the end of the grid is reached; this value may only be
+ *      used in this property for horizontally oriented grids)
+ * @ldp {#Insets} insets the insets margin of the child component's cell (this
+ *      inset is added to any inset set on the container component)
+ * @ldp {Number} rowSpan the number of rows the containing cell should span (a
+ *      value of <code>SPAN_FILL</code> indicates that cell should fill all
+ *      rows until the end of the grid is reached; this value may only be used
+ *      in this property for vertically oriented grids)
  */
 Echo.Grid = Core.extend(Echo.Component, {
 
@@ -2951,7 +2956,7 @@ Echo.Grid = Core.extend(Echo.Component, {
 });
 
 /**
- * Label component.
+ * Label component: displays a text string, an icon, or both.  May not contain child components.
  *
  * @sp {Boolean} formatWhitespace a boolean flag indicating whether whitespace 
  *     formatting should be applied to the label

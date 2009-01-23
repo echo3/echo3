@@ -30,7 +30,7 @@
 package nextapp.echo.app;
 
 /**
- * A component which displays a text string, an icon, or both.
+ * Label component: displays a text string, an icon, or both.  May not contain child components.
  */
 public class Label extends Component {
 

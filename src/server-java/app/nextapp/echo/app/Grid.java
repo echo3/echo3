@@ -30,14 +30,12 @@
 package nextapp.echo.app;
 
 /**
- * A layout <code>Component</code> which renders its contents in a grid. Each
- * component is contained within a "cell" of the grid.
- * <code>GridLayoutData</code> layout data objects may used to cause cells to
- * expand to fill multiple columns or rows.
+ * Grid component: a layout container which displays children in a grid. Individual child component cells may be configured to span
+ * multiple rows or columns using <code>GridLayoutData</code>. May contain zero or more components as children. May not contain
+ * <code>Pane</code> as children.
  * <p>
- * <b>Child LayoutData</b>: Children of this component may provide layout
- * information using the <code>nextapp.echo.app.layout.GridLayoutData</code>
- * layout data object.
+ * <b>Child LayoutData</b>: Children of this component may provide layout information using the
+ * <code>nextapp.echo.app.layout.GridLayoutData</code> layout data object.
  * 
  * @see nextapp.echo.app.layout.GridLayoutData
  */
