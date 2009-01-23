@@ -482,6 +482,10 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     
     /** Processes a key press event. */
     _processKeyPress: function(e) {
+        if (!this.client) {
+            return;
+        }
+        
         var focusPrevious,
             focusedComponent,
             focusFlags,

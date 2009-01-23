@@ -503,6 +503,10 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
      * Processes a key press event (for focus navigation amongst child cells.
      */
     _processKeyPress: function(e) { 
+        if (!this.client) {
+            return;
+        }
+        
         var focusPrevious,
             focusedComponent,
             focusFlags,
