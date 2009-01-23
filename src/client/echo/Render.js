@@ -685,7 +685,7 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
             this._renderContent(update);
             fullRender = true;
         } else {
-            this.client.domainElement.dir = this.component.application.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl";
+            this.client.domainElement.dir = this.client.application.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl";
             if (update.hasUpdatedProperties()) {
                 property = update.getUpdatedProperty("title");
                 if (property) {

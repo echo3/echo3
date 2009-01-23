@@ -2469,7 +2469,7 @@ Echo.Update.Manager = Core.extend({
         }
         this._fireUpdate();
     },
-    
+
     /**
      * Purges all updates from the manager.
      * Invoked after the client has repainted the screen.

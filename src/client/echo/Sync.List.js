@@ -211,7 +211,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
-        this.component.application.setFocusedComponent(this.component);
+        this.client.application.setFocusedComponent(this.component);
     },
     
     /** IE-specific event handler to prevent mouse-selection of text in DOM-rendered listbox component. */

@@ -148,7 +148,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
-        this.component.application.setFocusedComponent(this.component);
+        this.client.application.setFocusedComponent(this.component);
     },
 
     /**
@@ -159,7 +159,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         if (!this.client || !this.client.verifyInput(this.component)) {
             return true;
         }
-        this.component.application.setFocusedComponent(this.component);
+        this.client.application.setFocusedComponent(this.component);
     },
     
     /**
