@@ -2793,6 +2793,8 @@ Echo.Column = Core.extend(Echo.Component, {
  */
 Echo.Composite = Core.extend(Echo.Component, {
 
+    $abstract: true,
+    
     $load: function() {
         Echo.ComponentFactory.registerType("Composite", this);
         Echo.ComponentFactory.registerType("CM", this);
