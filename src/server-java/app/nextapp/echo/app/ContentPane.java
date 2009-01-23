@@ -30,15 +30,16 @@
 package nextapp.echo.app;
 
 /**
- * A content pane is a high-level container/layout object which provides
- * layout for a content region and floating <code>WindowPane</code>s.
+ * <code>ContentPane</code> component: a high-level container/layout object which fills a region and optionally provides the
+ * capability to add <code>FloatingPane</code>s (e.g. <code>WindowPane</code>s) above that content. A <code>ContentPane</code> is
+ * often suitable for use as a base class to extend when creating a composite (pane) component. May contain at most one non-
+ * <code>FloatinPane</code> component as a child. May contain zero or more <code>FloatingPane</code> components as children.
+ * 
  * <p>
- * A <code>ContentPane</code> may only be added to a <code>Component</code> 
- * which implements <code>PaneContainer</code>.
+ * A <code>ContentPane</code> may only be added to a <code>Component</code> which implements <code>PaneContainer</code>.
  * <p>
- * At most one <code>Component</code> that does NOT implement 
- * <code>FloatingPane</code> may be added to a <code>ContentPane</code>.
- * Any number of <code>FloatingPane</code>s may be added as children. 
+ * At most one <code>Component</code> that does NOT implement <code>FloatingPane</code> may be added to a <code>ContentPane</code>.
+ * Any number of <code>FloatingPane</code>s may be added as children.
  */
 public class ContentPane extends Component 
 implements Pane, PaneContainer {

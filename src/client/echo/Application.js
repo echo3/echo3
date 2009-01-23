@@ -2820,20 +2820,22 @@ Echo.Panel = Core.extend(Echo.Composite, {
 });
 
 /**
- * A content pane is a high-level container/layout object which provides
- * layout for a content region and floating WindowPanes.
- * Floating panes should have a property, <code>floatingPane</code>, set to true
- * on their <code>Echo.Component</code> instance.
- *
+ * ContentPane component: a high-level container/layout object which fills a
+ * region and optionally provides the capability to add floating panes (e.g.
+ * <code>WindowPane</code>s) above that content. A ContentPane is often
+ * suitable for use as a base class to extend when creating a composite (pane)
+ * component. May contain at most one non-floating pane component as a child.
+ * May contain zero or more floating pane components as children.
+ * 
  * @sp {#FillImage} backgroundImage the background image
  * @sp {#Extent} horizontalScroll the horizontal scroll position
  * @sp {#Insets} insets the inset margin of the content
- * @sp {Number} overflow the scrollbar behavior used when content overflows
- *     the boundaries of the pane, one of the following values:
+ * @sp {Number} overflow the scrollbar behavior used when content overflows the
+ *     boundaries of the pane, one of the following values:
  *     <ul>
- *      <li><code>OVERFLOW_AUTO</code> (the default)</li>
- *      <li><code>OVERFLOW_HIDDEN</code> hide content that overflows</li>
- *      <li><code>OVERFLOW_SCROLL</code> always display scrollbars</li>
+ *     <li><code>OVERFLOW_AUTO</code> (the default)</li>
+ *     <li><code>OVERFLOW_HIDDEN</code> hide content that overflows</li>
+ *     <li><code>OVERFLOW_SCROLL</code> always display scrollbars</li>
  *     </ul>
  * @sp {#Extent} verticalScroll the vertical scroll position
  */
