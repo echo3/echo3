@@ -2770,19 +2770,22 @@ Echo.SelectField = Core.extend(Echo.AbstractListComponent, {
 });
 
 /**
- * Column component: a layout container which renders its content in a single vertical column of cells.
- * May have zero or more child components.  Does not support pane components as children.
- *
+ * Column component: a layout container which renders its content in a single
+ * vertical column of cells. May have zero or more child components. Does not
+ * support pane components as children.
+ * 
  * @sp {#Border} border the border displayed around the entire column
  * @sp {#Extent} cellSpacing the extent margin between cells of the column
  * @sp {#Insets} insets the inset margin between the column border and its cells
- *
- * @ldp {#Alignment} alignment the alignment of the child component within its cell
+ * 
+ * @ldp {#Alignment} alignment the alignment of the child component within its
+ *      cell
  * @ldp {#Color} background the background of the child component's cell
- * @ldp {#FillImage} backrgoundImage the background image of the child component's cell
+ * @ldp {#FillImage} backrgoundImage the background image of the child
+ *      component's cell
  * @ldp {#Extent} height the height of the child component's cell
- * @ldp {#Insets} insets the insets margin of the child component's cell 
- *      (this inset is added to any inset set on the container component)
+ * @ldp {#Insets} insets the insets margin of the child component's cell (this
+ *      inset is added to any inset set on the container component)
  */
 Echo.Column = Core.extend(Echo.Component, {
 
@@ -2796,11 +2799,11 @@ Echo.Column = Core.extend(Echo.Component, {
 });
 
 /**
- * Composite component: a generic composite component abstract base class.
- * This class is intended to be used as base class for composite components.
- * Provides no rendering properties (other than those specified in Component).
- * May contain at most one child component. May not contain a pane component as
- * a child.
+ * Composite component: a generic composite component abstract base class. This
+ * class is intended to be used as base class for composite components. Provides
+ * no rendering properties (other than those specified in Component). May
+ * contain at most one child component. May not contain a pane component as a
+ * child.
  * 
  * This class provides no benefit if you are providing a custom
  * synchronization/rendering peer. In such cases, <code>Echo.Component</code>
@@ -2820,16 +2823,17 @@ Echo.Composite = Core.extend(Echo.Component, {
 });
 
 /**
- * Panel component: a single child container.
- * Provides a configurable border, margin, background image, and dimensions.
- * May contain at most one child.  May contain pane components, and may be used as a means to add pane components
- * to containers which do not allow pane components as children.  In such a case it may be necessary to manually set the height
- * property of the Panel itself.
- *
+ * Panel component: a single child container. Provides a configurable border,
+ * margin, background image, and dimensions. May contain at most one child. May
+ * contain pane components, and may be used as a means to add pane components to
+ * containers which do not allow pane components as children. In such a case it
+ * may be necessary to manually set the height property of the Panel itself.
+ * 
  * @sp {#FillImage} backgroundImage the background image
  * @sp {#Border} border the panel border surrounding the child component
  * @sp {#Extent} height the height of the panel
- * @sp {#Insets} insets the inset padding margin between the panel border and its content
+ * @sp {#Insets} insets the inset padding margin between the panel border and
+ *     its content
  * @sp {#Extent} width the width of the panel
  */
 Echo.Panel = Core.extend(Echo.Composite, {
@@ -2901,7 +2905,7 @@ Echo.ContentPane = Core.extend(Echo.Component, {
 /**
  * Grid component: a layout container which displays children in a grid.
  * Individual child component cells may be configured to span multiple rows or
- * columns using layout data.  May contain zero or more components as children.
+ * columns using layout data. May contain zero or more components as children.
  * May not contain panes as children.
  * 
  * @sp {#Border} border the border displayed around the grid, and between cells
@@ -2982,20 +2986,21 @@ Echo.Grid = Core.extend(Echo.Component, {
 });
 
 /**
- * Label component: displays a text string, an icon, or both.  May not contain child components.
- *
- * @sp {Boolean} formatWhitespace a boolean flag indicating whether whitespace 
+ * Label component: displays a text string, an icon, or both. May not contain
+ * child components.
+ * 
+ * @sp {Boolean} formatWhitespace a boolean flag indicating whether whitespace
  *     formatting should be applied to the label
- * @sp {Boolean} lineWrap a boolean flag indicating whether long lines should
- *     be wrapped
+ * @sp {Boolean} lineWrap a boolean flag indicating whether long lines should be
+ *     wrapped
  * @sp {#ImageReference} icon the icon/image to display in the label
- * @sp {#Extent} iconTextMargin an extent setting describing the distance between
- *     the label and icon
+ * @sp {#Extent} iconTextMargin an extent setting describing the distance
+ *     between the label and icon
  * @sp {String} text the text to display in the label
- * @sp {#Alignment} textAlignment an alignment setting describing the alignment of 
- *     the label's text
- * @sp {#Alignment} textPosition an alignment setting describing the position of the
- *     label's text relative to the icon
+ * @sp {#Alignment} textAlignment an alignment setting describing the alignment
+ *     of the label's text
+ * @sp {#Alignment} textPosition an alignment setting describing the position of
+ *     the label's text relative to the icon
  */
 Echo.Label = Core.extend(Echo.Component, {
 
@@ -3035,49 +3040,58 @@ Echo.Row = Core.extend(Echo.Component, {
 });
 
 /**
- * SplitPane component: a pane component which displays two components horizontally or vertically
- * adjacent to one another, optionally allowing the user to apportion space between the two using a resize handle.
- * May have at most two child components.  Supports pane components as children. 
- *
- * @sp {Boolean} autoPositioned flag indicating whether the pane should set the separator position automatically
- *     based on size of first child.  This feature is only available on vertically oriented panes, where the
- *     first child contains non-pane content. 
- * @sp {Number} orientation the orientation of the SplitPane, one of the following values:
+ * SplitPane component: a pane component which displays two components
+ * horizontally or vertically adjacent to one another, optionally allowing the
+ * user to apportion space between the two using a resize handle. May have at
+ * most two child components. Supports pane components as children.
+ * 
+ * @sp {Boolean} autoPositioned flag indicating whether the pane should set the
+ *     separator position automatically based on size of first child. This
+ *     feature is only available on vertically oriented panes, where the first
+ *     child contains non-pane content.
+ * @sp {Number} orientation the orientation of the SplitPane, one of the
+ *     following values:
  *     <ul>
- *      <li><code>ORIENTATION_HORIZONTAL_LEADING_TRAILING</code> (the default)</li>
- *      <li><code>ORIENTATION_HORIZONTAL_TRAILING_LEADING</code></li>
- *      <li><code>ORIENTATION_HORIZONTAL_LEFT_RIGHT</code></li>
- *      <li><code>ORIENTATION_HORIZONTAL_RIGHT_LEFT</code></li>
- *      <li><code>ORIENTATION_VERTICAL_TOP_BOTTOM</code></li>
- *      <li><code>ORIENTATION_VERTICAL_BOTTOM_TOP</code></li>
+ *     <li><code>ORIENTATION_HORIZONTAL_LEADING_TRAILING</code> (the default)</li>
+ *     <li><code>ORIENTATION_HORIZONTAL_TRAILING_LEADING</code></li>
+ *     <li><code>ORIENTATION_HORIZONTAL_LEFT_RIGHT</code></li>
+ *     <li><code>ORIENTATION_HORIZONTAL_RIGHT_LEFT</code></li>
+ *     <li><code>ORIENTATION_VERTICAL_TOP_BOTTOM</code></li>
+ *     <li><code>ORIENTATION_VERTICAL_BOTTOM_TOP</code></li>
  *     </ul>
- * @sp {Boolean} resizable flag indicating whether the pane separator can be moved
+ * @sp {Boolean} resizable flag indicating whether the pane separator can be
+ *     moved
  * @sp {#Color} separatorColor the separator color
- * @sp {#Extent} separatorHeight the height of the separator (this property is used to determine the size
- *     of the separator in vertical orientations)
- * @sp {#FillImage} separatorHorizontalImage a FillImage used to paint the separator for horizontal orientations
- * @sp {#FillImage} separatorHorizontalRolloverImage a FillImage used to paint the separator for horizontal orientations when
- *     the mouse is over it
- * @sp {#Extent} separatorPosition an extent specifying the position of the separator
+ * @sp {#Extent} separatorHeight the height of the separator (this property is
+ *     used to determine the size of the separator in vertical orientations)
+ * @sp {#FillImage} separatorHorizontalImage a FillImage used to paint the
+ *     separator for horizontal orientations
+ * @sp {#FillImage} separatorHorizontalRolloverImage a FillImage used to paint
+ *     the separator for horizontal orientations when the mouse is over it
+ * @sp {#Extent} separatorPosition an extent specifying the position of the
+ *     separator
  * @sp {#Color} separatorRolloverColor the rollover separator color
- * @sp {#FillImage} separatorVerticalImage a FillImage used to paint the separator for vertical orientations
- * @sp {#FillImage} separatorVerticalRolloverImage a FillImage used to paint the separator for vertical orientations when the
- *     mouse is over it
- * @sp {#Extent} separatorWidth the width of the separator (this property is used to determine the size
- *     of the separator in horizontal orientations)
- * @ldp {#Alignment} alignment the alignment of the child component within its subpane
+ * @sp {#FillImage} separatorVerticalImage a FillImage used to paint the
+ *     separator for vertical orientations
+ * @sp {#FillImage} separatorVerticalRolloverImage a FillImage used to paint the
+ *     separator for vertical orientations when the mouse is over it
+ * @sp {#Extent} separatorWidth the width of the separator (this property is
+ *     used to determine the size of the separator in horizontal orientations)
+ * @ldp {#Alignment} alignment the alignment of the child component within its
+ *      subpane
  * @ldp {#Color} background the background of the child component's subpane
- * @ldp {#FillImage} backrgoundImage the background image of the child component's subpane
+ * @ldp {#FillImage} backrgoundImage the background image of the child
+ *      component's subpane
  * @ldp {#Insets} insets the insets margin of the child component's subpane
  * @ldp {#Extent} maximumSize the maximum size of the child component's subpane
  * @ldp {#Extent} minimumSize the minimum size of the child component's subpane
- * @ldp {Number} overflow the layout behavior to use when the child component is larger than 
- *      its containing subpane, one of the following values:
+ * @ldp {Number} overflow the layout behavior to use when the child component is
+ *      larger than its containing subpane, one of the following values:
  *      <ul>
- *       <li><code>OVERFLOW_AUTO</code> (the default)</li>
- *       <li><code>OVERFLOW_HIDDEN</code></li>
- *       <li><code>OVERFLOW_SCROLL</code></li>
- *     </ul>
+ *      <li><code>OVERFLOW_AUTO</code> (the default)</li>
+ *      <li><code>OVERFLOW_HIDDEN</code></li>
+ *      <li><code>OVERFLOW_SCROLL</code></li>
+ *      </ul>
  */
 Echo.SplitPane = Core.extend(Echo.Component, {
 
@@ -3176,11 +3190,13 @@ Echo.SplitPane = Core.extend(Echo.Component, {
 
 /**
  * Abstract base class for text-entry components.
- *
- * @sp {String} actionCommand the action command fired when the enter key is pressed
- *     within the text component
- * @sp {#Alignment} alignment an alignment setting describing the alignment of the text
- * @sp {#FillImage} backgroundImage the background image to display in the component
+ * 
+ * @sp {String} actionCommand the action command fired when the enter key is
+ *     pressed within the text component
+ * @sp {#Alignment} alignment an alignment setting describing the alignment of
+ *     the text
+ * @sp {#FillImage} backgroundImage the background image to display in the
+ *     component
  * @sp {#Border} border the border to display around the component
  * @sp {#Color} disabledBackground the disabled background color
  * @sp {#Color} disabledBackgroundImage the disabled background image
@@ -3190,11 +3206,13 @@ Echo.SplitPane = Core.extend(Echo.Component, {
  * @sp {#Extent} height the height of the component
  * @sp {#Extent} horizontalScroll the horizontal scrollbar position
  * @sp {#Insets} insets the inset margin between the border and the text content
- * @sp {Number} maximumLength the maximum number of characters which may be entered 
+ * @sp {Number} maximumLength the maximum number of characters which may be
+ *     entered
  * @sp {String} toolTipText the tool tip text
  * @sp {#Extent} verticalScroll the vertical scrollbar position
  * @sp {#Extent} width the width of the component
- * @event action An event fired when the enter/return key is pressed while the field is focused.
+ * @event action An event fired when the enter/return key is pressed while the
+ *        field is focused.
  */
 Echo.TextComponent = Core.extend(Echo.Component, {
 
@@ -3223,7 +3241,8 @@ Echo.TextComponent = Core.extend(Echo.Component, {
 });
 
 /**
- * TextArea component: a multiple-line text input field.  May not contain child components.
+ * TextArea component: a multiple-line text input field. May not contain child
+ * components.
  */
 Echo.TextArea = Core.extend(Echo.TextComponent, {
 
@@ -3237,7 +3256,8 @@ Echo.TextArea = Core.extend(Echo.TextComponent, {
 });
 
 /**
- * TextField component: a single-line text input field.  May not contain child components.
+ * TextField component: a single-line text input field. May not contain child
+ * components.
  */
 Echo.TextField = Core.extend(Echo.TextComponent, {
 
@@ -3251,7 +3271,8 @@ Echo.TextField = Core.extend(Echo.TextComponent, {
 });
 
 /**
- * PasswordField component: a single-line text input field which masks input.  May not contain child components.
+ * PasswordField component: a single-line text input field which masks input.
+ * May not contain child components.
  */
 Echo.PasswordField = Core.extend(Echo.TextField, {
 
@@ -3265,10 +3286,12 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
 });
 
 /**
- * WindowPane component: displays content in a movable and/or resizable window. May only be added to a <code>ContentPane</code>. May
- * contain at most one child component. May contain pane components as children.
- *
- * @sp {#FillImage} backgroundImage the background image to display within the content area
+ * WindowPane component: displays content in a movable and/or resizable window.
+ * May only be added to a <code>ContentPane</code>. May contain at most one
+ * child component. May contain pane components as children.
+ * 
+ * @sp {#FillImage} backgroundImage the background image to display within the
+ *     content area
  * @sp {#FillImageBorder} border the border frame containing the WindowPane
  * @sp {Boolean} closable flag indicating whether the window is closable
  * @sp {#ImageReference} closeIcon the close button icon
@@ -3277,20 +3300,25 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * @sp {#Extent} contentHeight the height of the content region of the window
  * @sp {#Extent} contentWidth the width of the content region of the window
  * @sp {#Insets} controlsInsets the inset margin around the controls area
- * @sp {#Extent} controlsSpacing the spacing between controls in the controls area
+ * @sp {#Extent} controlsSpacing the spacing between controls in the controls
+ *     area
  * @sp {#Extent} height the outside height of the window, including its border
  * @sp {#ImageReference} icon the icon to display adjacent the window title
  * @sp {#Insets} iconInsets the inset margin around the icon
  * @sp {#Insets} insets the inset margin around the window content
- * @sp {Boolean} maximizeEnabled flag indicating whether maximize feature should be enabled
+ * @sp {Boolean} maximizeEnabled flag indicating whether maximize feature should
+ *     be enabled
  * @sp {#ImageReference} maximizeIcon the minimize button icon
- * @sp {#Insets} maximizeIconInsets the inset margin around the maximize button icon
+ * @sp {#Insets} maximizeIconInsets the inset margin around the maximize button
+ *     icon
  * @sp {#ImageReference} maximizeRolloverIcon the maximize button rollover icon
  * @sp {#Extent} maximumHeight the maximum height of the window
  * @sp {#Extent} maximumWidth the maximum width of the window
- * @sp {Boolean} minimizeEnabled flag indicating whether maximize feature should be enabled
+ * @sp {Boolean} minimizeEnabled flag indicating whether maximize feature should
+ *     be enabled
  * @sp {#ImageReference} minimizeIcon the minimize button icon
- * @sp {#Insets} minimizeIconInsets the inset margin around the minimize button icon
+ * @sp {#Insets} minimizeIconInsets the inset margin around the minimize button
+ *     icon
  * @sp {#ImageReference} minimizeRolloverIcon the minimize button rollover icon
  * @sp {#Extent} minimumHeight the minimum height of the window
  * @sp {#Extent} minimumWidth the minimum width of the window
@@ -3300,7 +3328,8 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * @sp {Boolean} resizable flag indicating whether the window is resizable
  * @sp {String} title the title of the window
  * @sp {#Color} titleBackground the background color to display in the title bar
- * @sp {#FillImage} titleBackgroundImage the background image to display in the title bar
+ * @sp {#FillImage} titleBackgroundImage the background image to display in the
+ *     title bar
  * @sp {#Font} titleFont the font in which to display the title text
  * @sp {#Color} titleForeground the foreground color of the title text
  * @sp {#Extent} titleHeight the height of the title bar
