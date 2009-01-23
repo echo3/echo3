@@ -2762,7 +2762,8 @@ Echo.SelectField = Core.extend(Echo.AbstractListComponent, {
 });
 
 /**
- * A container component which displays cells in a column in vertical order.
+ * Column component: a layout container which renders its content in a single vertical column of cells.
+ * May have zero or more child components.  Does not support pane components as children.
  *
  * @sp {#Border} border the border displayed around the entire column
  * @sp {#Extent} cellSpacing the extent margin between cells of the column
@@ -3000,7 +3001,7 @@ Echo.Label = Core.extend(Echo.Component, {
 });
 
 /**
- * Row component: a layout container which renders its contents in a single horizontal row of cells.
+ * Row component: a layout container which renders its content in a single horizontal row of cells.
  * May have zero or more child components.  Does not support pane components as children.
  *
  * @sp {#Border} border the border displayed around the entire column

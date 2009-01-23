@@ -30,8 +30,8 @@
 package nextapp.echo.app;
 
 /**
- * A layout <code>Component</code> which renders its contents in a single 
- * vertical column of cells.
+ * Column component: a layout container which renders its content in a single vertical column of cells.
+ * May have zero or more child components.  Does not support <code>Pane</code> components as children.
  * <p>
  * <b>Child LayoutData</b>: Children of this component may provide
  * layout information using the 
