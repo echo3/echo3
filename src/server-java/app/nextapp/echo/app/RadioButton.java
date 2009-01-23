@@ -38,7 +38,9 @@ import nextapp.echo.app.event.ChangeEvent;
 import nextapp.echo.app.event.ChangeListener;
 
 /**
- * A radio button implementation.
+ * <code>RadioButton</code> component: a toggle button which allows a user to select one option from a group of options. Radio
+ * buttons should be assigned to a unique application-specific <code>ButtonGroup</code> (by setting the <code>group</code>
+ * property). Only one radio button in a group will be selected at a given time. This component does not allow child components.
  */
 public class RadioButton extends ToggleButton {
     

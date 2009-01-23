@@ -38,7 +38,7 @@ import nextapp.echo.app.event.ChangeEvent;
 import nextapp.echo.app.event.ChangeListener;
 
 /**
- * An abstract base class for 'two state' buttons.
+ * An abstract base class for on/off toggle button components.
  */
 public abstract class ToggleButton extends AbstractButton {
     

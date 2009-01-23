@@ -33,7 +33,7 @@ import nextapp.echo.app.button.DefaultToggleButtonModel;
 import nextapp.echo.app.button.ToggleButton;
 
 /**
- * A check box implementation.
+ * <code>CheckBox</code> component: a simple on/off toggle button.  May not contain child components.
  */
 public class CheckBox extends ToggleButton {
 

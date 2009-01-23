@@ -33,8 +33,8 @@ import nextapp.echo.app.button.AbstractButton;
 import nextapp.echo.app.button.DefaultButtonModel;
 
 /**
- * An implementation of a &quot;push&quot; button.
- */
+ * <code>Button</code> component: a stateless "push" button which is used to initiate an action.
+ */ 
 public class Button extends AbstractButton {
 
     /** Serial Version UID. */

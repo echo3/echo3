@@ -44,7 +44,7 @@ import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 
 /**
- * An abstract base class for button components. Provides basic properties, a
+ * An abstract base class for button components.  Provides basic properties, a
  * model, and event handling facilities.
  */
 public abstract class AbstractButton extends Component {
