@@ -83,7 +83,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         var icon = this.component.render("icon");
         var orientation, margin, tct;
         
-        var entityCount = (text ? 1 : 0) + (icon ? 1 : 0) + 1; // +1 for state element.
+        var entityCount = (text != null ? 1 : 0) + (icon ? 1 : 0) + 1; // +1 for state element.
         if (entityCount == 1) {
             if (text != null) {
                 this._renderButtonText(this._div, text);
