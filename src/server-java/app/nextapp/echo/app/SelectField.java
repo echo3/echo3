@@ -34,7 +34,8 @@ import nextapp.echo.app.list.DefaultListModel;
 import nextapp.echo.app.list.ListModel;
 
 /**
- * A drop-down selection field.
+ * <code>SelectField</code> component: a selection component which display selection items in a drop-down field. Allows the
+ * selection of only one item at a time. Does not support child components.
  */
 public class SelectField extends AbstractListComponent {
 

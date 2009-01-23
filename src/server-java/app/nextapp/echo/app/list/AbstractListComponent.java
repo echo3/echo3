@@ -45,7 +45,7 @@ import nextapp.echo.app.event.ListDataEvent;
 import nextapp.echo.app.event.ListDataListener;
 
 /**
- * An abstract base class for list components.
+ * Abstract base class for selection list components (i.e., <code>SelectField</code>s and <code>ListBox</code>es).
  */
 public abstract class AbstractListComponent extends Component {
 

@@ -34,9 +34,9 @@ import nextapp.echo.app.list.DefaultListModel;
 import nextapp.echo.app.list.ListModel;
 import nextapp.echo.app.list.ListSelectionModel;
 
-
 /**
- * A component which provides the ability to select one or more items.
+ * <code>ListBox</code> component: a selection component which displays selection items in a list. May be configured to allow the
+ * selection of one item at a time, or to allow the selection of multiple items at one time. Does not support child components.
  */
 public class ListBox extends AbstractListComponent {
 

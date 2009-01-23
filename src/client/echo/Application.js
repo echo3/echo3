@@ -2662,28 +2662,30 @@ Echo.RadioButton = Core.extend(Echo.ToggleButton, {
 });
 
 /**
- * Base class for list components (i.e., SelectFields and ListBoxes).
- *
- * @cp {Array} items the array of items contained in the list component.
- *     The value of the 'text' property or toString() value of the item
- *     will be displayed in the selection component.
- * @cp selectedId the values of the id property of the selected item,
- *     or an array of the id values when multiple items are selected
- * @cp selection the index of the selected item, or an array of the 
- *     indices of selected items when multiple items are selected
- *
+ * Abstract base class for selection list components (i.e., SelectFields and
+ * ListBoxes).
+ * 
+ * @cp {Array} items the array of items contained in the list component. The
+ *     value of the 'text' property or toString() value of the item will be
+ *     displayed in the selection component.
+ * @cp selectedId the values of the id property of the selected item, or an
+ *     array of the id values when multiple items are selected
+ * @cp selection the index of the selected item, or an array of the indices of
+ *     selected items when multiple items are selected
+ * 
  * @sp {#Border} border the default border
  * @sp {#Color} disabledBackground the disabled background color
  * @sp {#Border} disabledBorder the disabled border
  * @sp {#Font} disabledFont the disabled font
  * @sp {#Color} disabledForeground the disabled foreground color
  * @sp {#Extent} height the component height
- * @sp {#Insets} insets the inset margin between the border and the items of the list component
+ * @sp {#Insets} insets the inset margin between the border and the items of the
+ *     list component
  * @sp {#Color} rolloverBackground the rollover background color
  * @sp {#Border} rolloverBorder the rollover border
  * @sp {#Font} rolloverFont the rollover font
  * @sp {#Color} rolloverForeground the rollover foreground color
- * @sp {#Extent} width the component width 
+ * @sp {#Extent} width the component width
  * @event action An event fired when an item is selected (clicked).
  */
 Echo.AbstractListComponent = Core.extend(Echo.Component, {
@@ -2713,12 +2715,16 @@ Echo.AbstractListComponent = Core.extend(Echo.Component, {
 });
 
 /**
- * ListBox component.
- *
- * @sp {Number} selectionMode a value indicating the selection mode, one of the following values:
+ * ListBox component: a selection component which displays selection items in a
+ * list. May be configured to allow the selection of one item at a time, or to
+ * allow the selection of multiple items at one time. Does not support child
+ * components.
+ * 
+ * @sp {Number} selectionMode a value indicating the selection mode, one of the
+ *     following values:
  *     <ul>
- *      <li><code>Echo.ListBox.SINGLE_SELECTION</code> (the default)</li>
- *      <li><code>Echo.ListBox.MULTIPLE_SELECTION</code></li>
+ *     <li><code>Echo.ListBox.SINGLE_SELECTION</code> (the default)</li>
+ *     <li><code>Echo.ListBox.MULTIPLE_SELECTION</code></li>
  *     </ul>
  */
 Echo.ListBox = Core.extend(Echo.AbstractListComponent, {
@@ -2748,7 +2754,9 @@ Echo.ListBox = Core.extend(Echo.AbstractListComponent, {
 });
 
 /**
- * SelectField component.
+ * SelectField component: a selection component which display selection items in
+ * a drop-down field. Allows the selection of only one item at a time. Does not
+ * support child components.
  */
 Echo.SelectField = Core.extend(Echo.AbstractListComponent, {
 
