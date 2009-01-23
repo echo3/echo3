@@ -317,6 +317,17 @@ extends SplitPane {
                 });
             }
         });
+        controlsColumn.addButton("Set Text = Empty String", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        if (button.getText() != null) {
+                            button.setText("");
+                        }
+                    }
+                });
+            }
+        });
         controlsColumn.addButton("Set Text = Short", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator() {
