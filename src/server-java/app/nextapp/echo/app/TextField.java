@@ -34,7 +34,7 @@ import nextapp.echo.app.text.StringDocument;
 import nextapp.echo.app.text.TextComponent;
 
 /**
- * A single-line text input field.
+ * TextField component: a single-line text input field.  May not contain child components.
  */
 public class TextField extends TextComponent {
 

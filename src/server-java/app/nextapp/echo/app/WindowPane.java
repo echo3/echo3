@@ -35,11 +35,8 @@ import nextapp.echo.app.event.WindowPaneEvent;
 import nextapp.echo.app.event.WindowPaneListener;
 
 /**
- * A <code>Component</code> which renders its contents in a floating, 
- * movable window.
- * <p>
- * <b>NOTE:</b> A <code>WindowPane</code> may only be added to 
- * a <code>ContentPane</code>.
+ * WindowPane component: displays content in a movable and/or resizable window. May only be added to a <code>ContentPane</code>. May
+ * contain at most one child component. May contain <code>Pane</code>s as children.
  */
 public class WindowPane extends Component 
 implements FloatingPane, ModalSupport, PaneContainer {
@@ -51,12 +48,12 @@ implements FloatingPane, ModalSupport, PaneContainer {
     
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
     public static final String PROPERTY_BORDER = "border";
-    public static final String PROPERTY_CONTENT_HEIGHT = "contentHeight";
-    public static final String PROPERTY_CONTENT_WIDTH = "contentWidth";
     public static final String PROPERTY_CLOSABLE = "closable";
     public static final String PROPERTY_CLOSE_ICON = "closeIcon";
     public static final String PROPERTY_CLOSE_ICON_INSETS = "closeIconInsets";
     public static final String PROPERTY_CLOSE_ROLLOVER_ICON = "closeRolloverIcon";
+    public static final String PROPERTY_CONTENT_HEIGHT = "contentHeight";
+    public static final String PROPERTY_CONTENT_WIDTH = "contentWidth";
     public static final String PROPERTY_CONTROLS_INSETS = "controlsInsets";
     public static final String PROPERTY_CONTROLS_SPACING = "controlsSpacing";
     public static final String PROPERTY_DEFAULT_CLOSE_OPERATION = "defaultCloseOperation";

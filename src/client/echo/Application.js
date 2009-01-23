@@ -3204,7 +3204,7 @@ Echo.TextArea = Core.extend(Echo.TextComponent, {
 });
 
 /**
- * TextField component.
+ * TextField component: a single-line text input field.  May not contain child components.
  */
 Echo.TextField = Core.extend(Echo.TextComponent, {
 
@@ -3218,7 +3218,7 @@ Echo.TextField = Core.extend(Echo.TextComponent, {
 });
 
 /**
- * PasswordField component.
+ * PasswordField component: a single-line text input field which masks input.  May not contain child components.
  */
 Echo.PasswordField = Core.extend(Echo.TextField, {
 
@@ -3232,7 +3232,8 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
 });
 
 /**
- * WindowPane component.
+ * WindowPane component: displays content in a movable and/or resizable window. May only be added to a <code>ContentPane</code>. May
+ * contain at most one child component. May contain <code>Pane</code>s as children.
  *
  * @sp {#FillImage} backgroundImage the background image to display within the content area
  * @sp {#FillImageBorder} border the border frame containing the WindowPane

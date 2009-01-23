@@ -30,7 +30,7 @@
 package nextapp.echo.app;
 
 /**
- * A single-line text input field which masks input.
+ * PasswordField component: a single-line text input field which masks input.  May not contain child components.
  */
 public class PasswordField extends TextField {
 
