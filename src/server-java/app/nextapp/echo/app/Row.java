@@ -30,8 +30,8 @@
 package nextapp.echo.app;
 
 /**
- * A layout <code>Component</code> which renders its contents in a single 
- * horizontal row of cells.
+ * A layout container which renders its contents in a single horizontal row of cells.
+ * May have zero or more child components.  Does not support <code>Pane</code> components as children.
  * <p>
  * <b>Child LayoutData</b>: Children of this component may provide
  * layout information using the 

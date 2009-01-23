@@ -2978,7 +2978,8 @@ Echo.Label = Core.extend(Echo.Component, {
 });
 
 /**
- * A container component which displays cells in a row in horizontal order.
+ * Row component: a layout container which renders its contents in a single horizontal row of cells.
+ * May have zero or more child components.  Does not support pane components as children.
  *
  * @sp {#Border} border the border displayed around the entire column
  * @sp {#Extent} cellSpacing the extent margin between cells of the column
@@ -3005,7 +3006,7 @@ Echo.Row = Core.extend(Echo.Component, {
 /**
  * SplitPane component: a pane component which displays two components horizontally or vertically
  * adjacent to one another, optionally allowing the user to apportion space between the two using a resize handle.
- * May have at most two child components.  Supports <code>Pane</code> components as children. 
+ * May have at most two child components.  Supports pane components as children. 
  *
  * @sp {Boolean} autoPositioned flag indicating whether the pane should set the separator position automatically
  *     based on size of first child.  This feature is only available on vertically oriented panes, where the
@@ -3234,7 +3235,7 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
 
 /**
  * WindowPane component: displays content in a movable and/or resizable window. May only be added to a <code>ContentPane</code>. May
- * contain at most one child component. May contain <code>Pane</code>s as children.
+ * contain at most one child component. May contain pane components as children.
  *
  * @sp {#FillImage} backgroundImage the background image to display within the content area
  * @sp {#FillImageBorder} border the border frame containing the WindowPane
