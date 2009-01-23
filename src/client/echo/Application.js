@@ -2787,9 +2787,15 @@ Echo.Column = Core.extend(Echo.Component, {
 });
 
 /**
- * Composite component: a generic composite component base class.
+ * Composite component: a generic composite component abstract base class.
+ * This class is intended to be used as base class for composite components.
  * Provides no rendering properties (other than those specified in Component).
- * May contain at most one child component.  May not contain a pane component as a child.
+ * May contain at most one child component. May not contain a pane component as
+ * a child.
+ * 
+ * This class provides no benefit if you are providing a custom
+ * synchronization/rendering peer. In such cases, <code>Echo.Component</code>
+ * itself should be derived instead of this class.
  */
 Echo.Composite = Core.extend(Echo.Component, {
 

@@ -30,18 +30,17 @@
 package nextapp.echo.app;
 
 /**
- * Generic composite component base class.  
+ * Composite component: a generic composite component abstract base class.
  * This class is intended to be used as base class for composite components.
- * This component will simply display its content without any modification to
- * its appearance or behavior.  This component may have at most one child
- * component.
+ * Provides no rendering properties (other than those specified in <code>Component</code>).
+ * May contain at most one child component. May not contain a <code>Pane</code> component as
+ * a child.
  * <p>
  * See the <code>Panel</code> component for a default implementation of a 
  * single-child container component.
  * <p>
- * This class provides no benefit if you are providing a custom client/server
- * synchronization peer.  If you wish to create a component with a custom
- * client/server synchronization peer, <code>Component</code> itself should be
+ * This class provides no benefit if you are providing a custom client-side 
+ * synchronization/rendering peer. In such cases, <code>Component</code> itself should be
  * derived instead of this class.
  */
 public abstract class Composite extends Component {
