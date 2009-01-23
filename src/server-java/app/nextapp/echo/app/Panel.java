@@ -30,7 +30,10 @@
 package nextapp.echo.app;
 
 /**
- * A single-child container.
+ * <code>Panel</code> component: a single child container. Provides a configurable border, margin, background image, and dimensions.
+ * May contain at most one child. May contain <code>Pane</code> components, and may be used as a means to add <code>Pane</code>
+ * components to containers which do not allow <code>Pane</code> components as children. In such a case it may be necessary to
+ * manually set the height property of the <code>Panel</code> itself.
  */
 public class Panel extends Composite 
 implements PaneContainer {

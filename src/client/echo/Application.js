@@ -2787,8 +2787,9 @@ Echo.Column = Core.extend(Echo.Component, {
 });
 
 /**
- * Composite component.
- * A single-child container that provides no rendering properties (other than those specified in Component).
+ * Composite component: a generic composite component base class.
+ * Provides no rendering properties (other than those specified in Component).
+ * May contain at most one child component.  May not contain a pane component as a child.
  */
 Echo.Composite = Core.extend(Echo.Component, {
 
@@ -2802,11 +2803,17 @@ Echo.Composite = Core.extend(Echo.Component, {
 });
 
 /**
- * Panel component.
- * A single-child container that provides a configurable border and margin.
+ * Panel component: a single child container.
+ * Provides a configurable border, margin, background image, and dimensions.
+ * May contain at most one child.  May contain pane components, and may be used as a means to add pane components
+ * to containers which do not allow pane components as children.  In such a case it may be necessary to manually set the height
+ * property of the Panel itself.
  *
+ * @sp {#FillImage} backgroundImage the background image
  * @sp {#Border} border the panel border surrounding the child component
+ * @sp {#Extent} height the height of the panel
  * @sp {#Insets} insets the inset padding margin between the panel border and its content
+ * @sp {#Extent} width the width of the panel
  */
 Echo.Panel = Core.extend(Echo.Composite, {
 
