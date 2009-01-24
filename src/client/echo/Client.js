@@ -90,7 +90,25 @@ Echo.Client = Core.extend({
      * @type Echo.Client
      */
     parent: null,
-
+    
+    /**
+     * Wait indicator.
+     * @type Echo.Client.WaitIndicator
+     */
+    _waitIndicator: null,
+    
+    /**
+     * Restriction time before raising wait indicator, in milliseconds.
+     * @type Number
+     */
+    _preWaitIndicatorDelay: 500,
+    
+    /**
+     * Runnable that will trigger initialization of wait indicator.
+     * @type Core.Web.Scheduler.Runnable
+     */
+    _waitIndicatorRunnable: null,
+    
     /**
      * Creates a new Client instance.  Derived classes must invoke.
      */
@@ -98,6 +116,9 @@ Echo.Client = Core.extend({
         this._inputRestrictionMap = { };
         this._processKeyPressRef = Core.method(this, this._processKeyPress);
         this._processApplicationFocusRef = Core.method(this, this._processApplicationFocus);
+        this._waitIndicator = new Echo.Client.DefaultWaitIndicator();
+        this._waitIndicatorRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._waitIndicatorActivate), 
+                this._preWaitIndicatorDelay, false);
     },
     
     $abstract: true,
@@ -196,6 +217,8 @@ Echo.Client = Core.extend({
      *         the restriction by invoking removeInputRestriction()
      */
     createInputRestriction: function() {
+        Core.Web.Scheduler.add(this._waitIndicatorRunnable);
+
         var id = (++this._lastInputRestrictionId).toString();
         ++this._inputRestrictionCount;
         this._inputRestrictionMap[id] = true;
@@ -327,15 +350,51 @@ Echo.Client = Core.extend({
         delete this._inputRestrictionMap[id];
         --this._inputRestrictionCount;
         
-        if (this._inputRestrictionCount === 0 && this._inputRestrictionListeners) {
-            // Last input restriction removed: notify input restriction listeners.
-            for (var x in this._inputRestrictionListeners) {
-                this._inputRestrictionListeners[x]();
+        if (this._inputRestrictionCount === 0) {
+            // Last input restriction removed.
+
+            // Remove wait indicator from scheduling (if wait indicator has not been presented yet, it will not be).
+            Core.Web.Scheduler.remove(this._waitIndicatorRunnable);
+            
+            // Disable wait indicator.
+            if (this._waitIndicatorActive) {
+                this._waitIndicatorActive = false;
+                this._waitIndicator.deactivate();
             }
-            this._inputRestrictionListeners = null;
+            
+            if (this._inputRestrictionListeners) {
+                // Notify input restriction listeners.
+                for (var x in this._inputRestrictionListeners) {
+                    this._inputRestrictionListeners[x]();
+                }
+                
+                // Clear input restriction listeners.
+                this._inputRestrictionListeners = null;
+            }
         }
     },
     
+    /**
+     * Sets the wait indicator that will be displayed when a client-server action takes longer than
+     * a specified period of time.
+     * 
+     * @param {Echo.Client.WaitIndicator} waitIndicator the new wait indicator 
+     */
+    setWaitIndicator: function(waitIndicator) {
+        if (this._waitIndicator) {
+            this._waitIndicator.deactivate();
+        }
+        this._waitIndicator = waitIndicator;
+    },
+    
+    /**
+     * Activates the wait indicator.
+     */
+    _waitIndicatorActivate: function() {
+        this._waitIndicatorActive = true;
+        this._waitIndicator.activate();
+    },
+
     /**
      * Instance listener to respond to resizing of browser window.
      * 
@@ -396,3 +455,76 @@ Echo.Client.Timer = Core.extend({
         return out;
     }
 });
+
+/**
+ * Abstract base class for "Wait Indicators" which are displayed when the
+ * application is not available (e.g., due to in-progress client/server
+ * activity. A single wait indicator will be used by the application.
+ */
+Echo.Client.WaitIndicator = Core.extend({
+
+    $abstract: {
+        
+        /**
+         * Wait indicator activation method. Invoked when the wait indicator
+         * should be activated. The implementation should add the wait indicator
+         * to the DOM and begin any animation (if applicable).
+         */
+        activate: function() { },
+        
+        /**
+         * Wait indicator deactivation method. Invoked when the wait indicator
+         * should be deactivated. The implementation should remove the wait
+         * indicator from the DOM, cancel any animations, and dispose of any
+         * resources.
+         */
+        deactivate: function() { }
+    }
+});
+
+/**
+ * Default wait indicator implementation.
+ */
+Echo.Client.DefaultWaitIndicator = Core.extend(Echo.Client.WaitIndicator, {
+
+    /** Creates a new DefaultWaitIndicator. */
+    $construct: function() {
+        this._divElement = document.createElement("div");
+        this._divElement.style.cssText = "display: none;z-index:32767;position:absolute;top:30px;right:30px;" +
+                 "width:200px;padding:20px;border:1px outset #abcdef;background-color:#abcdef;color:#000000;text-align:center;";
+        this._divElement.appendChild(document.createTextNode("Please wait..."));
+        this._fadeRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._tick), 50, true);
+        document.body.appendChild(this._divElement);
+    },
+    
+    /** @see Echo.Client.WaitIndicator#activate */
+    activate: function() {
+        this._divElement.style.display = "block";
+        Core.Web.Scheduler.add(this._fadeRunnable);
+        this._opacity = 0;
+    },
+    
+    /** @see Echo.Client.WaitIndicator#deactivate */
+    deactivate: function() {
+        this._divElement.style.display = "none";
+        Core.Web.Scheduler.remove(this._fadeRunnable);
+    },
+    
+    /**
+     * Runnable-invoked method to animate (fade in/out) wait indicator.
+     */
+    _tick: function() {
+        ++this._opacity;
+        // Formula explained:
+        // this._opacity starts at 0 and is incremented forever.
+        // First operation is to modulo by 40 then subtract 20, result ranges from -20 to 20.
+        // Next take the absolute value, result ranges from 20 to 0 to 20.
+        // Divide this value by 30, so the range goes from 2/3 to 0 to 2/3.
+        // Subtract that value from 1, so the range goes from 1/3 to 1 and back.
+        var opacityValue = 1 - (Math.abs((this._opacity % 40) - 20) / 30);
+        if (!Core.Web.Env.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
+            this._divElement.style.opacity = opacityValue;
+        }
+    }
+});
+

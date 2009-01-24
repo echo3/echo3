@@ -117,24 +117,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     _asyncManager: null,
     
     /**
-     * Wait indicator.
-     * @type Echo.RemoteClient.WaitIndicator
-     */
-    _waitIndicator: null,
-    
-    /**
-     * Network delay before raising wait indicator, in milliseconds.
-     * @type Number
-     */
-    _preWaitIndicatorDelay: 500,
-    
-    /**
-     * Runnable that will trigger initialization of wait indicator.
-     * @type Core.Web.Scheduler.Runnable
-     */
-    _waitIndicatorRunnable: null,
-    
-    /**
      * Flag indicating whether the remote client has been initialized.
      * @type Boolean
      */
@@ -165,9 +147,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         this._commandQueue = null;
         this._clientMessage = new Echo.RemoteClient.ClientMessage(this, true);
         this._asyncManager = new Echo.RemoteClient.AsyncManager(this);
-        this._waitIndicator = new Echo.RemoteClient.DefaultWaitIndicator();
-        this._waitIndicatorRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._waitIndicatorActivate), 
-                this._preWaitIndicatorDelay, false);
     },
     
     /**
@@ -400,12 +379,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             Core.Debug.consoleWrite(Echo.Client.profilingTimer + " /pc:" + Echo.Render._loadedPeerCount);
             Echo.Client.profilingTimer = null;
         }
-        
-        // Disable wait indicator.
-        if (this._waitIndicatorActive) {
-            this._waitIndicatorActive = false;
-            this._waitIndicator.deactivate();
-        }
     },
     
     /**
@@ -414,9 +387,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @param e the HttpConnection response event
      */
     _processSyncResponse: function(e) {
-        // Remove wait indicator from scheduling (if wait indicator has not been presented yet, it will not be).
-        Core.Web.Scheduler.remove(this._waitIndicatorRunnable);
-        
         // Retrieve response document.
         var responseDocument = e.source.getResponseXml();
         
@@ -468,26 +438,12 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     },
     
     /**
-     * Sets the wait indicator that will be displayed when a client-server action takes longer than
-     * a specified period of time.
-     * 
-     * @param {Echo.RemoteClient.WaitIndicator} waitIndicator the new wait indicator 
-     */
-    setWaitIndicator: function(waitIndicator) {
-        if (this._waitIndicator) {
-            this._waitIndicator.deactivate();
-        }
-        this._waitIndicator = waitIndicator;
-    },
-    
-    /**
      * Initiates a client-server synchronization.
      */
     sync: function() {
         if (this._transactionInProgress) {
             throw new Error("Attempt to invoke client/server synchronization while another transaction is in progress."); 
         }
-        Core.Web.Scheduler.add(this._waitIndicatorRunnable);
     
         this._transactionInProgress = true;
         this._inputRestrictionId = this.createInputRestriction(true);
@@ -503,14 +459,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
 
         conn.addResponseListener(Core.method(this, this._processSyncResponse));
         conn.connect();
-    },
-    
-    /**
-     * Activates the wait indicator.
-     */
-    _waitIndicatorActivate: function() {
-        this._waitIndicatorActive = true;
-        this._waitIndicator.activate();
     }
 });
 
@@ -1091,75 +1039,6 @@ Echo.RemoteClient.ServerMessage = Core.extend({
      */
     removeCompletionListener: function(l) {
         this._listenerList.removeListener("completion", l);
-    }
-});
-
-/**
- * Abstract base class for "Wait Indicators" which are displayed when the application is not available (e.g., due to in-progress
- * client/server synchronization.
- * A single wait indicator will be used by the application.
- */
-Echo.RemoteClient.WaitIndicator = Core.extend({
-
-    $abstract: {
-        
-        /**
-         * Wait indicator activation method.  Invoked when the wait indicator should be activated.
-         * The implementation should add the wait indicator to the DOM and begin any animation (if applicable).
-         */
-        activate: function() { },
-        
-        /**
-         * Wait indicator deactivation method.  Invoked when the wait indicator should be deactivated.
-         * The implementation should remove the wait indicator from the DOM, cancel any animations, and dispose of any resources. 
-         */
-        deactivate: function() { }
-    }
-});
-
-/**
- * @class Default wait indicator implementation.
- */
-Echo.RemoteClient.DefaultWaitIndicator = Core.extend(Echo.RemoteClient.WaitIndicator, {
-
-    /** Creates a new DefaultWaitIndicator. */
-    $construct: function() {
-        this._divElement = document.createElement("div");
-        this._divElement.style.cssText = "display: none;z-index:32767;position:absolute;top:30px;right:30px;" +
-                 "width:200px;padding:20px;border:1px outset #abcdef;background-color:#abcdef;color:#000000;text-align:center;";
-        this._divElement.appendChild(document.createTextNode("Please wait..."));
-        this._fadeRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._tick), 50, true);
-        document.body.appendChild(this._divElement);
-    },
-    
-    /** @see Echo.RemoteClient.WaitIndicator#activate */
-    activate: function() {
-        this._divElement.style.display = "block";
-        Core.Web.Scheduler.add(this._fadeRunnable);
-        this._opacity = 0;
-    },
-    
-    /** @see Echo.RemoteClient.WaitIndicator#deactivate */
-    deactivate: function() {
-        this._divElement.style.display = "none";
-        Core.Web.Scheduler.remove(this._fadeRunnable);
-    },
-    
-    /**
-     * Runnable-invoked method to animate (fade in/out) wait indicator.
-     */
-    _tick: function() {
-        ++this._opacity;
-        // Formula explained:
-        // this._opacity starts at 0 and is incremented forever.
-        // First operation is to modulo by 40 then subtract 20, result ranges from -20 to 20.
-        // Next take the absolute value, result ranges from 20 to 0 to 20.
-        // Divide this value by 30, so the range goes from 2/3 to 0 to 2/3.
-        // Subtract that value from 1, so the range goes from 1/3 to 1 and back.
-        var opacityValue = 1 - (Math.abs((this._opacity % 40) - 20) / 30);
-        if (!Core.Web.Env.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
-            this._divElement.style.opacity = opacityValue;
-        }
     }
 });
 

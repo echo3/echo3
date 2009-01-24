@@ -1,7 +1,7 @@
 /**
  * @class Default wait indicator implementation.
  */
-CustomWaitIndicator = Core.extend(Echo.RemoteClient.WaitIndicator, {
+CustomWaitIndicator = Core.extend(Echo.Client.WaitIndicator, {
 
     $static: {
     
