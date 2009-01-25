@@ -120,7 +120,6 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
                 this.arcClient = null;
             }
             if (this.arcApplication) {
-                this.arcApplication.dispose();
                 this.arcApplication = null;
                 this.baseComponent = null;
             }

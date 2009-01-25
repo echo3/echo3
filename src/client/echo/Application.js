@@ -39,6 +39,23 @@ Echo.Application = Core.extend({
     
     $abstract: true,
     
+    $virtual: {
+    
+        /**
+         * Performs application initialization operations.  This method should be provided by an application implementation
+         * if required.  The superclass' <code>init()</code> method should always be invoked out of convention.
+         * The <code>client</code> property will be available. 
+         */
+        init: function() { },
+        
+        /**
+         * Performs application disposal/resource cleanup operations.  This method should be provided by an application implementation
+         * if required.  The superclass' <code>dispose()</code> method should always be invoked out of convention.
+         * The <code>client</code> property will be available. 
+         */
+        dispose: function() { }
+    },
+    
     /**
      * The client engine hosting the application.  
      * This property is provided solely for use by the application itself, it is not (and may not be) used internally for any
@@ -131,12 +148,22 @@ Echo.Application = Core.extend({
     },
     
     /**
-     * Disposes of the application.
+     * Invoked by application container to dispose of the application.
+     * Invokes application-overridable <code>dispose()</code> method.
      * Once invoked, the application will no longer function and cannot be used again.
      * This method will free any resources allocated by the application.
      */ 
-    dispose: function() {
+    doDispose: function() {
         this.updateManager.dispose();
+        this.dispose();
+    },
+    
+    /**
+     * Invoked by application container to initialize of the application.
+     * Invokes application-overridable <code>init()</code> method.
+     */ 
+    doInit: function() {
+        this.init();
     },
     
     /**

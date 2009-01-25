@@ -192,22 +192,23 @@ Echo.Client = Core.extend({
      */
     configure: function(application, domainElement) {
         if (this.application) {
+            // Deconfigure current application if one is configured.
             Core.Arrays.remove(Echo.Client._activeClients, this);
             Core.Web.Event.remove(this.domainElement, 
                     Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._processKeyPressRef, false);
             this.application.removeListener("focus", this._processApplicationFocusRef);
-        }
-        
-        if (this.application) {
+            this.application.doDispose();
             this.application.client = null;
         }
+        
+        // Update state.
         this.application = application;
         this.domainElement = domainElement;
+        
         if (this.application) {
+            // Configure new application if being set.
             this.application.client = this;
-        }
-    
-        if (this.application) {
+            this.application.doInit();
             this.application.addListener("focus", this._processApplicationFocusRef);
             Core.Web.Event.add(this.domainElement, 
                     Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._processKeyPressRef, false);
