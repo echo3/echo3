@@ -39,6 +39,14 @@ Echo.Application = Core.extend({
     
     $abstract: true,
     
+    /**
+     * The client engine hosting the application.  
+     * This property is provided solely for use by the application itself, it is not (and may not be) used internally for any
+     * purpose. 
+     * @type Object
+     */
+    client: null,
+
     /** 
      * Mapping between component ids and component instances.
      * @type Core.Arrays.LargeMap

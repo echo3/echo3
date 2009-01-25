@@ -29,7 +29,7 @@ Echo.Client = Core.extend({
         // Register resize listener on containing window one time.
         Core.Web.DOM.addEventListener(window, "resize", this._globalWindowResizeListener, false);
     },
-
+    
     /**
      * Flag indicating the user interface should be rendered in design-mode, where all rendered component elements are
      * assigned an id.
@@ -198,8 +198,14 @@ Echo.Client = Core.extend({
             this.application.removeListener("focus", this._processApplicationFocusRef);
         }
         
+        if (this.application) {
+            this.application.client = null;
+        }
         this.application = application;
         this.domainElement = domainElement;
+        if (this.application) {
+            this.application.client = this;
+        }
     
         if (this.application) {
             this.application.addListener("focus", this._processApplicationFocusRef);
@@ -223,6 +229,20 @@ Echo.Client = Core.extend({
         ++this._inputRestrictionCount;
         this._inputRestrictionMap[id] = true;
         return id;
+    },
+    
+    /**
+     * Loads required libraries and then executes a function, adding input restrictions while the libaries are being loaded.
+     *
+     * @param {Array} requiredLibraries the URLs of the libraries which must be loaded before the function can execute
+     * @param {Function} f the function to execute
+     */
+    exec: function(requiredLibraries, f) {
+        var restriction = this.createInputRestriction();
+        Core.Web.Library.exec(requiredLibraries, Core.method(this, function() {
+            this.removeInputRestriction(restriction);
+            f();
+        }));
     },
     
     /**
