@@ -33,6 +33,7 @@ import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
+import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Grid;
 import nextapp.echo.app.Insets;
@@ -172,10 +173,12 @@ public class GridTest extends SplitPane {
                     int index = grid.indexOf(selectedButton);
                     grid.remove(selectedButton);
                     if (grid.getComponentCount() != 0) {
-                        if (index < grid.getComponentCount()) {
-                            selectCellButton((Button) grid.getComponent(index));
+                        Component cell = index < grid.getComponentCount() ? grid.getComponent(index) : 
+                                grid.getComponent(grid.getComponentCount() - 1);
+                        if (cell instanceof Button) {
+                            selectCellButton((Button) cell);
                         } else {
-                            selectCellButton((Button) grid.getComponent(grid.getComponentCount() - 1));
+                            selectCellButton(null);
                         }
                     } else {
                         selectCellButton(null);
