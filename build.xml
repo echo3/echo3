@@ -43,6 +43,7 @@
         <include name="**/*png"/>
         <include name="**/*xml"/>
         <include name="**/*stylesheet"/>
+        <include name="**/*css"/>
     </patternset>
 
     <!-- Minimize -->
