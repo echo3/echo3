@@ -8,13 +8,12 @@
  * Namespace for application-rendered component support.
  * @namespace
  */
-Echo.Arc = function() { };
+Echo.Arc = { };
 
 /**
  * Client for application-rendered components.
  * These clients are automatically created and destroyed by the
  * ArcClient component synchronization peer.
- * @class 
  */
 Echo.Arc.Client = Core.extend(Echo.FreeClient, {
     
@@ -38,7 +37,6 @@ Echo.Arc.Client = Core.extend(Echo.FreeClient, {
  * Application rendered component peers should extend this peer.
  * The super-implementations of the renderAdd(), renderDispose(),
  * renderDisplay(), and renderUpdate() methods must be invoked.
- * @class 
  */
 Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
 
