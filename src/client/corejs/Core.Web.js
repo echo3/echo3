@@ -1152,6 +1152,7 @@ Core.Web.HttpConnection = Core.extend({
 
 /**
  * Image-related utilities.
+ * @class
  */
 Core.Web.Image = {
     
