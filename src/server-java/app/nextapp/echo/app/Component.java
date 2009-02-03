@@ -177,9 +177,15 @@ implements RenderIdSupport, Serializable {
     /** Property change event name for enabled state changes. */
     public static final String ENABLED_CHANGED_PROPERTY = "enabled";
 
+    /** Property change event name for next focus traversal component changes. */
+    public static final String FOCUS_NEXT_ID_CHANGED_PROPERTY = "focusNextId";
+
+    /** Property change event name for previous focus traversal component changes. */
+    public static final String FOCUS_PREVIOUS_ID_CHANGED_PROPERTY = "focusPreviousId";
+    
     /** Property change event name for focus traversal participation changes. */
     public static final String FOCUS_TRAVERSAL_PARTICIPANT_CHANGED_PROPERTY = "focusTraversalParticipant";
-
+    
     /** Property change event name for layout direction changes. */
     public static final String LAYOUT_DIRECTION_CHANGED_PROPERTY = "layoutDirection";
 
@@ -289,6 +295,12 @@ implements RenderIdSupport, Serializable {
     /** Name of style to use from application style sheet */
     private String styleName;
     
+    /** Render id of previous focus traversal component. */
+    private String focusPreviousId;
+
+    /** Render id of next focus traversal component. */
+    private String focusNextId;
+
     /**
      * Creates a new <code>Component</code>.
      */
@@ -629,6 +641,26 @@ implements RenderIdSupport, Serializable {
             listenerList = new EventListenerList();
         }
         return listenerList;
+    }
+    
+    /**
+     * Returns the next focusable component.
+     * 
+     * @return the renderId of the next focusable component
+     * @see #setFocusNextId
+     */
+    public String getFocusNextId() {
+        return focusNextId;
+    }
+    
+    /**
+     * Returns the previous focusable component.
+     * 
+     * @return the renderId of the previous focusable component
+     * @see #setFocusPreviousId
+     */
+    public String getFocusPreviousId() {
+        return focusPreviousId;
     }
     
     /**
@@ -1403,6 +1435,34 @@ implements RenderIdSupport, Serializable {
             flags ^= FLAG_FOCUS_TRAVERSAL_PARTICIPANT; // Toggle FLAG_FOCUS_TRAVERSAL_PARTICIPANT bit.
             firePropertyChange(FOCUS_TRAVERSAL_PARTICIPANT_CHANGED_PROPERTY, new Boolean(oldValue), new Boolean(newValue));
         }
+    }
+    
+    /**
+     * Sets the next focusable component.
+     * RenderIds are used for setting focus traversal order in order to avoid referencing/garbage collection issues.
+     * Ensure that the component has a renderId (either by way of it having been registered with the application, or
+     * having it manually set).
+     * 
+     * @param newValue the <code>renderId</code> of the next focusable component
+     */
+    public void setFocusNextId(String newValue) {
+        String oldValue = focusNextId;
+        focusNextId = newValue;
+        firePropertyChange(FOCUS_NEXT_ID_CHANGED_PROPERTY, oldValue, newValue);
+    }
+    
+    /**
+     * Sets the previous focusable component.
+     * RenderIds are used for setting focus traversal order in order to avoid referencing/garbage collection issues.
+     * Ensure that the component has a renderId (either by way of it having been registered with the application, or
+     * having it manually set).
+     * 
+     * @param newValue the <code>renderId</code> of the previous focusable component
+     */
+    public void setFocusPreviousId(String newValue) {
+        String oldValue = focusPreviousId;
+        focusPreviousId = newValue;
+        firePropertyChange(FOCUS_PREVIOUS_ID_CHANGED_PROPERTY, oldValue, newValue);
     }
     
     /**
