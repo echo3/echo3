@@ -177,9 +177,6 @@ implements RenderIdSupport, Serializable {
     /** Property change event name for enabled state changes. */
     public static final String ENABLED_CHANGED_PROPERTY = "enabled";
 
-    /** @deprecated */
-    public static final String FOCUS_TRAVERSAL_INDEX_CHANGED_PROPERTY = "focusTraversalIndex";
-    
     /** Property change event name for focus traversal participation changes. */
     public static final String FOCUS_TRAVERSAL_PARTICIPANT_CHANGED_PROPERTY = "focusTraversalParticipant";
 
@@ -632,13 +629,6 @@ implements RenderIdSupport, Serializable {
             listenerList = new EventListenerList();
         }
         return listenerList;
-    }
-    
-    /**
-     * @deprecated Not supported.
-     */
-    public final int getFocusTraversalIndex() {
-        return 0;
     }
     
     /**
@@ -1399,12 +1389,6 @@ implements RenderIdSupport, Serializable {
             firePropertyChange(ENABLED_CHANGED_PROPERTY, new Boolean(oldValue), new Boolean(newValue));
         }
     }
-    
-    /**
-     * @deprecated Not supported.
-     * @see #getFocusTraversalIndex()
-     */
-    public void setFocusTraversalIndex(int newValue) { }
 
     /**
      * Sets whether the component participates in the focus traversal order 
