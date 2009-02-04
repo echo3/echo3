@@ -145,6 +145,8 @@ public class FocusTest extends SplitPane {
                 focusTextField.setFocusTraversalParticipant(true);
             }
         });
+        
+        createWackyFocusRow();
     }
     
     private void createFocusColumn() {
@@ -172,6 +174,22 @@ public class FocusTest extends SplitPane {
                     button.setText(Integer.toString(Integer.parseInt(button.getText()) + 1));
                 }
             });
+            focusRow.add(button);
+        }
+        testColumn.add(focusRow);
+    }
+
+    private void createWackyFocusRow() {
+        focusRow = new Row();
+        for (int i = 0; i < TEST_SIZE; ++i) {
+            final Button button = new Button();
+            button.setRenderId("wackyfocus_" + i);
+            int nextId = (int) (Math.random() * TEST_SIZE);
+            int previousId = (int) (Math.random() * TEST_SIZE);
+            button.setFocusNextId("wackyfocus_" + nextId);
+            button.setFocusPreviousId("wackyfocus_" + previousId);
+            button.setStyleName("Default");
+            button.setText("<" + previousId + " | " + nextId + ">");
             focusRow.add(button);
         }
         testColumn.add(focusRow);

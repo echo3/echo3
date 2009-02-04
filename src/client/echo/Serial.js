@@ -121,6 +121,14 @@ Echo.Serial = {
                 case "dir": // Layout direction
                     component.setLayoutDirection(element.firstChild ?
                             (element.firstChild.nodeValue == "rtl" ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR) : null);
+                    break;
+                case "f": // Focus
+                    if (element.getAttribute("n")) {
+                        component.focusNextId = element.getAttribute("n");
+                    }
+                    if (element.getAttribute("p")) {
+                        component.focusPreviousId = element.getAttribute("p");
+                    }
                 }
             }
             element = element.nextSibling;

@@ -585,18 +585,39 @@ class OutputProcessor {
         renderComponentStyleName(cElement, c, false);
         renderComponentStyle(cElement, c, false);
         
+        // Render focus traversal information.
+        if (c.getFocusNextId() != null || c.getFocusPreviousId() != null) {
+            Element fElement = document.createElement("f");
+            if (c.getFocusNextId() != null) {
+                Component focusComponent = c.getApplicationInstance().getComponentByRenderId(c.getFocusNextId());
+                if (focusComponent != null) {
+                    fElement.setAttribute("n", userInstance.getClientRenderId(focusComponent));
+                }
+            }
+            if (c.getFocusPreviousId() != null) {
+                Component focusComponent = c.getApplicationInstance().getComponentByRenderId(c.getFocusPreviousId());
+                if (focusComponent != null) {
+                    fElement.setAttribute("p", userInstance.getClientRenderId(focusComponent));
+                }
+            }
+            cElement.appendChild(fElement);
+        }
+        
+        // Render enabled state.
         if (!c.isEnabled()) {
             Element enElement = document.createElement("en");
             enElement.appendChild(document.createTextNode("false"));
             cElement.appendChild(enElement);
         }
         
+        // Render locale.
         if (c.getLocale() != null) {
             Element localeElement = document.createElement("locale");
             localeElement.appendChild(document.createTextNode(getClientLocaleString(c.getLocale())));
             cElement.appendChild(localeElement);
         }
         
+        // Render layout direction.
         if (c.getLayoutDirection() != null) {
             Element dirElement = document.createElement("dir");
             dirElement.appendChild(document.createTextNode(c.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl"));
