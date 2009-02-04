@@ -54,6 +54,11 @@ public class FocusTraversalTest extends TestCase {
         assertNotNull(a.getFocusNextId());
         assertEquals(c.getRenderId(), a.getFocusNextId());
         
+        b.setFocusPreviousId(c.getRenderId());
+        
+        assertNotNull(b.getFocusPreviousId());
+        assertEquals(c.getRenderId(), b.getFocusPreviousId());
+        
         ApplicationInstance.setActive(null);
     }
 }
