@@ -343,7 +343,14 @@ Echo.Client = Core.extend({
             this.removeInputRestriction(ir);
             this._forceIERedraw();
         } catch (ex) {
+            if (ex.lineNumber) {
+                // Display reported line number and adjusted line number (used if script was loaded dynamically).
+                Core.Debug.consoleWrite("Reported Line #: " + ex.lineNumber);
+                Core.Debug.consoleWrite("Evaluated Line #: " + (ex.lineNumber - Core.Web.Library.evalLine) + 
+                        " (if evaluated script)");
+            }
             if (ex.stack) {
+                // Display stack trace if available (Mozilla browsers).
                 Core.Debug.consoleWrite("Exception: " + ex + ", Stack Trace: " + ex.stack);
             }
             this.fail("Exception during Client.processUpdates(): " + ex.message);

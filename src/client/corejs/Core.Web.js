@@ -1249,6 +1249,13 @@ Core.Web.Library = {
     _loadedLibraries: { },
     
     /**
+     * Determined source code line number of eval() library load statement (useful for debugging on browsers which do not 
+     * properly report line numbers for evaluated scripts).
+     * @type Number
+     */
+    evalLine: null,
+    
+    /**
      * A representation of a group of libraries to be loaded at the same time.
      * Libraries will be retrieved asynchronously, and then installed once ALL the libraries have
      * been retrieved.  Installation will be done in the order in which the add() method was
@@ -1433,6 +1440,7 @@ Core.Web.Library = {
             }
             
             // Execute content to install library.
+            Core.Web.Library.evalLine = new Error().lineNumber + 1;
             eval(this._content);
         },
         
