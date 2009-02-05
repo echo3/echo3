@@ -1758,7 +1758,7 @@ Echo.Update.ComponentUpdate = Core.extend({
     _manager: null,
     
     /**
-     * The parent component represented in this <code>ServerComponentUpdate</code>.
+     * The parent component represented in this <code>ComponentUpdate</code>.
      * @type Echo.Component
      */
     parent: null,
@@ -1823,7 +1823,7 @@ Echo.Update.ComponentUpdate = Core.extend({
         this._manager = manager;
         
         /**
-         * The parent component represented in this <code>ServerComponentUpdate</code>.
+         * The parent component represented in this <code>ComponentUpdate</code>.
          * @type Echo.Component
          */
         this.parent = parent;
