@@ -91,6 +91,11 @@ public class FocusTest extends SplitPane {
         
         createFocusRow();
         
+        Button nonFocusButton = new Button("Not focusable");
+        nonFocusButton.setFocusTraversalParticipant(false);
+        nonFocusButton.setStyleName("Default");
+        testColumn.add(nonFocusButton);
+        
         controlsColumn.add(new Label("Row Test"));
         for (int i = 0; i < TEST_SIZE; ++i) {
             final int index = i;

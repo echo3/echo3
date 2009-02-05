@@ -586,19 +586,23 @@ class OutputProcessor {
         renderComponentStyle(cElement, c, false);
         
         // Render focus traversal information.
-        if (c.getFocusNextId() != null || c.getFocusPreviousId() != null) {
+        if (!c.isFocusTraversalParticipant() || c.getFocusNextId() != null || c.getFocusPreviousId() != null) {
             Element fElement = document.createElement("f");
-            if (c.getFocusNextId() != null) {
-                Component focusComponent = c.getApplicationInstance().getComponentByRenderId(c.getFocusNextId());
-                if (focusComponent != null) {
-                    fElement.setAttribute("n", userInstance.getClientRenderId(focusComponent));
+            if (c.isFocusTraversalParticipant()) {
+                if (c.getFocusNextId() != null) {
+                    Component focusComponent = c.getApplicationInstance().getComponentByRenderId(c.getFocusNextId());
+                    if (focusComponent != null) {
+                        fElement.setAttribute("n", userInstance.getClientRenderId(focusComponent));
+                    }
                 }
-            }
-            if (c.getFocusPreviousId() != null) {
-                Component focusComponent = c.getApplicationInstance().getComponentByRenderId(c.getFocusPreviousId());
-                if (focusComponent != null) {
-                    fElement.setAttribute("p", userInstance.getClientRenderId(focusComponent));
+                if (c.getFocusPreviousId() != null) {
+                    Component focusComponent = c.getApplicationInstance().getComponentByRenderId(c.getFocusPreviousId());
+                    if (focusComponent != null) {
+                        fElement.setAttribute("p", userInstance.getClientRenderId(focusComponent));
+                    }
                 }
+            } else {
+                fElement.setAttribute("t", "false");
             }
             cElement.appendChild(fElement);
         }
