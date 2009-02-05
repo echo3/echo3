@@ -343,6 +343,9 @@ Echo.Client = Core.extend({
             this.removeInputRestriction(ir);
             this._forceIERedraw();
         } catch (ex) {
+            if (ex.stack) {
+                Core.Debug.consoleWrite("Exception: " + ex + ", Stack Trace: " + ex.stack);
+            }
             this.fail("Exception during Client.processUpdates(): " + ex.message);
             throw (ex);
         }
