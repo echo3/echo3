@@ -138,12 +138,6 @@ implements RenderIdSupport, Serializable {
     private static final int FLAG_VISIBLE = 0x2;
     
     /**
-     * Flag indicating the <code>Component</code> will participate in the 
-     * focus traversal order.
-     */
-    private static final int FLAG_FOCUS_TRAVERSAL_PARTICIPANT= 0x4;
-    
-    /**
      * Flag indicating that the <code>Component</code> is currently undergoing
      * initialization.
      */
@@ -182,9 +176,6 @@ implements RenderIdSupport, Serializable {
 
     /** Property change event name for previous focus traversal component changes. */
     public static final String FOCUS_PREVIOUS_ID_CHANGED_PROPERTY = "focusPreviousId";
-    
-    /** Property change event name for focus traversal participation changes. */
-    public static final String FOCUS_TRAVERSAL_PARTICIPANT_CHANGED_PROPERTY = "focusTraversalParticipant";
     
     /** Property change event name for layout direction changes. */
     public static final String LAYOUT_DIRECTION_CHANGED_PROPERTY = "layoutDirection";
@@ -238,11 +229,8 @@ implements RenderIdSupport, Serializable {
     private List children;
     
     /**
-     * Boolean flags for this component, including enabled state, visibility, 
-     * focus traversal participation, and focus traversal index.
-     * Multiple booleans are wrapped in a single integer
-     * to save memory, since many <code>Component</code>instances will be 
-     * created.
+     * Boolean flags for this component, including enabled state and visibility. 
+     * Multiple booleans are wrapped in a single integer for memory use reduction.
      */
     private int flags;
     
@@ -306,7 +294,7 @@ implements RenderIdSupport, Serializable {
      */
     public Component() {
         super();
-        flags = FLAG_ENABLED | FLAG_VISIBLE | FLAG_FOCUS_TRAVERSAL_PARTICIPANT;
+        flags = FLAG_ENABLED | FLAG_VISIBLE;
         localStyle = new MutableStyle();
     }
     
@@ -1107,15 +1095,10 @@ implements RenderIdSupport, Serializable {
     }
     
     /**
-     * Determines if the <code>Component</code> participates in (tab) focus 
-     * traversal.
-     * 
-     * @return true if the <code>Component</code> participates in focus 
-     *         traversal
+     * @deprecated use focusNextId/focusPreviousId in (rare) scenario where focus of a specific component is to be avoided.
+     * This method will be removed soon.
      */
-    public boolean isFocusTraversalParticipant() {
-        return (flags & FLAG_FOCUS_TRAVERSAL_PARTICIPANT) != 0;
-    }
+    public boolean isFocusTraversalParticipant() { return false; }
 
     /**
      * Determines if the <code>Component</code> is registered to an 
@@ -1423,19 +1406,10 @@ implements RenderIdSupport, Serializable {
     }
 
     /**
-     * Sets whether the component participates in the focus traversal order 
-     * (tab order).
-     * 
-     * @param newValue true if the component participates in the focus 
-     *        traversal order
+     * @deprecated use focusNextId/focusPreviousId in (rare) scenario where focus of a specific component is to be avoided.
+     * This method will be removed soon.
      */
-    public void setFocusTraversalParticipant(boolean newValue) {
-        boolean oldValue = isFocusTraversalParticipant();
-        if (oldValue != newValue) {
-            flags ^= FLAG_FOCUS_TRAVERSAL_PARTICIPANT; // Toggle FLAG_FOCUS_TRAVERSAL_PARTICIPANT bit.
-            firePropertyChange(FOCUS_TRAVERSAL_PARTICIPANT_CHANGED_PROPERTY, new Boolean(oldValue), new Boolean(newValue));
-        }
-    }
+    public void setFocusTraversalParticipant(boolean newValue) { }
     
     /**
      * Sets the next focusable component.

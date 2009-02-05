@@ -123,9 +123,6 @@ Echo.Serial = {
                             (element.firstChild.nodeValue == "rtl" ? Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR) : null);
                     break;
                 case "f": // Focus
-                    if (element.getAttribute("t")) {
-                        component.focusable = element.getAttribute("t") == "true";
-                    }
                     if (element.getAttribute("n")) {
                         component.focusNextId = element.getAttribute("n");
                     }
