@@ -260,16 +260,16 @@ Echo.Client = Core.extend({
         msg = msg || "This application has been stopped due to an error. Press the reload or refresh button.";
         
         // Darken screen.
-        if (!Core.Web.Env.NOT_SUPPORTED_CSS_OPACITY) {
-            var blackoutDiv = document.createElement("div");
-            blackoutDiv.style.cssText = "position:absolute;z-index:32766;width:100%;height:100%;background-color:#000000;" +
-                    "opacity:0.75;";
-            this.domainElement.appendChild(blackoutDiv);
+        var blackoutDiv = document.createElement("div");
+        blackoutDiv.style.cssText = "position:absolute;z-index:32766;width:100%;height:100%;background-color:#000000;opacity:0.75";
+        if (Core.Web.Env.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
+            blackoutDiv.style.filter = "alpha(opacity=75)";
         }
+        this.domainElement.appendChild(blackoutDiv);
 
         // Display fail message.
         var div = document.createElement("div");
-        div.style.cssText = "position:absolute;z-index:32767;width:100%;height:100%;";
+        div.style.cssText = "position:absolute;z-index:32767;width:100%;height:100%;overflow:hidden;";
         this.domainElement.appendChild(div);
         var msgDiv = document.createElement("div");
         msgDiv.style.cssText = "border:#5f1f1f outset 1px;background-color:#5f1f1f;color:#ffffff;padding:2px 10px;";
@@ -340,9 +340,11 @@ Echo.Client = Core.extend({
         try {
             ir = this.createInputRestriction();
             Echo.Render.processUpdates(this);
-        } finally {
             this.removeInputRestriction(ir);
             this._forceIERedraw();
+        } catch (ex) {
+            this.fail("Exception during Client.processUpdates(): " + ex.message);
+            throw (ex);
         }
     },
     
