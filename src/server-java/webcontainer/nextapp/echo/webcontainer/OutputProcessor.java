@@ -232,7 +232,8 @@ class OutputProcessor {
     /**
      * Renders full-refresh application-level properties.
      */
-    private void renderApplicationFull() {
+    private void renderApplicationFull() 
+    throws SerialException {
         Element localeElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "AppSync", "locale");
         localeElement.appendChild(document.createTextNode(getClientLocaleString(
                 userInstance.getApplicationInstance().getLocale())));
@@ -245,7 +246,8 @@ class OutputProcessor {
     /**
      * Renders incrementally updated application instance properties.
      */
-    private void renderApplicationIncremental() {
+    private void renderApplicationIncremental() 
+    throws SerialException {
         UserInstanceUpdateManager updateManager = userInstance.getUserInstanceUpdateManager();
         String[] updatedProperties = updateManager.getPropertyUpdateNames();
         for (int i = 0; i < updatedProperties.length; ++i) {
@@ -259,7 +261,8 @@ class OutputProcessor {
     /**
      * Renders state of <code>ClientConfiguration</code> object associated with the <code>UserInstance</code>.
      */
-    private void renderClientConfiguration() {
+    private void renderClientConfiguration() 
+    throws SerialException {
         Element configElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "AppSync", "config");
         ClientConfiguration config = userInstance.getClientConfiguration();
         
@@ -267,9 +270,21 @@ class OutputProcessor {
         for (int i = 0; i < propertyNames.length; ++i) {
             Element pElement = document.createElement("p");
             pElement.setAttribute("n", propertyNames[i]);
-            String propertyValue = config.getProperty(propertyNames[i]);
-            if (propertyValue != null) {
-                pElement.appendChild(document.createTextNode(propertyValue));
+            Object propertyValue = config.getProperty(propertyNames[i]);
+            
+            
+            if (propertyValue == null) {
+                // Set null property value.
+                pElement.setAttribute("t", "0");
+            } else {
+                SerialPropertyPeer propertySyncPeer = propertyPeerFactory.getPeerForProperty(propertyValue.getClass());
+                if (propertySyncPeer == null) {
+                    // Unsupported property: do nothing.
+                    continue;
+                }
+    
+                // Render property value.
+                propertySyncPeer.toXml(context, ClientConfiguration.class, pElement, propertyValue);
             }
             configElement.appendChild(pElement);
         }

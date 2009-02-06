@@ -88,8 +88,8 @@ implements Serializable {
      * @param name the name of the property
      * @return the property value (or null if the property is not set)
      */
-    public String getProperty(String name) {
-        return (String) propertyMap.get(name);
+    public Object getProperty(String name) {
+        return propertyMap.get(name);
     }
     
     /**
@@ -108,7 +108,7 @@ implements Serializable {
      * @param name the property name
      * @param value the property value
      */
-    public void setProperty(String name, String value) {
+    public void setProperty(String name, Object value) {
         propertyMap.put(name, value);
     }
 }
