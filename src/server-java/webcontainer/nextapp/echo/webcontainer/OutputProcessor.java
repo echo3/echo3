@@ -189,7 +189,6 @@ class OutputProcessor {
             // Render output to server message DOM.
             if (serverUpdateManager.isFullRefreshRequired()) {
                 renderApplicationFull();
-                renderApplicationIncremental();
                 renderComponentsFull();
             } else {
                 renderApplicationIncremental();

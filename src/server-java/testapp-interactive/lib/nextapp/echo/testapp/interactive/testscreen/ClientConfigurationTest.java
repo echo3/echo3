@@ -63,7 +63,8 @@ public class ClientConfigurationTest extends Column {
         PROMPT_STYLE = style;
     }
 
-    private TextField serverErrorUriText, serverErrorMessageText, sessionExpirationUriText, sessionExpirationMessageText;
+    private TextField serverErrorUriText, serverErrorMessageText, sessionExpirationUriText, sessionExpirationMessageText,
+            resyncMessageText;
     
     /**
      * Default constructor. 
@@ -114,6 +115,14 @@ public class ClientConfigurationTest extends Column {
         sessionExpirationMessageText.setStyleName("Default");
         grid.add(sessionExpirationMessageText);
         
+        label = new Label("Resync Message:");
+        label.setStyle(PROMPT_STYLE);
+        grid.add(label);
+        
+        resyncMessageText = new TextField();
+        resyncMessageText.setStyleName("Default");
+        grid.add(resyncMessageText);
+        
         Button updateButton = new Button("Update ClientConfiguration");
         updateButton.setStyleName("Default");
         updateButton.addActionListener(new ActionListener(){
@@ -160,6 +169,10 @@ public class ClientConfigurationTest extends Column {
         if (sessionExpirationMessageText.getText().trim().length() > 0) {
             clientConfiguration.setProperty(ClientConfiguration.PROPERTY_SESSION_EXPIRATION_MESSAGE, 
                     sessionExpirationMessageText.getText());
+        }
+        if (resyncMessageText.getText().trim().length() > 0) {
+            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_RESYNC_MESSAGE, 
+                    resyncMessageText.getText());
         }
         
         ContainerContext containerContext 

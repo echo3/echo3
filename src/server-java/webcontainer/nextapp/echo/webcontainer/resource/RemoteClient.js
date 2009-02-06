@@ -34,16 +34,15 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         initialized: false,
         
         /**
-         * Resource bundle containing (error/issue) messages displayed to user.
-         * @type Core.ResourceBundle
+         * Default client configuration data.
          */
-        resource: new Core.ResourceBundle({
+        DEFAULT_CONFIG: {
             "ResyncMessage": "This window was not synchronized with the web server and has been reset.  " + 
                     "Please try your last request again.",
             "InvalidResponseMessagePre": "An invalid response was received from the server",
             "InvalidResponseMessagePost": ".\nPress the browser reload or refresh button.",
             "WaitMessage": "Waiting on server response.  Press the browser reload or refresh button if server fails to respond."
-        }),
+        },
 
         /**
          * Initializes the remote-client-based application.
@@ -79,6 +78,12 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @type String
      */
     _inputRestrictionId: null,
+    
+    /**
+     * Client configuration property map
+     * @type Object
+     */
+    config: null,
 
     /**
      * Function wrapper to invoke _processClientUpdate() method.
@@ -138,7 +143,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     
         Echo.Client.call(this);
         
-        this._msg = Echo.RemoteClient.resource.get();
+        this.config = Echo.RemoteClient.DEFAULT_CONFIG;
         this._serverUrl = serverUrl;
         this._processClientUpdateRef = Core.method(this, this._processClientUpdate);
         this._processClientEventRef = Core.method(this, this._processClientEvent);
@@ -199,7 +204,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * application state had to be resynchronized. 
      */
     _displayResyncNotification: function() {
-        alert(this._msg["ResyncMessage"]);
+        alert(this.config["ResyncMessage"]);
     },
     
     /**
@@ -263,7 +268,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @param e the HttpConnection response event
      */
     _handleInvalidResponse: function(e) {
-        var msg = this._msg["InvalidResponseMessagePre"];
+        var msg = this.config["InvalidResponseMessagePre"];
         if (e.exception) {
             Core.Debug.consoleWrite(msg + ": " + e.exception);
         } else if (e.source.getResponseText()) {
@@ -272,7 +277,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         try {
             this.fail();
         } finally {
-            alert(msg + this._msg["InvalidResponseMessagePost"]);
+            alert(msg + this.config["InvalidResponseMessagePost"]);
         }
     },
     
@@ -321,7 +326,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     _processClientEvent: function(e) {
         if (this._transactionInProgress) {
             if (new Date().getTime() - this._syncInitTime > 2000) {
-                alert(this._msg["WaitMessage"]);
+                alert(this.config["WaitMessage"]);
             }
             return;
         }
@@ -1063,6 +1068,27 @@ Echo.RemoteClient.ApplicationSyncProcessor = Core.extend(Echo.RemoteClient.Direc
             if (propertyElement.nodeName == "dir") {
                 this.client.application.setLayoutDirection(propertyElement.firstChild.nodeValue === "rtl" ?
                         Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR);
+            }
+            if (propertyElement.nodeName == "config") {
+                // Copy default configuration.
+                this.config = { };
+                for (var x in Echo.RemoteClient.DEFAULT_CONFIG) {
+                    this.config[x] = Echo.RemoteClient.DEFAULT_CONFIG[x];
+                }
+                
+                // Install customized configuration.
+                var childElement = propertyElement.firstChild;
+                while (childElement) {
+                    if (childElement.nodeName == "p") {
+                        var name = childElement.getAttribute("n");
+                        var value = childElement.firstChild ? childElement.firstChild.nodeValue : null;
+                        if (value) {
+                            this.config[name] = value;
+Core.Debug.consoleWrite("setting: " + this.config[name]);                            
+                        }
+                    }
+                    childElement = childElement.nextSibling;
+                }
             }
             propertyElement = propertyElement.nextSibling;
         }

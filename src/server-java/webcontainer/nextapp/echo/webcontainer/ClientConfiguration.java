@@ -68,6 +68,12 @@ implements Serializable {
     public static final String PROPERTY_SESSION_EXPIRATION_URI = "sessionExpirationUri";
 
     /**
+     * Property name constant for the URI which should be displayed in the event
+     * the session expires.
+     */
+    public static final String PROPERTY_RESYNC_MESSAGE = "ResyncMessage";
+
+    /**
      * Mapping from property names to property values.
      */
     private Map propertyMap = new HashMap();
