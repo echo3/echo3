@@ -263,9 +263,12 @@ class OutputProcessor {
      */
     private void renderClientConfiguration() 
     throws SerialException {
-        Element configElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "AppSync", "config");
         ClientConfiguration config = userInstance.getClientConfiguration();
+        if (config == null) {
+            return;
+        }
         
+        Element configElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "AppSync", "config");
         String[] propertyNames = config.getPropertyNames();
         for (int i = 0; i < propertyNames.length; ++i) {
             Element pElement = document.createElement("p");
