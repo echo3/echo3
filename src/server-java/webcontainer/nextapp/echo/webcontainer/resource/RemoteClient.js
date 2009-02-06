@@ -1084,7 +1084,6 @@ Echo.RemoteClient.ApplicationSyncProcessor = Core.extend(Echo.RemoteClient.Direc
                         var value = childElement.firstChild ? childElement.firstChild.nodeValue : null;
                         if (value) {
                             this.config[name] = value;
-Core.Debug.consoleWrite("setting: " + this.config[name]);                            
                         }
                     }
                     childElement = childElement.nextSibling;
