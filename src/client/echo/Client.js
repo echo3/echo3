@@ -272,15 +272,10 @@ Echo.Client = Core.extend({
         div.style.cssText = "position:absolute;z-index:32767;width:100%;height:100%;overflow:hidden;";
         this.domainElement.appendChild(div);
         var msgDiv = document.createElement("div");
-        msgDiv.style.cssText = "border:#5f1f1f outset 1px;background-color:#5f1f1f;color:#ffffff;padding:2px 10px;";
+        msgDiv.style.cssText = "border-top:12px solid #af1f1f;border-bottom:4px solid #3f1f1f;" +
+                "background-color:#5f1f1f;color:#ffffff;padding:20px 40px;font-weight:bold;";
         msgDiv.appendChild(document.createTextNode(msg));
         div.appendChild(msgDiv);
-        var xDiv = document.createElement("div");
-        xDiv.style.cssText = "color:red;line-height:90%;font-size:" + 
-                (new Core.Web.Measure.Bounds(this.domainElement).height || 100) + 
-                "px;text-align:center;overflow:hidden;";
-        xDiv.appendChild(document.createTextNode("X"));
-        div.appendChild(xDiv);
         
         // Attempt to dispose.
         this.dispose();

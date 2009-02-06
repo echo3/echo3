@@ -880,7 +880,7 @@ Echo.RemoteClient.CommandExec = Core.extend({
 
         /** 
          * Executes the command.
-         * Command implementations should overide.  Not inherited, provided for documentation purposes.
+         * Command implementations should override.  Not inherited, provided for documentation purposes.
          * 
          * @param {Echo.Client} client the client
          * @param commandData object containing command properties provided from server
