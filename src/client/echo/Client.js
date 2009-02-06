@@ -272,8 +272,8 @@ Echo.Client = Core.extend({
         div.style.cssText = "position:absolute;z-index:32767;width:100%;height:100%;overflow:hidden;";
         this.domainElement.appendChild(div);
         var msgDiv = document.createElement("div");
-        msgDiv.style.cssText = "border-top:12px solid #af1f1f;border-bottom:4px solid #3f1f1f;" +
-                "background-color:#5f1f1f;color:#ffffff;padding:20px 40px;font-weight:bold;";
+        msgDiv.style.cssText = "border-bottom:4px solid #af1f1f;background-color:#5f1f1f;color:#ffffff;" + 
+                "padding:20px 40px;font-weight:bold;";
         msgDiv.appendChild(document.createTextNode(msg));
         div.appendChild(msgDiv);
         
