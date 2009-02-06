@@ -1078,16 +1078,10 @@ Echo.RemoteClient.ApplicationSyncProcessor = Core.extend(Echo.RemoteClient.Direc
                 }
                 
                 // Install customized configuration.
-                var childElement = propertyElement.firstChild;
-                while (childElement) {
-                    if (childElement.nodeName == "p") {
-                        var name = childElement.getAttribute("n");
-                        var value = childElement.firstChild ? childElement.firstChild.nodeValue : null;
-                        if (value) {
-                            this.client.config[name] = value;
-                        }
-                    }
-                    childElement = childElement.nextSibling;
+                var pElement = propertyElement.firstChild;
+                while (pElement) {
+                    Echo.Serial.loadProperty(this.client, pElement, null, this.client.config, null);
+                    pElement = pElement.nextSibling;
                 }
             }
             propertyElement = propertyElement.nextSibling;
