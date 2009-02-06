@@ -37,11 +37,11 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
          * Default client configuration data.
          */
         DEFAULT_CONFIG: {
-            "ResyncMessage": "This window was not synchronized with the web server and has been reset.  " + 
+            "Message.Resync": "This window was not synchronized with the web server and has been reset.  " + 
                     "Please try your last request again.",
-            "InvalidResponseMessage": "An invalid response was received from the server\n" +
+            "Message.InvalidResponse": "An invalid response was received from the server\n" +
                     "Press the browser reload or refresh button.",
-            "WaitMessage": "Waiting on server response.  Press the browser reload or refresh button if server fails to respond."
+            "Message.Wait": "Waiting on server response.  Press the browser reload or refresh button if server fails to respond."
         },
 
         /**
@@ -204,7 +204,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * application state had to be resynchronized. 
      */
     _displayResyncNotification: function() {
-        alert(this.config["ResyncMessage"]);
+        alert(this.config["Message.Resync"]);
     },
     
     /**
@@ -268,7 +268,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @param e the HttpConnection response event
      */
     _handleInvalidResponse: function(e) {
-        var msg = this.config["InvalidResponseMessage"];
+        var msg = this.config["Message.InvalidResponse"];
         if (e.exception) {
             Core.Debug.consoleWrite(msg + "Message: " + e.exception);
         } else if (e.source.getResponseText()) {
@@ -327,7 +327,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     _processClientEvent: function(e) {
         if (this._transactionInProgress) {
             if (new Date().getTime() - this._syncInitTime > 2000) {
-                alert(this.config["WaitMessage"]);
+                alert(this.config["Message.Wait"]);
             }
             return;
         }

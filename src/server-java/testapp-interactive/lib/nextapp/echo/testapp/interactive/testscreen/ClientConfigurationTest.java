@@ -171,7 +171,7 @@ public class ClientConfigurationTest extends Column {
                     sessionExpirationMessageText.getText());
         }
         if (resyncMessageText.getText().trim().length() > 0) {
-            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_RESYNC_MESSAGE, 
+            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_MESSAGE_RESYNC, 
                     resyncMessageText.getText());
         }
         
