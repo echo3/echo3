@@ -188,10 +188,12 @@ class OutputProcessor {
         try {
             // Render output to server message DOM.
             if (serverUpdateManager.isFullRefreshRequired()) {
-                renderApplicationState();
-                renderComponentFullRefresh();
+                renderApplicationFull();
+                renderApplicationIncremental();
+                renderComponentsFull();
             } else {
-                renderComponentUpdates();
+                renderApplicationIncremental();
+                renderComponentsIncremental();
             }
             renderCommands();
             renderFocus();
@@ -229,15 +231,48 @@ class OutputProcessor {
     }
     
     /**
-     * Renders application-level properties.
+     * Renders full-refresh application-level properties.
      */
-    private void renderApplicationState() {
+    private void renderApplicationFull() {
         Element localeElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "AppSync", "locale");
         localeElement.appendChild(document.createTextNode(getClientLocaleString(
                 userInstance.getApplicationInstance().getLocale())));
         Element layoutDirElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "AppSync", "dir");
         layoutDirElement.appendChild(document.createTextNode(
                 userInstance.getApplicationInstance().getLayoutDirection().isLeftToRight() ? "ltr" : "rtl"));
+        renderClientConfiguration();
+    }
+    
+    /**
+     * Renders incrementally updated application instance properties.
+     */
+    private void renderApplicationIncremental() {
+        UserInstanceUpdateManager updateManager = userInstance.getUserInstanceUpdateManager();
+        String[] updatedProperties = updateManager.getPropertyUpdateNames();
+        for (int i = 0; i < updatedProperties.length; ++i) {
+            if (UserInstance.PROPERTY_CLIENT_CONFIGURATION.equals(updatedProperties[i])) {
+                renderClientConfiguration();
+            }
+        }
+    }
+    
+    /**
+     * Renders state of <code>ClientConfiguration</code> object associated with the <code>UserInstance</code>.
+     */
+    private void renderClientConfiguration() {
+        Element configElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "AppSync", "config");
+        ClientConfiguration config = userInstance.getClientConfiguration();
+        
+        String[] propertyNames = config.getPropertyNames();
+        for (int i = 0; i < propertyNames.length; ++i) {
+            Element pElement = document.createElement("p");
+            pElement.setAttribute("n", propertyNames[i]);
+            String propertyValue = config.getProperty(propertyNames[i]);
+            if (propertyValue != null) {
+                pElement.appendChild(document.createTextNode(propertyValue));
+            }
+            configElement.appendChild(pElement);
+        }
     }
     
     /**
@@ -315,7 +350,7 @@ class OutputProcessor {
      * 
      * @throws SerialException
      */
-    private void renderComponentFullRefresh()
+    private void renderComponentsFull()
     throws SerialException {
         // Special case: clear/full redraw.  Render entire component hierarchy by rendering an
         // add directive to add the Window's child ContentPane to the root.   
@@ -354,7 +389,7 @@ class OutputProcessor {
      * 
      * @throws SerialException
      */
-    private void renderComponentUpdates() 
+    private void renderComponentsIncremental() 
     throws SerialException {
         ServerComponentUpdate[] componentUpdates = serverUpdateManager.getComponentUpdates();
         

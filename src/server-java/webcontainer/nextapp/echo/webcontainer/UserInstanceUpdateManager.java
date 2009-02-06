@@ -34,8 +34,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Provides information about changes to <code>UserInstance</code> properties
- * of which the client engine needs to be informed.
+ * Provides information about changes to <code>UserInstance</code> properties of which the client needs to be informed.
  */
 public class UserInstanceUpdateManager 
 implements Serializable {
