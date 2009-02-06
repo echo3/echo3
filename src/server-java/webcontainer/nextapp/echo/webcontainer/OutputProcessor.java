@@ -254,6 +254,7 @@ class OutputProcessor {
                 renderClientConfiguration();
             }
         }
+        updateManager.purge();
     }
     
     /**
