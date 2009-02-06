@@ -47,36 +47,31 @@ implements Serializable {
      * Property name constant for the alert message which should be displayed in
      * the event that a server error occurs.
      */
-    public static final String PROPERTY_SERVER_ERROR_MESSAGE = "serverErrorMessage";
+    public static final String PROPERTY_MESSAGE_SERVER_ERROR = "Message.ServerError";
 
     /**
      * Property name constant for the URI which should be displayed in the event
      * that a server error occurs.
      */
-    public static final String PROPERTY_SERVER_ERROR_URI = "serverErrorUri";
+    public static final String PROPERTY_URI_SERVER_ERROR = "URI.ServerError";
 
     /**
      * Property name constant for the alert message which should be displayed in
      * the event the session expires.
      */
-    public static final String PROPERTY_SESSION_EXPIRATION_MESSAGE = "sessionExpirationMessage";
+    public static final String PROPERTY_MESSAGE_SESSION_EXPIRATION = "Message.SessionExpiration";
 
     /**
      * Property name constant for the URI which should be displayed in the event
      * the session expires.
      */
-    public static final String PROPERTY_SESSION_EXPIRATION_URI = "sessionExpirationUri";
+    public static final String PROPERTY_URI_SESSION_EXPIRATION = "URI.SessionExpiration";
 
     /**
      * Property name constant for message to display when client must be resynchronized.
      */
     public static final String PROPERTY_MESSAGE_RESYNC = "Message.Resync";
     
-    /**
-     * Property name constant for message to display when an invalid response is received from the server..
-     */
-    public static final String PROPERTY_MESSAGE_INVALID_RESPONSE = "Message.InvalidResponse";
-
     /**
      * Property name constant for message to display when user attempts to perform operations and must wait.
      */

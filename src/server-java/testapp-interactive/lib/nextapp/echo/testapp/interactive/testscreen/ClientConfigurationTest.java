@@ -157,17 +157,17 @@ public class ClientConfigurationTest extends Column {
     private void updateClientConfiguration() {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         if (serverErrorUriText.getText().trim().length() > 0) {
-            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_SERVER_ERROR_URI, serverErrorUriText.getText());
+            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_URI_SERVER_ERROR, serverErrorUriText.getText());
         }
         if (serverErrorMessageText.getText().trim().length() > 0) {
-            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_SERVER_ERROR_MESSAGE, serverErrorMessageText.getText());
+            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_MESSAGE_SERVER_ERROR, serverErrorMessageText.getText());
         }
         if (sessionExpirationUriText.getText().trim().length() > 0) {
-            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_SESSION_EXPIRATION_URI, 
+            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_URI_SESSION_EXPIRATION, 
                     sessionExpirationUriText.getText());
         }
         if (sessionExpirationMessageText.getText().trim().length() > 0) {
-            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_SESSION_EXPIRATION_MESSAGE, 
+            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_MESSAGE_SESSION_EXPIRATION, 
                     sessionExpirationMessageText.getText());
         }
         if (resyncMessageText.getText().trim().length() > 0) {

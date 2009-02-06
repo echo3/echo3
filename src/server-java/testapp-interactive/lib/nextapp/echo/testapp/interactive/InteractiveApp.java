@@ -181,7 +181,7 @@ public class InteractiveApp extends ApplicationInstance {
         }
         
         ClientConfiguration clientConfiguration = new ClientConfiguration();
-        clientConfiguration.setProperty(ClientConfiguration.PROPERTY_SERVER_ERROR_MESSAGE,
+        clientConfiguration.setProperty(ClientConfiguration.PROPERTY_MESSAGE_SERVER_ERROR,
                 "KA-BOOM! (test non-default server error message)");
         cc.setClientConfiguration(clientConfiguration);
         
