@@ -1071,9 +1071,9 @@ Echo.RemoteClient.ApplicationSyncProcessor = Core.extend(Echo.RemoteClient.Direc
             }
             if (propertyElement.nodeName == "config") {
                 // Copy default configuration.
-                this.config = { };
+                this.client.config = { };
                 for (var x in Echo.RemoteClient.DEFAULT_CONFIG) {
-                    this.config[x] = Echo.RemoteClient.DEFAULT_CONFIG[x];
+                    this.client.config[x] = Echo.RemoteClient.DEFAULT_CONFIG[x];
                 }
                 
                 // Install customized configuration.
@@ -1083,7 +1083,7 @@ Echo.RemoteClient.ApplicationSyncProcessor = Core.extend(Echo.RemoteClient.Direc
                         var name = childElement.getAttribute("n");
                         var value = childElement.firstChild ? childElement.firstChild.nodeValue : null;
                         if (value) {
-                            this.config[name] = value;
+                            this.client.config[name] = value;
                         }
                     }
                     childElement = childElement.nextSibling;
