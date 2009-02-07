@@ -7,6 +7,13 @@ Echo.Client = Core.extend({
     $static: {
 
         /**
+         * Default client configuration, copied into client configuration.
+         */
+        DEFAULT_CONFIGURATION: {
+            "WaitIndicator.Text": "Please wait..."
+        },
+    
+        /**
          * Global array containing all active client instances in the current browser window.
          * @type Array
          */
@@ -32,6 +39,9 @@ Echo.Client = Core.extend({
     
     /**
      * Application-configurable properties.
+     * Initialized at construction, this value should never be set, only individual properties of the configuration may
+     * be modified.
+     * @type Object
      */
     configuration: null,
     
@@ -124,6 +134,11 @@ Echo.Client = Core.extend({
      * Creates a new Client instance.  Derived classes must invoke.
      */
     $construct: function() { 
+        this.configuration = { };
+        for (var x in Echo.Client.DEFAULT_CONFIGURATION) {
+            this.configuration[x] = Echo.Client.DEFAULT_CONFIGURATION[x];
+        }
+        
         this._inputRestrictionMap = { };
         this._processKeyPressRef = Core.method(this, this._processKeyPress);
         this._processApplicationFocusRef = Core.method(this, this._processApplicationFocus);
@@ -564,7 +579,7 @@ Echo.Client.DefaultWaitIndicator = Core.extend(Echo.Client.WaitIndicator, {
     
     /** @see Echo.Client.WaitIndicator#activate */
     activate: function(client) {
-        this._textNode.nodeValue = client.configuration ? client.configuration["Message.WaitIndicator"] : "Please wait...";
+        this._textNode.nodeValue = client.configuration["WaitIndicator.Text"];
         this._divElement.style.display = "block";
         Core.Web.Scheduler.add(this._fadeRunnable);
         this._opacity = 0;

@@ -36,7 +36,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         /**
          * Default client configuration data.
          */
-        DEFAULT_CONFIG: {
+        DEFAULT_CONFIGURATION: {
             "Message.Resync": "This window was not synchronized with the web server and has been reset.  " + 
                     "Please try your last request again.",
             "Message.ServerError": "An invalid response was received from the server\n" +
@@ -79,12 +79,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      */
     _inputRestrictionId: null,
     
-    /**
-     * Client configuration property map
-     * @type Object
-     */
-    config: null,
-
     /**
      * Function wrapper to invoke _processClientUpdate() method.
      * @type Function
@@ -143,7 +137,11 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     
         Echo.Client.call(this);
         
-        this.config = Echo.RemoteClient.DEFAULT_CONFIG;
+        // Install default configuration.
+        for (var x in Echo.RemoteClient.DEFAULT_CONFIGURATION) {
+            this.configuration[x] = Echo.RemoteClient.DEFAULT_CONFIGURATION[x];    
+        }
+        
         this._serverUrl = serverUrl;
         this._processClientUpdateRef = Core.method(this, this._processClientUpdate);
         this._processClientEventRef = Core.method(this, this._processClientEvent);
@@ -204,7 +202,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * application state had to be resynchronized. 
      */
     _displayResyncNotification: function() {
-        alert(this.config["Message.Resync"]);
+        alert(this.configuration["Message.Resync"]);
     },
     
     /**
@@ -268,7 +266,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @param e the HttpConnection response event
      */
     _handleInvalidResponse: function(e) {
-        var msg = this.config["Message.ServerError"];
+        var msg = this.configuration["Message.ServerError"];
         if (e.exception) {
             Core.Debug.consoleWrite(msg + "Message: " + e.exception);
         } else if (e.source.getResponseText()) {
@@ -327,7 +325,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     _processClientEvent: function(e) {
         if (this._transactionInProgress) {
             if (new Date().getTime() - this._syncInitTime > 2000) {
-                alert(this.config["Message.Wait"]);
+                alert(this.configuration["Message.Wait"]);
             }
             return;
         }
@@ -1071,16 +1069,10 @@ Echo.RemoteClient.ApplicationSyncProcessor = Core.extend(Echo.RemoteClient.Direc
                         Echo.LayoutDirection.RTL : Echo.LayoutDirection.LTR);
             }
             if (propertyElement.nodeName == "config") {
-                // Copy default configuration.
-                this.client.config = { };
-                for (var x in Echo.RemoteClient.DEFAULT_CONFIG) {
-                    this.client.config[x] = Echo.RemoteClient.DEFAULT_CONFIG[x];
-                }
-                
                 // Install customized configuration.
                 var pElement = propertyElement.firstChild;
                 while (pElement) {
-                    Echo.Serial.loadProperty(this.client, pElement, null, this.client.config, null);
+                    Echo.Serial.loadProperty(this.client, pElement, null, this.client.configuration, null);
                     pElement = pElement.nextSibling;
                 }
             }
