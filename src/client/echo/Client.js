@@ -5,7 +5,7 @@
 Echo.Client = Core.extend({
     
     $static: {
-    
+
         /**
          * Global array containing all active client instances in the current browser window.
          * @type Array
@@ -29,6 +29,11 @@ Echo.Client = Core.extend({
         // Register resize listener on containing window one time.
         Core.Web.DOM.addEventListener(window, "resize", this._globalWindowResizeListener, false);
     },
+    
+    /**
+     * Application-configurable properties.
+     */
+    configuration: null,
     
     /**
      * Flag indicating the user interface should be rendered in design-mode, where all rendered component elements are
@@ -238,7 +243,7 @@ Echo.Client = Core.extend({
     },
     
     /**
-     * Loads required libraries and then executes a function, adding input restrictions while the libaries are being loaded.
+     * Loads required libraries and then executes a function, adding input restrictions while the libraries are being loaded.
      *
      * @param {Array} requiredLibraries the URLs of the libraries which must be loaded before the function can execute
      * @param {Function} f the function to execute
@@ -425,7 +430,7 @@ Echo.Client = Core.extend({
                 Core.Web.Scheduler.remove(this._waitIndicatorRunnable);
                 
                 // Deactivate if already displayed.
-                this._waitIndicator.deactivate();
+                this._waitIndicator.deactivate(this);
             }
         }
     },
@@ -447,7 +452,7 @@ Echo.Client = Core.extend({
      * Activates the wait indicator.
      */
     _waitIndicatorActivate: function() {
-        this._waitIndicator.activate();
+        this._waitIndicator.activate(this);
     },
 
     /**
@@ -524,16 +529,20 @@ Echo.Client.WaitIndicator = Core.extend({
          * Wait indicator activation method. Invoked when the wait indicator
          * should be activated. The implementation should add the wait indicator
          * to the DOM and begin any animation (if applicable).
+         * 
+         * @param {Echo.Client} the client
          */
-        activate: function() { },
+        activate: function(client) { },
         
         /**
          * Wait indicator deactivation method. Invoked when the wait indicator
          * should be deactivated. The implementation should remove the wait
          * indicator from the DOM, cancel any animations, and dispose of any
          * resources.
+         * 
+         * @param {Echo.Client} the client
          */
-        deactivate: function() { }
+        deactivate: function(client) { }
     }
 });
 
@@ -541,26 +550,28 @@ Echo.Client.WaitIndicator = Core.extend({
  * Default wait indicator implementation.
  */
 Echo.Client.DefaultWaitIndicator = Core.extend(Echo.Client.WaitIndicator, {
-
+    
     /** Creates a new DefaultWaitIndicator. */
     $construct: function() {
         this._divElement = document.createElement("div");
         this._divElement.style.cssText = "display: none;z-index:32767;position:absolute;top:30px;right:30px;" +
                  "width:200px;padding:20px;border:1px outset #abcdef;background-color:#abcdef;color:#000000;text-align:center;";
-        this._divElement.appendChild(document.createTextNode("Please wait..."));
+        this._textNode = document.createTextNode("");
+        this._divElement.appendChild(this._textNode);
         this._fadeRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._tick), 50, true);
         document.body.appendChild(this._divElement);
     },
     
     /** @see Echo.Client.WaitIndicator#activate */
-    activate: function() {
+    activate: function(client) {
+        this._textNode.nodeValue = client.configuration ? client.configuration["Message.WaitIndicator"] : "Please wait...";
         this._divElement.style.display = "block";
         Core.Web.Scheduler.add(this._fadeRunnable);
         this._opacity = 0;
     },
     
     /** @see Echo.Client.WaitIndicator#deactivate */
-    deactivate: function() {
+    deactivate: function(client) {
         this._divElement.style.display = "none";
         Core.Web.Scheduler.remove(this._fadeRunnable);
     },

@@ -43,7 +43,7 @@ public class InteractiveServlet extends WebContainerServlet {
     /**
      * Enable/disable this flag to test custom wait indicator.
      */
-    private static final boolean USE_CUSTOM_WAIT_INDICATOR = true;
+    private static final boolean USE_CUSTOM_WAIT_INDICATOR = false;
 
     /**
      * Enable/disable this flag to test custom CSS.
