@@ -579,6 +579,13 @@ Echo.Client.DefaultWaitIndicator = Core.extend(Echo.Client.WaitIndicator, {
     
     /** @see Echo.Client.WaitIndicator#activate */
     activate: function(client) {
+        if (client.configuration["WaitIndicator.Background"]) {
+            this._divElement.style.backgroundColor = client.configuration["WaitIndicator.Background"];
+            this._divElement.style.border = client.configuration["WaitIndicator.Background"];
+        }
+        if (client.configuration["WaitIndicator.Foreground"]) {
+            this._divElement.style.color = client.configuration["WaitIndicator.Foreground"];
+        }
         this._textNode.nodeValue = client.configuration["WaitIndicator.Text"];
         this._divElement.style.display = "block";
         Core.Web.Scheduler.add(this._fadeRunnable);

@@ -49,6 +49,7 @@ import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.GridLayoutData;
 import nextapp.echo.app.layout.SplitPaneLayoutData;
+import nextapp.echo.testapp.interactive.ColorChooser;
 import nextapp.echo.webcontainer.ClientConfiguration;
 import nextapp.echo.webcontainer.ContainerContext;
 import nextapp.echo.webcontainer.WebContainerServlet;
@@ -69,6 +70,7 @@ public class ClientConfigurationTest extends Column {
 
     private Grid grid;
     private Map textProperties = new HashMap();
+    private Map colorProperties = new HashMap();
     
     /**
      * Default constructor. 
@@ -86,6 +88,8 @@ public class ClientConfigurationTest extends Column {
         add(grid);
         
         addTextProperty("Wait Indicator Text:", ClientConfiguration.PROPERTY_WAIT_INDICATOR_TEXT);
+        addColorProperty("Wait Indicator Foreground:", ClientConfiguration.PROPERTY_WAIT_INDICATOR_FOREGROUND);
+        addColorProperty("Wait Indicator Background:", ClientConfiguration.PROPERTY_WAIT_INDICATOR_BACKGROUND);
         addTextProperty("Server Error URI:", ClientConfiguration.PROPERTY_URI_SERVER_ERROR);
         addTextProperty("Server Error Message:", ClientConfiguration.PROPERTY_MESSAGE_SERVER_ERROR);
         addTextProperty("Session Expiration URI:", ClientConfiguration.PROPERTY_URI_SESSION_EXPIRATION);
@@ -132,6 +136,19 @@ public class ClientConfigurationTest extends Column {
         add(delayButton);
     }
     
+    private void addColorProperty(String description, String propertyName) {
+        Label label = new Label(description);
+        label.setStyle(PROMPT_STYLE);
+        grid.add(label);
+        
+        ColorChooser cc = new ColorChooser();
+        cc.setStyleName("Default");
+        grid.add(cc);
+        
+        colorProperties.put(propertyName, cc);
+        
+    }
+    
     private void addTextProperty(String description, String propertyName) {
         Label label = new Label(description);
         label.setStyle(PROMPT_STYLE);
@@ -147,13 +164,25 @@ public class ClientConfigurationTest extends Column {
     
     private void updateClientConfiguration() {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
-        Iterator it = textProperties.keySet().iterator();
+        Iterator it;
+        
+        it = textProperties.keySet().iterator();
         while (it.hasNext()) {
             String propertyName = (String) it.next();
             TextField tf = (TextField) textProperties.get(propertyName);
             String propertyValue = tf.getText();
             if (propertyValue.length() > 0) {
-                clientConfiguration.setProperty(propertyName, tf.getText());
+                clientConfiguration.setProperty(propertyName, propertyValue);
+            }
+        }
+        
+        it = colorProperties.keySet().iterator();
+        while (it.hasNext()) {
+            String propertyName = (String) it.next();
+            ColorChooser cc = (ColorChooser) colorProperties.get(propertyName);
+            Color propertyValue = cc.getColor();
+            if (propertyValue != null) {
+                clientConfiguration.setProperty(propertyName, propertyValue);
             }
         }
         

@@ -78,9 +78,19 @@ implements Serializable {
     public static final String PROPERTY_MESSAGE_WAIT = "Message.Wait";
     
     /**
-     * Property name constant for message to display when user attempts to perform operations and must wait.
+     * Property name constant for wait indicator text.
      */
     public static final String PROPERTY_WAIT_INDICATOR_TEXT = "WaitIndicator.Text";
+
+    /**
+     * Property name constant for wait indicator foreground.  Must be a <code>Color</code> value.
+     */
+    public static final String PROPERTY_WAIT_INDICATOR_FOREGROUND = "WaitIndicator.Foreground";
+
+    /**
+     * Property name constant for wait indicator background.  Must be a <code>Color</code> value.
+     */
+    public static final String PROPERTY_WAIT_INDICATOR_BACKGROUND = "WaitIndicator.Background";
 
     /**
      * Mapping from property names to property values.
