@@ -80,6 +80,12 @@ Echo.Client = Core.extend({
     _processKeyPressRef: null,
     
     /**
+     * Flag indicating wait indicator is active.
+     * @type Boolean
+     */
+    _waitIndicatorActive: false, 
+    
+    /**
      * Method reference to this._processApplicationFocus().
      * @type Function
      */
@@ -224,8 +230,7 @@ Echo.Client = Core.extend({
      *         the restriction by invoking removeInputRestriction()
      */
     createInputRestriction: function() {
-        Core.Web.Scheduler.add(this._waitIndicatorRunnable);
-
+        this._setWaitVisible(true);
         var id = (++this._lastInputRestrictionId).toString();
         ++this._inputRestrictionCount;
         this._inputRestrictionMap[id] = true;
@@ -279,6 +284,9 @@ Echo.Client = Core.extend({
         
         // Attempt to dispose.
         this.dispose();
+
+        // Disable wait indicator.
+        this._setWaitVisible(false);
     },
     
     /**
@@ -381,14 +389,8 @@ Echo.Client = Core.extend({
         if (this._inputRestrictionCount === 0) {
             // Last input restriction removed.
 
-            // Remove wait indicator from scheduling (if wait indicator has not been presented yet, it will not be).
-            Core.Web.Scheduler.remove(this._waitIndicatorRunnable);
-            
             // Disable wait indicator.
-            if (this._waitIndicatorActive) {
-                this._waitIndicatorActive = false;
-                this._waitIndicator.deactivate();
-            }
+            this._setWaitVisible(false);
             
             if (this._inputRestrictionListeners) {
                 // Notify input restriction listeners.
@@ -403,6 +405,32 @@ Echo.Client = Core.extend({
     },
     
     /**
+     * Shows/hides wait indicator.
+     * 
+     * @param {Boolean} visible the new visibility state of the wait indicator
+     */
+    _setWaitVisible: function(visible) {
+        if (visible) {
+            if (this.application && !this._waitIndicatorActive) {
+                this._waitIndicatorActive = true;
+                
+                // Schedule runnable to display wait indicator.
+                Core.Web.Scheduler.add(this._waitIndicatorRunnable);
+            }
+        } else {
+            if (this._waitIndicatorActive) {
+                this._waitIndicatorActive = false;
+
+                // Remove wait indicator from scheduling (if wait indicator has not been presented yet, it will not be).
+                Core.Web.Scheduler.remove(this._waitIndicatorRunnable);
+                
+                // Deactivate if already displayed.
+                this._waitIndicator.deactivate();
+            }
+        }
+    },
+    
+    /**
      * Sets the wait indicator that will be displayed when a client-server action takes longer than
      * a specified period of time.
      * 
@@ -410,7 +438,7 @@ Echo.Client = Core.extend({
      */
     setWaitIndicator: function(waitIndicator) {
         if (this._waitIndicator) {
-            this._waitIndicator.deactivate();
+            this._setWaitVisible(false);
         }
         this._waitIndicator = waitIndicator;
     },
@@ -419,7 +447,6 @@ Echo.Client = Core.extend({
      * Activates the wait indicator.
      */
     _waitIndicatorActivate: function() {
-        this._waitIndicatorActive = true;
         this._waitIndicator.activate();
     },
 
