@@ -581,7 +581,7 @@ Echo.Client.DefaultWaitIndicator = Core.extend(Echo.Client.WaitIndicator, {
     activate: function(client) {
         if (client.configuration["WaitIndicator.Background"]) {
             this._divElement.style.backgroundColor = client.configuration["WaitIndicator.Background"];
-            this._divElement.style.border = client.configuration["WaitIndicator.Background"];
+            this._divElement.style.borderColor = client.configuration["WaitIndicator.Background"];
         }
         if (client.configuration["WaitIndicator.Foreground"]) {
             this._divElement.style.color = client.configuration["WaitIndicator.Foreground"];
