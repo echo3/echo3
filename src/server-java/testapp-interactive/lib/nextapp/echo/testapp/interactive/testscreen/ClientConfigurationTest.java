@@ -29,6 +29,10 @@
 
 package nextapp.echo.testapp.interactive.testscreen;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
@@ -63,8 +67,8 @@ public class ClientConfigurationTest extends Column {
         PROMPT_STYLE = style;
     }
 
-    private TextField serverErrorUriText, serverErrorMessageText, sessionExpirationUriText, sessionExpirationMessageText,
-            resyncMessageText;
+    private Grid grid;
+    private Map textProperties = new HashMap();
     
     /**
      * Default constructor. 
@@ -76,52 +80,17 @@ public class ClientConfigurationTest extends Column {
         setLayoutData(splitPaneLayoutData);
         setCellSpacing(new Extent(20));
         
-        Grid grid = new Grid(2);
+        grid = new Grid(2);
         grid.setBorder(new Border(2, Color.BLUE, Border.STYLE_GROOVE));
         grid.setInsets(new Insets(10, 5));
         add(grid);
         
-        Label label;
-        
-        label = new Label("Server Error URI:");
-        label.setStyle(PROMPT_STYLE);
-        grid.add(label);
-        
-        serverErrorUriText = new TextField();
-        serverErrorUriText.setStyleName("Default");
-        grid.add(serverErrorUriText);
-        
-        label = new Label("Server Error Message:");
-        label.setStyle(PROMPT_STYLE);
-        grid.add(label);
-        
-        serverErrorMessageText = new TextField();
-        serverErrorMessageText.setStyleName("Default");
-        grid.add(serverErrorMessageText);
-        
-        label = new Label("Session Expiration URI:");
-        label.setStyle(PROMPT_STYLE);
-        grid.add(label);
-        
-        sessionExpirationUriText = new TextField();
-        sessionExpirationUriText.setStyleName("Default");
-        grid.add(sessionExpirationUriText);
-        
-        label = new Label("Session Expiration Message:");
-        label.setStyle(PROMPT_STYLE);
-        grid.add(label);
-        
-        sessionExpirationMessageText = new TextField();
-        sessionExpirationMessageText.setStyleName("Default");
-        grid.add(sessionExpirationMessageText);
-        
-        label = new Label("Resync Message:");
-        label.setStyle(PROMPT_STYLE);
-        grid.add(label);
-        
-        resyncMessageText = new TextField();
-        resyncMessageText.setStyleName("Default");
-        grid.add(resyncMessageText);
+        addTextProperty("Server Error URI:", ClientConfiguration.PROPERTY_URI_SERVER_ERROR);
+        addTextProperty("Server Error Message:", ClientConfiguration.PROPERTY_MESSAGE_SERVER_ERROR);
+        addTextProperty("Session Expiration URI:", ClientConfiguration.PROPERTY_URI_SESSION_EXPIRATION);
+        addTextProperty("Session Expiration Message:", ClientConfiguration.PROPERTY_MESSAGE_SESSION_EXPIRATION);
+        addTextProperty("Resync Message:", ClientConfiguration.PROPERTY_MESSAGE_RESYNC);
+        addTextProperty("Wait Message:", ClientConfiguration.PROPERTY_MESSAGE_WAIT);
         
         Button updateButton = new Button("Update ClientConfiguration");
         updateButton.setStyleName("Default");
@@ -151,28 +120,29 @@ public class ClientConfigurationTest extends Column {
         add(expireSessionButton);
     }
     
-    /**
-     * Performs <code>ClientConfigurationUpdate</code>.
-     */
+    private void addTextProperty(String description, String propertyName) {
+        Label label = new Label(description);
+        label.setStyle(PROMPT_STYLE);
+        grid.add(label);
+        
+        TextField tf = new TextField();
+        tf.setStyleName("Default");
+        grid.add(tf);
+        
+        textProperties.put(propertyName, tf);
+        
+    }
+    
     private void updateClientConfiguration() {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
-        if (serverErrorUriText.getText().trim().length() > 0) {
-            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_URI_SERVER_ERROR, serverErrorUriText.getText());
-        }
-        if (serverErrorMessageText.getText().trim().length() > 0) {
-            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_MESSAGE_SERVER_ERROR, serverErrorMessageText.getText());
-        }
-        if (sessionExpirationUriText.getText().trim().length() > 0) {
-            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_URI_SESSION_EXPIRATION, 
-                    sessionExpirationUriText.getText());
-        }
-        if (sessionExpirationMessageText.getText().trim().length() > 0) {
-            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_MESSAGE_SESSION_EXPIRATION, 
-                    sessionExpirationMessageText.getText());
-        }
-        if (resyncMessageText.getText().trim().length() > 0) {
-            clientConfiguration.setProperty(ClientConfiguration.PROPERTY_MESSAGE_RESYNC, 
-                    resyncMessageText.getText());
+        Iterator it = textProperties.keySet().iterator();
+        while (it.hasNext()) {
+            String propertyName = (String) it.next();
+            TextField tf = (TextField) textProperties.get(propertyName);
+            String propertyValue = tf.getText();
+            if (propertyValue.length() > 0) {
+                clientConfiguration.setProperty(propertyName, tf.getText());
+            }
         }
         
         ContainerContext containerContext 
