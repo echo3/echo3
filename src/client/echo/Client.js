@@ -258,6 +258,74 @@ Echo.Client = Core.extend({
     },
     
     /**
+     * Displays an error message, locking the state of the client.  The client is unlocked when the user presses an
+     * (optionally configurable) action button.
+     * 
+     * @param {String} message the message to display
+     * @param {String} detail optional details about the message (e.g., client-side exception)
+     * @param {String} actionText optional text for an action button
+     * @param {Function} actionFunction optional function to execute when action button is clicked (required if actionText is
+     *        non-null)     
+     */
+    _displayError: function(message, detail, actionText, actionFunction) {
+        // Create restriction.
+        var restriction = this.createInputRestriction(false);
+
+        // Disable wait indicator.
+        this._setWaitVisible(false);
+        
+        // Darken screen.
+        var blackoutDiv = document.createElement("div");
+        blackoutDiv.style.cssText = "position:absolute;z-index:32766;width:100%;height:100%;background-color:#000000;opacity:0.75";
+        if (Core.Web.Env.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
+            blackoutDiv.style.filter = "alpha(opacity=75)";
+        }
+        this.domainElement.appendChild(blackoutDiv);
+        
+        // Display fail message.
+        var div = document.createElement("div");
+        div.style.cssText = "position:absolute;z-index:32767;width:100%;height:100%;overflow:hidden;";
+        this.domainElement.appendChild(div);
+        
+        var contentDiv = document.createElement("div");
+        contentDiv.style.cssText = "border-bottom:4px solid #af1f1f;background-color:#5f1f1f;color:#ffffff;" + 
+                "padding:20px 40px 0px;";
+        
+        if (message) {
+            var messageDiv = document.createElement("div");
+            messageDiv.style.cssText = "font-weight: bold; padding-bottom:20px;";
+            messageDiv.appendChild(document.createTextNode(message));
+            contentDiv.appendChild(messageDiv);
+        }
+        
+        if (detail) {
+            var detailDiv = document.createElement("div");
+            detailDiv.style.cssText = "padding-bottom:20px;";
+            detailDiv.appendChild(document.createTextNode(message));
+            contentDiv.appendChild(detailDiv);
+        }
+        
+        if (actionText) {
+            var actionDiv = document.createElement("div");
+            actionDiv.style.cssText = "border: 1px outset #af2f2f;background-color:#af2f2f;padding: 2px 10px;" +
+                    "margin-bottom:20px;cursor:pointer;font-weight:bold;";
+            actionDiv.appendChild(document.createTextNode(actionText));
+            contentDiv.appendChild(actionDiv);
+            Core.Web.DOM.addEventListener(contentDiv, "click", Core.method(this, function() {
+                try {
+                    this.removeInputRestriction(restriction);
+                    div.parentNode.removeChild(div);
+                    blackoutDiv.parentNode.removeChild(blackoutDiv);
+                } finally {
+                    actionFunction();
+                }
+            }), false);
+        }
+        
+        div.appendChild(contentDiv);
+    },
+    
+    /**
      * Loads required libraries and then executes a function, adding input restrictions while the libraries are being loaded.
      *
      * @param {Array} requiredLibraries the URLs of the libraries which must be loaded before the function can execute
@@ -278,35 +346,15 @@ Echo.Client = Core.extend({
      * @param {String} msg the message to display (a generic message will be used if omitted) 
      */
     fail: function(msg) {
-        // Block future input.
-        this.createInputRestriction(false);
-        
         // Default message.
-        msg = msg || "This application has been stopped due to an error. Press the reload or refresh button.";
+        msg = msg || "This application has been stopped due to an error.";
         
-        // Darken screen.
-        var blackoutDiv = document.createElement("div");
-        blackoutDiv.style.cssText = "position:absolute;z-index:32766;width:100%;height:100%;background-color:#000000;opacity:0.75";
-        if (Core.Web.Env.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
-            blackoutDiv.style.filter = "alpha(opacity=75)";
-        }
-        this.domainElement.appendChild(blackoutDiv);
-
-        // Display fail message.
-        var div = document.createElement("div");
-        div.style.cssText = "position:absolute;z-index:32767;width:100%;height:100%;overflow:hidden;";
-        this.domainElement.appendChild(div);
-        var msgDiv = document.createElement("div");
-        msgDiv.style.cssText = "border-bottom:4px solid #af1f1f;background-color:#5f1f1f;color:#ffffff;" + 
-                "padding:20px 40px;font-weight:bold;";
-        msgDiv.appendChild(document.createTextNode(msg));
-        div.appendChild(msgDiv);
+        this._displayError(msg, null, "Restart Application", function() {
+            window.location.reload();
+        });
         
         // Attempt to dispose.
         this.dispose();
-
-        // Disable wait indicator.
-        this._setWaitVisible(false);
     },
     
     /**
