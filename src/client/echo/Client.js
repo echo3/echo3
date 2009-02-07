@@ -305,24 +305,36 @@ Echo.Client = Core.extend({
             contentDiv.appendChild(detailDiv);
         }
         
+        div.appendChild(contentDiv);
+
         if (actionText) {
             var actionDiv = document.createElement("div");
+            actionDiv.tabIndex = "0";
             actionDiv.style.cssText = "border: 1px outset #af2f2f;background-color:#af2f2f;padding: 2px 10px;" +
                     "margin-bottom:20px;cursor:pointer;font-weight:bold;";
             actionDiv.appendChild(document.createTextNode(actionText));
             contentDiv.appendChild(actionDiv);
-            Core.Web.DOM.addEventListener(actionDiv, "click", Core.method(this, function() {
-                try {
-                    this.removeInputRestriction(restriction);
-                    div.parentNode.removeChild(div);
-                    blackoutDiv.parentNode.removeChild(blackoutDiv);
-                } finally {
-                    actionFunction();
+            var listener = Core.method(this, function(e) {
+                if (e.type != "keypress" || e.keyCode == 13) { 
+                    try {
+                        // Remove error elements.
+                        Core.Web.DOM.removeEventListener(actionDiv, "click", listener, false);
+                        Core.Web.DOM.removeEventListener(actionDiv, "keypress", listener, false);
+                        div.parentNode.removeChild(div);
+                        blackoutDiv.parentNode.removeChild(blackoutDiv);
+
+                        // Remove restriction.
+                        this.removeInputRestriction(restriction);
+                    } finally {
+                        actionFunction();
+                    }
                 }
-            }), false);
+            });
+            
+            Core.Web.DOM.addEventListener(actionDiv, "click", listener, false);
+            Core.Web.DOM.addEventListener(actionDiv, "keypress", listener, false);
+            Core.Web.DOM.focusElement(actionDiv);
         }
-        
-        div.appendChild(contentDiv);
     },
     
     /**
