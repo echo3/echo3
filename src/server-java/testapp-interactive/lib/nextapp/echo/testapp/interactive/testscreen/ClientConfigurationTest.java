@@ -85,6 +85,7 @@ public class ClientConfigurationTest extends Column {
         grid.setInsets(new Insets(10, 5));
         add(grid);
         
+        addTextProperty("Wait Indicator Text:", ClientConfiguration.PROPERTY_WAIT_INDICATOR_TEXT);
         addTextProperty("Server Error URI:", ClientConfiguration.PROPERTY_URI_SERVER_ERROR);
         addTextProperty("Server Error Message:", ClientConfiguration.PROPERTY_MESSAGE_SERVER_ERROR);
         addTextProperty("Session Expiration URI:", ClientConfiguration.PROPERTY_URI_SESSION_EXPIRATION);
@@ -118,6 +119,17 @@ public class ClientConfigurationTest extends Column {
             }
         });
         add(expireSessionButton);
+        
+        Button delayButton = new Button("3 Second Delay");
+        delayButton.setStyleName("Default");
+        delayButton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException ex) { };
+            }
+        });
+        add(delayButton);
     }
     
     private void addTextProperty(String description, String propertyName) {
