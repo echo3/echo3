@@ -282,7 +282,7 @@ Echo.Client = Core.extend({
         }
         this.domainElement.appendChild(blackoutDiv);
         
-        // Display fail message.
+        // Render error message.
         var div = document.createElement("div");
         div.style.cssText = "position:absolute;z-index:32767;width:100%;height:100%;overflow:hidden;";
         this.domainElement.appendChild(div);
@@ -301,7 +301,7 @@ Echo.Client = Core.extend({
         if (detail) {
             var detailDiv = document.createElement("div");
             detailDiv.style.cssText = "padding-bottom:20px;";
-            detailDiv.appendChild(document.createTextNode(message));
+            detailDiv.appendChild(document.createTextNode(detail));
             contentDiv.appendChild(detailDiv);
         }
         
@@ -311,7 +311,7 @@ Echo.Client = Core.extend({
                     "margin-bottom:20px;cursor:pointer;font-weight:bold;";
             actionDiv.appendChild(document.createTextNode(actionText));
             contentDiv.appendChild(actionDiv);
-            Core.Web.DOM.addEventListener(contentDiv, "click", Core.method(this, function() {
+            Core.Web.DOM.addEventListener(actionDiv, "click", Core.method(this, function() {
                 try {
                     this.removeInputRestriction(restriction);
                     div.parentNode.removeChild(div);
@@ -343,13 +343,13 @@ Echo.Client = Core.extend({
      * Handles an application failure, refusing future input and displaying an error message over the entirety of the domain 
      * element.
      * 
-     * @param {String} msg the message to display (a generic message will be used if omitted) 
+     * @param {String} message the message to display (a generic message will be used if omitted) 
      */
-    fail: function(msg) {
+    fail: function(message, detail) {
         // Default message.
-        msg = msg || "This application has been stopped due to an error.";
+        message = message || "This application has been stopped due to an error.";
         
-        this._displayError(msg, null, "Restart Application", function() {
+        this._displayError(message, detail, "Restart Application", function() {
             window.location.reload();
         });
         

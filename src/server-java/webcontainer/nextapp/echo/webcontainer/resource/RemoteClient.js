@@ -266,18 +266,14 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @param e the HttpConnection response event
      */
     _handleInvalidResponse: function(e) {
-        var msg = this.configuration["Message.ServerError"];
+        var message = this.configuration["Message.ServerError"];
+        var detail = null;
         if (e.exception) {
-            Core.Debug.consoleWrite(msg + "Message: " + e.exception);
+            detail = e.exception.toString();
         } else if (e.source.getResponseText()) {
-            Core.Debug.consoleWrite(msg + "Message: " + e.source.getResponseText());
+            detail = e.source.getResponseText();
         }
-        try {
-            this.fail();
-        } finally {
-            Core.Debug.consoleWrite(msg);
-            alert(msg);
-        }
+        this.fail(message, detail);
     },
     
     /**
