@@ -379,7 +379,8 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         }
 
         if (e.source.resync) {
-            this.displayError(this.configuration["Message.Resync"], null, this.configuration["Action.Continue"]);
+            this.displayError(this.domainElement, this.configuration["Message.Resync"], null, 
+                    this.configuration["Action.Continue"]);
         }
     },
     

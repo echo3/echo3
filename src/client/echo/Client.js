@@ -269,7 +269,7 @@ Echo.Client = Core.extend({
      * @param {String} actionText optional text for an action button
      * @param {Function} actionFunction optional function to execute when action button is clicked
      */
-    displayError: function(message, detail, actionText, actionFunction) {
+    displayError: function(parentElement, message, detail, actionText, actionFunction) {
         // Create restriction.
         var restriction = this.createInputRestriction(false);
 
@@ -282,12 +282,12 @@ Echo.Client = Core.extend({
         if (Core.Web.Env.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED) {
             blackoutDiv.style.filter = "alpha(opacity=75)";
         }
-        this.domainElement.appendChild(blackoutDiv);
+        parentElement.appendChild(blackoutDiv);
         
         // Render error message.
         var div = document.createElement("div");
         div.style.cssText = "position:absolute;z-index:32767;width:100%;height:100%;overflow:hidden;";
-        this.domainElement.appendChild(div);
+        parentElement.appendChild(div);
         
         var contentDiv = document.createElement("div");
         contentDiv.style.cssText = "border-bottom:4px solid #af1f1f;background-color:#5f1f1f;color:#ffffff;" + 
@@ -364,24 +364,20 @@ Echo.Client = Core.extend({
      * @param {String} detail the error details 
      */
     fail: function(detail) {
-        if (this.configuration["URI.StopError"]) {
-            try {
-                // Attempt to dispose.
-                this.dispose();
-            } finally {
+        var element = this.domainElement;
+        try {
+            // Attempt to dispose.
+            this.dispose();
+        } finally {
+            if (this.configuration["URI.StopError"]) {
                 // Redirect.
                 window.location.href = this.configuration["URI.StopError"];
-            }
-        } else {
-            try {
+            } else {
                 // Display error.
-                this.displayError(this.configuration["Message.StopError"], detail, this.configuration["Action.Restart"], 
+                this.displayError(element, this.configuration["Message.StopError"], detail, this.configuration["Action.Restart"], 
                         function() {
                     window.location.reload();
                 });
-            } finally {
-                // Attempt to dispose.
-                this.dispose();
             }
         }
     },
