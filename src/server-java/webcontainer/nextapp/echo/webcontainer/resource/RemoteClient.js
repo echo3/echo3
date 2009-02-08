@@ -37,8 +37,8 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
          * Default client configuration data.
          */
         DEFAULT_CONFIGURATION: {
-            "Message.SessionExpiration": "Your session has expired.",
-            "Message.Resync": "This window was not synchronized with the server and has been reset.  " + 
+            "SessionExpiration.Message": "Your session has expired.",
+            "Resync.Message": "This window was not synchronized with the server and has been reset.  " + 
                     "Please try your last request again."
         },
 
@@ -278,12 +278,12 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         try {
             this.dispose();
         } finally {
-            if (this.configuration["URI.SessionExpiration"]) {
+            if (this.configuration["SessionExpiration.URI"]) {
                 // Redirect.
-                window.location.href = this.configuration["URI.SessionExpiration"];
+                window.location.href = this.configuration["SessionExpiration.URI"];
             } else {
                 // Display error.
-                this.displayError(element, this.configuration["Message.SessionExpiration"], null, 
+                this.displayError(element, this.configuration["SessionExpiration.Message"], null, 
                         this.configuration["Action.Restart"], function() {
                     window.location.reload();
                 });
@@ -393,7 +393,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         }
 
         if (e.source.resync) {
-            this.displayError(this.domainElement, this.configuration["Message.Resync"], null, 
+            this.displayError(this.domainElement, this.configuration["Resync.Message"], null, 
                     this.configuration["Action.Continue"]);
         }
     },

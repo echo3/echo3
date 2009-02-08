@@ -181,7 +181,7 @@ public class InteractiveApp extends ApplicationInstance {
         }
         
         ClientConfiguration clientConfiguration = new ClientConfiguration();
-        clientConfiguration.setProperty(ClientConfiguration.PROPERTY_MESSAGE_STOP_ERROR,
+        clientConfiguration.setProperty(ClientConfiguration.STOP_ERROR_MESSAGE,
                 "An application error has occurred.  Please contact the system administrator and " +
                 "provide any information shown below.");
         cc.setClientConfiguration(clientConfiguration);

@@ -87,14 +87,14 @@ public class ClientConfigurationTest extends Column {
         grid.setInsets(new Insets(10, 5));
         add(grid);
         
-        addTextProperty("Wait Indicator Text:", ClientConfiguration.PROPERTY_WAIT_INDICATOR_TEXT);
-        addColorProperty("Wait Indicator Foreground:", ClientConfiguration.PROPERTY_WAIT_INDICATOR_FOREGROUND);
-        addColorProperty("Wait Indicator Background:", ClientConfiguration.PROPERTY_WAIT_INDICATOR_BACKGROUND);
-        addTextProperty("Stop Error URI:", ClientConfiguration.PROPERTY_URI_STOP_ERROR);
-        addTextProperty("Stop Error Message:", ClientConfiguration.PROPERTY_MESSAGE_STOP_ERROR);
-        addTextProperty("Session Expiration URI:", ClientConfiguration.PROPERTY_URI_SESSION_EXPIRATION);
-        addTextProperty("Session Expiration Message:", ClientConfiguration.PROPERTY_MESSAGE_SESSION_EXPIRATION);
-        addTextProperty("Resync Message:", ClientConfiguration.PROPERTY_MESSAGE_RESYNC);
+        addTextProperty("Wait Indicator Text:", ClientConfiguration.WAIT_INDICATOR_TEXT);
+        addColorProperty("Wait Indicator Foreground:", ClientConfiguration.WAIT_INDICATOR_FOREGROUND);
+        addColorProperty("Wait Indicator Background:", ClientConfiguration.WAIT_INDICATOR_BACKGROUND);
+        addTextProperty("Stop Error URI:", ClientConfiguration.STOP_ERROR_URI);
+        addTextProperty("Stop Error Message:", ClientConfiguration.STOP_ERROR_MESSAGE);
+        addTextProperty("Session Expiration URI:", ClientConfiguration.SESSION_EXPIRATION_URI);
+        addTextProperty("Session Expiration Message:", ClientConfiguration.SESSION_EXPIRATION_MESSAGE);
+        addTextProperty("Resync Message:", ClientConfiguration.RESYNC_MESSAGE);
         
         Button updateButton = new Button("Update ClientConfiguration");
         updateButton.setStyleName("Default");

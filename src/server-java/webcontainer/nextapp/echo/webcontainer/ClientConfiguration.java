@@ -47,45 +47,45 @@ implements Serializable {
      * Property name constant for the alert message which should be displayed in
      * the event that a stop error occurs.
      */
-    public static final String PROPERTY_MESSAGE_STOP_ERROR = "Message.StopError";
+    public static final String STOP_ERROR_MESSAGE = "StopError.Message";
 
     /**
      * Property name constant for the URI which should be displayed in the event
      * that a stop error occurs.
      */
-    public static final String PROPERTY_URI_STOP_ERROR = "URI.StopError";
+    public static final String STOP_ERROR_URI = "StopError.URI";
 
     /**
      * Property name constant for the alert message which should be displayed in
      * the event the session expires.
      */
-    public static final String PROPERTY_MESSAGE_SESSION_EXPIRATION = "Message.SessionExpiration";
+    public static final String SESSION_EXPIRATION_MESSAGE = "SessionExpiration.Message";
 
     /**
      * Property name constant for the URI which should be displayed in the event
      * the session expires.
      */
-    public static final String PROPERTY_URI_SESSION_EXPIRATION = "URI.SessionExpiration";
+    public static final String SESSION_EXPIRATION_URI = "SessionExpiration.URI";
 
     /**
      * Property name constant for message to display when client must be resynchronized.
      */
-    public static final String PROPERTY_MESSAGE_RESYNC = "Message.Resync";
+    public static final String RESYNC_MESSAGE = "Resync.Message";
     
     /**
      * Property name constant for wait indicator text.
      */
-    public static final String PROPERTY_WAIT_INDICATOR_TEXT = "WaitIndicator.Text";
+    public static final String WAIT_INDICATOR_TEXT = "WaitIndicator.Text";
 
     /**
      * Property name constant for wait indicator foreground.  Must be a <code>Color</code> value.
      */
-    public static final String PROPERTY_WAIT_INDICATOR_FOREGROUND = "WaitIndicator.Foreground";
+    public static final String WAIT_INDICATOR_FOREGROUND = "WaitIndicator.Foreground";
 
     /**
      * Property name constant for wait indicator background.  Must be a <code>Color</code> value.
      */
-    public static final String PROPERTY_WAIT_INDICATOR_BACKGROUND = "WaitIndicator.Background";
+    public static final String WAIT_INDICATOR_BACKGROUND = "WaitIndicator.Background";
 
     /**
      * Mapping from property names to property values.

@@ -10,7 +10,7 @@ Echo.Client = Core.extend({
          * Default client configuration, copied into client configuration.
          */
         DEFAULT_CONFIGURATION: {
-            "Message.StopError": "This application has been stopped due to an error.",
+            "StopError.Message": "This application has been stopped due to an error.",
             "WaitIndicator.Text": "Please wait...",
             "Action.Continue": "Continue",
             "Action.Restart": "Restart Application"
@@ -361,7 +361,7 @@ Echo.Client = Core.extend({
     
     /**
      * Handles an application failure.
-     * If the "URI.StopError" property of the <code>configuration</code> is set, the window is redirected to that URI.
+     * If the "StopError.URI" property of the <code>configuration</code> is set, the window is redirected to that URI.
      * If it is not set, an error message is displayed over the domain element, and further input is refused.  A restart
      * button is provided to reload the document.
      * 
@@ -373,12 +373,12 @@ Echo.Client = Core.extend({
             // Attempt to dispose.
             this.dispose();
         } finally {
-            if (this.configuration["URI.StopError"]) {
+            if (this.configuration["StopError.URI"]) {
                 // Redirect.
-                window.location.href = this.configuration["URI.StopError"];
+                window.location.href = this.configuration["StopError.URI"];
             } else {
                 // Display error.
-                this.displayError(element, this.configuration["Message.StopError"], detail, this.configuration["Action.Restart"], 
+                this.displayError(element, this.configuration["StopError.Message"], detail, this.configuration["Action.Restart"], 
                         function() {
                     window.location.reload();
                 });
