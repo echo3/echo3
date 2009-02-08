@@ -182,7 +182,8 @@ public class InteractiveApp extends ApplicationInstance {
         
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         clientConfiguration.setProperty(ClientConfiguration.PROPERTY_MESSAGE_SERVER_ERROR,
-                "KA-BOOM! (test non-default server error message)");
+                "An application error has occurred.  Please contact the system administrator and " +
+                "provide any information shown below.");
         cc.setClientConfiguration(clientConfiguration);
         
         return mainWindow;
