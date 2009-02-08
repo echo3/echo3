@@ -264,10 +264,9 @@ Echo.Client = Core.extend({
      * @param {String} message the message to display
      * @param {String} detail optional details about the message (e.g., client-side exception)
      * @param {String} actionText optional text for an action button
-     * @param {Function} actionFunction optional function to execute when action button is clicked (required if actionText is
-     *        non-null)     
+     * @param {Function} actionFunction optional function to execute when action button is clicked
      */
-    _displayError: function(message, detail, actionText, actionFunction) {
+    displayError: function(message, detail, actionText, actionFunction) {
         // Create restriction.
         var restriction = this.createInputRestriction(false);
 
@@ -326,7 +325,9 @@ Echo.Client = Core.extend({
                         // Remove restriction.
                         this.removeInputRestriction(restriction);
                     } finally {
-                        actionFunction();
+                        if (actionFunction) {
+                            actionFunction();
+                        }
                     }
                 }
             });
@@ -361,7 +362,7 @@ Echo.Client = Core.extend({
         // Default message.
         message = message || "This application has been stopped due to an error.";
         
-        this._displayError(message, detail, "Restart Application", function() {
+        this.displayError(message, detail, "Restart Application", function() {
             window.location.reload();
         });
         
