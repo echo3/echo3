@@ -10,6 +10,7 @@ Echo.Client = Core.extend({
          * Default client configuration, copied into client configuration.
          */
         DEFAULT_CONFIGURATION: {
+            "Message.StopError": "This application has been stopped due to an error.",
             "WaitIndicator.Text": "Please wait...",
             "Action.Continue": "Continue",
             "Action.Restart": "Restart Application"
@@ -362,7 +363,7 @@ Echo.Client = Core.extend({
      */
     fail: function(message, detail) {
         // Default message.
-        message = message || "This application has been stopped due to an error.";
+        message = message || this.configuration["Message.StopError"];
         
         this.displayError(message, detail, this.configuration["Action.Restart"], function() {
             window.location.reload();
