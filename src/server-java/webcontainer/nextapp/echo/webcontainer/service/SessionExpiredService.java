@@ -71,6 +71,6 @@ implements Service {
     throws IOException {
         conn.setContentType(ContentType.TEXT_PLAIN);
         conn.getResponse().setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        conn.getWriter().write("Session Expired");
+        conn.getWriter().write("!*! Session Expired");
     }
 }

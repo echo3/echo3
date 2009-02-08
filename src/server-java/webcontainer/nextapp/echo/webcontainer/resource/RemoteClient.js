@@ -259,9 +259,22 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         if (e.exception) {
             detail = e.exception.toString();
         } else if (e.source.getResponseText()) {
-            detail = e.source.getResponseText();
+            if (e.source.getResponseText().indexOf("!*! Session Expired") != -1) {
+                this._handleSessionExpiration();
+                return;
+            } else {
+                detail = e.source.getResponseText();
+            }
         }
         this.fail(detail);
+    },
+    
+    /**
+     * Handles server-side session expiration.
+     */
+    _handleSessionExpiration: function() {
+        //FIXME temporary
+        alert("Session expired.  Press reload.");
     },
     
     /**
