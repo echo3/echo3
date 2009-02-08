@@ -439,6 +439,7 @@ public abstract class WebContainerServlet extends HttpServlet {
         String exceptionId = Uid.generateUidString();
         Log.log("Server Exception. ID: " + exceptionId, ex);
         response.setContentType("text/plain");
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         response.getWriter().write("Server Exception. ID: " + exceptionId);
     }
 }
