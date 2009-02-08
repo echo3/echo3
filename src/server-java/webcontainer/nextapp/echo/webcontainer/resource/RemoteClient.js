@@ -198,14 +198,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     },
     
     /**
-     * Displays a notification to the user that the client and server were out of sync causing the entire
-     * application state had to be resynchronized. 
-     */
-    _displayResyncNotification: function() {
-        alert(this.configuration["Message.Resync"]);
-    },
-    
-    /**
      * Enqueues a command to be processed after component synchronization has been completed.
      * 
      * @param commandPeer the command peer to execute
@@ -379,6 +371,10 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             Core.Debug.consoleWrite(Echo.Client.profilingTimer + " /pc:" + Echo.Render._loadedPeerCount);
             Echo.Client.profilingTimer = null;
         }
+
+        if (e.source.resync) {
+            this.displayError(this.configuration["Message.Resync"], null, "Continue");
+        }
     },
     
     /**
@@ -414,10 +410,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         var serverMessage = new Echo.RemoteClient.ServerMessage(this, responseDocument);
         
         this.transactionId = serverMessage.transactionId;
-        
-        if (serverMessage.resync) {
-            this._displayResyncNotification();
-        }
         
         // Add completion listener to invoke _processSyncComplete when message has been fully processed.
         // (Some elements of the server message are processed asynchronously). 
