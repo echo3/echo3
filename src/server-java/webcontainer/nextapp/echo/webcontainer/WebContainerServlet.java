@@ -30,6 +30,8 @@
 package nextapp.echo.webcontainer;
 
 import nextapp.echo.app.ApplicationInstance;
+import nextapp.echo.app.util.Log;
+import nextapp.echo.app.util.Uid;
 import nextapp.echo.webcontainer.service.AsyncMonitorService;
 import nextapp.echo.webcontainer.service.BootService;
 import nextapp.echo.webcontainer.service.NewInstanceService;
@@ -367,7 +369,7 @@ public abstract class WebContainerServlet extends HttpServlet {
     }
     
     /**
-     * Processes a HTTP request and generates a response.
+     * Processes an HTTP request and generates a response.
      * 
      * @param request the incoming <code>HttpServletRequest</code>
      * @param response the outgoing <code>HttpServletResponse</code>
@@ -407,19 +409,36 @@ public abstract class WebContainerServlet extends HttpServlet {
             if (conn != null) {
                 conn.disposeUserInstance();
             }
-            throw(ex);
+            processError(request, response, ex);
         } catch (IOException ex) {
             if (conn != null) {
                 conn.disposeUserInstance();
             }
-            throw(ex);
+            processError(request, response, ex);
         } catch (RuntimeException ex) {
             if (conn != null) {
                 conn.disposeUserInstance();
             }
-            throw(ex);
+            processError(request, response, ex);
         } finally {
             activeConnection.set(null);
         }
+    }
+    
+    /**
+     * Exception handler for process() method.
+     * 
+     * @param request the HTTP request
+     * @param response the HTTP response
+     * @param ex the exception 
+     * @throws ServletException
+     * @throws IOException
+     */
+    private void processError(HttpServletRequest request, HttpServletResponse response, Exception ex) 
+    throws ServletException, IOException {
+        String exceptionId = Uid.generateUidString();
+        Log.log("Server Exception. ID: " + exceptionId, ex);
+        response.setContentType("text/plain");
+        response.getWriter().write("Server Exception. ID: " + exceptionId);
     }
 }
