@@ -295,14 +295,14 @@ Echo.Client = Core.extend({
         
         if (message) {
             var messageDiv = document.createElement("div");
-            messageDiv.style.cssText = "font-weight: bold; padding-bottom:20px;";
+            messageDiv.style.cssText = "font-weight: bold; margin-bottom:20px;";
             messageDiv.appendChild(document.createTextNode(message));
             contentDiv.appendChild(messageDiv);
         }
         
         if (detail) {
             var detailDiv = document.createElement("div");
-            detailDiv.style.cssText = "padding-bottom:20px;";
+            detailDiv.style.cssText = "margin-bottom:20px;";
             detailDiv.appendChild(document.createTextNode(detail));
             contentDiv.appendChild(detailDiv);
         }
