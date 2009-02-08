@@ -37,6 +37,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
          * Default client configuration data.
          */
         DEFAULT_CONFIGURATION: {
+            "Message.SessionExpiration": "Your session has expired.",
             "Message.Resync": "This window was not synchronized with the server and has been reset.  " + 
                     "Please try your last request again."
         },
@@ -273,8 +274,21 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * Handles server-side session expiration.
      */
     _handleSessionExpiration: function() {
-        //FIXME temporary
-        alert("Session expired.  Press reload.");
+        var element = this.domainElement;
+        try {
+            this.dispose();
+        } finally {
+            if (this.configuration["URI.SessionExpiration"]) {
+                // Redirect.
+                window.location.href = this.configuration["URI.SessionExpiration"];
+            } else {
+                // Display error.
+                this.displayError(element, this.configuration["Message.SessionExpiration"], null, 
+                        this.configuration["Action.Restart"], function() {
+                    window.location.reload();
+                });
+            }
+        }
     },
     
     /**
