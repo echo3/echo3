@@ -278,7 +278,10 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         try {
             this.dispose();
         } finally {
-            if (this.configuration["SessionExpiration.URI"]) {
+            if (this.configuration["SessionExpiration.Restart"]) {
+                // Restart immediately.
+                window.location.reload();
+            } else if (this.configuration["SessionExpiration.URI"]) {
                 // Redirect.
                 window.location.href = this.configuration["SessionExpiration.URI"];
             } else {

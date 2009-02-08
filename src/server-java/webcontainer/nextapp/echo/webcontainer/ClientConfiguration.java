@@ -51,9 +51,15 @@ implements Serializable {
 
     /**
      * Property name constant for the URI which should be displayed in the event
-     * that a stop error occurs.
+     * that a stop error occurs.  An alert message will not be shown if this value is set.
      */
     public static final String STOP_ERROR_URI = "StopError.URI";
+
+    /**
+     * Property name constant for boolean flag indicating whether application should automatically
+     * be restarted in the event session expires.  An alert message will not be shown if this value is set.
+     */
+    public static final String SESSION_EXPIRATION_RESTART = "SessionExpiration.Restart";
 
     /**
      * Property name constant for the alert message which should be displayed in
@@ -63,7 +69,7 @@ implements Serializable {
 
     /**
      * Property name constant for the URI which should be displayed in the event
-     * the session expires.
+     * the session expires.  An alert message will not be shown if this value is set.
      */
     public static final String SESSION_EXPIRATION_URI = "SessionExpiration.URI";
 

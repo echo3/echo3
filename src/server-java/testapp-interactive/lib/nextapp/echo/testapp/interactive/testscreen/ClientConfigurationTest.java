@@ -36,6 +36,7 @@ import java.util.Map;
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
+import nextapp.echo.app.CheckBox;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Extent;
@@ -71,6 +72,7 @@ public class ClientConfigurationTest extends Column {
     private Grid grid;
     private Map textProperties = new HashMap();
     private Map colorProperties = new HashMap();
+    private Map booleanProperties = new HashMap();
     
     /**
      * Default constructor. 
@@ -92,6 +94,7 @@ public class ClientConfigurationTest extends Column {
         addColorProperty("Wait Indicator Background:", ClientConfiguration.WAIT_INDICATOR_BACKGROUND);
         addTextProperty("Stop Error URI:", ClientConfiguration.STOP_ERROR_URI);
         addTextProperty("Stop Error Message:", ClientConfiguration.STOP_ERROR_MESSAGE);
+        addBooleanProperty("Session Expiration Restart:", ClientConfiguration.SESSION_EXPIRATION_RESTART);
         addTextProperty("Session Expiration URI:", ClientConfiguration.SESSION_EXPIRATION_URI);
         addTextProperty("Session Expiration Message:", ClientConfiguration.SESSION_EXPIRATION_MESSAGE);
         addTextProperty("Resync Message:", ClientConfiguration.RESYNC_MESSAGE);
@@ -133,6 +136,17 @@ public class ClientConfigurationTest extends Column {
             }
         });
         add(delayButton);
+    }
+    
+    private void addBooleanProperty(String description, String propertyName) {
+        Label label = new Label(description);
+        label.setStyle(PROMPT_STYLE);
+        grid.add(label);
+        
+        CheckBox check = new CheckBox();
+        grid.add(check);
+        
+        booleanProperties.put(propertyName, check);
     }
     
     private void addColorProperty(String description, String propertyName) {
@@ -182,6 +196,15 @@ public class ClientConfigurationTest extends Column {
             Color propertyValue = cc.getColor();
             if (propertyValue != null) {
                 clientConfiguration.setProperty(propertyName, propertyValue);
+            }
+        }
+        
+        it = booleanProperties.keySet().iterator();
+        while (it.hasNext()) {
+            String propertyName = (String) it.next();
+            CheckBox check = (CheckBox) booleanProperties.get(propertyName);
+            if (check.isSelected()) {
+                clientConfiguration.setProperty(propertyName, Boolean.TRUE);
             }
         }
         
