@@ -201,10 +201,14 @@ Echo.Client = Core.extend({
         
         /**
          * Default dispose implementation.
-         * Invokes configure(null, null) to deconfigure the client. 
+         * Invokes configure(null, null) to deconfigure the client.  Disables wait indicator. 
          */
         dispose: function() {
+            // Deconfigure.
             this.configure(null, null);
+
+            // Disable wait indicator.
+            this._setWaitVisible(false);
         }
     },
     
@@ -273,9 +277,6 @@ Echo.Client = Core.extend({
         // Create restriction.
         var restriction = this.createInputRestriction(false);
 
-        // Disable wait indicator.
-        this._setWaitVisible(false);
-        
         // Darken screen.
         var blackoutDiv = document.createElement("div");
         blackoutDiv.style.cssText = "position:absolute;z-index:32766;width:100%;height:100%;background-color:#000000;opacity:0.75";
