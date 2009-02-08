@@ -38,9 +38,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
          */
         DEFAULT_CONFIGURATION: {
             "Message.Resync": "This window was not synchronized with the server and has been reset.  " + 
-                    "Please try your last request again.",
-            "Message.ServerError": "An invalid response was received from the server\n" +
-                    "Press the browser reload or refresh button."
+                    "Please try your last request again."
         },
 
         /**
@@ -257,14 +255,13 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @param e the HttpConnection response event
      */
     _handleInvalidResponse: function(e) {
-        var message = this.configuration["Message.ServerError"];
         var detail = null;
         if (e.exception) {
             detail = e.exception.toString();
         } else if (e.source.getResponseText()) {
             detail = e.source.getResponseText();
         }
-        this.fail(message, detail);
+        this.fail(detail);
     },
     
     /**

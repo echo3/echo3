@@ -90,8 +90,8 @@ public class ClientConfigurationTest extends Column {
         addTextProperty("Wait Indicator Text:", ClientConfiguration.PROPERTY_WAIT_INDICATOR_TEXT);
         addColorProperty("Wait Indicator Foreground:", ClientConfiguration.PROPERTY_WAIT_INDICATOR_FOREGROUND);
         addColorProperty("Wait Indicator Background:", ClientConfiguration.PROPERTY_WAIT_INDICATOR_BACKGROUND);
-        addTextProperty("Server Error URI:", ClientConfiguration.PROPERTY_URI_SERVER_ERROR);
-        addTextProperty("Server Error Message:", ClientConfiguration.PROPERTY_MESSAGE_SERVER_ERROR);
+        addTextProperty("Stop Error URI:", ClientConfiguration.PROPERTY_URI_STOP_ERROR);
+        addTextProperty("Stop Error Message:", ClientConfiguration.PROPERTY_MESSAGE_STOP_ERROR);
         addTextProperty("Session Expiration URI:", ClientConfiguration.PROPERTY_URI_SESSION_EXPIRATION);
         addTextProperty("Session Expiration Message:", ClientConfiguration.PROPERTY_MESSAGE_SESSION_EXPIRATION);
         addTextProperty("Resync Message:", ClientConfiguration.PROPERTY_MESSAGE_RESYNC);

@@ -359,13 +359,10 @@ Echo.Client = Core.extend({
      * Handles an application failure, refusing future input and displaying an error message over the entirety of the domain 
      * element.
      * 
-     * @param {String} message the message to display (a generic message will be used if omitted) 
+     * @param {String} detail the error details 
      */
-    fail: function(message, detail) {
-        // Default message.
-        message = message || this.configuration["Message.StopError"];
-        
-        this.displayError(message, detail, this.configuration["Action.Restart"], function() {
+    fail: function(detail) {
+        this.displayError(this.configuration["Message.StopError"], detail, this.configuration["Action.Restart"], function() {
             window.location.reload();
         });
         

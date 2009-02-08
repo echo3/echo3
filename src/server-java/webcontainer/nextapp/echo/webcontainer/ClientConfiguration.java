@@ -45,15 +45,15 @@ implements Serializable {
 
     /**
      * Property name constant for the alert message which should be displayed in
-     * the event that a server error occurs.
+     * the event that a stop error occurs.
      */
-    public static final String PROPERTY_MESSAGE_SERVER_ERROR = "Message.ServerError";
+    public static final String PROPERTY_MESSAGE_STOP_ERROR = "Message.StopError";
 
     /**
      * Property name constant for the URI which should be displayed in the event
-     * that a server error occurs.
+     * that a stop error occurs.
      */
-    public static final String PROPERTY_URI_SERVER_ERROR = "URI.ServerError";
+    public static final String PROPERTY_URI_STOP_ERROR = "URI.StopError";
 
     /**
      * Property name constant for the alert message which should be displayed in
