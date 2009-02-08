@@ -37,7 +37,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
          * Default client configuration data.
          */
         DEFAULT_CONFIGURATION: {
-            "Message.Resync": "This window was not synchronized with the web server and has been reset.  " + 
+            "Message.Resync": "This window was not synchronized with the server and has been reset.  " + 
                     "Please try your last request again.",
             "Message.ServerError": "An invalid response was received from the server\n" +
                     "Press the browser reload or refresh button.",
@@ -373,7 +373,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         }
 
         if (e.source.resync) {
-            this.displayError(this.configuration["Message.Resync"], null, "Continue");
+            this.displayError(this.configuration["Message.Resync"], null, this.configuration["Action.Continue"]);
         }
     },
     

@@ -10,7 +10,9 @@ Echo.Client = Core.extend({
          * Default client configuration, copied into client configuration.
          */
         DEFAULT_CONFIGURATION: {
-            "WaitIndicator.Text": "Please wait..."
+            "WaitIndicator.Text": "Please wait...",
+            "Action.Continue": "Continue",
+            "Action.Restart": "Restart Application"
         },
     
         /**
@@ -309,7 +311,7 @@ Echo.Client = Core.extend({
         if (actionText) {
             var actionDiv = document.createElement("div");
             actionDiv.tabIndex = "0";
-            actionDiv.style.cssText = "border: 1px outset #af2f2f;background-color:#af2f2f;padding: 2px 10px;" +
+            actionDiv.style.cssText = "border: 1px outset #af2f2f;background-color:#af2f2f;padding:2px 10px;" +
                     "margin-bottom:20px;cursor:pointer;font-weight:bold;";
             actionDiv.appendChild(document.createTextNode(actionText));
             contentDiv.appendChild(actionDiv);
@@ -362,7 +364,7 @@ Echo.Client = Core.extend({
         // Default message.
         message = message || "This application has been stopped due to an error.";
         
-        this.displayError(message, detail, "Restart Application", function() {
+        this.displayError(message, detail, this.configuration["Action.Restart"], function() {
             window.location.reload();
         });
         
