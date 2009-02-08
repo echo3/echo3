@@ -356,18 +356,34 @@ Echo.Client = Core.extend({
     },
     
     /**
-     * Handles an application failure, refusing future input and displaying an error message over the entirety of the domain 
-     * element.
+     * Handles an application failure.
+     * If the "URI.StopError" property of the <code>configuration</code> is set, the window is redirected to that URI.
+     * If it is not set, an error message is displayed over the domain element, and further input is refused.  A restart
+     * button is provided to reload the document.
      * 
      * @param {String} detail the error details 
      */
     fail: function(detail) {
-        this.displayError(this.configuration["Message.StopError"], detail, this.configuration["Action.Restart"], function() {
-            window.location.reload();
-        });
-        
-        // Attempt to dispose.
-        this.dispose();
+        if (this.configuration["URI.StopError"]) {
+            try {
+                // Attempt to dispose.
+                this.dispose();
+            } finally {
+                // Redirect.
+                window.location.href = this.configuration["URI.StopError"];
+            }
+        } else {
+            try {
+                // Display error.
+                this.displayError(this.configuration["Message.StopError"], detail, this.configuration["Action.Restart"], 
+                        function() {
+                    window.location.reload();
+                });
+            } finally {
+                // Attempt to dispose.
+                this.dispose();
+            }
+        }
     },
     
     /**
