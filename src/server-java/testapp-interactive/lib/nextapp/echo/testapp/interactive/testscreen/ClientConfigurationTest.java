@@ -95,7 +95,6 @@ public class ClientConfigurationTest extends Column {
         addTextProperty("Session Expiration URI:", ClientConfiguration.PROPERTY_URI_SESSION_EXPIRATION);
         addTextProperty("Session Expiration Message:", ClientConfiguration.PROPERTY_MESSAGE_SESSION_EXPIRATION);
         addTextProperty("Resync Message:", ClientConfiguration.PROPERTY_MESSAGE_RESYNC);
-        addTextProperty("Wait Message:", ClientConfiguration.PROPERTY_MESSAGE_WAIT);
         
         Button updateButton = new Button("Update ClientConfiguration");
         updateButton.setStyleName("Default");

@@ -73,11 +73,6 @@ implements Serializable {
     public static final String PROPERTY_MESSAGE_RESYNC = "Message.Resync";
     
     /**
-     * Property name constant for message to display when user attempts to perform operations and must wait.
-     */
-    public static final String PROPERTY_MESSAGE_WAIT = "Message.Wait";
-    
-    /**
      * Property name constant for wait indicator text.
      */
     public static final String PROPERTY_WAIT_INDICATOR_TEXT = "WaitIndicator.Text";

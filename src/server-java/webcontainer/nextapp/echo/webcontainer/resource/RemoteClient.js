@@ -40,8 +40,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             "Message.Resync": "This window was not synchronized with the server and has been reset.  " + 
                     "Please try your last request again.",
             "Message.ServerError": "An invalid response was received from the server\n" +
-                    "Press the browser reload or refresh button.",
-            "Message.Wait": "Waiting on server response.  Press the browser reload or refresh button if server fails to respond."
+                    "Press the browser reload or refresh button."
         },
 
         /**
@@ -312,9 +311,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      */
     _processClientEvent: function(e) {
         if (this._transactionInProgress) {
-            if (new Date().getTime() - this._syncInitTime > 2000) {
-                alert(this.configuration["Message.Wait"]);
-            }
             return;
         }
         this._clientMessage.setEvent(e.source.renderId, e.type, e.data);
