@@ -69,7 +69,7 @@ implements Service {
      */
     public void service(Connection conn) 
     throws IOException {
-        conn.setContentType(ContentType.TEXT_HTML);
+        conn.setContentType(ContentType.TEXT_PLAIN);
         conn.getResponse().setStatus(HttpServletResponse.SC_BAD_REQUEST);
         conn.getWriter().write("Session Expired");
     }
