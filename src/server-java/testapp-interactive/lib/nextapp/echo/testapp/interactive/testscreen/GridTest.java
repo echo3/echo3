@@ -42,10 +42,12 @@ import nextapp.echo.app.Column;
 import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.TextArea;
 import nextapp.echo.app.TextField;
+import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.GridLayoutData;
 import nextapp.echo.testapp.interactive.ButtonColumn;
+import nextapp.echo.testapp.interactive.InteractiveApp;
 import nextapp.echo.testapp.interactive.StyleUtil;
 import nextapp.echo.testapp.interactive.Styles;
 
@@ -545,6 +547,47 @@ public class GridTest extends SplitPane {
                 for (int i = 0; i < 16; ++i) {
                     grid.setRowHeight(i, new Extent( ((int) (Math.random() * 100)) + 50));
                 }
+            }
+        });
+        
+        controlsColumn = new ButtonColumn();
+        controlsColumn.add(new Label("Additional Tests"));
+        groupContainerColumn.add(controlsColumn);
+
+        controlsColumn.addButton("Bug 356 Test", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                WindowPane windowPane = new WindowPane();
+                windowPane.setTitle("Bug 356 Test");
+                windowPane.setInsets(new Insets(10));
+                windowPane.setStyleName("Default");
+                windowPane.setDefaultCloseOperation(WindowPane.DISPOSE_ON_CLOSE);
+                InteractiveApp.getApp().getDefaultWindow().getContent().add(windowPane);
+
+                Grid grid0 = new Grid();
+                grid0.setBorder(new Border(1, Color.BLUE, Border.STYLE_SOLID));
+                grid0.setSize(4);
+                grid0.setWidth(new Extent(200, Extent.PX));
+                grid0.setColumnWidth(0,new Extent(35,Extent.PERCENT));
+                grid0.setColumnWidth(1,new Extent(15,Extent.PERCENT));
+                grid0.setColumnWidth(2,new Extent(35,Extent.PERCENT));
+                grid0.setColumnWidth(3,new Extent(15,Extent.PERCENT));
+                for (int i = 0 ; i <  20 ; i++ ) {
+                    Label label0 = new Label();
+                    label0.setText(Integer.toString(i));
+                    grid0.add(label0);
+                    
+                    Button button0 = new Button();
+                    button0.setText(Integer.toString(i));
+                    grid0.add(label0);
+                    
+                    Label label1 = new Label();
+                    GridLayoutData gridLayoutData0 = new GridLayoutData();
+                    gridLayoutData0.setColumnSpan(2);
+                    label1.setLayoutData(gridLayoutData0);
+                    label1.setText("");
+                    grid0.add(label1);
+                }
+                windowPane.add(grid0);
             }
         });
     }
