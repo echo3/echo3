@@ -567,25 +567,17 @@ public class GridTest extends SplitPane {
                 grid0.setBorder(new Border(1, Color.BLUE, Border.STYLE_SOLID));
                 grid0.setSize(4);
                 grid0.setWidth(new Extent(200, Extent.PX));
-                grid0.setColumnWidth(0,new Extent(35,Extent.PERCENT));
-                grid0.setColumnWidth(1,new Extent(15,Extent.PERCENT));
-                grid0.setColumnWidth(2,new Extent(35,Extent.PERCENT));
-                grid0.setColumnWidth(3,new Extent(15,Extent.PERCENT));
-                for (int i = 0 ; i <  20 ; i++ ) {
+                grid0.setColumnWidth(0, new Extent(35,Extent.PERCENT));
+                grid0.setColumnWidth(1, new Extent(15,Extent.PERCENT));
+                grid0.setColumnWidth(2, new Extent(35,Extent.PERCENT));
+                grid0.setColumnWidth(3, new Extent(15,Extent.PERCENT));
+                GridLayoutData ld = new GridLayoutData();
+                ld.setColumnSpan(2);
+                for (int i = 0 ; i < 2 ; i++ ) {
                     Label label0 = new Label();
                     label0.setText(Integer.toString(i));
+                    label0.setLayoutData(ld);
                     grid0.add(label0);
-                    
-                    Button button0 = new Button();
-                    button0.setText(Integer.toString(i));
-                    grid0.add(label0);
-                    
-                    Label label1 = new Label();
-                    GridLayoutData gridLayoutData0 = new GridLayoutData();
-                    gridLayoutData0.setColumnSpan(2);
-                    label1.setLayoutData(gridLayoutData0);
-                    label1.setText("");
-                    grid0.add(label1);
                 }
                 windowPane.add(grid0);
             }
