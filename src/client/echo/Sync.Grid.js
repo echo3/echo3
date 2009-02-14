@@ -170,7 +170,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                 if (ap || bp) {
                     if (ap && bp) {
                         // Both are percents, add them.
-                        return (parseFloat(ap) + parseFloat(bp)) + "%";
+                        return (parseFloat(a) + parseFloat(b)) + "%";
                     } else {
                         // One extent is percent, the other is not: return the percent extent.
                         return ap ? a : b;
