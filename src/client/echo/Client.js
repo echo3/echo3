@@ -392,14 +392,18 @@ Echo.Client = Core.extend({
      * displays a blank screen (commonly referred to on bug-tracker/forum as the "blank screen of death"/BSOD).
      * This bug appears to be most prevalent in IE7. 
      */
-    _forceIERedraw: function() {
-        if (Core.Web.Env.BROWSER_INTERNET_EXPLORER && this.domainElement.offsetHeight === 0) {
-            var displayState = document.documentElement.style.display;
-            if (!displayState) {
-                displayState = "";
+    forceRedraw: function() {
+        if (this.parent) {
+            this.parent.forceRedraw();
+        } else {
+            if (Core.Web.Env.BROWSER_INTERNET_EXPLORER && this.domainElement.offsetHeight === 0) {
+                var displayState = document.documentElement.style.display;
+                if (!displayState) {
+                    displayState = "";
+                }
+                document.documentElement.style.display = "none";
+                document.documentElement.style.display = displayState;
             }
-            document.documentElement.style.display = "none";
-            document.documentElement.style.display = displayState;
         }
     },
     
@@ -441,7 +445,7 @@ Echo.Client = Core.extend({
             ir = this.createInputRestriction();
             Echo.Render.processUpdates(this);
             this.removeInputRestriction(ir);
-            this._forceIERedraw();
+            this.forceRedraw();
         } catch (ex) {
             if (ex.lineNumber) {
                 // Display reported line number and adjusted line number (used if script was loaded dynamically).
