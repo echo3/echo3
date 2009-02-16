@@ -569,6 +569,17 @@ Core.Web.Env = {
      * @type Boolean
      */
     QUIRK_DELAYED_FOCUS_REQUIRED: null,
+    
+    /**
+     * Flag indicating peculiar behavior in Internet Explorer where screen suddenly appears blank after
+     * DOM manipulations have been performed.  This is commonly seen when many JavaScript execution contexts
+     * are being invoked and possibly performing DOM manipulations.  The exact criteria to trigger this bug
+     * has not yet been determined.  It does appear that IE's rendering engine somehow collapses as a result
+     * and simply blanks the screen.  Resizing the window and certain DOM modifications will cause the screen's
+     * image to be restored.
+     * @type Boolean
+     */
+    QUIRK_IE_BLANK_SCREEN: null,
 
     /**
      * Flag indicating multiple keydown events will be fired when a key is held down.
@@ -752,11 +763,9 @@ Core.Web.Env = {
             this.PROPRIETARY_EVENT_SELECT_START_SUPPORTED = true;
             this.QUIRK_IE_KEY_DOWN_EVENT_REPEAT = true;
             this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
-            
-            // Flag indicating that images which not yet been loaded will have size information (width/height values).
             this.QUIRK_UNLOADED_IMAGE_HAS_SIZE = true;
-            
             this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
+            this.QUIRK_IE_BLANK_SCREEN = true;
             
             if (this.BROWSER_VERSION_MAJOR < 8) {
                 // Internet Explorer 6 and 7 Flags.
