@@ -40,10 +40,28 @@ Echo.Arc.Client = Core.extend(Echo.FreeClient, {
  */
 Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
 
+    /**
+     * The embedded application.
+     * @type Echo.Application
+     */
+    arcApplication: null,
+    
+    /**
+     * The embedded client.
+     * @type Echo.Client
+     */
+    arcClient: null,
+
+    /**
+     * The base component that will serve as the rendered form of this synchronization peer's supported component.
+     * @type Echo.Component
+     */
+    baseComponent: null,
+    
     $abstract: {
     
         /**
-         * Creates the base component of that will be added to the root
+         * Creates the base component that will be added to the root
          * of the rendering application.  This component should probably be a
          * ContentPane or other container.
          * This method must be overridden by ARC implementations.
@@ -96,7 +114,7 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
                 this.arcApplication = new Echo.Application();
                 this.arcApplication.setStyleSheet(this.client.application.getStyleSheet());
                 this.baseComponent = this.createComponent();
-                if (this.baseComponent == null) {
+                if (!this.baseComponent) {
                     throw new Error("Invalid base component: null");
                 }
                 this.arcApplication.rootComponent.add(this.baseComponent);
