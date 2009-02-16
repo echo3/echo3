@@ -395,19 +395,275 @@ Core.Web.DOM = {
 Core.Web.Env = {
 
     /**
+     * Flag indicating the Presto rendering engine is being used (Opera).
+     */
+    ENGINE_PRESTO: null,
+
+    /**
+     * Flag indicating the WebKit rendering engine is being used (Safari,
+     * Chrome). Derivative of KHTML.
+     */
+    ENGINE_WEBKIT: null,
+
+    /**
+     * Flag indicating the KHTML rendering engine is being used (Konqueror).
+     */
+    ENGINE_KHTML: null,
+
+    /**
+     * Flag indicating the MSHTML/Trident rendering engine is being used
+     * (Internet Explorer).
+     */
+    ENGINE_MSHTML: null,
+
+    /**
+     * Flag indicating the Gecko rendering engine is being used (Mozilla,
+     * Firefox).
+     */
+    ENGINE_GECKO: null,
+
+    /**
+     * Flag indicating a Mozilla client or Mozilla-based client.
+     */
+    BROWSER_MOZILLA: null,
+
+    /**
+     * Flag indicating an Opera client.
+     */
+    BROWSER_OPERA: null,
+
+    /**
+     * Flag indicating an Konqueror client.
+     */
+    BROWSER_KONQUEROR: null,
+
+    /**
+     * Flag indicating a Mozilla Firefox client.
+     */
+    BROWSER_FIREFOX: null,
+
+    /**
+     * Flag indicating a Microsoft Internet Explorer client.
+     */
+    BROWSER_INTERNET_EXPLORER: null,
+
+    /**
+     * Flag indicating a Google Chrome client.
+     */
+    BROWSER_CHROME: null,
+
+    /**
+     * The major browser version. For Firefox 3.0.6 this would be 3.
+     * 
+     * @type Number
+     */
+    BROWSER_VERSION_MAJOR: null,
+
+    /**
+     * The minor browser version. For Firefox 3.0.6, this would be 0.
+     * 
+     * @type Number
+     */
+    BROWSER_VERSION_MINOR: null,
+
+    /**
+     * The major engine version. For Firefox 3.0.6, which uses the Gecko 1.9,
+     * this would be 1.
+     * 
+     * @type Number
+     */
+    ENGINE_VERSION_MAJOR: null,
+
+    /**
+     * The minor engine version. For Firefox 3.0.6, which uses the Gecko 1.9,
+     * this would be 9.
+     * 
+     * @type Number
+     */
+    ENGINE_VERSION_MINOR: null,
+
+    /**
+     * Flag indicating whether the user-agent string contains deceptive
+     * information. This is true in the case of Opera, which contains MSIE info
+     * in its version string.
+     */
+    DECEPTIVE_USER_AGENT: null,
+
+
+    /**
+     * Attribute name for CSS float attribute. Varies by browser.
+     * @type String
+     */
+    CSS_FLOAT: "cssFloat",
+
+    /**
+     * Flag indicating that offset measurements do not take into account CSS
+     * borders around elements.
+     * @type Boolean
+     */
+    MEASURE_OFFSET_EXCLUDES_BORDER: null,
+
+    /**
+     * Flag indicating that the CSS "opacity" attribute is not supported.
+     * @type Boolean
+     */
+    NOT_SUPPORTED_CSS_OPACITY: null,
+    
+    /**
+     * Flag indicating that relative table column widths are not supported, 
+     * e.g., "*" or "2*".
+     * @type Boolean
+     */
+    NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS: null,
+
+    /**
+     * Flag indicating support for "mouseenter" and "mouseleave" events. This is
+     * a proprietary IE event, but is necessary to use to control flicker in
+     * rollover effects on high-level elements in this browser.
+     * @type Boolean
+     */
+    PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED: null,
+
+    /**
+     * Flag indicating support for "selectstart" events.
+     * @type Boolean
+     */
+    PROPRIETARY_EVENT_SELECT_START_SUPPORTED: null,
+
+    /**
+     * Flag indicating a DirectX filter is required to render elements with
+     * reduced opacity.
+     * @type Boolean
+     */
+    PROPRIETARY_IE_OPACITY_FILTER_REQUIRED: null,
+
+    /**
+     * Flag indicating PNG alpha channel effects require the use of a DirectX
+     * filter. This filter is dangerous to use, as it can interfere with event
+     * handlers registered on the DOM element.
+     * @type Boolean
+     */
+    PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED: null,
+    
+    /**
+     * Flag indicating collapsed borders appear inside a table's rendered rather
+     * than around it. For example, a proper rendering for a 2px collapsed
+     * border is that one pixel appear inside the table's are and one pixel
+     * appear outside of it. The IE browser, for example, simply renders both
+     * pixels of the border inside.
+     * @type Boolean
+     */
+    QUIRK_CSS_BORDER_COLLAPSE_INSIDE: null,
+
+    /**
+     * Flag indicating that top and bottom or left and right CSS absolute
+     * positioning properties may not be used on the same attribute. Virtual
+     * positioning should be used in such cases.
+     * @type Boolean
+     */
+    QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY: null,
+
+    /**
+     * Flag indicating that setting focus is more reliably accomplished by
+     * performing the operation in a separate JavaScript execution context.
+     * @type Boolean
+     */
+    QUIRK_DELAYED_FOCUS_REQUIRED: null,
+
+    /**
+     * Flag indicating multiple keydown events will be fired when a key is held down.
+     * @type Boolean
+     */
+    QUIRK_IE_KEY_DOWN_EVENT_REPEAT: null,
+
+    /**
+     * Flag indicating DOM updates to SELECT elements may result in their
+     * appearance being changed, i.e., listboxes will become select fields.
+     * @type Boolean
+     */
+    QUIRK_IE_SELECT_LIST_DOM_UPDATE: null,
+
+    /**
+     * Flag indicating that setting percent widths on SELECT elements may result
+     * in undesired behavior, e.g., zero-width rendering.
+     * @type Boolean
+     */
+    QUIRK_IE_SELECT_PERCENT_WIDTH: null,
+
+    /**
+     * Flag indicating that SELECT elements do not respect z-index settings.
+     * @type Boolean
+     */
+    QUIRK_IE_SELECT_Z_INDEX: null,
+
+    /**
+     * Flag indicating that IE browser does not properly render tables whose
+     * widths are set to percent values when scrollbars are present. The
+     * scrollbar is not included in the calculation of the container size, thus
+     * a 100% wide table will not fit in its container when a vertical scrollbar
+     * is present, and will trigger a horizontal scroll bar.
+     * @type Boolean
+     */
+    QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR: null,
+
+    /**
+     * Quirk flag indicating that offset measurements on elements whose overflow setting is hidden
+     * will be incorrectly reduced by the border size.  Used internally in measuring algorithms.
+     * @type Boolean
+     */
+    QUIRK_MEASURE_OFFSET_HIDDEN_BORDER: null,
+
+    /**
+     * Flag indicating a bug in the Opera browser where absolute CSS positioning
+     * and offset calculations are incorrectly performed. See
+     * http://my.opera.com/community/forums/topic.dml?id=250572
+     * @type Boolean
+     */
+    QUIRK_OPERA_CSS_POSITIONING: null,
+
+    /**
+     * Quirk indicating that removing large element hierarchies from the DOM
+     * using a single removeChild invocation at the root results in poor
+     * performance. Workaround is to iteratively remove smaller hierarchies.
+     * @type Boolean
+     */
+    QUIRK_PERFORMANCE_LARGE_DOM_REMOVE: null,
+
+    /**
+     * Flag indicating XML documents being sent via XMLHttpRequest must have
+     * text content manually escaped due to bugs in the Safari browser.
+     * @type Boolean
+     */
+    QUIRK_SAFARI_DOM_TEXT_ESCAPE: null,
+
+    /**
+     * Flag indicating that table cell widths do not include padding value.
+     * @type Boolean
+     */
+    QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING: null,
+
+    /**
+     * Flag indicating that images which not yet been loaded will have size
+     * information (width/height values).
+     * @type Boolean
+     */
+    QUIRK_UNLOADED_IMAGE_HAS_SIZE: null,
+
+    /**
      * User-agent string, in lowercase.
      */
     _ua: null,
-    
+
     /**
-     * The user agent string with all non-alpha character sequences replaced with single slashes and with 
-     * leading/trailing slashes appended.  This string can be searched for whole words using indexOf("/example/")
+     * The user agent string with all non-alpha character sequences replaced
+     * with single slashes and with leading/trailing slashes appended. This
+     * string can be searched for whole words using indexOf("/example/")
      */
     _uaAlpha: null,
     
     /**
-     * Performs initial analysis of environment.
-     * Automatically invoked when Core.Web module is initialized.
+     * Performs initial analysis of environment. Automatically invoked when
+     * Core.Web module is initialized.
      */
     _init: function() {
         var browserVersion = null, 
@@ -480,8 +736,6 @@ Core.Web.Env = {
             this.ENGINE_VERSION_MINOR = engineVersion.minor;
         }
         
-        this.CSS_FLOAT = "cssFloat";
-    
         // Note deceptive user agent fields:
         // - Konqueror and Safari UA fields contain "like Gecko"
         // - Opera UA field typically contains "MSIE"
@@ -493,23 +747,22 @@ Core.Web.Env = {
         // Set IE Quirk Flags
         if (this.BROWSER_INTERNET_EXPLORER) {
             // Internet Explorer Flags (all versions).
+            this.CSS_FLOAT = "styleFloat";
             this.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED = true;
             this.PROPRIETARY_EVENT_SELECT_START_SUPPORTED = true;
             this.QUIRK_IE_KEY_DOWN_EVENT_REPEAT = true;
-            this.CSS_FLOAT = "styleFloat";
             this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
+            
+            // Flag indicating that images which not yet been loaded will have size information (width/height values).
             this.QUIRK_UNLOADED_IMAGE_HAS_SIZE = true;
+            
             this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
             
             if (this.BROWSER_VERSION_MAJOR < 8) {
                 // Internet Explorer 6 and 7 Flags.
                 this.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING = true;
                 this.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
-                this.QUIRK_IE_REPAINT = true;
-                this.QUIRK_TEXTAREA_CONTENT = true;
-                this.QUIRK_IE_TEXTAREA_NEWLINE_OBLITERATION = true;
                 this.QUIRK_CSS_BORDER_COLLAPSE_INSIDE = true;
-                this.QUIRK_CSS_BORDER_COLLAPSE_FOR_0_PADDING = true;
                 this.NOT_SUPPORTED_CSS_OPACITY = true;
                 this.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED = true;
                 this.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR = true;
@@ -520,10 +773,7 @@ Core.Web.Env = {
                     this.QUIRK_IE_SELECT_LIST_DOM_UPDATE = true;
                     this.QUIRK_CSS_POSITIONING_ONE_SIDE_ONLY = true;
                     this.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED = true;
-                    this.QUIRK_CSS_BACKGROUND_ATTACHMENT_USE_FIXED = true;
                     this.QUIRK_IE_SELECT_Z_INDEX = true;
-                    this.NOT_SUPPORTED_CSS_MAX_HEIGHT = true;
-                    
                     // Enable 'garbage collection' on large associative arrays to avoid memory leak.
                     Core.Arrays.LargeMap.garbageCollectEnabled = true;
                 }
@@ -541,7 +791,7 @@ Core.Web.Env = {
             }
         } else if (this.ENGINE_PRESTO) {
             if (this.BROWSER_VERSION_MAJOR == 9 && this.BROWSER_VERSION_MINOR >= 50) {
-                this.QUIRK_OPERA_WINDOW_RESIZE_POSITIONING = true;
+                this.QUIRK_OPERA_CSS_POSITIONING = true;
             }
             this.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
         } else if (this.ENGINE_WEBKIT) {
