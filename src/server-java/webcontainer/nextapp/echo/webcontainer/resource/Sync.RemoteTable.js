@@ -1,5 +1,5 @@
 /**
- * @class Remote Table component.
+  Remote Table component.
  */
 Echo.Sync.RemoteTable = Core.extend(Echo.Component, {
 
@@ -38,7 +38,8 @@ Echo.Sync.RemoteTable = Core.extend(Echo.Component, {
 });
 
 /**
- * Component rendering peer: RemoteTable
+ * Component rendering peer: RemoteTable.
+ * This class should not be extended by developers, the implementation is subject to change.
  */
 Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     
