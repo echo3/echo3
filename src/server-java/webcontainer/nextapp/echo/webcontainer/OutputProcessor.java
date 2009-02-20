@@ -234,6 +234,9 @@ class OutputProcessor {
      */
     private void renderApplicationFull() 
     throws SerialException {
+        // Clear User Instance updated property names.
+        userInstance.getUpdatedPropertyNames();
+        
         Element localeElement = serverMessage.addDirective(ServerMessage.GROUP_ID_INIT, "AppSync", "locale");
         localeElement.appendChild(document.createTextNode(getClientLocaleString(
                 userInstance.getApplicationInstance().getLocale())));
