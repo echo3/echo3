@@ -1,5 +1,6 @@
 /**
- * Component rendering peer: SplitPane
+ * Component rendering peer: SplitPane.
+ * This class should not be extended by developers, the implementation is subject to change.
  */
 Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
 

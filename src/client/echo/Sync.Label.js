@@ -1,5 +1,6 @@
 /**
- * Component rendering peer: Label
+ * Component rendering peer: Label.
+ * This class should not be extended by developers, the implementation is subject to change.
  */
 Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, { 
 

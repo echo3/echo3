@@ -1,5 +1,6 @@
 /**
- * Component rendering peer: WindowPane
+ * Component rendering peer: WindowPane.
+ * This class should not be extended by developers, the implementation is subject to change.
  */
 Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
 

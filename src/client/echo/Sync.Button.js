@@ -1,5 +1,6 @@
 /**
- * Component rendering peer: Button
+ * Component rendering peer: Button.
+ * This class should not be extended by developers, the implementation is subject to change.
  */
 Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
 

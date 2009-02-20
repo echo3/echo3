@@ -1,5 +1,6 @@
 /**
  * Abstract base class for rendering SELECT-element based list components.
+ * This class should not be extended by developers, the implementation is subject to change.
  */
 Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
 

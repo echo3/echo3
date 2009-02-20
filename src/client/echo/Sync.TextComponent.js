@@ -1,5 +1,6 @@
 /**
- * Component rendering peer: TextComponent
+ * Component rendering peer: TextComponent.
+ * This class should not be extended by developers, the implementation is subject to change.
  * 
  * Note that this component has workarounds for issues with percentage-width text fields/areas in various browsers.
  * Percentage widths are reduced based on container size and border width to ensure overall width of component meets

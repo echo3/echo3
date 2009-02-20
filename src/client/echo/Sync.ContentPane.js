@@ -1,5 +1,6 @@
 /**
- * Component rendering peer: ContentPane
+ * Component rendering peer: ContentPane.
+ * This class should not be extended by developers, the implementation is subject to change.
  */
 Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
 

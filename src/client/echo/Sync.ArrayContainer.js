@@ -1,5 +1,6 @@
 /**
  * Abstract base class for column/row peers.
+ * This class should not be extended by developers, the implementation is subject to change.
  */
 Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
 

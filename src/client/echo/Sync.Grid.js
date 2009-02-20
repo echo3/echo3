@@ -1,5 +1,6 @@
 /**
- * Component rendering peer: Grid
+ * Component rendering peer: Grid.
+ * This class should not be extended by developers, the implementation is subject to change.
  */
 Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
 

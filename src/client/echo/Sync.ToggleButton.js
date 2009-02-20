@@ -1,5 +1,6 @@
 /**
- * Component rendering peer: ToggleButton
+ * Component rendering peer: ToggleButton.
+ * This class should not be extended by developers, the implementation is subject to change.
  */
 Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
     
