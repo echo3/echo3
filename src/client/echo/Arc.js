@@ -58,6 +58,11 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
      */
     baseComponent: null,
     
+    /**
+     * Default domain element.  A DIV element which is created/returned if 
+     */
+    _defaultDomainElement: null,
+    
     $abstract: {
     
         /**
@@ -75,23 +80,28 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
         
         /**
          * Returns the element in which the client should be rendered.
+         * Default implementation creates/returns a DIV.
+         * May be overridden.  This implementation does not need to be invoked by overriding implementation. 
          * 
          * @type Element
          */
         getDomainElement: function() { 
+            if (!this._defaultDomainElement) {
+                this._defaultDomainElement = document.createElement("div");
+            }
             return this._defaultDomainElement;
         },
         
         /**
-         * renderAdd() implementation: must be invoked by overriding method.
+         * Default renderAdd() implementation: appends the element returned by getDomainElement() to the parent.
+         * May be overridden.  This implementation does not need to be invoked by overriding implementation. 
          * 
          * @see Echo.Render.ComponentSync#renderAdd
          */
         renderAdd: function(update, parentElement) {
-            if (!this.getDomainElement()) {
-                this._defaultDomainElement = document.createElement("div");
-                parentElement.appendChild(this._defaultDomainElement);
-            }
+            var element = this.getDomainElement();
+            Core.Debug.consoleWrite("RA:" + element);
+            parentElement.appendChild(element);
         },
     
         /**

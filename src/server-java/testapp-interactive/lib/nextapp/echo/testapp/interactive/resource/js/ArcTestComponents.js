@@ -91,7 +91,6 @@ ArcTest.ComponentSync.TestContainer = Core.extend(Echo.Arc.ComponentSync, {
     },
     
     renderAdd: function(update, parentElement) {
-        Echo.Arc.ComponentSync.prototype.renderAdd.call(this, update, parentElement);
         this._divElement = document.createElement("div");
         this._divElement.style.cssText 
                 = "position:relative; width:100%; height:450px; background-color: #3f3f6f; border: 1px #3f3f6f outset";
@@ -169,7 +168,6 @@ ArcTest.ComponentSync.TestPane = Core.extend(Echo.Arc.ComponentSync, {
     },
     
     renderAdd: function(update, parentElement) {
-        Echo.Arc.ComponentSync.prototype.renderAdd.call(this, update, parentElement);
         this._divElement = document.createElement("div");
         this._divElement.style.cssText 
                 = "position:relative; width:100%; height:450px; background-color: #3f3f6f; border: 1px #3f3f6f outset";
