@@ -248,14 +248,13 @@ class OutputProcessor {
      */
     private void renderApplicationIncremental() 
     throws SerialException {
-        UserInstanceUpdateManager updateManager = userInstance.getUserInstanceUpdateManager();
-        String[] updatedProperties = updateManager.getPropertyUpdateNames();
-        for (int i = 0; i < updatedProperties.length; ++i) {
-            if (UserInstance.PROPERTY_CLIENT_CONFIGURATION.equals(updatedProperties[i])) {
+        Iterator it = userInstance.getUpdatedPropertyNames();
+        while (it.hasNext()) {
+            String propertyName = (String) it.next();
+            if (UserInstance.PROPERTY_CLIENT_CONFIGURATION.equals(propertyName)) {
                 renderClientConfiguration();
             }
         }
-        updateManager.purge();
     }
     
     /**

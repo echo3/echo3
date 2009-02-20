@@ -30,9 +30,12 @@
 package nextapp.echo.webcontainer;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import javax.servlet.http.HttpSession;
@@ -126,6 +129,11 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
     private Map initialRequestParameterMap;
     
     /**
+     * Set of updated property names.
+     */
+    private Set updatedPropertyNames = new HashSet();
+    
+    /**
      * The URI of the servlet.
      */
     private String servletUri;
@@ -148,11 +156,6 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * browser windows pointing at the same application instance.
      */
     private int transactionId = 0;
-    
-    /**
-     * Provides information about updated <code>UserInstance</code> properties.
-     */
-    private UserInstanceUpdateManager updateManager;
        
     /**
      * Creates a new <code>UserInstance</code>.
@@ -162,7 +165,6 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      */
     public UserInstance(Connection conn) {
         super();
-        updateManager = new UserInstanceUpdateManager();
         conn.initUserInstance(this);
         initialRequestParameterMap = new HashMap(conn.getRequest().getParameterMap());
     }
@@ -403,6 +405,20 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         return session;
     }
     
+    /**
+     * Returns an iterator over updated property names.
+     * Invoked by OutputProcessor.
+     */
+    Iterator getUpdatedPropertyNames() {
+        if (updatedPropertyNames.size() == 0) {
+            return Collections.EMPTY_SET.iterator();
+        } else {
+            Set updatedPropertyNames = this.updatedPropertyNames;
+            this.updatedPropertyNames = new HashSet();
+            return updatedPropertyNames.iterator();
+        }
+    }
+    
    /**
      * Convenience method to retrieve the application's 
      * <code>UpdateManager</code>, which is used to synchronize
@@ -414,16 +430,6 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      */
     public UpdateManager getUpdateManager() {
         return applicationInstance.getUpdateManager();
-    }
-
-    /**
-     * Returns the <code>UserInstanceUpdateManager</code> providing information
-     * about updated <code>UserInstance</code> properties.
-     * 
-     * @return the <code>UserInstanceUpdateManager</code>
-     */
-    public UserInstanceUpdateManager getUserInstanceUpdateManager() {
-        return updateManager;
     }
 
     /**
@@ -525,7 +531,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      */
     public void setClientConfiguration(ClientConfiguration clientConfiguration) {
         this.clientConfiguration = clientConfiguration;
-        updateManager.processPropertyUpdate(PROPERTY_CLIENT_CONFIGURATION);
+        this.updatedPropertyNames.add(PROPERTY_CLIENT_CONFIGURATION);
     }
 
     /**
