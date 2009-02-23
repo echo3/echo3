@@ -139,6 +139,7 @@ public class DomUtil {
 
     /**
      * Retrieves a thread-specific <code>DocumentBuilder</code>.
+     * As it is a shared resource, the returned object should not be reconfigured in any fashion.
      * 
      * @return the <code>DocumentBuilder</code> serving the current thread.
      */
@@ -148,6 +149,7 @@ public class DomUtil {
     
     /**
      * Retrieves a thread-specific <code>TransformerFactory</code>.
+     * As it is a shared resource, the returned object should not be reconfigured in any fashion.
      * 
      * @return the <code>TransformerFactory</code> serving the current thread.
      */
