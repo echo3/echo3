@@ -34,7 +34,6 @@ import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
-import nextapp.echo.app.FillImage;
 import nextapp.echo.app.FloatingPane;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
