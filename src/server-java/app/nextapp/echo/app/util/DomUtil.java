@@ -29,6 +29,7 @@
 
 package nextapp.echo.app.util;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -52,6 +53,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -67,6 +70,20 @@ public class DomUtil {
     }
     
     /**
+     * Entity resolver which throws a SAXException when invoked to avoid external entity injection.
+     */
+    private static final EntityResolver entityResolver = new EntityResolver() {
+    
+        /**
+         * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
+         */
+        public InputSource resolveEntity(String publicId, String systemId)
+        throws SAXException, IOException {
+            throw new SAXException("External entities not supported.");
+        }
+    };
+
+    /**
      * ThreadLocal cache of <code>DocumentBuilder</code> instances.
      */
     private static final ThreadLocal documentBuilders = new ThreadLocal() {
@@ -79,6 +96,7 @@ public class DomUtil {
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 factory.setNamespaceAware(true);
                 DocumentBuilder builder = factory.newDocumentBuilder();
+                builder.setEntityResolver(entityResolver);
                 return builder;
             } catch (ParserConfigurationException ex) {
                 throw new RuntimeException(ex);
