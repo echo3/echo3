@@ -457,11 +457,29 @@ public class GridTest extends SplitPane {
                 }
             }
         });
-        controlsColumn.addButton("Set BackgroundImage", new ActionListener() {
+        controlsColumn.addButton("Set Background Image", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (selectedButton != null) {
                     GridLayoutData layoutData = (GridLayoutData) selectedButton.getLayoutData();
-                    layoutData.setBackgroundImage(Styles.BG_SHADOW_DARK_BLUE);
+                    layoutData.setBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE);
+                    selectedButton.setLayoutData(layoutData);
+                }
+            }
+        });
+        controlsColumn.addButton("Set Background Image (5px)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (selectedButton != null) {
+                    GridLayoutData layoutData = (GridLayoutData) selectedButton.getLayoutData();
+                    layoutData.setBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE_5_PX_REPEAT);
+                    selectedButton.setLayoutData(layoutData);
+                }
+            }
+        });
+        controlsColumn.addButton("Set Background Image (50%)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (selectedButton != null) {
+                    GridLayoutData layoutData = (GridLayoutData) selectedButton.getLayoutData();
+                    layoutData.setBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE_50_PERCENT_REPEAT);
                     selectedButton.setLayoutData(layoutData);
                 }
             }

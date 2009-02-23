@@ -66,6 +66,9 @@ public class Styles {
             IMAGE_PATH + "ShadowBackgroundDarkBlue.png"), null, null, FillImage.NO_REPEAT);
     public static final FillImage BG_SHADOW_LIGHT_BLUE = new FillImage(new ResourceImageReference(
             IMAGE_PATH + "ShadowBackgroundLightBlue.png"), null, null, FillImage.NO_REPEAT);
+    public static final FillImage BG_SHADOW_LIGHT_BLUE_5_PX_REPEAT = new FillImage(new ResourceImageReference(
+            IMAGE_PATH + "ShadowBackgroundLightBlue.png"), new Extent(5), new Extent(5), 
+            FillImage.REPEAT);
     public static final FillImage BG_SHADOW_LIGHT_BLUE_50_PX_REPEAT = new FillImage(new ResourceImageReference(
             IMAGE_PATH + "ShadowBackgroundLightBlue.png"), new Extent(50), new Extent(50), 
             FillImage.REPEAT);
