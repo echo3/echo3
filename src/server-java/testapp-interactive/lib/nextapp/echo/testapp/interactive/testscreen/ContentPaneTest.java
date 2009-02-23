@@ -126,6 +126,11 @@ public class ContentPaneTest extends SplitPane {
                 testContentPane.setBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE_50_PX_REPEAT);
             }
         });
+        controlsColumn.addButton("Background Image @ 1%", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testContentPane.setBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE_1_PERCENT_REPEAT);
+            }
+        });
         controlsColumn.addButton("Background Image @ 50%", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testContentPane.setBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE_50_PERCENT_REPEAT);

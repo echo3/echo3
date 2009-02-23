@@ -344,6 +344,9 @@ public class ColumnTest extends SplitPane {
                 case 2:
                      columnLayoutData.setBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE_5_PX_REPEAT);
                      break;
+                case 3:
+                     columnLayoutData.setBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE_1_PERCENT_REPEAT);
+                     break;
                 default:
                      columnLayoutData.setBackgroundImage(null);
                 }
