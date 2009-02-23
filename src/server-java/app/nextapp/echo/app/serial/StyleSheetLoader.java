@@ -35,8 +35,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -99,13 +97,9 @@ public class StyleSheetLoader {
     throws SerialException {
         final Document document;
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true);
-            DocumentBuilder builder = factory.newDocumentBuilder();
+            DocumentBuilder builder = DomUtil.getDocumentBuilder();
             document = builder.parse(in);
         } catch (IOException ex) {
-            throw new SerialException("Failed to parse InputStream.", ex);
-        } catch (ParserConfigurationException ex) {
             throw new SerialException("Failed to parse InputStream.", ex);
         } catch (SAXException ex) {
             throw new SerialException("Failed to parse InputStream.", ex);
