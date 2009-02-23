@@ -29,6 +29,7 @@
 
 package nextapp.echo.testapp.interactive;
 
+import nextapp.echo.app.Extent;
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.ImageReference;
 import nextapp.echo.app.ResourceImageReference;
@@ -65,6 +66,12 @@ public class Styles {
             IMAGE_PATH + "ShadowBackgroundDarkBlue.png"), null, null, FillImage.NO_REPEAT);
     public static final FillImage BG_SHADOW_LIGHT_BLUE = new FillImage(new ResourceImageReference(
             IMAGE_PATH + "ShadowBackgroundLightBlue.png"), null, null, FillImage.NO_REPEAT);
+    public static final FillImage BG_SHADOW_LIGHT_BLUE_50_PX_REPEAT = new FillImage(new ResourceImageReference(
+            IMAGE_PATH + "ShadowBackgroundLightBlue.png"), new Extent(50), new Extent(50), 
+            FillImage.REPEAT);
+    public static final FillImage BG_SHADOW_LIGHT_BLUE_50_PERCENT_REPEAT = new FillImage(new ResourceImageReference(
+            IMAGE_PATH + "ShadowBackgroundLightBlue.png"), new Extent(50, Extent.PERCENT), new Extent(50, Extent.PERCENT), 
+            FillImage.REPEAT);
     
     public static final ImageReference RG_STATE_ICON = new ResourceImageReference(
             IMAGE_PATH + "RGStateIcon.gif");

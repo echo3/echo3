@@ -34,6 +34,7 @@ import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.ContentPane;
 import nextapp.echo.app.Extent;
+import nextapp.echo.app.FillImage;
 import nextapp.echo.app.FloatingPane;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
@@ -45,6 +46,7 @@ import nextapp.echo.app.layout.SplitPaneLayoutData;
 import nextapp.echo.testapp.interactive.ButtonColumn;
 import nextapp.echo.testapp.interactive.InteractiveApp;
 import nextapp.echo.testapp.interactive.StyleUtil;
+import nextapp.echo.testapp.interactive.Styles;
 
 /**
  * Interactive test module for <code>ContentPane</code>s.
@@ -113,6 +115,26 @@ public class ContentPaneTest extends SplitPane {
         controlsColumn.addButton("Change Foreground", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testContentPane.setForeground(StyleUtil.randomColor());
+            }
+        });
+        controlsColumn.addButton("Background Image", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testContentPane.setBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE);
+            }
+        });
+        controlsColumn.addButton("Background Image @ 50px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testContentPane.setBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE_50_PX_REPEAT);
+            }
+        });
+        controlsColumn.addButton("Background Image @ 50%", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testContentPane.setBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE_50_PERCENT_REPEAT);
+            }
+        });
+        controlsColumn.addButton("Background Null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testContentPane.setBackgroundImage(null);
             }
         });
         controlsColumn.addButton("Change Font", new ActionListener() {
