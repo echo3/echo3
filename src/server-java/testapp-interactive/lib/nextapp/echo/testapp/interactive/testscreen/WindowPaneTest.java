@@ -139,6 +139,14 @@ public class WindowPaneTest extends SplitPane {
                 windowPane.setBorder(new FillImageBorder(Color.GREEN, new Insets(30), new Insets(15)));
             }
         });
+        controlsColumn.addButton("Set Border = L/R only", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                FillImageBorder fib = new FillImageBorder(Color.GREEN, new Insets(20), new Insets(5));
+                fib.setFillImage(FillImageBorder.LEFT, Styles.BG_SHADOW_DARK_BLUE);
+                fib.setFillImage(FillImageBorder.RIGHT, Styles.BG_SHADOW_LIGHT_BLUE);
+                windowPane.setBorder(fib);
+            }
+        });
         controlsColumn.addButton("Set Border = Null", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.setBorder(null);
