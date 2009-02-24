@@ -56,7 +56,7 @@ implements Serializable {
     private static final long serialVersionUID = 20070101L;
 
     /** The name and version of the Echo API in use. */
-    public static final String ID_STRING = "NextApp Echo v3.0.b5";
+    public static final String ID_STRING = "NextApp Echo v3.0.b6";
 
     public static final String FOCUSED_COMPONENT_CHANGED_PROPERTY = "focusedComponent";
     public static final String LOCALE_CHANGED_PROPERTY = "locale";
