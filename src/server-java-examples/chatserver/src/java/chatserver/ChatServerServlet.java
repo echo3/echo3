@@ -49,6 +49,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -108,6 +110,16 @@ public class ChatServerServlet extends HttpServlet {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
             DocumentBuilder builder = factory.newDocumentBuilder();
+            builder.setEntityResolver(new EntityResolver() {
+            
+                /**
+                 * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
+                 */
+                public InputSource resolveEntity(String publicId, String systemId)
+                throws SAXException, IOException {
+                    throw new SAXException("External entities not supported.");
+                }
+            });
             return builder.parse(in);
         } catch (ParserConfigurationException ex) {
             throw new IOException("Provided InputStream cannot be parsed: " + ex);
