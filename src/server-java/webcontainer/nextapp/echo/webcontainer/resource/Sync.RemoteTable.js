@@ -132,7 +132,6 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
     
         var tdPrototype = document.createElement("td");
         Echo.Sync.Border.render(this.component.render("border"), tdPrototype);
-        tdPrototype.style.overflow = "hidden";
         tdPrototype.style.padding = this._defaultCellPadding;
     
         for (var columnIndex = 0; columnIndex < this._columnCount; columnIndex++) {

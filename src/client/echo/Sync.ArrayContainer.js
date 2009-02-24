@@ -336,7 +336,6 @@ Echo.Sync.Row = Core.extend(Echo.Sync.ArrayContainer, {
         _createRowPrototype: function() {
             var div = document.createElement("div");
             div.style.outlineStyle = "none";
-            div.style.overflow = "hidden";
             div.tabIndex = "-1";
         
             var table = document.createElement("table");

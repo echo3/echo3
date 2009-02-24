@@ -628,7 +628,6 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         var tdPrototype = document.createElement("td");
         Echo.Sync.Border.render(defaultBorder, tdPrototype);
         tdPrototype.style.padding = defaultInsets;
-        tdPrototype.style.overflow = "hidden";
         
         // Render grid layout.
         for (var rowIndex = 0; rowIndex < this._rowCount; ++rowIndex) {
