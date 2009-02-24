@@ -412,36 +412,38 @@
         <delete file="${dir.release}/${tarfile.release}"/>
     </target>
 	
+	<target name="mvn-install" depends="dist" description="Installs the jar into the local maven repository">
+		<condition property="onWindows">
+			<os family="windows"/>
+		</condition>
+		<antcall target="mvn-install-win"/>
+		<antcall target="mvn-install-unix"/>
+	</target>
+	
     <target name="mvn-install-win"
-        depends="dist"
-        description="Installs the jars into the local maven repository (windows environment)">
+        description="Installs the jars into the local maven repository (windows environment)"
+    	if="onWindows">
         <exec executable="cmd">
             <arg value="/c"/>
-            <arg value="mvn install:install-file -DgroupId=com.nextapp -DartifactId=echo3-app -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=dist${file.separator}lib${file.separator}Echo3_App.jar"/>
+            <arg value="mvn install:install-file -DpomFile=resource/maven/echo3-app-pom.xml -Dfile=dist${file.separator}lib${file.separator}Echo3_App.jar"/>
             </exec>
             <exec executable="cmd">
                 <arg value="/c"/>
-                <arg value="mvn install:install-file -DgroupId=com.nextapp -DartifactId=echo3-webcontainer -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=dist${file.separator}lib${file.separator}Echo3_WebContainer.jar"/>
+                <arg value="mvn install:install-file -DpomFile=resource/maven/echo3-webcontainer-pom.xml -Dfile=dist${file.separator}lib${file.separator}Echo3_WebContainer.jar"/>
             </exec>
     </target>
 	
     <target name="mvn-install-unix"
-        depends="dist"
-        description="Installs the jar into the local maven repository (unix environment)">
+        description="Installs the jar into the local maven repository (unix environment)"
+    	unless="onWindows">
         <exec executable="mvn">
             <arg value="install:install-file"/>
-            <arg value="-DgroupId=com.nextapp"/>
-            <arg value="-DartifactId=echo3-app"/>
-            <arg value="-Dversion=1.0-SNAPSHOT"/>
-            <arg value="-Dpackaging=jar"/>
+        	<arg value="-DpomFile=resource/maven/echo3-app-pom.xml"/>
             <arg value="-Dfile=dist${file.separator}lib${file.separator}Echo3_App.jar"/>
         </exec>
         <exec executable="mvn">
             <arg value="install:install-file"/>
-            <arg value="-DgroupId=com.nextapp"/>
-            <arg value="-DartifactId=echo3-webcontainer"/>
-            <arg value="-Dversion=1.0-SNAPSHOT"/>
-            <arg value="-Dpackaging=jar"/>
+        	<arg value="-DpomFile=resource/maven/echo3-webcontainer-pom.xml"/>
             <arg value="-Dfile=dist${file.separator}lib${file.separator}Echo3_WebContainer.jar"/>
         </exec>
     </target>
