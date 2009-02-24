@@ -49,11 +49,30 @@ public class GridLayoutData extends CellLayoutData {
      */
     public static final int SPAN_FILL = -1;
     
-    private int columnSpan = 1;
-    private int rowSpan = 1;
+    private int columnSpan;
+    private int rowSpan;
     
     /**
-     * Returns the column span of the cell.
+     * Creates a new <code>>GridLayoutData</code> instance with no column span/row span. 
+     */
+    public GridLayoutData() {
+        this(1, 1);
+    }
+    
+    /**
+     * Creates a new <code>GridLayoutData</code> instance with the specified column and row spans.
+     * 
+     * @param columnSpan the columnSpan (a value of 1 indicates only one column is occupied)
+     * @param rowSpan the rowSpan (a value of 1 indicates only one row is occupied)
+     */
+    public GridLayoutData(int columnSpan, int rowSpan) {
+        super();
+        this.columnSpan = columnSpan;
+        this.rowSpan = rowSpan;
+    }
+    
+    /**
+     * Returns the column span of the cell.  A value of 1 indicates only column row is occupied.
      * 
      * @return the column span
      */
@@ -62,7 +81,7 @@ public class GridLayoutData extends CellLayoutData {
     }
     
     /**
-     * Returns the row span of the cell.
+     * Returns the row span of the cell.  A value of 1 indicates only one row is occupied.
      * 
      * @return the row span
      */
@@ -71,7 +90,7 @@ public class GridLayoutData extends CellLayoutData {
     }
     
     /**
-     * Sets the column span of the cell.
+     * Sets the column span of the cell.  A value of 1 indicates only column row is occupied.
      * 
      * @param newValue the new column span
      */
@@ -80,7 +99,7 @@ public class GridLayoutData extends CellLayoutData {
     }
     
     /**
-     * Sets the row span of the cell.
+     * Sets the row span of the cell.  A value of 1 indicates only one row is occupied.
      * 
      * @param newValue the new row span
      */

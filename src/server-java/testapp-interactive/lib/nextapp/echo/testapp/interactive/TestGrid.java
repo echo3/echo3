@@ -64,9 +64,8 @@ public class TestGrid extends Grid {
      */
     public void addHeaderRow(String text) {
         Label label = new Label(text);
-        GridLayoutData layoutData = new GridLayoutData();
+        GridLayoutData layoutData = new GridLayoutData(2, 1);
         layoutData.setBackground(HEADER_CELL_BACKGROUND);
-        layoutData.setColumnSpan(2);
         label.setLayoutData(layoutData);
         add(label);
     }
