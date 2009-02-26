@@ -34,8 +34,6 @@ import java.io.IOException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import nextapp.echo.app.serial.PropertyPeerFactory;
-import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.update.ClientUpdateManager;
 import nextapp.echo.app.update.UpdateManager;
 import nextapp.echo.app.util.Context;
@@ -59,57 +57,29 @@ public class InputProcessor {
     /**
      * <code>Context</code> implementation.
      */
-    private class InputContext implements Context {
+    private class InputContext extends SynchronizationContext {
         
         /**
-         * <code>SerialContext</code> implementation.
+         * Creates a new <code>OutputContext</code>.
          */
-        private SerialContext serialContext = new SerialContext() {
+        public InputContext() {
+            super(conn, clientMessage.getDocument());
+        }
 
-            /**
-             * @see nextapp.echo.app.serial.SerialContext#getClassLoader()
-             */
-            public ClassLoader getClassLoader() {
-                return classLoader;
-            }
-        
-            /**
-             * @see nextapp.echo.app.serial.SerialContext#getDocument()
-             */
-            public Document getDocument() {
-                return clientMessage.getDocument();
-            }
-
-            /**
-             * @see nextapp.echo.app.serial.SerialContext#getFlags()
-             */
-            public int getFlags() {
-                return 0;
-            }
-        };
-        
         /**
          * @see nextapp.echo.app.util.Context#get(java.lang.Class)
          */
         public Object get(Class specificContextClass) {
-            if (specificContextClass == SerialContext.class) {
-                return serialContext;
-            } else if (specificContextClass == Connection.class) {
-                return conn;
-            } else if (specificContextClass == PropertyPeerFactory.class) {
-                return propertyPeerFactory;
-            } else if (specificContextClass == UserInstance.class) {
-                return conn.getUserInstance();
-            } else if (specificContextClass == ClientMessage.class) {
+            if (specificContextClass == ClientMessage.class) {
                 return clientMessage;
             } else if (specificContextClass == ClientUpdateManager.class) {
                 return conn.getUserInstance().getApplicationInstance().getUpdateManager().getClientUpdateManager();
             } else {
-                return null;
+                return super.get(specificContextClass);
             }
         }
     }
-    
+        
     /** The <code>Connection</code> being processed. */
     private Connection conn;
     
@@ -119,12 +89,6 @@ public class InputProcessor {
     /** The incoming <code>ClientMessage</code> provided to the context. */
     private ClientMessage clientMessage;
     
-    /** The <code>PropertyPeerFactory</code> provided to the context. */
-    private PropertyPeerFactory propertyPeerFactory;
-    
-    /** The <code>ClassLoader</code> for this context. */
-    private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
     /**
      * Creates a new <code>InputProcessor</code>.
      * 
@@ -135,7 +99,6 @@ public class InputProcessor {
         super();
         this.syncState = syncState;
         this.conn = conn;
-        propertyPeerFactory = PropertySerialPeerFactory.forClassLoader(classLoader);
     }
     
     /**

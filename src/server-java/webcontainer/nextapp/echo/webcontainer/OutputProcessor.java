@@ -49,7 +49,6 @@ import nextapp.echo.app.Window;
 import nextapp.echo.app.reflect.ComponentIntrospector;
 import nextapp.echo.app.reflect.IntrospectorFactory;
 import nextapp.echo.app.serial.PropertyPeerFactory;
-import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
 import nextapp.echo.app.update.ServerComponentUpdate;
@@ -86,55 +85,27 @@ class OutputProcessor {
             return language + "-" + country;
         }
     }
-    
+   
     /**
      * <code>Context</code> implementation.
      */
-    private class OutputContext implements Context {
-
+    private class OutputContext extends SynchronizationContext {
+        
         /**
-         * <code>SerialContext</code> implementation.
+         * Creates a new <code>OutputContext</code>.
          */
-        private SerialContext serialContext = new SerialContext() {
-            
-            /**
-             * @see nextapp.echo.app.serial.SerialContext#getClassLoader()
-             */
-            public ClassLoader getClassLoader() {
-                return classLoader;
-            }
-        
-            /**
-             * @see nextapp.echo.app.serial.SerialContext#getDocument()
-             */
-            public Document getDocument() {
-                return document;
-            }
+        public OutputContext() {
+            super(conn, document);
+        }
 
-            /**
-             * @see nextapp.echo.app.serial.SerialContext#getFlags()
-             */
-            public int getFlags() {
-                return FLAG_RENDER_SHORT_NAMES;
-            }
-        };
-        
         /**
          * @see nextapp.echo.app.util.Context#get(java.lang.Class)
          */
         public Object get(Class specificContextClass) {
-            if (specificContextClass == SerialContext.class) {
-                return serialContext;
-            } else if (specificContextClass == Connection.class) {
-                return conn;
-            } else if (specificContextClass == PropertyPeerFactory.class) {
-                return propertyPeerFactory;
-            } else if (specificContextClass == UserInstance.class) {
-                return userInstance;
-            } else if (specificContextClass == ServerMessage.class) {
+            if (specificContextClass == ServerMessage.class) {
                 return serverMessage;
             } else {
-                return null;
+                return super.get(specificContextClass);
             }
         }
     }
@@ -167,9 +138,9 @@ class OutputProcessor {
         super();
         this.syncState = syncState;
         this.conn = conn;
-        context = new OutputContext();
         serverMessage = new ServerMessage();
         document = serverMessage.getDocument();
+        context = new OutputContext();
         userInstance = conn.getUserInstance();
         serverUpdateManager = userInstance.getUpdateManager().getServerUpdateManager();
         propertyPeerFactory = PropertySerialPeerFactory.forClassLoader(classLoader);
