@@ -786,6 +786,13 @@ Core.ListenerList = Core.extend({
     /**
      * Removes an event listener.
      * 
+     * CAUTION: If you are unregistering an event listener created with Core.method(), please see the documentation for
+     * Core.method() and note that a new closure-wrapped method is returned each time Core.method() is invoked.
+     * Thus calling removeListener(Core.method(this, this,_someListener)) will NOT remove an existing listener.
+     * The solution to this issue is to retain a reference to Core.method() wrapped listeners within the object
+     * that will register and unregister them.
+     * 
+     * 
      * @param {String} eventType the event type
      * @param {Function} eventTarget the event target
      */

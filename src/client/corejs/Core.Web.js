@@ -1072,6 +1072,15 @@ Core.Web.Event = {
     
     /**
      * Unregisters an event handler.
+     * 
+     * CAUTION: If you are unregistering an event listener created with Core.method(), please see the documentation for
+     * Core.method() and note that a new closure-wrapped method is returned each time Core.method() is invoked.
+     * Thus calling removeListener(Core.method(this, this,_someListener)) will NOT remove an existing listener.
+     * The solution to this issue is to retain a reference to Core.method() wrapped listeners within the object
+     * that will register and unregister them.
+     * 
+     * If you are removing all listeners registered for a particular element (e.g., one which is being disposed)
+     * it is more efficient to simply invoke removeAll().
      *
      * @param {Element} element the DOM element on which to add the event handler
      * @param {String} eventType the DOM event type
