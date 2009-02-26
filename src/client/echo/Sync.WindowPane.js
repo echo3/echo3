@@ -157,14 +157,18 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + pxBounds.contentHeight;
         }
         if (bounds.x != null) {
-            pxBounds.x = Math.round(Echo.Sync.Extent.isPercent(bounds.x) ?
-                    ((this._containerSize.width - pxBounds.width) * (parseInt(bounds.x, 10) / 100)) :
-                    Echo.Sync.Extent.toPixels(bounds.x, true));
+            if (Echo.Sync.Extent.isPercent(bounds.x)) {
+                pxBounds.x = Math.round((this._containerSize.width - pxBounds.width) * (parseInt(bounds.x, 10) / 100));
+            } else {
+                pxBounds.x = Math.round(Echo.Sync.Extent.toPixels(bounds.x, true));
+            }
         }
         if (bounds.y != null) {
-            pxBounds.y = Math.round(Echo.Sync.Extent.isPercent(bounds.y) ?
-                    ((this._containerSize.height - pxBounds.height) * (parseInt(bounds.y, 10) / 100)) :
-                    Echo.Sync.Extent.toPixels(bounds.y, false));
+            if (Echo.Sync.Extent.isPercent(bounds.y)) {
+                pxBounds.y = Math.round((this._containerSize.height - pxBounds.height) * (parseInt(bounds.y, 10) / 100));
+            } else {
+                pxBounds.y = Math.round(Echo.Sync.Extent.toPixels(bounds.y, false));
+            }
         }
         return pxBounds;
     },
