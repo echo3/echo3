@@ -1895,18 +1895,20 @@ Core.Web.Measure = {
         do {
             valueT += element.offsetTop  || 0;
             valueL += element.offsetLeft || 0;
-            if (element.style.borderLeftWidth && !init && Core.Web.Env.MEASURE_OFFSET_EXCLUDES_BORDER) {
-                var borderLeft = Core.Web.Measure.extentToPixels(element.style.borderLeftWidth, true);
-                valueL += borderLeft;
-                if (Core.Web.Env.QUIRK_MEASURE_OFFSET_HIDDEN_BORDER && element.style.overflow == "hidden") {
+            if (!init && Core.Web.Env.MEASURE_OFFSET_EXCLUDES_BORDER) {
+                if (element.style.borderLeftWidth && element.style.borderLeftStyle != "none") {
+                    var borderLeft = Core.Web.Measure.extentToPixels(element.style.borderLeftWidth, true);
                     valueL += borderLeft;
+                    if (Core.Web.Env.QUIRK_MEASURE_OFFSET_HIDDEN_BORDER && element.style.overflow == "hidden") {
+                        valueL += borderLeft;
+                    }
                 }
-            }
-            if (element.style.borderTopWidth && !init && Core.Web.Env.MEASURE_OFFSET_EXCLUDES_BORDER) {
-                var borderTop = Core.Web.Measure.extentToPixels(element.style.borderTopWidth, false);
-                valueT += borderTop;
-                if (Core.Web.Env.QUIRK_MEASURE_OFFSET_HIDDEN_BORDER && element.style.overflow == "hidden") {
+                if (element.style.borderTopWidth && element.style.borderTopStyle != "none") {
+                    var borderTop = Core.Web.Measure.extentToPixels(element.style.borderTopWidth, false);
                     valueT += borderTop;
+                    if (Core.Web.Env.QUIRK_MEASURE_OFFSET_HIDDEN_BORDER && element.style.overflow == "hidden") {
+                        valueT += borderTop;
+                    }
                 }
             }
             init = false;
