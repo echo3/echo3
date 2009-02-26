@@ -161,6 +161,10 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 pxBounds.x = Math.round((this._containerSize.width - pxBounds.width) * (parseInt(bounds.x, 10) / 100));
             } else {
                 pxBounds.x = Math.round(Echo.Sync.Extent.toPixels(bounds.x, true));
+                if (pxBounds.x < 0) {
+                    // Negative value: position window from right side of screen.
+                    pxBounds.x += this._containerSize.width - pxBounds.width;
+                }
             }
         }
         if (bounds.y != null) {
@@ -168,6 +172,10 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 pxBounds.y = Math.round((this._containerSize.height - pxBounds.height) * (parseInt(bounds.y, 10) / 100));
             } else {
                 pxBounds.y = Math.round(Echo.Sync.Extent.toPixels(bounds.y, false));
+                if (pxBounds.y < 0) {
+                    // Negative value: position window from bottom side of screen.
+                    pxBounds.y += this._containerSize.height - pxBounds.height;
+                }
             }
         }
         return pxBounds;

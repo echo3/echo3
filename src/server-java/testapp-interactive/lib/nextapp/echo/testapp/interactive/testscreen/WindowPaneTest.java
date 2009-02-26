@@ -229,6 +229,42 @@ public class WindowPaneTest extends SplitPane {
                 windowPane.setPositionY(new Extent((int) (Math.random() * 500)));
             }
         });
+
+        controlsColumn.addButton("Set Position Negative Random", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setPositionX(new Extent((int) (Math.random() * -600)));
+                windowPane.setPositionY(new Extent((int) (Math.random() * -500)));
+            }
+        });
+
+        controlsColumn.addButton("Set Position (20, 20)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setPositionX(new Extent(20));
+                windowPane.setPositionY(new Extent(20));
+            }
+        });
+
+        controlsColumn.addButton("Set Position (-20, 20)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setPositionX(new Extent(-20));
+                windowPane.setPositionY(new Extent(20));
+            }
+        });
+
+        controlsColumn.addButton("Set Position (20, -20)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setPositionX(new Extent(20));
+                windowPane.setPositionY(new Extent(-20));
+            }
+        });
+
+        controlsColumn.addButton("Set Position (-20, -20)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setPositionX(new Extent(-20));
+                windowPane.setPositionY(new Extent(-20));
+            }
+        });
+        
         controlsColumn.addButton("Set Size 400x300", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.setWidth(new Extent(400));
