@@ -42,7 +42,7 @@ public interface SerialPropertyPeer {
      * Translates an XML representation of a property to a property value object.
      * 
      * @param context the relevant <code>Context</code>
-     * @param objectClass the class of the property value
+     * @param objectClass the class of the property container
      * @param propertyElement the XML &lt;p&gt; element to process
      * @return the property value
      * @throws SerialException when the property cannot be de-serialized.
@@ -54,7 +54,7 @@ public interface SerialPropertyPeer {
      * Translates an object to an XML representation of a property.
      * 
      * @param context the relevant <code>context</code>
-     * @param objectClass the class of the property value
+     * @param objectClass the class of the property container
      * @param propertyElement the XML &lt;p&gt; element in which the 
      *        property value should be rendered
      * @param propertyValue the property value
