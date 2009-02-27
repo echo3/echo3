@@ -628,7 +628,6 @@ Echo.Render.ComponentSync = Core.extend({
          *         <li><code>SIZE_HEIGHT</code></li>
          *        </ul>
          * @return the preferred rendered size of the component
-         * @type {Number}
          */
         getPreferredSize: null,
         
