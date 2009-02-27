@@ -297,6 +297,14 @@ public class SplitPaneTest extends SplitPane {
                 testPane.add(createPaneLabel("Replacement for Pane 0"), 0);
             }
         });
+        controlsColumn.addButton("Replace Pane 0 with Text", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (testPane.getComponentCount() >= 1) {
+                    testPane.remove(0);
+                }
+                testPane.add(new Label("text"), 0);
+            }
+        });
         controlsColumn.addButton("Replace Pane 1", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (testPane.getComponentCount() >= 2) {
