@@ -225,7 +225,6 @@
  </s>
  <s b="Default" n="WelcomePane" t="nextapp.echo.app.WindowPane">
   <p n="width" t="Extent">40em</p>
-  <p n="height" t="Extent">22em</p>
   <p n="resizable" t="b">true</p>
   <p n="positionX" t="Extent">160px</p>
   <p n="positionY" t="Extent">-50px</p>

@@ -89,6 +89,20 @@ public class WindowPaneTest extends SplitPane {
             }
         });
         
+        controlsColumn.addButton("Set Content = Small Label with Icon", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.removeAll();
+                windowPane.add(new Label("Hello, World!", Styles.ICON_24_MAIL_COMPOSE));
+            }
+        });
+
+        controlsColumn.addButton("Set Content = Big Label with Icon", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.removeAll();
+                windowPane.add(new Label(StyleUtil.QUASI_LATIN_TEXT_1, Styles.ICON_24_MAIL_COMPOSE));
+            }
+        });
+        
         controlsColumn.addButton("Set Content = WindowPaneTest", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.removeAll();

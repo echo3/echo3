@@ -39,6 +39,13 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     $load: function() {
         Echo.Render.registerPeer("WindowPane", this);
     },
+    
+    /**
+     * Flag indicating whether initial automatic sizing operation (which occurs on first invocation of 
+     * <code>renderDisplay()</code> after <code>renderAdd()</code>) has been completed.
+     * @type Boolean
+     */
+    _initialAutoSizeComplete: false,
 
     /**
      * The user-requested bounds of the window.  Contains properties x, y, width, and height.  
@@ -128,9 +135,10 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      * 
      * @param bounds object containing bounds to convert, an object containing extent values in x, y, width (or contentWidth), 
      *        and height (or contentHeight) properties
+     * @param calculateSize {Boolean} flag indicating whether size (height) should be calculated if not available
      * @return a bounds object containing those bounds converted to pixels, with integer x, y, width, and height properties
      */
-    _coordinatesToPixels: function(bounds) {
+    _coordinatesToPixels: function(bounds, calculateSize) {
         var pxBounds = {};
         if (bounds.width != null) {
             // Calculate width based on outside width.
@@ -155,7 +163,42 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                     (parseInt(bounds.contentHeight, 10) * this._containerSize.height / 100) :
                     Echo.Sync.Extent.toPixels(bounds.contentHeight, false));
             pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + pxBounds.contentHeight;
+        } else if (calculateSize) {
+            // Calculate height based on content size.
+            if (this.component.children[0]) {
+                // Determine for content width.
+                var contentWidth = pxBounds.contentWidth ? pxBounds.contentWidth : 
+                        pxBounds.width - (this._contentInsets.left + this._contentInsets.right);
+                // Cache current content DIV CSS text.
+                var contentDivCss = this._contentDiv.style.cssText;
+                // Set content DIV CSS text for measuring.
+                this._contentDiv.style.cssText = "position:absolute;width:" + contentWidth + 
+                        "px;height:" + this._containerSize.height + "px";
+                
+                if (this.component.children[0].peer.getPreferredSize) {
+                    // Determine size using getPreferredSize()
+                    var prefSize = this.component.children[0].peer.getPreferredSize(Echo.Render.ComponentSync.SIZE_HEIGHT);
+                    if (prefSize.height) {
+                        pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + 
+                                prefSize.height;
+                    }
+                }
+                
+                if (!pxBounds.height && this._contentDiv.firstChild) {
+                    // Determine size using measurement.
+                    pxBounds.height = new Core.Web.Measure.Bounds(this._contentDiv.firstChild).height;
+                }
+
+                // Reset content DIV CSS text.
+                this._contentDiv.style.cssText = contentDivCss;
+            }
+            
+            if (!pxBounds.height) {
+                // Height calculation not possible: revert to using default height value.
+                pxBounds.height = Echo.Sync.Extent.toPixels(Echo.WindowPane.DEFAULT_HEIGHT, false);            
+            }
         }
+        
         if (bounds.x != null) {
             if (Echo.Sync.Extent.isPercent(bounds.x)) {
                 pxBounds.x = Math.round((this._containerSize.width - pxBounds.width) * (parseInt(bounds.x, 10) / 100));
@@ -194,8 +237,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         
         this._requested.width = this.component.render("width", 
                 this._requested.contentWidth ? null : Echo.WindowPane.DEFAULT_WIDTH);
-        this._requested.height = this.component.render("height", 
-                this._requested.contentHeight ? null : Echo.WindowPane.DEFAULT_HEIGHT);
+        this._requested.height = this.component.render("height");
     },
 
     /**
@@ -493,6 +535,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
+        this._initialAutoSizeComplete = false;
+
         // Create main component DIV.
         this._div = document.createElement("div");
         this._div.id = this.component.renderId;
@@ -816,6 +860,18 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._setBounds(this._requested, false);
         Core.Web.VirtualPosition.redraw(this._contentDiv);
         Core.Web.VirtualPosition.redraw(this._maskDiv);
+        
+        if (!this._initialAutoSizeComplete) {
+            // If position was successfully set, perform initial operations related to automatic sizing 
+            // (executed on first renderDisplay() after renderAdd()).
+            this._initialAutoSizeComplete = true;
+            var imageListener = Core.method(this, function() {
+                if (this.component) { // Verify component still registered.
+                    Echo.Render.renderComponentDisplay(this.component);
+                }
+            });
+            Core.Web.Image.monitor(this._contentDiv, imageListener);
+        }
     },
     
     /** @see Echo.Render.ComponentSync#renderDispose */
@@ -906,7 +962,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      *        the window (true) or is programmatic (false)
      */
     _setBounds: function(bounds, userAdjusting) {
-        var c = this._coordinatesToPixels(bounds);
+        var c = this._coordinatesToPixels(bounds, !userAdjusting);
         
         if (this._rendered == null) {
             this._rendered = { };

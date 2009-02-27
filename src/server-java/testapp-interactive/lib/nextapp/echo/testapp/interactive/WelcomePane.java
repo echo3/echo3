@@ -102,7 +102,7 @@ public class WelcomePane extends ContentPane {
         controlRow.add(continueButton);
         
         Column infoColumn = new Column();
-        infoColumn.setInsets(new Insets(20, 5));
+        infoColumn.setInsets(new Insets(20, 12));
         infoColumn.setCellSpacing(new Extent(10));
         splitPane.add(infoColumn);
         
