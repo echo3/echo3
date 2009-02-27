@@ -298,7 +298,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             return null;
         }
         
-        var bounds;
+        var bounds, insets, layoutData;
         
         dimension = dimension || (Echo.Render.ComponentSync.SIZE_WIDTH | Echo.Render.ComponentSync.SIZE_HEIGHT);        
 
@@ -312,6 +312,13 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             // Measure height of non-pane child (assuming height is being requested).
             bounds = new Core.Web.Measure.Bounds(this._paneDivs[0].firstChild);
             size0 = { height: bounds.height === 0 ? null : bounds.height };
+            if (size0.height) {
+                layoutData = this.component.children[0].render("layoutData");
+                if (layoutData && layoutData.insets) {
+                    insets = Echo.Sync.Insets.toPixels(layoutData.insets);
+                    size0.height += insets.top + insets.bottom;
+                }
+            }
         } else {
             // Pane 0 cannot be measured.
             size0 = { };
@@ -330,6 +337,13 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             // Measure height of non-pane child (assuming height is being requested).
             bounds = new Core.Web.Measure.Bounds(this._paneDivs[1].firstChild);
             size1 = { height: bounds.height === 0 ? null : bounds.height };
+            if (size1.height) {
+                layoutData = this.component.children[1].render("layoutData");
+                if (layoutData && layoutData.insets) {
+                    insets = Echo.Sync.Insets.toPixels(layoutData.insets);
+                    size1.height += insets.top + insets.bottom;
+                }
+            }
         } else {
             // Pane 1 cannot be measured.
             size1 = { };
