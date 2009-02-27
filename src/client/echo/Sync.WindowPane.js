@@ -188,16 +188,19 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                     this._contentDiv.style.cssText = contentDivCss;
                 }
                 
-                if (!pxBounds.height) {
+                if (!this.component.children[0].pane && !pxBounds.height) {
+                    var insets = Echo.Sync.Insets.toPixels(this.component.render("insets"));
+
                     this._contentDiv.style.position = "static";
-                    this._contentDiv.style.width = contentWidth + "px";
+                    this._contentDiv.style.width = (contentWidth - insets.left - insets.right) + "px";
                     this._contentDiv.style.height = "";
+                    this._contentDiv.style.padding = "";
 
                     // Determine size using measurement.
                     var measuredHeight = new Core.Web.Measure.Bounds(this._contentDiv).height;
                     if (measuredHeight) {
                         pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + 
-                                measuredHeight;
+                                measuredHeight + insets.top + insets.bottom;
                     }
 
                     // Reset content DIV CSS text.
