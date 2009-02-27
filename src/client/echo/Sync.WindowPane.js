@@ -171,26 +171,37 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                         pxBounds.width - (this._contentInsets.left + this._contentInsets.right);
                 // Cache current content DIV CSS text.
                 var contentDivCss = this._contentDiv.style.cssText;
-                // Set content DIV CSS text for measuring.
-                this._contentDiv.style.cssText = "position:absolute;width:" + contentWidth + 
-                        "px;height:" + this._containerSize.height + "px";
                 
                 if (this.component.children[0].peer.getPreferredSize) {
+                    // Set content DIV CSS text for measuring.
+                    this._contentDiv.style.cssText = "position:absolute;width:" + contentWidth + 
+                            "px;height:" + this._containerSize.height + "px";
+
                     // Determine size using getPreferredSize()
                     var prefSize = this.component.children[0].peer.getPreferredSize(Echo.Render.ComponentSync.SIZE_HEIGHT);
                     if (prefSize.height) {
                         pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + 
                                 prefSize.height;
                     }
+                    
+                    // Reset content DIV CSS text.
+                    this._contentDiv.style.cssText = contentDivCss;
                 }
                 
-                if (!pxBounds.height && this._contentDiv.firstChild) {
-                    // Determine size using measurement.
-                    pxBounds.height = new Core.Web.Measure.Bounds(this._contentDiv.firstChild).height;
-                }
+                if (!pxBounds.height) {
+                    this._contentDiv.style.position = "static";
+                    this._contentDiv.style.width = contentWidth + "px";
 
-                // Reset content DIV CSS text.
-                this._contentDiv.style.cssText = contentDivCss;
+                    // Determine size using measurement.
+                    var measuredHeight = new Core.Web.Measure.Bounds(this._contentDiv).height;
+                    if (measuredHeight) {
+                        pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + 
+                                measuredHeight;
+                    }
+
+                    // Reset content DIV CSS text.
+                    this._contentDiv.style.cssText = contentDivCss;
+                }
             }
             
             if (!pxBounds.height) {
