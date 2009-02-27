@@ -191,6 +191,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 if (!pxBounds.height) {
                     this._contentDiv.style.position = "static";
                     this._contentDiv.style.width = contentWidth + "px";
+                    this._contentDiv.style.height = "";
 
                     // Determine size using measurement.
                     var measuredHeight = new Core.Web.Measure.Bounds(this._contentDiv).height;
