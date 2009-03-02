@@ -273,6 +273,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
                     var newValue = textUpdate.newValue == null ? "" : textUpdate.newValue;
                     if (newValue != this._lastProcessedValue) {
                         this.input.value = newValue;
+                        this._lastProcessedValue = newValue;
                     }
                 }
                 var editableUpdate = update.getUpdatedProperty("editable");
