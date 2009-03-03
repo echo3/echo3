@@ -466,6 +466,12 @@ public class WindowPaneTest extends SplitPane {
             }
         });
 
+        controlsColumn.addButton("Toggle Visibility", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setVisible(!windowPane.isVisible());
+            }
+        });
+
         controlsColumn.addButton("Enable Component", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.setEnabled(true);
