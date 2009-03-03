@@ -31,6 +31,7 @@ package nextapp.echo.app;
 
 import java.util.EventListener;
 
+import nextapp.echo.app.event.WindowPaneControlListener;
 import nextapp.echo.app.event.WindowPaneEvent;
 import nextapp.echo.app.event.WindowPaneListener;
 
@@ -45,6 +46,8 @@ implements FloatingPane, ModalSupport, PaneContainer {
     private static final long serialVersionUID = 20070101L;
 
     public static final String INPUT_CLOSE = "close";
+    public static final String INPUT_MINIMIZE = "minimize";
+    public static final String INPUT_MAXIMIZE = "maximize";
     
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
     public static final String PROPERTY_BORDER = "border";
@@ -114,6 +117,9 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public static final int DISPOSE_ON_CLOSE = 2;
     
+    /**
+     * The modal state of the window.
+     */
     private boolean modal = false;
     
     /**
@@ -168,6 +174,44 @@ implements FloatingPane, ModalSupport, PaneContainer {
         WindowPaneEvent e = new WindowPaneEvent(this);
         for (int i = 0; i < listeners.length; ++i) {
             ((WindowPaneListener) listeners[i]).windowPaneClosing(e);
+        }
+    }
+    
+    /**
+     * Notifies <code>WindowPaneListener</code>s that the user has maximized the <code>WindowPane</code>
+     */
+    protected void fireWindowMaximized() {
+        if (!hasEventListenerList()) {
+            return;
+        }
+        EventListener[] listeners = getEventListenerList().getListeners(WindowPaneListener.class);
+        if (listeners.length == 0) {
+            return;
+        }
+        WindowPaneEvent e = new WindowPaneEvent(this);
+        for (int i = 0; i < listeners.length; ++i) {
+            if (listeners[i] instanceof WindowPaneControlListener) {
+                ((WindowPaneControlListener) listeners[i]).windowPaneMaximized(e);
+            }
+        }
+    }
+    
+    /**
+     * Notifies <code>WindowPaneListener</code>s that the user has minimized the <code>WindowPane</code>
+     */
+    protected void fireWindowMinimized() {
+        if (!hasEventListenerList()) {
+            return;
+        }
+        EventListener[] listeners = getEventListenerList().getListeners(WindowPaneListener.class);
+        if (listeners.length == 0) {
+            return;
+        }
+        WindowPaneEvent e = new WindowPaneEvent(this);
+        for (int i = 0; i < listeners.length; ++i) {
+            if (listeners[i] instanceof WindowPaneControlListener) {
+                ((WindowPaneControlListener) listeners[i]).windowPaneMinimized(e);
+            }
         }
     }
     
@@ -589,6 +633,10 @@ implements FloatingPane, ModalSupport, PaneContainer {
     public void processInput(String inputName, Object inputValue) {
         if (INPUT_CLOSE.equals(inputName)) {
             userClose();
+        } else if (INPUT_MAXIMIZE.equals(inputName)) {
+            userMaximize();
+        } else if (INPUT_MINIMIZE.equals(inputName)) {
+            userMinimize();
         } else if (PROPERTY_POSITION_X.equals(inputName)) {
             setPositionX((Extent) inputValue);
         } else if (PROPERTY_POSITION_Y.equals(inputName)) {
@@ -1024,5 +1072,22 @@ implements FloatingPane, ModalSupport, PaneContainer {
             setVisible(false);
             break;
         }
+    }
+    
+    /**
+     * Processes a user request to maximize the window (via the close button).
+     * Performs no operation by default.  The client is responsible for configuring the window appropriately.
+     */
+    public void userMaximize() {
+        fireWindowMinimized();
+    }
+    
+    /**
+     * Processes a user request to minimize the window (via the close button).
+     * Sets the window invisible.
+     */
+    public void userMinimize() {
+        setVisible(false);
+        fireWindowMaximized();
     }
 }

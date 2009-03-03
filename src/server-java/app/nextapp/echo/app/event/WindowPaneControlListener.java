@@ -29,18 +29,23 @@
 
 package nextapp.echo.app.event;
 
-import java.io.Serializable;
-import java.util.EventListener;
-
 /**
- * Listener interface for receiving <code>WindowPaneEvent</code>s.
+ * Advanced listener interface for receiving <code>WindowPaneEvent</code>s.
+ * Supports additional controls, e.g., maximize and minimize.
  */
-public interface WindowPaneListener extends EventListener, Serializable {
+public interface WindowPaneControlListener extends WindowPaneListener {
     
     /**
-     * Invoked when a <code>WindowPane</code> is being closed.
+     * Invoked when a <code>WindowPane</code> has been maximized (or de-maximized) by the user.
      * 
      * @param e the <code>WindowPaneEvent</code> describing the change
      */
-    public void windowPaneClosing(WindowPaneEvent e);
+    public void windowPaneMaximized(WindowPaneEvent e);
+    
+    /**
+     * Invoked when a <code>WindowPane</code> has been minimized by the user.
+     * 
+     * @param e the <code>WindowPaneEvent</code> describing the change
+     */
+    public void windowPaneMinimized(WindowPaneEvent e);
 }

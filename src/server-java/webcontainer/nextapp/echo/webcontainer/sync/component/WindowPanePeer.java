@@ -63,6 +63,8 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
     public WindowPanePeer() {
         super();
         addEvent(new AbstractComponentSynchronizePeer.EventPeer(WindowPane.INPUT_CLOSE, null));
+        addEvent(new AbstractComponentSynchronizePeer.EventPeer(WindowPane.INPUT_MAXIMIZE, null));
+        addEvent(new AbstractComponentSynchronizePeer.EventPeer(WindowPane.INPUT_MINIMIZE, null));
         addOutputProperty(WindowPane.MODAL_CHANGED_PROPERTY);
     }
     
@@ -145,9 +147,13 @@ public class WindowPanePeer extends AbstractComponentSynchronizePeer {
      *      nextapp.echo.app.Component, java.lang.String, java.lang.Object)
      */
     public void processEvent(Context context, Component component, String eventType, Object eventData) {
+        ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
         if (WindowPane.INPUT_CLOSE.equals(eventType)) {
-            ClientUpdateManager clientUpdateManager = (ClientUpdateManager) context.get(ClientUpdateManager.class);
             clientUpdateManager.setComponentAction(component, WindowPane.INPUT_CLOSE, null);
+        } else if (WindowPane.INPUT_MINIMIZE.equals(eventType)) {
+            clientUpdateManager.setComponentAction(component, WindowPane.INPUT_MINIMIZE, null);
+        } else if (WindowPane.INPUT_MAXIMIZE.equals(eventType)) {
+            clientUpdateManager.setComponentAction(component, WindowPane.INPUT_MAXIMIZE, null);
         }
     }
 }
