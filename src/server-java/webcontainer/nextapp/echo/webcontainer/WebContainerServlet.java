@@ -286,14 +286,6 @@ public abstract class WebContainerServlet extends HttpServlet {
     }
     
     /**
-     * @deprecated will be removed
-     * @see #addInitScript
-     */
-    protected void addStartupScript(Service service) {
-        addInitScript(service);
-    }
-    
-    /**
      * Handles a GET request.
      *
      * @see #process(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
