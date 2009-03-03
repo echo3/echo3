@@ -64,7 +64,7 @@ public class ContainerContextTest extends Column {
     
     private class CookiesTableModel extends AbstractTableModel {
         
-        private Cookie[] cookies;
+        private transient Cookie[] cookies;
         
         CookiesTableModel(ContainerContext containerContext) {
             this.cookies = containerContext.getCookies();

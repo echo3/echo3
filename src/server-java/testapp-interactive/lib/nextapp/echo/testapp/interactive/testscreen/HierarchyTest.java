@@ -29,6 +29,8 @@
 
 package nextapp.echo.testapp.interactive.testscreen;
 
+import java.io.Serializable;
+
 import nextapp.echo.app.Button;
 import nextapp.echo.app.CheckBox;
 import nextapp.echo.app.Column;
@@ -59,7 +61,8 @@ import nextapp.echo.testapp.interactive.InteractiveApp;
  */
 public class HierarchyTest extends SplitPane {
     
-    private abstract class ComponentEntry {
+    private abstract class ComponentEntry 
+    implements Serializable {
         
         public abstract String getName();
         
