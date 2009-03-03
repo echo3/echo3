@@ -145,7 +145,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
-     * Adds a <code>WindowPaneListener</code> to receive event notifications.
+     * Adds a <code>WindowPaneListener</code> (or <code>WindowPaneControlListener</code>) to receive event notifications.
      * 
      * @param l the <code>WindowPaneListener</code> to add
      */
@@ -645,7 +645,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
     }
     
     /**
-     * Removes a <code>WindowPaneListener</code> from receiving event notifications.
+     * Removes a <code>WindowPaneListener</code> (or <code>WindowPaneControlListener</code>) from receiving event notifications.
      * 
      * @param l the <code>WindowPaneListener</code> to remove
      */
