@@ -40,6 +40,9 @@ import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
+import nextapp.echo.app.event.WindowPaneControlListener;
+import nextapp.echo.app.event.WindowPaneEvent;
+import nextapp.echo.app.event.WindowPaneListener;
 import nextapp.echo.testapp.interactive.ButtonColumn;
 import nextapp.echo.testapp.interactive.InteractiveApp;
 import nextapp.echo.testapp.interactive.StyleUtil;
@@ -446,6 +449,39 @@ public class WindowPaneTest extends SplitPane {
             }
         });
 
+        // Listener Tests
+        
+        controlsColumn = new ButtonColumn();
+        controlsColumn.add(new Label("Listeners"));
+        groupContainerColumn.add(controlsColumn);
+
+        controlsColumn.addButton("Add WindowPaneListener", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.addWindowPaneListener(new WindowPaneListener() {
+                    public void windowPaneClosing(WindowPaneEvent e) {
+                        InteractiveApp.getApp().consoleWrite("WindowPaneListener: Closing");
+                    }
+                });;
+            }
+        });
+        controlsColumn.addButton("Add WindowPaneControlListener", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.addWindowPaneListener(new WindowPaneControlListener() {
+                    public void windowPaneClosing(WindowPaneEvent e) {
+                        InteractiveApp.getApp().consoleWrite("WindowPaneControlListener: Closing");
+                    }
+
+                    public void windowPaneMaximized(WindowPaneEvent e) {
+                        InteractiveApp.getApp().consoleWrite("WindowPaneControlListener: Maximized");
+                    }
+
+                    public void windowPaneMinimized(WindowPaneEvent e) {
+                        InteractiveApp.getApp().consoleWrite("WindowPaneControlListener: Minimized");
+                    }
+                });;
+            }
+        });
+        
         // Integration Tests
         
         controlsColumn = new ButtonColumn();

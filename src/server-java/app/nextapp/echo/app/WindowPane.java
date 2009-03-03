@@ -1079,7 +1079,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * Performs no operation by default.  The client is responsible for configuring the window appropriately.
      */
     public void userMaximize() {
-        fireWindowMinimized();
+        fireWindowMaximized();
     }
     
     /**
@@ -1088,6 +1088,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public void userMinimize() {
         setVisible(false);
-        fireWindowMaximized();
+        fireWindowMinimized();
     }
 }
