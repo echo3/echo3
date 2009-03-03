@@ -29,6 +29,10 @@
 
 package nextapp.echo.testapp.interactive;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
@@ -146,7 +150,18 @@ public class TestPane extends ContentPane {
         Column applicationControlsColumn = new Column();
         controlsColumn.add(applicationControlsColumn);
 
-        Button button = new Button("Exit");
+        Button button;
+        
+        button = new Button("Serial Test");
+        button.setStyleName("Default");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doSerialTest();
+            }
+        });
+        applicationControlsColumn.add(button);
+
+        button = new Button("Exit");
         button.setRenderId("Exit");
         button.setId("ExitTestApplication");
         button.setStyleName("Default");
@@ -156,6 +171,7 @@ public class TestPane extends ContentPane {
             }
         });
         applicationControlsColumn.add(button);
+
     }
     
     private void addTest(String name, String action) {
@@ -171,6 +187,23 @@ public class TestPane extends ContentPane {
         testLaunchButtonsColumn.add(button);
     }
 
+     
+    private void doSerialTest() {
+        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        ObjectOutputStream objectOut;
+        
+        try {
+            objectOut = new ObjectOutputStream(byteOut);
+            objectOut.writeObject(this.getApplicationInstance());
+            objectOut.flush();
+            objectOut.close();
+            byte[] data = byteOut.toByteArray();
+            InteractiveApp.getApp().consoleWrite("Serialized.  Length: " + data.length);
+        } catch (IOException ex) {
+            InteractiveApp.getApp().consoleWrite(ex.toString());
+        }
+    }
+    
     private Class getScreenClass(String testName) {
         try {
             return Class.forName("nextapp.echo.testapp.interactive.testscreen." + testName);
