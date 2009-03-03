@@ -90,12 +90,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
     public static final String PROPERTY_WIDTH = "width";
     public static final String PROPERTY_Z_INDEX = "zIndex";
     
-    /** 
-     * @deprecated Will be removed prior to 3.0.
-     * @see #PROPERTY_Z_INDEX 
-     */
-    public static final String Z_INDEX_CHANGED_PROPERTY = "zIndex";
-
     /**
      * A constant for the <code>defaultCloseOperation</code> property 
      * indicating that nothing should be done when the user attempts 
