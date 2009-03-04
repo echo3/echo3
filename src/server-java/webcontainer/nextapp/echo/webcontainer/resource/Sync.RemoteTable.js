@@ -294,7 +294,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         
         if (this.component.render("columnWidth")) {
             // If any column widths are set, render colgroup.
-            var columnPixelAdjustment;
+            var columnPixelAdjustment = 0;
             if (Core.Web.Env.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING) {
                 var pixelInsets = Echo.Sync.Insets.toPixels(this._defaultInsets);
                 columnPixelAdjustment = pixelInsets.left + pixelInsets.right;
@@ -306,14 +306,10 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
                 width = this.component.renderIndex("columnWidth", i); 
                 if (width != null) {
                     if (Echo.Sync.Extent.isPercent(width)) {
-                        colElement.width = parseInt(width, 10) + "%";
+                        colElement.width = width.toString();
                     } else {
                         var columnPixels = Echo.Sync.Extent.toPixels(width, true);
-                        if (columnPixelAdjustment) {
-                            colElement.width = columnPixels - columnPixelAdjustment;
-                        } else {
-                            colElement.width = columnPixels;
-                        }
+                        colElement.width = columnPixels - columnPixelAdjustment;
                     }
                 }
                 colGroupElement.appendChild(colElement);
