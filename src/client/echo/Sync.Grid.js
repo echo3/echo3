@@ -556,11 +556,13 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
     renderAdd: function(update, parentElement) {
         var gridProcessor = new Echo.Sync.Grid.Processor(this.component),
             defaultInsets = Echo.Sync.Insets.toCssValue(this.component.render("insets", 0)),
+            defaultPixelInsets,
             defaultBorder = this.component.render("border", ""),
             width = this.component.render("width"),
             height = this.component.render("height"),
             td,
             columnIndex;
+        defaultPixelInsets = Echo.Sync.Insets.toPixels(defaultInsets);
         
         this._columnCount = gridProcessor.getColumnCount();
         this._rowCount = gridProcessor.getRowCount();
@@ -570,7 +572,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         
         Echo.Sync.renderComponentDefaults(this.component, this._table);
         Echo.Sync.Border.render(defaultBorder, this._table);
-        this._table.style.padding = defaultInsets;
+        this._table.style.padding = defaultInsets; 
         
         // Render percent widths using measuring for IE to avoid potential horizontal scrollbars.
         if (width && Core.Web.Env.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && Echo.Sync.Extent.isPercent(width)) {
@@ -598,7 +600,21 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         var colGroup = this._table.firstChild;
         for (columnIndex = 0; columnIndex < this._columnCount; ++columnIndex) {
             var col = document.createElement("col");
-            Echo.Sync.Extent.render(gridProcessor.xExtents[columnIndex], col, "width", true, true);
+            width = gridProcessor.xExtents[columnIndex];
+            if (width != null) {
+                if (Echo.Sync.Extent.isPercent(width)) {
+                    col.width = width.toString();
+                } else {
+                    var widthValue = Echo.Sync.Extent.toPixels(width, true);
+                    if (Core.Web.Env.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING) {
+                        widthValue -= defaultPixelInsets.left + defaultPixelInsets.right;
+                        if (widthValue < 0) {
+                            widthValue = 0;
+                        }
+                    }
+                    col.width = widthValue + "px";
+                }
+            }
             colGroup.appendChild(col);
         }
         
