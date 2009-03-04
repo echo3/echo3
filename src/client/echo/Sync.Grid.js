@@ -598,14 +598,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         var colGroup = this._table.firstChild;
         for (columnIndex = 0; columnIndex < this._columnCount; ++columnIndex) {
             var col = document.createElement("col");
-            width = gridProcessor.xExtents[columnIndex];
-            if (width != null) {
-                if (Echo.Sync.Extent.isPercent(width)) {
-                    col.width = width.toString();
-                } else {
-                    col.width = Echo.Sync.Extent.toCssValue(width, true);
-                }
-            }
+            Echo.Sync.Extent.render(gridProcessor.xExtents[columnIndex], col, "width", true, true);
             colGroup.appendChild(col);
         }
         
