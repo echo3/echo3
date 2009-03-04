@@ -799,6 +799,7 @@ Core.Web.Env = {
                 this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
             }
         } else if (this.ENGINE_PRESTO) {
+            this.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING = true;
             if (this.BROWSER_VERSION_MAJOR == 9 && this.BROWSER_VERSION_MINOR >= 50) {
                 this.QUIRK_OPERA_CSS_POSITIONING = true;
             }
