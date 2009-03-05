@@ -498,11 +498,11 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 this.component.render("minimumHeight", Echo.WindowPane.DEFAULT_MINIMUM_HEIGHT), false);
         this._maximumWidth = Echo.Sync.Extent.toPixels(this.component.render("maximumWidth"), true);
         this._maximumHeight = Echo.Sync.Extent.toPixels(this.component.render("maximumHeight"), false);
+        this._resizable = this.component.render("resizable", true);
         var border = this.component.render("border", Echo.WindowPane.DEFAULT_BORDER);
         this._borderInsets = Echo.Sync.Insets.toPixels(border.borderInsets);
         this._contentInsets = Echo.Sync.Insets.toPixels(border.contentInsets);
         var movable = this.component.render("movable", true);
-        var resizable = this.component.render("resizable", true);
         var closable = this.component.render("closable", true);
         var maximizeEnabled = this.component.render("maximizeEnabled", false);
         var minimizeEnabled = this.component.render("minimizeEnabled", false);
@@ -577,7 +577,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 if (border.color != null) {
                     this._borderDivs[i].style.backgroundColor = border.color;
                 }
-                if (resizable) {
+                if (this._resizable) {
                     this._borderDivs[i].style.cursor = Echo.Sync.WindowPane.CURSORS[i];
                     Core.Web.Event.add(this._borderDivs[i], "mousedown", 
                             Core.method(this, this._processBorderMouseDown), true);
@@ -867,8 +867,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      *        the window (true) or is programmatic (false)
      */
     _setBounds: function(specBounds, userAdjusting) {
-        // Object to store actual pixel bounds.  Will contain x, y, width, height properties.
-        var pxBounds = {};
+        var pxBounds = {}, // Pixel bounds (x/y/width/height as numeric pixel values. 
+            calculatedHeight = false; // Flag indicating whether height is calculated or default.
         
         if (userAdjusting) {
             // Constrain user adjustment specBounds coordinate to be an on-screen negative value.
@@ -908,6 +908,9 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                     Echo.Sync.Extent.toPixels(specBounds.contentHeight, false));
             pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + pxBounds.contentHeight;
         } else if (!userAdjusting) {
+            // Set calculated height flag, will be used later for constraints.
+            calculatedHeight = true;
+            
             // Calculate height based on content size.
             if (this.component.children[0]) {
                 // Determine pixel content width.
@@ -1002,7 +1005,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         // Constrain width, store value in _rendered property.
         if (pxBounds.width != null) {
             // Constrain to width of region.
-            if (pxBounds.width > this._containerSize.width) {
+            if (this._resizable && pxBounds.width > this._containerSize.width) {
                 pxBounds.width = this._containerSize.width;
             }
 
@@ -1033,7 +1036,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         // Constrain height, store value in _rendered property.
         if (pxBounds.height != null) {
             // Constrain to height of region.
-            if (pxBounds.height > this._containerSize.height) {
+            if ((calculatedHeight || this._resizable) && pxBounds.height > this._containerSize.height) {
                 pxBounds.height = this._containerSize.height;
             }
             
