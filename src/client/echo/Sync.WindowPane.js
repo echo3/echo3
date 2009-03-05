@@ -1001,6 +1001,11 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
 
         // Constrain width, store value in _rendered property.
         if (pxBounds.width != null) {
+            // Constrain to width of region.
+            if (pxBounds.width > this._containerSize.width) {
+                pxBounds.width = this._containerSize.width;
+            }
+
             // Constrain to maximum width.
             if (this._maximumWidth && pxBounds.width > this._maximumWidth) {
                 if (userAdjusting && pxBounds.x != null) {
@@ -1027,6 +1032,11 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         
         // Constrain height, store value in _rendered property.
         if (pxBounds.height != null) {
+            // Constrain to height of region.
+            if (pxBounds.height > this._containerSize.height) {
+                pxBounds.height = this._containerSize.height;
+            }
+            
             // Constrain to maximum height.
             if (this._maximumHeight && pxBounds.height > this._maximumHeight) {
                 if (userAdjusting && pxBounds.y != null) {
