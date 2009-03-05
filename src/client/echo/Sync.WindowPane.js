@@ -127,136 +127,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._processTitleBarMouseMoveRef = Core.method(this, this._processTitleBarMouseMove);
         this._processTitleBarMouseUpRef = Core.method(this, this._processTitleBarMouseUp);
     },
-
-    /**
-     * Converts the x/y/width/height coordinates of a window pane to pixel values.
-     * The _containerSize instance property is used to calculate percent-based values.
-     * Percentage values are converted based on size of container.   
-     * 
-     * @param bounds object containing bounds to convert, an object containing extent values in x, y, width (or contentWidth), 
-     *        and height (or contentHeight) properties
-     * @param calculateSize {Boolean} flag indicating whether size (height) should be calculated if not available
-     * @return a bounds object containing those bounds converted to pixels, with integer x, y, width, and height properties
-     */
-    _coordinatesToPixels: function(bounds, calculateSize) {
-        var pxBounds = {};
-        
-        if (!calculateSize) {
-//FIXME temporary.  We're basically using calculateSize here because we know it's !userAdjusting....
-// inappropriate, but fixes bug, needs refactor.            
-            // User adjusting.
-            if (bounds.x < 0) {
-                bounds.x = 0;
-            }
-            if (bounds.y < 0) {
-                bounds.y = 0;
-            }
-        }
-        
-        if (bounds.width != null) {
-            // Calculate width based on outside width.
-            pxBounds.width = Math.round(Echo.Sync.Extent.isPercent(bounds.width) ?
-                    (parseInt(bounds.width, 10) * this._containerSize.width / 100) :
-                    Echo.Sync.Extent.toPixels(bounds.width, true));
-        } else if (bounds.contentWidth != null) {
-            // Calculate width based on inside (content) width.
-            pxBounds.contentWidth = Math.round(Echo.Sync.Extent.isPercent(bounds.contentWidth) ?
-                    (parseInt(bounds.contentWidth, 10) * this._containerSize.width / 100) :
-                    Echo.Sync.Extent.toPixels(bounds.contentWidth, true));
-            pxBounds.width = this._contentInsets.left + this._contentInsets.right + pxBounds.contentWidth;
-        }
-        if (bounds.height != null) {
-            // Calculate height based on outside height.
-            pxBounds.height = Math.round(Echo.Sync.Extent.isPercent(bounds.height) ?
-                    (parseInt(bounds.height, 10) * this._containerSize.height / 100) :
-                    Echo.Sync.Extent.toPixels(bounds.height, false));
-        } else if (bounds.contentHeight != null) {
-            // Calculate height based on inside (content) height.
-            pxBounds.contentHeight = Math.round(Echo.Sync.Extent.isPercent(bounds.contentHeight) ?
-                    (parseInt(bounds.contentHeight, 10) * this._containerSize.height / 100) :
-                    Echo.Sync.Extent.toPixels(bounds.contentHeight, false));
-            pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + pxBounds.contentHeight;
-        } else if (calculateSize) {
-            // Calculate height based on content size.
-            if (this.component.children[0]) {
-                // Determine for content width.
-                var contentWidth = pxBounds.contentWidth ? pxBounds.contentWidth : 
-                        pxBounds.width - (this._contentInsets.left + this._contentInsets.right);
-                // Cache current content DIV CSS text.
-                var contentDivCss = this._contentDiv.style.cssText;
-                
-                if (this.component.children[0].peer.getPreferredSize) {
-                    // Set content DIV CSS text for measuring.
-                    this._contentDiv.style.cssText = "position:absolute;width:" + contentWidth + 
-                            "px;height:" + this._containerSize.height + "px";
-
-                    // Determine size using getPreferredSize()
-                    var prefSize = this.component.children[0].peer.getPreferredSize(Echo.Render.ComponentSync.SIZE_HEIGHT);
-                    if (prefSize.height) {
-                        pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + 
-                                prefSize.height;
-                    }
-                    
-                    // Reset content DIV CSS text.
-                    this._contentDiv.style.cssText = contentDivCss;
-                }
-                
-                if (!this.component.children[0].pane && !pxBounds.height) {
-                    var insets = Echo.Sync.Insets.toPixels(this.component.render("insets"));
-
-                    this._contentDiv.style.position = "static";
-                    this._contentDiv.style.width = (contentWidth - insets.left - insets.right) + "px";
-                    this._contentDiv.style.height = "";
-                    this._contentDiv.style.padding = "";
-
-                    // Determine size using measurement.
-                    var measuredHeight = new Core.Web.Measure.Bounds(this._contentDiv).height;
-                    if (measuredHeight) {
-                        pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + 
-                                measuredHeight + insets.top + insets.bottom;
-                    }
-
-                    // Reset content DIV CSS text.
-                    this._contentDiv.style.cssText = contentDivCss;
-                }
-            }
-            
-            if (!pxBounds.height) {
-                // Height calculation not possible: revert to using default height value.
-                pxBounds.height = Echo.Sync.Extent.toPixels(Echo.WindowPane.DEFAULT_HEIGHT, false);            
-            }
-        }
-        
-        if (bounds.x != null) {
-            if (Echo.Sync.Extent.isPercent(bounds.x)) {
-                pxBounds.x = Math.round((this._containerSize.width - pxBounds.width) * (parseInt(bounds.x, 10) / 100));
-                if (pxBounds.x < 0) {
-                    pxBounds.x = 0;
-                }
-            } else {
-                pxBounds.x = Math.round(Echo.Sync.Extent.toPixels(bounds.x, true));
-                if (pxBounds.x < 0) {
-                    // Negative value: position window from right side of screen.
-                    pxBounds.x += this._containerSize.width - pxBounds.width;
-                }
-            }
-        }
-        if (bounds.y != null) {
-            if (Echo.Sync.Extent.isPercent(bounds.y)) {
-                pxBounds.y = Math.round((this._containerSize.height - pxBounds.height) * (parseInt(bounds.y, 10) / 100));
-                if (pxBounds.y < 0) {
-                    pxBounds.y = 0;
-                }
-            } else {
-                pxBounds.y = Math.round(Echo.Sync.Extent.toPixels(bounds.y, false));
-                if (pxBounds.y < 0) {
-                    // Negative value: position window from bottom side of screen.
-                    pxBounds.y += this._containerSize.height - pxBounds.height;
-                }
-            }
-        }
-        return pxBounds;
-    },
     
     /**
      * Updates the _requested object based on values from the component object.
@@ -989,71 +859,231 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     
     /**
      * Sets the bounds of the window.  Constrains the specified bounds to within the available area.
+     * If userAdjusting parameter is true, specBounds values must be in pixel values.
      * Invokes _redraw().
      * 
-     * @param bounds an object containing extent properties x, y, width, and height
+     * @param specBounds an object containing extent properties x, y, width, and height
      * @param {Boolean} userAdjusting flag indicating whether this bounds adjustment is a result of the user moving/resizing
      *        the window (true) or is programmatic (false)
      */
-    _setBounds: function(bounds, userAdjusting) {
-        var c = this._coordinatesToPixels(bounds, !userAdjusting);
+    _setBounds: function(specBounds, userAdjusting) {
+        // Object to store actual pixel bounds.  Will contain x, y, width, height properties.
+        var pxBounds = {};
         
+        if (userAdjusting) {
+            // Constrain user adjustment specBounds coordinate to be an on-screen negative value.
+            // if userAdjusting is true, x/y values are guaranteed to be integers.
+            if (specBounds.x != null && specBounds.x < 0) {
+                specBounds.x = 0;
+            }
+            if (specBounds.y != null && specBounds.y < 0) {
+                specBounds.y = 0;
+            }
+        }
+        
+        // Determine pixel width based on specified extent width.
+        if (specBounds.width != null) {
+            // Determine pixel width based on specified outside width.
+            pxBounds.width = Math.round(Echo.Sync.Extent.isPercent(specBounds.width) ?
+                    (parseInt(specBounds.width, 10) * this._containerSize.width / 100) :
+                    Echo.Sync.Extent.toPixels(specBounds.width, true));
+        } else if (specBounds.contentWidth != null) {
+            // Determine pixel width based on specified inside (content) width.
+            pxBounds.contentWidth = Math.round(Echo.Sync.Extent.isPercent(specBounds.contentWidth) ?
+                    (parseInt(specBounds.contentWidth, 10) * this._containerSize.width / 100) :
+                    Echo.Sync.Extent.toPixels(specBounds.contentWidth, true));
+            pxBounds.width = this._contentInsets.left + this._contentInsets.right + pxBounds.contentWidth;
+        }
+        
+        // Determine pixel height based on specified extent height, or if not specified, calculate height.
+        if (specBounds.height != null) {
+            // Calculate pixel height based on specified outside height.
+            pxBounds.height = Math.round(Echo.Sync.Extent.isPercent(specBounds.height) ?
+                    (parseInt(specBounds.height, 10) * this._containerSize.height / 100) :
+                    Echo.Sync.Extent.toPixels(specBounds.height, false));
+        } else if (specBounds.contentHeight != null) {
+            // Calculate pixel height based on specified inside (content) height.
+            pxBounds.contentHeight = Math.round(Echo.Sync.Extent.isPercent(specBounds.contentHeight) ?
+                    (parseInt(specBounds.contentHeight, 10) * this._containerSize.height / 100) :
+                    Echo.Sync.Extent.toPixels(specBounds.contentHeight, false));
+            pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + pxBounds.contentHeight;
+        } else if (!userAdjusting) {
+            // Calculate height based on content size.
+            if (this.component.children[0]) {
+                // Determine pixel content width.
+                var contentWidth = pxBounds.contentWidth ? pxBounds.contentWidth : 
+                        pxBounds.width - (this._contentInsets.left + this._contentInsets.right);
+                // Cache current content DIV CSS text.
+                var contentDivCss = this._contentDiv.style.cssText;
+                
+                // Use child peer's getPreferredSize() implementation if available.
+                if (this.component.children[0].peer.getPreferredSize) {
+                    // Set content DIV CSS text for measuring.
+                    this._contentDiv.style.cssText = "position:absolute;width:" + contentWidth + 
+                            "px;height:" + this._containerSize.height + "px";
+
+                    // Determine size using getPreferredSize()
+                    var prefSize = this.component.children[0].peer.getPreferredSize(Echo.Render.ComponentSync.SIZE_HEIGHT);
+                    if (prefSize.height) {
+                        pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + 
+                                prefSize.height;
+                    }
+                    
+                    // Reset content DIV CSS text.
+                    this._contentDiv.style.cssText = contentDivCss;
+                }
+                
+                // If height not yet determined and child is not a pane, measure child height.
+                if (!pxBounds.height && !this.component.children[0].pane) {
+                    // Configure _contentDiv state for proper measuring of its content height.
+                    var insets = Echo.Sync.Insets.toPixels(this.component.render("insets"));
+                    this._contentDiv.style.position = "static";
+                    this._contentDiv.style.width = (contentWidth - insets.left - insets.right) + "px";
+                    this._contentDiv.style.height = "";
+                    this._contentDiv.style.padding = "";
+
+                    // Determine size using measurement.
+                    var measuredHeight = new Core.Web.Measure.Bounds(this._contentDiv).height;
+                    if (measuredHeight) {
+                        pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + 
+                                measuredHeight + insets.top + insets.bottom;
+                    }
+
+                    // Reset content DIV CSS text.
+                    this._contentDiv.style.cssText = contentDivCss;
+                }
+            }
+            
+            if (!pxBounds.height) {
+                // Height calculation not possible: revert to using default height value.
+                pxBounds.height = Echo.Sync.Extent.toPixels(Echo.WindowPane.DEFAULT_HEIGHT, false);            
+            }
+        }
+        
+        // Determine x-coordinate of window based on specified x-coordinate.
+        if (specBounds.x != null) {
+            if (Echo.Sync.Extent.isPercent(specBounds.x)) {
+                pxBounds.x = Math.round((this._containerSize.width - pxBounds.width) * (parseInt(specBounds.x, 10) / 100));
+                if (pxBounds.x < 0) {
+                    // Constain x coordinate if window is too large to fit on-screen.
+                    pxBounds.x = 0;
+                }
+            } else {
+                pxBounds.x = Math.round(Echo.Sync.Extent.toPixels(specBounds.x, true));
+                if (pxBounds.x < 0) {
+                    // Negative value: position window from right side of screen.
+                    pxBounds.x += this._containerSize.width - pxBounds.width;
+                }
+            }
+        }
+
+        // Determine y-coordinate of window based on specified y-coordinate.
+        if (specBounds.y != null) {
+            if (Echo.Sync.Extent.isPercent(specBounds.y)) {
+                pxBounds.y = Math.round((this._containerSize.height - pxBounds.height) * (parseInt(specBounds.y, 10) / 100));
+                if (pxBounds.y < 0) {
+                    // Constain y coordinate if window is too large to fit on-screen.
+                    pxBounds.y = 0;
+                }
+            } else {
+                pxBounds.y = Math.round(Echo.Sync.Extent.toPixels(specBounds.y, false));
+                if (pxBounds.y < 0) {
+                    // Negative value: position window from bottom side of screen
+                    pxBounds.y += this._containerSize.height - pxBounds.height;
+                }
+            }
+        }
+        
+        // Initialize _rendered property if required.
         if (this._rendered == null) {
             this._rendered = { };
         }
 
-        if (c.width != null) {
-            if (this._maximumWidth && c.width > this._maximumWidth) {
-                if (userAdjusting && c.x != null) {
-                    c.x += (c.width - this._maximumWidth);
+        // Constrain width, store value in _rendered property.
+        if (pxBounds.width != null) {
+            // Constrain to maximum width.
+            if (this._maximumWidth && pxBounds.width > this._maximumWidth) {
+                if (userAdjusting && pxBounds.x != null) {
+                    // If user is adjusting the window and x-coordinate is provided, adjust x-coordinate appropriately
+                    // as window is being resized using a left-side handle.
+                    pxBounds.x += (pxBounds.width - this._maximumWidth);
                 }
-                c.width = this._maximumWidth;
+                pxBounds.width = this._maximumWidth;
             }
-            if (c.width < this._minimumWidth) {
-                if (userAdjusting && c.x != null) {
-                    c.x += (c.width - this._minimumWidth);
+
+            // Constrain to minimum width.
+            if (pxBounds.width < this._minimumWidth) {
+                if (userAdjusting && pxBounds.x != null) {
+                    // If user is adjusting the window and x-coordinate is provided, adjust x-coordinate appropriately
+                    // as window is being resized using a left-side handle.
+                    pxBounds.x += (pxBounds.width - this._minimumWidth);
                 }
-                c.width = this._minimumWidth;
+                pxBounds.width = this._minimumWidth;
             }
-            this._rendered.width = Math.round(c.width);
+
+            // Store.
+            this._rendered.width = Math.round(pxBounds.width);
         }
         
-        if (c.height != null) {
-            if (this._maximumHeight && c.height > this._maximumHeight) {
-                if (userAdjusting && c.y != null) {
-                    c.y += (c.height - this._maximumHeight);
+        // Constrain height, store value in _rendered property.
+        if (pxBounds.height != null) {
+            // Constrain to maximum height.
+            if (this._maximumHeight && pxBounds.height > this._maximumHeight) {
+                if (userAdjusting && pxBounds.y != null) {
+                    // If user is adjusting the window and y-coordinate is provided, adjust y-coordinate appropriately
+                    // as window is being resized using a top-side handle.
+                    pxBounds.y += (pxBounds.height - this._maximumHeight);
                 }
-                c.height = this._maximumHeight;
+                pxBounds.height = this._maximumHeight;
             }
-            if (c.height < this._minimumHeight) {
-                if (userAdjusting && c.y != null) {
-                    c.y += (c.height - this._minimumHeight);
+
+            // Constrain to minimum height.
+            if (pxBounds.height < this._minimumHeight) {
+                if (userAdjusting && pxBounds.y != null) {
+                    // If user is adjusting the window and y-coordinate is provided, adjust y-coordinate appropriately
+                    // as window is being resized using a top-side handle.
+                    pxBounds.y += (pxBounds.height - this._minimumHeight);
                 }
-                c.height = this._minimumHeight;
+                pxBounds.height = this._minimumHeight;
             }
-            this._rendered.height = Math.round(c.height);
+            
+            // Store.
+            this._rendered.height = Math.round(pxBounds.height);
         }
     
-        if (c.x != null) {
-            if (this._containerSize.width > 0 && c.x > this._containerSize.width - this._rendered.width) {
-                c.x = this._containerSize.width - this._rendered.width;
+        // Constrain x position, store value in _rendered property.
+        if (pxBounds.x != null) {
+            // Ensure right edge of window is on-screen.
+            if (this._containerSize.width > 0 && pxBounds.x > this._containerSize.width - this._rendered.width) {
+                pxBounds.x = this._containerSize.width - this._rendered.width;
             }
-            if (c.x < 0) {
-                c.x = 0;
+
+            // Ensure left edge of window is on-screen.
+            if (pxBounds.x < 0) {
+                pxBounds.x = 0;
             }
-            this._rendered.x = Math.round(c.x);
+
+            // Store.
+            this._rendered.x = Math.round(pxBounds.x);
         }
     
-        if (c.y != null) {
-            if (this._containerSize.height > 0 && c.y > this._containerSize.height - this._rendered.height) {
-                c.y = this._containerSize.height - this._rendered.height;
+        // Constrain y position, store value in _rendered property.
+        if (pxBounds.y != null) {
+            // Ensure bottom edge of window is on-screen.
+            if (this._containerSize.height > 0 && pxBounds.y > this._containerSize.height - this._rendered.height) {
+                pxBounds.y = this._containerSize.height - this._rendered.height;
             }
-            if (c.y < 0) {
-                c.y = 0;
+
+            // Ensure top edge of window is on-screen.
+            if (pxBounds.y < 0) {
+                pxBounds.y = 0;
             }
-            this._rendered.y = Math.round(c.y);
+
+            // Store.
+            this._rendered.y = Math.round(pxBounds.y);
         }
-        
+
+        // Perform redraw based on new _rendered state.
         this._redraw();
     }
 });
