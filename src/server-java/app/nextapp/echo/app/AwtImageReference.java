@@ -40,10 +40,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * An ImageReference describing an image which may be rendered from
- * a <code>java.awt.Image</code>.
- * Note that the JVM running the Echo Application Container will require 
- * access to a graphics context for the Java AWT to function.
+ * An ImageReference describing an image which may be rendered from a <code>java.awt.Image</code>. Note that the JVM running the
+ * Echo Application Container will require access to a graphics context for the Java AWT to function.
+ * <p>
+ * <strong>WARNING:</strong> Use of this class is <strong>STRONGLY DISCOURAGED</strong> unless you specifically need to dynamically
+ * render or modify image content. Rendering AWT images requires that the image be brought into memory as a bitmap and then
+ * rendered to a client-compatible format (e.g., PNG). DO NOT use this class unless you absolutely must.
+ * <p>
+ * The preferred means of serving images is by using <code>ResourceImageReference</code>s or <code>HttpImageReference</code>s.
+ * 
+ * @see ResourceImageReference
+ * @see HttpImageReference
  */
 public class AwtImageReference 
 implements ImageReference {
