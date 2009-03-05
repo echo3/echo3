@@ -306,10 +306,10 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
                 width = this.component.renderIndex("columnWidth", i); 
                 if (width != null) {
                     if (Echo.Sync.Extent.isPercent(width)) {
-                        colElement.width = width.toString();
+                        colElement.style.width = width.toString();
                     } else {
                         var columnPixels = Echo.Sync.Extent.toPixels(width, true);
-                        colElement.width = columnPixels - columnPixelAdjustment;
+                        colElement.style.width = (columnPixels - columnPixelAdjustment) + "px";
                     }
                 }
                 colGroupElement.appendChild(colElement);
