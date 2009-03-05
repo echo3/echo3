@@ -140,6 +140,19 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      */
     _coordinatesToPixels: function(bounds, calculateSize) {
         var pxBounds = {};
+        
+        if (!calculateSize) {
+//FIXME temporary.  We're basically using calculateSize here because we know it's !userAdjusting....
+// inappropriate, but fixes bug, needs refactor.            
+            // User adjusting.
+            if (bounds.x < 0) {
+                bounds.x = 0;
+            }
+            if (bounds.y < 0) {
+                bounds.y = 0;
+            }
+        }
+        
         if (bounds.width != null) {
             // Calculate width based on outside width.
             pxBounds.width = Math.round(Echo.Sync.Extent.isPercent(bounds.width) ?
@@ -217,6 +230,9 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         if (bounds.x != null) {
             if (Echo.Sync.Extent.isPercent(bounds.x)) {
                 pxBounds.x = Math.round((this._containerSize.width - pxBounds.width) * (parseInt(bounds.x, 10) / 100));
+                if (pxBounds.x < 0) {
+                    pxBounds.x = 0;
+                }
             } else {
                 pxBounds.x = Math.round(Echo.Sync.Extent.toPixels(bounds.x, true));
                 if (pxBounds.x < 0) {
@@ -228,6 +244,9 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         if (bounds.y != null) {
             if (Echo.Sync.Extent.isPercent(bounds.y)) {
                 pxBounds.y = Math.round((this._containerSize.height - pxBounds.height) * (parseInt(bounds.y, 10) / 100));
+                if (pxBounds.y < 0) {
+                    pxBounds.y = 0;
+                }
             } else {
                 pxBounds.y = Math.round(Echo.Sync.Extent.toPixels(bounds.y, false));
                 if (pxBounds.y < 0) {
@@ -1034,7 +1053,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             }
             this._rendered.y = Math.round(c.y);
         }
-
+        
         this._redraw();
     }
 });
