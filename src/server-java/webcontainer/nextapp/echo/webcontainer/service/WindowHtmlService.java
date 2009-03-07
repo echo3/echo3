@@ -60,7 +60,7 @@ implements Service {
     public static final String XHTML_1_0_TRANSITIONAL_PUBLIC_ID = "-//W3C//DTD XHTML 1.0 Transitional//EN";
 
     /** The XHTML 1.0 Transitional System ID. */
-    public static final String XHTML_1_0_TRANSITIONAL_SYSTSEM_ID = "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd";
+    public static final String XHTML_1_0_TRANSITIONAL_SYSTEM_ID = "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd";
     
     /** The XHTML 1.0 Namespace URI. */
     public static final String XHTML_1_0_NAMESPACE_URI = "http://www.w3.org/1999/xhtml";
@@ -77,7 +77,7 @@ implements Service {
         OUTPUT_PROPERTIES.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         OUTPUT_PROPERTIES.putAll(DomUtil.OUTPUT_PROPERTIES_INDENT);
         OUTPUT_PROPERTIES.setProperty(OutputKeys.DOCTYPE_PUBLIC, XHTML_1_0_TRANSITIONAL_PUBLIC_ID);
-        OUTPUT_PROPERTIES.setProperty(OutputKeys.DOCTYPE_SYSTEM, XHTML_1_0_TRANSITIONAL_SYSTSEM_ID);
+        OUTPUT_PROPERTIES.setProperty(OutputKeys.DOCTYPE_SYSTEM, XHTML_1_0_TRANSITIONAL_SYSTEM_ID);
     }
 
     /** Singleton instance. */
@@ -92,7 +92,7 @@ implements Service {
      */
     private Document createHtmlDocument(Connection conn, UserInstance userInstance, boolean debug) {
         Document document = DomUtil.createDocument("html", XHTML_1_0_TRANSITIONAL_PUBLIC_ID, 
-                XHTML_1_0_TRANSITIONAL_SYSTSEM_ID, XHTML_1_0_NAMESPACE_URI);
+                XHTML_1_0_TRANSITIONAL_SYSTEM_ID, XHTML_1_0_NAMESPACE_URI);
         
         Element htmlElement = document.getDocumentElement();
 
