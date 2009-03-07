@@ -146,7 +146,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      * Processes a mouse click event. Notifies application of focus.
      */
     _processClick: function(e) {
-        if (!this.client) {
+        if (!this.client || !this.component.isActive()) {
             return true;
         }
         this.client.application.setFocusedComponent(this.component);
@@ -157,7 +157,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      */
     _processFocus: function(e) {
         this._focused = true;
-        if (!this.client) {
+        if (!this.client || !this.component.isActive()) {
             return true;
         }
         this.client.application.setFocusedComponent(this.component);
@@ -295,21 +295,17 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      * @param keyEvent the user keyboard event which triggered the value storage request (optional)
      */
     _storeValue: function(keyEvent) {
-        if (!this.client) {
+        if (!this.client || !this.component.isActive()) {
+            if (keyEvent) {
+                // Prevent input.
+                Core.Web.DOM.preventEventDefault(keyEvent);
+            }
             return true;
         }
 
         this.sanitizeInput();
         
         if (!this.client.verifyInput(this.component)) {
-            if (!this.component.isActive()) {
-                // Component is unwilling to receive input, prevent the input and return.
-                if (keyEvent) {
-                    Core.Web.DOM.preventEventDefault(keyEvent);
-                }
-                return true;
-            }
-            
             // Component is willing to receive input, but client is not ready:  
             // Register listener to be notified when client input restrictions have been removed, 
             // but allow the change to be reflected in the text field temporarily.
@@ -399,7 +395,7 @@ Echo.Sync.TextField = Core.extend(Echo.Sync.TextComponent, {
         this.renderAddToParent(parentElement);
     },
 
-    /** 
+    /**
      * Allows all input.
      * @see Echo.Sync.TextComponent#sanitizeInput
      */

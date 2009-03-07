@@ -92,6 +92,15 @@ public class TextSyncTest extends SplitPane {
             }
         });
         
+        controlsColumn.addButton("3 Second Server Interaction Delay; Disable Text Area", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException ex) { }
+                textArea.setEnabled(false);
+            }
+        });
+        
         controlsColumn.addButton("3 Second Server Interaction Delay; Remove Text Area", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
