@@ -37,10 +37,16 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /**
+     * The rendered enabled state of the component.
+     * @type Boolean
+     */
+    enabled: null,
+    
+    /**
      * Outer DIV containing button.
      * @type Element
      */
-    _div: null,
+    div: null,
     
     /**
      * Text-containing element, upon which font styles should be set.
@@ -52,7 +58,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
      * IMG element representing buttons icon.
      * @type Element
      */
-    _iconImg: null,
+    iconImg: null,
     
     /**
      * Method reference to _processRolloverExit.
@@ -89,11 +95,11 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         
         /**
          * Renders the content (e.g. text and/or icon) of the button.
-         * Appends rendered content to bounding element (<code>this._div</code>).
+         * Appends rendered content to bounding element (<code>this.div</code>).
          */
         renderContent: function() {
             var text = this.component.render("text");
-            var icon = Echo.Sync.getEffectProperty(this.component, "icon", "disabledIcon", !this._enabled);
+            var icon = Echo.Sync.getEffectProperty(this.component, "icon", "disabledIcon", !this.enabled);
             if (text != null) {
                 if (icon) {
                     // Text and icon.
@@ -102,16 +108,16 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
                     var orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
                     var tct = new Echo.Sync.TriCellTable(orientation, 
                             Echo.Sync.Extent.toPixels(iconTextMargin));
-                    this._renderButtonText(tct.tdElements[0], text);
-                    this._iconImg = this._renderButtonIcon(tct.tdElements[1], icon);
-                    this._div.appendChild(tct.tableElement);
+                    this.renderButtonText(tct.tdElements[0], text);
+                    this.iconImg = this.renderButtonIcon(tct.tdElements[1], icon);
+                    this.div.appendChild(tct.tableElement);
                 } else {
                     // Text only.
-                    this._renderButtonText(this._div, text);
+                    this.renderButtonText(this.div, text);
                 }
             } else if (icon) {
                 // Icon only.
-                this._iconImg = this._renderButtonIcon(this._div, icon);
+                this.iconImg = this.renderButtonIcon(this.div, icon);
             }
         },
     
@@ -128,19 +134,19 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             var font = Echo.Sync.getEffectProperty(this.component, "font", "pressedFont", pressedState);
             var border = Echo.Sync.getEffectProperty(this.component, "border", "pressedBorder", pressedState);
             
-            Echo.Sync.Color.renderClear(foreground, this._div, "color");
-            Echo.Sync.Color.renderClear(background, this._div, "backgroundColor");
-            Echo.Sync.FillImage.renderClear(backgroundImage, this._div, "backgroundColor");
-            Echo.Sync.Border.renderClear(border, this._div);
+            Echo.Sync.Color.renderClear(foreground, this.div, "color");
+            Echo.Sync.Color.renderClear(background, this.div, "backgroundColor");
+            Echo.Sync.FillImage.renderClear(backgroundImage, this.div, "backgroundColor");
+            Echo.Sync.Border.renderClear(border, this.div);
             if (this._textElement) {
                 Echo.Sync.Font.renderClear(font, this._textElement);
             }
             
-            if (this._iconImg) {
+            if (this.iconImg) {
                 var iconUrl = Echo.Sync.ImageReference.getUrl(
                         Echo.Sync.getEffectProperty(this.component, "icon", "pressedIcon", pressedState));
-                if (iconUrl != this._iconImg.src) {
-                    this._iconImg.src = iconUrl;
+                if (iconUrl != this.iconImg.src) {
+                    this.iconImg.src = iconUrl;
                 }
             }
         },
@@ -158,19 +164,19 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             var font = Echo.Sync.getEffectProperty(this.component, "font", "rolloverFont", rolloverState);
             var border = Echo.Sync.getEffectProperty(this.component, "border", "rolloverBorder", rolloverState);
             
-            Echo.Sync.Color.renderClear(foreground, this._div, "color");
-            Echo.Sync.Color.renderClear(background, this._div, "backgroundColor");
-            Echo.Sync.FillImage.renderClear(backgroundImage, this._div, "backgroundColor");
-            Echo.Sync.Border.renderClear(border, this._div);
+            Echo.Sync.Color.renderClear(foreground, this.div, "color");
+            Echo.Sync.Color.renderClear(background, this.div, "backgroundColor");
+            Echo.Sync.FillImage.renderClear(backgroundImage, this.div, "backgroundColor");
+            Echo.Sync.Border.renderClear(border, this.div);
             if (this._textElement) {
                 Echo.Sync.Font.renderClear(font, this._textElement);
             }
         
-            if (this._iconImg) {
+            if (this.iconImg) {
                 var iconUrl = Echo.Sync.ImageReference.getUrl(
                         Echo.Sync.getEffectProperty(this.component, "icon", "rolloverIcon", rolloverState));
-                if (iconUrl != this._iconImg.src) {
-                    this._iconImg.src = iconUrl;
+                if (iconUrl != this.iconImg.src) {
+                    this.iconImg.src = iconUrl;
                 }
             }
         }
@@ -186,25 +192,25 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         this._processRolloverExitRef = Core.method(this, this._processRolloverExit);
     
         // Remove initialization listeners.
-        Core.Web.Event.remove(this._div, "focus", this._processInitEventRef);
-        Core.Web.Event.remove(this._div, "mouseover", this._processInitEventRef);
+        Core.Web.Event.remove(this.div, "focus", this._processInitEventRef);
+        Core.Web.Event.remove(this.div, "mouseover", this._processInitEventRef);
         
-        Core.Web.Event.add(this._div, "click", Core.method(this, this._processClick), false);
-        Core.Web.Event.add(this._div, "keypress", Core.method(this, this._processKeyPress), false);
+        Core.Web.Event.add(this.div, "click", Core.method(this, this._processClick), false);
+        Core.Web.Event.add(this.div, "keypress", Core.method(this, this._processKeyPress), false);
         if (this.component.render("rolloverEnabled")) {
-            Core.Web.Event.add(this._div, Core.Web.Env.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED ? "mouseenter" : "mouseover", 
+            Core.Web.Event.add(this.div, Core.Web.Env.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED ? "mouseenter" : "mouseover", 
                     Core.method(this, this._processRolloverEnter), false);
-            Core.Web.Event.add(this._div, Core.Web.Env.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED ? "mouseleave" : "mouseout", 
+            Core.Web.Event.add(this.div, Core.Web.Env.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED ? "mouseleave" : "mouseout", 
                     Core.method(this, this._processRolloverExit), false);
         }
         if (this.component.render("pressedEnabled")) {
-            Core.Web.Event.add(this._div, "mousedown", Core.method(this, this._processPress), false);
-            Core.Web.Event.add(this._div, "mouseup", Core.method(this, this._processRelease), false);
+            Core.Web.Event.add(this.div, "mousedown", Core.method(this, this._processPress), false);
+            Core.Web.Event.add(this.div, "mouseup", Core.method(this, this._processRelease), false);
         }
-        Core.Web.Event.add(this._div, "focus", Core.method(this, this._processFocus), false);
-        Core.Web.Event.add(this._div, "blur", Core.method(this, this._processBlur), false);
+        Core.Web.Event.add(this.div, "focus", Core.method(this, this._processFocus), false);
+        Core.Web.Event.add(this.div, "blur", Core.method(this, this._processBlur), false);
         
-        Core.Web.Event.Selection.disable(this._div);
+        Core.Web.Event.Selection.disable(this.div);
     },
     
     /** @see Echo.Render.ComponentSync#getFocusFlags */ 
@@ -305,55 +311,55 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
-        this._enabled = this.component.isRenderEnabled();
+        this.enabled = this.component.isRenderEnabled();
         
-        this._div = Echo.Sync.Button._prototypeButton.cloneNode(false); 
-        this._div.id = this.component.renderId;
+        this.div = Echo.Sync.Button._prototypeButton.cloneNode(false); 
+        this.div.id = this.component.renderId;
 
-        Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this._div);
-        if (this._enabled) {
-            Echo.Sync.Color.renderFB(this.component, this._div);
-            Echo.Sync.Border.render(this.component.render("border"), this._div);
-            Echo.Sync.FillImage.render(this.component.render("backgroundImage"), this._div);
+        Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this.div);
+        if (this.enabled) {
+            Echo.Sync.Color.renderFB(this.component, this.div);
+            Echo.Sync.Border.render(this.component.render("border"), this.div);
+            Echo.Sync.FillImage.render(this.component.render("backgroundImage"), this.div);
         } else {
             Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
-                    this._div, "color");
+                    this.div, "color");
             Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "background", "disabledBackground", true), 
-                    this._div, "backgroundColor");
+                    this.div, "backgroundColor");
             Echo.Sync.Border.render(Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", true), 
-                    this._div);
+                    this.div);
             Echo.Sync.FillImage.render(Echo.Sync.getEffectProperty(this.component, 
-                    "backgroundImage", "disabledBackgroundImage", true), this._div);
+                    "backgroundImage", "disabledBackgroundImage", true), this.div);
         }
         
-        Echo.Sync.Insets.render(this.component.render("insets"), this._div, "padding");
-        Echo.Sync.Alignment.render(this.component.render("alignment"), this._div, true, this.component);
+        Echo.Sync.Insets.render(this.component.render("insets"), this.div, "padding");
+        Echo.Sync.Alignment.render(this.component.render("alignment"), this.div, true, this.component);
         
         var toolTipText = this.component.render("toolTipText");
         if (toolTipText) {
-            this._div.title = toolTipText;
+            this.div.title = toolTipText;
         }
         var width = this.component.render("width");
         if (width) {
-            this._div.style.width = Echo.Sync.Extent.toCssValue(width, true, true);
+            this.div.style.width = Echo.Sync.Extent.toCssValue(width, true, true);
         }
         var height = this.component.render("height");
         if (height) {
-            this._div.style.height = Echo.Sync.Extent.toCssValue(height, false);
-            this._div.style.overflow = "hidden";
+            this.div.style.height = Echo.Sync.Extent.toCssValue(height, false);
+            this.div.style.overflow = "hidden";
         }
         
         this.renderContent();
         
-        if (this._enabled) {
+        if (this.enabled) {
             // Add event listeners for focus and mouse rollover.  When invoked, these listeners will register the full gamut
             // of button event listeners.  There may be a large number of such listeners depending on how many effects
             // are enabled, and as such we do this lazily for performance reasons.
-            Core.Web.Event.add(this._div, "focus", this._processInitEventRef, false);
-            Core.Web.Event.add(this._div, "mouseover", this._processInitEventRef, false);
+            Core.Web.Event.add(this.div, "focus", this._processInitEventRef, false);
+            Core.Web.Event.add(this.div, "mouseover", this._processInitEventRef, false);
         }
         
-        parentElement.appendChild(this._div);
+        parentElement.appendChild(this.div);
     },
     
     /**
@@ -362,13 +368,13 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
      * @param element the element which should contain the text.
      * @param text the text to render
      */
-    _renderButtonText: function(element, text) {
+    renderButtonText: function(element, text) {
         this._textElement = element;
         var textAlignment = this.component.render("textAlignment"); 
         if (textAlignment) {
             Echo.Sync.Alignment.render(textAlignment, element, true, this.component);
         }
-        if (this._enabled) {
+        if (this.enabled) {
             Echo.Sync.Font.render(this.component.render("font"), this._textElement);
         } else {
             Echo.Sync.Font.render(Echo.Sync.getEffectProperty(this.component, "font", "disabledFont", true), this._textElement);
@@ -386,7 +392,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
      * @param elemnt the element which should contain the icon.
      * @param icon the icon property to render
      */
-    _renderButtonIcon: function(element, icon) {
+    renderButtonIcon: function(element, icon) {
         var alignment = this.component.render("alignment"); 
         if (alignment) {
             Echo.Sync.Alignment.render(alignment, element, true, this.component);
@@ -403,12 +409,12 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             this.client.application.removeListener("focus", this._processRolloverExitRef);
         }
 
-        Core.Web.Event.removeAll(this._div);
+        Core.Web.Event.removeAll(this.div);
         
         this._focused = false;
-        this._div = null;
+        this.div = null;
         this._textElement = null;
-        this._iconImg = null;
+        this.iconImg = null;
     },
 
     /** @see Echo.Render.ComponentSync#renderFocus */
@@ -418,12 +424,12 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         }
 
         this._renderFocusStyle(true);
-        Core.Web.DOM.focusElement(this._div);
+        Core.Web.DOM.focusElement(this.div);
     },
     
     /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
-        var element = this._div;
+        var element = this.div;
         var containerElement = element.parentNode;
         this.renderDispose(update);
         containerElement.removeChild(element);
@@ -448,7 +454,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             background = this.component.render("background");
             if (background != null) {
                 var newBackground = focusState ? Echo.Sync.Color.adjust(background, 0x20, 0x20, 0x20) : background;
-                Echo.Sync.Color.render(newBackground, this._div, "backgroundColor");
+                Echo.Sync.Color.render(newBackground, this.div, "backgroundColor");
             }
             return;
         } else {
@@ -459,19 +465,19 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             var font = Echo.Sync.getEffectProperty(this.component, "font", "focusedFont", focusState);
             var border = Echo.Sync.getEffectProperty(this.component, "border", "focusedBorder", focusState);
             
-            Echo.Sync.Color.renderClear(foreground, this._div, "color");
-            Echo.Sync.Color.renderClear(background, this._div, "backgroundColor");
-            Echo.Sync.FillImage.renderClear(backgroundImage, this._div, "backgroundColor");
-            Echo.Sync.Border.renderClear(border, this._div);
+            Echo.Sync.Color.renderClear(foreground, this.div, "color");
+            Echo.Sync.Color.renderClear(background, this.div, "backgroundColor");
+            Echo.Sync.FillImage.renderClear(backgroundImage, this.div, "backgroundColor");
+            Echo.Sync.Border.renderClear(border, this.div);
             if (this._textElement) {
                 Echo.Sync.Font.renderClear(font, this._textElement);
             }
         
-            if (this._iconImg) {
+            if (this.iconImg) {
                 var iconUrl = Echo.Sync.ImageReference.getUrl(
                         Echo.Sync.getEffectProperty(this.component, "icon", "focusedIcon", focusState));
-                if (iconUrl != this._iconImg.src) {
-                    this._iconImg.src = iconUrl;
+                if (iconUrl != this.iconImg.src) {
+                    this.iconImg.src = iconUrl;
                 }
             }
         }

@@ -44,7 +44,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
     getStateIcon: function(rollover, pressed) {
         var icon;
         if (this._selected) {
-            icon = Echo.Sync.getEffectProperty(this.component, "selectedStateIcon", "disabledSelectedStateIcon", !this._enabled);
+            icon = Echo.Sync.getEffectProperty(this.component, "selectedStateIcon", "disabledSelectedStateIcon", !this.enabled);
             if (icon) {
                 if (pressed) {
                     icon = this.component.render("pressedSelectedStateIcon", icon); 
@@ -54,7 +54,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
             }
         }
         if (!icon) {
-            icon = Echo.Sync.getEffectProperty(this.component, "stateIcon", "disabledStateIcon", !this._enabled);
+            icon = Echo.Sync.getEffectProperty(this.component, "stateIcon", "disabledStateIcon", !this.enabled);
             if (icon) {
                 if (pressed) {
                     icon = this.component.render("pressedStateIcon", icon); 
@@ -87,28 +87,28 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
         var entityCount = (text != null ? 1 : 0) + (icon ? 1 : 0) + 1; // +1 for state element.
         if (entityCount == 1) {
             if (text != null) {
-                this._renderButtonText(this._div, text);
+                this.renderButtonText(this.div, text);
             } else if (icon) {
-                this._iconImg = this._renderButtonIcon(this._div, icon);
+                this.iconImg = this.renderButtonIcon(this.div, icon);
             } else {
-                this._stateElement = this._renderButtonState(this._div);
+                this._stateElement = this._renderButtonState(this.div);
             }
         } else if (entityCount == 2) {
             orientation = Echo.Sync.TriCellTable.getInvertedOrientation(this.component, "statePosition", "leading");
             margin = this.component.render("stateMargin", Echo.Sync.Button._defaultIconTextMargin);
             tct = new Echo.Sync.TriCellTable(orientation, Echo.Sync.Extent.toPixels(margin));
             if (text != null) {
-                this._renderButtonText(tct.tdElements[0], text);
+                this.renderButtonText(tct.tdElements[0], text);
                 if (icon) {
-                    this._iconImg = this._renderButtonIcon(tct.tdElements[1], icon);
+                    this.iconImg = this.renderButtonIcon(tct.tdElements[1], icon);
                 } else {
                     this._stateElement = this._renderButtonState(tct.tdElements[1]);
                 }
             } else {
-                this._iconImg = this._renderButtonIcon(tct.tdElements[0], icon);
+                this.iconImg = this.renderButtonIcon(tct.tdElements[0], icon);
                 this._stateElement = this._renderButtonState(tct.tdElements[1]);
             }
-            this._div.appendChild(tct.tableElement);
+            this.div.appendChild(tct.tableElement);
         } else if (entityCount == 3) {
             orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
             margin = this.component.render("iconTextMargin", Echo.Sync.Button._defaultIconTextMargin);
@@ -116,10 +116,10 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
             var stateMargin = this.component.render("stateMargin", Echo.Sync.Button._defaultIconTextMargin);
             tct = new Echo.Sync.TriCellTable(orientation, 
                     Echo.Sync.Extent.toPixels(margin), stateOrientation, Echo.Sync.Extent.toPixels(stateMargin));
-            this._renderButtonText(tct.tdElements[0], text);
-            this._iconImg = this._renderButtonIcon(tct.tdElements[1], icon);
+            this.renderButtonText(tct.tdElements[0], text);
+            this.iconImg = this.renderButtonIcon(tct.tdElements[1], icon);
             this._stateElement = this._renderButtonState(tct.tdElements[2]);
-            this._div.appendChild(tct.tableElement);
+            this.div.appendChild(tct.tableElement);
         }
     },
     
