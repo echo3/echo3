@@ -153,6 +153,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
             }
             stateElement.defaultChecked = this._selected ? true : false;
             Core.Web.Event.add(stateElement, "change", Core.method(this, this._processStateChange), false);
+            Core.Web.Event.add(this.div, "click", Core.method(this, this._processStateChange), false);
         }
         parent.appendChild(stateElement);
         var stateAlignment = this.component.render("stateAlignment"); 
