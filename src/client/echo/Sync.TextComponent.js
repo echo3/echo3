@@ -146,7 +146,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      * Processes a mouse click event. Notifies application of focus.
      */
     _processClick: function(e) {
-        if (!this.client || !this.client.verifyInput(this.component)) {
+        if (!this.client) {
             return true;
         }
         this.client.application.setFocusedComponent(this.component);
@@ -157,7 +157,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      */
     _processFocus: function(e) {
         this._focused = true;
-        if (!this.client || !this.client.verifyInput(this.component)) {
+        if (!this.client) {
             return true;
         }
         this.client.application.setFocusedComponent(this.component);

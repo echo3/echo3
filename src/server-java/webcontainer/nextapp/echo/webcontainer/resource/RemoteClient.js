@@ -120,6 +120,18 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     _initialized: false,
     
     /**
+     * The last component which was focused on the client before synchronization.
+     * @type Component
+     */
+    _clientFocusedComponent: null,
+    
+    /**
+     * The component which the server has requested to be focused.
+     * @type Component
+     */
+    _serverFocusedComponent: null,
+    
+    /**
      * Current client/server transaction id.
      * @type Number
      */
@@ -386,8 +398,8 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         this.removeInputRestriction(this._inputRestrictionId);
         
         // Focus component
-        if (this._focusedComponent) {
-            this.application.setFocusedComponent(this._focusedComponent);
+        if (this._serverFocusedComponent) {
+            this.application.setFocusedComponent(this._serverFocusedComponent);
         }
     
         if (Echo.Client.profilingTimer) {
@@ -461,9 +473,12 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             throw new Error("Attempt to invoke client/server synchronization while another transaction is in progress."); 
         }
     
+        this._clientFocusedComponent = this.application ? this.application.getFocusedComponent() : null;
+        this._serverFocusedComponent = null;
+        
         this._transactionInProgress = true;
         this._inputRestrictionId = this.createInputRestriction(true);
-    
+
         this._asyncManager._stop();    
         this._syncInitTime = new Date().getTime();
 
@@ -1154,7 +1169,10 @@ Echo.RemoteClient.ComponentFocusProcessor = Core.extend(Echo.RemoteClient.Direct
         var element = dirElement.firstChild;
         while (element) {
             if (element.nodeType == 1 && element.nodeName == "focus") {
-                this.client._focusedComponent = this.client.application.getComponentByRenderId(element.getAttribute("i"));
+                var newComponent = this.client.application.getComponentByRenderId(element.getAttribute("i"));
+                if (newComponent != this.client._clientFocusedComponent) {
+                    this.client._serverFocusedComponent = newComponent;
+                }
             }
             element = element.nextSibling;
         }
