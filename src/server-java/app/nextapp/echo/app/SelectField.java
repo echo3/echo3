@@ -36,6 +36,10 @@ import nextapp.echo.app.list.ListModel;
 /**
  * <code>SelectField</code> component: a selection component which display selection items in a drop-down field. Allows the
  * selection of only one item at a time. Does not support child components.
+ * <p>
+ * One item of the select field will always be displayed as being selected.  If the model does not specify a selected item,
+ * the first item will be selected.  Note that the <code>getSelectedItem()</code> and <code>getSelectedIndex()</code> methods
+ * of this object will reflect such selection, even when the model itself does not.
  */
 public class SelectField extends AbstractListComponent {
 
@@ -75,8 +79,13 @@ public class SelectField extends AbstractListComponent {
      * @return the index of the currently selected item
      */
     public int getSelectedIndex() {
-        int selectedIndex = getSelectionModel().getMinSelectedIndex(); 
-        return selectedIndex == -1 ? 0 : selectedIndex;
+        int selectedIndex = getSelectionModel().getMinSelectedIndex();
+        if (selectedIndex == -1) {
+            // Return -1 only if model is empty, otherwise return default selected index of 0.
+            return getModel().size() > 0 ? 0 : -1;
+        } else {
+            return selectedIndex;
+        }
     }
     
     /**
@@ -88,7 +97,11 @@ public class SelectField extends AbstractListComponent {
      */
     public Object getSelectedItem() {
         int selectedIndex = getSelectionModel().getMinSelectedIndex();
-        return selectedIndex == -1 ? null : getModel().get(selectedIndex);
+        if (selectedIndex == -1) {
+            return getModel().size() > 0 ? getModel().get(0): null;
+        } else {
+            return getModel().get(selectedIndex);
+        }
     }
     
     /**
@@ -110,7 +123,7 @@ public class SelectField extends AbstractListComponent {
      * selected index to that of the first item that is found to test equal 
      * (using Object.equals()) to the specified item.
      *
-     * @param item the new selected item, or null, to select nothing
+     * @param item the new selected item
      */
     public void setSelectedItem(Object item) {
         if (item != null) {
