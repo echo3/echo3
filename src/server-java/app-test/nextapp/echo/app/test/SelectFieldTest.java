@@ -49,6 +49,28 @@ public class SelectFieldTest extends TestCase {
         }
     }
     
+    public void testEmptyModelSelection() {
+        SelectField selectField = new SelectField();
+        assertEquals(-1, selectField.getSelectionModel().getMinSelectedIndex());
+        assertEquals(-1, selectField.getSelectionModel().getMaxSelectedIndex());
+        assertEquals(-1, selectField.getSelectedIndex());
+        assertEquals(null, selectField.getSelectedItem());
+    }
+    
+    public void testSingleModelSelection() {
+        SelectField selectField = new SelectField(new Object[] { "Single" });
+        assertEquals(-1, selectField.getSelectionModel().getMinSelectedIndex());
+        assertEquals(-1, selectField.getSelectionModel().getMaxSelectedIndex());
+        assertEquals(0, selectField.getSelectedIndex());
+        assertEquals("Single", selectField.getSelectedItem());
+    }
+    
+    public void testSelection() {
+        SelectField selectField = new SelectField(new Object[] { "One", "Two", "Three" });
+        assertEquals(0, selectField.getSelectedIndex());
+        assertEquals("One", selectField.getSelectedItem());
+    }
+    
     /**
      * Ensures that invoking <code>getSelectedItem</code> on a 
      * <code>SelectField</code> with no selected items returns null.
