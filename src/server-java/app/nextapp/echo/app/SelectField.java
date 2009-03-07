@@ -74,8 +74,10 @@ public class SelectField extends AbstractListComponent {
     }
     
     /**
-     * Returns the index of the currently selected item.
-     *
+     * Returns the index of the currently selected item. If the selection model does not specify a selection, a value of zero is
+     * returned indicating the default (first) item of the SelectField is selected. If the model itself has no items, a value of -1
+     * will be returned.
+     * 
      * @return the index of the currently selected item
      */
     public int getSelectedIndex() {
@@ -89,10 +91,10 @@ public class SelectField extends AbstractListComponent {
     }
     
     /**
-     * Returns the currently selected item.
-     * This is a convenience method that returns the item from the model
-     * whose index is selected.
-     *
+     * Returns the currently selected item. This is a convenience method that returns the item from the model whose index is
+     * selected. If the selection model is empty, the default (item) of the SelectField is returned. If the model itself has not
+     * item, null will be returned.
+     * 
      * @return the currently selected item
      */
     public Object getSelectedItem() {
