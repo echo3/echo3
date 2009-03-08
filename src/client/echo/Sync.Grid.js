@@ -603,7 +603,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
             width = gridProcessor.xExtents[columnIndex];
             if (width != null) {
                 if (Echo.Sync.Extent.isPercent(width)) {
-                    col.width = width.toString();
+                    col.style.width = width.toString();
                 } else {
                     var widthValue = Echo.Sync.Extent.toPixels(width, true);
                     if (Core.Web.Env.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING) {
@@ -612,7 +612,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                             widthValue = 0;
                         }
                     }
-                    col.width = widthValue + "px";
+                    col.style.width = widthValue + "px";
                 }
             }
             colGroup.appendChild(col);
