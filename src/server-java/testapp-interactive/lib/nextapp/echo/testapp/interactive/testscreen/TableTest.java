@@ -97,13 +97,18 @@ public class TableTest extends SplitPane {
     
     private class MultiplicationTableModel extends AbstractTableModel {
 
-        private int rowCount =12;
+        private int rowCount;
+        private int columnCount;
+        
+        MultiplicationTableModel(int count) {
+            this.rowCount = this.columnCount = count;
+        }
         
         /**
          * @see nextapp.echo.app.table.TableModel#getColumnCount()
          */
         public int getColumnCount() {
-            return 12;
+            return columnCount;
         }
         
         /**
@@ -290,9 +295,21 @@ public class TableTest extends SplitPane {
 
         controlsColumn.add(new Label("TableModel"));
         
-        controlsColumn.addButton("Multiplication Model", new ActionListener() {
+        controlsColumn.addButton("Multiplication Model 3x3", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                testTable.setModel(new MultiplicationTableModel());
+                testTable.setModel(new MultiplicationTableModel(3));
+            }
+        });
+        
+        controlsColumn.addButton("Multiplication Model 6x6", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testTable.setModel(new MultiplicationTableModel(6));
+            }
+        });
+        
+        controlsColumn.addButton("Multiplication Model 12x12", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testTable.setModel(new MultiplicationTableModel(12));
             }
         });
         
@@ -390,7 +407,7 @@ public class TableTest extends SplitPane {
             }
         });
         
-        testTable = new Table(new MultiplicationTableModel());
+        testTable = new Table(new MultiplicationTableModel(12));
         testTable.setBorder(new Border(new Extent(1), Color.BLUE, Border.STYLE_SOLID));
         testColumn.add(testTable);
 
