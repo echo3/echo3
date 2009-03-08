@@ -671,6 +671,15 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                 
                 var layoutData = cell.component.render("layoutData");
                 if (layoutData) {
+                    var columnWidth = gridProcessor.xExtents[columnIndex];
+                    if (Core.Web.Env.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING && columnWidth && 
+                            !Echo.Sync.Extent.isPercent(columnWidth)) { 
+                        var cellInsets = Echo.Sync.Insets.toPixels(layoutData.insets);
+                        if (defaultPixelInsets.left + defaultPixelInsets.right < cellInsets.left + cellInsets.right) {
+                            td.style.width = (Echo.Sync.Extent.toPixels(columnWidth) - 
+                                    (cellInsets.left + cellInsets.right)) + "px";
+                        }
+                    }
                     Echo.Sync.Insets.render(layoutData.insets, td, "padding");
                     Echo.Sync.Alignment.render(layoutData.alignment, td, true, this.component);
                     Echo.Sync.FillImage.render(layoutData.backgroundImage, td);
