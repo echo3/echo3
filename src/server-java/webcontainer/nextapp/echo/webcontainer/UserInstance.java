@@ -119,7 +119,9 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
          * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
          */
         public void propertyChange(PropertyChangeEvent e) {
-            
+            if (ApplicationInstance.STYLE_SHEET_CHANGED_PROPERTY.equals(e.getPropertyName())) {
+                updatedPropertyNames.add(ApplicationInstance.STYLE_SHEET_CHANGED_PROPERTY);
+            }
         }
     };
     

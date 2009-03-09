@@ -774,6 +774,8 @@ implements Serializable {
         locale = newValue;
         layoutDirection = LayoutDirection.forLocale(locale);
         propertyChangeSupport.firePropertyChange(LOCALE_CHANGED_PROPERTY, oldValue, newValue);
+        
+        // Perform full refresh: container's synchronization peers may need to provide new localization resources to client. 
         updateManager.getServerUpdateManager().processFullRefresh();
     }
     
@@ -821,7 +823,6 @@ implements Serializable {
         StyleSheet oldValue = styleSheet;
         this.styleSheet = newValue;
         firePropertyChange(STYLE_SHEET_CHANGED_PROPERTY, oldValue, newValue);
-        updateManager.getServerUpdateManager().processFullRefresh();
     }
 
     /**

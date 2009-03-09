@@ -40,6 +40,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Command;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
@@ -227,6 +228,8 @@ class OutputProcessor {
             String propertyName = (String) it.next();
             if (UserInstance.PROPERTY_CLIENT_CONFIGURATION.equals(propertyName)) {
                 renderClientConfiguration();
+            } else if (ApplicationInstance.STYLE_SHEET_CHANGED_PROPERTY.equals(propertyName)) {
+                renderStyleSheet();
             }
         }
     }
