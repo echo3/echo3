@@ -29,6 +29,8 @@
 
 package nextapp.echo.webcontainer;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -57,7 +59,9 @@ import nextapp.echo.webcontainer.util.IdTable;
  */
 public class UserInstance 
 implements HttpSessionActivationListener, HttpSessionBindingListener, Serializable {
-
+    
+    private abstract class SerializablePropertyChangeListener implements PropertyChangeListener, Serializable { }
+    
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
@@ -105,6 +109,19 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * Mapping between component instances and <code>RenderState</code> objects.
      */
     private Map componentToRenderStateMap = new HashMap();
+    
+    /**
+     * <code>PropertyChangeListener</code> for supported <code>ApplicationInstance</code>.
+     */
+    private PropertyChangeListener applicationPropertyChangeListener = new SerializablePropertyChangeListener() {
+    
+        /**
+         * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+         */
+        public void propertyChange(PropertyChangeEvent e) {
+            
+        }
+    };
     
     /**
      * <code>IdTable</code> used to assign weakly-referenced unique 
@@ -431,6 +448,23 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
     public UpdateManager getUpdateManager() {
         return applicationInstance.getUpdateManager();
     }
+    
+    /**
+     * Disposes of the <code>UserInstance</code>.
+     */
+    public void dispose() {
+        if (applicationInstance != null) {
+            try {
+                ApplicationInstance.setActive(applicationInstance);
+                applicationInstance.removePropertyChangeListener(applicationPropertyChangeListener);
+                applicationInstance.dispose();
+                applicationInstance = null;
+            } finally {
+                ApplicationInstance.setActive(null);
+            }
+        }
+        session = null;
+    }
 
     /**
      * Initializes the <code>UserInstance</code>, creating an instance
@@ -446,6 +480,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         }
         WebContainerServlet servlet = (WebContainerServlet) conn.getServlet();
         applicationInstance = servlet.newApplicationInstance();
+        applicationInstance.addPropertyChangeListener(applicationPropertyChangeListener);
         
         ContainerContext containerContext = new ContainerContextImpl(this);
         applicationInstance.setContextProperty(ContainerContext.CONTEXT_PROPERTY_NAME, containerContext);
@@ -602,14 +637,6 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * @see javax.servlet.http.HttpSessionBindingListener#valueUnbound(HttpSessionBindingEvent)
      */
     public void valueUnbound(HttpSessionBindingEvent e) {
-        if (applicationInstance != null) {
-            try {
-                ApplicationInstance.setActive(applicationInstance);
-                applicationInstance.dispose();
-            } finally {
-                ApplicationInstance.setActive(null);
-            }
-        }
-        session = null;
+        dispose();
     }
 }
