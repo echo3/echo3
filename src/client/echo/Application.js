@@ -49,9 +49,9 @@ Echo.Application = Core.extend({
         init: function() { },
         
         /**
-         * Performs application disposal/resource cleanup operations.  This method should be provided by an application implementation
-         * if required.  The superclass' <code>dispose()</code> method should always be invoked out of convention.
-         * The <code>client</code> property will be available. 
+         * Performs application disposal/resource cleanup operations. This method should be provided by an application
+         * implementation if required. The superclass' <code>dispose()</code> method should always be invoked out of convention.
+         * The <code>client</code> property will be available.
          */
         dispose: function() { }
     },
