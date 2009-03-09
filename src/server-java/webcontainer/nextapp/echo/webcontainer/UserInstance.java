@@ -458,12 +458,10 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
                 ApplicationInstance.setActive(applicationInstance);
                 applicationInstance.removePropertyChangeListener(applicationPropertyChangeListener);
                 applicationInstance.dispose();
-                applicationInstance = null;
             } finally {
                 ApplicationInstance.setActive(null);
             }
         }
-        session = null;
     }
 
     /**
@@ -638,5 +636,6 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      */
     public void valueUnbound(HttpSessionBindingEvent e) {
         dispose();
+        session = null;
     }
 }
