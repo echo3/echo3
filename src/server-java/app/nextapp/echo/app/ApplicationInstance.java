@@ -61,6 +61,7 @@ implements Serializable {
     public static final String FOCUSED_COMPONENT_CHANGED_PROPERTY = "focusedComponent";
     public static final String LOCALE_CHANGED_PROPERTY = "locale";
     public static final String MODAL_COMPONENTS_CHANGED_PROPERTY = "modalComponents";
+    public static final String STYLE_SHEET_CHANGED_PROPERTY = "styleSheet";
     public static final String WINDOWS_CHANGED_PROPERTY = "windows";
     
     /** 
@@ -814,10 +815,12 @@ implements Serializable {
      * only be reconfigured at application initialization and/or when
      * the user changes the visual theme of a theme-capable application.
      * 
-     * @param styleSheet the new style sheet
+     * @param newValue the new style sheet
      */
-    public void setStyleSheet(StyleSheet styleSheet) {
-        this.styleSheet = styleSheet;
+    public void setStyleSheet(StyleSheet newValue) {
+        StyleSheet oldValue = styleSheet;
+        this.styleSheet = newValue;
+        firePropertyChange(STYLE_SHEET_CHANGED_PROPERTY, oldValue, newValue);
         updateManager.getServerUpdateManager().processFullRefresh();
     }
 
