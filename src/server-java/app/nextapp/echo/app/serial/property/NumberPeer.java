@@ -71,7 +71,7 @@ implements SerialPropertyPeer {
     public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
     throws SerialException {
         SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
-        propertyElement.setAttribute("t", "i");
+        propertyElement.setAttribute("t", "n");
         propertyElement.appendChild(serialContext.getDocument().createTextNode(propertyValue.toString()));
     }
 }
