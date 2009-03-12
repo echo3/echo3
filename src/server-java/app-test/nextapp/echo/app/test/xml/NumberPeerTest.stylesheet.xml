@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ss>
+ <s n="zero" t="nextapp.echo.app.test.xml.NumberPeerTest$NumberComponent">
+  <p n="number">0</p>
+ </s>
+ <s n="two" t="nextapp.echo.app.test.xml.NumberPeerTest$NumberComponent">
+  <p n="number">2</p>
+ </s>
+ <s n="twopointthree" t="nextapp.echo.app.test.xml.NumberPeerTest$NumberComponent">
+  <p n="number">2.3</p>
+ </s>
+</ss>

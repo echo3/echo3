@@ -33,17 +33,29 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-import nextapp.echo.app.Button;
-import nextapp.echo.app.Label;
+import nextapp.echo.app.Component;
 import nextapp.echo.app.Style;
 import nextapp.echo.app.StyleSheet;
 import nextapp.echo.app.serial.StyleSheetLoader;
 
 /**
- * Unit test(s) for <code>nextapp.echo.app.serial.property.BooleanPeer</code>.
+ * Unit test(s) for <code>nextapp.echo.app.serial.property.NumberPeer</code>.
  */
-public class BooleanPeerTest extends TestCase {
+public class NumberPeerTest extends TestCase {
 
+    public static class NumberComponent extends Component {
+        
+        public static final String PROPERTY_NUMBER = "number";
+        
+        public Number getNumber() {
+            return (Number) get(PROPERTY_NUMBER);
+        }
+        
+        public void setNumber(Number newValue) {
+            set(PROPERTY_NUMBER, newValue);
+        }
+    }
+    
     private StyleSheet styleSheet;
     
     /**
@@ -51,24 +63,33 @@ public class BooleanPeerTest extends TestCase {
      */
     public void setUp()
     throws Exception {
-        InputStream in = BooleanPeerTest.class.getClassLoader().getResourceAsStream(
-                "nextapp/echo/app/test/xml/BooleanPeerTest.stylesheet.xml");
+        InputStream in = NumberPeerTest.class.getClassLoader().getResourceAsStream(
+                "nextapp/echo/app/test/xml/NumberPeerTest.stylesheet.xml");
         styleSheet = StyleSheetLoader.load(in, StyleSheetLoaderTest.class.getClassLoader());
         in.close();
     }
     
-    /**
-     * Test retrieval of boolean properties.
-     */
-    public void testLoadTrue() {
-        Style deltaStyle = styleSheet.getStyle("delta", Button.class, true);
+    public void testZero() {
+        Style deltaStyle = styleSheet.getStyle("zero", NumberComponent.class, true);
         assertNotNull(deltaStyle);
-        assertEquals(Boolean.TRUE, deltaStyle.get("lineWrap"));
+        Number n = (Number) deltaStyle.get(NumberComponent.PROPERTY_NUMBER);
+        assertNotNull(n);
+        assertEquals(0, n.intValue());
     }
     
-    public void testLoadFalse() {
-        Style charlieStyle = styleSheet.getStyle("charlie", Label.class, true);
-        assertNotNull(charlieStyle);
-        assertEquals(Boolean.FALSE, charlieStyle.get("lineWrap"));
+    public void testTwo() {
+        Style deltaStyle = styleSheet.getStyle("two", NumberComponent.class, true);
+        assertNotNull(deltaStyle);
+        Number n = (Number) deltaStyle.get(NumberComponent.PROPERTY_NUMBER);
+        assertNotNull(n);
+        assertEquals(2, n.intValue());
+    }
+    
+    public void testTwoPointThree() {
+        Style deltaStyle = styleSheet.getStyle("twopointthree", NumberComponent.class, true);
+        assertNotNull(deltaStyle);
+        Number n = (Number) deltaStyle.get(NumberComponent.PROPERTY_NUMBER);
+        assertNotNull(n);
+        assertEquals(2.3, n.doubleValue(), 0.0000001);
     }
 }
