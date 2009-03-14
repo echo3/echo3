@@ -77,14 +77,24 @@ Echo.Render = {
      * @param {Echo.Component} component the component on which to invoke renderDisplay()
      */
     _doRenderDisplayImpl: function(component) {
-        if (component.peer) {
-            // components that are present on the client, but are not rendered (lazy rendered as in tree), 
-            // have no peer installed.
-            if (component.peer.renderDisplay) {
-                component.peer.renderDisplay();
+        if (!component.peer) {
+            // Do nothing for components that are not rendered. 
+            return;
+        }
+        
+        if (component.peer.renderDisplay) {
+            component.peer.renderDisplay();
+        }
+        
+        var i;
+        if (component.peer.isChildVisible) {
+            for (i = 0; i < component.children.length; ++i) {
+                if (component.peer.isChildVisible(component.children[i])) {
+                    Echo.Render._doRenderDisplayImpl(component.children[i]);
+                }
             }
-            
-            for (var i = 0; i < component.children.length; ++i) {
+        } else {
+            for (i = 0; i < component.children.length; ++i) {
                 Echo.Render._doRenderDisplayImpl(component.children[i]);
             }
         }
@@ -393,6 +403,26 @@ Echo.Render = {
     },
     
     /**
+     * Notifies a child component and its descendants that it is about to be removed from the DOM or otherwise hidden from view.
+     * The <code>renderHide()</code> methods of the peers of the specified child component and its descendants will be invoked.
+     * 
+     * @param {Echo.Component} component the child component being hidden
+     */
+    renderComponentHide: function(component) {
+        if (!component.peer || component.peer.disposed) {
+            return;
+        }
+        
+        if (component.peer.renderHide) {
+            component.peer.renderHide();
+        }
+        
+        for (var i = 0; i < component.children.length; ++i) {
+            Echo.Render.renderComponentHide(component.children[i]);
+        }
+    },
+    
+    /**
      * Sets the peer disposed state of a component.
      * The peer disposed state indicates whether the renderDispose()
      * method of the component has been executed since it was last rendered.
@@ -632,14 +662,35 @@ Echo.Render.ComponentSync = Core.extend({
         getPreferredSize: null,
         
         /**
+         * (Optional) Determines if the specified child component is currently displayed.  Implementations
+         * should return true if the specified child component is on-screen and should have its <code>renderDisplay()</code>
+         * method invoked when required, or false if the component is off-screen.
+         * 
+         * @param component the child component
+         * @return true if the component should have its renderDisplay() method invoked
+         * @type Boolean
+         */
+        isChildVisible: null,
+        
+        /**
          * (Optional) Invoked when component is rendered focused.
          */
         renderFocus: null,
         
         /**
-         * (Optional) Invoked when the component has been added to the hierarchy and first appears
+         * (Optional) Invoked when a parent/ancestor component is hiding the content of this component, possibly removing it from
+         * the DOM.  An parent/ancestor DOM element will automatically be removed/hidden, but the component may need to take action 
+         * to remove any rendered items not contained within that element.
+         * The renderDisplay() method will be invoked the when/if the component is displayed again.
+         * This method may be invoked on components which are already in a hidden state.
+         * This method will not necessarily be invoked prior to disposal.
+         */
+        renderHide: null,
+        
+        /**
+         * (Optional) Invoked when the component has been added (or-readded) to the hierarchy and first appears
          * on screen, and when ancestors of the component (or the containing window) have
-         * resized.         
+         * resized.
          */
         renderDisplay: null
     }
