@@ -85,6 +85,7 @@ Echo.Render = {
         if (component.peer.renderDisplay) {
             component.peer.renderDisplay();
         }
+        component.peer.displayed = true;
         
         var i;
         if (component.peer.isChildVisible) {
@@ -413,12 +414,14 @@ Echo.Render = {
             return;
         }
         
-        if (component.peer.renderHide) {
-            component.peer.renderHide();
-        }
-        
-        for (var i = 0; i < component.children.length; ++i) {
-            Echo.Render.renderComponentHide(component.children[i]);
+        if (component.peer.displayed) {
+            if (component.peer.renderHide) {
+                component.peer.renderHide();
+            }
+            component.peer.displayed = false;
+            for (var i = 0; i < component.children.length; ++i) {
+                Echo.Render.renderComponentHide(component.children[i]);
+            }
         }
     },
     
@@ -553,6 +556,12 @@ Echo.Render.ComponentSync = Core.extend({
      * @type Echo.Component
      */
     component: null,
+    
+    /**
+     * Flag indicating whether component is displayed or hidden.  Initially false until <code>renderDisplay()</code> has been
+     * invoked, then will be set to true.  Will again be set false after invocation of <code>renderHide()</code>.
+     */
+    displayed: false,
     
     /**
      * Flag indicating that the component has been disposed, i.e., the peer's <code>renderDispose()</code> method 
