@@ -36,6 +36,12 @@ Echo.Sync.RemoteTextField.Sync = Core.extend(Echo.Sync.TextField, {
         this._processChangeRef = Core.method(this, this._processChange);
     },
     
+    getSupportedPartialProperties: function() {
+       var properties = this.constructor.$super.prototype.getSupportedPartialProperties();
+       properties.push("syncMode", "syncDelay", "syncInitialDelay");
+       return properties;
+    },
+    
     _processChange: function(e) {
         if (!this.client) {
             return;

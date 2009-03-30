@@ -10,27 +10,10 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     
     $abstract: true,
     
-    $static: {
-    
-        /**
-         * Array containing properties that may be updated without full re-render.
-         * @type Array
-         */
-        _supportedPartialProperties: ["text", "editable"]
-    },
-    
     $virtual: {
         
-        /**
-         * Determines if the specified update requires a full render of the component.
-         * 
-         * @param {Echo.Update.ComponentUpdate} update the update
-         * @return true if a full update is required
-         * @type Boolean
-         */
-        isFullRenderRequired: function(update) {
-            return !Core.Arrays.containsAll(Echo.Sync.TextComponent._supportedPartialProperties, 
-                                update.getUpdatedPropertyNames(), true);
+        getSupportedPartialProperties: function() {
+           return ["text", "editable"];
         },
         
         /**
@@ -269,7 +252,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     
     /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
-        var fullRender = this.isFullRenderRequired(update);
+        var fullRender = !Core.Arrays.containsAll(this.getSupportedPartialProperties(), update.getUpdatedPropertyNames(), true);
     
         if (fullRender) {
             var element = this.container ? this.container : this.input;
