@@ -48,6 +48,7 @@ import nextapp.echo.testapp.interactive.ButtonColumn;
 import nextapp.echo.testapp.interactive.InteractiveApp;
 import nextapp.echo.testapp.interactive.StyleUtil;
 import nextapp.echo.testapp.interactive.Styles;
+import nextapp.echo.webcontainer.sync.component.TextComponentPeer;
 
 public class TextComponentTest extends SplitPane {
     
@@ -113,6 +114,22 @@ public class TextComponentTest extends SplitPane {
         final TextArea textArea = new TextArea();
         textArea.setBorder(new Border(1, Color.BLUE, Border.STYLE_SOLID));
         testColumn.add(textArea);
+        
+        controlsColumn.addButton("Set StyleName = Default", new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                textField.setStyleName("Default");
+                passwordField.setStyleName("Default");
+                textArea.setStyleName("Default");
+            }
+        });
+        
+        controlsColumn.addButton("Set StyleName = Null", new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                textField.setStyleName(null);
+                passwordField.setStyleName(null);
+                textArea.setStyleName(null);
+            }
+        });
         
         controlsColumn.addButton("Query TextField State", new ActionListener(){
         
@@ -521,6 +538,82 @@ public class TextComponentTest extends SplitPane {
         controlsColumn.addButton("Focus TextArea", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().setFocusedComponent(textArea);
+            }
+        });
+        controlsColumn.addButton("Sync Mode: On Action", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.set(TextComponentPeer.PROPERTY_SYNC_MODE, 
+                        new Integer(TextComponentPeer.SYNC_ON_ACTION));
+                passwordField.set(TextComponentPeer.PROPERTY_SYNC_MODE, 
+                        new Integer(TextComponentPeer.SYNC_ON_ACTION));
+                textArea.set(TextComponentPeer.PROPERTY_SYNC_MODE, 
+                        new Integer(TextComponentPeer.SYNC_ON_ACTION));
+            }
+        });
+        controlsColumn.addButton("Sync Mode: On Change", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.set(TextComponentPeer.PROPERTY_SYNC_MODE, 
+                        new Integer(TextComponentPeer.SYNC_ON_CHANGE));
+                passwordField.set(TextComponentPeer.PROPERTY_SYNC_MODE, 
+                        new Integer(TextComponentPeer.SYNC_ON_CHANGE));
+                textArea.set(TextComponentPeer.PROPERTY_SYNC_MODE, 
+                        new Integer(TextComponentPeer.SYNC_ON_CHANGE));
+            }
+        });
+        controlsColumn.addButton("Sync Delay: 0", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.set(TextComponentPeer.PROPERTY_SYNC_DELAY, new Integer(0));
+                passwordField.set(TextComponentPeer.PROPERTY_SYNC_DELAY, new Integer(0));
+                textArea.set(TextComponentPeer.PROPERTY_SYNC_DELAY, new Integer(0));
+            }
+        });
+        controlsColumn.addButton("Sync Delay: 500", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.set(TextComponentPeer.PROPERTY_SYNC_DELAY, new Integer(500));
+                passwordField.set(TextComponentPeer.PROPERTY_SYNC_DELAY, new Integer(500));
+                textArea.set(TextComponentPeer.PROPERTY_SYNC_DELAY, new Integer(500));
+            }
+        });
+        controlsColumn.addButton("Sync Delay: 1000", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.set(TextComponentPeer.PROPERTY_SYNC_DELAY, new Integer(1000));
+                passwordField.set(TextComponentPeer.PROPERTY_SYNC_DELAY, new Integer(1000));
+                textArea.set(TextComponentPeer.PROPERTY_SYNC_DELAY, new Integer(1000));
+            }
+        });
+        controlsColumn.addButton("Sync Delay: 3000", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.set(TextComponentPeer.PROPERTY_SYNC_DELAY, new Integer(3000));
+                passwordField.set(TextComponentPeer.PROPERTY_SYNC_DELAY, new Integer(3000));
+                textArea.set(TextComponentPeer.PROPERTY_SYNC_DELAY, new Integer(3000));
+            }
+        });
+        controlsColumn.addButton("Sync Initial Delay: 0", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(0));
+                passwordField.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(0));
+                textArea.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(0));
+            }
+        });
+        controlsColumn.addButton("Sync Initial Delay: 500", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(500));
+                passwordField.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(500));
+                textArea.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(500));
+            }
+        });
+        controlsColumn.addButton("Sync Initial Delay: 1000", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(1000));
+                passwordField.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(1000));
+                textArea.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(1000));
+            }
+        });
+        controlsColumn.addButton("Sync Initial Delay: 3000", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(3000));
+                passwordField.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(3000));
+                textArea.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(3000));
             }
         });
     }

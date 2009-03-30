@@ -22,6 +22,18 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     $virtual: {
         
         /**
+         * Determines if the specified update requires a full render of the component.
+         * 
+         * @param {Echo.Update.ComponentUpdate} update the update
+         * @return true if a full update is required
+         * @type Boolean
+         */
+        isFullRenderRequired: function(update) {
+            return !Core.Arrays.containsAll(Echo.Sync.TextComponent._supportedPartialProperties, 
+                                update.getUpdatedPropertyNames(), true);
+        },
+        
+        /**
          * Invoked to ensure that input meets requirements of text field.  Default implementation ensures input
          * does not exceed maximum length.
          */
@@ -257,8 +269,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     
     /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
-        var fullRender = !Core.Arrays.containsAll(Echo.Sync.TextComponent._supportedPartialProperties, 
-                    update.getUpdatedPropertyNames(), true);
+        var fullRender = this.isFullRenderRequired(update);
     
         if (fullRender) {
             var element = this.container ? this.container : this.input;

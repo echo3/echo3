@@ -2087,6 +2087,8 @@ Core.Web.Scheduler = {
     
     /**
      * Enqueues a Runnable to be executed by the scheduler.
+     * If the runnable is currently enqueued, it will be removed and re-enqueued.  It will be next be invoked
+     * after its specified time interval.
      * 
      * @param {Core.Web.Scheduler.Runnable} runnable the runnable to enqueue
      */

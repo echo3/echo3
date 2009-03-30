@@ -44,9 +44,62 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
  */
 public class TextComponentPeer extends AbstractComponentSynchronizePeer {
 
+    /**
+     * Constant for <code>PROPERTY_SYNC_MODE</code> indicating that the server should be notified of text changes only
+     * after an action event is fired.
+     * 
+     * <strong>EXPERIMENTAL, for testing purposes only, do not use.</strong>
+     */
+    public static final int SYNC_ON_ACTION = 0;
+
+    /**
+     * Constant for <code>PROPERTY_SYNC_MODE</code> indicating that the server should be notified of text changes after
+     * each change.  The <code>PROPERTY_SYNC_DELAY</code> and <code>PROPERTY_SYNC_INITIAL_DELAY</code> properties may be used to
+     * configure the amount of inactivity after which change events are fired.
+     * 
+     * <strong>EXPERIMENTAL, for testing purposes only, do not use.</strong>
+     */
+    public static final int SYNC_ON_CHANGE = 1;
+    
+    /**
+     * The mode in which the server should be synchronized in response to changes to a text component's value.
+     * One of the following values:
+     * <ul>
+     *  <li><code>SYNC_ON_ACTION</code> (the default)</li>
+     *  <li><code>SYNC_ON_CHANGE</code></li>
+     * </ul>
+     * 
+     * <strong>EXPERIMENTAL, for testing purposes only, do not use.</strong>
+     */
+    public static final String PROPERTY_SYNC_MODE = "syncMode";
+    
+    /**
+     * The time in milliseconds after which the server will be notified of changes to a text component.  This value is used only
+     * when the synchronization mode is set to <code>SYNC_ON_CHANGE</code>.
+     * The default value is 250ms.
+     * 
+     * <strong>EXPERIMENTAL, for testing purposes only, do not use.</strong>
+     */
+    public static final String PROPERTY_SYNC_DELAY = "syncDelay";
+
+    /**
+     * The time in milliseconds after which the server will first be notified of changes to a text component.  This value is used only
+     * when the synchronization mode is set to <code>SYNC_ON_CHANGE</code>.
+     * The default value is 0ms, such that the first change to a text component will immediately notify the server.
+     * 
+     * <strong>EXPERIMENTAL, for testing purposes only, do not use.</strong>
+     */
+    public static final String PROPERTY_SYNC_INITIAL_DELAY = "syncInitialDelay";
+    
+    /**
+     * Input property name for text change events.
+     */
+    public static final String INPUT_CHANGE = "change";
+    
     /** The associated client-side JavaScript module <code>Service</code>. */
-    private static final Service TEXT_COMPONENT_SERVICE = JavaScriptService.forResource("Echo.TextComponent", 
-            "nextapp/echo/webcontainer/resource/Sync.TextComponent.js");
+    private static final Service TEXT_COMPONENT_SERVICE = JavaScriptService.forResources("Echo.TextComponent", 
+            new String[] { "nextapp/echo/webcontainer/resource/Sync.TextComponent.js",
+            "nextapp/echo/webcontainer/resource/Sync.RemoteTextComponent.js" });
     
     static {
         WebContainerServlet.getServiceRegistry().add(TEXT_COMPONENT_SERVICE);
@@ -56,9 +109,16 @@ public class TextComponentPeer extends AbstractComponentSynchronizePeer {
     public TextComponentPeer() {
         super();
         addOutputProperty(TextComponent.TEXT_CHANGED_PROPERTY);
+        addOutputProperty(PROPERTY_SYNC_MODE);
         addEvent(new EventPeer(TextComponent.INPUT_ACTION, TextComponent.ACTION_LISTENERS_CHANGED_PROPERTY) {
             public boolean hasListeners(Context context, Component c) {
                 return ((TextComponent) c).hasActionListeners();
+            }
+        });
+        addEvent(new EventPeer(INPUT_CHANGE, PROPERTY_SYNC_MODE) {
+            public boolean hasListeners(Context context, Component c) {
+                return ((Integer) c.getRenderProperty(PROPERTY_SYNC_MODE, new Integer(SYNC_ON_ACTION))).intValue() 
+                        == SYNC_ON_CHANGE;
             }
         });
     }
@@ -78,6 +138,16 @@ public class TextComponentPeer extends AbstractComponentSynchronizePeer {
     }
     
     /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getInputPropertyClass(java.lang.String)
+     */
+    public Class getInputPropertyClass(String propertyName) {
+        if (TextComponent.TEXT_CHANGED_PROPERTY.equals(propertyName)) {
+            return String.class;
+        }
+        return null;
+    }
+    
+    /**
      * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getOutputProperty(
      *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, int)
      */
@@ -90,16 +160,6 @@ public class TextComponentPeer extends AbstractComponentSynchronizePeer {
         }
     }
 
-    /**
-     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getInputPropertyClass(java.lang.String)
-     */
-    public Class getInputPropertyClass(String propertyName) {
-        if (TextComponent.TEXT_CHANGED_PROPERTY.equals(propertyName)) {
-            return String.class;
-        }
-        return null;
-    }
-    
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context, Component)
      */

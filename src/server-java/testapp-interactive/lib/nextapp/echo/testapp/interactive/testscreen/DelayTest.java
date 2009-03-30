@@ -29,6 +29,9 @@
 
 package nextapp.echo.testapp.interactive.testscreen;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import nextapp.echo.app.Button;
 import nextapp.echo.app.CheckBox;
 import nextapp.echo.app.Insets;
@@ -38,6 +41,8 @@ import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.SplitPaneLayoutData;
 import nextapp.echo.testapp.interactive.InteractiveApp;
+import nextapp.echo.webcontainer.sync.component.TextComponentPeer;
+
 /**
  * A test for handling of long-running server-interactions.
  */
@@ -121,6 +126,21 @@ public class DelayTest extends Column {
             }
         });
         add(blockedButton);
+        
+        Button immediateListenerButton = new Button("Receive input events immediately");
+        immediateListenerButton.setStyleName("Default");
+        immediateListenerButton.addActionListener(new ActionListener() {
+        
+            public void actionPerformed(ActionEvent e) {
+                textField.set(TextComponentPeer.PROPERTY_SYNC_MODE, new Integer(TextComponentPeer.SYNC_ON_CHANGE));
+                textField.addPropertyChangeListener(new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent e) {
+                        InteractiveApp.getApp().consoleWrite("immediate: \"" + textField.getText() + "\"");
+                    }
+                });
+            }
+        });
+        add(immediateListenerButton);
         
         textField = new TextField();
         textField.addActionListener(new ActionListener() {
