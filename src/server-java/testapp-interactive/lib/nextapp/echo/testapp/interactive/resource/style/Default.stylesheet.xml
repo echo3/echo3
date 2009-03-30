@@ -47,6 +47,11 @@
   <p n="foreground" t="Color">#000000</p>
   <p n="border" t="Border">1px inset #ffffaf</p>
  </s>
+ <s n="Default" t="nextapp.echo.app.PasswordField">
+  <p n="background" t="Color">#ffdfdf</p>
+  <p n="foreground" t="Color">#000000</p>
+  <p n="border" t="Border">1px inset #ffffaf</p>
+ </s>
  <s n="DefaultResizable" t="nextapp.echo.app.SplitPane">
   <p n="resizable" t="b">true</p>
   <p n="separatorHorizontalImage" t="FillImage">
