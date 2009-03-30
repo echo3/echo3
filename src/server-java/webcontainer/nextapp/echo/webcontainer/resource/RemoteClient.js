@@ -353,7 +353,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             return;
         }
         this._clientMessage.setEvent(e.source.renderId, e.type, e.data);
-        this.sync();
+        Core.Web.Scheduler.run(Core.method(this, this.sync));
     },
     
     /**
@@ -871,6 +871,9 @@ Echo.RemoteClient.ClientMessage = Core.extend({
      * @param the event data object
      */
     setEvent: function(componentId, eventType, eventData) {
+        if (this._eventComponentId) {
+            return;
+        }
         this._eventComponentId = componentId;
         this._eventType = eventType;
         this._eventData = eventData;
