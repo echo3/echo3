@@ -157,7 +157,7 @@ Echo.Sync.RemotePasswordField.Sync = Core.extend(Echo.Sync.PasswordField, {
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
         this._remoteDispose();
-        Echo.Sync.PasswordField.prototype.renderDispose.call(this, update);
+        this.constructor.$super.prototype.renderDispose.call(this, update);
     }
 });
 
@@ -204,7 +204,7 @@ Echo.Sync.RemoteTextArea.Sync = Core.extend(Echo.Sync.TextArea, {
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
         this._remoteDispose();
-        Echo.Sync.TextArea.prototype.renderDispose.call(this, update);
+        this.constructor.$super.prototype.renderDispose.call(this, update);
     }
 });
 
@@ -251,7 +251,7 @@ Echo.Sync.RemoteTextField.Sync = Core.extend(Echo.Sync.TextField, {
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
         this._remoteDispose();
-        Echo.Sync.TextField.prototype.renderDispose.call(this, update);
+        this.constructor.$super.prototype.renderDispose.call(this, update);
     }
 });
 
