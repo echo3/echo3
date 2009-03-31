@@ -1,32 +1,74 @@
 /**
- * Component rendering peer for remote text components.
+ * Component rendering peer for RemoteClient-based text components.
  * This class should not be extended by developers, the implementation is subject to change.
  */
 Echo.Sync.RemoteTextComponent = Core.extend({
     
     $static: {
     
+        /**
+         * Constant for <code>syncMode</code> indicating that the server should be notified of text changes only
+         * after an action event is fired.
+         */
         SYNC_ON_ACTION: 0,
 
+        /**
+         * Constant for <code>syncMode</code> indicating that the server should be notified of text changes after
+         * each change.  The <code>syncDelay</code> and <code>syncInitialDelay</code> properties may be used to
+         * configure the amount of inactivity after which change events are fired.
+         */
         SYNC_ON_CHANGE: 1,
         
+        /**
+         * Mixin properties used by all remote text components.
+         */
         _SyncMixins: {
     
+            /**
+             * Method reference to instance's _processChange() method.
+             * @type Function
+             */
             _processChangeRef: null,
+            
+            /** 
+             * The synchronization mode, one of the following values:
+             * <ul>
+             *  <li><code>SYNC_ON_ACTION<code></li>
+             *  <li><code>SYNC_ON_CHANGE</code></li>
+             * </ul>
+             * @type Number
+             */
             _syncMode: null,
+            
+            /**
+             * The runnable used to buffer changes to avoid sending input to server unnecessarily.
+             * @type Core.Web.Scheduler.Runnable
+             */
             _changeRunnable: null,
+            
+            /**
+             * Flag indicating that the initial delay has been completed.
+             * @type Boolean
+             */
             _initialDelayComplete: false,
             
             _remoteInit: function() {
                 this._processChangeRef = Core.method(this, this._processChange);
             },
     
+            /**
+             * Delegate implementation of <code>getSupportedPartialProperties().
+             * @see Echo.Sync.TextComponent#getSupportedPartialProperties
+             */
             _remoteGetSupportedPartialProperties: function() {
                 var properties = this.constructor.$super.prototype.getSupportedPartialProperties();
                 properties.push("syncMode", "syncDelay", "syncInitialDelay");
                 return properties;
             },
             
+            /**
+             * Performs remote-client specific renderAdd() tasks.
+             */
             _remoteAdd: function() {
                 this._syncMode = this.component.render("syncMode", Echo.Sync.RemoteTextComponent.SYNC_ON_ACTION);
                 if (this._syncMode !== Echo.Sync.RemoteTextComponent.SYNC_ON_ACTION) {
@@ -34,6 +76,9 @@ Echo.Sync.RemoteTextComponent = Core.extend({
                 }
             },
             
+            /**
+             * Performs remote-client specific renderDispose() tasks.
+             */
             _remoteDispose: function() {
                 if (this._changeRunnable) {
                     Core.Web.Scheduler.remove(this._changeRunnable);
@@ -41,8 +86,13 @@ Echo.Sync.RemoteTextComponent = Core.extend({
                 this.component.removeListener("property", this._processChangeRef);
             },
             
+            /**
+             * Processes a property change event from a text component synchronization peer's supported component.
+             * 
+             * @param e the property change event
+             */
             _processChange: function(e) {
-                if (!this.client) {
+                if (!this.client || e.propertyName != "text") {
                     return;
                 }
                 
@@ -61,8 +111,12 @@ Echo.Sync.RemoteTextComponent = Core.extend({
     }
 });
 
+/**
+ * Remote password field component.
+ */
 Echo.Sync.RemotePasswordField = Core.extend(Echo.PasswordField, {
 
+    /** @see Echo.Component#componentType */
     componentType: "RPF",
     
     $load: function() {
@@ -70,6 +124,9 @@ Echo.Sync.RemotePasswordField = Core.extend(Echo.PasswordField, {
     }
 });
 
+/**
+ * Remote password field component synchronization peer.
+ */
 Echo.Sync.RemotePasswordField.Sync = Core.extend(Echo.Sync.PasswordField, {
     
     $load: function() {
@@ -78,10 +135,12 @@ Echo.Sync.RemotePasswordField.Sync = Core.extend(Echo.Sync.PasswordField, {
     
     $include: [ Echo.Sync.RemoteTextComponent._SyncMixins],
     
+    /** Constructor. */
     $construct: function() {
         this._remoteInit();
     },
     
+    /** @see Echo.Sync.TextComponent#getSupportedPartialProperties */
     getSupportedPartialProperties: function() {
         return this._remoteGetSupportedPartialProperties();
     },
@@ -99,8 +158,12 @@ Echo.Sync.RemotePasswordField.Sync = Core.extend(Echo.Sync.PasswordField, {
     }
 });
 
+/**
+ * Remote text area component.
+ */
 Echo.Sync.RemoteTextArea = Core.extend(Echo.TextArea, {
 
+    /** @see Echo.Component#componentType */
     componentType: "RTA",
     
     $load: function() {
@@ -108,6 +171,9 @@ Echo.Sync.RemoteTextArea = Core.extend(Echo.TextArea, {
     }
 });
 
+/**
+ * Remote text area component synchronization peer.
+ */
 Echo.Sync.RemoteTextArea.Sync = Core.extend(Echo.Sync.TextArea, {
     
     $load: function() {
@@ -116,10 +182,12 @@ Echo.Sync.RemoteTextArea.Sync = Core.extend(Echo.Sync.TextArea, {
     
     $include: [ Echo.Sync.RemoteTextComponent._SyncMixins],
     
+    /** Constructor. */
     $construct: function() {
         this._remoteInit();
     },
     
+    /** @see Echo.Sync.TextComponent#getSupportedPartialProperties */
     getSupportedPartialProperties: function() {
         return this._remoteGetSupportedPartialProperties();
     },
@@ -137,8 +205,12 @@ Echo.Sync.RemoteTextArea.Sync = Core.extend(Echo.Sync.TextArea, {
     }
 });
 
+/**
+ * Remote text field component.
+ */
 Echo.Sync.RemoteTextField = Core.extend(Echo.TextField, {
 
+    /** @see Echo.Component#componentType */
     componentType: "RTF",
     
     $load: function() {
@@ -146,6 +218,9 @@ Echo.Sync.RemoteTextField = Core.extend(Echo.TextField, {
     }
 });
 
+/**
+ * Remote text field component synchronization peer.
+ */
 Echo.Sync.RemoteTextField.Sync = Core.extend(Echo.Sync.TextField, {
     
     $load: function() {
@@ -154,10 +229,12 @@ Echo.Sync.RemoteTextField.Sync = Core.extend(Echo.Sync.TextField, {
     
     $include: [ Echo.Sync.RemoteTextComponent._SyncMixins],
     
+    /** Constructor. */
     $construct: function() {
         this._remoteInit();
     },
     
+    /** @see Echo.Sync.TextComponent#getSupportedPartialProperties */
     getSupportedPartialProperties: function() {
         return this._remoteGetSupportedPartialProperties();
     },
