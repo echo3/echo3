@@ -52,12 +52,15 @@ Echo.Sync.RemoteTextComponent = Core.extend({
              */
             _initialDelayComplete: false,
             
+            /**
+             * Initialization method, should be invoked by class' constructor.
+             */
             _remoteInit: function() {
                 this._processChangeRef = Core.method(this, this._processChange);
             },
     
             /**
-             * Delegate implementation of <code>getSupportedPartialProperties().
+             * Delegate implementation of <code>getSupportedPartialProperties()</code>.
              * @see Echo.Sync.TextComponent#getSupportedPartialProperties
              */
             _remoteGetSupportedPartialProperties: function() {
