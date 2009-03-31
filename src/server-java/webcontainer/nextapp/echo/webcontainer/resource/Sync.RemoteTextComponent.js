@@ -53,6 +53,28 @@ Echo.Sync.RemoteTextComponent = Core.extend({
             _initialDelayComplete: false,
             
             /**
+             * Processes a property change event from a text component synchronization peer's supported component.
+             * 
+             * @param e the property change event
+             */
+            _processChange: function(e) {
+                if (!this.client || e.propertyName != "text") {
+                    return;
+                }
+                
+                if (!this._changeRunnable) {
+                    this._changeRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, function() {
+                        this._initialDelayComplete = true;
+                        this.component.fireEvent({source: this.component, type: "change" });
+                    }), this.component.render("syncInitialDelay", 0));
+                    Core.Web.Scheduler.add(this._changeRunnable);
+                } else if (this._initialDelayComplete) {
+                    this._changeRunnable.timeInterval = this.component.render("syncDelay", 250);
+                    Core.Web.Scheduler.add(this._changeRunnable);
+                }
+            },
+            
+            /**
              * Initialization method, should be invoked by class' constructor.
              */
             _remoteInit: function() {
@@ -90,25 +112,11 @@ Echo.Sync.RemoteTextComponent = Core.extend({
             },
             
             /**
-             * Processes a property change event from a text component synchronization peer's supported component.
-             * 
-             * @param e the property change event
+             * Performs remote-client specific renderUpdate() tasks.
              */
-            _processChange: function(e) {
-                if (!this.client || e.propertyName != "text") {
-                    return;
-                }
-                
-                if (!this._changeRunnable) {
-                    this._changeRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, function() {
-                        this._initialDelayComplete = true;
-                        this.component.fireEvent({source: this.component, type: "change" });
-                    }), this.component.render("syncInitialDelay", 0));
-                    Core.Web.Scheduler.add(this._changeRunnable);
-                } else if (this._initialDelayComplete) {
-                    this._changeRunnable.timeInterval = this.component.render("syncDelay", 250);
-                    Core.Web.Scheduler.add(this._changeRunnable);
-                }
+            _remoteUpdate: function() {
+                this._remoteDispose();
+                this._remoteAdd();
             }
         }
     }
@@ -158,6 +166,12 @@ Echo.Sync.RemotePasswordField.Sync = Core.extend(Echo.Sync.PasswordField, {
     renderDispose: function(update) {
         this._remoteDispose();
         this.constructor.$super.prototype.renderDispose.call(this, update);
+    },
+
+    /** @see Echo.Render.ComponentSync#renderUpdate */
+    renderUpdate: function(update) {
+        this._remoteUpdate();
+        this.constructor.$super.prototype.renderUpdate.call(this, update);
     }
 });
 
@@ -205,6 +219,12 @@ Echo.Sync.RemoteTextArea.Sync = Core.extend(Echo.Sync.TextArea, {
     renderDispose: function(update) {
         this._remoteDispose();
         this.constructor.$super.prototype.renderDispose.call(this, update);
+    },
+    
+    /** @see Echo.Render.ComponentSync#renderUpdate */
+    renderUpdate: function(update) {
+        this._remoteUpdate();
+        this.constructor.$super.prototype.renderUpdate.call(this, update);
     }
 });
 
@@ -252,6 +272,12 @@ Echo.Sync.RemoteTextField.Sync = Core.extend(Echo.Sync.TextField, {
     renderDispose: function(update) {
         this._remoteDispose();
         this.constructor.$super.prototype.renderDispose.call(this, update);
+    },
+    
+    /** @see Echo.Render.ComponentSync#renderUpdate */
+    renderUpdate: function(update) {
+        this._remoteUpdate();
+        this.constructor.$super.prototype.renderUpdate.call(this, update);
     }
 });
 
