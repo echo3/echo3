@@ -580,6 +580,15 @@ Core.Web.Env = {
      * @type Boolean
      */
     QUIRK_IE_BLANK_SCREEN: null,
+    
+    /**
+     * Flag indicating a fundamental issue in Internet Explorer's rendering engine wherein the browser is incapable of correctly
+     * sizing/positioning elements unless certain CSS attributes (which should not be necessary) are present.
+     * Setting the proprietary "zoom" attribute to a value of '1' can force this browser to properly layout an an element that 
+     * sufferes this quirk.
+     * See http://msdn.microsoft.com/en-us/library/bb250481.aspx 
+     */
+    QUIRK_IE_HAS_LAYOUT: null,
 
     /**
      * Flag indicating multiple keydown events will be fired when a key is held down.
@@ -766,6 +775,7 @@ Core.Web.Env = {
             this.QUIRK_UNLOADED_IMAGE_HAS_SIZE = true;
             this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
             this.QUIRK_IE_BLANK_SCREEN = true;
+            this.QUIRK_IE_HAS_LAYOUT = true;
             
             if (this.BROWSER_VERSION_MAJOR < 8) {
                 // Internet Explorer 6 and 7 Flags.
