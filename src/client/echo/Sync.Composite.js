@@ -88,7 +88,12 @@ Echo.Sync.Panel = Core.extend(Echo.Sync.Composite, {
             this.contentDiv.style.overflow = "hidden";
             if (height && this._imageBorder) {
                 var insetsPx = Echo.Sync.Insets.toPixels(this._imageBorder.contentInsets);
-                this.contentDiv.style.height = (Echo.Sync.Extent.toPixels(height) - insetsPx.top - insetsPx.bottom) + "px";
+                var contentHeight = Echo.Sync.Extent.toPixels(height) - insetsPx.top - insetsPx.bottom;
+                if (!child || !child.pane) {
+                    insetsPx = Echo.Sync.Insets.toPixels(this.component.render("insets"));
+                    contentHeight -= insetsPx.top + insetsPx.bottom;
+                }
+                this.contentDiv.style.height = contentHeight + "px";
             }
         }
         
