@@ -80,12 +80,11 @@ Echo.Sync._ListComponentSyncMixins = {
 Echo.Sync.RemoteListBox = Core.extend(Echo.ListBox, {
 
     $load: function() {
-        Echo.ComponentFactory.registerType("RemoteListBox", this);
         Echo.ComponentFactory.registerType("RLB", this);
     },
 
     /** @see Echo.Component#componentType */
-    componentType: "RemoteListBox",
+    componentType: "RLB",
     
     $include: [ Echo.Sync._ListComponentMixins ]
 });
@@ -96,7 +95,7 @@ Echo.Sync.RemoteListBox = Core.extend(Echo.ListBox, {
 Echo.Sync.RemoteListBoxSync = Core.extend(Echo.Sync.ListBox, {
 
     $load: function() {
-        Echo.Render.registerPeer("RemoteListBox", this);
+        Echo.Render.registerPeer("RLB", this);
     },
     
     $include: [ Echo.Sync._ListComponentSyncMixins ]
@@ -108,12 +107,11 @@ Echo.Sync.RemoteListBoxSync = Core.extend(Echo.Sync.ListBox, {
 Echo.Sync.RemoteSelectField = Core.extend(Echo.SelectField, {
 
     $load: function() {
-        Echo.ComponentFactory.registerType("RemoteSelectField", this);
         Echo.ComponentFactory.registerType("RSF", this);
     },
 
     /** @see Echo.Component#componentType */
-    componentType: "RemoteSelectField",
+    componentType: "RSF",
 
     $include: [ Echo.Sync._ListComponentMixins ]
 });
@@ -125,7 +123,7 @@ Echo.Sync.RemoteSelectField = Core.extend(Echo.SelectField, {
 Echo.Sync.RemoteSelectFieldSync = Core.extend(Echo.Sync.SelectField, {
 
     $load: function() {
-        Echo.Render.registerPeer("RemoteSelectField", this);
+        Echo.Render.registerPeer("RSF", this);
     },
 
     $include: [ Echo.Sync._ListComponentSyncMixins ]

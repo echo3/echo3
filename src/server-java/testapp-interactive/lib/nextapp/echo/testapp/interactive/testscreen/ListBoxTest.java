@@ -228,6 +228,25 @@ public class ListBoxTest extends SplitPane {
         grid.add(listBox2);
         
         controlsColumn.add(new Label("Global"));
+        
+        controlsColumn.addButton("Set StyleName = Default", new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator(){
+                    public void apply(AbstractListComponent listComponent) {
+                        listComponent.setStyleName("Default");
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set StyleName = Null", new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator(){
+                    public void apply(AbstractListComponent listComponent) {
+                        listComponent.setStyleName(null);
+                    }
+                });
+            }
+        });
 
         controlsColumn.addButton("Query First Selection Item", new ActionListener() {
             public void actionPerformed(ActionEvent e) {

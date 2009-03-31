@@ -41,7 +41,7 @@ public class SelectFieldPeer extends AbstractListComponentPeer {
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
     public String getClientComponentType(boolean mode) {
-        return mode ? "RSF" : "RemoteSelectField";
+        return mode ? "RSF" : "SelectField";
     }
 
     /**
