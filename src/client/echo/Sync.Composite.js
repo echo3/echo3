@@ -8,40 +8,41 @@ Echo.Sync.Composite = Core.extend(Echo.Render.ComponentSync, {
         Echo.Render.registerPeer("Composite", this);
     },
 
+    div: null,
+    contentDiv: null,
+    
     $virtual: {
         
         /**
          * Renders style attributes on the created DIV.
          * Overridden by <code>Echo.Sync.Panel</code> to provide additional features.
-         * 
-         * @param {Element} element the element
          */
-        renderStyle: function(element) {
-            Echo.Sync.renderComponentDefaults(this.component, element);
+        renderStyle: function() {
+            Echo.Sync.renderComponentDefaults(this.component, this.div);
         }
     },
     
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
-        this._div = document.createElement("div");
-        this._div.id = this.component.renderId;
+        this.div = this.contentDiv = document.createElement("div");
+        this.div.id = this.component.renderId;
         
         if (this.component.children.length !== 0) {
-            this.renderStyle(this._div);
-            Echo.Render.renderComponentAdd(update, this.component.children[0], this._div);
+            this.renderStyle();
+            Echo.Render.renderComponentAdd(update, this.component.children[0], this.contentDiv);
         }
         
-        parentElement.appendChild(this._div);
+        parentElement.appendChild(this.div);
     },
     
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) { 
-        this._div = null;
+        this.div = null;
     },
     
     /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
-        var element = this._div;
+        var element = this.div;
         var containerElement = element.parentNode;
         Echo.Render.renderComponentDispose(update, update.parent);
         containerElement.removeChild(element);
@@ -58,28 +59,49 @@ Echo.Sync.Panel = Core.extend(Echo.Sync.Composite, {
     $load: function() {
         Echo.Render.registerPeer("Panel", this);
     },
+    
+    renderDisplay: function() {
+        if (this._imageBorder) {
+            Echo.Sync.FillImageBorder.renderContainerDisplay(this.div);
+        }
+    },
 
     /** @see Echo.Sync.Composite#renderStyle */
-    renderStyle: function(element) {
+    renderStyle: function() {
+        this._imageBorder = this.component.render("imageBorder");
+        
         var child = this.component.children.length !== 0 ? this.component.children[0] : null;
         var width = this.component.render("width");
         var height = this.component.render("height");
+        if (Echo.Sync.Extent.isPercent(height)) {
+            height = null;
+        }
         if (child && child.pane) {
-            element.style.position = "relative";
-            if (!height || Echo.Sync.Extent.isPercent(height)) {
+            this.div.style.position = "relative";
+            if (!height) {
                 height = "10em";
             }
         }
         
         if (width || height) {
-            element.style.overflow = "hidden";
+            this.contentDiv.style.overflow = "hidden";
+            if (height && this._imageBorder) {
+                var insetsPx = Echo.Sync.Insets.toPixels(this._imageBorder.contentInsets);
+                this.contentDiv.style.height = (Echo.Sync.Extent.toPixels(height) - insetsPx.top - insetsPx.bottom) + "px";
+            }
         }
         
-        Echo.Sync.renderComponentDefaults(this.component, element);
-        Echo.Sync.Border.render(this.component.render("border"), element);
-        Echo.Sync.Insets.render(this.component.render("insets"), element, "padding");
-        Echo.Sync.FillImage.render(this.component.render("backgroundImage"), element);
-        Echo.Sync.Extent.render(width, element, "width", true, true);
-        Echo.Sync.Extent.render(height, element, "height", false, false);
+        if (this._imageBorder) {
+            this.div = Echo.Sync.FillImageBorder.renderContainer(this._imageBorder, this.contentDiv);
+        } else {
+            Echo.Sync.Border.render(this.component.render("border"), this.contentDiv);
+        }
+        Echo.Sync.renderComponentDefaults(this.component, this.contentDiv);
+        if (!child || !child.pane) {
+            Echo.Sync.Insets.render(this.component.render("insets"), this.contentDiv, "padding");
+        }
+        Echo.Sync.FillImage.render(this.component.render("backgroundImage"), this.contentDiv);
+        Echo.Sync.Extent.render(width, this.div, "width", true, true);
+        Echo.Sync.Extent.render(height, this.div, "height", false, false);
     }
 });

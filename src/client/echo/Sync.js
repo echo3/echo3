@@ -734,6 +734,99 @@ Echo.Sync.FillImage = {
     }
 };
 
+Echo.Sync.FillImageBorder = {
+    
+    _NAMES: ["topLeft", "top", "topRight", "right", "bottomRight", "bottom", "bottomLeft", "left"],
+    
+    _PROTOTYPE: null,
+    
+    /**
+     * Creates prototype fill image border container DIV.
+     * Child elements (in order) are top-left, top, top-right, right, bottom-right, bottom, bottom-left, left, content.
+     */
+    _createPrototype: function() {
+        var div = document.createElement("div");
+        div.style.cssText = "position:relative;";
+        if (Core.Web.Env.QUIRK_IE_HAS_LAYOUT) {
+            div.style.zoom = 1;
+        }
+        
+        var topLeft = document.createElement("div");
+        topLeft.style.cssText = "position:absolute;top:0;left:0;";
+        div.appendChild(topLeft);
+        var topDiv = document.createElement("div");
+        topDiv.style.cssText = "position:absolute;top:0;";
+        div.appendChild(topDiv);
+        var topRight = document.createElement("div");
+        topRight.style.cssText = "position:absolute;top:0;right:0;";
+        div.appendChild(topRight);
+        var rightDiv = document.createElement("div");
+        rightDiv.style.cssText = "position:absolute;right:0;";
+        div.appendChild(rightDiv);
+        var bottomRight = document.createElement("div");
+        bottomRight.style.cssText = "position:absolute;bottom:0;right:0;";
+        div.appendChild(bottomRight);
+        var bottomDiv = document.createElement("div");
+        bottomDiv.style.cssText = "position:absolute;bottom:0;";
+        div.appendChild(bottomDiv);
+        var bottomLeft = document.createElement("div");
+        bottomLeft.style.cssText = "position:absolute;bottom:0;left:0;";
+        div.appendChild(bottomLeft);
+        var leftDiv = document.createElement("div");
+        leftDiv.style.cssText = "position:absolute;left:0;";
+        div.appendChild(leftDiv);
+
+        var contentDiv = document.createElement("div");
+        contentDiv.style.cssText = "position:relative;";
+        div.appendChild(contentDiv);
+        return div;
+    },
+    
+    renderContainer: function(fillImageBorder, childElement) {
+        if (!this._PROTOTYPE) {
+            this._PROTOTYPE = this._createPrototype();
+        }
+        var i;
+        var div = this._PROTOTYPE.cloneNode(true);
+        var ch = div.childNodes;
+        var borderInsets = Echo.Sync.Insets.toPixels(fillImageBorder.borderInsets);
+        if (fillImageBorder.color) {
+            for (i = 0; i < 8; ++i) {
+                ch[i].style.backgroundColor = fillImageBorder.color; 
+            }
+        }
+        for (i = 0; i < 3; ++i) {
+            ch[i].style.height = borderInsets.top + "px";
+        }
+        for (i = 2; i < 5; ++i) {
+            ch[i].style.width = borderInsets.right + "px";
+        }
+        for (i = 4; i < 7; ++i) {
+            ch[i].style.height = borderInsets.bottom + "px";
+        }
+        for (i = 6; i < 9; ++i) {
+            ch[i % 8].style.width = borderInsets.left + "px";
+        }
+        for (i = 0; i < 8; ++i) {
+            Echo.Sync.FillImage.render(fillImageBorder[this._NAMES[i]], ch[i]);
+        }
+        ch[1].style.left = ch[5].style.left = borderInsets.left + "px";
+        ch[1].style.right = ch[5].style.right = borderInsets.right + "px";
+        ch[3].style.top = ch[7].style.top = borderInsets.top + "px";
+        ch[3].style.bottom = ch[7].style.bottom = borderInsets.bottom + "px";
+        
+        Echo.Sync.Insets.render(fillImageBorder.contentInsets, ch[8], "padding");
+        ch[8].appendChild(childElement);
+        return div;
+    },
+    
+    renderContainerDisplay: function(containerDiv) {
+        for (var i = 1; i <= 7; i += 2) {
+            Core.Web.VirtualPosition.redraw(containerDiv.childNodes[i]);
+        }
+    }
+};
+
 /**
  * Provides tools for rendering font properties.
  * @class

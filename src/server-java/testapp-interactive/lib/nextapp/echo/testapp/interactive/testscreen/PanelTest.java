@@ -32,10 +32,13 @@ package nextapp.echo.testapp.interactive.testscreen;
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Extent;
+import nextapp.echo.app.FillImage;
+import nextapp.echo.app.FillImageBorder;
 import nextapp.echo.app.Grid;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Panel;
+import nextapp.echo.app.ResourceImageReference;
 import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
@@ -46,6 +49,9 @@ import nextapp.echo.testapp.interactive.StyleUtil;
  * Interactive test for the <code>Panel</code> component.
  */
 public class PanelTest extends SplitPane {
+    
+    private static final String FIB1_BASE = "/nextapp/echo/testapp/interactive/resource/image/window/simple/Border";
+    private static final String FIB2_BASE = "/nextapp/echo/testapp/interactive/resource/image/window/transgreen/Border";
     
     public PanelTest() {
         super();
@@ -167,6 +173,47 @@ public class PanelTest extends SplitPane {
                 panel.setBorder(StyleUtil.nextBorderStyle(panel.getBorder()));
             }
         });
+        controlsColumn.addButton("Set ImageBorder Solid", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setImageBorder(new FillImageBorder(Color.RED, new Insets(20), new Insets(10)));
+            }
+        });
+        controlsColumn.addButton("Set ImageBorder Graphic 1", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setImageBorder(new FillImageBorder(null, new Insets(17, 17, 23, 23), new Insets(8, 8, 14, 14), 
+                new FillImage[] {
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "topLeft.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "top.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "topRight.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "left.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "right.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "bottomLeft.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "bottom.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "bottomRight.png"))
+                }));
+            }
+        });
+        controlsColumn.addButton("Set ImageBorder Graphic 2", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setImageBorder(new FillImageBorder(null, new Insets(20, 34, 20, 20), new Insets(15, 6, 20, 20), 
+                new FillImage[] {
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "topLeft.png")),
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "top.png")),
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "topRight.png")),
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "left.png")),
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "right.png")),
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "bottomLeft.png")),
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "bottom.png")),
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "bottomRight.png"))
+                }));
+            }
+        });
+        controlsColumn.addButton("Set ImageBorder -> Null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setImageBorder(null);
+            }
+        });
+        
         controlsColumn.addButton("Remove Border", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 panel.setBorder(null);
@@ -190,26 +237,6 @@ public class PanelTest extends SplitPane {
         controlsColumn.addButton("Insets -> 10/20/30/40px", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 panel.setInsets(new Insets(10, 20, 30, 40));
-            }
-        });
-        controlsColumn.addButton("Width", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                panel.setInsets(new Insets(5));
-            }
-        });
-        controlsColumn.addButton("Insets -> 5px", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                panel.setInsets(new Insets(5));
-            }
-        });
-        controlsColumn.addButton("Insets -> 5px", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                panel.setInsets(new Insets(5));
-            }
-        });
-        controlsColumn.addButton("Insets -> 5px", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                panel.setInsets(new Insets(5));
             }
         });
         controlsColumn.addButton("Set Width = null", new ActionListener() {

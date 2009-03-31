@@ -43,6 +43,7 @@ implements PaneContainer {
 
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
     public static final String PROPERTY_BORDER = "border";
+    public static final String PROPERTY_IMAGE_BORDER = "imageBorder";
     public static final String PROPERTY_INSETS = "insets";
     public static final String PROPERTY_WIDTH = "width";
     public static final String PROPERTY_HEIGHT = "height";
@@ -57,12 +58,21 @@ implements PaneContainer {
     }
     
     /**
-     * Returns the <code>Border</code> that encloses the entire <code>Column</code>.
+     * Returns the <code>Border</code> that encloses the entire <code>Panel</code>.
      * 
      * @return the border
      */
     public Border getBorder() {
         return (Border) get(PROPERTY_BORDER);
+    }
+    
+    /**
+     * Returns the <code>FillImageBorder</code> that encloses the entire <code>Panel</code>.
+     * 
+     * @return the image border
+     */
+    public FillImageBorder getImageBorder() {
+        return (FillImageBorder) get(PROPERTY_IMAGE_BORDER);
     }
 
     /**
@@ -79,8 +89,7 @@ implements PaneContainer {
     
     /**
      * Returns the default inset between the border and cells of the
-     * <code>Column</code>. This value will be overridden for a child
-     * component if a setting is specified in its <code>ColumnLayoutData</code>.
+     * <code>Panel</code>.
      * 
      * @return the inset
      */
@@ -108,7 +117,7 @@ implements PaneContainer {
     }
 
     /**
-     * Sets the <code>Border</code> that encloses the entire <code>Column</code>.
+     * Sets the <code>Border</code> that encloses the entire <code>Panel</code>.
      * 
      * @param newValue the new border
      */
@@ -129,9 +138,16 @@ implements PaneContainer {
     }
 
     /**
-     * Sets the inset between the border and cells of the <code>Column</code>.
-     * This value will be overridden for a child component if a setting is
-     * specified in its <code>ColumnLayoutData</code>.
+     * Sets the <code>FillImageBorder</code> that encloses the entire <code>Panel</code>.
+     * 
+     * @param newValue the new image border
+     */
+    public void setImageBorder(FillImageBorder newValue) {
+        set(PROPERTY_IMAGE_BORDER, newValue);
+    }
+    
+    /**
+     * Sets the inset between the border and cells of the <code>Panel</code>.
      * 
      * @param newValue the new inset
      */
