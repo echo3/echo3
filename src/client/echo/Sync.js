@@ -734,15 +734,28 @@ Echo.Sync.FillImage = {
     }
 };
 
+/**
+ * Provides tools for rendering fill image border properties (borders composed of eight graphic images).
+ * @class
+ */
 Echo.Sync.FillImageBorder = {
     
+    /**
+     * Mapping between child node indices of container element and fill image property names of a FillImageBorder.
+     * @type Array
+     */
     _NAMES: ["topLeft", "top", "topRight", "right", "bottomRight", "bottom", "bottomLeft", "left"],
     
+    /**
+     * The prototype DOM hierarchy for FillImageBorder containers.  This hierarchy is cloned for performance.
+     * @type Element
+     */
     _PROTOTYPE: null,
     
     /**
      * Creates prototype fill image border container DIV.
      * Child elements (in order) are top-left, top, top-right, right, bottom-right, bottom, bottom-left, left, content.
+     * @type Element
      */
     _createPrototype: function() {
         var div = document.createElement("div");
@@ -782,6 +795,33 @@ Echo.Sync.FillImageBorder = {
         return div;
     },
     
+    /**
+     * Returns the content element (to which children may be added) of a FillImageBorder container element created with
+     * <code>renderContainer()</code>.
+     * 
+     * @param {Element} containerDiv the container element
+     * @return the content element to which child nodes may be added
+     * @type Element
+     */
+    getContainerContent: function(containerDiv) {
+        return containerDiv.childNodes[8];
+    },
+    
+    /**
+     * Creates a DOM hierarchy representing a FillImageBorder.
+     * The provided childElement will be added to it, if specified.
+     * The outer container DIV element of the rendered DOM hierarchy is returned.  Width and height values may be configured
+     * on this returned value.
+     * 
+     * The <code>renderContainerDisplay()</code> method should be invoked by the <code>renderDisplay()</code> method of any
+     * synchronization peer making use of a rendered FillImageBorder container in order to support Internet Explorer 6 browsers
+     * (the rendered border uses virtual positioning to appear properly in IE6).
+     * 
+     * @param {#FillImageBorder} fillImageBorder the FillImageBorder to be rendered.
+     * @param {Element} childElement (optional) a child DOM element to add inside the rendered hierarchy
+     * @return the outer container DIV element of the rendered DOM hierarchy
+     * @type Element
+     */
     renderContainer: function(fillImageBorder, childElement) {
         if (!this._PROTOTYPE) {
             this._PROTOTYPE = this._createPrototype();
@@ -816,10 +856,19 @@ Echo.Sync.FillImageBorder = {
         ch[3].style.bottom = ch[7].style.bottom = borderInsets.bottom + "px";
         
         Echo.Sync.Insets.render(fillImageBorder.contentInsets, ch[8], "padding");
-        ch[8].appendChild(childElement);
+        if (childElement) {
+            ch[8].appendChild(childElement);
+        }
         return div;
     },
     
+    /**
+     * Performs renderDisplay() operations on a FillImageBorder container DOM hierarchy.
+     * This method should be invoked the renderDisplay() method of a synchronization peer on each FillImageBorder container
+     * which it is using.  It is required for IE6 virtual positioning support.
+     * 
+     * @param {Element} containerDiv the outer container DIV element of the rendered FillImageBorder DOM hierarchy
+     */
     renderContainerDisplay: function(containerDiv) {
         for (var i = 1; i <= 7; i += 2) {
             Core.Web.VirtualPosition.redraw(containerDiv.childNodes[i]);

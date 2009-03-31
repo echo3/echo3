@@ -60,6 +60,7 @@ Echo.Sync.Panel = Core.extend(Echo.Sync.Composite, {
         Echo.Render.registerPeer("Panel", this);
     },
     
+    /** @see Echo.Render.ComponentSync#renderDisplay */
     renderDisplay: function() {
         if (this._imageBorder) {
             Echo.Sync.FillImageBorder.renderContainerDisplay(this.div);
