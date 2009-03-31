@@ -55,7 +55,7 @@ public interface ComponentSynchronizePeer {
     /**
      * Returns the remote client component type name.
      * 
-     * @param mode flag indicating whether short type or normal type name should be returned
+     * @param mode a boolean flag indicating whether a component name (true) or style name (false) is being rendered
      * @return the client component type name
      */
     public String getClientComponentType(boolean mode);
