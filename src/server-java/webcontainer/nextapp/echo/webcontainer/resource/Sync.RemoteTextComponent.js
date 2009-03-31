@@ -1,3 +1,7 @@
+/**
+ * Component rendering peer for remote text components.
+ * This class should not be extended by developers, the implementation is subject to change.
+ */
 Echo.Sync.RemoteTextComponent = Core.extend({
     
     $static: {
