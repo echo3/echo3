@@ -126,8 +126,8 @@ public class TextComponentPeer extends AbstractComponentSynchronizePeer {
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType(boolean shortType) {
-        return shortType ? "TC" : "TextComponent";
+    public String getClientComponentType(boolean mode) {
+        return mode ? "TC" : "TextComponent";
     }
     
     /**

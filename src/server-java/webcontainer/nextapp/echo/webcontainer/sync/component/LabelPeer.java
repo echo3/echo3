@@ -54,8 +54,8 @@ public class LabelPeer extends AbstractComponentSynchronizePeer {
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType(boolean shortType) {
-        return shortType ? "L" : "Label";
+    public String getClientComponentType(boolean mode) {
+        return mode ? "L" : "Label";
     }
     
     /**

@@ -56,8 +56,8 @@ public class CompositePeer extends AbstractComponentSynchronizePeer {
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType(boolean shortType) {
-        return shortType ? "CM" : "Composite";
+    public String getClientComponentType(boolean mode) {
+        return mode ? "CM" : "Composite";
     }
     
     /**

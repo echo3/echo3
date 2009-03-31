@@ -40,8 +40,8 @@ public class ListBoxPeer extends AbstractListComponentPeer {
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType(boolean shortType) {
-        return shortType ? "RLB" : "RemoteListBox";
+    public String getClientComponentType(boolean mode) {
+        return mode ? "RLB" : "RemoteListBox";
     }
 
     /**

@@ -39,8 +39,8 @@ public class ColumnPeer extends AbstractArrayContainerSynchronizePeer {
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType(boolean shortType) {
-        return shortType ? "C" : "Column";
+    public String getClientComponentType(boolean mode) {
+        return mode ? "C" : "Column";
     }
     
     /**

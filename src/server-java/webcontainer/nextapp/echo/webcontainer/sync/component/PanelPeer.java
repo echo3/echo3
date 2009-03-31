@@ -41,8 +41,8 @@ public class PanelPeer extends CompositePeer {
     /**
      * @see nextapp.echo.webcontainer.sync.component.CompositePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType(boolean shortType) {
-        return shortType ? "P" : "Panel";
+    public String getClientComponentType(boolean mode) {
+        return mode ? "P" : "Panel";
     }
     
     /**

@@ -62,7 +62,7 @@ public class ClientExceptionTest extends Column {
         /**
          * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
          */
-        public String getClientComponentType(boolean shortType) {
+        public String getClientComponentType(boolean mode) {
             return "ExTest.RenderFail";
         }
 

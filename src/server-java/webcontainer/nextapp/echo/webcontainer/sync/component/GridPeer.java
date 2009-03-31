@@ -54,8 +54,8 @@ public class GridPeer extends AbstractComponentSynchronizePeer {
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType(boolean shortType) {
-        return shortType ? "G" : "Grid";
+    public String getClientComponentType(boolean mode) {
+        return mode ? "G" : "Grid";
     }
     
     /**

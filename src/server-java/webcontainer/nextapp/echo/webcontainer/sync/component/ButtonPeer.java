@@ -39,8 +39,8 @@ public class ButtonPeer extends AbstractButtonPeer {
     /**
      * @see nextapp.echo.webcontainer.sync.component.AbstractButtonPeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType(boolean shortType) {
-        return shortType ? "B" : "Button";
+    public String getClientComponentType(boolean mode) {
+        return mode ? "B" : "Button";
     }
     
     /**

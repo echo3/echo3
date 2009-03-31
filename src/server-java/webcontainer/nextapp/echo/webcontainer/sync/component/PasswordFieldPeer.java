@@ -39,8 +39,8 @@ public class PasswordFieldPeer extends TextComponentPeer {
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType(boolean shortType) {
-        return "RPF";
+    public String getClientComponentType(boolean mode) {
+        return mode ? "RPF" : "PasswordField";
     }
     
     /**

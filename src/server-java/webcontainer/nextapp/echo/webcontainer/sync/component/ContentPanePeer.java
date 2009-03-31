@@ -54,8 +54,8 @@ public class ContentPanePeer extends AbstractComponentSynchronizePeer {
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType(boolean shortType) {
-        return shortType ? "CP" : "ContentPane";
+    public String getClientComponentType(boolean mode) {
+        return mode ? "CP" : "ContentPane";
     }
     
     /**

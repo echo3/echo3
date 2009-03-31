@@ -67,8 +67,8 @@ public class AbstractButtonPeer extends AbstractComponentSynchronizePeer {
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
-    public String getClientComponentType(boolean shortType) {
-        return shortType ? "AB" : "AbstractButton";
+    public String getClientComponentType(boolean mode) {
+        return mode ? "AB" : "AbstractButton";
     }
     
     /**
