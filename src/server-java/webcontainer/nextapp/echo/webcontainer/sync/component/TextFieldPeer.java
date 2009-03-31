@@ -40,7 +40,7 @@ public class TextFieldPeer extends TextComponentPeer {
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
      */
     public String getClientComponentType(boolean mode) {
-        return "RTF";
+        return mode ? "RTF" : "TextField";
     }
     
     /**
