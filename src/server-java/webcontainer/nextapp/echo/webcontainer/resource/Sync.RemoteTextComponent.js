@@ -102,6 +102,13 @@ Echo.Sync.RemoteTextComponent = Core.extend({
             },
             
             /**
+             * Performs remote-client specific processBlur() tasks.
+             */
+            _remoteBlur: function() {
+                //FIXME implement.
+            },
+            
+            /**
              * Performs remote-client specific renderDispose() tasks.
              */
             _remoteDispose: function() {
@@ -154,6 +161,12 @@ Echo.Sync.RemotePasswordField.Sync = Core.extend(Echo.Sync.PasswordField, {
     /** @see Echo.Sync.TextComponent#getSupportedPartialProperties */
     getSupportedPartialProperties: function() {
         return this._remoteGetSupportedPartialProperties();
+    },
+    
+    /** @see Echo.Sync.TextComponent#processBlur */
+    processBlur: function(e) {
+        this.constructor.$super.prototype.processBlur.call(this, e);
+        this._remoteBlur();
     },
     
     /** @see Echo.Render.ComponentSync#renderAdd */
@@ -209,6 +222,12 @@ Echo.Sync.RemoteTextArea.Sync = Core.extend(Echo.Sync.TextArea, {
         return this._remoteGetSupportedPartialProperties();
     },
     
+    /** @see Echo.Sync.TextComponent#processBlur */
+    processBlur: function(e) {
+        this.constructor.$super.prototype.processBlur.call(this, e);
+        this._remoteBlur();
+    },
+    
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         this.constructor.$super.prototype.renderAdd.call(this, update, parentElement);
@@ -260,6 +279,12 @@ Echo.Sync.RemoteTextField.Sync = Core.extend(Echo.Sync.TextField, {
     /** @see Echo.Sync.TextComponent#getSupportedPartialProperties */
     getSupportedPartialProperties: function() {
         return this._remoteGetSupportedPartialProperties();
+    },
+    
+    /** @see Echo.Sync.TextComponent#processBlur */
+    processBlur: function(e) {
+        this.constructor.$super.prototype.processBlur.call(this, e);
+        this._remoteBlur();
     },
     
     /** @see Echo.Render.ComponentSync#renderAdd */

@@ -17,6 +17,14 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         },
         
         /**
+         * Processes a focus blur event.
+         */
+        processBlur: function(e) {
+            this._focused = false;
+            return this._storeValue();
+        },
+        
+        /**
          * Invoked to ensure that input meets requirements of text field.  Default implementation ensures input
          * does not exceed maximum length.
          */
@@ -112,7 +120,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     _addEventHandlers: function() {
         Core.Web.Event.add(this.input, "click", Core.method(this, this._processClick), false);
         Core.Web.Event.add(this.input, "focus", Core.method(this, this._processFocus), false);
-        Core.Web.Event.add(this.input, "blur", Core.method(this, this._processBlur), false);
+        Core.Web.Event.add(this.input, "blur", Core.method(this, this.processBlur), false);
         Core.Web.Event.add(this.input, "keypress", Core.method(this, this._processKeyPress), false);
         Core.Web.Event.add(this.input, "keyup", Core.method(this, this._processKeyUp), false);
     },
@@ -127,14 +135,6 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     _adjustPercentWidth: function(percentValue, reducePixels, containerPixels) {
         var value = (100 - Math.ceil(100 * reducePixels / containerPixels)) * percentValue / 100;
         return value > 0 ? value : 0;
-    },
-    
-    /**
-     * Processes a focus blur event.
-     */
-    _processBlur: function(e) {
-        this._focused = false;
-        return this._storeValue();
     },
     
     /**
