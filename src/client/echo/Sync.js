@@ -764,29 +764,31 @@ Echo.Sync.FillImageBorder = {
             div.style.zoom = 1;
         }
         
+        var base = "font-size:1px;line-height:0;position:absolute;";
+        
         var topLeft = document.createElement("div");
-        topLeft.style.cssText = "position:absolute;top:0;left:0;";
+        topLeft.style.cssText = base + "top:0;left:0;";
         div.appendChild(topLeft);
         var topDiv = document.createElement("div");
-        topDiv.style.cssText = "position:absolute;top:0;";
+        topDiv.style.cssText = base + "top:0;";
         div.appendChild(topDiv);
         var topRight = document.createElement("div");
-        topRight.style.cssText = "position:absolute;top:0;right:0;";
+        topRight.style.cssText = base + "top:0;right:0;";
         div.appendChild(topRight);
         var rightDiv = document.createElement("div");
-        rightDiv.style.cssText = "position:absolute;right:0;";
+        rightDiv.style.cssText = base + "right:0;";
         div.appendChild(rightDiv);
         var bottomRight = document.createElement("div");
-        bottomRight.style.cssText = "position:absolute;bottom:0;right:0;";
+        bottomRight.style.cssText = base + "bottom:0;right:0;";
         div.appendChild(bottomRight);
         var bottomDiv = document.createElement("div");
-        bottomDiv.style.cssText = "position:absolute;bottom:0;";
+        bottomDiv.style.cssText = base + "bottom:0;";
         div.appendChild(bottomDiv);
         var bottomLeft = document.createElement("div");
-        bottomLeft.style.cssText = "position:absolute;bottom:0;left:0;";
+        bottomLeft.style.cssText = base + "bottom:0;left:0;";
         div.appendChild(bottomLeft);
         var leftDiv = document.createElement("div");
-        leftDiv.style.cssText = "position:absolute;left:0;";
+        leftDiv.style.cssText = base + "left:0;";
         div.appendChild(leftDiv);
 
         var contentDiv = document.createElement("div");
@@ -848,7 +850,7 @@ Echo.Sync.FillImageBorder = {
             ch[i % 8].style.width = borderInsets.left + "px";
         }
         for (i = 0; i < 8; ++i) {
-            Echo.Sync.FillImage.render(fillImageBorder[this._NAMES[i]], ch[i]);
+            Echo.Sync.FillImage.render(fillImageBorder[this._NAMES[i]], ch[i], Echo.Sync.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER);
         }
         ch[1].style.left = ch[5].style.left = borderInsets.left + "px";
         ch[1].style.right = ch[5].style.right = borderInsets.right + "px";
