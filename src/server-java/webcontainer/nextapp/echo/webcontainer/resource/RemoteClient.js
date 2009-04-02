@@ -470,7 +470,9 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      */
     sync: function() {
         if (this._transactionInProgress) {
-            throw new Error("Attempt to invoke client/server synchronization while another transaction is in progress."); 
+            throw new Error("Attempt to invoke client/server synchronization while another transaction is in progress; " + 
+                    "event data: componentId=" + this._clientMessage._eventComponentId + " eventType=" + 
+                    this._clientMessage._eventType + " eventData=" + this._clientMessage._eventData);  
         }
     
         this._clientFocusedComponent = this.application ? this.application.getFocusedComponent() : null;
