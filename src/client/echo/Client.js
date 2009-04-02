@@ -500,13 +500,15 @@ Echo.Client = Core.extend({
             this._setWaitVisible(false);
             
             if (this._inputRestrictionListeners) {
-                // Notify input restriction listeners.
-                for (var x in this._inputRestrictionListeners) {
-                    this._inputRestrictionListeners[x]();
-                }
-                
-                // Clear input restriction listeners.
+                // Copy restriction listeners to intermediate map, so that listeners can register new
+                // listeners that will be invoked the next time all input restrictions are removed.
+                var listeners = this._inputRestrictionListeners;
                 this._inputRestrictionListeners = null;
+               
+                // Notify input restriction listeners.
+                for (var x in listeners) {
+                    listeners[x]();
+                }
             }
         }
     },
