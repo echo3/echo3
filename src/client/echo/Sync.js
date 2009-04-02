@@ -695,7 +695,16 @@ Echo.Sync.FillImage = {
         var isObject = typeof(fillImage) == "object";
         var url = isObject ? fillImage.url : fillImage;
 
-        if (Core.Web.Env.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED && flags && (flags & this.FLAG_ENABLE_IE_PNG_ALPHA_FILTER)) {
+        if (Core.Web.Env.QUIRK_IE_SECURE_ITEMS && document.location.protocol == "https:") {
+            if (url.substring(0, 5) != "http:" && url.substring(0, 6) != "https:") {
+                // Use full URL, see http://support.microsoft.com/kb/925014 and
+                // http://weblogs.asp.net/rchartier/archive/2008/03/12/ie7-this-page-contains-both-secure-and-nonsecure-items.aspx
+                url = document.location.protocol + "//" + document.location.hostname + 
+                        (document.location.port ? (":" + document.location.port) : "") + url;
+            }
+        }
+        if (Core.Web.Env.PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED &&
+                flags && (flags & this.FLAG_ENABLE_IE_PNG_ALPHA_FILTER)) {
             // IE6 PNG workaround required.
             element.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + url + "', sizingMethod='scale')";
         } else {
