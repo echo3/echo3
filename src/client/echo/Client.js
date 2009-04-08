@@ -530,7 +530,7 @@ Echo.Client = Core.extend({
      */
     _setWaitVisible: function(visible) {
         if (visible) {
-            if (this.application && !this._waitIndicatorActive) {
+            if (!this._waitIndicatorActive) {
                 this._waitIndicatorActive = true;
                 
                 // Schedule runnable to display wait indicator.
