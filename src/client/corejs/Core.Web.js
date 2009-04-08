@@ -2028,10 +2028,10 @@ Core.Web.Measure = {
                 
                 if (constraints) {
                     if (constraints.width) {
-                        Core.Web.Measure._offscreenDiv.width = constraints.width;
+                        Core.Web.Measure.Bounds._offscreenDiv.width = constraints.width;
                     }
                     if (constraints.height) {
-                        Core.Web.Measure._offscreenDiv.height = constraints.height;
+                        Core.Web.Measure.Bounds._offscreenDiv.height = constraints.height;
                     }
                 }
                 
@@ -2039,8 +2039,8 @@ Core.Web.Measure = {
                 Core.Web.Measure.Bounds._offscreenDiv.appendChild(element);
                 
                 if (constraints) {
-                    Core.Web.Measure._offscreenDiv.width = "1600px";
-                    Core.Web.Measure._offscreenDiv.height = "1200px";
+                    Core.Web.Measure.Bounds._offscreenDiv.width = "1600px";
+                    Core.Web.Measure.Bounds._offscreenDiv.height = "1200px";
                 }
             }
             
