@@ -414,6 +414,16 @@ Echo.Client = Core.extend({
     },
     
     /**
+     * Returns the configured wait indicator.
+     *
+     * @return the wait indicator
+     * @type {Echo.Client.WaitIndicator}
+     */
+    getWaitIndicator: function() {
+        return this._waitIndicator;
+    },
+    
+    /**
      * Listener for application change of component focus:
      * invokes focus() method on focused component's peer.
      * 
