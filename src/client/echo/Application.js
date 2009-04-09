@@ -2893,10 +2893,11 @@ Echo.Composite = Core.extend(Echo.Component, {
  * may be necessary to manually set the height property of the Panel itself.
  * 
  * @sp {#FillImage} backgroundImage the background image
- * @sp {#Border} border the panel border surrounding the child component
+ * @sp {#Border} border the border surrounding the child component
  * @sp {#Extent} height the height of the panel
- * @sp {#Insets} insets the inset padding margin between the panel border and
- *     its content
+ * @sp {#FillImageBorder} imageBorder an image-based border surrounding the child component (overrides <code>border</code>
+ *     property when set
+ * @sp {#Insets} insets the inset padding margin between the panel border and its content
  * @sp {#Extent} width the width of the panel
  */
 Echo.Panel = Core.extend(Echo.Composite, {
