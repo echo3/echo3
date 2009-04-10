@@ -1473,7 +1473,7 @@ Core.Web.Image = {
          */
         $construct: function(element, listener, interval) {
             this._listener = listener;
-            this._interval = interval || 2000;
+            this._interval = interval || 250;
             this._processImageLoadRef = Core.method(this, this._processImageLoad);
             var imgs = element.getElementsByTagName("img");
             this._count = imgs.length;
