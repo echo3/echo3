@@ -2344,7 +2344,7 @@ Core.Web.VirtualPosition = {
     _OFFSETS_HORIZONTAL: ["paddingLeft", "paddingRight", "marginLeft", "marginRight", "borderLeftWidth", "borderRightWidth"],
     
     /** Flag indicating whether virtual positioning is required/enabled. */
-    _enabled: false,
+    enabled: false,
     
     /**
      * Calculates horizontal or vertical padding, border, and margin offsets for a particular style.
@@ -2372,7 +2372,7 @@ Core.Web.VirtualPosition = {
      * Enables and initializes the virtual positioning system.
      */
     _init: function() {
-        this._enabled = true;
+        this.enabled = true;
     },
     
     /**
@@ -2384,7 +2384,7 @@ Core.Web.VirtualPosition = {
      * @param element the element to redraw
      */
     redraw: function(element) {
-        if (!this._enabled) {
+        if (!this.enabled) {
             return;
         }
     
