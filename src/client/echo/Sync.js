@@ -776,15 +776,45 @@ Echo.Sync.FillImageBorder = {
         [   0,    1,    2,    3,    4,    5,    6,    7]  // lbrt
     ],
 
-    
+    /**
+     * Prototype storage.  Indices of this array store lazily-created DOM hierarchies for various FillImageBorder
+     * side configurations.  Valid indices of this array are form 0-15, representing the following values ORed
+     * together to describe possible configurations of sides:
+     * <ul>
+     *  <li><code>1</code>: bit indicating the top border should be rendered</li> 
+     *  <li><code>2</code>: bit indicating the right border should be rendered</li> 
+     *  <li><code>4</code>: bit indicating the bottom border should be rendered</li> 
+     *  <li><code>8</code>: bit indicating the left border should be rendered</li> 
+     * </li>
+     */
     _PROTOTYPES: [],
     
-    _createSegment: function(parent, css, name) {
+    /**
+     * Generates a segment of a rendered FillImageBorder DOM and adds it to its parent.
+     * 
+     * @param {Element} parent the parent element
+     * @param {String} css the CSS text add to the rendered element
+     */
+    _createSegment: function(parent, css) {
         var child = document.createElement("div");
         child.style.cssText = "font-size:1px;line-height:0;position:absolute;" + css;
         parent.appendChild(child);
     },
     
+    /**
+     * Creates a prototype rendered DOM element hierarchy to display a fill image border.
+     * The values returned by this method are stored and cloned for performance.
+     * This method will be invoked at most 16 times, once per key (0-15).
+     * 
+     * @param key the fill image border key, any combination of the following values ORed together:
+     *        <ul>
+     *         <li><code>1</code>: bit indicating the top border should be rendered</li> 
+     *         <li><code>2</code>: bit indicating the right border should be rendered</li> 
+     *         <li><code>4</code>: bit indicating the bottom border should be rendered</li> 
+     *         <li><code>8</code>: bit indicating the left border should be rendered</li> 
+     *        </li>
+     * @return the created border prototype
+     */
     _createPrototype: function(key) {
         var div = document.createElement("div");
         if (Core.Web.Env.QUIRK_IE_HAS_LAYOUT) {
