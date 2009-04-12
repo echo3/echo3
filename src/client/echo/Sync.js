@@ -912,7 +912,8 @@ Echo.Sync.FillImageBorder = {
      * @param {#FillImageBorder} fillImageBorder the FillImageBorder to be rendered.
      * @param configuration (optional) configuration options, an object containing one or more of the following properties:
      *        <ul>
-     *         <li><code>child</code>: a content element to added inside the border</li>
+     *         <li><code>content</code>: flag indicating that a content element should be created/managed (implied by child)</li>
+     *         <li><code>child</code>: a content element to added inside the border (implies content)</li>
      *         <li><code>absolute</code>: boolean flag indicating whether the DIV shold be absolutely (true) or relatively
      *         (false) positioned</li>
      *        </ul>
@@ -932,9 +933,12 @@ Echo.Sync.FillImageBorder = {
         
         var content = null;
         
-        if (configuration.child) {
+        if (configuration.content || configuration.child) {
             content = document.createElement("div");
             content.__FIB_content = true;
+            if (configuration.child) {
+                content.appendChild(configuration.child);
+            }
             div.__FIB_hasContent = true;
             div.appendChild(content);
         }
@@ -983,10 +987,6 @@ Echo.Sync.FillImageBorder = {
         if (bi.left) {
             border[6].style.top = bi.top + "px";
             border[6].style.bottom = bi.bottom + "px";
-        }
-        
-        if (configuration.child) {
-            content.appendChild(configuration.child);
         }
         
         if (configuration.absolute) {
