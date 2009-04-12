@@ -852,9 +852,6 @@ Echo.Sync.FillImageBorder = {
                 this._createSegment(div, "top:0;left:0;");
             }
         }
-
-        var contentDiv = document.createElement("div");
-        div.appendChild(contentDiv);
         return div;
     },
     
@@ -897,7 +894,7 @@ Echo.Sync.FillImageBorder = {
      * @param {#FillImageBorder} fillImageBorder the FillImageBorder to be rendered.
      * @param configuration (optional) configuration options, an object containing one or more of the following properties:
      *        <ul>
-     *         <li><code>content</code>: a content element to added inside the border</li>
+     *         <li><code>child</code>: a content element to added inside the border</li>
      *         <li><code>absolute</code>: boolean flag indicating whether the DIV shold be absolutely (true) or relatively
      *         (false) positioned</li>
      *        </ul>
@@ -910,14 +907,18 @@ Echo.Sync.FillImageBorder = {
         var bi = Echo.Sync.Insets.toPixels(fillImageBorder.borderInsets);
         
         var key = (bi.left && 0x8) | (bi.bottom && 0x4) | (bi.right && 0x2) | (bi.top && 0x1);
+        var map = this._MAP[key];
         var div = (this._PROTOTYPES[key] ? this._PROTOTYPES[key] : 
                 this._PROTOTYPES[key] = this._createPrototype(key)).cloneNode(true);
         div.__key = key;
-        div.__content = div.lastChild;
+        
+        if (configuration.child) {
+            div.__content = document.createElement("div");
+            div.appendChild(div.__content);
+        }
+        
         div.__border = [];
         
-        var map = this._MAP[key];
-
         var child = div.firstChild;
         for (var i = 0; i < 8; ++i) {
             if (!map[i]) {
@@ -968,16 +969,21 @@ Echo.Sync.FillImageBorder = {
         if (configuration.absolute) {
             div.__absolute = true;
             var insets = Echo.Sync.Insets.toPixels(fillImageBorder.contentInsets);
-            div.__content.style.position = div.style.position = "absolute";
-            div.__content.style.overflow = "auto";
-            div.__content.style.top = insets.top + "px";
-            div.__content.style.right = insets.right + "px";
-            div.__content.style.bottom = insets.bottom + "px";
-            div.__content.style.left = insets.left + "px";
+            div.style.position = "absolute";
+            if (div.__content) {
+                div.__content.style.position = "absolute"; 
+                div.__content.style.overflow = "auto";
+                div.__content.style.top = insets.top + "px";
+                div.__content.style.right = insets.right + "px";
+                div.__content.style.bottom = insets.bottom + "px";
+                div.__content.style.left = insets.left + "px";
+            }
         } else {
             Echo.Sync.Insets.render(fillImageBorder.contentInsets, div.__content, "padding");
-            div.__content.style.position = "relative";
             div.style.position = "relative";
+            if (div.__content) {
+                div.__content.style.position = "relative";
+            }
         }
         
         return div;
@@ -993,7 +999,9 @@ Echo.Sync.FillImageBorder = {
     renderContainerDisplay: function(containerDiv) {
         if (containerDiv.__absolute) {
             Core.Web.VirtualPosition.redraw(containerDiv);
-            Core.Web.VirtualPosition.redraw(containerDiv.__content);
+            if (containerDiv.__content) {
+                Core.Web.VirtualPosition.redraw(containerDiv.__content);
+            }
         }
         for (var i = 0; i < 8; i += 2) {
             var child = containerDiv.__border[i];
