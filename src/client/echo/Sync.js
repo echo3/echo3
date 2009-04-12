@@ -755,25 +755,32 @@ Echo.Sync.FillImageBorder = {
      */
     _NAMES: ["top", "topRight", "right", "bottomRight", "bottom", "bottomLeft", "left", "topLeft"],
     
+    /**
+     * Two dimensional mapping array representing which FillImageBorder side configurations have which elements.
+     * First index represents FillImageBorder configuration, from 0-15, with bitwise 1=top, 2=right, 4=bottom 8=left
+     * flags ORed together.  Second index represents border side in order top, top-right, right, 
+     * bottom-right, bottom, bottom-left, left.  Value is 1 when side/corner element exists for this configuration, 0 otherwise.
+     * @type Array
+     */
     _MAP: [
-        //  0     1     2     3     4     5     6    7
-        //  T    TR     R    BR     B    BL     L    TL
-        [null, null, null, null, null, null, null, null], // ----
-        [   0, null, null, null, null, null, null, null], // ---t
-        [null, null,    0, null, null, null, null, null], // --r-
-        [   0,    1,    2, null, null, null, null, null], // --rt
-        [null, null, null, null,    0, null, null, null], // -b--
-        [   0, null, null, null,    1, null, null, null], // -b-t
-        [null, null,    0,    1,    2, null, null, null], // -br-
-        [   0,    1,    2,    3,    4, null, null, null], // -brt
-        [null, null, null, null, null, null,    0, null], // l---
-        [   0, null, null, null, null, null,    1,    2], // l--t
-        [null, null,    0, null, null, null,    1, null], // l-r-
-        [   0,    1,    2, null, null, null,    3,    4], // l-rt
-        [null, null, null, null,    0,    1,    2, null], // lb--
-        [   0, null, null, null,    1,    1,    3,    4], // lb-t
-        [null, null,    0,    1,    2,    3,    4, null], // lbr-
-        [   0,    1,    2,    3,    4,    5,    6,    7]  // lbrt
+    //   0  1  2  3  4  5  6  7
+    //   T TR  R BR  B BL  L  TL
+        [0, 0, 0, 0, 0, 0, 0, 0], // ----
+        [1, 0, 0, 0, 0, 0, 0, 0], // ---t
+        [0, 0, 1, 0, 0, 0, 0, 0], // --r-
+        [1, 1, 1, 0, 0, 0, 0, 0], // --rt
+        [0, 0, 0, 0, 1, 0, 0, 0], // -b--
+        [1, 0, 0, 0, 1, 0, 0, 0], // -b-t
+        [0, 0, 1, 1, 1, 0, 0, 0], // -br-
+        [1, 1, 1, 1, 1, 0, 0, 0], // -brt
+        [0, 0, 0, 0, 0, 0, 1, 0], // l---
+        [1, 0, 0, 0, 0, 0, 1, 1], // l--t
+        [0, 0, 1, 0, 0, 0, 1, 0], // l-r-
+        [1, 1, 1, 0, 0, 0, 1, 1], // l-rt
+        [0, 0, 0, 0, 1, 1, 1, 0], // lb--
+        [1, 0, 0, 0, 1, 1, 1, 1], // lb-t
+        [0, 0, 1, 1, 1, 1, 1, 0], // lbr-
+        [1, 1, 1, 1, 1, 1, 1, 1]  // lbrt
     ],
 
     /**
@@ -893,8 +900,8 @@ Echo.Sync.FillImageBorder = {
 
         var child = div.firstChild;
         for (var i = 0; i < 8; ++i) {
-            // Load child.
-            if (map[i] === null) {
+            if (!map[i]) {
+                // Continue in case where border has no element in this position.
                 continue;
             }
 
