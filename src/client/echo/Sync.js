@@ -920,7 +920,7 @@ Echo.Sync.FillImageBorder = {
         div.__border = [];
         
         var child = div.firstChild;
-        for (var i = 0; i < 8; ++i) {
+        for (i = 0; i < 8; ++i) {
             if (!map[i]) {
                 // Continue in case where border has no element in this position.
                 continue;
