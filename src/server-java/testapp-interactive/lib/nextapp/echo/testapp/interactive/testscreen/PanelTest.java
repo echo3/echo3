@@ -193,6 +193,36 @@ public class PanelTest extends SplitPane {
                 }));
             }
         });
+        controlsColumn.addButton("Set ImageBorder Graphic 1:TB", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setImageBorder(new FillImageBorder(null, new Insets(0, 17, 0, 23), new Insets(0, 8, 0, 14), 
+                new FillImage[] {
+                    null,
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "top.png")),
+                    null,
+                    null,
+                    null,
+                    null,
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "bottom.png")),
+                    null
+                }));
+            }
+        });
+        controlsColumn.addButton("Set ImageBorder Graphic 1:LRB", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setImageBorder(new FillImageBorder(null, new Insets(17, 0, 23, 23), new Insets(8, 0, 14, 14), 
+                new FillImage[] {
+                    null,
+                    null,
+                    null,
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "left.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "right.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "bottomLeft.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "bottom.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "bottomRight.png"))
+                }));
+            }
+        });
         controlsColumn.addButton("Set ImageBorder Graphic 2", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 panel.setImageBorder(new FillImageBorder(null, new Insets(20, 34, 20, 20), new Insets(15, 6, 20, 20), 

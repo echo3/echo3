@@ -753,55 +753,70 @@ Echo.Sync.FillImageBorder = {
      * Mapping between child node indices of container element and fill image property names of a FillImageBorder.
      * @type Array
      */
-    _NAMES: ["topLeft", "top", "topRight", "right", "bottomRight", "bottom", "bottomLeft", "left"],
+    _NAMES: ["top", "topRight", "right", "bottomRight", "bottom", "bottomLeft", "left", "topLeft"],
     
-    /**
-     * The prototype DOM hierarchy for FillImageBorder containers.  This hierarchy is cloned for performance.
-     * @type Element
-     */
-    _PROTOTYPE: null,
+    _MAP: [
+        //  0     1     2     3     4     5     6    7
+        //  T    TR     R    BR     B    BL     L    TL
+        [null, null, null, null, null, null, null, null], // ----
+        [   0, null, null, null, null, null, null, null], // ---t
+        [null, null,    0, null, null, null, null, null], // --r-
+        [   0,    1,    2, null, null, null, null, null], // --rt
+        [null, null, null, null,    0, null, null, null], // -b--
+        [   0, null, null, null,    1, null, null, null], // -b-t
+        [null, null,    0,    1,    2, null, null, null], // -br-
+        [   0,    1,    2,    3,    4, null, null, null], // -brt
+        [null, null, null, null, null, null,    0, null], // l---
+        [   0, null, null, null, null, null,    1,    2], // l--t
+        [null, null,    0, null, null, null,    1, null], // l-r-
+        [   0,    1,    2, null, null, null,    3,    4], // l-rt
+        [null, null, null, null,    0,    1,    2, null], // lb--
+        [   0, null, null, null,    1,    1,    3,    4], // lb-t
+        [null, null,    0,    1,    2,    3,    4, null], // lbr-
+        [   0,    1,    2,    3,    4,    5,    6,    7]  // lbrt
+    ],
+
     
-    /**
-     * Creates prototype fill image border container DIV.
-     * Child elements (in order) are top-left, top, top-right, right, bottom-right, bottom, bottom-left, left, content.
-     * @type Element
-     */
-    _createPrototype: function() {
+    _PROTOTYPES: [],
+    
+    _createSegment: function(parent, css, name) {
+        var child = document.createElement("div");
+        child.style.cssText = "font-size:1px;line-height:0;position:absolute;" + css;
+        parent.appendChild(child);
+    },
+    
+    _createPrototype: function(key) {
         var div = document.createElement("div");
-        div.style.cssText = "position:relative;";
         if (Core.Web.Env.QUIRK_IE_HAS_LAYOUT) {
             div.style.zoom = 1;
         }
         
-        var base = "font-size:1px;line-height:0;position:absolute;";
-        
-        var topLeft = document.createElement("div");
-        topLeft.style.cssText = base + "top:0;left:0;";
-        div.appendChild(topLeft);
-        var topDiv = document.createElement("div");
-        topDiv.style.cssText = base + "top:0;";
-        div.appendChild(topDiv);
-        var topRight = document.createElement("div");
-        topRight.style.cssText = base + "top:0;right:0;";
-        div.appendChild(topRight);
-        var rightDiv = document.createElement("div");
-        rightDiv.style.cssText = base + "right:0;";
-        div.appendChild(rightDiv);
-        var bottomRight = document.createElement("div");
-        bottomRight.style.cssText = base + "bottom:0;right:0;";
-        div.appendChild(bottomRight);
-        var bottomDiv = document.createElement("div");
-        bottomDiv.style.cssText = base + "bottom:0;";
-        div.appendChild(bottomDiv);
-        var bottomLeft = document.createElement("div");
-        bottomLeft.style.cssText = base + "bottom:0;left:0;";
-        div.appendChild(bottomLeft);
-        var leftDiv = document.createElement("div");
-        leftDiv.style.cssText = base + "left:0;";
-        div.appendChild(leftDiv);
+        if (key & 0x1) { // Top
+            this._createSegment(div, "top:0;");
+            if (key & 0x2) { // Right
+                this._createSegment(div, "top:0;right:0;");
+            }
+        }
+        if (key & 0x2) { // Right
+            this._createSegment(div, "right:0;");
+            if (key & 0x4) { // Bottom
+                this._createSegment(div, "bottom:0;right:0;");
+            }
+        }
+        if (key & 0x4) { // Bottom
+            this._createSegment(div, "bottom:0;");
+            if (key & 0x8) { // Left
+                this._createSegment(div, "bottom:0;left:0;");
+            }
+        }
+        if (key & 0x8) { // Left
+            this._createSegment(div, "left:0;");
+            if (key & 0x1) { // Top
+                this._createSegment(div, "top:0;left:0;");
+            }
+        }
 
         var contentDiv = document.createElement("div");
-        contentDiv.style.cssText = "position:relative;";
         div.appendChild(contentDiv);
         return div;
     },
@@ -815,7 +830,7 @@ Echo.Sync.FillImageBorder = {
      * @type Element
      */
     getContainerContent: function(containerDiv) {
-        return containerDiv.childNodes[8];
+        return containerDiv.__content;
     },
     
     /**
@@ -833,43 +848,75 @@ Echo.Sync.FillImageBorder = {
      * @return the outer container DIV element of the rendered DOM hierarchy
      * @type Element
      */
-    renderContainer: function(fillImageBorder, childElement) {
-        if (!this._PROTOTYPE) {
-            this._PROTOTYPE = this._createPrototype();
-        }
+    renderContainer: function(fillImageBorder, childElement, options) {
         var i;
-        var div = this._PROTOTYPE.cloneNode(true);
-        var ch = div.childNodes;
-        var borderInsets = Echo.Sync.Insets.toPixels(fillImageBorder.borderInsets);
-        if (fillImageBorder.color) {
-            for (i = 0; i < 8; ++i) {
-                ch[i].style.backgroundColor = fillImageBorder.color; 
-            }
-        }
-        for (i = 0; i < 3; ++i) {
-            ch[i].style.height = borderInsets.top + "px";
-        }
-        for (i = 2; i < 5; ++i) {
-            ch[i].style.width = borderInsets.right + "px";
-        }
-        for (i = 4; i < 7; ++i) {
-            ch[i].style.height = borderInsets.bottom + "px";
-        }
-        for (i = 6; i < 9; ++i) {
-            ch[i % 8].style.width = borderInsets.left + "px";
-        }
-        for (i = 0; i < 8; ++i) {
-            Echo.Sync.FillImage.render(fillImageBorder[this._NAMES[i]], ch[i], Echo.Sync.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER);
-        }
-        ch[1].style.left = ch[5].style.left = borderInsets.left + "px";
-        ch[1].style.right = ch[5].style.right = borderInsets.right + "px";
-        ch[3].style.top = ch[7].style.top = borderInsets.top + "px";
-        ch[3].style.bottom = ch[7].style.bottom = borderInsets.bottom + "px";
+        var bi = Echo.Sync.Insets.toPixels(fillImageBorder.borderInsets);
         
-        Echo.Sync.Insets.render(fillImageBorder.contentInsets, ch[8], "padding");
-        if (childElement) {
-            ch[8].appendChild(childElement);
+        var key = (bi.left && 0x8) | (bi.bottom && 0x4) | (bi.right && 0x2) | (bi.top && 0x1);
+        var div = (this._PROTOTYPES[key] ? this._PROTOTYPES[key] : 
+                this._PROTOTYPES[key] = this._createPrototype(key)).cloneNode(true);
+        div.__key = key;
+        div.__content = div.lastChild;
+        div.__border = [];
+        
+        var map = this._MAP[key];
+
+        var child = div.firstChild;
+        for (var i = 0; i < 8; ++i) {
+            // Load child.
+            if (map[i] === null) {
+                continue;
+            }
+
+            div.__border[i] = child;
+            
+            if (fillImageBorder.color) {
+                child.style.backgroundColor = fillImageBorder.color; 
+            }
+            if (i === 0 || i === 1 || i === 7) { // 0,1,7 = top
+                child.style.height = bi.top + "px";
+            } else if (i >= 3 && i <= 5) { // 3,4,5 = bottom
+                child.style.height = bi.bottom + "px";
+            }
+            if (i >= 1 && i <= 3) { // 1,2,3 = right
+                child.style.width = bi.right + "px";
+            } else if (i >= 5) { // 5,6,7 = left
+                child.style.width = bi.left + "px";
+            }
+            Echo.Sync.FillImage.render(fillImageBorder[this._NAMES[i]], child, Echo.Sync.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER);
+            child = child.nextSibling;
         }
+
+        if (bi.top) {
+            div.__border[0].style.left = bi.left + "px";
+            div.__border[0].style.right = bi.right + "px";
+        }
+        if (bi.right) {
+            div.__border[2].style.top = bi.top + "px";
+            div.__border[2].style.bottom = bi.bottom + "px";
+        }
+        if (bi.bottom) {
+            div.__border[4].style.left = bi.left + "px";
+            div.__border[4].style.right = bi.right + "px";
+        }
+        if (bi.left) {
+            div.__border[6].style.top = bi.top + "px";
+            div.__border[6].style.bottom = bi.bottom + "px";
+        }
+        
+        Echo.Sync.Insets.render(fillImageBorder.contentInsets, div.__content, "padding");
+
+        if (childElement) {
+            div.__content.appendChild(childElement);
+        }
+        
+        if (options && options.absolute) {
+            div.style.position = "absolute";
+        } else {
+            div.__content.style.position = "relative";
+            div.style.position = "relative";
+        }
+        
         return div;
     },
     
@@ -881,8 +928,11 @@ Echo.Sync.FillImageBorder = {
      * @param {Element} containerDiv the outer container DIV element of the rendered FillImageBorder DOM hierarchy
      */
     renderContainerDisplay: function(containerDiv) {
-        for (var i = 1; i <= 7; i += 2) {
-            Core.Web.VirtualPosition.redraw(containerDiv.childNodes[i]);
+        for (var i = 0; i < 8; i += 2) {
+            var child = containerDiv.__border[i];
+            if (child) {
+                Core.Web.VirtualPosition.redraw(child);
+            }
         }
     }
 };
