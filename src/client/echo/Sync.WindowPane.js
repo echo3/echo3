@@ -424,12 +424,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         this._initialAutoSizeComplete = false;
-
-        // Create main component DIV.
-        this._div = document.createElement("div");
-        this._div.id = this.component.renderId;
-        this._div.tabIndex = "0";
-        
         this._rtl = !this.component.getRenderLayoutDirection().isLeftToRight();
         
         // Create content DIV.
@@ -457,13 +451,10 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             this._maskDiv.appendChild(maskIFrameElement);
         }
     
-        // Render window frame.
-        this._renderAddFrame();
-        
         Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this._div);
-    
-        // Append main DIV to parent.
-        parentElement.appendChild(this._div);
+        
+        // Render window frame.
+        this._renderAddFrame(parentElement);
     },
     
     /**
@@ -471,9 +462,16 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      * initially been rendered to update the window content.
      * _renderDisposeFrame() must be invoked between invocations of _renderAddFrame() to dispose resources.
      * _contentDiv will be appended to rendered DOM structure.
+     * 
+     * @param {Element} parentElement the parent element to which the rendered frame should be appended 
      */
-    _renderAddFrame: function() {
+    _renderAddFrame: function(parentElement) {
         this._loadPositionAndSize();
+
+        // Create main component DIV.
+        this._div = document.createElement("div");
+        this._div.id = this.component.renderId;
+        this._div.tabIndex = "0";
 
         // Load property states.
         this._minimumWidth = Echo.Sync.Extent.toPixels(
@@ -506,7 +504,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                     this._borderDivs[i].style.zIndex = 2;
                     this._borderDivs[i].style.cursor = Echo.Sync.WindowPane.CURSORS[i];
                     Core.Web.Event.add(this._borderDivs[i], "mousedown", mouseDownHandler, true);
-                    Core.Debug.consoleWrite("setting cursor:" + Echo.Sync.WindowPane.CURSORS[i]);
                 }
             }
         }
@@ -629,6 +626,9 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         }
         Core.Web.Event.add(this._div, "click", 
                 Core.method(this, this._processFocusClick), true);
+
+        // Append main DIV to parent.
+        parentElement.appendChild(this._div);
     },
 
     /**
@@ -703,7 +703,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     renderDispose: function(update) {
         this._overlayRemove();
         this._renderDisposeFrame();
-        this._div = null;
         this._maskDiv = null;
         this._contentDiv = null;
     },
@@ -733,6 +732,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.Event.removeAll(this._titleBarDiv);
         this._titleBarDiv = null;
         
+        this._div = null;
     },
     
     /** @see Echo.Render.ComponentSync#renderFocus */
@@ -751,9 +751,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             this._loadPositionAndSize();
             return false;
         } else if (update.isUpdatedPropertySetIn(Echo.Sync.WindowPane.PARTIAL_PROPERTIES)) {
-//FIXME disabling partial updates for conversion to FIB render            
-//            this._renderUpdateFrame();
-//            return false;
+            this._renderUpdateFrame();
+            return false;
         }
 
         var element = this._div;
@@ -768,15 +767,11 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      * Renders an update to the window frame.  Disposes existing frame, removes rendered elements, adds new frame.
      */
     _renderUpdateFrame: function() {
+        var element = this._div;
+        var containerElement = element.parentNode;
         this._renderDisposeFrame();
-    
-        // Remove all child components from main DIV (necessary in cases where frame is being redrawn
-        // on previously rendered WindowPane in response to property update). 
-        while (this._div.childNodes.length > 0) {
-            this._div.removeChild(this._div.lastChild);
-        }
-
-        this._renderAddFrame();
+        containerElement.removeChild(element);
+        this._renderAddFrame(containerElement);
     },
     
     /**
