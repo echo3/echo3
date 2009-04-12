@@ -98,7 +98,7 @@ Echo.Sync.Panel = Core.extend(Echo.Sync.Composite, {
         }
         
         if (this._imageBorder) {
-            this.div = Echo.Sync.FillImageBorder.renderContainer(this._imageBorder, this.contentDiv);
+            this.div = Echo.Sync.FillImageBorder.renderContainer(this._imageBorder, { child: this.contentDiv });
         } else {
             Echo.Sync.Border.render(this.component.render("border"), this.contentDiv);
         }

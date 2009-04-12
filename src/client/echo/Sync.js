@@ -858,6 +858,10 @@ Echo.Sync.FillImageBorder = {
         return div;
     },
     
+    getBorder: function(containerDiv) {
+        return containerDiv.__border;
+    },
+    
     /**
      * Returns the content element (to which children may be added) of a FillImageBorder container element created with
      * <code>renderContainer()</code>.
@@ -881,11 +885,18 @@ Echo.Sync.FillImageBorder = {
      * (the rendered border uses virtual positioning to appear properly in IE6).
      * 
      * @param {#FillImageBorder} fillImageBorder the FillImageBorder to be rendered.
-     * @param {Element} childElement (optional) a child DOM element to add inside the rendered hierarchy
+     * @param configuration (optional) configuration options, an object containing one or more of the following properties:
+     *        <ul>
+     *         <li><code>container</code>: the parent element to which borders and content should be appended
+     *         <li><code>child</code>: the child element to render</li>
+     *         <li><code>absolute</code>: boolean flag indicating whether the DIV shold be absolutely (true) or relatively
+     *         (false) positioned</li>
+     *        </ul>
      * @return the outer container DIV element of the rendered DOM hierarchy
      * @type Element
      */
-    renderContainer: function(fillImageBorder, childElement, options) {
+    renderContainer: function(fillImageBorder, configuration) {
+        configuration = configuration || {};
         var i;
         var bi = Echo.Sync.Insets.toPixels(fillImageBorder.borderInsets);
         
@@ -943,11 +954,11 @@ Echo.Sync.FillImageBorder = {
         
         Echo.Sync.Insets.render(fillImageBorder.contentInsets, div.__content, "padding");
 
-        if (childElement) {
-            div.__content.appendChild(childElement);
+        if (configuration.child) {
+            div.__content.appendChild(configuration.child);
         }
         
-        if (options && options.absolute) {
+        if (configuration.absolute) {
             div.style.position = "absolute";
         } else {
             div.__content.style.position = "relative";
