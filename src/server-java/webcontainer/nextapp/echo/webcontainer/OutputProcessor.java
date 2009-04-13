@@ -490,6 +490,10 @@ class OutputProcessor {
         boolean indexedProperty = componentPeer.isOutputPropertyIndexed(context, c, propertyName);
         if (indexedProperty) {
             Iterator indicesIt = componentPeer.getOutputPropertyIndices(context, c, propertyName);
+            if (indicesIt == null) {
+                // Abort immediately if no indices can be determined.
+                return;
+            }
             while (indicesIt.hasNext()) {
                 int index = ((Integer) indicesIt.next()).intValue();
                 renderComponentPropertyImpl(parentElement, componentPeer, c, propertyName, index, renderNulls);

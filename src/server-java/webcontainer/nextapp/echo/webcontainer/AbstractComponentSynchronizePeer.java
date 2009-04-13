@@ -346,8 +346,7 @@ implements ComponentSynchronizePeer {
      */
     public Iterator getOutputPropertyNames(Context context, Component component) {
         final Iterator styleIterator = component.getLocalStyle().getPropertyNames();
-        final Iterator additionalPropertyIterator 
-                = additionalProperties == null ? null : additionalProperties.iterator();
+        final Iterator additionalPropertyIterator = additionalProperties == null ? null : additionalProperties.iterator();
         
         return new Iterator() {
         
@@ -355,8 +354,7 @@ implements ComponentSynchronizePeer {
              * @see java.util.Iterator#hasNext()
              */
             public boolean hasNext() {
-                return styleIterator.hasNext() || 
-                        (additionalPropertyIterator != null && additionalPropertyIterator.hasNext());
+                return styleIterator.hasNext() || (additionalPropertyIterator != null && additionalPropertyIterator.hasNext());
             }
         
             /**
