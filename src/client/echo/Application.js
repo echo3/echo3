@@ -2137,7 +2137,7 @@ Echo.Update.ComponentUpdate = Core.extend({
         s += "- Adds: " + this._addedChildIds + "\n";
         s += "- Removes: " + this._removedChildIds + "\n";
         s += "- DescendantRemoves: " + this._removedDescendantIds + "\n";
-        s += "- Properties: " + this._propertyUpdates + "\n";
+        s += "- Properties: " + Core.Debug.toString(this._propertyUpdates) + "\n";
         s += "- LayoutDatas: " + this._updatedLayoutDataChildIds + "\n";
         return s;
     },
