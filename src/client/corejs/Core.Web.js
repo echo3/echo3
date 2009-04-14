@@ -79,6 +79,12 @@ Core.Web.DOM = {
      * Temporary storage for the element about to be focused (for clients that require 'delayed' focusing).
      */
     _focusPendingElement: null,
+    
+    /**
+     * Runnable to invoke focus implementation (lazily created).
+     * @type Core.Web.Scheduler.Runnable
+     */
+    _focusRunnable: null,
 
     /**
      * Adds an event listener to an object, using the client's supported event 
@@ -149,8 +155,11 @@ Core.Web.DOM = {
      */
     focusElement: function(element) {
         if (Core.Web.Env.QUIRK_DELAYED_FOCUS_REQUIRED) {
+            if (!this._focusRunnable) {
+                this._focusRunnable = new Core.Web.Scheduler.MethodRunnable(this._focusElementImpl);
+            }
             Core.Web.DOM._focusPendingElement = element;
-            Core.Web.Scheduler.run(Core.method(window, this._focusElementImpl));
+            Core.Web.Scheduler.add(this._focusRunnable);
         } else {
             this._focusElementImpl(element);
         }
