@@ -98,6 +98,12 @@ Echo.Client = Core.extend({
     _processKeyPressRef: null,
     
     /**
+     * Method reference to this._processKeyDownRef().
+     * @type Function
+     */
+    _processKeyDownRef: null,
+    
+    /**
      * Flag indicating wait indicator is active.
      * @type Boolean
      */
@@ -144,6 +150,7 @@ Echo.Client = Core.extend({
         
         this._inputRestrictionMap = { };
         this._processKeyPressRef = Core.method(this, this._processKeyPress);
+        this._processKeyDownRef = Core.method(this, this._processKeyDown);
         this._processApplicationFocusRef = Core.method(this, this._processApplicationFocus);
         this._waitIndicator = new Echo.Client.DefaultWaitIndicator();
         this._waitIndicatorRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._waitIndicatorActivate), 
@@ -227,8 +234,8 @@ Echo.Client = Core.extend({
         if (this.application) {
             // Deconfigure current application if one is configured.
             Core.Arrays.remove(Echo.Client._activeClients, this);
-            Core.Web.Event.remove(this.domainElement, 
-                    Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._processKeyPressRef, false);
+            Core.Web.Event.remove(this.domainElement, "keypress", this._processKeyPressRef, false);
+            Core.Web.Event.remove(this.domainElement, "keydown", this._processKeyDownRef, false);
             this.application.removeListener("focus", this._processApplicationFocusRef);
             this.application.doDispose();
             this.application.client = null;
@@ -243,8 +250,8 @@ Echo.Client = Core.extend({
             this.application.client = this;
             this.application.doInit();
             this.application.addListener("focus", this._processApplicationFocusRef);
-            Core.Web.Event.add(this.domainElement, 
-                    Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", this._processKeyPressRef, false);
+            Core.Web.Event.add(this.domainElement, "keypress", this._processKeyPressRef, false);
+            Core.Web.Event.add(this.domainElement, "keydown", this._processKeyDownRef, false);
             Echo.Client._activeClients.push(this);
         }
     },
@@ -437,18 +444,32 @@ Echo.Client = Core.extend({
     },
     
     /**
+     * Root KeyPress event handler.
+     * 
+     * @param e the event
+     */
+    _processKeyDown: function(e) {
+        if (Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT && e.keyCode == 9) { // Tab
+            this.application.focusNext(e.shiftKey);
+            Core.Web.DOM.preventEventDefault(e);
+        }
+        Core.Debug.consoleWrite("keyDown: charCode=" + e.charCode + ", keyCode=" + e.keyCode);
+        return true;
+    },
+    
+    /**
      * Root KeyDown event handler.
      * Specifically processes tab key events for focus management.
      * 
      * @param e the event
      */
     _processKeyPress: function(e) {
-        if (e.keyCode == 9) { // Tab
+        if (!Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT && e.keyCode == 9) { // Tab
             this.application.focusNext(e.shiftKey);
             Core.Web.DOM.preventEventDefault(e);
-            return false; // Stop propagation.
         }
-        return true; // Allow propagation.
+        Core.Debug.consoleWrite("keyPress: charCode=" + e.charCode + ", keyCode=" + e.keyCode);
+        return true;
     },
     
     /**
