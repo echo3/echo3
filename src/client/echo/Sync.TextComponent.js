@@ -71,6 +71,18 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     percentWidth: false,
     
     /**
+     * First index of cursor selection.
+     * @type Nunber
+     */
+    _selectionStart: 0,
+    
+    /**
+     * Last index of cursor selection.
+     * @type Nunber
+     */
+    _selectionEnd: 0,
+    
+    /**
      * Renders style information: colors, borders, font, insets, etc.
      * Sets percentWidth flag.
      */
@@ -145,6 +157,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             return true;
         }
         this.client.application.setFocusedComponent(this.component);
+        this._storePosition();
     },
 
     /**
@@ -281,6 +294,31 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     },
 
     /**
+     * Stores the selection/cursor position within the input field.
+     */
+    _storePosition: function() {
+        if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
+            var range = document.selection.createRange();
+            if (range.parentElement() != this.input) {
+                return;
+            }
+            var measureRange = range.duplicate();
+            if (this.input.nodeName.toLowerCase() == "textarea") {
+                measureRange.moveToElementText(this.input);
+            } else {
+                measureRange.expand("textedit");
+            }
+            measureRange.setEndPoint("EndToEnd", range);
+            this._selectionStart = measureRange.text.length - range.text.length;
+            this._selectionEnd = this._selectionStart + range.text.length;
+        } else {
+            this._selectionStart = this.input.selectionStart;
+            this._selectionEnd = this.input.selectionEnd;
+        }
+Core.Debug.consoleWrite(this._selectionStart == this._selectionEnd ? this._selectionStart : (this._selectionStart + "-" + this._selectionEnd));
+    },
+    
+    /**
      * Stores the current value of the input field, if the client will allow it.
      * If the client will not allow it, but the component itself is active, registers
      * a restriction listener to be notified when the client is clear of input restrictions
@@ -289,6 +327,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      * @param keyEvent the user keyboard event which triggered the value storage request (optional)
      */
     _storeValue: function(keyEvent) {
+        this._storePosition();
         if (!this.client || !this.component.isActive()) {
             if (keyEvent) {
                 // Prevent input.
