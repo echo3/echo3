@@ -453,7 +453,6 @@ Echo.Client = Core.extend({
             this.application.focusNext(e.shiftKey);
             Core.Web.DOM.preventEventDefault(e);
         }
-        Core.Debug.consoleWrite("keyDown: charCode=" + e.charCode + ", keyCode=" + e.keyCode);
         return true;
     },
     
@@ -468,7 +467,6 @@ Echo.Client = Core.extend({
             this.application.focusNext(e.shiftKey);
             Core.Web.DOM.preventEventDefault(e);
         }
-        Core.Debug.consoleWrite("keyPress: charCode=" + e.charCode + ", keyCode=" + e.keyCode);
         return true;
     },
     

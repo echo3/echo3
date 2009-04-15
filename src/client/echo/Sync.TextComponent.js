@@ -315,7 +315,6 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             this._selectionStart = this.input.selectionStart;
             this._selectionEnd = this.input.selectionEnd;
         }
-Core.Debug.consoleWrite(this._selectionStart == this._selectionEnd ? this._selectionStart : (this._selectionStart + "-" + this._selectionEnd));
     },
     
     /**
