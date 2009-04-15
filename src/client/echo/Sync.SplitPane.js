@@ -353,7 +353,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         if ((dimension & Echo.Render.ComponentSync.SIZE_HEIGHT) && size0.height != null && size1.height != null) {
             if (this._orientationVertical) {
                 // Measure height of vertical SplitPane: sum pane heights and separator.
-                height = size0.height + size1.height + this._separatorSize;
+                height = size0.height + size1.height + (this._separatorVisible ? this._separatorSize : 0);
             } else {
                 // Measure height of horizontal SplitPane: use maximum pane height.
                 height = size0.height > size1.height ? size0.height : size1.height;
@@ -367,7 +367,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
                 width = size0.width > size1.width ? size0.width : size1.width;
             } else {
                 // Measure width of horizontal SplitPane: sum pane widths and separator.
-                width = size0.width + size1.width + this._separatorSize;
+                width = size0.width + size1.width + (this._separatorVisible ? this._separatorSize : 0);
             }
         }
         
