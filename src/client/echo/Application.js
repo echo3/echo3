@@ -350,6 +350,8 @@ Echo.Application = Core.extend({
      * @param {Echo.Component} newValue the new focused component
      */
     setFocusedComponent: function(newValue) {
+        var oldValue = this._focusedComponent;
+        
         // If required, find focusable parent containing 'newValue'.
         while (newValue != null && !newValue.focusable) {
             newValue = newValue.parent;
@@ -369,7 +371,7 @@ Echo.Application = Core.extend({
         }
         
         this._focusedComponent = newValue;
-        this._listenerList.fireEvent({type: "focus", source: this});
+        this._listenerList.fireEvent({type: "focus", source: this, oldValue: oldValue, newValue: newValue });
     },
     
     /**
