@@ -3306,7 +3306,9 @@ Echo.TextComponent = Core.extend(Echo.Component, {
          * @param keyCode the (standardized) key code
          */
         doKeyDown: function(keyCode) {
-            this.fireEvent({type: "keyDown", source: this, keyCode: keyCode });
+            var e = { type: "keyDown", source: this, keyCode: keyCode };
+            this.fireEvent(e);
+            return !e.veto;
         },
         
         /**
@@ -3316,7 +3318,9 @@ Echo.TextComponent = Core.extend(Echo.Component, {
          * @param charCode the charater code
          */
         doKeyPress: function(keyCode, charCode) {
-            this.fireEvent({type: "keyPress", source: this, keyCode: keyCode, charCode: charCode });
+            var e = { type: "keyPress", source: this, keyCode: keyCode, charCode: charCode };
+            this.fireEvent(e);
+            return !e.veto;
         }
     },
 

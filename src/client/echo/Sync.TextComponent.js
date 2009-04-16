@@ -175,7 +175,9 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     clientKeyDown: function(e) {
         this._storeValue(e);
         if (this.client && this.component.isActive()) {
-            this.component.doKeyDown(e.keyCode);
+            if (!this.component.doKeyDown(e.keyCode)) {
+                Core.Web.DOM.preventEventDefault(e.domEvent);
+            }
         }
         return true;
     },
@@ -184,7 +186,9 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     clientKeyPress: function(e) {
         this._storeValue(e);
         if (this.client && this.component.isActive()) {
-            this.component.doKeyPress(e.keyCode, e.charCode);
+            if (!this.component.doKeyPress(e.keyCode, e.charCode)) {
+                Core.Web.DOM.preventEventDefault(e.domEvent);
+            }
         }
         return true;
     },

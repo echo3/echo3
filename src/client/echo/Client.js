@@ -479,7 +479,7 @@ Echo.Client = Core.extend({
         while (component && !cancel) {
             if (component.peer && component.peer.clientKeyDown) {
                 if (!keyEvent) {
-                    keyEvent = { type: "key", source: this, keyCode: e.keyCode };
+                    keyEvent = { type: "key", source: this, keyCode: e.keyCode, domEvent: e };
                 }
                 cancel = !component.peer.clientKeyDown(keyEvent);
             }
@@ -515,7 +515,8 @@ Echo.Client = Core.extend({
                         type: "key", 
                         source: this,
                         charCode: Core.Web.Env.QUIRK_KEY_CODE_IS_CHAR_CODE ? e.keyCode : e.charCode,
-                        keyCode: this._lastKeyCode
+                        keyCode: this._lastKeyCode,
+                        domEvent: e
                     };
                 }
                 cancel = !component.peer.clientKeyPress(keyEvent);
