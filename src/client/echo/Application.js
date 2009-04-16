@@ -3274,6 +3274,8 @@ Echo.SplitPane = Core.extend(Echo.Component, {
  * @sp {#Insets} insets the inset margin between the border and the text content
  * @sp {Number} maximumLength the maximum number of characters which may be
  *     entered
+ * @sp {Number} selectionStart the character index of the beginning of the selection
+ * @sp {Number} selectionEnd the character index of the end of the selection
  * @sp {String} toolTipText the tool tip text
  * @sp {#Extent} verticalScroll the vertical scrollbar position
  * @sp {#Extent} width the width of the component
@@ -3296,6 +3298,16 @@ Echo.TextComponent = Core.extend(Echo.Component, {
          */
         doAction: function() {
             this.fireEvent({type: "action", source: this, actionCommand: this.get("actionCommand")});
+        },
+        
+        /**
+         * Notifies listeners of a key press.
+         * 
+         * @param keyCode the (standardized) key code
+         * @param charCode the charater code
+         */
+        doKey: function(keyCode, charCode) {
+            this.fireEvent({type: "key", source: this, keyCode: keyCode, charCode: charCode });
         }
     },
 

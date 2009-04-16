@@ -13,7 +13,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     $virtual: {
         
         getSupportedPartialProperties: function() {
-           return ["text", "editable"];
+           return ["text", "editable", "selectionStart", "selectionEnd"];
         },
         
         /**
@@ -21,6 +21,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
          */
         processBlur: function(e) {
             this._focused = false;
+            this._storeSelection();
             return this._storeValue();
         },
         
@@ -133,7 +134,6 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.Event.add(this.input, "click", Core.method(this, this._processClick), false);
         Core.Web.Event.add(this.input, "focus", Core.method(this, this._processFocus), false);
         Core.Web.Event.add(this.input, "blur", Core.method(this, this.processBlur), false);
-        Core.Web.Event.add(this.input, "keypress", Core.method(this, this._processKeyPress), false);
         Core.Web.Event.add(this.input, "keyup", Core.method(this, this._processKeyUp), false);
     },
     
@@ -157,7 +157,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             return true;
         }
         this.client.application.setFocusedComponent(this.component);
-        this._storePosition();
+        this._storeSelection();
     },
 
     /**
@@ -173,20 +173,18 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     
     /** @see Echo.Render.ComponentSync#processKey */
     processKey: function(e) {
-        Core.Debug.consoleWrite("processKey:" + Core.Debug.toString(e));
-    },
-    
-    /**
-     * Processes a key press event.  Prevents input when client is not ready. 
-     */
-    _processKeyPress: function(e) {
-        return this._storeValue(e);
+        this._storeValue(e);
+        if (this.client && this.component.isActive()) {
+            this.component.doKey(e.keyCode, e.charCode);
+        }
+        return true;
     },
     
     /**
      * Processes a key up event.  
      */
     _processKeyUp: function(e) {
+        this._storeSelection();
         return this._storeValue(e);
     },
     
@@ -301,13 +299,18 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     /**
      * Stores the selection/cursor position within the input field.
      */
-    _storePosition: function() {
+    _storeSelection: function() {
+        //FIXME fire selection events if required.
+        if (!this.component) {
+            return;
+        }
+        var range, measureRange;
         if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
-            var range = document.selection.createRange();
+            range = document.selection.createRange();
             if (range.parentElement() != this.input) {
                 return;
             }
-            var measureRange = range.duplicate();
+            measureRange = range.duplicate();
             if (this.input.nodeName.toLowerCase() == "textarea") {
                 measureRange.moveToElementText(this.input);
             } else {
@@ -320,6 +323,8 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             this._selectionStart = this.input.selectionStart;
             this._selectionEnd = this.input.selectionEnd;
         }
+        this.component.set("selectionStart", this._selectionStart);
+        this.component.set("selectionEnd", this._selectionEnd);
     },
     
     /**
@@ -331,7 +336,6 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      * @param keyEvent the user keyboard event which triggered the value storage request (optional)
      */
     _storeValue: function(keyEvent) {
-        this._storePosition();
         if (!this.client || !this.component.isActive()) {
             if (keyEvent) {
                 // Prevent input.
