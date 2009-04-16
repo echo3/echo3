@@ -300,7 +300,6 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      * Stores the selection/cursor position within the input field.
      */
     _storeSelection: function() {
-        //FIXME fire selection events if required.
         if (!this.component) {
             return;
         }
