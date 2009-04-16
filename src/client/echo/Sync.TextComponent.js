@@ -171,11 +171,20 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         this.client.application.setFocusedComponent(this.component);
     },
     
-    /** @see Echo.Render.ComponentSync#processKey */
-    processKey: function(e) {
+    /** @see Echo.Render.ComponentSync#clientKeyDown */
+    clientKeyDown: function(e) {
         this._storeValue(e);
         if (this.client && this.component.isActive()) {
-            this.component.doKey(e.keyCode, e.charCode);
+            this.component.doKeyDown(e.keyCode);
+        }
+        return true;
+    },
+    
+    /** @see Echo.Render.ComponentSync#clientKeyPress */
+    clientKeyPress: function(e) {
+        this._storeValue(e);
+        if (this.client && this.component.isActive()) {
+            this.component.doKeyPress(e.keyCode, e.charCode);
         }
         return true;
     },

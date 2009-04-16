@@ -555,6 +555,24 @@ Core.Web.Env = {
     PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED: null,
     
     /**
+     * Flag indicating that keypress events will place charCode value in keyCode property.
+     * @type Boolean
+     */
+    QUIRK_KEY_CODE_IS_CHAR_CODE: null,
+    
+    /**
+     * Flag indicating that keypress events are fired for special keys.
+     * @type Boolean
+     */
+    QUIRK_KEY_PRESS_FIRED_FOR_SPECIAL_KEYS: null,
+    
+    /**
+     * Flag indicating that keypress events are fired for special keys.
+     * @type Boolean
+     */
+    QUIRK_KEY_DOWN_NOT_FIRED_FOR_SPECIAL_KEYS: null,
+    
+    /**
      * Flag indicating collapsed borders appear inside a table's rendered rather
      * than around it. For example, a proper rendering for a 2px collapsed
      * border is that one pixel appear inside the table's are and one pixel
@@ -785,6 +803,7 @@ Core.Web.Env = {
         if (this.BROWSER_INTERNET_EXPLORER) {
             // Internet Explorer Flags (all versions).
             this.CSS_FLOAT = "styleFloat";
+            this.QUIRK_KEY_CODE_IS_CHAR_CODE = true;
             this.QUIRK_IE_SECURE_ITEMS = true;
             this.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED = true;
             this.PROPRIETARY_EVENT_SELECT_START_SUPPORTED = true;
@@ -816,6 +835,7 @@ Core.Web.Env = {
                 }
             }
         } else if (this.ENGINE_GECKO) {
+            this.QUIRK_KEY_PRESS_FIRED_FOR_SPECIAL_KEYS = true;
             this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
             this.QUIRK_MEASURE_OFFSET_HIDDEN_BORDER = true;
             if (this.BROWSER_FIREFOX) {
@@ -827,6 +847,7 @@ Core.Web.Env = {
                 this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
             }
         } else if (this.ENGINE_PRESTO) {
+            this.QUIRK_KEY_CODE_IS_CHAR_CODE = true;
             this.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING = true;
             if (this.BROWSER_VERSION_MAJOR == 9 && this.BROWSER_VERSION_MINOR >= 50) {
                 this.QUIRK_OPERA_CSS_POSITIONING = true;

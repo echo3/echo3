@@ -3301,13 +3301,22 @@ Echo.TextComponent = Core.extend(Echo.Component, {
         },
         
         /**
-         * Notifies listeners of a key press.
+         * Notifies listeners of a key down event.
+         * 
+         * @param keyCode the (standardized) key code
+         */
+        doKeyDown: function(keyCode) {
+            this.fireEvent({type: "keyDown", source: this, keyCode: keyCode });
+        },
+        
+        /**
+         * Notifies listeners of a key press event.
          * 
          * @param keyCode the (standardized) key code
          * @param charCode the charater code
          */
-        doKey: function(keyCode, charCode) {
-            this.fireEvent({type: "key", source: this, keyCode: keyCode, charCode: charCode });
+        doKeyPress: function(keyCode, charCode) {
+            this.fireEvent({type: "keyPress", source: this, keyCode: keyCode, charCode: charCode });
         }
     },
 

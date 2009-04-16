@@ -445,6 +445,8 @@ Echo.Client = Core.extend({
         }
     },
     
+    _lastKeyCode: null,
+    
     /**
      * Root KeyPress event handler.
      * 
@@ -459,12 +461,30 @@ Echo.Client = Core.extend({
             }
         }
         
-        if (Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT && e.keyCode == 9) { // Tab
+        if (e.keyCode == 9) { // Tab
             this.application.focusNext(e.shiftKey);
             Core.Web.DOM.preventEventDefault(e);
         }
         
-        this._sendKeyEvent(e.keyCode, e.charCode);
+        var component = this.application.getFocusedComponent(),
+            cancel = false,
+            keyEvent = null;
+            
+        if (!component) {
+            return true;
+        }
+        
+        this._lastKeyCode = e.keyCode;
+        
+        while (component && !cancel) {
+            if (component.peer && component.peer.clientKeyDown) {
+                if (!keyEvent) {
+                    keyEvent = { type: "key", source: this, keyCode: e.keyCode };
+                }
+                cancel = !component.peer.clientKeyDown(keyEvent);
+            }
+            component = component.parent;
+        }        
         
         return true;
     },
@@ -476,18 +496,33 @@ Echo.Client = Core.extend({
      * @param e the event
      */
     _processKeyPress: function(e) {
-        if (e.keyCode == 8) {
-            // Prevent backspace from navigating to previous page.
-            var nodeName = e.target.nodeName ? e.target.nodeName.toLowerCase() : null;
-            if (nodeName != "input" && nodeName != "textarea") {
-                Core.Web.DOM.preventEventDefault(e);
+        var component = this.application.getFocusedComponent(),
+            cancel = false,
+            keyEvent = null;
+        if (!component) {
+            return true;
+        }
+        
+        if (Core.Web.Env.QUIRK_KEY_PRESS_FIRED_FOR_SPECIAL_KEYS && !e.charCode) {
+            // Do nothing in the event no char code is provided for a keypress.
+            return true;
+        }
+        
+        while (component && !cancel) {
+            if (component.peer && component.peer.clientKeyPress) {
+                if (!keyEvent) {
+                    keyEvent = {
+                        type: "key", 
+                        source: this,
+                        charCode: Core.Web.Env.QUIRK_KEY_CODE_IS_CHAR_CODE ? e.keyCode : e.charCode,
+                        keyCode: this._lastKeyCode
+                    };
+                }
+                cancel = !component.peer.clientKeyPress(keyEvent);
             }
+            component = component.parent;
         }
-
-        if (!Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT && e.keyCode == 9) { // Tab
-            this.application.focusNext(e.shiftKey);
-            Core.Web.DOM.preventEventDefault(e);
-        }
+        
         return true;
     },
     
@@ -561,32 +596,6 @@ Echo.Client = Core.extend({
                 }
             }
         }
-    },
-    
-    // FIXME experimental.
-    //FIXME. Obey modal context?
-    /**
-     * Sends a keyboard event to the focused component and/or its ancestors.
-     * 
-     * @param {Number} keyCode the raw (browser-provided) key code
-     * @param {Number} charCode the raw (browser-provided) character code
-     */
-    _sendKeyEvent: function(keyCode, charCode) {
-        var component = this.application.getFocusedComponent(),
-            cancel = false,
-            e = null;
-        if (!component) {
-            return;
-        }
-        while (component && !cancel) {
-            if (component.peer && component.peer.processKey) {
-                if (!e) {
-                    e = { type: "key", source: this, keyCode: keyCode, charCode: charCode };
-                }
-                cancel = !component.peer.processKey(e);
-            }
-            component = component.parent;
-        }        
     },
     
     /**
