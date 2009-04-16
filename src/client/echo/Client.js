@@ -401,7 +401,7 @@ Echo.Client = Core.extend({
         if (this.parent) {
             this.parent.forceRedraw();
         } else if (Core.Web.Env.QUIRK_IE_BLANK_SCREEN) {
-            if (this.domainElement.offsetHeight === 0) {
+            if (this.domainElement && this.domainElement.offsetHeight === 0) {
                 // Force IE browser to re-render entire document if the height of the application's domain element measures zero.
                 // This is a workaround for an Internet Explorer bug where the browser's rendering engine fundamentally fails and 
                 // simply displays a blank screen (commonly referred to on bug-tracker/forum as the "blank screen of death").
