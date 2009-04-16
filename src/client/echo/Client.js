@@ -496,6 +496,14 @@ Echo.Client = Core.extend({
      * @param e the event
      */
     _processKeyPress: function(e) {
+        if (e.keyCode == 8) {
+            // Prevent backspace from navigating to previous page.
+            var nodeName = e.target.nodeName ? e.target.nodeName.toLowerCase() : null;
+            if (nodeName != "input" && nodeName != "textarea") {
+                Core.Web.DOM.preventEventDefault(e);
+            }
+        }
+
         var component = this.application.getFocusedComponent(),
             cancel = false,
             keyEvent = null;
