@@ -305,6 +305,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         }
         var range, measureRange;
         if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
+            //FIXME Move to Core.Web.Env variable describing selection
             range = document.selection.createRange();
             if (range.parentElement() != this.input) {
                 return;
