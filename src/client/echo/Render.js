@@ -681,6 +681,17 @@ Echo.Render.ComponentSync = Core.extend({
          */
         isChildVisible: null,
         
+        //FIXME Experimental.
+        /**
+         * (Optional) Processes a keyboard input event.  Invoked by client based on current focused component of application.
+         * This event is a combination of keypress and keydown events.
+         * 
+         * @param e the key event, containing charCode and (processed) keyCode properties
+         * @return true if higher-level containers should be allowed to process the key event as well
+         * @type Boolean
+         */
+        processKey: null,
+        
         /**
          * (Optional) Invoked when component is rendered focused.
          */

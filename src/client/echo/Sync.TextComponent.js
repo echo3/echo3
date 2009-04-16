@@ -171,6 +171,11 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         this.client.application.setFocusedComponent(this.component);
     },
     
+    /** @see Echo.Render.ComponentSync#processKey */
+    processKey: function(e) {
+        Core.Debug.consoleWrite("processKey:" + Core.Debug.toString(e));
+    },
+    
     /**
      * Processes a key press event.  Prevents input when client is not ready. 
      */

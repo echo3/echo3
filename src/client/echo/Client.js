@@ -455,6 +455,9 @@ Echo.Client = Core.extend({
             this.application.focusNext(e.shiftKey);
             Core.Web.DOM.preventEventDefault(e);
         }
+        
+        this._sendKeyEvent(e.keyCode, e.charCode);
+        
         return true;
     },
     
@@ -542,6 +545,32 @@ Echo.Client = Core.extend({
                 }
             }
         }
+    },
+    
+    // FIXME experimental.
+    //FIXME. Obey modal context?
+    /**
+     * Sends a keyboard event to the focused component and/or its ancestors.
+     * 
+     * @param {Number} keyCode the raw (browser-provided) key code
+     * @param {Number} charCode the raw (browser-provided) character code
+     */
+    _sendKeyEvent: function(keyCode, charCode) {
+        var component = this.application.getFocusedComponent(),
+            cancel = false,
+            e = null;
+        if (!component) {
+            return;
+        }
+        while (component && !cancel) {
+            if (component.peer && component.peer.processKey) {
+                if (!e) {
+                    e = { type: "key", source: this, keyCode: keyCode, charCode: charCode };
+                }
+                cancel = !component.peer.processKey(e);
+            }
+            component = component.parent;
+        }        
     },
     
     /**

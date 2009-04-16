@@ -1534,6 +1534,29 @@ Core.Web.Image = {
     }
 };
 
+Core.Web.Key = {
+    
+    _KEY_TABLES: {
+        
+        MSIE: {
+        },
+        
+        GECKO: {
+        },
+        
+        OPERA: {
+        },
+        
+        WEBKIT: {
+        }
+    },
+    
+    _keyTable: null,
+    
+    translateKeyCode: function() {
+    }
+};
+
 /**
  * Utilities for dynamically loading additional script libraries.
  * @class
