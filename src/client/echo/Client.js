@@ -453,7 +453,9 @@ Echo.Client = Core.extend({
      * @param e the event
      */
     _processKeyDown: function(e) {
-        if (e.keyCode == 8) {
+        var keyCode = Core.Web.Key.translateKeyCode(e.keyCode);
+        
+        if (keyCode == 8) {
             // Prevent backspace from navigating to previous page.
             var nodeName = e.target.nodeName ? e.target.nodeName.toLowerCase() : null;
             if (nodeName != "input" && nodeName != "textarea") {
@@ -461,7 +463,7 @@ Echo.Client = Core.extend({
             }
         }
         
-        if (e.keyCode == 9) { // Tab
+        if (keyCode == 9) { // Tab
             this.application.focusNext(e.shiftKey);
             Core.Web.DOM.preventEventDefault(e);
         }
@@ -474,12 +476,12 @@ Echo.Client = Core.extend({
             return true;
         }
         
-        this._lastKeyCode = e.keyCode;
+        this._lastKeyCode = keyCode;
         
         while (component && !cancel) {
             if (component.peer && component.peer.clientKeyDown) {
                 if (!keyEvent) {
-                    keyEvent = { type: "key", source: this, keyCode: e.keyCode, domEvent: e };
+                    keyEvent = { type: "key", source: this, keyCode: keyCode, domEvent: e };
                 }
                 cancel = !component.peer.clientKeyDown(keyEvent);
             }

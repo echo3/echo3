@@ -1559,13 +1559,27 @@ Core.Web.Key = {
     
     _KEY_TABLES: {
         
-        MSIE: {
+        GECKO: { 
+            59: 186, 
+            61: 187,
+            109: 189
         },
         
-        GECKO: {
+        MAC_GECKO: {
         },
         
-        OPERA: {
+        PRESTO: {
+            59: 186,
+            61: 187,
+            44: 188,
+            45: 189,
+            46: 190,
+            47: 191,
+            96: 192,
+            91: 219,
+            92: 220,
+            93: 221,
+            39: 222
         },
         
         WEBKIT: {
@@ -1574,7 +1588,21 @@ Core.Web.Key = {
     
     _keyTable: null,
     
-    translateKeyCode: function() {
+    _loadKeyTable: function() {
+        if (Core.Web.Env.ENGINE_GECKO) {
+            this._keyTable = this._KEY_TABLES.GECKO;
+        } else if(Core.Web.Env.ENGINE_PRESTO) {
+            this._keyTable = this._KEY_TABLES.PRESTO;
+        } else {
+            this._keyTable = { };
+        }
+    },
+
+    translateKeyCode: function(keyCode) {
+        if (!this._keyTable) {
+            this._loadKeyTable();
+        }
+        return this._keyTable[keyCode] || keyCode;
     }
 };
 
