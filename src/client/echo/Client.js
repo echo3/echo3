@@ -92,16 +92,10 @@ Echo.Client = Core.extend({
     _inputRescriptionMap: null,
     
     /**
-     * Method reference to this._processKeyPressRef().
+     * Method reference to this._processKey().
      * @type Function
      */
-    _processKeyPressRef: null,
-    
-    /**
-     * Method reference to this._processKeyDownRef().
-     * @type Function
-     */
-    _processKeyDownRef: null,
+    _processKeyRef: null,
     
     /**
      * Flag indicating wait indicator is active.
@@ -149,8 +143,7 @@ Echo.Client = Core.extend({
         }
         
         this._inputRestrictionMap = { };
-        this._processKeyPressRef = Core.method(this, this._processKeyPress);
-        this._processKeyDownRef = Core.method(this, this._processKeyDown);
+        this._processKeyRef = Core.method(this, this._processKey);
         this._processApplicationFocusRef = Core.method(this, this._processApplicationFocus);
         this._waitIndicator = new Echo.Client.DefaultWaitIndicator();
         this._waitIndicatorRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._waitIndicatorActivate), 
@@ -234,8 +227,8 @@ Echo.Client = Core.extend({
         if (this.application) {
             // Deconfigure current application if one is configured.
             Core.Arrays.remove(Echo.Client._activeClients, this);
-            Core.Web.Event.remove(this.domainElement, "keypress", this._processKeyPressRef, false);
-            Core.Web.Event.remove(this.domainElement, "keydown", this._processKeyDownRef, false);
+            Core.Web.Event.remove(this.domainElement, "keypress", this._processKeyRef, false);
+            Core.Web.Event.remove(this.domainElement, "keydown", this._processKeyRef, false);
             this.application.removeListener("focus", this._processApplicationFocusRef);
             this.application.doDispose();
             this.application.client = null;
@@ -250,8 +243,8 @@ Echo.Client = Core.extend({
             this.application.client = this;
             this.application.doInit();
             this.application.addListener("focus", this._processApplicationFocusRef);
-            Core.Web.Event.add(this.domainElement, "keypress", this._processKeyPressRef, false);
-            Core.Web.Event.add(this.domainElement, "keydown", this._processKeyDownRef, false);
+            Core.Web.Event.add(this.domainElement, "keypress", this._processKeyRef, false);
+            Core.Web.Event.add(this.domainElement, "keydown", this._processKeyRef, false);
             Echo.Client._activeClients.push(this);
         }
     },
@@ -447,13 +440,9 @@ Echo.Client = Core.extend({
     
     _lastKeyCode: null,
     
-    /**
-     * Root KeyPress event handler.
-     * 
-     * @param e the event
-     */
-    _processKeyDown: function(e) {
-        var keyCode = Core.Web.Key.translateKeyCode(e.keyCode);
+    _processKey: function(e) {
+        var press = e.type == "keypress";
+        var keyCode = press ? this._lastKeyCode : this._lastKeyCode = Core.Web.Key.translateKeyCode(e.keyCode);
         
         if (keyCode == 8) {
             // Prevent backspace from navigating to previous page.
@@ -461,78 +450,38 @@ Echo.Client = Core.extend({
             if (nodeName != "input" && nodeName != "textarea") {
                 Core.Web.DOM.preventEventDefault(e);
             }
-        }
-        
-        if (keyCode == 9) { // Tab
+        } else if (!press && keyCode == 9) {
             this.application.focusNext(e.shiftKey);
             Core.Web.DOM.preventEventDefault(e);
         }
         
+        if (press && Core.Web.Env.QUIRK_KEY_PRESS_FIRED_FOR_SPECIAL_KEYS && !e.charCode) {
+            // Do nothing in the event no char code is provided for a keypress.
+            return true;
+        }
+        
         var component = this.application.getFocusedComponent(),
-            cancel = false,
+            bubble = true,
             keyEvent = null;
             
         if (!component) {
             return true;
         }
         
-        this._lastKeyCode = keyCode;
+        var eventMethod = press ? "clientKeyPress" : "clientKeyDown";
         
-        while (component && !cancel) {
-            if (component.peer && component.peer.clientKeyDown) {
+        while (component && bubble) {
+            if (component.peer && component.peer[eventMethod]) {
                 if (!keyEvent) {
-                    keyEvent = { type: "key", source: this, keyCode: keyCode, domEvent: e };
+                    keyEvent = { type: e.type, source: this, keyCode: keyCode, domEvent: e };
+                    if (press) {
+                        keyEvent.charCode = Core.Web.Env.QUIRK_KEY_CODE_IS_CHAR_CODE ? e.keyCode : e.charCode;
+                    }
                 }
-                cancel = !component.peer.clientKeyDown(keyEvent);
+                bubble = component.peer[eventMethod](keyEvent);
             }
             component = component.parent;
         }        
-        
-        return true;
-    },
-    
-    /**
-     * Root KeyDown event handler.
-     * Specifically processes tab key events for focus management.
-     * 
-     * @param e the event
-     */
-    _processKeyPress: function(e) {
-        if (e.keyCode == 8) {
-            // Prevent backspace from navigating to previous page.
-            var nodeName = e.target.nodeName ? e.target.nodeName.toLowerCase() : null;
-            if (nodeName != "input" && nodeName != "textarea") {
-                Core.Web.DOM.preventEventDefault(e);
-            }
-        }
-
-        var component = this.application.getFocusedComponent(),
-            cancel = false,
-            keyEvent = null;
-        if (!component) {
-            return true;
-        }
-        
-        if (Core.Web.Env.QUIRK_KEY_PRESS_FIRED_FOR_SPECIAL_KEYS && !e.charCode) {
-            // Do nothing in the event no char code is provided for a keypress.
-            return true;
-        }
-        
-        while (component && !cancel) {
-            if (component.peer && component.peer.clientKeyPress) {
-                if (!keyEvent) {
-                    keyEvent = {
-                        type: "key", 
-                        source: this,
-                        charCode: Core.Web.Env.QUIRK_KEY_CODE_IS_CHAR_CODE ? e.keyCode : e.charCode,
-                        keyCode: this._lastKeyCode,
-                        domEvent: e
-                    };
-                }
-                cancel = !component.peer.clientKeyPress(keyEvent);
-            }
-            component = component.parent;
-        }
         
         return true;
     },
