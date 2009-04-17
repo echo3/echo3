@@ -100,7 +100,6 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
          */
         renderAdd: function(update, parentElement) {
             var element = this.getDomainElement();
-            Core.Debug.consoleWrite("RA:" + element);
             parentElement.appendChild(element);
         },
     
