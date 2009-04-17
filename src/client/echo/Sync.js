@@ -912,6 +912,9 @@ Echo.Sync.FillImageBorder = {
      * @param {#FillImageBorder} fillImageBorder the FillImageBorder to be rendered.
      * @param configuration (optional) configuration options, an object containing one or more of the following properties:
      *        <ul>
+     *         <li><code>update</code>: the containerDiv to update (normally null, which will result in a new one being
+     *          created; note that it is less efficient to update a container than to create a new one; currently does not 
+     *          support adding content)</li>
      *         <li><code>content</code>: flag indicating that a content element should be created/managed (implied by child)</li>
      *         <li><code>child</code>: a content element to added inside the border (implies content)</li>
      *         <li><code>absolute</code>: boolean flag indicating whether the DIV shold be absolutely (true) or relatively
@@ -922,18 +925,49 @@ Echo.Sync.FillImageBorder = {
      */
     renderContainer: function(fillImageBorder, configuration) {
         configuration = configuration || {};
-        var i;
         var bi = Echo.Sync.Insets.toPixels(fillImageBorder.borderInsets);
-        
         var key = (bi.left && 0x8) | (bi.bottom && 0x4) | (bi.right && 0x2) | (bi.top && 0x1);
         var map = this._MAP[key];
-        var div = (this._PROTOTYPES[key] ? this._PROTOTYPES[key] : 
-                this._PROTOTYPES[key] = this._createPrototype(key)).cloneNode(true);
+        var prototypeDiv = this._PROTOTYPES[key] ? this._PROTOTYPES[key] : this._PROTOTYPES[key] = this._createPrototype(key); 
+        var div, child, childClone, firstChild, i, content = null, border = [], insertBefore = null, testChild, insets;
+        
+        if (configuration.update) {
+            div = configuration.update;
+            // Remove children.
+            child = div.firstChild;
+            while (child) {
+                testChild = child;
+                child = child.nextSibling;
+                if (testChild.__FIB_segment != null) {
+                    // Mark position where children should be inserted.
+                    insertBefore = child;
+                    div.removeChild(testChild);
+                }
+            }
+            // Add children from prototype.
+            child = prototypeDiv.firstChild;
+            while (child) {
+                childClone = child.cloneNode(true);
+                if (!firstChild) {
+                    // Store reference to first added child.
+                    firstChild = childClone;
+                }
+                
+                // Insert child.
+                if (insertBefore) {
+                    div.insertBefore(childClone, insertBefore);
+                } else {
+                    div.appendChild(childClone);
+                }
+                child = child.nextSibling;
+            }
+        } else {
+            div = prototypeDiv.cloneNode(true);
+            firstChild = div.firstChild;
+        }
         div.__key = key;
         
-        var content = null;
-        
-        if (configuration.content || configuration.child) {
+        if (!configuration.update && (configuration.content || configuration.child)) {
             content = document.createElement("div");
             content.__FIB_content = true;
             if (configuration.child) {
@@ -943,9 +977,7 @@ Echo.Sync.FillImageBorder = {
             div.appendChild(content);
         }
         
-        var border = [];
-        
-        var child = div.firstChild;
+        child = firstChild;
         for (i = 0; i < 8; ++i) {
             if (!map[i]) {
                 // Continue in case where border has no element in this position.
@@ -991,7 +1023,7 @@ Echo.Sync.FillImageBorder = {
         
         if (configuration.absolute) {
             div.__FIB_absolute = true;
-            var insets = Echo.Sync.Insets.toPixels(fillImageBorder.contentInsets);
+            insets = Echo.Sync.Insets.toPixels(fillImageBorder.contentInsets);
             div.style.position = "absolute";
             if (content) {
                 content.style.position = "absolute"; 
