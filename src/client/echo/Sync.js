@@ -943,6 +943,9 @@ Echo.Sync.FillImageBorder = {
                     insertBefore = child;
                     div.removeChild(testChild);
                 }
+                if (testChild.__FIB_content) {
+                    content = testChild;
+                }
             }
             // Add children from prototype.
             child = prototypeDiv.firstChild;
@@ -1035,9 +1038,11 @@ Echo.Sync.FillImageBorder = {
             }
         } else {
             Echo.Sync.Insets.render(fillImageBorder.contentInsets, content, "padding");
-            div.style.position = "relative";
-            if (content) {
-                content.style.position = "relative";
+            if (!configuration.update) {
+                div.style.position = "relative";
+                if (content) {
+                    content.style.position = "relative";
+                }
             }
         }
         
