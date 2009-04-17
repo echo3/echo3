@@ -134,6 +134,12 @@ Echo.Client = Core.extend({
     _waitIndicatorRunnable: null,
     
     /**
+     * Last received keycode from <code>keydown</code> event.  Used for firing cross-browser <Code>keypress</code> events.
+     * @type Number
+     */
+    _lastKeyCode: null,
+
+    /**
      * Creates a new Client instance.  Derived classes must invoke.
      */
     $construct: function() { 
@@ -438,8 +444,12 @@ Echo.Client = Core.extend({
         }
     },
     
-    _lastKeyCode: null,
-    
+    /**
+     * Event handler for <code>keydown</code> and <code>keypress</code> events.
+     * Notifies focsued component of event via <code>clientKeyDown</code> and <code>clientKeyPress</code> methods respectively.
+     * 
+     * @param e the event
+     */
     _processKey: function(e) {
         var press = e.type == "keypress";
         var keyCode = press ? this._lastKeyCode : this._lastKeyCode = Core.Web.Key.translateKeyCode(e.keyCode);
