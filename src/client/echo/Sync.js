@@ -1037,7 +1037,9 @@ Echo.Sync.FillImageBorder = {
                 content.style.left = insets.left + "px";
             }
         } else {
-            Echo.Sync.Insets.render(fillImageBorder.contentInsets, content, "padding");
+            if (content) {
+                Echo.Sync.Insets.render(fillImageBorder.contentInsets, content, "padding");
+            }
             if (!configuration.update) {
                 div.style.position = "relative";
                 if (content) {
