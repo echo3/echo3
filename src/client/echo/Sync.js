@@ -925,15 +925,21 @@ Echo.Sync.FillImageBorder = {
      */
     renderContainer: function(fillImageBorder, configuration) {
         configuration = configuration || {};
+        
+        // Load pixel border insets.
         var bi = Echo.Sync.Insets.toPixels(fillImageBorder.borderInsets);
+        
+        // Create bitset "key" based on which sides of border are present.
         var key = (bi.left && 0x8) | (bi.bottom && 0x4) | (bi.right && 0x2) | (bi.top && 0x1);
         var map = this._MAP[key];
         var prototypeDiv = this._PROTOTYPES[key] ? this._PROTOTYPES[key] : this._PROTOTYPES[key] = this._createPrototype(key); 
         var div, child, childClone, firstChild, i, content = null, border = [], insertBefore = null, testChild, insets;
         
         if (configuration.update) {
+            // Updating existing FillImageBorder container DIV: load element specified in update property.
             div = configuration.update;
-            // Remove children.
+
+            // Remove current fill image border children, store references to important elements.
             child = div.firstChild;
             while (child) {
                 testChild = child;
@@ -944,9 +950,11 @@ Echo.Sync.FillImageBorder = {
                     div.removeChild(testChild);
                 }
                 if (testChild.__FIB_content) {
+                    // Store content child.
                     content = testChild;
                 }
             }
+            
             // Add children from prototype.
             child = prototypeDiv.firstChild;
             while (child) {
@@ -965,29 +973,45 @@ Echo.Sync.FillImageBorder = {
                 child = child.nextSibling;
             }
         } else {
+            // Creating new FillImageBorder container DIV: clone the prototype.
             div = prototypeDiv.cloneNode(true);
             firstChild = div.firstChild;
+
+            // Create and append content container if required.
+            if (configuration.content || configuration.child) {
+                content = document.createElement("div");
+                content.__FIB_content = true;
+                if (configuration.child) {
+                    content.appendChild(configuration.child);
+                }
+                div.__FIB_hasContent = true;
+                div.appendChild(content);
+            }
+            
+            // Set positioning based on configuration.
+            if (configuration.absolute) {
+                div.__FIB_absolute = true;
+                div.style.position = "absolute";
+            } else {
+                div.style.position = "relative";
+                if (content) {
+                    content.style.position = "relative";
+                }
+            }
         }
         div.__key = key;
         
-        if (!configuration.update && (configuration.content || configuration.child)) {
-            content = document.createElement("div");
-            content.__FIB_content = true;
-            if (configuration.child) {
-                content.appendChild(configuration.child);
-            }
-            div.__FIB_hasContent = true;
-            div.appendChild(content);
-        }
-        
+        // Render FillImageBorder.
         child = firstChild;
         for (i = 0; i < 8; ++i) {
             if (!map[i]) {
-                // Continue in case where border has no element in this position.
+                // Loaded map indicates no border element in this position: skip.
                 continue;
             }
+            // Set identifier on segment element.
             child.__FIB_segment = i;
-
+            
+            // Store segment element in array for convenient access later.
             border[i] = child;
             
             if (fillImageBorder.color) {
@@ -1007,6 +1031,7 @@ Echo.Sync.FillImageBorder = {
             child = child.nextSibling;
         }
 
+        // Set left/right, top/bottom positions of border sides (where elements exist).
         if (bi.top) {
             border[0].style.left = bi.left + "px";
             border[0].style.right = bi.right + "px";
@@ -1024,20 +1049,20 @@ Echo.Sync.FillImageBorder = {
             border[6].style.bottom = bi.bottom + "px";
         }
         
-        if (configuration.absolute) {
-            div.__FIB_absolute = true;
-            insets = Echo.Sync.Insets.toPixels(fillImageBorder.contentInsets);
-            div.style.position = "absolute";
+        if (div.__FIB_absolute) {
             if (content) {
+                // Set content positioning.
+                ci = Echo.Sync.Insets.toPixels(fillImageBorder.contentInsets);
                 content.style.position = "absolute"; 
                 content.style.overflow = "auto";
-                content.style.top = insets.top + "px";
-                content.style.right = insets.right + "px";
-                content.style.bottom = insets.bottom + "px";
-                content.style.left = insets.left + "px";
+                content.style.top = ci.top + "px";
+                content.style.right = ci.right + "px";
+                content.style.bottom = ci.bottom + "px";
+                content.style.left = ci.left + "px";
             }
         } else {
             if (content) {
+                // Set content positioning.
                 Echo.Sync.Insets.render(fillImageBorder.contentInsets, content, "padding");
             }
             if (!configuration.update) {
