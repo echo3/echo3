@@ -1052,7 +1052,7 @@ Echo.Sync.FillImageBorder = {
         if (div.__FIB_absolute) {
             if (content) {
                 // Set content positioning.
-                ci = Echo.Sync.Insets.toPixels(fillImageBorder.contentInsets);
+                var ci = Echo.Sync.Insets.toPixels(fillImageBorder.contentInsets);
                 content.style.position = "absolute"; 
                 content.style.overflow = "auto";
                 content.style.top = ci.top + "px";
