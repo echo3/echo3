@@ -197,20 +197,32 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
     
     /**
      * Returns the corresponding <code>ApplicationInstance</code>
-     * for this user instance.  Initializes the <code>ApplicationInstance</code>
-     * if it has not already been done.
+     * for this user instance.
      * 
      * @return the relevant <code>ApplicationInstance</code>
      */
     public synchronized ApplicationInstance getApplicationInstance() {
+        return applicationInstance;
+    }
+    
+    /**
+     * Prepares the <code>ApplicationInstance</code> for use, initializing the application if it has not been initialized 
+     * previously.
+     * 
+     * @return the relevant <code>ApplicationInstance</code>
+     */
+    void prepareApplicationInstance() {
         if (!applicationInitialized) {
-            try {
-                applicationInstance.doInit();
-            } finally {
-                applicationInitialized = true;
+            synchronized (applicationInstance) {
+                if (!applicationInitialized) {
+                    try {
+                        applicationInstance.doInit();
+                    } finally {
+                        applicationInitialized = true;
+                    }
+                }
             }
         }
-        return applicationInstance;
     }
     
     /**

@@ -157,6 +157,8 @@ implements ClientMessage.Processor {
         parseDirElement(dirElement);
         
         UserInstance userInstance = (UserInstance) context.get(UserInstance.class);
+        userInstance.prepareApplicationInstance();
+        
         PropertyPeerFactory propertyPeerFactory = (PropertyPeerFactory) context.get(PropertyPeerFactory.class);
         UpdateManager updateManager = userInstance.getApplicationInstance().getUpdateManager();
 
