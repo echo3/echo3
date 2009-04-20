@@ -31,8 +31,6 @@ package nextapp.echo.webcontainer;
 
 import java.io.IOException;
 
-import nextapp.echo.app.ApplicationInstance;
-
 /**
  * The high-level object which encapsulates the core of the client-server synchronization process for 
  * server-side applications.

@@ -206,26 +206,6 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
     }
     
     /**
-     * Prepares the <code>ApplicationInstance</code> for use, initializing the application if it has not been initialized 
-     * previously.
-     * 
-     * @return the relevant <code>ApplicationInstance</code>
-     */
-    void prepareApplicationInstance() {
-        if (!applicationInitialized) {
-            synchronized (applicationInstance) {
-                if (!applicationInitialized) {
-                    try {
-                        applicationInstance.doInit();
-                    } finally {
-                        applicationInitialized = true;
-                    }
-                }
-            }
-        }
-    }
-    
-    /**
      * Determines the application-specified asynchronous monitoring
      * service callback interval.
      * 
@@ -501,6 +481,26 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      */
     public boolean isInitialized() {
         return initialized;
+    }
+    
+    /**
+     * Prepares the <code>ApplicationInstance</code> for use, initializing the application if it has not been initialized 
+     * previously.
+     * 
+     * @return the relevant <code>ApplicationInstance</code>
+     */
+    void prepareApplicationInstance() {
+        if (!applicationInitialized) {
+            synchronized (applicationInstance) {
+                if (!applicationInitialized) {
+                    try {
+                        applicationInstance.doInit();
+                    } finally {
+                        applicationInitialized = true;
+                    }
+                }
+            }
+        }
     }
     
     /**
