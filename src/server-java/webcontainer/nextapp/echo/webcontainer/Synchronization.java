@@ -99,7 +99,7 @@ implements SynchronizationState {
                 userInstance.init(conn);
             }
 
-            ApplicationInstance.setActive(userInstance.getApplicationInstance());
+            userInstance.setActive(true);
             try {
                 // Process client input.
                 InputProcessor inputProcessor = new InputProcessor(this, conn);
@@ -119,7 +119,7 @@ implements SynchronizationState {
                 // Purge updates.
                 userInstance.getUpdateManager().purge();
             } finally {
-                ApplicationInstance.setActive(null);
+                userInstance.setActive(false);
             }
         }
     }

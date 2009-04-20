@@ -204,17 +204,10 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      */
     public synchronized ApplicationInstance getApplicationInstance() {
         if (!applicationInitialized) {
-            boolean alreadyActive = ApplicationInstance.getActive() != null;
             try {
-                if (!alreadyActive) {
-                    ApplicationInstance.setActive(applicationInstance);
-                }
                 applicationInstance.doInit();
             } finally {
                 applicationInitialized = true;
-                if (!alreadyActive) {
-                    ApplicationInstance.setActive(null);
-                }
             }
         }
         return applicationInstance;
@@ -556,6 +549,19 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
             applicationInstance.passivate();
         }
         session = null;
+    }
+    
+    /**
+     * Sets the contained <code>ApplicationInstance</code> active or inactive.
+     * 
+     * @param active the new active state
+     */
+    void setActive(boolean active) {
+        if (active) {
+            ApplicationInstance.setActive(applicationInstance);
+        } else {
+            ApplicationInstance.setActive(null);
+        }
     }
 
     /**
