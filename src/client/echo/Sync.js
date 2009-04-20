@@ -567,8 +567,8 @@ Echo.Sync.Extent = {
             } else if (this._FORMATTED_DECIMAL_PIXEL_TEST.test(extent)) {
                 return Math.round(parseFloat(extent)) + "px";
             } else {
-                if (allowPercent && this.isPercent(extent)) {
-                    return extent;
+                if (this.isPercent(extent)) {
+                    return allowPercent ? extent : "";
                 } else {
                     var pixels = this.toPixels(extent, horizontal);
                     return pixels == null ? "" : this.toPixels(extent, horizontal) + "px";
