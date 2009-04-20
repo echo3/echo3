@@ -405,10 +405,7 @@ Echo.Client = Core.extend({
                 // This is a workaround for an Internet Explorer bug where the browser's rendering engine fundamentally fails and 
                 // simply displays a blank screen (commonly referred to on bug-tracker/forum as the "blank screen of death").
                 // This bug appears to be most prevalent in IE7. 
-                var displayState = document.documentElement.style.display;
-                if (!displayState) {
-                    displayState = "";
-                }
+                var displayState = document.documentElement.style.display || "";
                 document.documentElement.style.display = "none";
                 document.documentElement.style.display = displayState;
             }
