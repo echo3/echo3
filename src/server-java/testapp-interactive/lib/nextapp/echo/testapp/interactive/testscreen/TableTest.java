@@ -779,6 +779,37 @@ public class TableTest extends SplitPane {
                         createTableCellRenderer(new Alignment(Alignment.RIGHT, Alignment.BOTTOM)));
             }
         });
+
+        // Special Cases
+
+        controlsColumn = new ButtonColumn();
+        groupContainerColumn.add(controlsColumn);
+        
+        controlsColumn.add(new Label("Special Cases"));
+
+        controlsColumn.addButton("Remove Random Child (FAIL)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (testTable.getComponentCount() > 0){
+                    try {
+                        testTable.remove((int) (Math.random() * testTable.getComponentCount()));
+                        throw new RuntimeException("Table child manipulation did not fail, this is bad!");
+                    } catch (IllegalStateException ex) {
+                        InteractiveApp.getApp().consoleWrite("Table manipulation failed (this is good): "+ ex);
+                    }
+                }
+            }
+        });
+        
+        controlsColumn.addButton("Add Random Child (FAIL)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    testTable.add(new Label("Boo!"));
+                    throw new RuntimeException("Table child manipulation did not fail, this is bad!");
+                } catch (IllegalStateException ex) {
+                        InteractiveApp.getApp().consoleWrite("Table manipulation failed (this is good): "+ ex);
+                }
+            }
+        });
     }
 
     private TableCellRenderer createTableCellRenderer(final Alignment alignment) {

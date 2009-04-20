@@ -55,6 +55,9 @@ import nextapp.echo.app.table.TableModel;
 
 /**
  * A component used to display data in a tabular format.
+ * 
+ * This component may contain child components, but they will be added and removed internally.  
+ * Invoking <code>add()</code>/<code>remove()</code> directly on this component is not allowed.
  *
  * @see nextapp.echo.app.table
  */
@@ -106,6 +109,7 @@ public class Table extends Component {
     private TableCellRenderer defaultHeaderRenderer;
     private ListSelectionModel selectionModel;
     private boolean suppressChangeNotifications;
+    private boolean rendering = false;
     
     /**
      * Listener to monitor changes to model.
@@ -241,6 +245,16 @@ public class Table extends Component {
     }
     
     /**
+     * @see nextapp.echo.app.Component#add(nextapp.echo.app.Component, int)
+     */
+    public void add(Component c, int n) throws IllegalChildException {
+        if (!rendering) {
+            throw new IllegalStateException("Programmatic addition or removal of Table children is prohibited.");
+        }
+        super.add(c, n);
+    }
+
+    /**
      * Adds an <code>ActionListener</code> to the <code>Table</code>.
      * <code>ActionListener</code>s will be invoked when the user
      * selects a row.
@@ -272,12 +286,17 @@ public class Table extends Component {
             }
         }
     }
-
+    
     /**
      * Re-renders changed rows.
      */
     protected void doRender() {
-        removeAll();
+        try {
+            rendering = true;
+            removeAll();
+        } finally {
+            rendering = false;
+        }
         int rowCount = model.getRowCount();
         int columnCount = columnModel.getColumnCount();
         
@@ -318,7 +337,13 @@ public class Table extends Component {
                 if (renderedComponent == null || !renderedComponent.isVisible()) {
                     renderedComponent = new Label();
                 }
-                add(renderedComponent);
+                
+                try {
+                    rendering = true;
+                    add(renderedComponent);
+                } finally {
+                    rendering = false;
+                }
             }
         }
         
@@ -331,7 +356,12 @@ public class Table extends Component {
                 if (renderedComponent == null || !renderedComponent.isVisible()) {
                     renderedComponent = new Label();
                 }
-                add(renderedComponent);
+                try {
+                    rendering = true;
+                    add(renderedComponent);
+                } finally {
+                    rendering = false;
+                }
             }
         }
     }
@@ -584,6 +614,16 @@ public class Table extends Component {
         }
     }
     
+    /**
+     * @see nextapp.echo.app.Component#remove(nextapp.echo.app.Component)
+     */
+    public void remove(Component c) {
+        if (!rendering) {
+            throw new IllegalStateException("Programmatic addition or removal of Table children is prohibited.");
+        }
+        super.remove(c);
+    }
+
     /**
      * Removes an <code>ActionListener</code> from the <code>Table</code>.
      * <code>ActionListener</code>s will be invoked when the user
