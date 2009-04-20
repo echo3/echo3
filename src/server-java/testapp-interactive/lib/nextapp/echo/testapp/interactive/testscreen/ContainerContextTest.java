@@ -37,6 +37,7 @@ import javax.servlet.http.Cookie;
 
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Button;
+import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
@@ -50,6 +51,7 @@ import nextapp.echo.app.layout.SplitPaneLayoutData;
 import nextapp.echo.app.table.AbstractTableModel;
 import nextapp.echo.app.table.DefaultTableModel;
 import nextapp.echo.app.table.TableCellRenderer;
+import nextapp.echo.testapp.interactive.InteractiveApp;
 import nextapp.echo.webcontainer.ContainerContext;
 import nextapp.echo.webcontainer.ClientProperties;
 
@@ -150,6 +152,14 @@ public class ContainerContextTest extends Column {
         ApplicationInstance app = ApplicationInstance.getActive();
         final ContainerContext containerContext 
                 = (ContainerContext) app.getContextProperty(ContainerContext.CONTEXT_PROPERTY_NAME);
+        
+        Column warningsColumn = new Column();
+        warningsColumn.add(new Label("Warnings"));
+        Label clientPropertiesLabel = new Label("Client properties available at init: " +
+                ((InteractiveApp) app).isClientPropertiesAvailableAtInit());
+        clientPropertiesLabel.setBackground(((InteractiveApp) app).isClientPropertiesAvailableAtInit() ? Color.GREEN : Color.RED);
+        warningsColumn.add(clientPropertiesLabel);
+        add(warningsColumn);
         
         Table clientPropertiesTable = createClientPropertiesTable(containerContext);
         if (clientPropertiesTable != null) {

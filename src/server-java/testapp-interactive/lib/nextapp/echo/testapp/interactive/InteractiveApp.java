@@ -105,6 +105,7 @@ public class InteractiveApp extends ApplicationInstance {
     private TaskQueueHandle ghostTaskQueue;
     private Window mainWindow;
     private ConsoleWindowPane console;
+    private boolean clientPropertiesAvailableAtInit;
     
     /**
      * Writes a message to a pop-up debugging console.
@@ -150,17 +151,26 @@ public class InteractiveApp extends ApplicationInstance {
             return parameterValue == null ? null : parameterValue.toString();
         }
     }
+    
+    /**
+     * Queries whether <code>ClientProperties</code> was available at initialization (init()). 
+     */
+    public boolean isClientPropertiesAvailableAtInit() {
+        return clientPropertiesAvailableAtInit;
+    }
 
     /**
      * @see nextapp.echo.app.ApplicationInstance#init()
      */
     public Window init() {
+        ContainerContext cc = (ContainerContext) getContextProperty(ContainerContext.CONTEXT_PROPERTY_NAME);
+        clientPropertiesAvailableAtInit = cc != null && cc.getClientProperties() != null;
+        
         setStyleSheet(Styles.DEFAULT_STYLE_SHEET);
         mainWindow = new Window();
         mainWindow.setTitle("NextApp Echo Test Application");
         mainWindow.setContent(new WelcomePane());
         
-        ContainerContext cc = (ContainerContext) getContextProperty(ContainerContext.CONTEXT_PROPERTY_NAME);
         if (!LIVE_DEMO_SERVER) {
             if (cc.getInitialRequestParameterMap().containsKey("ghost")) {
                 GhostTask ghostTask = new GhostTask();
