@@ -202,7 +202,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * 
      * @return the relevant <code>ApplicationInstance</code>
      */
-    public ApplicationInstance getApplicationInstance() {
+    public synchronized ApplicationInstance getApplicationInstance() {
         if (!applicationInitialized) {
             boolean alreadyActive = ApplicationInstance.getActive() != null;
             try {
