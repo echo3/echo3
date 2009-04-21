@@ -201,7 +201,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * 
      * @return the relevant <code>ApplicationInstance</code>
      */
-    public synchronized ApplicationInstance getApplicationInstance() {
+    public ApplicationInstance getApplicationInstance() {
         return applicationInstance;
     }
     
@@ -486,19 +486,13 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
     /**
      * Prepares the <code>ApplicationInstance</code> for use, initializing the application if it has not been initialized 
      * previously.
-     * 
-     * @return the relevant <code>ApplicationInstance</code>
      */
     void prepareApplicationInstance() {
         if (!applicationInitialized) {
-            synchronized (applicationInstance) {
-                if (!applicationInitialized) {
-                    try {
-                        applicationInstance.doInit();
-                    } finally {
-                        applicationInitialized = true;
-                    }
-                }
+            try {
+                applicationInstance.doInit();
+            } finally {
+                applicationInitialized = true;
             }
         }
     }
