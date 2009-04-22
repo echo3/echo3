@@ -176,18 +176,6 @@ Echo.DebugConsole = {
         }
     },
     
-    /** Listener for click events from the move (>) button: moves console to other side of screen. */
-    _moveListener: function(e) {
-        var style = this._div.style;
-        if (style.top) {
-            style.top = style.right = "";
-            style.bottom = style.left = "20px";
-        } else {
-            style.bottom = style.left = "";
-            style.top = style.right = "20px";
-        }
-    },
-    
     /**
      * Renders the debug console to the screen.
      */
@@ -206,6 +194,7 @@ Echo.DebugConsole = {
                 "color:#ffffff;overflow:hidden;cursor:move;";
                 
         Core.Web.DOM.addEventListener(this._titleDiv, "mousedown", Core.method(this, this._titleMouseDown), false);
+        Core.Web.Event.Selection.disable(this._titleDiv);
         this._div.appendChild(this._titleDiv);
 
         var titleTextDiv = document.createElement("div");
@@ -218,7 +207,6 @@ Echo.DebugConsole = {
         this._titleDiv.appendChild(this._controlsDiv);
         
         this._addControl("C", this._clearListener);
-        this._addControl("<", this._moveListener);
         this._addControl("^", this._maximizeListener);
         this._addControl("X", this._closeListener);
         
