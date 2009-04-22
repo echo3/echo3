@@ -33,7 +33,7 @@ Echo.DebugConsole = {
      * The outer container DOM element of the rendered console. 
      * @type Element
      */
-    _windowDiv: null,
+    _div: null,
     
     /** 
      * Flag indicating whether the console is logging/processing output.
@@ -46,6 +46,18 @@ Echo.DebugConsole = {
      * @type Boolean 
      */
     _maximized: false,
+    
+    /**
+     * Reference to mouse move listener.
+     * @type Function
+     */
+    _mouseMoveRef: null,
+    
+    /**
+     * Reference to mouse up listener.
+     * @type Function
+     */
+    _mouseDownRef: null,
     
     /**
      * Adds a control to the title bar.
@@ -70,7 +82,7 @@ Echo.DebugConsole = {
     
     /** Listener for click events from the close (X) button: sets display to none. */
     _closeListener: function(e) {
-        this._windowDiv.style.display = "none";
+        this._div.style.display = "none";
     },
     
     /**
@@ -137,32 +149,36 @@ Echo.DebugConsole = {
         if (!this._rendered) {
             return false;
         }
-        return this._windowDiv.style.display == "block";
+        return this._div.style.display == "block";
     },
     
     /** Listener for click events from the maximize (^) button: toggles maximization state. */
     _maximizeListener: function(e) {
         this._maximized = !this._maximized;
+        this._div.style.top = "20px";
+        this._div.style.right = "20px";
+        this._div.style.left = "";
+        this._div.style.bottom = "";
         if (this._maximized) {
             var height = document.height || 600;
             var width = document.width || 600;
-            this._windowDiv.style.width = (width - 50) + "px";
+            this._div.style.width = (width - 50) + "px";
             this._titleDiv.style.width = (width - 72) + "px";
             this._contentDiv.style.width = (width - 72) + "px";
-            this._windowDiv.style.height = (height - 50) + "px";
+            this._div.style.height = (height - 50) + "px";
             this._contentDiv.style.height = (height - 85) + "px";
         } else {
-            this._windowDiv.style.width = "300px";
+            this._div.style.width = "300px";
             this._titleDiv.style.width = "278px";
             this._contentDiv.style.width = "278px";
-            this._windowDiv.style.height = "300px";
+            this._div.style.height = "300px";
             this._contentDiv.style.height = "265px";
         }
     },
     
     /** Listener for click events from the move (>) button: moves console to other side of screen. */
     _moveListener: function(e) {
-        var style = this._windowDiv.style;
+        var style = this._div.style;
         if (style.top) {
             style.top = style.right = "";
             style.bottom = style.left = "20px";
@@ -178,17 +194,19 @@ Echo.DebugConsole = {
     _render: function() {
         var button;
         
-        this._windowDiv = document.createElement("div");
-        this._windowDiv.id = "__DebugConsole__";
-        this._windowDiv.style.cssText = 
+        this._div = document.createElement("div");
+        this._div.id = "__DebugConsole__";
+        this._div.style.cssText = 
                 "display:none;position:absolute;top:20px;right:20px;width:300px;height:300px;background-color:#2f2f3f;" +
                 "border:5px solid #3f6fff;overflow:hidden;z-index:32767;";
         
         this._titleDiv = document.createElement("div");
         this._titleDiv.style.cssText =
                 "position:absolute;top:1px;left:1px;width:278px;height:3em;padding:3px 10px;background-color:#5f5f8f;" +
-                "color:#ffffff;overflow:hidden;";
-        this._windowDiv.appendChild(this._titleDiv);
+                "color:#ffffff;overflow:hidden;cursor:move;";
+                
+        Core.Web.DOM.addEventListener(this._titleDiv, "mousedown", Core.method(this, this._titleMouseDown), false);
+        this._div.appendChild(this._titleDiv);
 
         var titleTextDiv = document.createElement("div");
         titleTextDiv.style.cssText = "position:absolute;font-weight:bold;";
@@ -208,11 +226,45 @@ Echo.DebugConsole = {
         this._contentDiv.style.cssText = 
                 "font-family:monospace;font-size:9px;position:absolute;top:3em;left:1px;" +
                 "width:278px;height:265px;padding:3px 10px;background-color:#1f1f2f;overflow:auto;color:#3fff6f;";
-        this._windowDiv.appendChild(this._contentDiv);
+        this._div.appendChild(this._contentDiv);
         
-        document.body.appendChild(this._windowDiv);
+        document.body.appendChild(this._div);
+        
+        this._titleMouseUpRef = Core.method(this, this._titleMouseUp);
+        this._titleMouseMoveRef = Core.method(this, this._titleMouseMove);
     
         this._rendered = true;
+    },
+    
+    /**
+     * Mouse down event handler for dragging console.
+     */
+    _titleMouseDown: function(e) {
+        this._drag = { originX: e.clientX, originY: e.clientY, initialX: this._div.offsetLeft, initialY: this._div.offsetTop };
+        Core.Web.DOM.preventEventDefault(e);
+        Core.Web.DOM.addEventListener(document.body, "mouseup", this._titleMouseUpRef, false);
+        Core.Web.DOM.addEventListener(document.body, "mousemove", this._titleMouseMoveRef, false);
+    },
+    
+    /**
+     * Mouse move event handler for dragging console.
+     */
+    _titleMouseMove: function(e) {
+        if (!this._drag) {
+            return;
+        }
+        this._div.style.right = this._div.style.bottom = "";
+        this._div.style.top = (e.clientY - this._drag.originY + this._drag.initialY) + "px";
+        this._div.style.left = (e.clientX - this._drag.originX + this._drag.initialX) + "px";
+    },
+    
+    /**
+     * Mouse up event handler for dragging console.
+     */
+    _titleMouseUp: function(e) {
+        this._drag = null;
+        Core.Web.DOM.removeEventListener(document.body, "mouseup", this._titleMouseUpRef, false);
+        Core.Web.DOM.removeEventListener(document.body, "mousemove", this._titleMouseMoveRef, false);
     },
     
     /**
@@ -224,6 +276,6 @@ Echo.DebugConsole = {
         if (!this._rendered) {
             this._render();
         }
-        this._windowDiv.style.display = newValue ? "block" : "none";
+        this._div.style.display = newValue ? "block" : "none";
     }
 };
