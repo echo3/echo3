@@ -46,34 +46,36 @@ Echo.DebugConsole = {
      * <code>Core.Debug.consoleWrite()</code>.
      */
     install: function() {
-        if (Echo.DebugConsole._installed) {
+        if (this._installed) {
             return;
         }
-        Core.Web.DOM.addEventListener(document, "keydown", Echo.DebugConsole._keyListener, false);
-        Core.Debug.consoleWrite = Echo.DebugConsole._consoleWrite;
+        Core.Web.DOM.addEventListener(document, "keydown", Core.method(this, this._keyListener), false);
+        Core.Debug.consoleWrite = function(text) {
+            Echo.DebugConsole._consoleWrite(text);
+        };
         
         if (document.URL.toString().indexOf("?debug") != -1) {
-            Echo.DebugConsole.setVisible(true);
-            Echo.DebugConsole._logging = true;
+            this.setVisible(true);
+            this._logging = true;
         }
         
-        Echo.DebugConsole._installed = true;
+        this._installed = true;
     },
     
     /** Listener for click events from the "Clear" button: removes all content. */
-    _clearListener: function() {
-        while (Echo.DebugConsole._contentDiv.firstChild) {
-            Echo.DebugConsole._contentDiv.removeChild(Echo.DebugConsole._contentDiv.firstChild);
+    _clearListener: function(e) {
+        while (this._contentDiv.firstChild) {
+            this._contentDiv.removeChild(this._contentDiv.firstChild);
         }
     },
     
     /** Listener for click events from the close (X) button: sets display to none. */
-    _closeListener: function() {
-        Echo.DebugConsole._windowDiv.style.display = "none";
+    _closeListener: function(e) {
+        this._windowDiv.style.display = "none";
     },
     
     /** Listener for click events from the move (>) button: moves console to other side of screen. */
-    _moveListener: function() {
+    _moveListener: function(e) {
         var style = this._windowDiv.style;
         if (style.top) {
             style.top = style.right = "";
@@ -85,45 +87,53 @@ Echo.DebugConsole = {
     },
     
     /** Listener for click events from the maximize (^) button: toggles maximization state. */
-    _maximizeListener: function() {
-        Echo.DebugConsole._maximized = !Echo.DebugConsole._maximized;
-        if (Echo.DebugConsole._maximized) {
+    _maximizeListener: function(e) {
+        this._maximized = !this._maximized;
+        if (this._maximized) {
             var height = document.height;
             height = height ? height : 600;
             var width = document.width;
             width = width ? width : 600;
-            Echo.DebugConsole._windowDiv.style.width = (width - 50) + "px";
-            Echo.DebugConsole._titleDiv.style.width = (width - 72) + "px";
-            Echo.DebugConsole._contentDiv.style.width = (width - 72) + "px";
-            Echo.DebugConsole._windowDiv.style.height = (height - 50) + "px";
-            Echo.DebugConsole._contentDiv.style.height = (height - 85) + "px";
+            this._windowDiv.style.width = (width - 50) + "px";
+            this._titleDiv.style.width = (width - 72) + "px";
+            this._contentDiv.style.width = (width - 72) + "px";
+            this._windowDiv.style.height = (height - 50) + "px";
+            this._contentDiv.style.height = (height - 85) + "px";
         } else {
-            Echo.DebugConsole._windowDiv.style.width = "300px";
-            Echo.DebugConsole._titleDiv.style.width = "278px";
-            Echo.DebugConsole._contentDiv.style.width = "278px";
-            Echo.DebugConsole._windowDiv.style.height = "300px";
-            Echo.DebugConsole._contentDiv.style.height = "265px";
+            this._windowDiv.style.width = "300px";
+            this._titleDiv.style.width = "278px";
+            this._contentDiv.style.width = "278px";
+            this._windowDiv.style.height = "300px";
+            this._contentDiv.style.height = "265px";
         }
     },
     
+    _addControl: function(text, method) {
+        var button = document.createElement("span");
+        button.style.cssText = "padding:0 8px 0 0;cursor:pointer;";
+        button.appendChild(document.createTextNode("[" + text + "]"));
+        this._controlsDiv.appendChild(button);
+        Core.Web.DOM.addEventListener(button, "click", Core.method(this, method), false);
+    },
+
     /**
      * Method which will overwrite Core.Debug.consoleWrite().
      * 
      * @text {String} the text to output
      */
     _consoleWrite: function(text) {
-        if (!Echo.DebugConsole._logging) {
+        if (!this._logging) {
             return;
         }
     
-        if (!Echo.DebugConsole._rendered) {
-            Echo.DebugConsole._render();
+        if (!this._rendered) {
+            this._render();
         }
         
         var lineDiv = document.createElement("div");
         lineDiv.appendChild(document.createTextNode(text));
-        Echo.DebugConsole._contentDiv.appendChild(lineDiv);
-        Echo.DebugConsole._contentDiv.scrollTop = 10000000;
+        this._contentDiv.appendChild(lineDiv);
+        this._contentDiv.scrollTop = 10000000;
     },
     
     /** 
@@ -135,8 +145,8 @@ Echo.DebugConsole = {
             return;
         }
         
-        Echo.DebugConsole._logging = true;
-        Echo.DebugConsole.setVisible(!Echo.DebugConsole.isVisible());
+        this._logging = true;
+        this.setVisible(!this.isVisible());
     },
     
     /**
@@ -146,10 +156,10 @@ Echo.DebugConsole = {
      * @type Boolean
      */
     isVisible: function() {
-        if (!Echo.DebugConsole._rendered) {
+        if (!this._rendered) {
             return false;
         }
-        return Echo.DebugConsole._windowDiv.style.display == "block";
+        return this._windowDiv.style.display == "block";
     },
     
     /**
@@ -158,61 +168,41 @@ Echo.DebugConsole = {
     _render: function() {
         var button;
         
-        Echo.DebugConsole._windowDiv = document.createElement("div");
-        Echo.DebugConsole._windowDiv.id = "__DebugConsole__";
-        Echo.DebugConsole._windowDiv.style.cssText = 
+        this._windowDiv = document.createElement("div");
+        this._windowDiv.id = "__DebugConsole__";
+        this._windowDiv.style.cssText = 
                 "display:none;position:absolute;top:20px;right:20px;width:300px;height:300px;background-color:#2f2f3f;" +
                 "border:5px solid #3f6fff;overflow:hidden;z-index:32767;";
         
-        Echo.DebugConsole._titleDiv = document.createElement("div");
-        Echo.DebugConsole._titleDiv.style.cssText =
+        this._titleDiv = document.createElement("div");
+        this._titleDiv.style.cssText =
                 "position:absolute;top:1px;left:1px;width:278px;height:3em;padding:3px 10px;background-color:#5f5f8f;" +
                 "color:#ffffff;overflow:hidden;";
-        Echo.DebugConsole._windowDiv.appendChild(Echo.DebugConsole._titleDiv);
+        this._windowDiv.appendChild(this._titleDiv);
 
         var titleTextDiv = document.createElement("div");
         titleTextDiv.style.cssText = "position:absolute;font-weight:bold;";
         titleTextDiv.appendChild(document.createTextNode("Debug Console"));
-        Echo.DebugConsole._titleDiv.appendChild(titleTextDiv);
+        this._titleDiv.appendChild(titleTextDiv);
     
-        var controlsDiv = document.createElement("div");
-        controlsDiv.style.cssText = "position:absolute;right:0;background-color:#5f5f8f;";
-        Echo.DebugConsole._titleDiv.appendChild(controlsDiv);
+        this._controlsDiv = document.createElement("div");
+        this._controlsDiv.style.cssText = "position:absolute;right:0;background-color:#5f5f8f;";
+        this._titleDiv.appendChild(this._controlsDiv);
         
-    
-        button = document.createElement("span");
-        button.style.cssText = "padding:0 8px 0 0;cursor:pointer;";
-        button.appendChild(document.createTextNode("[C]"));
-        controlsDiv.appendChild(button);
-        Core.Web.DOM.addEventListener(button, "click", Core.method(this, this._clearListener), false);
+        this._addControl("C", this._clearListener);
+        this._addControl("<", this._moveListener);
+        this._addControl("^", this._maximizeListener);
+        this._addControl("X", this._closeListener);
         
-        button = document.createElement("span");
-        button.style.cssText = "padding:0 8px 0 0;cursor:pointer;";
-        button.appendChild(document.createTextNode("[>]"));
-        controlsDiv.appendChild(button);
-        Core.Web.DOM.addEventListener(button, "click", Core.method(this, this._moveListener), false);
-        
-        button = document.createElement("span");
-        button.style.cssText = "padding:0 8px 0 0;cursor:pointer;";
-        button.appendChild(document.createTextNode("[^]"));
-        controlsDiv.appendChild(button);
-        Core.Web.DOM.addEventListener(button, "click", Core.method(this, this._maximizeListener), false);
-        
-        button = document.createElement("span");
-        button.style.cssText = "padding:0 8px 0 0;cursor:pointer;";
-        button.appendChild(document.createTextNode("[X]"));
-        controlsDiv.appendChild(button);
-        Core.Web.DOM.addEventListener(button, "click", Core.method(this, this._closeListener), false);
-    
-        Echo.DebugConsole._contentDiv = document.createElement("div");
-        Echo.DebugConsole._contentDiv.style.cssText = 
+        this._contentDiv = document.createElement("div");
+        this._contentDiv.style.cssText = 
                 "font-family:monospace;font-size:9px;position:absolute;top:3em;left:1px;" +
                 "width:278px;height:265px;padding:3px 10px;background-color:#1f1f2f;overflow:auto;color:#3fff6f;";
-        Echo.DebugConsole._windowDiv.appendChild(Echo.DebugConsole._contentDiv);
+        this._windowDiv.appendChild(this._contentDiv);
         
-        document.body.appendChild(Echo.DebugConsole._windowDiv);
+        document.body.appendChild(this._windowDiv);
     
-        Echo.DebugConsole._rendered = true;
+        this._rendered = true;
     },
     
     /**
@@ -221,9 +211,9 @@ Echo.DebugConsole = {
      * @param {Boolean} newValue the new console visibility state
      */
     setVisible: function(newValue) {
-        if (!Echo.DebugConsole._rendered) {
-            Echo.DebugConsole._render();
+        if (!this._rendered) {
+            this._render();
         }
-        Echo.DebugConsole._windowDiv.style.display = newValue ? "block" : "none";
+        this._windowDiv.style.display = newValue ? "block" : "none";
     }
 };
