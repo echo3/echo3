@@ -72,6 +72,18 @@ Echo.DebugConsole = {
         Echo.DebugConsole._windowElement.style.display = "none";
     },
     
+    /** Listener for click events from the move (>) button: moves console to other side of screen. */
+    _moveListener: function() {
+        var style = this._windowElement.style;
+        if (style.top) {
+            style.top = style.right = "";
+            style.bottom = style.left = "20px";
+        } else {
+            style.bottom = style.left = "";
+            style.top = style.right = "20px";
+        }
+    },
+    
     /** Listener for click events from the maximize (^) button: toggles maximization state. */
     _maximizeListener: function() {
         Echo.DebugConsole._maximized = !Echo.DebugConsole._maximized;
@@ -166,22 +178,28 @@ Echo.DebugConsole = {
         Echo.DebugConsole._titleBarElement.appendChild(controlsContainerDivElement);
     
         var clearButtonElement = document.createElement("span");
-        clearButtonElement.style.cssText = "padding:0 20px 0 0;cursor:pointer;";
-        clearButtonElement.appendChild(document.createTextNode("[Clear]"));
+        clearButtonElement.style.cssText = "padding:0 8px 0 0;cursor:pointer;";
+        clearButtonElement.appendChild(document.createTextNode("[C]"));
         controlsContainerDivElement.appendChild(clearButtonElement);
-        Core.Web.DOM.addEventListener(clearButtonElement, "click", Echo.DebugConsole._clearListener, false);
+        Core.Web.DOM.addEventListener(clearButtonElement, "click", Core.method(this, this._clearListener), false);
+        
+        var moveButtonElement = document.createElement("span");
+        moveButtonElement.style.cssText = "padding:0 8px 0 0;cursor:pointer;";
+        moveButtonElement.appendChild(document.createTextNode("[>]"));
+        controlsContainerDivElement.appendChild(moveButtonElement);
+        Core.Web.DOM.addEventListener(moveButtonElement, "click", Core.method(this, this._moveListener), false);
         
         var maximizeButtonElement = document.createElement("span");
-        maximizeButtonElement.style.cssText = "padding:0 20px 0 0;cursor:pointer;";
+        maximizeButtonElement.style.cssText = "padding:0 8px 0 0;cursor:pointer;";
         maximizeButtonElement.appendChild(document.createTextNode("[^]"));
         controlsContainerDivElement.appendChild(maximizeButtonElement);
-        Core.Web.DOM.addEventListener(maximizeButtonElement, "click", Echo.DebugConsole._maximizeListener, false);
+        Core.Web.DOM.addEventListener(maximizeButtonElement, "click", Core.method(this, this._maximizeListener), false);
         
         var closeButtonElement = document.createElement("span");
-        closeButtonElement.style.cssText = "padding:0 20px 0 0;cursor:pointer;";
+        closeButtonElement.style.cssText = "padding:0 8px 0 0;cursor:pointer;";
         closeButtonElement.appendChild(document.createTextNode("[X]"));
         controlsContainerDivElement.appendChild(closeButtonElement);
-        Core.Web.DOM.addEventListener(closeButtonElement, "click", Echo.DebugConsole._closeListener, false);
+        Core.Web.DOM.addEventListener(closeButtonElement, "click", Core.method(this, this._closeListener), false);
     
         Echo.DebugConsole._contentElement = document.createElement("div");
         Echo.DebugConsole._contentElement.style.cssText = 
