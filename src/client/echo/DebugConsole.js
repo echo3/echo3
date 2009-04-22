@@ -1,7 +1,8 @@
 /**
- * A simple debug console which attaches to Core.Debug to provide
- * the capability to view messages printed with
+ * A simple debug console which attaches to Core.Debug to provide the capability to view messages printed with
  * <code>Core.Debug.consoleWrite()</code>.
+ * 
+ * This object intentionally takes advantage of as little functionality of CoreJS/Echo as possible.
  */
 Echo.DebugConsole = {
         
@@ -16,6 +17,11 @@ Echo.DebugConsole = {
      * @type Boolean
      */
     _rendered: false,
+    
+    /**
+     * The DOM element in which the title is contained.
+     */
+    _titleDiv: null,
     
     /** 
      * The DOM element to which log messages should be appended. 
@@ -42,26 +48,19 @@ Echo.DebugConsole = {
     _maximized: false,
     
     /**
-     * Attaches the Debug console to Core.Web, by overriding the implementation of 
-     * <code>Core.Debug.consoleWrite()</code>.
+     * Adds a control to the title bar.
+     * 
+     * @param {String}  text the control text
+     * @param {Function} method the method to invoke when the control is clicked
      */
-    install: function() {
-        if (this._installed) {
-            return;
-        }
-        Core.Web.DOM.addEventListener(document, "keydown", Core.method(this, this._keyListener), false);
-        Core.Debug.consoleWrite = function(text) {
-            Echo.DebugConsole._consoleWrite(text);
-        };
-        
-        if (document.URL.toString().indexOf("?debug") != -1) {
-            this.setVisible(true);
-            this._logging = true;
-        }
-        
-        this._installed = true;
+    _addControl: function(text, method) {
+        var button = document.createElement("span");
+        button.style.cssText = "padding:0 8px 0 0;cursor:pointer;";
+        button.appendChild(document.createTextNode("[" + text + "]"));
+        this._controlsDiv.appendChild(button);
+        Core.Web.DOM.addEventListener(button, "click", Core.method(this, method), false);
     },
-    
+
     /** Listener for click events from the "Clear" button: removes all content. */
     _clearListener: function(e) {
         while (this._contentDiv.firstChild) {
@@ -74,48 +73,6 @@ Echo.DebugConsole = {
         this._windowDiv.style.display = "none";
     },
     
-    /** Listener for click events from the move (>) button: moves console to other side of screen. */
-    _moveListener: function(e) {
-        var style = this._windowDiv.style;
-        if (style.top) {
-            style.top = style.right = "";
-            style.bottom = style.left = "20px";
-        } else {
-            style.bottom = style.left = "";
-            style.top = style.right = "20px";
-        }
-    },
-    
-    /** Listener for click events from the maximize (^) button: toggles maximization state. */
-    _maximizeListener: function(e) {
-        this._maximized = !this._maximized;
-        if (this._maximized) {
-            var height = document.height;
-            height = height ? height : 600;
-            var width = document.width;
-            width = width ? width : 600;
-            this._windowDiv.style.width = (width - 50) + "px";
-            this._titleDiv.style.width = (width - 72) + "px";
-            this._contentDiv.style.width = (width - 72) + "px";
-            this._windowDiv.style.height = (height - 50) + "px";
-            this._contentDiv.style.height = (height - 85) + "px";
-        } else {
-            this._windowDiv.style.width = "300px";
-            this._titleDiv.style.width = "278px";
-            this._contentDiv.style.width = "278px";
-            this._windowDiv.style.height = "300px";
-            this._contentDiv.style.height = "265px";
-        }
-    },
-    
-    _addControl: function(text, method) {
-        var button = document.createElement("span");
-        button.style.cssText = "padding:0 8px 0 0;cursor:pointer;";
-        button.appendChild(document.createTextNode("[" + text + "]"));
-        this._controlsDiv.appendChild(button);
-        Core.Web.DOM.addEventListener(button, "click", Core.method(this, method), false);
-    },
-
     /**
      * Method which will overwrite Core.Debug.consoleWrite().
      * 
@@ -150,6 +107,27 @@ Echo.DebugConsole = {
     },
     
     /**
+     * Attaches the Debug console to Core.Web, by overriding the implementation of 
+     * <code>Core.Debug.consoleWrite()</code>.
+     */
+    install: function() {
+        if (this._installed) {
+            return;
+        }
+        Core.Web.DOM.addEventListener(document, "keydown", Core.method(this, this._keyListener), false);
+        Core.Debug.consoleWrite = function(text) {
+            Echo.DebugConsole._consoleWrite(text);
+        };
+        
+        if (document.URL.toString().indexOf("?debug") != -1) {
+            this.setVisible(true);
+            this._logging = true;
+        }
+        
+        this._installed = true;
+    },
+    
+    /**
      * Queries the visibility of the console.
      * 
      * @return the console visibility state.
@@ -160,6 +138,38 @@ Echo.DebugConsole = {
             return false;
         }
         return this._windowDiv.style.display == "block";
+    },
+    
+    /** Listener for click events from the maximize (^) button: toggles maximization state. */
+    _maximizeListener: function(e) {
+        this._maximized = !this._maximized;
+        if (this._maximized) {
+            var height = document.height || 600;
+            var width = document.width || 600;
+            this._windowDiv.style.width = (width - 50) + "px";
+            this._titleDiv.style.width = (width - 72) + "px";
+            this._contentDiv.style.width = (width - 72) + "px";
+            this._windowDiv.style.height = (height - 50) + "px";
+            this._contentDiv.style.height = (height - 85) + "px";
+        } else {
+            this._windowDiv.style.width = "300px";
+            this._titleDiv.style.width = "278px";
+            this._contentDiv.style.width = "278px";
+            this._windowDiv.style.height = "300px";
+            this._contentDiv.style.height = "265px";
+        }
+    },
+    
+    /** Listener for click events from the move (>) button: moves console to other side of screen. */
+    _moveListener: function(e) {
+        var style = this._windowDiv.style;
+        if (style.top) {
+            style.top = style.right = "";
+            style.bottom = style.left = "20px";
+        } else {
+            style.bottom = style.left = "";
+            style.top = style.right = "20px";
+        }
     },
     
     /**
