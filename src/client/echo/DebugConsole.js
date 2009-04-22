@@ -163,15 +163,13 @@ Echo.DebugConsole = {
             var height = document.height || 600;
             var width = document.width || 600;
             this._div.style.width = (width - 50) + "px";
-            this._titleDiv.style.width = (width - 72) + "px";
-            this._contentDiv.style.width = (width - 72) + "px";
             this._div.style.height = (height - 50) + "px";
+            this._contentDiv.style.width = (width - 72) + "px";
             this._contentDiv.style.height = (height - 85) + "px";
         } else {
             this._div.style.width = "300px";
-            this._titleDiv.style.width = "278px";
-            this._contentDiv.style.width = "278px";
             this._div.style.height = "300px";
+            this._contentDiv.style.width = "278px";
             this._contentDiv.style.height = "265px";
         }
     },
@@ -189,9 +187,8 @@ Echo.DebugConsole = {
                 "border:5px solid #3f6fff;overflow:hidden;z-index:32767;";
         
         this._titleDiv = document.createElement("div");
-        this._titleDiv.style.cssText =
-                "position:absolute;top:1px;left:1px;width:278px;height:3em;padding:3px 10px;background-color:#5f5f8f;" +
-                "color:#ffffff;overflow:hidden;cursor:move;";
+        this._titleDiv.style.cssText = "position:relative;" +
+                "margin:1px;height:20px;padding:3px 10px;background-color:#5f5f8f;color:#ffffff;overflow:hidden;cursor:move;";
                 
         Core.Web.DOM.addEventListener(this._titleDiv, "mousedown", Core.method(this, this._titleMouseDown), false);
         Core.Web.Event.Selection.disable(this._titleDiv);
@@ -212,7 +209,7 @@ Echo.DebugConsole = {
         
         this._contentDiv = document.createElement("div");
         this._contentDiv.style.cssText = 
-                "font-family:monospace;font-size:9px;position:absolute;top:3em;left:1px;" +
+                "font-family:monospace;font-size:9px;position:absolute;top:28px;left:1px;" +
                 "width:278px;height:265px;padding:3px 10px;background-color:#1f1f2f;overflow:auto;color:#3fff6f;";
         this._div.appendChild(this._contentDiv);
         
