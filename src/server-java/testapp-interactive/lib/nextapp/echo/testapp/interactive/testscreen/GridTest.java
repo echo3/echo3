@@ -507,6 +507,12 @@ public class GridTest extends SplitPane {
             }
         });
         
+        controlsColumn.addButton("Set Column 0 to 123px Width", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                grid.setColumnWidth(0, new Extent(123));
+            }
+        });
+        
         controlsColumn.addButton("Set First 16 Columns to 100px Width", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Extent width = new Extent(100);
