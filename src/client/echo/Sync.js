@@ -745,6 +745,13 @@ Echo.Sync.FillImage = {
 
 /**
  * Provides tools for rendering fill image border properties (borders composed of eight graphic images).
+ * 
+ * A relative-positioned DIV may be added to the created FillImageBorder container DIV.
+ * Note that you should ALWAYS set the "zoom" CSS property to 1 to workaround "hasLayout" bugs in Internet Explorer's
+ * rendering engine.  Use the following code to set this property on any relative positioned DIVs you create:
+ * <code>if (Core.Web.Env.QUIRK_IE_HAS_LAYOUT) { div.style.zoom = 1; }</code>.
+ * See http://msdn.microsoft.com/en-us/library/bb250481.aspx 
+ * 
  * @class
  */
 Echo.Sync.FillImageBorder = {
@@ -997,6 +1004,9 @@ Echo.Sync.FillImageBorder = {
                 div.style.position = "relative";
                 if (content) {
                     content.style.position = "relative";
+                    if (Core.Web.Env.QUIRK_IE_HAS_LAYOUT) {
+                        content.style.zoom = 1;
+                    }
                 }
             }
         }
