@@ -924,6 +924,7 @@ Echo.Sync.FillImageBorder = {
      * @type Element
      */
     renderContainer: function(fillImageBorder, configuration) {
+        fillImageBorder = fillImageBorder || {};
         configuration = configuration || {};
         
         // Load pixel border insets.
