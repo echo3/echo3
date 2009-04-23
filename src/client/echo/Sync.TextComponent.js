@@ -371,7 +371,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         this.component.set("text", this.input.value);
         this._lastProcessedValue = this.input.value;
         
-        if (keyEvent && keyEvent.keyCode == 13) {
+        if (keyEvent && keyEvent.keyCode == 13 && keyEvent.type == "keydown") {
             this.component.doAction();
         }
 
