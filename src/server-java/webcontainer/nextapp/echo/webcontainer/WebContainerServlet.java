@@ -111,7 +111,7 @@ public abstract class WebContainerServlet extends HttpServlet {
     /**
      * <code>Service</code> identifier of the 'new instance' service. 
      * The 'new instance' service is rendered when a client makes a request
-     * without a service identifier and a session DOES NOT exist..
+     * without a service identifier and a session DOES NOT exist.
      */
     public static final String SERVICE_ID_NEW_INSTANCE = "Echo.NewInstance";
     
