@@ -52,6 +52,7 @@ implements Serializable {
     public static final ContentType TEXT_PLAIN = new ContentType("text/plain", false);
     public static final ContentType TEXT_XML = new ContentType("text/xml", false);
     public static final ContentType TEXT_CSS = new ContentType("text/css", false);
+    public static final ContentType APPLICATION_FLASH = new ContentType("application/x-shockwave-flash", true);
 
     /** The mime type. */
     private String mimeType = null;
