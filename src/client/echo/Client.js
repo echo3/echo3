@@ -314,7 +314,7 @@ Echo.Client = Core.extend({
         
         if (detail) {
             var detailDiv = document.createElement("div");
-            detailDiv.style.cssText = "margin-bottom:20px;";
+            detailDiv.style.cssText = "max-height:10em;overflow:auto;margin-bottom:20px;";
             detailDiv.appendChild(document.createTextNode(detail));
             contentDiv.appendChild(detailDiv);
         }
