@@ -280,6 +280,8 @@ Echo.Client = Core.extend({
      * @param {Function} actionFunction optional function to execute when action button is clicked
      */
     displayError: function(parentElement, message, detail, actionText, actionFunction) {
+        parentElement = parentElement || document.body;
+        
         // Create restriction.
         var restriction = this.createInputRestriction(false);
 
