@@ -1262,8 +1262,8 @@ Echo.Sync.Insets = {
      * Renders an insets property to an element.
      * 
      * @param {#Insets} insets the insets property
-     * @param {Element} the target element
-     * @param {String} the style attribute name, e.g., "padding" or "margin" 
+     * @param {Element} element the target element
+     * @param {String} styleAttribute the style attribute name, e.g., "padding" or "margin" 
      */
     render: function(insets, element, styleAttribute) {
         switch(typeof(insets)) {
@@ -1280,6 +1280,20 @@ Echo.Sync.Insets = {
             }
             break;
         }
+    },
+    
+    /**
+     * Renders an insets property to an element as absolute position coordinates (i.e., top/right/bottom/left values).
+     * 
+     * @param {#Insts} insets the insets propert
+     * @param {Element} element the target element
+     */
+    renderPosition: function(insets, element) {
+        var insetsPx = this.toPixels(insets);
+        element.style.top = insetsPx.top + "px";
+        element.style.right = insetsPx.right + "px";
+        element.style.bottom = insetsPx.bottom + "px";
+        element.style.left = insetsPx.left + "px";
     },
     
     /**
