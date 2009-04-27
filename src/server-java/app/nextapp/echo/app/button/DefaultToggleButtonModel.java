@@ -81,6 +81,9 @@ implements ToggleButtonModel {
      * @see nextapp.echo.app.button.ToggleButtonModel#setSelected(boolean)
      */
     public void setSelected(boolean selected) {
+        if (this.selected == selected) {
+            return;
+        }
         this.selected = selected;
         fireStateChanged();
     }
