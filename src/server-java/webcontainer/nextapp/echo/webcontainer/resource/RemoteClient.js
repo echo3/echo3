@@ -353,6 +353,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             return;
         }
         this._clientMessage.setEvent(e.source.renderId, e.type, e.data);
+        this._inputRestrictionId = this.createInputRestriction();
         Core.Web.Scheduler.run(Core.method(this, this.sync));
     },
     
@@ -479,7 +480,9 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         this._serverFocusedComponent = null;
         
         this._transactionInProgress = true;
-        this._inputRestrictionId = this.createInputRestriction(true);
+        if (!this._inputRestrictionId) {
+            this._inputRestrictionId = this.createInputRestriction();
+        }
 
         this._asyncManager._stop();    
         this._syncInitTime = new Date().getTime();

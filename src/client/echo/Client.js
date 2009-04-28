@@ -283,7 +283,7 @@ Echo.Client = Core.extend({
         parentElement = parentElement || document.body;
         
         // Create restriction.
-        var restriction = this.createInputRestriction(false);
+        var restriction = this.createInputRestriction();
 
         // Disable wait indicator.
         this._setWaitVisible(false);
