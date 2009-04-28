@@ -296,6 +296,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         }
         this.client.application.addListener("focus", this._processRolloverExitRef);
         this.setRolloverState(true);
+        return true;
     },
     
     /** Processes a mouse roll over exit event, displaying the button's normal appearance. */
@@ -307,6 +308,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             this.client.application.removeListener("focus", this._processRolloverExitRef);
         }
         this.setRolloverState(false);
+        return true;
     },
     
     /** @see Echo.Render.ComponentSync#renderAdd */
