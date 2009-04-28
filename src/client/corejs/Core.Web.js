@@ -2036,6 +2036,16 @@ Core.Web.Measure = {
     Bounds: Core.extend({
 
         $static: {
+            /**
+             * Flag indicating that the dimension of elements should be calculated.
+             */
+            FLAG_MEASURE_DIMENSION: 0x1,
+            
+            /**
+             * Flag indicating that the position of elements should be calculated.
+             */
+            FLAG_MEASURE_POSITION: 0x2,
+            
             _initMeasureContainer: function() {
                 // Create off-screen div element for evaluating sizes.
                 this._offscreenDiv = document.createElement("div");
@@ -2078,6 +2088,9 @@ Core.Web.Measure = {
          * @constructor
          */    
         $construct: function(element, constraints) {
+            var flags = (constraints && constraints.flags) || 
+                    (Core.Web.Measure.Bounds.FLAG_MEASURE_DIMENSION | Core.Web.Measure.Bounds.FLAG_MEASURE_POSITION);
+
             if (element === document.body) {
                 return { 
                     x: 0,
@@ -2094,52 +2107,54 @@ Core.Web.Measure = {
             var rendered = testElement == document;
             
             var parentNode, nextSibling;
-            if (!rendered) {
-                // Element must be added to off-screen element for measuring.
-                
-                // Store parent node and next sibling such that element may be replaced into proper position
-                // once off-screen measurement has been completed.
-                parentNode = element.parentNode;
-                nextSibling = element.nextSibling;
-        
-                // Remove element from parent.
-                if (parentNode) {
-                    parentNode.removeChild(element);
+            
+            if (flags & Core.Web.Measure.Bounds.FLAG_MEASURE_DIMENSION) {
+                if (!rendered) {
+                    // Element must be added to off-screen element for measuring.
+                    
+                    // Store parent node and next sibling such that element may be replaced into proper position
+                    // once off-screen measurement has been completed.
+                    parentNode = element.parentNode;
+                    nextSibling = element.nextSibling;
+            
+                    // Remove element from parent.
+                    if (parentNode) {
+                        parentNode.removeChild(element);
+                    }
+                    
+                    if (constraints) {
+                        if (constraints.width) {
+                            Core.Web.Measure.Bounds._offscreenDiv.width = constraints.width;
+                        }
+                        if (constraints.height) {
+                            Core.Web.Measure.Bounds._offscreenDiv.height = constraints.height;
+                        }
+                    }
+                    
+                    // Append element to measuring container DIV.
+                    Core.Web.Measure.Bounds._offscreenDiv.appendChild(element);
+                    
+                    if (constraints) {
+                        Core.Web.Measure.Bounds._offscreenDiv.width = "1600px";
+                        Core.Web.Measure.Bounds._offscreenDiv.height = "1200px";
+                    }
                 }
                 
-                if (constraints) {
-                    if (constraints.width) {
-                        Core.Web.Measure.Bounds._offscreenDiv.width = constraints.width;
-                    }
-                    if (constraints.height) {
-                        Core.Web.Measure.Bounds._offscreenDiv.height = constraints.height;
-                    }
-                }
+                // Store width and height of element.
+                this.width = element.offsetWidth;
+                this.height = element.offsetHeight;
                 
-                // Append element to measuring container DIV.
-                Core.Web.Measure.Bounds._offscreenDiv.appendChild(element);
-                
-                if (constraints) {
-                    Core.Web.Measure.Bounds._offscreenDiv.width = "1600px";
-                    Core.Web.Measure.Bounds._offscreenDiv.height = "1200px";
+                if (!rendered) {
+                    // Replace off-screen measured element in previous location.
+                    Core.Web.Measure.Bounds._offscreenDiv.removeChild(element);
+                    if (parentNode) {
+                        parentNode.insertBefore(element, nextSibling);
+                    }
                 }
             }
-            
-            // Store width and height of element.
-        
-            this.width = element.offsetWidth;
-            this.height = element.offsetHeight;
-            
-            if (!rendered) {
-                // Replace off-screen measured element in previous location.
-                Core.Web.Measure.Bounds._offscreenDiv.removeChild(element);
-                if (parentNode) {
-                    parentNode.insertBefore(element, nextSibling);
-                }
-            }
-            
+
             // Determine top and left positions of element if rendered on-screen.
-            if (rendered) {
+            if (rendered && (flags & Core.Web.Measure.Bounds.FLAG_MEASURE_POSITION)) {
                 var cumulativeOffset = Core.Web.Measure._getCumulativeOffset(element);
                 var scrollOffset = Core.Web.Measure._getScrollOffset(element);
         
@@ -2155,7 +2170,8 @@ Core.Web.Measure = {
          * @type String
          */
         toString: function() {
-            return (this.left != null ? (this.left + "," + this.top + " : ") : "") + "[" + this.width + "x" + this.height + "]";
+            return (this.left != null ? (this.left + "," + this.top + " : ") : "") + 
+                    (this.width != null ? ("[" + this.width + "x" + this.height + "]") : "");
         }
     })
 };
