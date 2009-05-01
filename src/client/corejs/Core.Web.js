@@ -1788,7 +1788,8 @@ Core.Web.Library = {
          */
         _retrieveListener: function(e) {
             if (!e.valid) {
-                throw new Error("Invalid HTTP response from library request: " + e.source.getStatus());
+                throw new Error("Invalid HTTP response retrieving library \"" + this._url + 
+                        "\", received status: " + e.source.getStatus());
             }
             this._content = e.source.getResponseText();
             this._group._notifyRetrieved();
