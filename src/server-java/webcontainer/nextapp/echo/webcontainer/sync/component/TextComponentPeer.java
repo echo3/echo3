@@ -83,8 +83,8 @@ public class TextComponentPeer extends AbstractComponentSynchronizePeer {
     public static final String PROPERTY_SYNC_DELAY = "syncDelay";
 
     /**
-     * The time in milliseconds after which the server will first be notified of changes to a text component.  This value is used only
-     * when the synchronization mode is set to <code>SYNC_ON_CHANGE</code>.
+     * The time in milliseconds after which the server will first be notified of changes to a text component.  
+     * This value is used only when the synchronization mode is set to <code>SYNC_ON_CHANGE</code>.
      * The default value is 0ms, such that the first change to a text component will immediately notify the server.
      * 
      * <strong>EXPERIMENTAL, for testing purposes only, do not use.</strong>
