@@ -303,8 +303,10 @@ Echo.Application = Core.extend({
      * @param {String} propertyName the updated property
      * @param oldValue the previous property value
      * @param newValue the new property value
+     * @param rendered optional flag indicating whether the update has already been rendered by the containing client; 
+     *        if enabled, the property update will not be sent to the update manager
      */
-    notifyComponentUpdate: function(parent, propertyName, oldValue, newValue) {
+    notifyComponentUpdate: function(parent, propertyName, oldValue, newValue, rendered) {
         if (parent.modalSupport && propertyName == "modal") {
             this._setModal(parent, newValue);
         }
@@ -312,7 +314,9 @@ Echo.Application = Core.extend({
             this._listenerList.fireEvent({type: "componentUpdate", parent: parent, propertyName: propertyName, 
                     oldValue: oldValue, newValue: newValue});
         }
-        this.updateManager._processComponentUpdate(parent, propertyName, oldValue, newValue);
+        if (!rendered) {
+            this.updateManager._processComponentUpdate(parent, propertyName, oldValue, newValue);
+        }
     },
     
     /**
@@ -1218,8 +1222,10 @@ Echo.Component = Core.extend({
      * 
      * @param {String} name the name of the property
      * @param value the new value of the property
+     * @param rendered optional flag indicating whether the update has already been rendered by the containing client; 
+     *        if enabled, the property update will not be sent to the update manager
      */
-    set: function(name, newValue) {
+    set: function(name, newValue, rendered) {
         var oldValue = this._localStyle[name];
         if (oldValue === newValue) {
             return;
@@ -1230,7 +1236,7 @@ Echo.Component = Core.extend({
                     oldValue: oldValue, newValue: newValue});
         }
         if (this.application) {
-            this.application.notifyComponentUpdate(this, name, oldValue, newValue);
+            this.application.notifyComponentUpdate(this, name, oldValue, newValue, rendered);
         }
     },
     
@@ -1253,8 +1259,10 @@ Echo.Component = Core.extend({
      * @param {String} name the name of the property
      * @param {Number} index the index of the property
      * @param newValue the new value of the property
+     * @param rendered optional flag indicating whether the update has already been rendered by the containing client; 
+     *        if enabled, the property update will not be sent to the update manager
      */
-    setIndex: function(name, index, newValue) {
+    setIndex: function(name, index, newValue, rendered) {
         var valueArray = this._localStyle[name];
         var oldValue = null;
         if (valueArray) {
@@ -1268,7 +1276,7 @@ Echo.Component = Core.extend({
         }
         valueArray[index] = newValue;
         if (this.application) {
-            this.application.notifyComponentUpdate(this, name, oldValue, newValue);
+            this.application.notifyComponentUpdate(this, name, oldValue, newValue, rendered);
         }
         if (this._listenerList && this._listenerList.hasListeners("property")) {
             this._listenerList.fireEvent({type: "property", source: this, propertyName: name, index: index,
@@ -1729,7 +1737,7 @@ Echo.StyleSheet = Core.extend({
 /**
  * Namespace for update management.
  * Provides capabilities for storing property changes made to applications and components
- * such that display redraws may be performed efficiently. 
+ * such that display redraws may be performed efficiently in batches by application container.
  * @namespace
  */
 Echo.Update = { };

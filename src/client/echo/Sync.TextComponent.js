@@ -218,7 +218,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         }
 
         // All-clear, store current text value.
-        this.component.set("text", this.input.value);
+        this.component.set("text", this.input.value, true);
     },
 
     /**
@@ -336,8 +336,8 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             this._selectionStart = this.input.selectionStart;
             this._selectionEnd = this.input.selectionEnd;
         }
-        this.component.set("selectionStart", this._selectionStart);
-        this.component.set("selectionEnd", this._selectionEnd);
+        this.component.set("selectionStart", this._selectionStart, true);
+        this.component.set("selectionEnd", this._selectionEnd, true);
     },
     
     /**
@@ -368,7 +368,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         }
 
         // Component and client are ready to receive input, set the component property and/or fire action event.
-        this.component.set("text", this.input.value);
+        this.component.set("text", this.input.value, true);
         this._lastProcessedValue = this.input.value;
         
         if (keyEvent && keyEvent.keyCode == 13 && keyEvent.type == "keydown") {
