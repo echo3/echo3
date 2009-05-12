@@ -85,8 +85,7 @@ Echo.Sync.RemoteTextComponent = Core.extend({
              * Delegate implementation of <code>getSupportedPartialProperties()</code>.
              * @see Echo.Sync.TextComponent#getSupportedPartialProperties
              */
-            _remoteGetSupportedPartialProperties: function() {
-                var properties = this.constructor.$super.prototype.getSupportedPartialProperties();
+            _remoteGetSupportedPartialProperties: function(properties) {
                 properties.push("syncMode", "syncDelay", "syncInitialDelay");
                 return properties;
             },
@@ -160,31 +159,32 @@ Echo.Sync.RemotePasswordField.Sync = Core.extend(Echo.Sync.PasswordField, {
     
     /** @see Echo.Sync.TextComponent#getSupportedPartialProperties */
     getSupportedPartialProperties: function() {
-        return this._remoteGetSupportedPartialProperties();
+        return this._remoteGetSupportedPartialProperties(
+                Echo.Sync.PasswordField.prototype.getSupportedPartialProperties.call(this));
     },
     
     /** @see Echo.Sync.TextComponent#processBlur */
     processBlur: function(e) {
-        this.constructor.$super.prototype.processBlur.call(this, e);
+        Echo.Sync.PasswordField.prototype.processBlur.call(this, e);
         this._remoteBlur();
     },
     
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
-        this.constructor.$super.prototype.renderAdd.call(this, update, parentElement);
+        Echo.Sync.PasswordField.prototype.renderAdd.call(this, update, parentElement);
         this._remoteAdd();
     },
     
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
         this._remoteDispose();
-        this.constructor.$super.prototype.renderDispose.call(this, update);
+        Echo.Sync.PasswordField.prototype.renderDispose.call(this, update);
     },
 
     /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
         this._remoteUpdate();
-        this.constructor.$super.prototype.renderUpdate.call(this, update);
+        Echo.Sync.PasswordField.prototype.renderUpdate.call(this, update);
     }
 });
 
@@ -219,31 +219,32 @@ Echo.Sync.RemoteTextArea.Sync = Core.extend(Echo.Sync.TextArea, {
     
     /** @see Echo.Sync.TextComponent#getSupportedPartialProperties */
     getSupportedPartialProperties: function() {
-        return this._remoteGetSupportedPartialProperties();
+        return this._remoteGetSupportedPartialProperties(
+                Echo.Sync.TextArea.prototype.getSupportedPartialProperties.call(this));
     },
     
     /** @see Echo.Sync.TextComponent#processBlur */
     processBlur: function(e) {
-        this.constructor.$super.prototype.processBlur.call(this, e);
+        Echo.Sync.TextArea.prototype.processBlur.call(this, e);
         this._remoteBlur();
     },
     
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
-        this.constructor.$super.prototype.renderAdd.call(this, update, parentElement);
+        Echo.Sync.TextArea.prototype.renderAdd.call(this, update, parentElement);
         this._remoteAdd();
     },
     
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
         this._remoteDispose();
-        this.constructor.$super.prototype.renderDispose.call(this, update);
+        Echo.Sync.TextArea.prototype.renderDispose.call(this, update);
     },
     
     /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
         this._remoteUpdate();
-        this.constructor.$super.prototype.renderUpdate.call(this, update);
+        Echo.Sync.TextArea.prototype.renderUpdate.call(this, update);
     }
 });
 
@@ -278,31 +279,32 @@ Echo.Sync.RemoteTextField.Sync = Core.extend(Echo.Sync.TextField, {
     
     /** @see Echo.Sync.TextComponent#getSupportedPartialProperties */
     getSupportedPartialProperties: function() {
-        return this._remoteGetSupportedPartialProperties();
+        return this._remoteGetSupportedPartialProperties(
+                Echo.Sync.TextField.prototype.getSupportedPartialProperties.call(this));
     },
     
     /** @see Echo.Sync.TextComponent#processBlur */
     processBlur: function(e) {
-        this.constructor.$super.prototype.processBlur.call(this, e);
+        Echo.Sync.TextField.prototype.processBlur.call(this, e);
         this._remoteBlur();
     },
     
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
-        this.constructor.$super.prototype.renderAdd.call(this, update, parentElement);
+        Echo.Sync.TextField.prototype.renderAdd.call(this, update, parentElement);
         this._remoteAdd();
     },
     
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
         this._remoteDispose();
-        this.constructor.$super.prototype.renderDispose.call(this, update);
+        Echo.Sync.TextField.prototype.renderDispose.call(this, update);
     },
     
     /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
         this._remoteUpdate();
-        this.constructor.$super.prototype.renderUpdate.call(this, update);
+        Echo.Sync.TextField.prototype.renderUpdate.call(this, update);
     }
 });
 
