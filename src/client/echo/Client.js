@@ -411,12 +411,6 @@ Echo.Client = Core.extend({
                 document.documentElement.style.display = "none";
                 document.documentElement.style.display = displayState;
             }
-        } else if (Core.Web.Env.QUIRK_OPERA_CSS_POSITIONING) {
-            // Execute renderComponentDisplay() on root component to avoid (some) issues with Opera's absolute CSS positioning bug.
-            // This does not completely work around the issue, but makes it somewhat usable.
-            if (this.application && this.application.rootComponent) {
-                Echo.Render.renderComponentDisplay(this.application.rootComponent);
-            }
         }
     },
     
