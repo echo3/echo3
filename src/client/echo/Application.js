@@ -2906,7 +2906,7 @@ Echo.Composite = Core.extend(Echo.Component, {
  * @sp {#Border} border the border surrounding the child component
  * @sp {#Extent} height the height of the panel
  * @sp {#FillImageBorder} imageBorder an image-based border surrounding the child component (overrides <code>border</code>
- *     property when set
+ *     property when set)
  * @sp {#Insets} insets the inset padding margin between the panel border and its content
  * @sp {#Extent} width the width of the panel
  */
