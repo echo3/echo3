@@ -330,7 +330,7 @@ Echo.Sync.Border = {
      * @param {#Border} border the border
      * @param {String} sideName, the border side name, "left", "right", "bottom", or "top" (defaults to "top" if omitted)
      * @return the border size in pixels
-     * @type {Number}
+     * @type Number
      */
     getPixelSize: function(border, sideName) {
         if (!border) {

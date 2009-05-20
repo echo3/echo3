@@ -370,7 +370,7 @@ Echo.Sync.RadioButton.Group = Core.extend({
      * Returns the number of buttons contained by this button group.
      * 
      * @return the number of buttons
-     * @type {Number}
+     * @type Number
      */
     size: function() {
         return this._buttons.length;

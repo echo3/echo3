@@ -3209,25 +3209,25 @@ Echo.SplitPane = Core.extend(Echo.Component, {
         
         /**
          * Default separator position.
-         * @type {#Extent}
+         * @type #Extent
          */
         DEFAULT_SEPARATOR_POSITION: "50%",
         
         /**
          * Default separator size for fixed SplitPanes.
-         * @type {#Extent}
+         * @type #Extent
          */
         DEFAULT_SEPARATOR_SIZE_FIXED: 0,
 
         /**
          * Default separator size for resizable SplitPanes.
-         * @type {#Extent}
+         * @type #Extent
          */
         DEFAULT_SEPARATOR_SIZE_RESIZABLE: 4,
         
         /** 
          * Default separator color.
-         * @type {#Color}
+         * @type #Color
          */
         DEFAULT_SEPARATOR_COLOR: "#3f3f4f",
         
