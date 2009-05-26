@@ -200,7 +200,6 @@ public class TablePeer extends AbstractComponentSynchronizePeer {
         super.init(context, component);
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(TABLE_SERVICE.getId());
-System.err.println("INIT");        
     }
     
     /**
