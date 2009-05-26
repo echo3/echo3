@@ -29,6 +29,7 @@
 
 package nextapp.echo.testapp.interactive.testscreen;
 
+import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Extent;
@@ -84,6 +85,26 @@ public class PanelTest extends SplitPane {
         controlsColumn.addButton("Change Font", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 panel.setFont(StyleUtil.randomFont());
+            }
+        });
+        controlsColumn.addButton("Set Alignment: Left", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setAlignment(Alignment.ALIGN_LEFT);
+            }
+        });
+        controlsColumn.addButton("Set Alignment: Center", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setAlignment(Alignment.ALIGN_CENTER);
+            }
+        });
+        controlsColumn.addButton("Set Alignment: Right", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setAlignment(Alignment.ALIGN_RIGHT);
+            }
+        });
+        controlsColumn.addButton("Set Alignment: Null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setAlignment(null);
             }
         });
         controlsColumn.addButton("Set Content (Label)", new ActionListener() {

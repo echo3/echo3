@@ -41,6 +41,7 @@ implements PaneContainer {
     /** Serial Version UID. */
     private static final long serialVersionUID = 20090103L;
 
+    public static final String PROPERTY_ALIGNMENT = "alignment";
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
     public static final String PROPERTY_BORDER = "border";
     public static final String PROPERTY_IMAGE_BORDER = "imageBorder";
@@ -55,6 +56,15 @@ implements PaneContainer {
      */
     public FillImage getBackgroundImage() {
         return (FillImage) get(PROPERTY_BACKGROUND_IMAGE);
+    }
+    
+    /**
+     * Returns the <code>Alignment</code> describing how the child component is aligned within the <code>Panel</code>.
+     * 
+     * @return the alignment
+     */
+    public Alignment getAlignment() {
+        return (Alignment) get(PROPERTY_ALIGNMENT);
     }
     
     /**
@@ -105,6 +115,15 @@ implements PaneContainer {
      */
     public Extent getWidth() {
         return (Extent) get(PROPERTY_WIDTH);
+    }
+    
+    /**
+     * Sets the <code>Alignment</code> describing how the child component is aligned within the <code>Panel</code>.
+     * 
+     * @param newValue the new alignment
+     */
+    public void setAlignment(Alignment newValue) {
+        set(PROPERTY_ALIGNMENT, newValue);
     }
     
     /**

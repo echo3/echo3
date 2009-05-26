@@ -2902,6 +2902,7 @@ Echo.Composite = Core.extend(Echo.Component, {
  * containers which do not allow pane components as children. In such a case it
  * may be necessary to manually set the height property of the Panel itself.
  * 
+ * @sp {#Alignment} alignment the alignment of the child component within the panel
  * @sp {#FillImage} backgroundImage the background image
  * @sp {#Border} border the border surrounding the child component
  * @sp {#Extent} height the height of the panel
