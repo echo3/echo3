@@ -1380,7 +1380,7 @@ Echo.FocusManager = Core.extend({
      * Focus management handler for a specific application instance.
      * One FocusManager is created for each application.
      * 
-     * @param {Echo.Application} the managed application
+     * @param {Echo.Application} application the managed application
      */
     $construct: function(application) { 
         this._application = application;
@@ -1403,6 +1403,8 @@ Echo.FocusManager = Core.extend({
      * Search order (REVERSE):
      * Last Child, previous sibling, parent
      * 
+     * @param {Echo.Component} component the component at which to begin searching
+     * @param {Boolean} reverse flag indicating the direction of the search
      * @return the Component which should be focused
      * @type Echo.Component
      */
