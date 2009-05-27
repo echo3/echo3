@@ -473,7 +473,7 @@ Echo.Render = {
         if (focusedComponent && focusedComponent.peer) {
             if (!focusedComponent.peer.renderFocus) {
                 throw new Error("Cannot focus component: " + focusedComponent + 
-                        ", peer does not provide renderFocus() implemnetation."); 
+                        ", peer does not provide renderFocus() implementation."); 
             }
             focusedComponent.peer.renderFocus();
         }
