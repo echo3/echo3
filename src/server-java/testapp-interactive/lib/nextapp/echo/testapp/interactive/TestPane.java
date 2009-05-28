@@ -146,12 +146,13 @@ public class TestPane extends ContentPane {
         addTest("Window", "WindowTest");
         addTest("WindowPane", "WindowPaneTest");
         addTest("WindowPane Examples", "WindowPaneExamplesTest");
+        addTest("{ Scratch Test }", "ScratchTest");
         
         Column applicationControlsColumn = new Column();
         controlsColumn.add(applicationControlsColumn);
 
         Button button;
-        
+
         button = new Button("Serial Test");
         button.setStyleName("Default");
         button.addActionListener(new ActionListener() {
@@ -160,7 +161,7 @@ public class TestPane extends ContentPane {
             }
         });
         applicationControlsColumn.add(button);
-
+        
         button = new Button("Exit");
         button.setRenderId("Exit");
         button.setId("ExitTestApplication");
