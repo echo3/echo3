@@ -299,9 +299,9 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             } else {
                 // Display error.
                 this.displayError(element, this.configuration["SessionExpiration.Message"], null, 
-                        this.configuration["Action.Restart"], function() {
+                        this.configuration["Action.Continue"], function() {
                     window.location.reload();
-                });
+                }, Echo.Client.STYLE_MESSAGE);
             }
         }
     },
@@ -410,7 +410,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
 
         if (e.source.resync) {
             this.displayError(this.domainElement, this.configuration["Resync.Message"], null, 
-                    this.configuration["Action.Continue"]);
+                    this.configuration["Action.Continue"], null, Echo.Client.STYLE_MESSAGE);
         }
     },
     

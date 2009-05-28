@@ -15,6 +15,18 @@ Echo.Client = Core.extend({
             "Action.Continue": "Continue",
             "Action.Restart": "Restart Application"
         },
+        
+        /**
+         * Style property value for <code>displayError</code> indicating a critical error.
+         * @type Number
+         */
+        STYLE_CRITICAL: 0,
+
+        /**
+         * Style property value for <code>displayError</code> indicating a message.
+         * @type Number
+         */
+        STYLE_MESSAGE: 1,
     
         /**
          * Global array containing all active client instances in the current browser window.
@@ -278,8 +290,13 @@ Echo.Client = Core.extend({
      * @param {String} detail optional details about the message (e.g., client-side exception)
      * @param {String} actionText optional text for an action button
      * @param {Function} actionFunction optional function to execute when action button is clicked
+     * @param {Number} style the style in which to display the error, one of the following values:
+     *        <ul>
+     *         <li><code>STYLE_CRITICAL</code>: used to display a critical error (the default)</li>
+     *         <li><code>STYLE_MESSAGE</code>: used to display a message to the user</li>
+     *        </ul>
      */
-    displayError: function(parentElement, message, detail, actionText, actionFunction) {
+    displayError: function(parentElement, message, detail, actionText, actionFunction, style) {
         parentElement = parentElement || document.body;
         
         // Create restriction.
@@ -302,8 +319,9 @@ Echo.Client = Core.extend({
         parentElement.appendChild(div);
         
         var contentDiv = document.createElement("div");
-        contentDiv.style.cssText = "border-bottom:4px solid #af1f1f;background-color:#5f1f1f;color:#ffffff;" + 
-                "padding:20px 40px 0px;";
+        contentDiv.style.cssText = "color:#ffffff;padding:20px 40px 0px;" + 
+              (style === Echo.Client.STYLE_MESSAGE ? "border-bottom:4px solid #1f1faf;background-color:#1f1f5f" :
+              "border-bottom:4px solid #af1f1f;background-color:#5f1f1f");
         
         if (message) {
             var messageDiv = document.createElement("div");
@@ -324,8 +342,9 @@ Echo.Client = Core.extend({
         if (actionText) {
             var actionDiv = document.createElement("div");
             actionDiv.tabIndex = "0";
-            actionDiv.style.cssText = "border: 1px outset #af2f2f;background-color:#af2f2f;padding:2px 10px;" +
-                    "margin-bottom:20px;cursor:pointer;font-weight:bold;";
+            actionDiv.style.cssText = "margin-bottom:20px;cursor:pointer;font-weight:bold;padding:2px 10px;" +
+                    (style === Echo.Client.STYLE_MESSAGE ? "border: 1px outset #2f2faf;background-color:#2f2faf;" :
+                    "border: 1px outset #af2f2f;background-color:#af2f2f;");
             actionDiv.appendChild(document.createTextNode(actionText));
             contentDiv.appendChild(actionDiv);
             var listener = Core.method(this, function(e) {
