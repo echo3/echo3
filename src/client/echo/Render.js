@@ -639,6 +639,7 @@ Echo.Render.ComponentSync = Core.extend({
          * (Optional) Processes a key down event received by the client's key listeners.  
          * Invoked by client based on current focused component of application.
          * 
+         * @function
          * @param e the key event, containing (processed) keyCode property
          * @return true if higher-level containers should be allowed to process the key event as well
          * @type Boolean
@@ -650,6 +651,7 @@ Echo.Render.ComponentSync = Core.extend({
          * (Optional) Processes a key press event received by the client's key listeners.  
          * Invoked by client based on current focused component of application.
          * 
+         * @function
          * @param e the key event, containing (processed) charCode and keyCode properties
          * @return true if higher-level containers should be allowed to process the key event as well
          * @type Boolean
@@ -671,6 +673,7 @@ Echo.Render.ComponentSync = Core.extend({
          *   any arrow key is pressed (this is a shorthand for up, left, down, and right ORed together).</li>
          * </ul>
          * 
+         * @function
          * @return the focus flags
          * @type Number
          */
@@ -682,6 +685,7 @@ Echo.Render.ComponentSync = Core.extend({
          * the space provided to the child component.  If implemented, this method should return
          * an object containing height and/or width properties specifying integer pixel values.
          * 
+         * @function
          * @param dimension the dimension to be calculated, one of the following values, or null
          *        to specify that all dimensions should be calculated:
          *        <ul>
@@ -697,6 +701,7 @@ Echo.Render.ComponentSync = Core.extend({
          * should return true if the specified child component is on-screen and should have its <code>renderDisplay()</code>
          * method invoked when required, or false if the component is off-screen.
          * 
+         * @function
          * @param component the child component
          * @return true if the component should have its renderDisplay() method invoked
          * @type Boolean
@@ -705,6 +710,8 @@ Echo.Render.ComponentSync = Core.extend({
         
         /**
          * (Optional) Invoked when component is rendered focused.
+         * 
+         * @function
          */
         renderFocus: null,
         
@@ -715,6 +722,8 @@ Echo.Render.ComponentSync = Core.extend({
          * The renderDisplay() method will be invoked the when/if the component is displayed again.
          * This method may be invoked on components which are already in a hidden state.
          * This method will not necessarily be invoked prior to disposal.
+         * 
+         * @function
          */
         renderHide: null,
         
@@ -722,6 +731,8 @@ Echo.Render.ComponentSync = Core.extend({
          * (Optional) Invoked when the component has been added (or-readded) to the hierarchy and first appears
          * on screen, and when ancestors of the component (or the containing window) have
          * resized.
+         * 
+         * @function
          */
         renderDisplay: null
     }
