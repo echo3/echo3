@@ -584,6 +584,7 @@ Echo.Sync.Extent = {
      * 
      * @param {#Extent} extent the Extent
      * @param {Boolean} horizontal flag indicating whether the value is being rendered horizontally
+     * @return the pixel value
      * @type Number
      */
     toPixels: function(extent, horizontal) {
