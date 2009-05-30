@@ -205,7 +205,7 @@ Echo.Serial = {
                     indexValues[index] = value;
                 }
             } else {
-                // Property has property name: invoke set(Indexed)Property.
+                // Property has property name: invoke set(Index).
                 if (index == null) {
                     object.set(name, value);
                 } else {
