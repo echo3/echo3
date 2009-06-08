@@ -63,6 +63,8 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
      */
     _defaultDomainElement: null,
     
+    _applicationFocusRef: null,
+    
     $abstract: {
     
         /**
@@ -91,7 +93,25 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
             }
             return this._defaultDomainElement;
         },
-        
+
+        /**
+         * Listener for application focus change events.
+         * Registered to both the rendered application and the containing component's application.
+         */
+        _processApplicationFocus: function(e) {
+            if (e.source == this.component.application) {
+                if (e.newValue != this.component) {
+                    // Set focus of rendered application to null when containing application's focus moves
+                    // away from the application rendered component.
+                    this.arcApplication.setFocusedComponent(null);
+                }
+            } else if (e.source == this.arcApplication && e.newValue) {
+                // Set focus of containing application to the application rendered component when a component contained
+                // within the rendered application is focused.
+                this.component.application.setFocusedComponent(this.component);
+            }
+        },
+     
         /**
          * Default renderAdd() implementation: appends the element returned by getDomainElement() to the parent.
          * May be overridden.  This implementation does not need to be invoked by overriding implementation. 
@@ -131,6 +151,11 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
                 this.arcClient.arcSync = this;
                 this.arcClient.parent = this.client;
                 this.arcClient.init();
+                
+                // Register application focus listeners for both containing application and rendered application.
+                this._applicationFocusRef = Core.method(this, this._processApplicationFocus);
+                this.arcApplication.addListener("focus", this._applicationFocusRef);
+                this.client.application.addListener("focus", this._applicationFocusRef);
             }
         },
         
@@ -140,6 +165,11 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
          * @see Echo.Render.ComponentSync#renderDispose
          */
         renderDispose: function(update) {
+            if (this._applicationFocusRef) {
+                // Unregister application focus listeners for both containing application and rendered application.
+                this.arcApplication.removeListener("focus", this._applicationFocusRef);
+                this.client.application.removeListener("focus", this._applicationFocusRef);
+            }
             if (this.arcClient) {
                 this.arcClient.dispose();
                 this.arcClient = null;
