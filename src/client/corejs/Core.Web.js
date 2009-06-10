@@ -686,10 +686,10 @@ Core.Web.Env = {
 
     /**
      * Flag indicating XML documents being sent via XMLHttpRequest must have
-     * text content manually escaped due to bugs in the Safari browser.
+     * text content manually escaped due to bugs in the Webkit render engine.
      * @type Boolean
      */
-    QUIRK_SAFARI_DOM_TEXT_ESCAPE: null,
+    QUIRK_WEBKIT_DOM_TEXT_ESCAPE: null,
 
     /**
      * Flag indicating that table cell widths do not include padding value.
@@ -855,7 +855,9 @@ Core.Web.Env = {
             this.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
         } else if (this.ENGINE_WEBKIT) {
             this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
-            this.QUIRK_SAFARI_DOM_TEXT_ESCAPE = true;
+            if (this.ENGINE_VERSION_MAJOR < 526 || (this.ENGINE_VERSION_MAJOR == 256 && this.ENGINE_VERSION_MINOR < 8)) {
+            	this.QUIRK_WEBKIT_DOM_TEXT_ESCAPE = true; //https://bugs.webkit.org/show_bug.cgi?id=18421
+            }
         }
     },
     
@@ -1263,8 +1265,8 @@ Core.Web.HttpConnection = Core.extend({
         this._url = url;
         this._contentType = contentType;
         this._method = method;
-        if (Core.Web.Env.QUIRK_SAFARI_DOM_TEXT_ESCAPE && messageObject instanceof Document) {
-            this._preprocessSafariDOM(messageObject.documentElement);
+        if (Core.Web.Env.QUIRK_WEBKIT_DOM_TEXT_ESCAPE && messageObject instanceof Document) {
+            this._preprocessWebkitDOM(messageObject.documentElement);
         }
         
         this._messageObject = messageObject;
@@ -1272,14 +1274,14 @@ Core.Web.HttpConnection = Core.extend({
     },
     
     /**
-     * Preprocesses outgoing requests to Safari (invoked when appropriate quirk is detected).
-     * All less than, greater than, and ampersands are replaced with escaped values, as this browser
-     * is broken in this regard and will otherwise fail.  Recursively invoked on nodes, starting with
+     * Preprocesses outgoing requests to Webkit (invoked when appropriate quirk is detected).
+     * All less than, greater than, and ampersands are replaced with escaped values, as this render engine
+     * is broken in this regard and will otherwise fail. Recursively invoked on nodes, starting with
      * document element.
      * 
      * @param {Node} node the node to process
      */
-    _preprocessSafariDOM: function(node) {
+    _preprocessWebkitDOM: function(node) {
         if (node.nodeType == 3) {
             var value = node.data;
             value = value.replace(/&/g, "&amp;");
@@ -1289,7 +1291,7 @@ Core.Web.HttpConnection = Core.extend({
         } else {
             var child = node.firstChild;
             while (child) {
-                this._preprocessSafariDOM(child);
+                this._preprocessWebkitDOM(child);
                 child = child.nextSibling;
             }
         }
