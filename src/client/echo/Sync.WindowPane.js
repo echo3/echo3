@@ -290,22 +290,13 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     /**
      * Processes a key down event in the window.
      */
-    _processKeyDown: function(e) {
+    clientKeyDown: function(e) {
         if (e.keyCode == 27) {
-            this.component.userClose();
-            Core.Web.DOM.preventEventDefault(e);
-            return false;
-        }
-        return true;
-    },
-
-    /**
-     * Processes a key press event in the window.
-     */
-    _processKeyPress: function(e) {
-        if (e.keyCode == 27) {
-            Core.Web.DOM.preventEventDefault(e);
-            return false;
+            if (this.component.render("closable", true)) {
+                this.component.userClose();
+                Core.Web.DOM.preventEventDefault(e.domEvent);
+                return false;
+            }
         }
         return true;
     },
@@ -587,8 +578,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             // Close Button
             if (closable) {
                 this._renderControlIcon("close", this.client.getResourceUrl("Echo", "resource/WindowPaneClose.gif"), "[X]");
-                Core.Web.Event.add(this._div, "keydown", Core.method(this, this._processKeyDown), false);
-                Core.Web.Event.add(this._div, "keypress", Core.method(this, this._processKeyPress), false);
             }
             if (maximizeEnabled) {
                 this._renderControlIcon("maximize", this.client.getResourceUrl("Echo", "resource/WindowPaneMaximize.gif"), "[+]");

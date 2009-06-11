@@ -231,6 +231,55 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         this._processSeparatorMouseUpRef = Core.method(this, this._processSeparatorMouseUp);
     },
     
+    /** Processes a key press event. */
+    clientKeyDown: function(e) {
+        var focusPrevious,
+            focusedComponent,
+            focusFlags,
+            focusChild;
+        switch (e.keyCode) {
+        case 37:
+        case 39:
+            if (!this._orientationVertical) {
+                focusPrevious = (e.keyCode == 37) ^ (!this._orientationTopLeft);
+                focusedComponent = this.client.application.getFocusedComponent();
+                if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
+                    focusFlags = focusedComponent.peer.getFocusFlags();
+                    if ((focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_LEFT) || 
+                            (!focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT)) {
+                        focusChild = this.client.application.focusManager.findInParent(this.component, focusPrevious);
+                        if (focusChild) {
+                            this.client.application.setFocusedComponent(focusChild);
+                            Core.Web.DOM.preventEventDefault(e.domEvent);
+                            return false;
+                        }
+                    }
+                }
+            }
+            break;
+        case 38:
+        case 40:
+            if (this._orientationVertical) {
+                focusPrevious = (e.keyCode == 38) ^ (!this._orientationTopLeft);
+                focusedComponent = this.client.application.getFocusedComponent();
+                if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
+                    focusFlags = focusedComponent.peer.getFocusFlags();
+                    if ((focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_UP) ||
+                            (!focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_DOWN)) {
+                        focusChild = this.client.application.focusManager.findInParent(this.component, focusPrevious);
+                        if (focusChild) {
+                            this.client.application.setFocusedComponent(focusChild);
+                            Core.Web.DOM.preventEventDefault(e.domEvent);
+                            return false;
+                        }
+                    }
+                }
+            }
+            break;
+        }
+        return true;
+    }, 
+    
     /**
      * Converts a desired separator position into a render-able separator position that
      * complies with the SplitPane's separator bounds (miniumSize and maximumSize of child
@@ -499,59 +548,6 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         this._overlay = null;
     },
     
-    /** Processes a key press event. */
-    _processKeyPress: function(e) {
-        if (!this.client) {
-            return;
-        }
-        
-        var focusPrevious,
-            focusedComponent,
-            focusFlags,
-            focusChild;
-        switch (e.keyCode) {
-        case 37:
-        case 39:
-            if (!this._orientationVertical) {
-                focusPrevious = (e.keyCode == 37) ^ (!this._orientationTopLeft);
-                focusedComponent = this.client.application.getFocusedComponent();
-                if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
-                    focusFlags = focusedComponent.peer.getFocusFlags();
-                    if ((focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_LEFT) || 
-                            (!focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_RIGHT)) {
-                        focusChild = this.client.application.focusManager.findInParent(this.component, focusPrevious);
-                        if (focusChild) {
-                            this.client.application.setFocusedComponent(focusChild);
-                            Core.Web.DOM.preventEventDefault(e);
-                            return false;
-                        }
-                    }
-                }
-            }
-            break;
-        case 38:
-        case 40:
-            if (this._orientationVertical) {
-                focusPrevious = (e.keyCode == 38) ^ (!this._orientationTopLeft);
-                focusedComponent = this.client.application.getFocusedComponent();
-                if (focusedComponent && focusedComponent.peer && focusedComponent.peer.getFocusFlags) {
-                    focusFlags = focusedComponent.peer.getFocusFlags();
-                    if ((focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_UP) ||
-                            (!focusPrevious && focusFlags & Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_DOWN)) {
-                        focusChild = this.client.application.focusManager.findInParent(this.component, focusPrevious);
-                        if (focusChild) {
-                            this.client.application.setFocusedComponent(focusChild);
-                            Core.Web.DOM.preventEventDefault(e);
-                            return false;
-                        }
-                    }
-                }
-            }
-            break;
-        }
-        return true;
-    }, 
-    
     /** Processes a mouse down event on a SplitPane separator that is about to be dragged. */
     _processSeparatorMouseDown: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
@@ -717,10 +713,6 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         
         parentElement.appendChild(this._splitPaneDiv);
         
-        Core.Web.Event.add(this._splitPaneDiv, 
-                Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress", 
-                Core.method(this, this._processKeyPress), false);
-                
         if (this._resizable) {
             Core.Web.Event.add(this._separatorDiv, "mousedown", 
                     Core.method(this, this._processSeparatorMouseDown), false);

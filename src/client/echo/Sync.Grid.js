@@ -503,11 +503,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
     /**
      * Processes a key press event (for focus navigation amongst child cells.
      */
-    _processKeyPress: function(e) { 
-        if (!this.client) {
-            return;
-        }
-        
+    clientKeyDown: function(e) { 
         var focusPrevious,
             focusedComponent,
             focusFlags,
@@ -524,7 +520,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                     focusChild = this.client.application.focusManager.findInParent(this.component, focusPrevious);
                     if (focusChild) {
                         this.client.application.setFocusedComponent(focusChild);
-                        Core.Web.DOM.preventEventDefault(e);
+                        Core.Web.DOM.preventEventDefault(e.domEvent);
                         return false;
                     }
                 }
@@ -542,7 +538,7 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
                             this._columnCount);
                     if (focusChild) {
                         this.client.application.setFocusedComponent(focusChild);
-                        Core.Web.DOM.preventEventDefault(e);
+                        Core.Web.DOM.preventEventDefault(e.domEvent);
                         return false;
                     }
                 }
@@ -692,10 +688,6 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
             }
         }
         
-        Core.Web.Event.add(this._table, 
-                Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
-                Core.method(this, this._processKeyPress), false);
-
         parentElement.appendChild(this._table);
     },
     

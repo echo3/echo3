@@ -89,11 +89,7 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
      * 
      * @param e the event
      */
-    processKeyPress: function(e) {
-        if (!this.client) {
-            return;
-        }
-        
+    clientKeyDown: function(e) {
         switch (e.keyCode) {
         case this.prevFocusKey:
         case this.nextFocusKey:
@@ -108,7 +104,7 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
                     var focusChild = this.client.application.focusManager.findInParent(this.component, focusPrevious);
                     if (focusChild) {
                         this.client.application.setFocusedComponent(focusChild);
-                        Core.Web.DOM.preventEventDefault(e);
+                        Core.Web.DOM.preventEventDefault(e.domEvent);
                         return false;
                     }
                 }
@@ -181,10 +177,6 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
             var child = this.component.getComponent(i);
             this._renderAddChild(update, child);
         }
-        
-        Core.Web.Event.add(this.element, 
-                Core.Web.Env.QUIRK_IE_KEY_DOWN_EVENT_REPEAT ? "keydown" : "keypress",
-                Core.method(this, this.processKeyPress), false);
     },
 
     /** @see Echo.Render.ComponentSync#renderDispose */
