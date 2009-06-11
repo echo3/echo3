@@ -665,6 +665,8 @@ Echo.Render.ComponentSync = Core.extend({
          * 
          * @function
          * @param e the key event, containing (processed) charCode and keyCode properties
+         * @return true if higher-level containers should be allowed to process the key event as well
+         * @type Boolean
          */
         clientKeyUp: null,
         
