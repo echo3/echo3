@@ -247,6 +247,7 @@ Echo.Client = Core.extend({
             Core.Arrays.remove(Echo.Client._activeClients, this);
             Core.Web.Event.remove(this.domainElement, "keypress", this._processKeyRef, false);
             Core.Web.Event.remove(this.domainElement, "keydown", this._processKeyRef, false);
+            Core.Web.Event.remove(this.domainElement, "keyup", this._processKeyRef, false);
             this.application.removeListener("focus", this._processApplicationFocusRef);
             this.application.doDispose();
             this.application.client = null;
@@ -263,6 +264,7 @@ Echo.Client = Core.extend({
             this.application.addListener("focus", this._processApplicationFocusRef);
             Core.Web.Event.add(this.domainElement, "keypress", this._processKeyRef, false);
             Core.Web.Event.add(this.domainElement, "keydown", this._processKeyRef, false);
+            Core.Web.Event.add(this.domainElement, "keyup", this._processKeyRef, false);
             Echo.Client._activeClients.push(this);
         }
     },
@@ -463,34 +465,38 @@ Echo.Client = Core.extend({
      * @param e the event
      */
     _processKey: function(e) {
-        var press = e.type == "keypress";
-        var keyCode = press ? this._lastKeyCode : this._lastKeyCode = Core.Web.Key.translateKeyCode(e.keyCode);
+        var up = e.type == "keyup",
+            press = e.type == "keypress",
+            component = this.application.getFocusedComponent(),
+            bubble = true,
+            keyEvent = null,
+            keyCode;
+            
+        keyCode = press ? this._lastKeyCode : this._lastKeyCode = Core.Web.Key.translateKeyCode(e.keyCode);
         
-        if (keyCode == 8) {
-            // Prevent backspace from navigating to previous page.
-            var nodeName = e.target.nodeName ? e.target.nodeName.toLowerCase() : null;
-            if (nodeName != "input" && nodeName != "textarea") {
+        if (!up) {
+            if (keyCode == 8) {
+                // Prevent backspace from navigating to previous page.
+                var nodeName = e.target.nodeName ? e.target.nodeName.toLowerCase() : null;
+                if (nodeName != "input" && nodeName != "textarea") {
+                    Core.Web.DOM.preventEventDefault(e);
+                }
+            } else if (!press && keyCode == 9) {
+                this.application.focusNext(e.shiftKey);
                 Core.Web.DOM.preventEventDefault(e);
             }
-        } else if (!press && keyCode == 9) {
-            this.application.focusNext(e.shiftKey);
-            Core.Web.DOM.preventEventDefault(e);
-        }
         
-        if (press && Core.Web.Env.QUIRK_KEY_PRESS_FIRED_FOR_SPECIAL_KEYS && !e.charCode) {
-            // Do nothing in the event no char code is provided for a keypress.
-            return true;
+            if (press && Core.Web.Env.QUIRK_KEY_PRESS_FIRED_FOR_SPECIAL_KEYS && !e.charCode) {
+                // Do nothing in the event no char code is provided for a keypress.
+                return true;
+            }
         }
-        
-        var component = this.application.getFocusedComponent(),
-            bubble = true,
-            keyEvent = null;
             
         if (!component) {
             return true;
         }
         
-        var eventMethod = press ? "clientKeyPress" : "clientKeyDown";
+        var eventMethod = press ? "clientKeyPress" : (up ? "clientKeyUp" : "clientKeyDown");
         
         while (component && bubble) {
             if (component.peer && component.peer[eventMethod]) {
