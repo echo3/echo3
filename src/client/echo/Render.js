@@ -658,6 +658,16 @@ Echo.Render.ComponentSync = Core.extend({
          */
         clientKeyPress: null,
         
+        //FIXME Experimental.
+        /**
+         * (Optional) Processes a key up event received by the client's key listeners.  
+         * Invoked by client based on current focused component of application.
+         * 
+         * @function
+         * @param e the key event, containing (processed) charCode and keyCode properties
+         */
+        clientKeyUp: null,
+        
         /**
          * Returns the focus flags for the component, one or more of the following values, ORed together.
          * <ul>
