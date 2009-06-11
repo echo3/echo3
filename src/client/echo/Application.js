@@ -1516,7 +1516,14 @@ Echo.FocusManager = Core.extend({
             minimumDistance = 1;
         }
         
-        var focusedComponent = this._application.getFocusedComponent();
+        var visitedIds = {},
+            focusedComponent = this._application.getFocusedComponent();
+
+        if (!focusedComponent) {
+            return null;
+        }
+
+        visitedIds[focusedComponent.renderId] = true;
         
         var focusedIndex = this._getDescendantIndex(parentComponent, focusedComponent);
         if (focusedIndex == -1) {
@@ -1526,11 +1533,12 @@ Echo.FocusManager = Core.extend({
         var componentIndex = focusedIndex;
         var component = focusedComponent;
         do {
-            component = this.find(component, reverse);
-            if (component == null) {
+            component = this.find(component, reverse, visitedIds);
+            if (component == null || visitedIds[component.renderId]) {
                 return null;
             }
             componentIndex = this._getDescendantIndex(parentComponent, component);
+            visitedIds[component.renderId] = true;
         } while (Math.abs(componentIndex - focusedIndex) < minimumDistance && component != focusedComponent);
 
         if (component == focusedComponent) {
