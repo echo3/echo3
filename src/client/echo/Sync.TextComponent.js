@@ -22,7 +22,8 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         processBlur: function(e) {
             this._focused = false;
             this._storeSelection();
-            return this._storeValue();
+            this._storeValue();
+            return true;
         },
         
         /**
@@ -134,7 +135,6 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.Event.add(this.input, "click", Core.method(this, this._processClick), false);
         Core.Web.Event.add(this.input, "focus", Core.method(this, this._processFocus), false);
         Core.Web.Event.add(this.input, "blur", Core.method(this, this.processBlur), false);
-        Core.Web.Event.add(this.input, "keyup", Core.method(this, this._processKeyUp), false);
     },
     
     /**
@@ -193,12 +193,11 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         return true;
     },
     
-    /**
-     * Processes a key up event.  
-     */
-    _processKeyUp: function(e) {
+    /** @see Echo.Render.ComponentSync#clientKeyPress */
+    clientKeyUp: function(e) {
         this._storeSelection();
-        return this._storeValue(e);
+        this._storeValue(e);
+        return true;
     },
     
     /**
@@ -354,7 +353,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
                 // Prevent input.
                 Core.Web.DOM.preventEventDefault(keyEvent);
             }
-            return true;
+            return;
         }
 
         this.sanitizeInput();
@@ -364,7 +363,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             // Register listener to be notified when client input restrictions have been removed, 
             // but allow the change to be reflected in the text field temporarily.
             this.client.registerRestrictionListener(this.component, Core.method(this, this._processRestrictionsClear)); 
-            return true;
+            return;
         }
 
         // Component and client are ready to receive input, set the component property and/or fire action event.
@@ -374,8 +373,6 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         if (keyEvent && keyEvent.keyCode == 13 && keyEvent.type == "keydown") {
             this.component.doAction();
         }
-
-        return true;
     }
 });
 
