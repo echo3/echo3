@@ -32,6 +32,7 @@ package nextapp.echo.webcontainer.service;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import javax.xml.transform.OutputKeys;
 
@@ -79,6 +80,8 @@ implements Service {
         OUTPUT_PROPERTIES.setProperty(OutputKeys.DOCTYPE_PUBLIC, XHTML_1_0_TRANSITIONAL_PUBLIC_ID);
         OUTPUT_PROPERTIES.setProperty(OutputKeys.DOCTYPE_SYSTEM, XHTML_1_0_TRANSITIONAL_SYSTEM_ID);
     }
+    
+    private static final Pattern USER_AGENT_MSIE8 = Pattern.compile("MSIE 8\\.");
 
     /** Singleton instance. */
     public static final WindowHtmlService INSTANCE = new WindowHtmlService();
@@ -91,6 +94,7 @@ implements Service {
      * @return the created document
      */
     private Document createHtmlDocument(Connection conn, UserInstance userInstance, boolean debug) {
+        String userAgent = conn.getRequest().getHeader("User-Agent");
         Document document = DomUtil.createDocument("html", XHTML_1_0_TRANSITIONAL_PUBLIC_ID, 
                 XHTML_1_0_TRANSITIONAL_SYSTEM_ID, XHTML_1_0_NAMESPACE_URI);
         
@@ -103,6 +107,14 @@ implements Service {
         metaGeneratorElement.setAttribute("name", "generator");
         metaGeneratorElement.setAttribute("content", ApplicationInstance.ID_STRING);
         headElement.appendChild(metaGeneratorElement);
+
+        if (userAgent != null && USER_AGENT_MSIE8.matcher(userAgent).find()) {
+            // Force Internet Explorer 8 standards-compliant mode.
+            Element metaCompElement = document.createElement("meta");
+            metaCompElement.setAttribute("http-equiv", "X-UA-Compatible");
+            metaCompElement.setAttribute("content", "IE=8");
+            headElement.appendChild(metaCompElement);
+        }
 
         Element titleElement = document.createElement("title");
         titleElement.appendChild(document.createTextNode(" "));
