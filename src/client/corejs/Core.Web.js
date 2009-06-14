@@ -1632,6 +1632,17 @@ Core.Web.Library = {
      * been retrieved.  Installation will be done in the order in which the add() method was
      * invoked to add libraries to the group (without regard for the order in which the 
      * HTTP server returns the library code).
+     * 
+     * A "load" event will be fired (listeners registered via <code>addLoadListener()</code>) when the group
+     * has completed loading and the libraries have been installed.  The "success" property of the fired event
+     * will be set to true in the event that all libraries were successfully loaded, and false otherwise.
+     * In the event of a library loading failure, the following properties will be available in the event:
+     * <ul>
+     *  <li><code>url</code>: the URL of the failed library.</li>
+     *  <li><code>ex</code>: the exception which occurred when attempting to load the library.</li>
+     *  <li><code>cancel</code>: a boolean flag, initially set to false, which may be set to true to avoid
+     *   having the library loader throw an exception for the failure.  If unset, the exception will be thrown.</li>
+     * </ul>
      */
     Group: Core.extend({
     
@@ -1714,9 +1725,12 @@ Core.Web.Library = {
                         url: this._libraries[i]._url,
                         cancel: false
                     };
-                    this._listenerList.fireEvent(e);
-                    if (!e.cancel) {
-                        throw new Error("Exception installing library \"" + this._libraries[i]._url + "\"; " + ex);
+                    try {
+                        this._listenerList.fireEvent(e);
+                    } finally {
+                        if (!e.cancel) {
+                            throw new Error("Exception installing library \"" + this._libraries[i]._url + "\"; " + ex);
+                        }
                     }
                 }
             }
