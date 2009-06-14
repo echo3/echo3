@@ -382,7 +382,11 @@ Echo.Client = Core.extend({
      */
     exec: function(requiredLibraries, f) {
         var restriction = this.createInputRestriction();
-        Core.Web.Library.exec(requiredLibraries, Core.method(this, function() {
+        Core.Web.Library.exec(requiredLibraries, Core.method(this, function(e) {
+            if (e && !e.success) {
+                this.fail("Cannot install library: " + e.url + " Exception: " + e.ex);
+                return;
+            }
             this.removeInputRestriction(restriction);
             f();
         }));
