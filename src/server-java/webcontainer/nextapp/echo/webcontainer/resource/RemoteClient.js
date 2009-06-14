@@ -66,6 +66,12 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     _serverUrl: null,
     
     /**
+     * Flag indicating whether a client-server synchronization is requested.
+     * @type Boolean
+     */
+    _syncRequested: false,
+
+    /**
      * Flag indicating whether a client-server transaction is currently in progress.
      * @type Boolean
      */
@@ -353,7 +359,10 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             return;
         }
         this._clientMessage.setEvent(e.source.renderId, e.type, e.data);
-        this._inputRestrictionId = this.createInputRestriction();
+        if (!this._inputRestrictionId) {
+           this._inputRestrictionId = this.createInputRestriction();
+        }
+        this._syncRequested = true;
         Core.Web.Scheduler.run(Core.method(this, this.sync));
     },
     
@@ -397,7 +406,8 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         // Flag transaction as being complete.
         this._transactionInProgress = false;
         this.removeInputRestriction(this._inputRestrictionId);
-        
+        this._inputRestrictionId = null;
+
         // Focus component
         if (this._serverFocusedComponent) {
             this.application.setFocusedComponent(this._serverFocusedComponent);
@@ -480,6 +490,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         this._serverFocusedComponent = null;
         
         this._transactionInProgress = true;
+        this._syncRequested = false;
         if (!this._inputRestrictionId) {
             this._inputRestrictionId = this.createInputRestriction();
         }
@@ -597,7 +608,7 @@ Echo.RemoteClient.AsyncManager = Core.extend({
         if (e.valid && responseDocument && responseDocument.documentElement) {
             this._failedConnectAttempts = 0;
             if (responseDocument.documentElement.getAttribute("request-sync") == "true") {
-                if (!this._client._transactionInProgress) {
+                if (!this._client._transactionInProgress && !this._client._syncRequested) {                    
                     this._client.sync();
                 }
                 return;
