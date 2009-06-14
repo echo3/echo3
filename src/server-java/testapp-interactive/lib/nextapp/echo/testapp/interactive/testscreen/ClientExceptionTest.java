@@ -48,11 +48,15 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
  */
 public class ClientExceptionTest extends Column {
 
-    private static final Service EX_TEST_SERVICE = JavaScriptService.forResource("Test.Ex", 
+    private static final Service EX_TEST_FAIL_SERVICE = JavaScriptService.forResource("Test.Ex", 
             "nextapp/echo/testapp/interactive/resource/js/ExceptionComponent.js");
     
+    private static final Service EX_TEST_EPIC_FAIL_SERVICE = JavaScriptService.forResource("Test.Ex2", 
+            "nextapp/echo/testapp/interactive/resource/js/ExceptionScript.js");
+    
     static {
-        WebContainerServlet.getServiceRegistry().add(EX_TEST_SERVICE);
+        WebContainerServlet.getServiceRegistry().add(EX_TEST_FAIL_SERVICE);
+        WebContainerServlet.getServiceRegistry().add(EX_TEST_EPIC_FAIL_SERVICE);
     }
     
     public class RenderFail extends Component { }
@@ -79,7 +83,35 @@ public class ClientExceptionTest extends Column {
         public void init(Context context, Component component) {
             super.init(context, component);
             ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
-            serverMessage.addLibrary(EX_TEST_SERVICE.getId());
+            serverMessage.addLibrary(EX_TEST_FAIL_SERVICE.getId());
+        }
+    }
+    
+    public class RenderEpicFail extends Component { }
+    
+    public static class RenderEpicFailPeer extends AbstractComponentSynchronizePeer {
+    
+        /**
+         * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
+         */
+        public String getClientComponentType(boolean mode) {
+            return "ExTest.RenderEpicFail";
+        }
+
+        /**
+         * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getComponentClass()
+         */
+        public Class getComponentClass() {
+            return RenderEpicFail.class;
+        }
+        
+        /**
+         * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context, Component)
+         */
+        public void init(Context context, Component component) {
+            super.init(context, component);
+            ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
+            serverMessage.addLibrary(EX_TEST_EPIC_FAIL_SERVICE.getId());
         }
     }
     
@@ -97,6 +129,16 @@ public class ClientExceptionTest extends Column {
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 add(new RenderFail());
+            }
+        });
+        add(button);
+        
+        button = new Button("Add RenderEpicFail Component (service contains malformed script, will fail attempting to load, " +
+                "application will enter unusable state.)");
+        button.setStyleName("Default");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                add(new RenderEpicFail());
             }
         });
         add(button);

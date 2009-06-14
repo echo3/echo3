@@ -1049,10 +1049,16 @@ Echo.RemoteClient.ServerMessage = Core.extend({
      * May have been invoked directly by <code>process()</code> or as a Core.Web.LibraryGroup loadListener.
      * Notifies completion listeners of processing completion.
      */
-    _processPostLibraryLoad: function() {
+    _processPostLibraryLoad: function(e) {
         if (Echo.Client.profilingTimer) {
             Echo.Client.profilingTimer.mark("lib"); // Library Loading
         }
+        
+        if (e && !e.success) {
+            this.client.fail("Cannot install library: " + e.url + " Exception: " + e.ex);
+            return;
+        }
+        
         // Processing phase 2: invoke directives.
         var groupElements = Core.Web.DOM.getChildElementsByTagName(this.document.documentElement, "group");
         for (var i = 0; i < groupElements.length; ++i) {
