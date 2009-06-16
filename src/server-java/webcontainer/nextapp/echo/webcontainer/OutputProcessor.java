@@ -176,7 +176,7 @@ class OutputProcessor {
         } catch (SerialException ex) {
             throw new SynchronizationException("Cannot serialize server state.", ex);
         } catch (SAXException ex) {
-            throw new SynchronizationException("Cannot parse client XML.", ex);
+            throw new SynchronizationException("Cannot serialize server state.", ex);
         }
         
         if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
