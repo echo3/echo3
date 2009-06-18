@@ -231,6 +231,27 @@ Echo.Client = Core.extend({
     },
     
     /**
+     * Registers an element (which is not a descendant of <code>domainElement</code>) that will contain rendered components.
+     * The client will register event listeners to this element, such that it can provide notification of client-level events
+     * to component synchronization peers when they occur within this element and its descendants.
+     * Any component adding an element outside of the <code>domainElement</code> should invoke this method with said element.
+     * Any object invoking this method <strong>MUST</strong> invoke <code>removeElement</code> when the element will no longer
+     * be used.
+     * This method should only be invoked <strong>once per element</code>, and only on the <strong>root element</code> of any 
+     * element hierarchy added outside of the <code>domainElement</code>.
+     * 
+     * The common use case for this method is when adding elements directly to the <code>BODY</code> element of the DOM.
+     * 
+     * @param element the element to register
+     * @see #removeElement
+     */
+    addElement: function(element) {
+        Core.Web.Event.add(this.domainElement, "keypress", this._processKeyRef, false);
+        Core.Web.Event.add(this.domainElement, "keydown", this._processKeyRef, false);
+        Core.Web.Event.add(this.domainElement, "keyup", this._processKeyRef, false);
+    },
+    
+    /**
      * Configures/Deconfigures the client.  This method must be invoked
      * with the supported application/containing domain element before
      * the client is used, and invoked with null values before it is
@@ -245,9 +266,7 @@ Echo.Client = Core.extend({
         if (this.application) {
             // Deconfigure current application if one is configured.
             Core.Arrays.remove(Echo.Client._activeClients, this);
-            Core.Web.Event.remove(this.domainElement, "keypress", this._processKeyRef, false);
-            Core.Web.Event.remove(this.domainElement, "keydown", this._processKeyRef, false);
-            Core.Web.Event.remove(this.domainElement, "keyup", this._processKeyRef, false);
+            this.removeElement(this.domainElement);
             this.application.removeListener("focus", this._processApplicationFocusRef);
             this.application.doDispose();
             this.application.client = null;
@@ -262,9 +281,7 @@ Echo.Client = Core.extend({
             this.application.client = this;
             this.application.doInit();
             this.application.addListener("focus", this._processApplicationFocusRef);
-            Core.Web.Event.add(this.domainElement, "keypress", this._processKeyRef, false);
-            Core.Web.Event.add(this.domainElement, "keydown", this._processKeyRef, false);
-            Core.Web.Event.add(this.domainElement, "keyup", this._processKeyRef, false);
+            this.addElement(this.domainElement);
             Echo.Client._activeClients.push(this);
         }
     },
@@ -628,6 +645,18 @@ Echo.Client = Core.extend({
             this._setWaitVisible(false);
         }
         this._waitIndicator = waitIndicator;
+    },
+    
+    /**
+     * Unregisters an element (which is not a descendant of <code>domainElement</code>) that will contain rendered components.
+     * 
+     * @param element the element to unregister
+     * @see #addElement
+     */
+    removeElement: function(element) {
+        Core.Web.Event.remove(this.domainElement, "keypress", this._processKeyRef, false);
+        Core.Web.Event.remove(this.domainElement, "keydown", this._processKeyRef, false);
+        Core.Web.Event.remove(this.domainElement, "keyup", this._processKeyRef, false);
     },
     
     /**
