@@ -246,9 +246,9 @@ Echo.Client = Core.extend({
      * @see #removeElement
      */
     addElement: function(element) {
-        Core.Web.Event.add(this.domainElement, "keypress", this._processKeyRef, false);
-        Core.Web.Event.add(this.domainElement, "keydown", this._processKeyRef, false);
-        Core.Web.Event.add(this.domainElement, "keyup", this._processKeyRef, false);
+        Core.Web.Event.add(element, "keypress", this._processKeyRef, false);
+        Core.Web.Event.add(element, "keydown", this._processKeyRef, false);
+        Core.Web.Event.add(element, "keyup", this._processKeyRef, false);
     },
     
     /**
@@ -654,9 +654,9 @@ Echo.Client = Core.extend({
      * @see #addElement
      */
     removeElement: function(element) {
-        Core.Web.Event.remove(this.domainElement, "keypress", this._processKeyRef, false);
-        Core.Web.Event.remove(this.domainElement, "keydown", this._processKeyRef, false);
-        Core.Web.Event.remove(this.domainElement, "keyup", this._processKeyRef, false);
+        Core.Web.Event.remove(element, "keypress", this._processKeyRef, false);
+        Core.Web.Event.remove(element, "keydown", this._processKeyRef, false);
+        Core.Web.Event.remove(element, "keyup", this._processKeyRef, false);
     },
     
     /**
