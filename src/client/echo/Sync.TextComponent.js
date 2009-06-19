@@ -193,7 +193,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         return true;
     },
     
-    /** @see Echo.Render.ComponentSync#clientKeyPress */
+    /** @see Echo.Render.ComponentSync#clientKeyUp */
     clientKeyUp: function(e) {
         this._storeSelection();
         this._storeValue(e);
