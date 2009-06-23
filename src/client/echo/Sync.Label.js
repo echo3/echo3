@@ -116,12 +116,11 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
                 this._node = null;
             }
         }
-        
-        if (toolTip) {
-            this._node.title = toolTip;
-        }
     
         if (this._node) {
+            if (toolTip) {
+                this._node.title = toolTip;
+            }
             parentElement.appendChild(this._node);
         }
     },
