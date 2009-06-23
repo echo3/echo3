@@ -164,13 +164,20 @@ public class LabelTest extends SplitPane {
                 });
             }
         });
+        controlsColumn.addButton("Set Text = Null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(Label label) {
+                        label.setText(null);
+                    }
+                });
+            }
+        });
         controlsColumn.addButton("Set Text = Short", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator() {
                     public void apply(Label label) {
-                        if (label.getText() != null) {
-                            label.setText("Test Label");
-                        }
+                        label.setText("Test Label");
                     }
                 });
             }
@@ -179,9 +186,7 @@ public class LabelTest extends SplitPane {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator() {
                     public void apply(Label label) {
-                        if (label.getText() != null) {
-                            label.setText("This is a longer label.  The quick brown fox jumps over the lazy brown dog.");
-                        }
+                        label.setText("This is a longer label.  The quick brown fox jumps over the lazy brown dog.");
                     }
                 });
             }
@@ -190,9 +195,7 @@ public class LabelTest extends SplitPane {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator() {
                     public void apply(Label label) {
-                        if (label.getText() != null) {
-                            label.setText("<foo>\"foo!\" & foo!</foo>");
-                        }
+                        label.setText("<foo>\"foo!\" & foo!</foo>");
                     }
                 });
             }
@@ -201,9 +204,7 @@ public class LabelTest extends SplitPane {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator() {
                     public void apply(Label label) {
-                        if (label.getText() != null) {
-                            label.setText("This is a label that uses newlines, tabs and multiple spaces:\nThe\tquick   brown  fox jumps  over   the\tlazy   brown  dog.");
-                        }
+                        label.setText("This is a label that uses newlines, tabs and multiple spaces:\nThe\tquick   brown  fox jumps  over   the\tlazy   brown  dog.");
                     }
                 });
             }
