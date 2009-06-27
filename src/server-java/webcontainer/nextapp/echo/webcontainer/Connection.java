@@ -81,11 +81,9 @@ public class Connection {
         // Configure connection for Multipart Request if required.
         String contentType = request.getContentType();
         if (contentType != null && contentType.startsWith(ContentType.MULTIPART_FORM_DATA.getMimeType())) {
-            if (WebContainerServlet.getMultipartRequestWrapper() == null) {
-                throw new WebContainerServletException("MultipartRequestWrapper was never set and client made an HTTP request "
-                        + "encoded as multipart/form-data.");
+            if (WebContainerServlet.getMultipartRequestWrapper() != null) {
+                this.request = WebContainerServlet.getMultipartRequestWrapper().getWrappedRequest(request);
             }
-            this.request = WebContainerServlet.getMultipartRequestWrapper().getWrappedRequest(request);
         }
 
         HttpSession session = request.getSession(false);
