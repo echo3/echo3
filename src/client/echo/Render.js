@@ -62,11 +62,30 @@ Echo.Render = {
      *        specified component (if false, it will only be invoked on child components)
      */
     _doRenderDisplay: function(component, includeSelf) {
+        var testComponent = component;
+        var testParent = testComponent.parent;
+        while (testParent) {
+            if (testParent.peer.isChildVisible && !testParent.peer.isChildVisible(testComponent)) {
+                // Do nothing for components that are not visible. 
+                return;
+            }
+            testComponent = testParent;
+            testParent = testParent.parent;
+        }
+        
         if (includeSelf) {
             Echo.Render._doRenderDisplayImpl(component);
         } else {
-            for (var i = 0; i < component.children.length; ++i) {
-                Echo.Render._doRenderDisplayImpl(component.children[i]);
+            if (component.peer.isChildVisible) {
+                for (i = 0; i < component.children.length; ++i) {
+                    if (component.peer.isChildVisible(component.children[i])) {
+                        Echo.Render._doRenderDisplayImpl(component.children[i]);
+                    }
+                }
+            } else {
+                for (i = 0; i < component.children.length; ++i) {
+                    Echo.Render._doRenderDisplayImpl(component.children[i]);
+                }
             }
         }
     },
