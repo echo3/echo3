@@ -643,6 +643,9 @@ Echo.Client = Core.extend({
     setWaitIndicator: function(waitIndicator) {
         if (this._waitIndicator) {
             this._setWaitVisible(false);
+            if (this._waitIndicator.dispose) {
+                this._waitIndicator.dispose(this);
+            }
         }
         this._waitIndicator = waitIndicator;
     },
@@ -754,6 +757,16 @@ Echo.Client.WaitIndicator = Core.extend({
          * @param {Echo.Client} the client
          */
         deactivate: function(client) { }
+    },
+    
+    $virtual: {
+        
+        /**
+         * Disposes of the wait indicator.
+         * 
+         * @param {Echo.Client} the client
+         */
+        dispose: null
     }
 });
 
@@ -794,6 +807,15 @@ Echo.Client.DefaultWaitIndicator = Core.extend(Echo.Client.WaitIndicator, {
         Core.Web.Scheduler.remove(this._fadeRunnable);
     },
     
+    /** @see Echo.Client.WaitIndicator#dispose */
+    dispose: function(client) {
+        if (this._divElement && this._divElement.parentNode) {
+            this._divElement.parentNode.removeChild(this._divElement);
+        }
+        this._divElement = null;
+        this._textNode = null;
+    },
+    
     /**
      * Runnable-invoked method to animate (fade in/out) wait indicator.
      */
@@ -811,4 +833,3 @@ Echo.Client.DefaultWaitIndicator = Core.extend(Echo.Client.WaitIndicator, {
         }
     }
 });
-
