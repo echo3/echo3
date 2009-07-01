@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ss>
+ <s n="zero" t="nextapp.echo.app.test.xml.MapPeerTest$MapComponent">
+  <p n="map">
+   <p n="alpha" t="s">bravo</p>
+   <p n="charlie" t="s">delta</p>
+   <p n="delta" t="i">5</p>
+  </p>
+ </s>
+ <s n="empty" t="nextapp.echo.app.test.xml.MapPeerTest$MapComponent">
+  <p n="map">
+  </p>
+ </s>
+</ss>

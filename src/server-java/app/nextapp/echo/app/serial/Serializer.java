@@ -152,7 +152,7 @@ public class Serializer {
      * @return the <code>SerialPropertyPeer</code>, if it can be determined
      * @throws SerialException
      */
-    private SerialPropertyPeer getSerialPropertyPeer(Element propertyElement) 
+    public SerialPropertyPeer getSerialPropertyPeer(Element propertyElement) 
     throws SerialException {
         if (!propertyElement.hasAttribute("t")) {
             return null;

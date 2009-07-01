@@ -29,15 +29,18 @@
 
 package nextapp.echo.app.serial.property;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import nextapp.echo.app.serial.PropertyPeerFactory;
 import nextapp.echo.app.serial.SerialContext;
 import nextapp.echo.app.serial.SerialException;
 import nextapp.echo.app.serial.SerialPropertyPeer;
+import nextapp.echo.app.serial.Serializer;
 import nextapp.echo.app.util.Context;
 
 /**
@@ -51,8 +54,25 @@ implements SerialPropertyPeer {
      *     java.lang.Class, org.w3c.dom.Element)
      */
     public Object toProperty(Context context, Class objectClass, Element propertyElement) 
-    throws SerialException {        
-        throw new UnsupportedOperationException();
+    throws SerialException {
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
+        Serializer serializer = Serializer.forClassLoader(serialContext.getClassLoader());
+        
+        Map map = new HashMap();
+        Node childNode = propertyElement.getFirstChild();
+        while (childNode != null) {
+            if (childNode instanceof Element && "p".equals(childNode.getNodeName())) {
+                Element childPropertyElement = (Element) childNode;
+                SerialPropertyPeer peer = serializer.getSerialPropertyPeer(childPropertyElement);
+                if (peer != null) {
+                    String name = childPropertyElement.getAttribute("n");
+                    Object value = peer.toProperty(context, null, childPropertyElement);
+                    map.put(name, value);
+                }
+            }
+            childNode = childNode.getNextSibling();
+        }
+        return map;
     }
 
     /**
