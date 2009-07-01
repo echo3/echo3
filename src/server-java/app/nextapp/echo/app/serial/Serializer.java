@@ -145,6 +145,29 @@ public class Serializer {
     }
     
     /**
+     * Retrieves a <code>SerialPropertyPeer</code> specified by a type name in a property DOM element, if possible.
+     * Returns null in the event no type name is specified.
+     * 
+     * @param propertyElement the property element, which may or may not specify a "t" attribute specifying the type name
+     * @return the <code>SerialPropertyPeer</code>, if it can be determined
+     * @throws SerialException
+     */
+    private SerialPropertyPeer getSerialPropertyPeer(Element propertyElement) 
+    throws SerialException {
+        if (!propertyElement.hasAttribute("t")) {
+            return null;
+        }
+        try {
+            Class propertyClass = null;
+            String type = propertyElement.getAttribute("t");
+            propertyClass = getClass(type);
+            return (SerialPropertyPeer) factory.getPeerForProperty(propertyClass);
+        } catch (ClassNotFoundException ex) {
+            throw new SerialException("Error loading class.", ex);
+        }    
+    }
+    
+    /**
      * Creates a <code>Style</code> object based on an XML property container.
      * 
      * @param serialContext the <code>SerialContext</code> providing contextual information about the serialization
@@ -178,13 +201,7 @@ public class Serializer {
                 }
                 String name = pElements[i].getAttribute("n");
 
-                SerialPropertyPeer peer = null;
-                Class propertyClass = null;
-                if (pElements[i].hasAttribute("t")) {
-                    String type = pElements[i].getAttribute("t");
-                    propertyClass = getClass(type);
-                    peer = (SerialPropertyPeer) factory.getPeerForProperty(propertyClass);
-                }
+                SerialPropertyPeer peer = getSerialPropertyPeer(pElements[i]);
                 
                 int index = -1;
                 if (pElements[i].hasAttribute("x")) {
@@ -192,12 +209,11 @@ public class Serializer {
                 }
                 
                 if (peer == null) {
-                    propertyClass = introspector.getPropertyClass(name);
+                    Class propertyClass = introspector.getPropertyClass(name);
+                    if (propertyClass == null) {
+                        throw new SerialException("Cannot find class for property: " + componentType + "." + name, null);
+                    }
                     peer = (SerialPropertyPeer) factory.getPeerForProperty(propertyClass);
-                }
-                
-                if (propertyClass == null) {
-                    throw new SerialException("Cannot find class for property: " + componentType + "." + name, null);
                 }
                 
                 if (peer == null) {

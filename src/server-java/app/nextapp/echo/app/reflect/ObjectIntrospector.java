@@ -50,7 +50,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
- * Provides introspection/reflection capabilities for components, proeprties, 
+ * Provides introspection/reflection capabilities for components, properties, 
  * and layout data objects.  Wraps Java beans and reflection APIs.
  */
 public class ObjectIntrospector {
