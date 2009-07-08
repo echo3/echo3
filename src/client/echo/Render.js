@@ -62,6 +62,7 @@ Echo.Render = {
      *        specified component (if false, it will only be invoked on child components)
      */
     _doRenderDisplay: function(component, includeSelf) {
+        // Ensure component is visible.
         var testComponent = component;
         var testParent = testComponent.parent;
         while (testParent) {

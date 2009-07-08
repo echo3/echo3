@@ -138,6 +138,10 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
          */
         renderDisplay: function() {
             if (this.arcApplication) {
+                if (!this.baseComponent.peer) {
+                    // Do nothing in the event application peers have not been instantiated.
+                    return;
+                }
                 Echo.Render.renderComponentDisplay(this.baseComponent);
             } else {
                 this.arcApplication = new Echo.Application();
