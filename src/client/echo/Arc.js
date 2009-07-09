@@ -173,6 +173,7 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
                 // Unregister application focus listeners for both containing application and rendered application.
                 this.arcApplication.removeListener("focus", this._applicationFocusRef);
                 this.client.application.removeListener("focus", this._applicationFocusRef);
+                this._applicationFocusRef = null;
             }
             if (this.arcClient) {
                 this.arcClient.dispose();
