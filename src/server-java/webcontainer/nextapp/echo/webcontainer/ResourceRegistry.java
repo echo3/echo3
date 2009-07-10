@@ -43,9 +43,6 @@ public class ResourceRegistry {
      */
     private class PackageData {
         
-        /** The package identifier. */
-        String id;
-        
         /** The package root location. */
         String location;
         
@@ -55,11 +52,9 @@ public class ResourceRegistry {
         /**
          * Creates a new <code>PackageData</code>.
          * 
-         * @param id the package identifier
          * @param location the package root location
          */
-        PackageData(String id, String location) {
-            this.id = id;
+        PackageData(String location) {
             this.location = location;
         }
     }
@@ -89,7 +84,7 @@ public class ResourceRegistry {
         }
         
         // Store new package data object.
-        packageMap.put(packageId, new PackageData(packageId, location));
+        packageMap.put(packageId, new PackageData(location));
     }
     
     /**
