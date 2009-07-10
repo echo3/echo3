@@ -675,7 +675,9 @@ Echo.Client = Core.extend({
      * @param e the DOM resize event
      */
     _windowResizeListener: function(e) {
-        Echo.Render.notifyResize(this.application.rootComponent);
+        if (this.application.rootComponent.peer) {
+            Echo.Render.notifyResize(this.application.rootComponent);
+        }
     }
 });
 
