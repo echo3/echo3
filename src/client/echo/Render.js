@@ -63,7 +63,7 @@ Echo.Render = {
      */
     _doRenderDisplay: function(component, includeSelf) {
         // Ensure component is visible.
-        var testComponent = component;
+        var i, testComponent = component;
         var testParent = testComponent.parent;
         while (testParent) {
             if (testParent.peer.isChildVisible && !testParent.peer.isChildVisible(testComponent)) {
@@ -809,7 +809,10 @@ Echo.Render.RootSync = Core.extend(Echo.Render.ComponentSync, {
 
         if (update.fullRefresh || update.hasAddedChildren() || update.hasRemovedChildren()) {
             Echo.Sync.renderComponentDefaults(this.component, this.client.domainElement);
-            document.title = this.component.render("title", "");
+            var title = this.component.render("title");
+            if (title) {
+                document.title = title;
+            }
             this._renderContent(update);
             fullRender = true;
         } else {
