@@ -150,6 +150,11 @@ Echo.Client = Core.extend({
      * @type Number
      */
     _lastKeyCode: null,
+    
+    /**
+     * The renderId of the compoennt which was focused during the last received <code>keyDown</code> event.
+     */
+    _keyFocusedComponentId: null,
 
     /**
      * Creates a new Client instance.  Derived classes must invoke.
@@ -492,7 +497,7 @@ Echo.Client = Core.extend({
             bubble = true,
             keyEvent = null,
             keyCode;
-            
+        
         keyCode = press ? this._lastKeyCode : this._lastKeyCode = Core.Web.Key.translateKeyCode(e.keyCode);
         
         if (!up) {
@@ -516,6 +521,18 @@ Echo.Client = Core.extend({
         if (!component) {
             return true;
         }
+
+        if (up || press) {
+            if (this._keyFocusedComponentId != component.renderId) {
+                // Focus has changed: do not fire.
+                return true;
+            }
+        } else {
+            // Key Press Event: Validate focusedComponentId.
+            this._keyFocusedComponentId = component.renderId;
+        }
+            
+
         
         var eventMethod = press ? "clientKeyPress" : (up ? "clientKeyUp" : "clientKeyDown");
         
