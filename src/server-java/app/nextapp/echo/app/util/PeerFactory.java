@@ -66,8 +66,8 @@ public class PeerFactory {
             Map peerNameMap = PropertiesDiscovery.loadProperties(resourceName, classLoader);
             Iterator it = peerNameMap.keySet().iterator();
             while (it.hasNext()) {
-                String objectClassName = (String) it.next();
-                String peerClassName = (String) peerNameMap.get(objectClassName);
+                String objectClassName = ((String) it.next()).trim();
+                String peerClassName = ((String) peerNameMap.get(objectClassName)).trim();
                 Class peerClass = classLoader.loadClass(peerClassName);
                 Object peer = peerClass.newInstance();
                 objectClassNameToPeerMap.put(objectClassName, peer);
