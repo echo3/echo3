@@ -29,6 +29,8 @@
 
 package nextapp.echo.app.test.xml;
 
+import nextapp.echo.app.Extent;
+import nextapp.echo.app.Row;
 import nextapp.echo.app.Style;
 import nextapp.echo.app.StyleSheet;
 import nextapp.echo.app.WindowPane;
@@ -38,14 +40,36 @@ import junit.framework.TestCase;
 
 public class StyleSheetLoaderTest extends TestCase {
     
-    public void testLoad() 
+    StyleSheet styleSheet = null;
+    
+    /**
+     * @see junit.framework.TestCase#setUp()
+     */
+    public void setUp()
     throws Exception {
-        StyleSheet styleSheet = StyleSheetLoader.load("nextapp/echo/app/test/xml/Test.stylesheet.xml",
+        styleSheet = StyleSheetLoader.load("nextapp/echo/app/test/xml/Test.stylesheet.xml",
                 Thread.currentThread().getContextClassLoader());
         assertNotNull(styleSheet);
-        
+    }
+    
+    /**
+     * @see junit.framework.TestCase#tearDown()
+     */
+    public void tearDown() {
+        styleSheet = null;
+    }
+    
+    public void testBasic() 
+    throws Exception {
         Style welcomePaneStyle = styleSheet.getStyle("WelcomePane", WindowPane.class, true);
         assertNotNull(welcomePaneStyle);
         assertEquals(Boolean.TRUE, welcomePaneStyle.get(WindowPane.PROPERTY_RESIZABLE));
+    }
+    
+    public void testDefaultStyle() {
+        Style defaultRowStyle = styleSheet.getStyle(null, Row.class, false);
+        assertNotNull(defaultRowStyle);
+        Extent cellSpacing = (Extent) defaultRowStyle.get("cellSpacing");
+        assertEquals(new Extent(3), cellSpacing);
     }
 }

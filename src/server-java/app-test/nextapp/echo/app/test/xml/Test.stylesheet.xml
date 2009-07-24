@@ -9,6 +9,10 @@
   </p>
  </s>
  
+ <s t="nextapp.echo.app.Row">
+  <p n="cellSpacing">3px</p>
+ </s>
+ 
  <s n="WelcomePane.Column" t="nextapp.echo.app.Column">
   <p n="insets">0px 0px 0px 245px</p>
   <p n="cellSpacing">40px</p>
