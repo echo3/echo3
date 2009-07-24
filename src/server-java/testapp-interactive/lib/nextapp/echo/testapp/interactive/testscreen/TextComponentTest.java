@@ -39,6 +39,7 @@ import nextapp.echo.app.Column;
 import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.TextArea;
 import nextapp.echo.app.TextField;
+import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.event.DocumentEvent;
@@ -614,6 +615,15 @@ public class TextComponentTest extends SplitPane {
                 textField.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(3000));
                 passwordField.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(3000));
                 textArea.set(TextComponentPeer.PROPERTY_SYNC_INITIAL_DELAY, new Integer(3000));
+            }
+        });
+        controlsColumn.addButton("Launch Modal Dialog", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                WindowPane modalWindow = new WindowPane();
+                modalWindow.setStyleName("Default");
+                modalWindow.setTitle("Blocking Modal WindowPane");
+                modalWindow.setModal(true);
+                InteractiveApp.getApp().getDefaultWindow().getContent().add(modalWindow);
             }
         });
     }
