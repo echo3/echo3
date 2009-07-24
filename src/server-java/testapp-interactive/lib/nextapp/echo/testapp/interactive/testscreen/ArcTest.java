@@ -45,6 +45,7 @@ import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.layout.SplitPaneLayoutData;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.testapp.interactive.ButtonColumn;
+import nextapp.echo.testapp.interactive.InteractiveApp;
 import nextapp.echo.testapp.interactive.StyleUtil;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
 import nextapp.echo.webcontainer.ServerMessage;
@@ -270,6 +271,17 @@ public class ArcTest extends SplitPane {
         controlsColumn.addButton("Toggle Container Enabled State", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testColumn.setEnabled(!testColumn.isEnabled());
+            }
+        });
+        
+        controlsColumn.addButton("Launch Modal Dialog", new ActionListener() {
+            
+            public void actionPerformed(ActionEvent e) {
+                WindowPane modalWindow = new WindowPane();
+                modalWindow.setStyleName("Default");
+                modalWindow.setTitle("Blocking Modal WindowPane");
+                modalWindow.setModal(true);
+                InteractiveApp.getApp().getDefaultWindow().getContent().add(modalWindow);
             }
         });
 
