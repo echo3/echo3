@@ -38,6 +38,7 @@ import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
 import nextapp.echo.app.Row;
 import nextapp.echo.app.SplitPane;
+import nextapp.echo.app.TextField;
 import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
@@ -180,6 +181,42 @@ public class ArcTest extends SplitPane {
         }
     }
     
+    public class ArcTestTextField extends Component {
+    }
+    
+    public static class ArcTestTextFieldPeer extends AbstractComponentSynchronizePeer {
+    
+        public ArcTestTextFieldPeer() {
+            super();
+            addRequiredComponentClass(Column.class);
+            addRequiredComponentClass(Button.class);
+            addRequiredComponentClass(TextField.class);
+        }
+    
+        /**
+         * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
+         */
+        public String getClientComponentType(boolean mode) {
+            return "ArcTestTextField";
+        }
+
+        /**
+         * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getComponentClass()
+         */
+        public Class getComponentClass() {
+            return ArcTestTextField.class;
+        }
+        
+        /**
+         * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#init(nextapp.echo.app.util.Context, Component)
+         */
+        public void init(Context context, Component component) {
+            super.init(context, component);
+            ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
+            serverMessage.addLibrary(ARC_TEST_COMPONENT_SERVICE.getId());
+        }
+    }
+    
     private Column testColumn;
     private ArcTestComponent arcTestComponent;
     private ArcTestContainer arcTestContainer;
@@ -244,6 +281,8 @@ public class ArcTest extends SplitPane {
         
         arcTestComponent = new ArcTestComponent();
         testColumn.add(arcTestComponent);
+        
+        testColumn.add(new ArcTestTextField());
         
         testColumn.add(new ArcTestPane());
         

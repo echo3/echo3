@@ -36,6 +36,15 @@ ArcTest.TestPane = Core.extend(Echo.Component, {
     }
 });
 
+ArcTest.TetTextField = Core.extend(Echo.Component, {
+    
+    componentType: "ArcTestTextField",
+    
+    $load: function() {
+        Echo.ComponentFactory.registerType("ArcTestTextField", this);
+    }
+});
+
 ArcTest.ComponentSync = { };
 
 /**
@@ -180,3 +189,53 @@ ArcTest.ComponentSync.TestPane = Core.extend(Echo.Arc.ComponentSync, {
         this._divElement = null;
     }
 });
+
+/**
+ * Component rendering peer: TestTextField
+ */
+ArcTest.ComponentSync.TestTextField = Core.extend(Echo.Arc.ComponentSync, {
+
+    $load: function() {
+        Echo.Render.registerPeer("ArcTestTextField", this);
+    },
+
+    $construct: function() { },
+    
+    createComponent: function() {
+        return new Echo.Column({
+            cellSpacing: 30,
+            children: [
+                this._textField = new Echo.TextField({
+                    text: "textField"
+                }),
+                new Echo.Button({
+                    text: "Focus the TextField",
+                    styleName: "Default",
+                    events: {
+                        action: Core.method(this, function(e) {
+                            this.arcApplication.setFocusedComponent(this._textField);
+                        })
+                    }
+                })
+            ]
+        });
+    },
+    
+    getDomainElement: function() {
+        return this._divElement;
+    },
+    
+    renderAdd: function(update, parentElement) {
+        this._divElement = document.createElement("div");
+        this._divElement.style.cssText 
+                = "insets: 20px; background-color: #6f3f3f; border: 1px #6f3f3f outset";
+        parentElement.appendChild(this._divElement);
+    },
+    
+    renderDispose: function(update) {
+        Echo.Arc.ComponentSync.prototype.renderDispose.call(this, update);
+        this._divElement = null;
+        this._textField = null;
+    }
+});
+
