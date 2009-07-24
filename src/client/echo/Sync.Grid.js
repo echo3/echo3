@@ -583,6 +583,9 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
             } else {
                 this._table.style.width = Echo.Sync.Extent.toCssValue(width, true);
             }
+            // Enable fixed table-layout for width-set tables
+            // (Browser consistency issues result when setting fixed on auto-width tables).
+            this._table.style.tableLayout = "fixed";
         }
         if (height) {
             if (Echo.Sync.Extent.isPercent(height)) {

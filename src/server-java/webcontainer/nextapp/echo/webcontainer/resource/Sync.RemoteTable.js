@@ -276,6 +276,11 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         this._table.id = this.component.renderId;
         
         var width = this.component.render("width");
+        if (width) {
+            // Enable fixed table-layout for width-set tables
+            // (Browser consistency issues result when setting fixed on auto-width tables).
+            this._table.style.tableLayout = "fixed";
+        }
         if (width && Core.Web.Env.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && Echo.Sync.Extent.isPercent(width)) {
             this._renderPercentWidthByMeasure = parseInt(width, 10);
             width = null;
