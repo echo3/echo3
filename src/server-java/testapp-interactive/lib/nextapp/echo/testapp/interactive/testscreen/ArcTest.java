@@ -188,7 +188,7 @@ public class ArcTest extends SplitPane {
     
         public ArcTestTextFieldPeer() {
             super();
-            addRequiredComponentClass(Column.class);
+            addRequiredComponentClass(Row.class);
             addRequiredComponentClass(Button.class);
             addRequiredComponentClass(TextField.class);
         }

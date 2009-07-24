@@ -202,8 +202,8 @@ ArcTest.ComponentSync.TestTextField = Core.extend(Echo.Arc.ComponentSync, {
     $construct: function() { },
     
     createComponent: function() {
-        return new Echo.Column({
-            cellSpacing: 30,
+        return new Echo.Row({
+            cellSpacing: 5,
             children: [
                 this._textField = new Echo.TextField({
                     text: "textField"
@@ -228,7 +228,7 @@ ArcTest.ComponentSync.TestTextField = Core.extend(Echo.Arc.ComponentSync, {
     renderAdd: function(update, parentElement) {
         this._divElement = document.createElement("div");
         this._divElement.style.cssText 
-                = "insets: 20px; background-color: #6f3f3f; border: 1px #6f3f3f outset";
+                = "padding: 20px; background-color: #3f3f6f; border: 1px #3f3f6f outset";
         parentElement.appendChild(this._divElement);
     },
     
