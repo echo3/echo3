@@ -248,7 +248,7 @@ Echo.Serial = {
                         }
                         sChild = sChild.nextSibling;
                     }
-                    styleSheet.setStyle(ssChild.getAttribute("n"), ssChild.getAttribute("t"), style);
+                    styleSheet.setStyle(ssChild.getAttribute("n") || "", ssChild.getAttribute("t"), style);
                 }
             }
             ssChild = ssChild.nextSibling;
