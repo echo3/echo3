@@ -93,6 +93,12 @@ public class JavaScriptCompressor {
             } else if (isWhitespace()) {
                 // Compress whitespace
                 skipWhiteSpace();
+            } else if (ch == '\\') {
+                // Skip backslash and subsequent character.
+                append(ch);
+                nextChar();
+                append(ch);
+                nextChar();
             } else if ((ch == '"') || (ch == '\'')) {
                 // Handle strings
                 renderString();
