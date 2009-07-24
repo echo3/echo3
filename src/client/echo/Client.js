@@ -104,6 +104,17 @@ Echo.Client = Core.extend({
     _inputRescriptionMap: null,
     
     /**
+     * The renderId of the compoennt which was focused during the last received <code>keyDown</code> event.
+     */
+    _keyFocusedComponentId: null,
+    
+    /**
+     * Last received keycode from <code>keydown</code> event.  Used for firing cross-browser <Code>keypress</code> events.
+     * @type Number
+     */
+    _lastKeyCode: null,
+    
+    /**
      * Method reference to this._processKey().
      * @type Function
      */
@@ -144,17 +155,6 @@ Echo.Client = Core.extend({
      * @type Core.Web.Scheduler.Runnable
      */
     _waitIndicatorRunnable: null,
-    
-    /**
-     * Last received keycode from <code>keydown</code> event.  Used for firing cross-browser <Code>keypress</code> events.
-     * @type Number
-     */
-    _lastKeyCode: null,
-    
-    /**
-     * The renderId of the compoennt which was focused during the last received <code>keyDown</code> event.
-     */
-    _keyFocusedComponentId: null,
 
     /**
      * Creates a new Client instance.  Derived classes must invoke.
@@ -485,8 +485,9 @@ Echo.Client = Core.extend({
     },
     
     /**
-     * Event handler for <code>keydown</code> and <code>keypress</code> events.
-     * Notifies focsued component of event via <code>clientKeyDown</code> and <code>clientKeyPress</code> methods respectively.
+     * Event handler for <code>keydown</code>, <code>keypress</code> events, and <code>keyup</code> events.
+     * Notifies focsued component (and its ancestry) of event via <code>clientKeyDown</code>, <code>clientKeyPress</code>,
+     * and <code>clientKeyUp</code> methods respectively.
      * 
      * @param e the event
      */
@@ -498,7 +499,14 @@ Echo.Client = Core.extend({
             keyEvent = null,
             keyCode;
         
-        keyCode = press ? this._lastKeyCode : this._lastKeyCode = Core.Web.Key.translateKeyCode(e.keyCode);
+        // Determine key code.
+        if (press) {
+            // If key event is a keypress, retrieve keycode from previous keydown event.
+            keyCode = this._lastKeyCode;
+        } else {
+            // If key event is not a keypress, translate value from event and additionally store in _lastKeyCode property.
+            keyCode = this._lastKeyCode = Core.Web.Key.translateKeyCode(e.keyCode);
+        }
         
         if (!up) {
             if (keyCode == 8) {
@@ -508,6 +516,7 @@ Echo.Client = Core.extend({
                     Core.Web.DOM.preventEventDefault(e);
                 }
             } else if (!press && keyCode == 9) {
+                // Process tab keydown event: focus next component in application, prevent default browser action.
                 this.application.focusNext(e.shiftKey);
                 Core.Web.DOM.preventEventDefault(e);
             }
@@ -519,31 +528,35 @@ Echo.Client = Core.extend({
         }
             
         if (!component) {
+            // No component is focused, take no action.
             return true;
         }
 
         if (up || press) {
             if (this._keyFocusedComponentId != component.renderId) {
-                // Focus has changed: do not fire.
+                // Focus has changed: do not fire clientKeyUp/clientKeyPress events.
                 return true;
             }
         } else {
-            // Key Press Event: Validate focusedComponentId.
+            // Store render id of focused component for keyDown events, such that it can be ensured that keyUp/keyPress events
+            // will only be fired if that component remains focused when those events are received. 
             this._keyFocusedComponentId = component.renderId;
         }
-            
-
         
+        // Determine event method which should be invoked.
         var eventMethod = press ? "clientKeyPress" : (up ? "clientKeyUp" : "clientKeyDown");
         
+        // Fire event to component and ancestry.
         while (component && bubble) {
             if (component.peer && component.peer[eventMethod]) {
                 if (!keyEvent) {
+                    // Lazy-create key event.
                     keyEvent = { type: e.type, source: this, keyCode: keyCode, domEvent: e };
                     if (press) {
                         keyEvent.charCode = Core.Web.Env.QUIRK_KEY_CODE_IS_CHAR_CODE ? e.keyCode : e.charCode;
                     }
                 }
+                // Fire event to clientKeyXXX() method.  Continue bubbling event only if clientKeyXXX() method returns true.
                 bubble = component.peer[eventMethod](keyEvent);
             }
             component = component.parent;
