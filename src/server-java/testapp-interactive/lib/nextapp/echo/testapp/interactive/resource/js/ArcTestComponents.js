@@ -205,11 +205,15 @@ ArcTest.ComponentSync.TestTextField = Core.extend(Echo.Arc.ComponentSync, {
         return new Echo.Row({
             cellSpacing: 5,
             children: [
+                new Echo.Label({
+                    text: "Bug 426 Test:",
+                    foreground: "#ffffaf"
+                }),
                 this._textField = new Echo.TextField({
                     text: "textField"
                 }),
                 new Echo.Button({
-                    text: "Focus the TextField",
+                    text: "Focus TextField",
                     styleName: "Default",
                     events: {
                         action: Core.method(this, function(e) {

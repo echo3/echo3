@@ -188,8 +188,9 @@ public class ArcTest extends SplitPane {
     
         public ArcTestTextFieldPeer() {
             super();
-            addRequiredComponentClass(Row.class);
             addRequiredComponentClass(Button.class);
+            addRequiredComponentClass(Label.class);
+            addRequiredComponentClass(Row.class);
             addRequiredComponentClass(TextField.class);
         }
     
@@ -282,11 +283,11 @@ public class ArcTest extends SplitPane {
         arcTestComponent = new ArcTestComponent();
         testColumn.add(arcTestComponent);
         
-        testColumn.add(new ArcTestTextField());
-        
         testColumn.add(new ArcTestPane());
         
         arcTestContainer = new ArcTestContainer();
         testColumn.add(arcTestContainer);
+        
+        testColumn.add(new ArcTestTextField());
     }
 }
