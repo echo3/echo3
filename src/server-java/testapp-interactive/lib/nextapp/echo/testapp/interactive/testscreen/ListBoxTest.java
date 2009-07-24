@@ -41,6 +41,7 @@ import nextapp.echo.app.Label;
 import nextapp.echo.app.ListBox;
 import nextapp.echo.app.SelectField;
 import nextapp.echo.app.SplitPane;
+import nextapp.echo.app.WindowPane;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.event.ChangeEvent;
@@ -733,6 +734,15 @@ public class ListBoxTest extends SplitPane {
         controlsColumn.addButton("Focus SelectField2", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getApplicationInstance().setFocusedComponent(selectField2);
+            }
+        });
+        controlsColumn.addButton("Launch Modal Dialog", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                WindowPane modalWindow = new WindowPane();
+                modalWindow.setStyleName("Default");
+                modalWindow.setTitle("Blocking Modal WindowPane");
+                modalWindow.setModal(true);
+                InteractiveApp.getApp().getDefaultWindow().getContent().add(modalWindow);
             }
         });
         
