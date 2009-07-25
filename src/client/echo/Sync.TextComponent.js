@@ -132,6 +132,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      * Registers event handlers on the text component.
      */
     _addEventHandlers: function() {
+        Core.Web.Event.add(this.input, "keydown", Core.method(this, this._processKeyDown), false);
         Core.Web.Event.add(this.input, "click", Core.method(this, this._processClick), false);
         Core.Web.Event.add(this.input, "focus", Core.method(this, this._processFocus), false);
         Core.Web.Event.add(this.input, "blur", Core.method(this, this.processBlur), false);
@@ -197,6 +198,14 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     clientKeyUp: function(e) {
         this._storeSelection();
         this._storeValue(e);
+        return true;
+    },
+    
+    _processKeyDown: function(e) {
+        if (!this.component.isActive()) {
+            Core.Web.DOM.preventEventDefault(e);
+            return false;
+        }
         return true;
     },
     
