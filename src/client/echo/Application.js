@@ -53,7 +53,19 @@ Echo.Application = Core.extend({
          * implementation if required. The superclass' <code>dispose()</code> method should always be invoked out of convention.
          * The <code>client</code> property will be available.
          */
-        dispose: function() { }
+        dispose: function() { },
+        
+        /**
+         * Returns the active state of the application.
+         * 
+         * @return the active state of the application, a value of 
+         *         true indicating the application is ready for user
+         *         input, a value of false indicating otherwise
+         * @type Boolean
+         */
+        isActive: function() {
+            return true;
+        }
     },
     
     /**
@@ -281,18 +293,6 @@ Echo.Application = Core.extend({
      */
     getStyleSheet: function() {
         return this._styleSheet;
-    },
-    
-    /**
-     * Returns the active state of the application.
-     * 
-     * @return the active state of the application, a value of 
-     *         true indicating the application is ready for user
-     *         input, a value of false indicating otherwise
-     * @type Boolean
-     */
-    isActive: function() {
-        return true;
     },
     
     /**
