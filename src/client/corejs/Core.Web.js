@@ -914,15 +914,48 @@ Core.Web.Env = {
 };
 
 /**
- * Event Processing System namespace.
- * The static methods in this object provide a standard framework for handling
- * DOM events across incompatible browser platforms.
+ * Event Processing System namespace. The static methods in this object provide
+ * a standard framework for handling DOM events across often-incompatible
+ * browser platforms.
  * <p>
- * <b>Capturing/Bubbling Listeners:</b>
- * This implementation additionally allows for the registration of capturing and bubbling event 
- * listeners that work even on Internet Explorer platforms, where they are not natively supported.
- * This implementation relies on the fact that all event listeners will be registered
- * through it.
+ * <b>Event Propagation:</b> Capturing listeners are notified of events first,
+ * followed by bubbling listeners. During the capturing phase of event firing,
+ * listeners on higher-level DOM elements are notified before the lower-level
+ * DOM elements. During the bubbling phase of event firing, lower-level DOM
+ * elements are notified before higher-level DOM elements.
+ * <p>
+ * For example, given the DOM hierarchy
+ * <code>&lt;body&gt;&lt;div&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&lt;/body&gt;</code>,
+ * with click listeners registered for both capturing and bubbling phases on all
+ * elements, the listener notification order for a click on the
+ * <code>&lt;span&gt;</code> element would be as folows:
+ * <ol>
+ * <li>Notify capturing listener of <code>&lt;body&gt;</code> element.</li>
+ * <li>Notify capturing listener of <code>&lt;div&gt;</code> element.</li>
+ * <li>Notify capturing listener of <code>&lt;span&gt;</code> element.</li>
+ * <li>Notify bubbling listener of <code>&lt;span&gt;</code> element.</li>
+ * <li>Notify bubbling listener of <code>&lt;div&gt;</code> element.</li>
+ * <li>Notify bubbling listener of <code>&lt;body&gt;</code> element.</li>
+ * </ol>
+ * <b>Listener Return Values:</b> Listeners should return a value of true if
+ * they wish to continue to allow propogation of an event, and false if they do
+ * not.
+ * <p>
+ * <b>Capturing/Bubbling Listeners:</b> This implementation allows for the
+ * registration of both capturing and bubbling event listeners on all browser
+ * platforms, including Internet Explorer, even though Internet Explorer does
+ * not inhererntly support such listeners. This is accomplished by the Event
+ * system adding a layer of abstraction between event registration and the
+ * browser, and then invoking event listeners itself.
+ * <p>
+ * This implementation relies on the fact that all event listeners will be 
+ * registered through it.  The implementation is in fact internally registering only
+ * bubbling-phase event listeners on the DOM.  Thus, if other event listeners are 
+ * registered directly on the DOM, scenarios may occur such as a direct-registered
+ * bubbling listener receiving an event before a Core.Web.Event-registered capturing
+ * listener.  This is not necessarily a critical issue, but the developer should
+ * be aware of it. 
+ * 
  * @class
  */
 Core.Web.Event = {
