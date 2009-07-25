@@ -181,7 +181,6 @@ Echo.Sync.ArrayContainer = Core.extend(Echo.Render.ComponentSync, {
 
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) { 
-        Core.Web.Event.removeAll(this.element);
         this.element = null;
         this.containerElement = null;
         this._childIdToElementMap = null;
