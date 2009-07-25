@@ -184,6 +184,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      */
     _processClick: function(e) {
         if (!this.client || !this.component.isActive()) {
+            Core.Web.DOM.preventEventDefault(e);
             return true;
         }
         this.client.application.setFocusedComponent(this.component);
@@ -210,7 +211,6 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     _processKeyDown: function(e) {
         if (!this.component.isActive()) {
             Core.Web.DOM.preventEventDefault(e);
-            return false;
         }
         return true;
     },
