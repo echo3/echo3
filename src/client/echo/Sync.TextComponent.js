@@ -150,28 +150,6 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         return value > 0 ? value : 0;
     },
     
-    /**
-     * Processes a mouse click event. Notifies application of focus.
-     */
-    _processClick: function(e) {
-        if (!this.client || !this.component.isActive()) {
-            return true;
-        }
-        this.client.application.setFocusedComponent(this.component);
-        this._storeSelection();
-    },
-
-    /**
-     * Processes a focus event. Notifies application of focus.
-     */
-    _processFocus: function(e) {
-        this._focused = true;
-        if (!this.client || !this.component.isActive()) {
-            return true;
-        }
-        this.client.application.setFocusedComponent(this.component);
-    },
-    
     /** @see Echo.Render.ComponentSync#clientKeyDown */
     clientKeyDown: function(e) {
         this._storeValue(e);
@@ -200,7 +178,29 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         this._storeValue(e);
         return true;
     },
-    
+
+    /**
+     * Processes a mouse click event. Notifies application of focus.
+     */
+    _processClick: function(e) {
+        if (!this.client || !this.component.isActive()) {
+            return true;
+        }
+        this.client.application.setFocusedComponent(this.component);
+        this._storeSelection();
+    },
+
+    /**
+     * Processes a focus event. Notifies application of focus.
+     */
+    _processFocus: function(e) {
+        this._focused = true;
+        if (!this.client || !this.component.isActive()) {
+            return true;
+        }
+        this.client.application.setFocusedComponent(this.component);
+    },
+        
     /**
      * Keydown event handler to suppress input when component is inactive
      * (clientKeyXXX() methods will not be invoked, even though component can potentially be focused).
