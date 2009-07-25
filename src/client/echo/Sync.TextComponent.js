@@ -189,6 +189,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         }
         this.client.application.setFocusedComponent(this.component);
         this._storeSelection();
+        return false;
     },
 
     /**
@@ -196,10 +197,12 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      */
     _processFocus: function(e) {
         this._focused = true;
-        if (!this.client || !this.component.isActive()) {
+        if (this.client && this.component.isActive()) {
+            this.client.application.setFocusedComponent(this.component);
+            return false;
+        } else {
             return true;
         }
-        this.client.application.setFocusedComponent(this.component);
     },
         
     /**
