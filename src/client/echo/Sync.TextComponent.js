@@ -201,6 +201,12 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         return true;
     },
     
+    /**
+     * Keydown event handler to suppress input when component is inactive
+     * (clientKeyXXX() methods will not be invoked, even though component can potentially be focused).
+     * 
+     * @param e the event
+     */
     _processKeyDown: function(e) {
         if (!this.component.isActive()) {
             Core.Web.DOM.preventEventDefault(e);
