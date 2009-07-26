@@ -52,8 +52,8 @@ import nextapp.echo.webcontainer.service.JavaScriptService;
  */
 public class RenderHideTest extends SplitPane {
 
-    private static final Service TEST_SERVICE = JavaScriptService.forResource("FlashingTest", 
-            "nextapp/echo/testapp/interactive/resource/js/FlashingTest.js");
+    private static final Service TEST_SERVICE = JavaScriptService.forResource("BlinkComponent", 
+            "nextapp/echo/testapp/interactive/resource/js/BlinkComponent.js");
     
     static {
         WebContainerServlet.getServiceRegistry().add(TEST_SERVICE);
@@ -69,7 +69,7 @@ public class RenderHideTest extends SplitPane {
          * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
          */
         public String getClientComponentType(boolean mode) {
-            return "FlashingTest";
+            return "BlinkComponent";
         }
 
         /**

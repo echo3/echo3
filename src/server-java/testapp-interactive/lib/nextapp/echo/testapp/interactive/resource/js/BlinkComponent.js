@@ -1,33 +1,27 @@
 /**
- * Flashing component test.
- * @namespace
+ * A component which tests renderHide by blinking its content.
  */
-FlashingTest = { };
-
-/**
- * A component which tests renderHide
- */
-FlashingTest = Core.extend(Echo.Component, {
+BlinkComponent = Core.extend(Echo.Component, {
 
     $load: function() {
-        Echo.ComponentFactory.registerType("FlashingTest", this);
+        Echo.ComponentFactory.registerType("BlinkComponent", this);
     },
 
     /** @see Echo.Component#componentType */
-    componentType: "FlashingTest"
+    componentType: "BlinkComponent"
 });
 
 /**
- * Synchronization peer for RHT component.
+ * Synchronization peer for blink component.
  */
-FlashingTest.Sync = Core.extend(Echo.Render.ComponentSync, {
+BlinkComponent.Sync = Core.extend(Echo.Render.ComponentSync, {
     
     _div: null,
     _hidingDiv: null,
     _flashRunnable: null,
     
     $load: function() {
-        Echo.Render.registerPeer("FlashingTest", this);
+        Echo.Render.registerPeer("BlinkComponent", this);
     },
     
     _flash: function() {
