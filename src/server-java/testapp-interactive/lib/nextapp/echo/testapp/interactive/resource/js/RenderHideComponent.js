@@ -31,8 +31,8 @@ ExTest.RHT.Sync = Core.extend(Echo.Render.ComponentSync, {
     },
     
     _flash: function() {
-        if (this._hidingDiv.parentNode) {
-            this._hidingDiv.parentNode.removeChild(this._hidingDiv);
+        if (this._div === this._hidingDiv.parentNode) {
+            this._div.removeChild(this._hidingDiv);
         } else {
             this._div.appendChild(this._hidingDiv);
         }
