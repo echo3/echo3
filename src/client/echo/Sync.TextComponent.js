@@ -197,12 +197,14 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      */
     _processFocus: function(e) {
         this._focused = true;
-        if (this.client && this.component.isActive()) {
-            this.client.application.setFocusedComponent(this.component);
-            return false;
-        } else {
-            return true;
+        if (this.client) {
+            if (this.component.isActive()) {
+                this.client.application.setFocusedComponent(this.component);
+            } else {
+                this._resetFocus();
+            }
         }
+        return false;
     },
         
     /**
@@ -238,6 +240,25 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         this.component.set("text", this.input.value, true);
     },
 
+    /**
+     * Forcibly resets focus.  Creates hidden focusable text field, focuses it, destroys it.  Then invokes
+     * Echo.Render.updateFocus() to re-focus correct component.
+     */
+    _resetFocus: function() {
+        var div = document.createElement("div");
+        div.style.cssText = "position:absolute;width:0;height:0;overflow:hidden;";
+        var input = document.createElement("input");
+        input.type = "text";
+        div.appendChild(input);
+        document.body.appendChild(div);
+        input.focus();
+        document.body.removeChild(div);
+        div = null;
+        input = null;
+        this.client.forceRedraw();
+        Echo.Render.updateFocus(this.client);
+    },
+    
     /**
      * Adds the input element to its parent in the DOM.
      * Wraps the element in a special container DIV if necessary to appease Internet Explorer's various text field/area bugs,
