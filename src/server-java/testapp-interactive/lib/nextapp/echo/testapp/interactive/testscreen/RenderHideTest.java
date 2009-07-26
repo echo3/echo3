@@ -36,6 +36,8 @@ import nextapp.echo.app.Pane;
 import nextapp.echo.app.PaneContainer;
 import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.WindowPane;
+import nextapp.echo.app.event.ActionEvent;
+import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.testapp.interactive.ButtonColumn;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
@@ -97,15 +99,34 @@ public class RenderHideTest extends SplitPane {
         
         final TestComponent testComponent = new TestComponent();
         
-        ContentPane contentPane = new ContentPane();
-        testComponent.add(contentPane);
-        
-        WindowPane windowPane = new WindowPane();
-        windowPane.setStyleName("Default");
-        contentPane.add(windowPane);
-        
         add(testComponent);
 
         controlsColumn.add(new Label("Tests"));
+        
+        controlsColumn.addButton("Add WindowPane", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testComponent.removeAll();
+                ContentPane contentPane = new ContentPane();
+                testComponent.add(contentPane);
+                WindowPane windowPane = new WindowPane();
+                windowPane.setStyleName("Default");
+                contentPane.add(windowPane);
+            }
+        });
+        
+        controlsColumn.addButton("Add SplitPane", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testComponent.removeAll();
+                SplitPane splitPane = new SplitPane();
+                splitPane.setStyleName("DefaultResizable");
+                testComponent.add(splitPane);
+            }
+        });
+        
+        controlsColumn.addButton("Remove", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testComponent.removeAll();
+            }
+        });
     }
 }
