@@ -1,33 +1,33 @@
 /**
- * Exception test namespace.
+ * Flashing component test.
  * @namespace
  */
-ExTest = { };
+FlashingTest = { };
 
 /**
  * A component which tests renderHide
  */
-ExTest.RHT = Core.extend(Echo.Component, {
+FlashingTest = Core.extend(Echo.Component, {
 
     $load: function() {
-        Echo.ComponentFactory.registerType("ExTest.RHT", this);
+        Echo.ComponentFactory.registerType("FlashingTest", this);
     },
 
     /** @see Echo.Component#componentType */
-    componentType: "ExTest.RHT"
+    componentType: "FlashingTest"
 });
 
 /**
  * Synchronization peer for RHT component.
  */
-ExTest.RHT.Sync = Core.extend(Echo.Render.ComponentSync, {
+FlashingTest.Sync = Core.extend(Echo.Render.ComponentSync, {
     
     _div: null,
     _hidingDiv: null,
     _flashRunnable: null,
     
     $load: function() {
-        Echo.Render.registerPeer("ExTest.RHT", this);
+        Echo.Render.registerPeer("FlashingTest", this);
     },
     
     _flash: function() {
