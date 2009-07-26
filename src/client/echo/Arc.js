@@ -11,6 +11,26 @@
 Echo.Arc = { };
 
 /**
+ * Application class.
+ */
+Echo.Arc.Application = Core.extend(Echo.Application, {
+    
+    /**
+     * The containing <code>Echo.Arc.ComponentSync</code> instance.
+     */
+    arcSync: null,
+    
+    /** @see Echo.Application#isActive */
+    isActive: function() {
+        if (!this.arcSync.component.isActive()) {
+            return false;
+        } else {
+            return Echo.Application.prototype.isActive.call(this);
+        }
+    }
+});
+
+/**
  * Client for application-rendered components.
  * These clients are automatically created and destroyed by the
  * ArcClient component synchronization peer.
@@ -144,7 +164,8 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
                 }
                 Echo.Render.renderComponentDisplay(this.baseComponent);
             } else {
-                this.arcApplication = new Echo.Application();
+                this.arcApplication = new Echo.Arc.Application();
+                this.arcApplication.arcSync = this;
                 this.arcApplication.setStyleSheet(this.client.application.getStyleSheet());
                 this.baseComponent = this.createComponent();
                 if (!this.baseComponent) {
@@ -180,6 +201,7 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
                 this.arcClient = null;
             }
             if (this.arcApplication) {
+                this.arcApplication.arcSync = null;
                 this.arcApplication = null;
                 this.baseComponent = null;
             }
