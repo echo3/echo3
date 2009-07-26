@@ -58,12 +58,23 @@ public class RenderHideTest extends SplitPane {
     static {
         WebContainerServlet.getServiceRegistry().add(TEST_SERVICE);
     }
-    
 
-    public class TestComponent extends Component 
-    implements Pane, PaneContainer { }
+    public class BlinkComponent extends Component 
+    implements Pane, PaneContainer {
+        
+        public static final String PROPERTY_INTERVAL = "interval";
+        
+        public int getInterval() {
+            Integer interval = (Integer) get(PROPERTY_INTERVAL);
+            return interval == null ? 5000 : interval.intValue(); 
+        }
+        
+        public void setInterval(int interval) {
+            set(PROPERTY_INTERVAL, new Integer(interval));
+        }
+    }
     
-    public static class TestPeer extends AbstractComponentSynchronizePeer {
+    public static class BlinkComponentPeer extends AbstractComponentSynchronizePeer {
     
         /**
          * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getClientComponentType(boolean)
@@ -76,7 +87,7 @@ public class RenderHideTest extends SplitPane {
          * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#getComponentClass()
          */
         public Class getComponentClass() {
-            return TestComponent.class;
+            return BlinkComponent.class;
         }
         
         /**
@@ -97,17 +108,41 @@ public class RenderHideTest extends SplitPane {
         controlsColumn.setStyleName("TestControlsColumn");
         add(controlsColumn);
         
-        final TestComponent testComponent = new TestComponent();
+        final BlinkComponent blinkComponent = new BlinkComponent();
         
-        add(testComponent);
+        add(blinkComponent);
 
         controlsColumn.add(new Label("Tests"));
         
+        controlsColumn.addButton("Blink Inteval: 100", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                blinkComponent.setInterval(100);
+            }
+        });
+
+        controlsColumn.addButton("Blink Inteval: 300", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                blinkComponent.setInterval(300);
+            }
+        });
+
+        controlsColumn.addButton("Blink Inteval: 1000", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                blinkComponent.setInterval(1000);
+            }
+        });
+
+        controlsColumn.addButton("Blink Inteval: 3000", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                blinkComponent.setInterval(3000);
+            }
+        });
+
         controlsColumn.addButton("Add WindowPane", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                testComponent.removeAll();
+                blinkComponent.removeAll();
                 ContentPane contentPane = new ContentPane();
-                testComponent.add(contentPane);
+                blinkComponent.add(contentPane);
                 WindowPane windowPane = new WindowPane();
                 windowPane.setStyleName("Default");
                 contentPane.add(windowPane);
@@ -116,16 +151,16 @@ public class RenderHideTest extends SplitPane {
         
         controlsColumn.addButton("Add SplitPane", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                testComponent.removeAll();
+                blinkComponent.removeAll();
                 SplitPane splitPane = new SplitPane();
                 splitPane.setStyleName("DefaultResizable");
-                testComponent.add(splitPane);
+                blinkComponent.add(splitPane);
             }
         });
         
         controlsColumn.addButton("Remove", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                testComponent.removeAll();
+                blinkComponent.removeAll();
             }
         });
     }

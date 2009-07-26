@@ -13,6 +13,8 @@ BlinkComponent = Core.extend(Echo.Component, {
 
 /**
  * Synchronization peer for blink component.
+ * 
+ * @sp {Number} interval the flash interval
  */
 BlinkComponent.Sync = Core.extend(Echo.Render.ComponentSync, {
     
@@ -53,7 +55,8 @@ BlinkComponent.Sync = Core.extend(Echo.Render.ComponentSync, {
         }
         
         parentElement.appendChild(this._div);
-        this._flashRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._flash), 3000, true);
+        this._flashRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._flash), 
+                this.component.render("interval", 3000), true);
         Core.Web.Scheduler.add(this._flashRunnable);
     },
     
