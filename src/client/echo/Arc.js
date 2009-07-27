@@ -209,6 +209,21 @@ Echo.Arc.ComponentSync = Core.extend(Echo.Render.ComponentSync, {
         },
         
         /**
+         * renderHide() implementation: must be invoked by overriding method.
+         * 
+         * @see Echo.Render.ComponentSync#renderHide
+         */
+        renderHide: function() {
+            if (this.arcApplication) {
+                if (!this.baseComponent.peer) {
+                    // Do nothing in the event application peers have not been instantiated.
+                    return;
+                }
+                Echo.Render.renderComponentHide(this.baseComponent);
+            }
+        },
+        
+        /**
          * Default implementation disposes of the existing client and application 
          * and creates a new one.  All application state will be lost.
          * This method should thus be overridden in the event that the application
