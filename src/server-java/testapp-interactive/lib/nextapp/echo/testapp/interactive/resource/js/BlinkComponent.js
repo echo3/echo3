@@ -29,10 +29,10 @@ BlinkComponent.Sync = Core.extend(Echo.Render.ComponentSync, {
     _flash: function() {
         if (this._div === this._hidingDiv.parentNode) {
             // Remove child, invoke renderComponentHide().
-            this._div.removeChild(this._hidingDiv);
             if (this.component.children.length > 0) {
                 Echo.Render.renderComponentHide(this.component.children[0]);
             }
+            this._div.removeChild(this._hidingDiv);
         } else {
             // Add child, invoke renderComponentDisplay().
             this._div.appendChild(this._hidingDiv);

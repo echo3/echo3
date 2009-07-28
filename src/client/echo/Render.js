@@ -428,6 +428,8 @@ Echo.Render = {
     /**
      * Notifies a child component and its descendants that it is about to be removed from the DOM or otherwise hidden from view.
      * The <code>renderHide()</code> methods of the peers of the specified child component and its descendants will be invoked.
+     * <strong>It is absolutely critical that this method be invoked before the component's rendered state is removed from the DOM 
+     * hierarchy.</strong>
      * 
      * @param {Echo.Component} component the child component being hidden
      */
