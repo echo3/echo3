@@ -370,7 +370,9 @@ Echo.Render = {
         if (!component.parent || !component.parent.peer || !component.parent.peer.client) {
             throw new Error("Cannot find reference to the Client with which this component should be associated: " +
                     "cannot load peer.  This is due to the component's parent's peer not being associated with a Client. " +
-                    "Component = " + component);
+                    "Component = " + component + ", Parent = " + component.parent + ", Parent Peer = " + 
+                    (component.parent ? component.parent.peer : "N/A") + ", Parent Peer Client = " + 
+                    ((component.parent && component.parent.peer) ? component.parent.peer.client : "N/A"));
         }
     
         Echo.Render._loadPeer(component.parent.peer.client, component);
