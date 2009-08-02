@@ -355,7 +355,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @param e the event to process
      */
     _processClientEvent: function(e) {
-        if (this._transactionInProgress) {
+        if (this._syncRequested || this._transactionInProgress) {
             return;
         }
         this._clientMessage.setEvent(e.source.renderId, e.type, e.data);
