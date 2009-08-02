@@ -637,12 +637,6 @@ Core.Web.Env = {
     QUIRK_IE_HAS_LAYOUT: null,
 
     /**
-     * Flag indicating multiple keydown events will be fired when a key is held down.
-     * @type Boolean
-     */
-    QUIRK_IE_KEY_DOWN_EVENT_REPEAT: null,
-
-    /**
      * Flag indicating DOM updates to SELECT elements may result in their
      * appearance being changed, i.e., listboxes will become select fields.
      * @type Boolean
@@ -829,7 +823,6 @@ Core.Web.Env = {
             this.PROPRIETARY_IE_RANGE = true;
             this.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED = true;
             this.PROPRIETARY_EVENT_SELECT_START_SUPPORTED = true;
-            this.QUIRK_IE_KEY_DOWN_EVENT_REPEAT = true;
             this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
             this.QUIRK_UNLOADED_IMAGE_HAS_SIZE = true;
             this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
