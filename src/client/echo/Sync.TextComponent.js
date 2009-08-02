@@ -18,6 +18,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         
         /**
          * Processes a focus blur event.
+         * Overriding implementations must invoke.
          */
         processBlur: function(e) {
             this._focused = false;
@@ -26,6 +27,22 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             return true;
         },
         
+        /**
+         * Processes a focus event. Notifies application of focus.
+         * Overriding implementations must invoke.
+         */
+        processFocus: function(e) {
+            this._focused = true;
+            if (this.client) {
+                if (this.component.isActive()) {
+                    this.client.application.setFocusedComponent(this.component);
+                } else {
+                    this._resetFocus();
+                }
+            }
+            return false;
+        },
+            
         /**
          * Invoked to ensure that input meets requirements of text field.  Default implementation ensures input
          * does not exceed maximum length.
@@ -134,7 +151,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
     _addEventHandlers: function() {
         Core.Web.Event.add(this.input, "keydown", Core.method(this, this._processKeyDown), false);
         Core.Web.Event.add(this.input, "click", Core.method(this, this._processClick), false);
-        Core.Web.Event.add(this.input, "focus", Core.method(this, this._processFocus), false);
+        Core.Web.Event.add(this.input, "focus", Core.method(this, this.processFocus), false);
         Core.Web.Event.add(this.input, "blur", Core.method(this, this.processBlur), false);
     },
     
@@ -192,21 +209,6 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         return false;
     },
 
-    /**
-     * Processes a focus event. Notifies application of focus.
-     */
-    _processFocus: function(e) {
-        this._focused = true;
-        if (this.client) {
-            if (this.component.isActive()) {
-                this.client.application.setFocusedComponent(this.component);
-            } else {
-                this._resetFocus();
-            }
-        }
-        return false;
-    },
-        
     /**
      * Keydown event handler to suppress input when component is inactive
      * (clientKeyXXX() methods will not be invoked, even though component can potentially be focused).

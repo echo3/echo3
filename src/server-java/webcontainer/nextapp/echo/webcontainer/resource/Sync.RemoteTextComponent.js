@@ -30,6 +30,12 @@ Echo.Sync.RemoteTextComponent = Core.extend({
              */
             _processChangeRef: null,
             
+            /**
+             * Flag indicating whether text has changed during current period of focus.
+             * @type Boolean
+             */
+            _changed: false,
+            
             /** 
              * The synchronization mode, one of the following values:
              * <ul>
@@ -62,9 +68,12 @@ Echo.Sync.RemoteTextComponent = Core.extend({
                     return;
                 }
                 
+                this._changed = true;
+                
                 if (!this._changeRunnable) {
                     this._changeRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, function() {
                         this._initialDelayComplete = true;
+                        this._changed = false;
                         this.component.fireEvent({source: this.component, type: "change" });
                     }), this.component.render("syncInitialDelay", 0));
                     Core.Web.Scheduler.add(this._changeRunnable);
@@ -104,7 +113,20 @@ Echo.Sync.RemoteTextComponent = Core.extend({
              * Performs remote-client specific processBlur() tasks.
              */
             _remoteBlur: function() {
-                //FIXME implement.
+                if (this._changed && this._syncMode !== Echo.Sync.RemoteTextComponent.SYNC_ON_ACTION) {
+                    if (this._changeRunnable) {
+                        Core.Web.Scheduler.remove(this._changeRunnable);
+                    }
+                    this.component.fireEvent({source: this.component, type: "change" });
+                }
+                this._changed = false;
+            },
+            
+            /**
+             * Performs remote-client specific processFocus() tasks.
+             */
+            _remoteFocus: function() {
+                this._changed = false;
             },
             
             /**
@@ -169,6 +191,12 @@ Echo.Sync.RemotePasswordField.Sync = Core.extend(Echo.Sync.PasswordField, {
         this._remoteBlur();
     },
     
+    /** @see Echo.Sync.TextComponent#processFocus */
+    processFocus: function(e) {
+        Echo.Sync.PasswordField.prototype.processFocus.call(this, e);
+        this._remoteFocus();
+    },
+    
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         Echo.Sync.PasswordField.prototype.renderAdd.call(this, update, parentElement);
@@ -229,6 +257,12 @@ Echo.Sync.RemoteTextArea.Sync = Core.extend(Echo.Sync.TextArea, {
         this._remoteBlur();
     },
     
+    /** @see Echo.Sync.TextComponent#processFocus */
+    processFocus: function(e) {
+        Echo.Sync.TextArea.prototype.processFocus.call(this, e);
+        this._remoteFocus();
+    },
+    
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         Echo.Sync.TextArea.prototype.renderAdd.call(this, update, parentElement);
@@ -287,6 +321,12 @@ Echo.Sync.RemoteTextField.Sync = Core.extend(Echo.Sync.TextField, {
     processBlur: function(e) {
         Echo.Sync.TextField.prototype.processBlur.call(this, e);
         this._remoteBlur();
+    },
+    
+    /** @see Echo.Sync.TextComponent#processFocus */
+    processFocus: function(e) {
+        Echo.Sync.TextField.prototype.processFocus.call(this, e);
+        this._remoteFocus();
     },
     
     /** @see Echo.Render.ComponentSync#renderAdd */
