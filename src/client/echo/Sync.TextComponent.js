@@ -351,12 +351,15 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      * Stores the selection/cursor position within the input field.
      */
     _storeSelection: function() {
+        var range, measureRange;
         if (!this.component) {
             return;
         }
-        var range, measureRange;
-        if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
-            //FIXME Move to Core.Web.Env variable describing selection
+        
+        if (!Core.Web.Env.NOT_SUPPORTED_INPUT_SELECTION) {
+            this._selectionStart = this.input.selectionStart;
+            this._selectionEnd = this.input.selectionEnd;
+        } else if (Core.Web.Env.PROPRIETARY_IE_RANGE) {
             range = document.selection.createRange();
             if (range.parentElement() != this.input) {
                 return;
@@ -371,8 +374,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             this._selectionStart = measureRange.text.length - range.text.length;
             this._selectionEnd = this._selectionStart + range.text.length;
         } else {
-            this._selectionStart = this.input.selectionStart;
-            this._selectionEnd = this.input.selectionEnd;
+            return;
         }
         this.component.set("selectionStart", this._selectionStart, true);
         this.component.set("selectionEnd", this._selectionEnd, true);

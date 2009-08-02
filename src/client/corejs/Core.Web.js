@@ -524,6 +524,19 @@ Core.Web.Env = {
      * @type Boolean
      */
     NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS: null,
+    
+    /**
+     * Flag indicating that selectionStart/selectionEnd/setSelectionRange() are not
+     * supported on text field INPUT elements and TEXTAREA elements.
+     * @type Boolean
+     */
+    NOT_SUPPORTED_INPUT_SELECTION: null,
+    
+    /**
+     * Flag indicating complete lack of support for W3C DOM range API. 
+     * @type Boolean
+     */
+    NOT_SUPPORTED_RANGE: null,
 
     /**
      * Flag indicating support for "mouseenter" and "mouseleave" events. This is
@@ -553,6 +566,12 @@ Core.Web.Env = {
      * @type Boolean
      */
     PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED: null,
+    
+    /**
+     * Flag indicating support for the IE text range API.
+     * @type Boolean
+     */
+    PROPRIETARY_IE_RANGE: null,
     
     /**
      * Flag indicating that keypress events will place charCode value in keyCode property.
@@ -805,6 +824,9 @@ Core.Web.Env = {
             this.CSS_FLOAT = "styleFloat";
             this.QUIRK_KEY_CODE_IS_CHAR_CODE = true;
             this.QUIRK_IE_SECURE_ITEMS = true;
+            this.NOT_SUPPORTED_RANGE = true;
+            this.NOT_SUPPORTED_INPUT_SELECTION = true;
+            this.PROPRIETARY_IE_RANGE = true;
             this.PROPRIETARY_EVENT_MOUSE_ENTER_LEAVE_SUPPORTED = true;
             this.PROPRIETARY_EVENT_SELECT_START_SUPPORTED = true;
             this.QUIRK_IE_KEY_DOWN_EVENT_REPEAT = true;
