@@ -658,7 +658,6 @@ Echo.Render.ComponentSync = Core.extend({
     
     $virtual: {
     
-        //FIXME Experimental.
         /**
          * (Optional) Processes a key down event received by the client's key listeners.  
          * Invoked by client based on current focused component of application.
@@ -670,7 +669,6 @@ Echo.Render.ComponentSync = Core.extend({
          */
         clientKeyDown: null,
 
-        //FIXME Experimental.
         /**
          * (Optional) Processes a key press event received by the client's key listeners.  
          * Invoked by client based on current focused component of application.
@@ -682,7 +680,6 @@ Echo.Render.ComponentSync = Core.extend({
          */
         clientKeyPress: null,
         
-        //FIXME Experimental.
         /**
          * (Optional) Processes a key up event received by the client's key listeners.  
          * Invoked by client based on current focused component of application.
