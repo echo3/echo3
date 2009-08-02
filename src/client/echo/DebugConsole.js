@@ -184,7 +184,7 @@ Echo.DebugConsole = {
         this._div.id = "__DebugConsole__";
         this._div.style.cssText = 
                 "display:none;position:absolute;top:20px;right:20px;width:300px;height:300px;background-color:#2f2f3f;" +
-                "border:5px solid #3f6fff;overflow:hidden;z-index:32767;";
+                "border:5px solid #3f6fff;overflow:hidden;z-index:32500;";
         
         this._titleDiv = document.createElement("div");
         this._titleDiv.style.cssText = "position:relative;" +

@@ -16,7 +16,7 @@ CustomWaitIndicator = Core.extend(Echo.Client.WaitIndicator, {
 
     $construct: function() {
         this._divElement = document.createElement("div");
-        this._divElement.style.cssText = "display: none; z-index: 32767; position: absolute; top: 30px; right: 30px; width: 200px;"
+        this._divElement.style.cssText = "display: none; z-index: 32000; position: absolute; top: 30px; right: 30px; width: 200px;"
                  + " padding: 20px; border: 1px outset #000000; background-color: #000000; color: #00ff00; text-align: center;";
         this._divElement.appendChild(document.createTextNode("LOADING"));
         this._fadeRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._tick), 50, true);

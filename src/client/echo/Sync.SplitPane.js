@@ -531,7 +531,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             return;
         }
         this._overlay = document.createElement("div");
-        this._overlay.style.cssText = "position:absolute;z-index:32767;width:100%;height:100%;";
+        this._overlay.style.cssText = "position:absolute;z-index:32600;width:100%;height:100%;";
         Echo.Sync.FillImage.render(this.client.getResourceUrl("Echo", "resource/Transparent.gif"), this._overlay);
         document.body.appendChild(this._overlay);
     },

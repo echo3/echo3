@@ -810,7 +810,7 @@ Echo.Client.DefaultWaitIndicator = Core.extend(Echo.Client.WaitIndicator, {
     /** Creates a new DefaultWaitIndicator. */
     $construct: function() {
         this._divElement = document.createElement("div");
-        this._divElement.style.cssText = "display: none;z-index:32767;position:absolute;top:30px;right:30px;" +
+        this._divElement.style.cssText = "display: none;z-index:32000;position:absolute;top:30px;right:30px;" +
                  "width:200px;padding:20px;border:1px outset #abcdef;background-color:#abcdef;color:#000000;text-align:center;";
         this._textNode = document.createTextNode("");
         this._divElement.appendChild(this._textNode);
