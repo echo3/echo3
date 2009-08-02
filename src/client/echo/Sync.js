@@ -1286,7 +1286,7 @@ Echo.Sync.Insets = {
     /**
      * Renders an insets property to an element as absolute position coordinates (i.e., top/right/bottom/left values).
      * 
-     * @param {#Insts} insets the insets propert
+     * @param {#Instes} insets the insets property
      * @param {Element} element the target element
      */
     renderPosition: function(insets, element) {
