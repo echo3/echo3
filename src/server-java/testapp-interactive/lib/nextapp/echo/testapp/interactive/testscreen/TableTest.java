@@ -41,6 +41,7 @@ import nextapp.echo.app.Label;
 import nextapp.echo.app.SelectField;
 import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.Table;
+import nextapp.echo.app.TaskQueueHandle;
 import nextapp.echo.app.TextField;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
@@ -66,6 +67,66 @@ import nextapp.echo.testapp.interactive.Styles;
  * A test for <code>Tables</code>s.
  */
 public class TableTest extends SplitPane {
+    
+    private class RemoteUpdatingTableModel extends AbstractTableModel {
+        
+        private TaskQueueHandle handle;
+
+        private final int[][] data = new int[5][5];
+        private Thread updateThread;
+        
+        public int getColumnCount() {
+            return data[0].length;
+        }
+
+        public int getRowCount() {
+            return data.length;
+        }
+
+        public Object getValueAt(int column, int row) {
+            return new Integer(data[row][column]);
+        }
+        
+        public void startUpdates() {
+            if (updateThread != null) {
+                return;
+            }
+            
+            final InteractiveApp app = InteractiveApp.getApp(); 
+            handle = app.createTaskQueue();
+            
+            updateThread = new Thread() {
+                
+                /**
+                 * @see java.lang.Thread#run()
+                 */
+                public void run() {
+                    while (updateThread != null && TableTest.this.isRegistered()) {
+                        int[] row = data[(int) (Math.random() * data.length)];
+                        row[(int) (Math.random() * data.length)] = (int) (Math.random() * 10);
+                        fireTableDataChanged();
+                        app.enqueueTask(handle, new Runnable() {
+                            
+                            public void run() {
+                                // Do nothing, just force UI thread/sync.
+                            }
+                        });
+                        
+                        try {
+                            Thread.sleep((int) (Math.random() * 1000));
+                        } catch (InterruptedException ex) { }
+                    }
+                    app.removeTaskQueue(handle);
+                    handle = null;
+                }
+            };
+            updateThread.start();
+        }
+        
+        public void stopUpdates() {
+            updateThread = null;
+        }
+    }
     
     private static class PayGrade {
         
@@ -404,6 +465,30 @@ public class TableTest extends SplitPane {
                     data[i] = model.getValueAt(i, 2);
                 }
                 model.insertRow(2, data);
+            }
+        });
+        
+        controlsColumn.addButton("Remote Update Table Model", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testTable.setModel(new RemoteUpdatingTableModel());
+            }
+        });
+        
+        controlsColumn.addButton("Remote Update Table Model: Start", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!(testTable.getModel() instanceof RemoteUpdatingTableModel)) {
+                    return;
+                }
+                ((RemoteUpdatingTableModel) testTable.getModel()).startUpdates();
+            }
+        });
+        
+        controlsColumn.addButton("Remote Update Table Model: Stop", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!(testTable.getModel() instanceof RemoteUpdatingTableModel)) {
+                    return;
+                }
+                ((RemoteUpdatingTableModel) testTable.getModel()).stopUpdates();
             }
         });
         
