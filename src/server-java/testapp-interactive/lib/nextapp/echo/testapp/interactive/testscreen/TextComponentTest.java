@@ -29,10 +29,12 @@
 
 package nextapp.echo.testapp.interactive.testscreen;
 
+import nextapp.echo.app.Component;
 import nextapp.echo.app.FillImage;
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Extent;
+import nextapp.echo.app.Grid;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.PasswordField;
 import nextapp.echo.app.Column;
@@ -87,34 +89,63 @@ public class TextComponentTest extends SplitPane {
         }
     };
     
+    private TextField textField;
+    private PasswordField passwordField;
+    private TextArea textArea;
+    
+    private void setContainer(Component container) {
+        if (getComponentCount() > 1) {
+            remove(1);
+        }
+        add(container);
+        
+        SplitPaneLayoutData splitPaneLayoutData = new SplitPaneLayoutData();
+        splitPaneLayoutData.setInsets(new Insets(15));
+        container.setLayoutData(splitPaneLayoutData);
+        container.removeAll();
+        
+        container.add(textField);
+        container.add(passwordField);
+        container.add(textArea);
+    }
+    
     public TextComponentTest() {
         super();
         setStyleName("TestControls");
 
-        SplitPaneLayoutData splitPaneLayoutData;
-        
         ButtonColumn controlsColumn = new ButtonColumn();
         controlsColumn.setStyleName("TestControlsColumn");
         add(controlsColumn);
-
+        
+        textField = new TextField();
+        textField.setBorder(new Border(1, Color.BLUE, Border.STYLE_SOLID));
+        
+        passwordField = new PasswordField();
+        passwordField.setBorder(new Border(1, Color.BLUE, Border.STYLE_SOLID));
+        
+        textArea = new TextArea();
+        textArea.setBorder(new Border(1, Color.BLUE, Border.STYLE_SOLID));
+        
         Column testColumn = new Column();
         testColumn.setCellSpacing(new Extent(15));
-        splitPaneLayoutData = new SplitPaneLayoutData();
-        splitPaneLayoutData.setInsets(new Insets(15));
-        testColumn.setLayoutData(splitPaneLayoutData);
-        add(testColumn);
+        setContainer(testColumn);
         
-        final TextField textField = new TextField();
-        textField.setBorder(new Border(1, Color.BLUE, Border.STYLE_SOLID));
-        testColumn.add(textField);
+        controlsColumn.addButton("Set Container = Column", new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                Column testColumn = new Column();
+                testColumn.setCellSpacing(new Extent(15));
+                setContainer(testColumn);
+            }
+        });
         
-        final PasswordField passwordField = new PasswordField();
-        passwordField.setBorder(new Border(1, Color.BLUE, Border.STYLE_SOLID));
-        testColumn.add(passwordField);
-        
-        final TextArea textArea = new TextArea();
-        textArea.setBorder(new Border(1, Color.BLUE, Border.STYLE_SOLID));
-        testColumn.add(textArea);
+        controlsColumn.addButton("Set Container = 100% Wide Grid", new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                Grid grid = new Grid();
+                grid.setWidth(new Extent(100, Extent.PERCENT));
+                grid.setSize(1);
+                setContainer(grid);
+            }
+        });
         
         controlsColumn.addButton("Set StyleName = Default", new ActionListener(){
             public void actionPerformed(ActionEvent e) {
