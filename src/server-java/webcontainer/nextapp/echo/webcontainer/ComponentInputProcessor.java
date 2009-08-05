@@ -224,6 +224,5 @@ implements ClientMessage.Processor {
         }
 
         updateManager.processClientUpdates();
-        
     }
 }
