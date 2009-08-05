@@ -203,14 +203,14 @@ public class PanelTest extends SplitPane {
             public void actionPerformed(ActionEvent e) {
                 panel.setImageBorder(new FillImageBorder(null, new Insets(17, 17, 23, 23), new Insets(8, 8, 14, 14), 
                 new FillImage[] {
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "topLeft.png")),
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "top.png")),
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "topRight.png")),
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "left.png")),
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "right.png")),
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "bottomLeft.png")),
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "bottom.png")),
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "bottomRight.png"))
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "TopLeft.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "Top.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "TopRight.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "Left.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "Right.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "BottomLeft.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "Bottom.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "BottomRight.png"))
                 }));
             }
         });
@@ -219,12 +219,12 @@ public class PanelTest extends SplitPane {
                 panel.setImageBorder(new FillImageBorder(null, new Insets(0, 17, 0, 23), new Insets(0, 8, 0, 14), 
                 new FillImage[] {
                     null,
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "top.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "Top.png")),
                     null,
                     null,
                     null,
                     null,
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "bottom.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "Bottom.png")),
                     null
                 }));
             }
@@ -236,11 +236,11 @@ public class PanelTest extends SplitPane {
                     null,
                     null,
                     null,
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "left.png")),
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "right.png")),
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "bottomLeft.png")),
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "bottom.png")),
-                    new FillImage(new ResourceImageReference(FIB1_BASE + "bottomRight.png"))
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "Left.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "Right.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "BottomLeft.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "Bottom.png")),
+                    new FillImage(new ResourceImageReference(FIB1_BASE + "BottomRight.png"))
                 }));
             }
         });
@@ -248,14 +248,14 @@ public class PanelTest extends SplitPane {
             public void actionPerformed(ActionEvent e) {
                 panel.setImageBorder(new FillImageBorder(null, new Insets(20, 34, 20, 20), new Insets(15, 6, 20, 20), 
                 new FillImage[] {
-                    new FillImage(new ResourceImageReference(FIB2_BASE + "topLeft.png")),
-                    new FillImage(new ResourceImageReference(FIB2_BASE + "top.png")),
-                    new FillImage(new ResourceImageReference(FIB2_BASE + "topRight.png")),
-                    new FillImage(new ResourceImageReference(FIB2_BASE + "left.png")),
-                    new FillImage(new ResourceImageReference(FIB2_BASE + "right.png")),
-                    new FillImage(new ResourceImageReference(FIB2_BASE + "bottomLeft.png")),
-                    new FillImage(new ResourceImageReference(FIB2_BASE + "bottom.png")),
-                    new FillImage(new ResourceImageReference(FIB2_BASE + "bottomRight.png"))
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "TopLeft.png")),
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "Top.png")),
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "TopRight.png")),
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "Left.png")),
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "Right.png")),
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "BottomLeft.png")),
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "Bottom.png")),
+                    new FillImage(new ResourceImageReference(FIB2_BASE + "BottomRight.png"))
                 }));
             }
         });
