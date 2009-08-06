@@ -269,7 +269,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      * @param parentElement the parent element
      */
     renderAddToParent: function(parentElement) {
-        if (Core.Web.Env.BROWSER_INTERNET_EXPLORER && this.percentWidth) {
+        if (Core.Web.Env.ENGINE_MSHTML && this.percentWidth) {
             this.container = document.createElement("div");
             this.container.appendChild(this.input);
             parentElement.appendChild(this.container);

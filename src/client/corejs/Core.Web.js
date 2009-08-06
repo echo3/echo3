@@ -49,7 +49,7 @@ Core.Web = {
             Core.Web.VirtualPosition._init();
         }
     
-        if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
+        if (Core.Web.Env.ENGINE_MSHTML) {
             Core.Web.DOM.addEventListener(document, "selectstart", Core.Web._selectStartListener, false);
         }
         

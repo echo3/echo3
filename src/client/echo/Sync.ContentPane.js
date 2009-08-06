@@ -180,7 +180,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
                             position = Math.round((contentElement.scrollWidth - contentElement.offsetWidth) * percent / 100);
                             if (position > 0) {
                                 contentElement.scrollLeft = position;
-                                if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
+                                if (Core.Web.Env.ENGINE_MSHTML) {
                                     // IE needs to be told twice.
                                     position = Math.round((contentElement.scrollWidth - contentElement.offsetWidth) * 
                                             percent / 100);
@@ -201,7 +201,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
                             position = Math.round((contentElement.scrollHeight - contentElement.offsetHeight) * percent / 100);
                             if (position > 0) {
                                 contentElement.scrollTop = position;
-                                if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
+                                if (Core.Web.Env.ENGINE_MSHTML) {
                                     // IE needs to be told twice.
                                     position = Math.round((contentElement.scrollHeight - contentElement.offsetHeight) *
                                             percent / 100);
