@@ -292,7 +292,8 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
                 var insetsPx = Echo.Sync.Insets.toPixels(insets);
                 borderSize += insetsPx.left + insetsPx.right;
             }
-        
+            
+            // Perform fairly ridiculous browser-specific adjustments.
             if (Core.Web.Env.ENGINE_MSHTML) {
                 // Add additional 1px for IE.
                 borderSize += 1;
@@ -303,7 +304,17 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
                 } else {
                     borderSize += Core.Web.Measure.SCROLL_WIDTH;
                 }
+            } else if (Core.Web.Env.BROWSER_CHROME && this.input.nodeName.toLowerCase() == "textarea") {
+                // Add additional 3px to TEXTAREA elements for Chrome.
+                borderSize += 3;
+            } else if (Core.Web.Env.BROWSER_SAFARI && this.input.nodeName.toLowerCase() == "input") {
+                // Add additional 1px to INPUT elements for Safari.
+                borderSize += 1;
+            } else if (Core.Web.Env.ENGINE_PRESTO) {
+                // Add additional 1px to all for Opera.
+                borderSize += 1;
             }
+            
             this.input.style.width = this._adjustPercentWidth(parseInt(width, 10), borderSize, 
                     this.input.parentNode.offsetWidth) + "%";
         }
