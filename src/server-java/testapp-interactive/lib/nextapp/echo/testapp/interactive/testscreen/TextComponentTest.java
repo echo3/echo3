@@ -93,15 +93,18 @@ public class TextComponentTest extends SplitPane {
     private PasswordField passwordField;
     private TextArea textArea;
     
-    private void setContainer(Component container) {
+    private void setContainer(Component container, boolean inset) {
         if (getComponentCount() > 1) {
             remove(1);
         }
         add(container);
         
-        SplitPaneLayoutData splitPaneLayoutData = new SplitPaneLayoutData();
-        splitPaneLayoutData.setInsets(new Insets(15));
-        container.setLayoutData(splitPaneLayoutData);
+        if (inset) {
+            SplitPaneLayoutData splitPaneLayoutData = new SplitPaneLayoutData();
+            splitPaneLayoutData.setInsets(new Insets(15));
+            container.setLayoutData(splitPaneLayoutData);
+        }
+        
         container.removeAll();
         
         container.add(textField);
@@ -128,13 +131,20 @@ public class TextComponentTest extends SplitPane {
         
         Column testColumn = new Column();
         testColumn.setCellSpacing(new Extent(15));
-        setContainer(testColumn);
+        setContainer(testColumn, true);
         
         controlsColumn.addButton("Set Container = Column", new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 Column column = new Column();
                 column.setCellSpacing(new Extent(15));
-                setContainer(column);
+                setContainer(column, true);
+            }
+        });
+        
+        controlsColumn.addButton("Set Container = Column, No Inset", new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                Column column = new Column();
+                setContainer(column, false);
             }
         });
         
@@ -143,7 +153,7 @@ public class TextComponentTest extends SplitPane {
                 Column column = new Column();
                 column.setCellSpacing(new Extent(15));
                 column.setBorder(new Border(1, new Color(0x007f00), Border.STYLE_SOLID));
-                setContainer(column);
+                setContainer(column, true);
             }
         });
         
@@ -153,7 +163,43 @@ public class TextComponentTest extends SplitPane {
                 grid.setWidth(new Extent(100, Extent.PERCENT));
                 grid.setSize(1);
                 grid.setBorder(new Border(1, new Color(0x007f00), Border.STYLE_SOLID));
-                setContainer(grid);
+                setContainer(grid, true);
+            }
+        });
+        
+        controlsColumn.addButton("Width -> null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.setWidth(null);
+                passwordField.setWidth(null);
+                textArea.setWidth(null);
+            }
+        });
+        controlsColumn.addButton("Width -> 500px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.setWidth(new Extent(500, Extent.PX));
+                passwordField.setWidth(new Extent(500, Extent.PX));
+                textArea.setWidth(new Extent(500, Extent.PX));
+            }
+        });
+        controlsColumn.addButton("Width -> 100%", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.setWidth(new Extent(100, Extent.PERCENT));
+                passwordField.setWidth(new Extent(100, Extent.PERCENT));
+                textArea.setWidth(new Extent(100, Extent.PERCENT));
+            }
+        });
+        controlsColumn.addButton("Height -> null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.setHeight(null);
+                passwordField.setHeight(null);
+                textArea.setHeight(null);
+            }
+        });
+        controlsColumn.addButton("Height -> 300px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.setHeight(new Extent(300, Extent.PX));
+                passwordField.setHeight(new Extent(300, Extent.PX));
+                textArea.setHeight(new Extent(300, Extent.PX));
             }
         });
         
@@ -516,41 +562,7 @@ public class TextComponentTest extends SplitPane {
                 textArea.setInsets(new Insets(10, 20, 30, 40));
             }
         });
-        controlsColumn.addButton("Width -> null", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                textField.setWidth(null);
-                passwordField.setWidth(null);
-                textArea.setWidth(null);
-            }
-        });
-        controlsColumn.addButton("Width -> 500px", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                textField.setWidth(new Extent(500, Extent.PX));
-                passwordField.setWidth(new Extent(500, Extent.PX));
-                textArea.setWidth(new Extent(500, Extent.PX));
-            }
-        });
-        controlsColumn.addButton("Width -> 100%", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                textField.setWidth(new Extent(100, Extent.PERCENT));
-                passwordField.setWidth(new Extent(100, Extent.PERCENT));
-                textArea.setWidth(new Extent(100, Extent.PERCENT));
-            }
-        });
-        controlsColumn.addButton("Height -> null", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                textField.setHeight(null);
-                passwordField.setHeight(null);
-                textArea.setHeight(null);
-            }
-        });
-        controlsColumn.addButton("Height -> 300px", new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                textField.setHeight(new Extent(300, Extent.PX));
-                passwordField.setHeight(new Extent(300, Extent.PX));
-                textArea.setHeight(new Extent(300, Extent.PX));
-            }
-        });
+
         controlsColumn.addButton("Toggle Enabled", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 boolean enabled = !textField.isEnabled();

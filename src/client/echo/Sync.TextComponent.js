@@ -287,7 +287,9 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             var border = this.component.render("border");
             var borderSize = border ? 
                     (Echo.Sync.Border.getPixelSize(border, "left") + Echo.Sync.Border.getPixelSize(border, "right")) : 4; 
-            if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
+            if (Core.Web.Env.ENGINE_MSHTML) {
+                // Add additional 1px for IE.
+                borderSize += 1;
                 // Add default windows scroll bar width to border size for Internet Explorer browsers.
                 if (this.container) {
                     this.container.style.width = this._adjustPercentWidth(100, Core.Web.Measure.SCROLL_WIDTH, 
