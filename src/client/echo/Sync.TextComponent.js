@@ -163,7 +163,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      * @param {Number} containerPixels the size of the container element 
      */
     _adjustPercentWidth: function(percentValue, reducePixels, containerPixels) {
-        var value = (100 - Math.ceil(100 * reducePixels / containerPixels)) * percentValue / 100;
+        var value = (100 - (100 * reducePixels / containerPixels)) * percentValue / 100;
         return value > 0 ? value : 0;
     },
     
@@ -285,8 +285,8 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             // If width is a percentage, reduce rendered percent width based on measured container size and border width,
             // such that border pixels will not make the component wider than specified percentage.
             var border = this.component.render("border");
-            var borderSize = Echo.Sync.Border.getPixelSize(this.component.render("border", "2px solid #000000"), "left") +
-                    Echo.Sync.Border.getPixelSize(this.component.render("border", "2px solid #000000"), "right") + 1;
+            var borderSize = border ? 
+                    (Echo.Sync.Border.getPixelSize(border, "left") + Echo.Sync.Border.getPixelSize(border, "right")) : 4; 
             if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
                 // Add default windows scroll bar width to border size for Internet Explorer browsers.
                 if (this.container) {

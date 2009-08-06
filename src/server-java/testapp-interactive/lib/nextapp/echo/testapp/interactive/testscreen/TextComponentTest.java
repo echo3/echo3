@@ -132,17 +132,27 @@ public class TextComponentTest extends SplitPane {
         
         controlsColumn.addButton("Set Container = Column", new ActionListener(){
             public void actionPerformed(ActionEvent e) {
-                Column testColumn = new Column();
-                testColumn.setCellSpacing(new Extent(15));
-                setContainer(testColumn);
+                Column column = new Column();
+                column.setCellSpacing(new Extent(15));
+                setContainer(column);
             }
         });
         
-        controlsColumn.addButton("Set Container = 100% Wide Grid", new ActionListener(){
+        controlsColumn.addButton("Set Container = Column w/ Border", new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                Column column = new Column();
+                column.setCellSpacing(new Extent(15));
+                column.setBorder(new Border(1, new Color(0x007f00), Border.STYLE_SOLID));
+                setContainer(column);
+            }
+        });
+        
+        controlsColumn.addButton("Set Container = 100% Wide Grid w/ Border", new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 Grid grid = new Grid();
                 grid.setWidth(new Extent(100, Extent.PERCENT));
                 grid.setSize(1);
+                grid.setBorder(new Border(1, new Color(0x007f00), Border.STYLE_SOLID));
                 setContainer(grid);
             }
         });
