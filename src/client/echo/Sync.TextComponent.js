@@ -286,7 +286,13 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             // such that border pixels will not make the component wider than specified percentage.
             var border = this.component.render("border");
             var borderSize = border ? 
-                    (Echo.Sync.Border.getPixelSize(border, "left") + Echo.Sync.Border.getPixelSize(border, "right")) : 4; 
+                    (Echo.Sync.Border.getPixelSize(border, "left") + Echo.Sync.Border.getPixelSize(border, "right")) : 4;
+            var insets = this.component.render("insets");
+            if (insets) {
+                var insetsPx = Echo.Sync.Insets.toPixels(insets);
+                borderSize += insetsPx.left + insetsPx.right;
+            }
+        
             if (Core.Web.Env.ENGINE_MSHTML) {
                 // Add additional 1px for IE.
                 borderSize += 1;
