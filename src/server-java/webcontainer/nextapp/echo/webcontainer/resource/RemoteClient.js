@@ -51,7 +51,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             }
             Echo.RemoteClient.initialized = true;
             Core.Web.init();
-            if (Core.Web.Env.BROWSER_INTERNET_EXPLORER) {
+            if (Core.Web.Env.ENGINE_MSHTML) {
                 // Set documentElement.style.overflow to hidden in order to hide root scrollbar in IE.
                 // This is a non-standard CSS property.
                 document.documentElement.style.overflow = "hidden";
