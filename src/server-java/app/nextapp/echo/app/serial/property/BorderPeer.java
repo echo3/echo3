@@ -29,6 +29,7 @@
 
 package nextapp.echo.app.serial.property;
 
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import org.w3c.dom.Element;
@@ -105,16 +106,20 @@ implements SerialPropertyPeer {
      */
     public static final Border.Side fromString(String value) 
     throws SerialException {
-        StringTokenizer st = new StringTokenizer(value, " ");
-        String sizeString = st.nextToken();
-        String styleString = st.nextToken();
-        String colorString = st.nextToken();
-
-        Extent size = ExtentPeer.fromString(sizeString);
-        int style = STYLE_CONSTANT_MAP.get(styleString, Border.STYLE_SOLID);
-        Color color = ColorPeer.fromString(colorString);
-        
-        return new Border.Side(size, color, style);
+        try {
+            StringTokenizer st = new StringTokenizer(value, " ");
+            String sizeString = st.nextToken();
+            String styleString = st.nextToken();
+            String colorString = st.nextToken();
+    
+            Extent size = ExtentPeer.fromString(sizeString);
+            int style = STYLE_CONSTANT_MAP.get(styleString, Border.STYLE_SOLID);
+            Color color = ColorPeer.fromString(colorString);
+            
+            return new Border.Side(size, color, style);
+        } catch (NoSuchElementException ex) {
+            throw new SerialException("Unable to parse border side value: " + value, ex);
+        }
     }
     
     /**
