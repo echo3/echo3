@@ -84,8 +84,7 @@ implements SerialPropertyPeer {
             }
         }
         if (separatorPoint == -1) {
-            throw new IllegalArgumentException(
-                    "Cannot create extent from value: " + value);
+            throw new SerialException("Cannot create extent from value: " + value, null);
         }
 
         String valueString = value.substring(0, separatorPoint);
