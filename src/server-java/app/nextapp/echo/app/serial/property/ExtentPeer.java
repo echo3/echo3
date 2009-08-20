@@ -91,20 +91,24 @@ implements SerialPropertyPeer {
         String unitString = value.substring(separatorPoint);
         int extentUnits = suffixConstantMap.get(unitString, -1);
 
-        if (valueString.indexOf('.') == -1) {
-            int extentValue = Integer.parseInt(valueString);
-            if (extentUnits == -1) {
-                // Return pixel-based extent.
-                return new Extent(extentValue);
+        try {
+            if (valueString.indexOf('.') == -1) {
+                int extentValue = Integer.parseInt(valueString);
+                if (extentUnits == -1) {
+                    // Return pixel-based extent.
+                    return new Extent(extentValue);
+                }
+                return new Extent(extentValue, extentUnits);
+            } else {
+                double decimalExtentValue = Double.parseDouble(valueString);
+                if (extentUnits == -1) {
+                    // Return pixel-based extent.
+                    return new DecimalExtent(decimalExtentValue);
+                }
+                return new DecimalExtent(decimalExtentValue, extentUnits);
             }
-            return new Extent(extentValue, extentUnits);
-        } else {
-            double decimalExtentValue = Double.parseDouble(valueString);
-            if (extentUnits == -1) {
-                // Return pixel-based extent.
-                return new DecimalExtent(decimalExtentValue);
-            }
-            return new DecimalExtent(decimalExtentValue, extentUnits);
+        } catch (NumberFormatException ex) {
+            throw new SerialException("Cannot create extent from value: " + value, ex);
         }
     }
 
