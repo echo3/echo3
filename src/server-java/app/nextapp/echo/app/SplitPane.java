@@ -501,7 +501,7 @@ implements Pane, PaneContainer {
      * 
      * @param newValue the new image
      */
-    public void setSeparatorRolloverVerticalImage(FillImage newValue) {
+    public void setSeparatorVerticalRolloverImage(FillImage newValue) {
         set(PROPERTY_SEPARATOR_VERTICAL_ROLLOVER_IMAGE, newValue);
     }
     
