@@ -33,7 +33,7 @@ package nextapp.echo.app;
  * <code>ContentPane</code> component: a high-level container/layout object which fills a region and optionally provides the
  * capability to add <code>FloatingPane</code>s (e.g. <code>WindowPane</code>s) above that content. A <code>ContentPane</code> is
  * often suitable for use as a base class to extend when creating a composite (pane) component. May contain at most one non-
- * <code>FloatinPane</code> component as a child. May contain zero or more <code>FloatingPane</code> components as children.
+ * <code>FloatingPane</code> component as a child. May contain zero or more <code>FloatingPane</code> components as children.
  * 
  * <p>
  * A <code>ContentPane</code> may only be added to a <code>Component</code> which implements <code>PaneContainer</code>.
