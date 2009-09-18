@@ -531,11 +531,13 @@ implements Serializable {
         if (taskQueueMap.size() == 0) {
             return false;
         }
-        Iterator it = taskQueueMap.values().iterator();
-        while (it.hasNext()) {
-            List taskList = (List) it.next();
-            if (taskList != null && taskList.size() > 0) {
-                return true;
+        synchronized (taskQueueMap) {
+            Iterator it = taskQueueMap.values().iterator();
+            while (it.hasNext()) {
+                List taskList = (List) it.next();
+                if (taskList != null && taskList.size() > 0) {
+                    return true;
+                }
             }
         }
         return false;
