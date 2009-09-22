@@ -747,7 +747,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
      * 
      * @param newValue the new inset margin
      */
-    public void setControlsInsets(Extent newValue) {
+    public void setControlsInsets(Insets newValue) {
         set(PROPERTY_CONTROLS_INSETS, newValue);
     }
     
