@@ -48,6 +48,7 @@ Echo.Client = Core.extend({
         
         /**
          * A client-generated unique persistent identifier for the window, stored in window.name.
+         * @type String
          */
         windowId: null
     },
@@ -117,7 +118,8 @@ Echo.Client = Core.extend({
     _inputRescriptionMap: null,
     
     /**
-     * The renderId of the compoennt which was focused during the last received <code>keyDown</code> event.
+     * The renderId of the component which was focused during the last received <code>keyDown</code> event.
+     * @String
      */
     _keyFocusedComponentId: null,
     
