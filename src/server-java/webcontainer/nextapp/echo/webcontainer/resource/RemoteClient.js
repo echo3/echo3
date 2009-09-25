@@ -41,7 +41,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             "Resync.Message": "This window was not synchronized with the server and has been reset.  " + 
                     "Please try your last request again."
         },
-
+        
         /**
          * Initializes the remote-client-based application.
          */
@@ -56,6 +56,8 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
                 // This is a non-standard CSS property.
                 document.documentElement.style.overflow = "hidden";
             }
+        
+            Core.Debug.consoleWrite("windowId:" + Echo.Client.windowId);
         }
     },
     

@@ -44,12 +44,25 @@ Echo.Client = Core.extend({
             for (var i = 0; i < Echo.Client._activeClients.length; ++i) {
                 Echo.Client._activeClients[i]._windowResizeListener(e);
             }
-        }
+        },
+        
+        /**
+         * A client-generated unique persistent identifier for the window, stored in window.name.
+         */
+        windowId: null
     },
     
     $load: function() {
         // Register resize listener on containing window one time.
         Core.Web.DOM.addEventListener(window, "resize", this._globalWindowResizeListener, false);
+        
+        var re = /EchoWindowId=([0-9a-f]*\.[0-9a-f]*);/i;
+        var match = re.exec(window.name || "");
+        this.windowId = match && match[1];
+        if (!this.windowId) {
+            this.windowId = new Date().getTime().toString(16) + "." + parseInt(Math.random() * 0x100000000, 10).toString(16);
+            window.name = (window.name || "") + ";EchoWindowId=" + this.windowId + ";";
+        }
     },
     
     /**
