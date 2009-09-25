@@ -833,7 +833,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
 
                     // Determine size using getPreferredSize()
                     var prefSize = this.component.children[0].peer.getPreferredSize(Echo.Render.ComponentSync.SIZE_HEIGHT);
-                    if (prefSize.height) {
+                    if (prefSize && prefSize.height) {
                         pxBounds.height = this._contentInsets.top + this._contentInsets.bottom + this._titleBarHeight + 
                                 prefSize.height;
                     }
