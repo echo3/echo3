@@ -56,8 +56,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
                 // This is a non-standard CSS property.
                 document.documentElement.style.overflow = "hidden";
             }
-        
-            Core.Debug.consoleWrite("windowId:" + Echo.Client.windowId);
         }
     },
     
@@ -346,8 +344,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     init: function(initialResponseDocument) {
         this._uiid = initialResponseDocument.documentElement.getAttribute("u");
 
-Core.Debug.consoleWrite("UIID:" + this._uiid);        
-        
         this._urlMappings = {};
         this._urlMappings.I = this._serverUrl + (this._uiid == null ? "" : "?uiid=" + this._uiid + "&") + "sid=Echo.Image&iid=";
 
