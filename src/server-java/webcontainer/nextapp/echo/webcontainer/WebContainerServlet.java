@@ -303,9 +303,7 @@ public abstract class WebContainerServlet extends HttpServlet {
      */
     public final void doGet(HttpServletRequest request, HttpServletResponse response) 
     throws IOException, ServletException {
-System.err.println("GET:" + request.getRequestURI());        
         process(request, response);
-System.err.println("------");
     }
     
     /**
@@ -315,9 +313,7 @@ System.err.println("------");
      */
     public final void doPost(HttpServletRequest request, HttpServletResponse response) 
     throws IOException, ServletException {
-System.err.println("POST:" + request.getRequestURI());        
         process(request, response);
-System.err.println("------");
     }
     
     /**

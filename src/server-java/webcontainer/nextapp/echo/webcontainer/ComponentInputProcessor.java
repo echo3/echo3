@@ -203,7 +203,6 @@ implements ClientMessage.Processor {
         // Process event which caused client-server synchronization request, if applicable.
         if (getEvent() != null) {
             Component component = userInstance.getComponentByClientRenderId(getEventComponentId());
-System.err.println(userInstance + "////" + component);            
             ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
             Class eventDataClass = componentPeer.getEventDataClass(getEventType());
             if (eventDataClass == null) {

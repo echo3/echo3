@@ -83,8 +83,6 @@ public class Connection {
         if (servlet.getInstanceMode() == WebContainerServlet.INSTANCE_MODE_WINDOW) {
             uiid = request.getParameter("uiid");
         }
-System.err.println("UIID: " + uiid);
-System.err.println("SID: " + request.getParameter("sid"));
 
         // Configure connection for Multipart Request if required.
         String contentType = request.getContentType();
@@ -95,11 +93,9 @@ System.err.println("SID: " + request.getParameter("sid"));
         }
         
         HttpSession session = request.getSession(false);
-System.err.println("Session Created: " + (session != null));            
         if (session != null) {
             userInstanceContainer = (UserInstanceContainer) session.getAttribute(getUserInstanceContainerSessionKey());
             userInstance = userInstanceContainer.getUserInstanceById(uiid);
-System.err.println((userInstanceContainer != null) + "/" + (userInstance != null));            
         }
     }
 
@@ -202,7 +198,6 @@ System.err.println((userInstanceContainer != null) + "/" + (userInstance != null
         synchronized(userInstanceContainer) {
             if (userInstance == null && windowId != null) {
                 userInstance = userInstanceContainer.loadUserInstance(windowId, initId);
-System.err.println("Created:" + userInstance.getId());                
             }
         }
         
