@@ -31,14 +31,14 @@ Echo.Boot = {
      * @param {String} serverBaseUrl the servlet URL
      * @param {Boolean} debug flag indicating whether debug capabilities should be enabled
      */
-    boot: function(serverBaseUrl, debug) {
+    boot: function(serverBaseUrl, initId, debug) {
         Core.Web.init();
         
         if (debug && window.Echo.DebugConsole) {
             Echo.DebugConsole.install();
         }
     
-        var client = new Echo.RemoteClient(serverBaseUrl);
+        var client = new Echo.RemoteClient(serverBaseUrl, initId);
         for (var i = 0; i < Echo.Boot._initMethods.length; ++i) {
             Echo.Boot._initMethods[i](client);
         }

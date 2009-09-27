@@ -93,8 +93,17 @@ public class ClientMessage {
     /** The request type. */
     private String type;
     
+    /** Unique client-generated window identifier. */
+    private String windowId;
+    
     /** The sequential transaction identifier, used for determining if the client has the current application state. */
     private int transactionId;
+    
+    /**
+     * the server-generated initialization request identifier, used to distinguish initial HTTP requests to an application.
+     * (Used specifically for storing initialization request parameters.)
+     */
+    private String initId;
     
     /**
      * Creates a new <Code>ClientMessage</code>.
@@ -108,8 +117,11 @@ public class ClientMessage {
         this.document = document;
 
         // Retrieve message type, transaction id.
-        type = document.getDocumentElement().getAttribute("t");
-        transactionId = Integer.parseInt(document.getDocumentElement().getAttribute("i"));
+        Element cmsg = document.getDocumentElement();
+        type = cmsg.getAttribute("t");
+        initId = cmsg.hasAttribute("ii") ? cmsg.getAttribute("ii") : null;
+        transactionId = Integer.parseInt(cmsg.getAttribute("i"));
+        windowId = cmsg.hasAttribute("w") ? cmsg.getAttribute("w") : null;
     }
     
     /**
@@ -128,6 +140,25 @@ public class ClientMessage {
      */
     public int getTransactionId() {
         return transactionId;
+    }
+    
+    /**
+     * Returns the server-generated initialization request identifier, used to distinguish initial HTTP requests to an application.
+     * (Used specifically for storing initialization request parameters.)
+     * 
+     * @return the identifier
+     */
+    public String getInitId() {
+        return initId;
+    }
+    
+    /**
+     * Returns the client-generated unique window identifier, used to differentiate between multiple browser windows.
+     * 
+     * @return the identifier
+     */
+    public String getWindowId() {
+        return windowId;
     }
     
     /**

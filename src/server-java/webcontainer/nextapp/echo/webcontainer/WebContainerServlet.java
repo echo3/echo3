@@ -74,14 +74,6 @@ public abstract class WebContainerServlet extends HttpServlet {
         DEBUG_PRINT_MESSAGES_TO_CONSOLE = value;
     }
     
-    /**
-     * Creates a new <code>ApplicationInstance</code> for visitor to an 
-     * application.
-     * 
-     * @return a new <code>ApplicationInstance</code>
-     */
-    public abstract ApplicationInstance newApplicationInstance();
-    
     /** A <code>ThreadLocal</code> reference to the <code>Connection</code> relevant to the current thread. */ 
     private static final ThreadLocal activeConnection = new ThreadLocal();
     
@@ -95,8 +87,27 @@ public abstract class WebContainerServlet extends HttpServlet {
     /** Flag indicating whether client-side debug console should be enabled. */
     public static final boolean ENABLE_CLIENT_DEBUG_CONSOLE = true;
     
+    /**
+     * Constant for <code>getInstanceMode()</code> indicating that one instance (<code>UserInstance</code> of
+     * the application should exist per session.
+     * If the user visits the application in a different browser window, the state of the singleton instance will
+     * be displayed.  The user will experience "window not synchronized" errors if the user attempts to operate
+     * the same application from multiple windows.
+     */
+    public static final int INSTANCE_MODE_SINGLE = 0;
+    
+    /**
+     * Constant for <code>getInstanceMode()</code> indicating that one instance (<code>UserInstance</code> of
+     * the application should exist per session per client browser window.
+     * If the user visits the application in a different browser window, a new instance will be created.
+     */
+    public static final int INSTANCE_MODE_WINDOW = 1;
+    
     /** Request parameter identifying requested <code>Service</code>. */
     public static final String SERVICE_ID_PARAMETER = "sid";
+    
+    /** Request parameter identifying requested <code>UserInstance</code>. */
+    public static final String USER_INSTANCE_ID_PARAMETER = "uiid";
     
     /**
      * <code>Service</code> identifier of the 'default' service. 
@@ -292,7 +303,9 @@ public abstract class WebContainerServlet extends HttpServlet {
      */
     public final void doGet(HttpServletRequest request, HttpServletResponse response) 
     throws IOException, ServletException {
+System.err.println("GET:" + request.getRequestURI());        
         process(request, response);
+System.err.println("------");
     }
     
     /**
@@ -302,7 +315,9 @@ public abstract class WebContainerServlet extends HttpServlet {
      */
     public final void doPost(HttpServletRequest request, HttpServletResponse response) 
     throws IOException, ServletException {
+System.err.println("POST:" + request.getRequestURI());        
         process(request, response);
+System.err.println("------");
     }
     
     /**
@@ -311,18 +326,18 @@ public abstract class WebContainerServlet extends HttpServlet {
      * @param id The id of the service to return.
      * @return The service corresponding to the specified Id.
      */
-    private static Service getService(UserInstance userInstance, String id) {
+    private static Service getService(String id, boolean hasInstance) {
         Service service;
         
         service = services.get(id);
         if (id == null) {
-            if (userInstance == null) {
-                id = SERVICE_ID_NEW_INSTANCE;
-            } else {
+            if (hasInstance) {
                 id = SERVICE_ID_DEFAULT;
+            } else {
+                id = SERVICE_ID_NEW_INSTANCE;
             }
         } else {
-            if (userInstance == null) {
+            if (!hasInstance) {
                 id = SERVICE_ID_SESSION_EXPIRED;
             }
         }
@@ -359,6 +374,29 @@ public abstract class WebContainerServlet extends HttpServlet {
     public Iterator getInitStyleSheets() {
         return initStyleSheets == null ? null : Collections.unmodifiableCollection(initStyleSheets).iterator();
     }
+
+    /**
+     * Returns the instance operating mode of the application, determining how the application will perform if it
+     * is visited by multiple browser windows.
+     * 
+     * @return the operating mode, one of the following values:
+     *         <ul>
+     *          <li><code>INSTANCE_MODE_SINGLE</code> (the default) to allow only a single instance of the application</li>
+     *          <li><code>INSTANCE_MODE_WINDOW</code> to allow multiple instances of the application per session, with new
+     *           instances created for new browser windows</li>
+     *          </ul>
+     */
+    public int getInstanceMode() {
+        return INSTANCE_MODE_SINGLE;
+    }
+    
+    /**
+     * Creates a new <code>ApplicationInstance</code> for visitor to an 
+     * application.
+     * 
+     * @return a new <code>ApplicationInstance</code>
+     */
+    public abstract ApplicationInstance newApplicationInstance();
     
     /**
      * Processes an HTTP request and generates a response.
@@ -373,7 +411,7 @@ public abstract class WebContainerServlet extends HttpServlet {
             conn = new Connection(this, request, response);
             activeConnection.set(conn);
             String serviceId = request.getParameter(SERVICE_ID_PARAMETER);
-            Service service = getService(conn.getUserInstance(), serviceId);
+            Service service = getService(serviceId, conn.getUserInstanceContainer() != null);
             if (service == null) {
                 throw new ServletException("Service id \"" + serviceId + "\" not registered.");
             }

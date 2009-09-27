@@ -67,6 +67,13 @@ public class InteractiveServlet extends WebContainerServlet {
     }
     
     /**
+     * @see nextapp.echo.webcontainer.WebContainerServlet#getInstanceMode()
+     */
+    public int getInstanceMode() {
+        return INSTANCE_MODE_WINDOW;
+    }
+
+    /**
      * @see nextapp.echo.webcontainer.WebContainerServlet#newApplicationInstance()
      */
     public ApplicationInstance newApplicationInstance() {

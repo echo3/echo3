@@ -29,14 +29,12 @@
 
 package nextapp.echo.webcontainer.service;
 
-
 import java.io.IOException;
 
 import nextapp.echo.webcontainer.Connection;
 import nextapp.echo.webcontainer.Service;
-import nextapp.echo.webcontainer.UserInstance;
+import nextapp.echo.webcontainer.UserInstanceContainer;
 import nextapp.echo.webcontainer.WebContainerServlet;
-
 
 /**
  * <code>Service</code> which launches a new instance of an Echo application.
@@ -75,7 +73,7 @@ implements Service {
      */
     public void service(Connection conn) 
     throws IOException {
-        UserInstance.newInstance(conn);
+        UserInstanceContainer.newInstance(conn);
         WindowHtmlService.INSTANCE.service(conn);
     }
 }

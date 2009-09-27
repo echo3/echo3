@@ -95,10 +95,31 @@ public class InputProcessor {
      * @param syncState the <code>SynchronizationState</code> of the current synchronization
      * @param conn the <code>Connection</code> for which the input is being parsed
      */
-    public InputProcessor(SynchronizationState syncState, Connection conn) {
+    public InputProcessor(SynchronizationState syncState, Connection conn) 
+    throws IOException {
         super();
         this.syncState = syncState;
         this.conn = conn;
+        Document document = XmlRequestParser.parse(conn.getRequest(), conn.getUserInstanceContainer().getCharacterEncoding());        
+        clientMessage = new ClientMessage(document);
+    }
+    
+    /**
+     * Returns the unique client-generated window identifier specified in the <code>ClientMessage</code>.
+     * 
+     * @return the client window identifier
+     */
+    public String getWindowId() {
+        return clientMessage.getWindowId();
+    }
+    
+    /**
+     * Returns the unique client-generated initialization request identifier specified in the <code>ClientMessage</code>.
+     * 
+     * @return the client window identifier
+     */
+    public String getInitId() {
+        return clientMessage.getInitId();
     }
     
     /**
@@ -109,8 +130,6 @@ public class InputProcessor {
      */
     public void process() 
     throws IOException {
-        Document document = XmlRequestParser.parse(conn.getRequest(), conn.getUserInstance().getCharacterEncoding());        
-        clientMessage = new ClientMessage(document);
         UserInstance userInstance = conn.getUserInstance();
         UpdateManager updateManager = userInstance.getUpdateManager();
         Context context = new InputContext();

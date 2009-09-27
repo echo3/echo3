@@ -153,6 +153,7 @@ class OutputProcessor {
      */
     public void process() 
     throws IOException {
+        serverMessage.setUserInstanceId(userInstance.getId());
         serverMessage.setTransactionId(userInstance.getNextTransactionId());
         if (syncState.isOutOfSync()) {
             serverMessage.setResync();

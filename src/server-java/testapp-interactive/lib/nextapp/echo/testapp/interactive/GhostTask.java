@@ -29,6 +29,8 @@
 
 package nextapp.echo.testapp.interactive;
 
+import java.io.Serializable;
+
 import nextapp.echo.app.TaskQueueHandle;
 
 import nextapp.echo.app.Button;
@@ -39,7 +41,8 @@ import nextapp.echo.app.Button;
  * See the documentation for examples of how asynchronous tasks
  * might normally be used.
  */
-public class GhostTask {
+public class GhostTask 
+implements Serializable {
     
     private InteractiveApp app;
     private int clicksPerIteration = 1;

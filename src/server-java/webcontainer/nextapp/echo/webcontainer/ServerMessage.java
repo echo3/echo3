@@ -227,4 +227,8 @@ public class ServerMessage {
     public void setTransactionId(long transactionId) {
         serverMessageElement.setAttribute("i", Long.toString(transactionId));
     }
+
+    public void setUserInstanceId(String userInstanceId) {
+        serverMessageElement.setAttribute("u", userInstanceId);
+    }
 }

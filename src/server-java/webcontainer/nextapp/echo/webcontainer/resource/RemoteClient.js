@@ -62,6 +62,12 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     },
     
     /**
+     * Server user instance identifier.
+     * @type String
+     */
+    _uiid: null,
+    
+    /**
      * The base server URL.
      * @type String
      */
@@ -149,8 +155,9 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * Creates a new RemoteClient instance.
      * 
      * @param serverUrl the URL of the server
+     * @param initId the initialization id, which should be provided in the initial client message
      */
-    $construct: function(serverUrl) {
+    $construct: function(serverUrl, initId) {
         Echo.RemoteClient.init();
     
         Echo.Client.call(this);
@@ -161,12 +168,11 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         }
         
         this._serverUrl = serverUrl;
+        
         this._processClientUpdateRef = Core.method(this, this._processClientUpdate);
         this._processClientEventRef = Core.method(this, this._processClientEvent);
-        this._urlMappings = {};
-        this._urlMappings.I = this._serverUrl + "?sid=Echo.Image&iid=";
         this._commandQueue = null;
-        this._clientMessage = new Echo.RemoteClient.ClientMessage(this, true);
+        this._clientMessage = new Echo.RemoteClient.ClientMessage(this, initId);
         this._asyncManager = new Echo.RemoteClient.AsyncManager(this);
     },
     
@@ -251,7 +257,11 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         if (!Echo.RemoteClient._libraryServerUrl) {
             Echo.RemoteClient._libraryServerUrl = this._serverUrl;
         }
-        return Echo.RemoteClient._libraryServerUrl + "?sid=" + serviceId;
+        if (this._uiid == null) {
+            return Echo.RemoteClient._libraryServerUrl + "?sid=" + serviceId;
+        } else {
+            return Echo.RemoteClient._libraryServerUrl + "?sid=" + serviceId + "&uiid=" + this._uiid;
+        }
     },
     
     /** @see Echo.Client#getResoruceUrl */
@@ -267,7 +277,11 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @type String
      */
     _getServiceUrl: function(serviceId) {
-        return this._serverUrl + "?sid=" + serviceId;
+        if (this._uiid == null) {
+            return this._serverUrl + "?sid=" + serviceId;
+        } else {
+            return this._serverUrl + "?sid=" + serviceId + "&uiid=" + this._uiid;
+        }
     },
 
     /**
@@ -330,6 +344,13 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      *        such as the id of the root element)
      */
     init: function(initialResponseDocument) {
+        this._uiid = initialResponseDocument.documentElement.getAttribute("u");
+
+Core.Debug.consoleWrite("UIID:" + this._uiid);        
+        
+        this._urlMappings = {};
+        this._urlMappings.I = this._serverUrl + (this._uiid == null ? "" : "?uiid=" + this._uiid + "&") + "sid=Echo.Image&iid=";
+
         // Find domain element.
         var domainElementId = initialResponseDocument.documentElement.getAttribute("root");
         var domainElement = document.getElementById(domainElementId);
@@ -504,7 +525,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
                 this._clientMessage._renderXml(), "text/xml");
         
         // Create new client message.
-        this._clientMessage = new Echo.RemoteClient.ClientMessage(this, false);
+        this._clientMessage = new Echo.RemoteClient.ClientMessage(this, null);
 
         conn.addResponseListener(Core.method(this, this._processSyncResponse));
         conn.connect();
@@ -754,16 +775,18 @@ Echo.RemoteClient.ClientMessage = Core.extend({
      * Creates a new client message.
      *
      * @param {Echo.RemoteClient} client the RemoteClient
-     * @param {Boolean} initialize flag indicating whether this is the initial client message, which will 
-     *        gather data about the client environment
+     * @param {String} initId the initialization id provided to the RemoteClient constructor (if this an initialization request) 
+     *        or null if it is not
      */
-    $construct: function(client, initialize) {
+    $construct: function(client, initId) {
         this._client = client;
         this._componentIdToPropertyMap = {};
         
         this._document = Core.Web.DOM.createDocument("http://www.nextapp.com/products/echo/svrmsg/clientmessage.3.0", "cmsg");
-        if (initialize) {
+        if (initId != null) {
             this._document.documentElement.setAttribute("t", "init");
+            this._document.documentElement.setAttribute("w", Echo.Client.windowId);
+            this._document.documentElement.setAttribute("ii", initId);
             this._renderClientProperties();
         }
     },

@@ -46,8 +46,8 @@ import nextapp.echo.app.util.DomUtil;
 import nextapp.echo.webcontainer.Connection;
 import nextapp.echo.webcontainer.ContentType;
 import nextapp.echo.webcontainer.Service;
+import nextapp.echo.webcontainer.UserInstanceContainer;
 import nextapp.echo.webcontainer.SynchronizationException;
-import nextapp.echo.webcontainer.UserInstance;
 import nextapp.echo.webcontainer.WebContainerServlet;
 
 /**
@@ -93,7 +93,8 @@ implements Service {
      * @param debug flag indicating whether debug capabilities should be enabled
      * @return the created document
      */
-    private Document createHtmlDocument(Connection conn, UserInstance userInstance, boolean debug) {
+    private Document createHtmlDocument(Connection conn, boolean debug) {
+        UserInstanceContainer userInstanceContainer = conn.getUserInstanceContainer();
         String userAgent = conn.getRequest().getHeader("User-Agent");
         Document document = DomUtil.createDocument("html", XHTML_1_0_TRANSITIONAL_PUBLIC_ID, 
                 XHTML_1_0_TRANSITIONAL_SYSTEM_ID, XHTML_1_0_NAMESPACE_URI);
@@ -129,7 +130,7 @@ implements Service {
         Text textNode = document.createTextNode(" ");
         scriptElement.appendChild(textNode);
         scriptElement.setAttribute("type", "text/javascript");
-        scriptElement.setAttribute("src", userInstance.getServiceUri(BootService.SERVICE));
+        scriptElement.setAttribute("src", userInstanceContainer.getServiceUri(BootService.SERVICE, null));
         headElement.appendChild(scriptElement);
         
         WebContainerServlet servlet = conn.getServlet();
@@ -143,7 +144,7 @@ implements Service {
                 textNode = document.createTextNode(" ");
                 scriptElement.appendChild(textNode);
                 scriptElement.setAttribute("type", "text/javascript");
-                scriptElement.setAttribute("src", userInstance.getServiceUri(scriptService));
+                scriptElement.setAttribute("src", userInstanceContainer.getServiceUri(scriptService, null));
                 headElement.appendChild(scriptElement);
             }
         }
@@ -156,14 +157,15 @@ implements Service {
                 Element linkElement = document.createElement("link");
                 linkElement.setAttribute("rel", "StyleSheet");
                 linkElement.setAttribute("type", "text/css");
-                linkElement.setAttribute("href", userInstance.getServiceUri(styleSheetService));
+                linkElement.setAttribute("href", userInstanceContainer.getServiceUri(styleSheetService, null));
                 headElement.appendChild(linkElement);
             }
         }
         
         Element bodyElement = document.createElement("body");
         bodyElement.setAttribute("id", "body");
-        bodyElement.setAttribute("onload", "Echo.Boot.boot('" + userInstance.getServletUri() + "', " + debug + ");");
+        bodyElement.setAttribute("onload", "Echo.Boot.boot('" + userInstanceContainer.getServletUri() + "', '" + 
+                userInstanceContainer.createInitId(conn) + "', " + debug + ");");
         bodyElement.setAttribute("style",
                 "height:100%;width:100%;margin:0px;padding:0px;" +
                 "font-family:verdana, arial, helvetica, sans-serif;font-size:10pt");
@@ -171,7 +173,7 @@ implements Service {
 
         Element rootDivElement = document.createElement("div");
         rootDivElement.setAttribute("style", "position:absolute;width:100%;height:100%;");
-        rootDivElement.setAttribute("id", userInstance.getRootHtmlElementId());
+        rootDivElement.setAttribute("id", userInstanceContainer.getRootHtmlElementId());
         bodyElement.appendChild(rootDivElement);
         
         return document;
@@ -196,9 +198,8 @@ implements Service {
      */
     public void service(Connection conn) throws IOException {
         try {
-            UserInstance userInstance = (UserInstance) conn.getUserInstance();
             boolean debug = !("false".equals(conn.getServlet().getInitParameter("echo.debug")));
-            Document document = createHtmlDocument(conn, userInstance, debug);
+            Document document = createHtmlDocument(conn, debug);
             conn.setContentType(ContentType.TEXT_HTML);
             DomUtil.save(document, conn.getWriter(), OUTPUT_PROPERTIES);
         } catch (SAXException ex) {

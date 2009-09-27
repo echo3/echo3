@@ -51,15 +51,17 @@ import javax.servlet.http.HttpSession;
 public class Connection {
 
     /**
-     * Prefix to use for user instance <code>HttpSession</code> keys.
+     * Prefix to use for <code>UserInstanceContainer</code> <code>HttpSession</code> keys.
      */
-    private static final String USER_INSTANCE_SESSION_KEY_PREFIX = "EchoUserInstance";
+    private static final String USER_INSTANCE_CONTAINER_SESSION_KEY_PREFIX = "EchoUserInstanceContainer";
 
     private HttpServletRequest request;
     private HttpServletResponse response;
     private WebContainerServlet servlet;
     private UserInstance userInstance;
+    private UserInstanceContainer userInstanceContainer;
     private Map propertyMap;
+    private String uiid;
     
     /**
      * Creates a <code>connection</code> object that will handle the given 
@@ -77,6 +79,12 @@ public class Connection {
         this.servlet = servlet;
         this.request = request;
         this.response = response;
+        
+        if (servlet.getInstanceMode() == WebContainerServlet.INSTANCE_MODE_WINDOW) {
+            uiid = request.getParameter("uiid");
+        }
+System.err.println("UIID: " + uiid);
+System.err.println("SID: " + request.getParameter("sid"));
 
         // Configure connection for Multipart Request if required.
         String contentType = request.getContentType();
@@ -85,10 +93,13 @@ public class Connection {
                 this.request = WebContainerServlet.getMultipartRequestWrapper().getWrappedRequest(request);
             }
         }
-
+        
         HttpSession session = request.getSession(false);
+System.err.println("Session Created: " + (session != null));            
         if (session != null) {
-            userInstance = (UserInstance) session.getAttribute(getSessionKey());
+            userInstanceContainer = (UserInstanceContainer) session.getAttribute(getUserInstanceContainerSessionKey());
+            userInstance = userInstanceContainer.getUserInstanceById(uiid);
+System.err.println((userInstanceContainer != null) + "/" + (userInstance != null));            
         }
     }
 
@@ -97,10 +108,8 @@ public class Connection {
      * <code>Connection</code>.
      */
     void disposeUserInstance() {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            getUserInstance().setServletUri(null);
-            session.removeAttribute(getSessionKey());
+        if (userInstanceContainer != null && userInstance != null) {
+            userInstanceContainer.unloadUserInstance(userInstance);
         }
     }
 
@@ -157,17 +166,11 @@ public class Connection {
     public HttpServletResponse getResponse() {
         return response;
     }
-
-    /**
-     * Determines the <code>HttpSession</code> key value in which the
-     * associated <code>UserInstance</code> should be stored.
-     * 
-     * @return the <code>HttpSession</code> key
-     */
-    private String getSessionKey() {
-        return USER_INSTANCE_SESSION_KEY_PREFIX + ":" + servlet.getServletName();
+    
+    private String getUserInstanceContainerSessionKey() {
+        return USER_INSTANCE_CONTAINER_SESSION_KEY_PREFIX + ":" + servlet.getServletName();
     }
-
+    
     /**
      * Returns the <code>WebContainerServlet</code> wrapped by this 
      * <code>Connection</code>.
@@ -190,6 +193,25 @@ public class Connection {
     public UserInstance getUserInstance() {
         return userInstance;
     }
+    
+    public UserInstance getUserInstance(String windowId, String initId) {
+        if (userInstanceContainer == null) {
+            return null;
+        }
+        
+        synchronized(userInstanceContainer) {
+            if (userInstance == null && windowId != null) {
+                userInstance = userInstanceContainer.loadUserInstance(windowId, initId);
+System.err.println("Created:" + userInstance.getId());                
+            }
+        }
+        
+        return userInstance;
+    }
+    
+    public UserInstanceContainer getUserInstanceContainer() {
+        return userInstanceContainer;
+    }
 
     /**
      * Returns the <code>PrintWriter</code> object that may be used to 
@@ -208,21 +230,20 @@ public class Connection {
             throw new WebContainerServletException("Unable to get PrintWriter.", ex);
         }
     }
-
+    
     /**
-     * Initializes the state of a new <code>UserInstance</code> and associates
-     * it with this <code>Connection</code> and the underlying
-     * <code>HttpSession</code>
+     * Initializes the state of the new <code>UserInstanceContainer</code> and associates
+     * it with this <code>Connection</code> and the underlying <code>HttpSession</code>
      * 
-     * @param userInstance the <code>UserInstance</code>
+     * @param userInstanceContainer the <code>UserInstanceContaienr</code>
      */
-    void initUserInstance(UserInstance userInstance) {
-        this.userInstance = userInstance;
-        userInstance.setServletUri(request.getRequestURI());
+    void initUserInstanceContainer(UserInstanceContainer userInstanceContainer) {
+        this.userInstanceContainer = userInstanceContainer;
+        userInstanceContainer.setServletUri(request.getRequestURI());
         HttpSession session = request.getSession(true);
-        session.setAttribute(getSessionKey(), userInstance);
+        session.setAttribute(getUserInstanceContainerSessionKey(), userInstanceContainer);
     }
-
+    
     /**
      * Sets the content type of the response.
      * This method will automatically append a character encoding to

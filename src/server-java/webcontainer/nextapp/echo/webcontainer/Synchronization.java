@@ -46,16 +46,20 @@ implements SynchronizationState {
     
     /** Flag indicating whether synchronization is coming from an out-of-sync client. */
     private boolean outOfSync = false;
+    
+    private InputProcessor inputProcessor;
 
     /**
      * Creates a new <code>Synchronization</code>.
      * 
      * @param conn the synchronization <code>Connection</code> 
      */
-    public Synchronization(Connection conn) {
+    public Synchronization(Connection conn) 
+    throws IOException {
         super();
         this.conn = conn;
-        this.userInstance = conn.getUserInstance();
+        inputProcessor = new InputProcessor(this, conn);
+        userInstance = conn.getUserInstance(inputProcessor.getWindowId(), inputProcessor.getInitId());
     }
     
     /**
@@ -100,7 +104,6 @@ implements SynchronizationState {
             userInstance.setActive(true);
             try {
                 // Process client input.
-                InputProcessor inputProcessor = new InputProcessor(this, conn);
                 inputProcessor.process();
                 
                 // Manage render states.
