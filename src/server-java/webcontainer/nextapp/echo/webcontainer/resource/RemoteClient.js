@@ -343,9 +343,13 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      */
     init: function(initialResponseDocument) {
         this._uiid = initialResponseDocument.documentElement.getAttribute("u");
+        if (this._uiid == "") {
+            this._uiid = null;
+        }
 
         this._urlMappings = {};
-        this._urlMappings.I = this._serverUrl + (this._uiid == null ? "" : "?uiid=" + this._uiid + "&") + "sid=Echo.Image&iid=";
+        this._urlMappings.I = this._serverUrl + "?" + (this._uiid == null ? "" : "uiid=" + this._uiid + "&") + 
+              "sid=Echo.Image&iid=";
 
         // Find domain element.
         var domainElementId = initialResponseDocument.documentElement.getAttribute("root");
