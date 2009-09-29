@@ -95,7 +95,9 @@ public class Connection {
         HttpSession session = request.getSession(false);
         if (session != null) {
             userInstanceContainer = (UserInstanceContainer) session.getAttribute(getUserInstanceContainerSessionKey());
-            userInstance = userInstanceContainer.getUserInstanceById(uiid);
+            if (userInstanceContainer != null) {
+                userInstance = userInstanceContainer.getUserInstanceById(uiid);
+            }
         }
     }
 
