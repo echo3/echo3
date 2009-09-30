@@ -33,6 +33,7 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Color;
@@ -66,6 +67,60 @@ implements SerialPropertyPeer {
     private static final String[] borderSideAttributeNames = new String[]{"t", "r", "b", "l"};
     
     /**
+     * Generates a <code>Border.Side</code> from a string representation.
+     * To create a non-multisided border from a string, simply pass the returned
+     * <code>Border.Side</code> to the constructor of a new <code>Border</code>.
+     * 
+     * @param value the string representation
+     * @return the generated <code>Border.Side</code>
+     * @throws SerialException if the string is not a valid representation of a <code>Border.Side</code>
+     */
+    public static final Border.Side fromString(String value) 
+    throws SerialException {
+        try {
+            StringTokenizer st = new StringTokenizer(value, " ");
+            String sizeString = st.nextToken();
+            String styleString = st.nextToken();
+            String colorString = st.nextToken();
+    
+            Extent size = ExtentPeer.fromString(sizeString);
+            int style = STYLE_CONSTANT_MAP.get(styleString, Border.STYLE_SOLID);
+            Color color = ColorPeer.fromString(colorString);
+            
+            return new Border.Side(size, color, style);
+        } catch (NoSuchElementException ex) {
+            throw new SerialException("Unable to parse border side value: " + value, ex);
+        }
+    }
+    
+    /**
+     * Creates a <code>Node</code> representation of the border state suitable for appending to a property element.
+     * 
+     * @param context the relevant <code>Context</code>
+     * @param border the border to render
+     * @return the created node, may be a <code>Text</code> or <code>Element</code> node
+     */
+    public static final Node toNode(Context context, Border border) 
+    throws SerialException {
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
+        if (border.isMultisided()) {
+            Element borderElement = serialContext.getDocument().createElement("b");
+            Border.Side[] sides = border.getSides();
+            for (int i = 0; i < sides.length; ++i) {
+                if (sides[i] == null) {
+                    borderElement.setAttribute(borderSideAttributeNames[i], "");
+                } else {
+                    borderElement.setAttribute(borderSideAttributeNames[i], toString(sides[i]));
+                }
+            }
+            return borderElement;
+        } else {
+            return serialContext.getDocument().createTextNode(toString(border));
+        }
+    }
+    
+    
+    /**
      * Generates a string representation of a <code>Border</code>
      * 
      * @param border the border
@@ -93,33 +148,6 @@ implements SerialPropertyPeer {
         out.append(" ");
         out.append(ColorPeer.toString(side.getColor()));
         return out.toString();
-    }
-    
-    /**
-     * Generates a <code>Border.Side</code> from a string representation.
-     * To create a non-multisided border from a string, simply pass the returned
-     * <code>Border.Side</code> to the constructor of a new <code>Border</code>.
-     * 
-     * @param value the string representation
-     * @return the generated <code>Border.Side</code>
-     * @throws SerialException if the string is not a valid representation of a <code>Border.Side</code>
-     */
-    public static final Border.Side fromString(String value) 
-    throws SerialException {
-        try {
-            StringTokenizer st = new StringTokenizer(value, " ");
-            String sizeString = st.nextToken();
-            String styleString = st.nextToken();
-            String colorString = st.nextToken();
-    
-            Extent size = ExtentPeer.fromString(sizeString);
-            int style = STYLE_CONSTANT_MAP.get(styleString, Border.STYLE_SOLID);
-            Color color = ColorPeer.fromString(colorString);
-            
-            return new Border.Side(size, color, style);
-        } catch (NoSuchElementException ex) {
-            throw new SerialException("Unable to parse border side value: " + value, ex);
-        }
     }
     
     /**
@@ -157,7 +185,7 @@ implements SerialPropertyPeer {
             return new Border(sides);
         }
     }
-
+    
     /**
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
      *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
@@ -168,19 +196,6 @@ implements SerialPropertyPeer {
         propertyElement.setAttribute("t", 
                 (serialContext.getFlags() & SerialContext.FLAG_RENDER_SHORT_NAMES) == 0 ? "Border" : "BO");
         Border border = (Border) propertyValue;
-        if (border.isMultisided()) {
-            Element borderElement = serialContext.getDocument().createElement("b");
-            Border.Side[] sides = border.getSides();
-            for (int i = 0; i < sides.length; ++i) {
-                if (sides[i] == null) {
-                    borderElement.setAttribute(borderSideAttributeNames[i], "");
-                } else {
-                    borderElement.setAttribute(borderSideAttributeNames[i], toString(sides[i]));
-                }
-            }
-            propertyElement.appendChild(borderElement);
-        } else {
-            propertyElement.appendChild(serialContext.getDocument().createTextNode(toString(border)));
-        }
+        propertyElement.appendChild(toNode(context, border));
     }
 }
