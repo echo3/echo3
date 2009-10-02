@@ -3276,6 +3276,7 @@ Echo.SplitPane = Core.extend(Echo.Component, {
 /**
  * Abstract base class for text-entry components.
  * 
+ * @cp {String} text the text value
  * @sp {String} actionCommand the action command fired when the enter key is
  *     pressed within the text component
  * @sp {#Alignment} alignment an alignment setting describing the alignment of
@@ -3288,6 +3289,7 @@ Echo.SplitPane = Core.extend(Echo.Component, {
  * @sp {#Border} disabledBorder the disabled border
  * @sp {#Font} disabledFont the disabled font
  * @sp {#Color} disabledForeground the disabled foreground color
+ * @sp {Boolean} editable flag indicating whether field is editable (true) or read-only (false); default value is true
  * @sp {#Extent} height the height of the component
  * @sp {#Extent} horizontalScroll the horizontal scrollbar position
  * @sp {#Insets} insets the inset margin between the border and the text content
