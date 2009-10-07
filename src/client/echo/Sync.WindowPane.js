@@ -459,11 +459,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     _renderAddFrame: function(parentElement) {
         this._loadPositionAndSize();
 
-        // Create main component DIV.
-        this._div = document.createElement("div");
-        this._div.id = this.component.renderId;
-        this._div.tabIndex = "0";
-
         // Load property states.
         this._minimumWidth = Echo.Sync.Extent.toPixels(
                 this.component.render("minimumWidth", Echo.WindowPane.DEFAULT_MINIMUM_WIDTH), true);
@@ -482,7 +477,10 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         var hasControlIcons = closable || maximizeEnabled || minimizeEnabled;
         var fillImageFlags = this.component.render("ieAlphaRenderBorder") ? Echo.Sync.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER : 0;
         
+        // Create main component DIV.
         this._div = Echo.Sync.FillImageBorder.renderContainer(border, { absolute: true });
+        this._div.id = this.component.renderId;
+        this._div.tabIndex = "0";
         this._div.style.outlineStyle = "none";
         this._div.style.overflow = "hidden";
         this._div.style.zIndex = 1;
