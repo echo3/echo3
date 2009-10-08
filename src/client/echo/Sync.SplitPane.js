@@ -355,7 +355,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
         var size0;
         if (this.component.children[0].peer.getPreferredSize) {
             // Use getPreferredSize() if available.
-            size0 = this.component.children[0].peer.getPreferredSize(dimension);
+            size0 = this.component.children[0].peer.getPreferredSize(dimension) || { };
         } else if (!this.component.children[0].pane && (dimension & Echo.Render.ComponentSync.SIZE_HEIGHT) &&
                 this._paneDivs[0].firstChild) {
             // Measure height of non-pane child (assuming height is being requested).
@@ -380,7 +380,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             size1 = { width: 0, height: 0 };
         } else if (this.component.children[1].peer.getPreferredSize) {
             // Use getPreferredSize() if available.
-            size1 = this.component.children[1].peer.getPreferredSize(dimension);
+            size1 = this.component.children[1].peer.getPreferredSize(dimension) || { };
         } else if (!this.component.children[1].pane && (dimension & Echo.Render.ComponentSync.SIZE_HEIGHT) &&
                 this._paneDivs[1].firstChild) {
             // Measure height of non-pane child (assuming height is being requested).
