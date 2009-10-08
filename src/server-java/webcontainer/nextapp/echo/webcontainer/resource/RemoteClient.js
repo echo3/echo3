@@ -343,7 +343,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      */
     init: function(initialResponseDocument) {
         this._uiid = initialResponseDocument.documentElement.getAttribute("u");
-        if (this._uiid == "") {
+        if (this._uiid === "") {
             this._uiid = null;
         }
 
