@@ -1075,41 +1075,45 @@ Echo.RemoteClient.ServerMessage = Core.extend({
      * Notifies completion listeners of processing completion.
      */
     _processPostLibraryLoad: function(e) {
-        if (Echo.Client.profilingTimer) {
-            Echo.Client.profilingTimer.mark("lib"); // Library Loading
-        }
-        
-        if (e && !e.success) {
-            this.client.fail("Cannot install library: " + e.url + " Exception: " + e.ex);
-            return;
-        }
-        
-        // Processing phase 2: invoke directives.
-        var groupElements = Core.Web.DOM.getChildElementsByTagName(this.document.documentElement, "group");
-        for (var i = 0; i < groupElements.length; ++i) {
-            var dirElements = Core.Web.DOM.getChildElementsByTagName(groupElements[i], "dir");
-            for (var j = 0; j < dirElements.length; ++j) {
-                var procName = dirElements[j].getAttribute("proc");
-                var processor = this._processorInstances[procName];
-                if (!processor) {
-                    // Create new processor instance.
-                    if (!Echo.RemoteClient.ServerMessage._processorClasses[procName]) {
-                        throw new Error("Invalid processor specified in ServerMessage: " + procName);
-                    }
-                    processor = new Echo.RemoteClient.ServerMessage._processorClasses[procName](this.client);
-                    this._processorInstances[procName] = processor;
-                }
-                processor.process(dirElements[j]);
+        try {
+            if (Echo.Client.profilingTimer) {
+                Echo.Client.profilingTimer.mark("lib"); // Library Loading
             }
-        }
-    
-        // Complete: notify listeners of completion.
-        this._listenerList.fireEvent({type: "completion", source: this});
+            
+            if (e && !e.success) {
+                this.client.fail("Cannot install library: " + e.url + " Exception: " + e.ex);
+                return;
+            }
+            
+            // Processing phase 2: invoke directives.
+            var groupElements = Core.Web.DOM.getChildElementsByTagName(this.document.documentElement, "group");
+            for (var i = 0; i < groupElements.length; ++i) {
+                var dirElements = Core.Web.DOM.getChildElementsByTagName(groupElements[i], "dir");
+                for (var j = 0; j < dirElements.length; ++j) {
+                    var procName = dirElements[j].getAttribute("proc");
+                    var processor = this._processorInstances[procName];
+                    if (!processor) {
+                        // Create new processor instance.
+                        if (!Echo.RemoteClient.ServerMessage._processorClasses[procName]) {
+                            throw new Error("Invalid processor specified in ServerMessage: " + procName);
+                        }
+                        processor = new Echo.RemoteClient.ServerMessage._processorClasses[procName](this.client);
+                        this._processorInstances[procName] = processor;
+                    }
+                    processor.process(dirElements[j]);
+                }
+            }
         
-        // Start server push listener if required.
-        if (this.document.documentElement.getAttribute("async-interval")) {
-            this.client._asyncManager._setInterval(parseInt(this.document.documentElement.getAttribute("async-interval"), 10));
-            this.client._asyncManager._start();
+            // Complete: notify listeners of completion.
+            this._listenerList.fireEvent({type: "completion", source: this});
+            
+            // Start server push listener if required.
+            if (this.document.documentElement.getAttribute("async-interval")) {
+                this.client._asyncManager._setInterval(parseInt(this.document.documentElement.getAttribute("async-interval"), 10));
+                this.client._asyncManager._start();
+            }
+        } catch (ex) {
+            this.client.fail("Exception: " + ex);
         }
     },
     

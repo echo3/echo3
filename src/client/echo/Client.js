@@ -170,6 +170,11 @@ Echo.Client = Core.extend({
      * @type Core.Web.Scheduler.Runnable
      */
     _waitIndicatorRunnable: null,
+    
+    /**
+     * Flag indicating whether a client failure has occurred (indicating there a fail error has also been displayed).
+     */
+    _failed: false,
 
     /**
      * Creates a new Client instance.  Derived classes must invoke.
@@ -438,6 +443,11 @@ Echo.Client = Core.extend({
      * @param {String} detail the error details 
      */
     fail: function(detail) {
+        if (this._failed) {
+            // Do nothing if failure has already been processed.
+            return;
+        }
+        this._failed = true;
         var element = this.domainElement;
         try {
             // Attempt to dispose.
@@ -579,7 +589,7 @@ Echo.Client = Core.extend({
         
         return true;
     },
-    
+
     /**
      * Processes updates to the component hierarchy.
      * Invokes <code>Echo.Render.processUpdates()</code>.
