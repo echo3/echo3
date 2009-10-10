@@ -414,6 +414,16 @@ Echo.Client = Core.extend({
             Core.Web.DOM.addEventListener(actionDiv, "keypress", listener, false);
             Core.Web.DOM.focusElement(actionDiv);
         }
+        
+        var closeDiv = document.createElement("div");
+        closeDiv.style.cssText = "position:absolute;top:2px;right:8px;color:#ffffff;font-weight:bold;cursor:pointer;";
+        closeDiv.appendChild(document.createTextNode("x"));
+        Core.Web.DOM.addEventListener(closeDiv, "click", Core.method(this, function() {
+            blackoutDiv.parentNode.removeChild(blackoutDiv);
+            div.parentNode.removeChild(div);
+        }), false);
+        
+        div.appendChild(closeDiv);
     },
     
     /**
