@@ -27,7 +27,42 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         /** 
          * Map containing position/size-related properties whose update can be rendered by moving/resizing the window.
          */
-        PARTIAL_PROPERTIES_POSITION_SIZE: { positionX: true, positionY: true, width: true, height: true }
+        PARTIAL_PROPERTIES_POSITION_SIZE: { positionX: true, positionY: true, width: true, height: true },
+        
+        FadeRunnable: Core.extend(Core.Web.Scheduler.Runnable, {
+            
+            timeInterval: 10,
+            repeat: true,
+            _directionOut: null,
+            _div: null,
+            _increment: 8,
+            _completeMethod: null,
+            _time: null,
+            
+            $construct: function(div, directionOut, time, completeMethod) {
+                this._directionOut = directionOut;
+                this._div = div;
+                this._completeMethod = completeMethod;
+                this._startTime = new Date().getTime();
+                this._time = time;
+            },
+            
+            run: function() {
+                var value = (new Date().getTime() - this._startTime) / this._time;
+                if (value > 1) {
+                    value = 1;
+                }
+                this._div.style.opacity = this._directionOut ? 1 - value : value;
+                
+                if (value === 1) {
+                    this.repeat = false;
+                    if (this._completeMethod) {
+                        this._completeMethod();
+                        this._completeMethod = null;
+                    }
+                }
+            }
+        })
     },
     
     $load: function() {
@@ -40,6 +75,12 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      * @type Boolean
      */
     _initialAutoSizeComplete: false,
+    
+    /**
+     * Flag indicating whether the window has been displayed on the screen, i.e., whether CSS visibility property has
+     * been set/any open effect has been started.
+     */
+    _displayed: false,
 
     /**
      * The user-requested bounds of the window.  Contains properties x, y, width, and height.  
@@ -111,6 +152,13 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      * @type Element
      */
     _overlay: null,
+
+    /**
+     * The closing animation time, in milliseconds.  Stored in instance variable due to unavailability of 
+     * application/stylesheet after disposal.
+     * @type Number
+     */
+    _closeAnimationTime: null,
 
     /**
      * Creates a <code>Echo.Sync.WindowPane<code>.
@@ -288,6 +336,23 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /**
+     * <code>ContentPane</code>-specific method to allow component to remove.
+     * 
+     * @return true if a self-remove is being performed, or false if the parent <code>ContentPane</code> should
+     *         immediately remove the <code>WindowPane</code>
+     */
+    renderContentPaneRemove: function(container, completeCallback) {
+        if (this._closeAnimationTime > 0) {
+            Core.Web.Scheduler.add(new Echo.Sync.WindowPane.FadeRunnable(container, true, this._closeAnimationTime, 
+                    completeCallback));
+            return true;
+        } else {
+            // Return false, declining to perform effect.  Do not invoke callback.
+            return false;
+        }
+    },
+    
+    /**
      * Processes a key down event in the window.
      */
     clientKeyDown: function(e) {
@@ -416,6 +481,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     renderAdd: function(update, parentElement) {
         this._initialAutoSizeComplete = false;
         this._rtl = !this.component.getRenderLayoutDirection().isLeftToRight();
+        this._closeAnimationTime = Core.Web.Env.NOT_SUPPORTED_CSS_OPACITY ? 0 : this.component.render("closeAnimationTime", 0);
         
         // Create content DIV.
         // Content DIV will be appended to main DIV by _renderAddFrame().
@@ -484,6 +550,9 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._div.style.outlineStyle = "none";
         this._div.style.overflow = "hidden";
         this._div.style.zIndex = 1;
+        if (!this._displayed) {
+            this._div.style.visibility = "hidden";
+        }
         
         this._borderDivs = Echo.Sync.FillImageBorder.getBorder(this._div);
         var mouseDownHandler = this._resizable ? Core.method(this, this._processBorderMouseDown) : null; 
@@ -683,6 +752,16 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 }
             });
             Core.Web.Image.monitor(this._contentDiv, imageListener);
+        }
+        
+        if (!this._displayed) {
+            this._displayed = true;
+            var time = Core.Web.Env.NOT_SUPPORTED_CSS_OPACITY ? 0 : this.component.render("openAnimationTime", 0);
+            if (time > 0) {
+                Core.Web.Scheduler.add(new Echo.Sync.WindowPane.FadeRunnable(this._div, false, time, null));
+                this._div.style.opacity = 0;
+            }
+            this._div.style.visibility = "visible";
         }
     },
     

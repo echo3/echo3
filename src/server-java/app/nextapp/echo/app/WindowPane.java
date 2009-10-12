@@ -52,6 +52,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
     public static final String PROPERTY_BORDER = "border";
     public static final String PROPERTY_CLOSABLE = "closable";
+    public static final String PROPERTY_CLOSE_ANIMATION_TIME = "closeAnimationTime";
     public static final String PROPERTY_CLOSE_ICON = "closeIcon";
     public static final String PROPERTY_CLOSE_ICON_INSETS = "closeIconInsets";
     public static final String PROPERTY_CLOSE_ROLLOVER_ICON = "closeRolloverIcon";
@@ -77,6 +78,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
     public static final String PROPERTY_MINIMUM_HEIGHT = "minimumHeight";
     public static final String PROPERTY_MINIMUM_WIDTH = "minimumWidth";
     public static final String PROPERTY_MOVABLE = "movable";
+    public static final String PROPERTY_OPEN_ANIMATION_TIME = "openAnimationTime";
     public static final String PROPERTY_POSITION_X = "positionX";
     public static final String PROPERTY_POSITION_Y = "positionY";
     public static final String PROPERTY_RESIZABLE = "resizable";
@@ -225,6 +227,17 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public FillImageBorder getBorder() {
         return (FillImageBorder) get(PROPERTY_BORDER);
+    }
+    
+    /**
+     * Returns the animation time for the window closing effect.
+     * A value of 0 (the default) indicates the window will be immediately closed.
+     * 
+     * @return the animation time, in milliseconds
+     */
+    public int getCloseAnimationTime() {
+        Integer animationTime = (Integer) get(PROPERTY_CLOSE_ANIMATION_TIME);
+        return animationTime == null ? 0 : animationTime.intValue();
     }
     
     /**
@@ -437,6 +450,17 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public Extent getMinimumWidth() {
         return (Extent) get(PROPERTY_MINIMUM_WIDTH);
+    }
+    
+    /**
+     * Returns the animation time for the window opening effect.
+     * A value of 0 (the default) indicates the window will be immediately opened.
+     * 
+     * @return the animation time, in milliseconds
+     */
+    public int getOpenAnimationTime() {
+        Integer animationTime = (Integer) get(PROPERTY_OPEN_ANIMATION_TIME);
+        return animationTime == null ? 0 : animationTime.intValue();
     }
     
     /**
@@ -682,6 +706,16 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public void setClosable(boolean newValue) {
         set(PROPERTY_CLOSABLE, new Boolean(newValue));
+    }
+    
+    /**
+     * Sets the animation time for the window closing effect.
+     * A value of 0 (the default) indicates the window will be immediately closed.
+     * 
+     * @param newValue the new animation time, in milliseconds
+     */
+    public void setCloseAnimationTime(int newValue) {
+        set(PROPERTY_CLOSE_ANIMATION_TIME, new Integer(newValue));
     }
     
     /**
@@ -935,6 +969,16 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public void setMovable(boolean newValue) {
         set(PROPERTY_MOVABLE, new Boolean(newValue));
+    }
+    
+    /**
+     * Sets the animation time for the window opening effect.
+     * A value of 0 (the default) indicates the window will be immediately opened.
+     * 
+     * @param newValue the new animation time, in milliseconds
+     */
+    public void setOpenAnimationTime(int newValue) {
+        set(PROPERTY_OPEN_ANIMATION_TIME, new Integer(newValue));
     }
     
     /**

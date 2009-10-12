@@ -3406,6 +3406,8 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  *     content area
  * @sp {#FillImageBorder} border the border frame containing the WindowPane
  * @sp {Boolean} closable flag indicating whether the window is closable
+ * @sp {Number} closeAnimationTime the duration of the close animation, in 
+ *     milliseconds (default/zero value will result in no animation)
  * @sp {#ImageReference} closeIcon the close button icon
  * @sp {#Insets} closeIconInsets the inset margin around the close button icon
  * @sp {#ImageReference} closeRolloverIcon the close button rollover icon
@@ -3435,6 +3437,8 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * @sp {#Extent} minimumHeight the minimum height of the window
  * @sp {#Extent} minimumWidth the minimum width of the window
  * @sp {Boolean} movable flag indicating whether the window is movable
+ * @sp {Number} openAnimationTime the duration of the open animation, in 
+ *     milliseconds (default/zero value will result in no animation)
  * @sp {#Extent} positionX the horizontal (x) position of the window
  * @sp {#Extent} positionY the vertical (y) position of the window
  * @sp {Boolean} resizable flag indicating whether the window is resizable

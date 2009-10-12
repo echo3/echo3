@@ -253,7 +253,23 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
             // Child never rendered.
             return;
         }
-        childDiv.parentNode.removeChild(childDiv);
+
+        // Determine if child component would like to render removal effect (e.g., WindowPane fade).
+        // If so, inform child to start effect, provide copmletion callback to perform removal operations.
+        var selfRemove = false;
+        if (child.peer.renderContentPaneRemove) {
+            selfRemove = child.peer.renderContentPaneRemove(this._childIdToElementMap[child.renderId], 
+                    Core.method(this, function() {
+                        childDiv.parentNode.removeChild(childDiv);
+                    })
+            );
+        }
+        
+        if (!selfRemove) {
+            // Child will not render removal effect, remove immediately.
+            childDiv.parentNode.removeChild(childDiv);
+        }
+        
         delete this._childIdToElementMap[child.renderId];
     },
     
