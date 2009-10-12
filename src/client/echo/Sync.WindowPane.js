@@ -73,11 +73,13 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 this._directionOut = directionOut;
                 this._div = div;
                 this._completeMethod = completeMethod;
-                this._startTime = new Date().getTime();
                 this._time = time;
             },
             
             run: function() {
+                if (!this._startTime) {
+                    this._startTime = new Date().getTime();
+                }
                 var value = (new Date().getTime() - this._startTime) / this._time;
                 if (value > 1) {
                     value = 1;
