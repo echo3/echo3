@@ -34,7 +34,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
          */
         FadeRunnable: Core.extend(Core.Web.Scheduler.Runnable, {
             
-            timeInterval: 10,
+            timeInterval: 20,
             repeat: true,
             
             /** 
