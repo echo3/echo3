@@ -828,14 +828,14 @@ Core.Web.Env = {
             this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
             this.QUIRK_IE_BLANK_SCREEN = true;
             this.QUIRK_IE_HAS_LAYOUT = true;
+            this.NOT_SUPPORTED_CSS_OPACITY = true;
+            this.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED = true;
             
             if (this.BROWSER_VERSION_MAJOR < 8) {
                 // Internet Explorer 6 and 7 Flags.
                 this.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING = true;
                 this.NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS = true;
                 this.QUIRK_CSS_BORDER_COLLAPSE_INSIDE = true;
-                this.NOT_SUPPORTED_CSS_OPACITY = true;
-                this.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED = true;
                 this.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR = true;
                 this.QUIRK_IE_SELECT_PERCENT_WIDTH = true;
                 
