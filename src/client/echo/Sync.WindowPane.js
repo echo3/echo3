@@ -191,6 +191,12 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      * @type Number
      */
     _closeAnimationTime: null,
+    
+    /**
+     * Flag indicating whether window is being "opened", i.e., if the most recent update has it being directly added to its
+     * parent <code>ContentPane</code>.
+     */
+    _opening: false,
 
     /**
      * Creates a <code>Echo.Sync.WindowPane<code>.
@@ -511,6 +517,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
+        this._opening = update.parent == this.component.parent;
         this._initialAutoSizeComplete = false;
         this._rtl = !this.component.getRenderLayoutDirection().isLeftToRight();
         this._closeAnimationTime = Core.Web.Env.NOT_SUPPORTED_CSS_OPACITY ? 0 : this.component.render("closeAnimationTime", 0);
@@ -788,7 +795,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         
         if (!this._displayed) {
             this._displayed = true;
-            var time = Core.Web.Env.NOT_SUPPORTED_CSS_OPACITY ? 0 : this.component.render("openAnimationTime", 0);
+            var time = (Core.Web.Env.NOT_SUPPORTED_CSS_OPACITY || !this._opening) ? 
+                    0 : this.component.render("openAnimationTime", 0);
             if (time > 0) {
                 Core.Web.Scheduler.add(new Echo.Sync.WindowPane.FadeRunnable(this._div, false, time, null));
                 this._div.style.opacity = 0;
