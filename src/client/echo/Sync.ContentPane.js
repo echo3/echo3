@@ -1,6 +1,21 @@
 /**
  * Component rendering peer: ContentPane.
  * This class should not be extended by developers, the implementation is subject to change.
+ * 
+ * <h3>Exit Animations</h3>
+ * 
+ * <p>Child component peers may implement a <code>renderContentPaneRemove()</code> method if they desire to run
+ * an "exit" animation.  If this method is provided, it will be used to determine if the child desires to play an exit
+ * animation and if so, allow the child to begin executing the animation when the child is to be removed.  
+ * The method must take the following form:</p>
+ * <p><code>renderContentPaneRemove(element, completionMethod)</code></p>
+ * <p>The first parameter, <code>element</code>, provides the DOM <code>Element</code> containing the child component</p>
+ * <p>The second parameter,<code>completionMethod</code> is a function which the animator should call once the animation 
+ * completes</p>
+ * <p>If the <code>renderContentPaneRemove()</code> implementation determines that it will play an animation, it should return 
+ * <code>true</code> and invoke the <code>completionMethod</code> when the animation completes.</p>
+ * <p>If the <code>renderContentPaneRemove()</code> implementation determines that it will NOT play an animation, it should return
+ * <code>false</code> and it should <strong>not invoke</strong> the <code>completionMethod</code>.</p>
  */
 Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
 

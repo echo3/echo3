@@ -29,16 +29,46 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
          */
         PARTIAL_PROPERTIES_POSITION_SIZE: { positionX: true, positionY: true, width: true, height: true },
         
+        /**
+         * Fade runnable for fading in/out windows.
+         */
         FadeRunnable: Core.extend(Core.Web.Scheduler.Runnable, {
             
             timeInterval: 10,
             repeat: true,
-            _directionOut: null,
+            
+            /** 
+             * Flag for fading in/out, set to true when fading out.
+             * @type Boolean 
+             */
+            _directionOut: false,
+            
+            /** 
+             * The DIV element being animated.
+             * @type Element 
+             */
             _div: null,
-            _increment: 8,
+            
+            /** 
+             * Completion callback method to be invoked when animation completes.
+             * @type Function 
+             */
             _completeMethod: null,
+            
+            /**
+             * Desired animation time in milliseconds.
+             * @type Number
+             */
             _time: null,
             
+            /**
+             * Creates a new <code>FadeRunnable</code>.
+             * 
+             * @param {Element} div the element being animated
+             * @param {Boolean} directionOut the animation direction, in = false, out = true
+             * @param {Number} the desired animation time, in milliseconds
+             * @param {Function} the completion method to execute when the animation completes
+             */
             $construct: function(div, directionOut, time, completeMethod) {
                 this._directionOut = directionOut;
                 this._div = div;
