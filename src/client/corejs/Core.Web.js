@@ -51,6 +51,7 @@ Core.Web = {
     
         if (Core.Web.Env.ENGINE_MSHTML) {
             Core.Web.DOM.addEventListener(document, "selectstart", Core.Web._selectStartListener, false);
+            Core.Web.DOM.addEventListener(document, "dragstart", Core.Web._selectStartListener, false);
         }
         
         Core.Web.initialized = true;
