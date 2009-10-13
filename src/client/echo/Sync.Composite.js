@@ -36,7 +36,8 @@ Echo.Sync.Composite = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /** @see Echo.Render.ComponentSync#renderDispose */
-    renderDispose: function(update) { 
+    renderDispose: function(update) {
+        this.contentDiv = null;
         this.div = null;
     },
     
