@@ -811,6 +811,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._renderDisposeFrame();
         this._maskDiv = null;
         this._contentDiv = null;
+        this._controlDiv = null;
     },
     
     /**
