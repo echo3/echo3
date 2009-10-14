@@ -12,14 +12,14 @@ Echo.Sync._ListComponentMixins = {
      */
     getSelectionString: function() {
         var selection = this.get("selection");
-        if (selection != null) {
+        if (selection == null) {
+            return null;
+        } else {
             if (selection instanceof Array) {
                 return selection.join(",");
             } else {
                 return selection.toString();
             }
-        } else {
-            return null;
         }
     },
     
