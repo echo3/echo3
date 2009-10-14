@@ -157,7 +157,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
             var selection = this._getSelection();
             if (selection == null) {
                 selection = [];
-            } else if (typeof (selection) == "number") {
+            } else if (!(selection instanceof Array)) {
                 selection = [selection];
             }
             var arrayIndex = Core.Arrays.indexOf(selection, i); 
