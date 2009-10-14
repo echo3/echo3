@@ -159,6 +159,9 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
                 selection = [];
             } else if (!(selection instanceof Array)) {
                 selection = [selection];
+            } else {
+                // Clone array (required to ensure oldValue != newValue on property set).
+                selection = selection.slice();
             }
             var arrayIndex = Core.Arrays.indexOf(selection, i); 
             if (arrayIndex == -1) {
