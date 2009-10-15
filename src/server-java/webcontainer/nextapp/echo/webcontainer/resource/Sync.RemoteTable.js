@@ -272,20 +272,16 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
                     parseInt(this.component.get("selectionMode"), 10));
         }
         
-        this._table = document.createElement("table");
-        this._table.id = this.component.renderId;
+        this._div = document.createElement("div");
+        this._div.id = this.component.renderId;
         
-        var width = this.component.render("width");
-        if (width && Core.Web.Env.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && Echo.Sync.Extent.isPercent(width)) {
-            this._renderPercentWidthByMeasure = parseInt(width, 10);
-            width = null;
-        }
-    
+        this._table = document.createElement("table");
         this._table.style.borderCollapse = "collapse";
         if (this._selectionEnabled) {
             this._table.style.cursor = "pointer";
         }
         Echo.Sync.renderComponentDefaults(this.component, this._table);
+        
         var border = this.component.render("border");
         if (border) {
             Echo.Sync.Border.render(border, this._table);
@@ -293,8 +289,14 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
                 this._table.style.margin = (Echo.Sync.Extent.toPixels(border.size, false) / 2) + "px";
             }
         }
+
+        var width = this.component.render("width");
         if (width) {
             this._table.style.width = width;
+            // Render percent widths using measuring for IE to avoid potential horizontal scrollbars.
+            if (Core.Web.Env.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && Echo.Sync.Extent.isPercent(width)) {
+                this._div.style.zoom = 1;
+            }
         }
         
         this._tbody = document.createElement("tbody");
@@ -326,8 +328,8 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         }
         
         this._table.appendChild(this._tbody);
-        
-        parentElement.appendChild(this._table);
+        this._div.appendChild(this._table);
+        parentElement.appendChild(this._div);
         
         var trPrototype = this._createRowPrototype();
         
@@ -345,25 +347,6 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         this._addEventListeners();
     },
     
-    /** @see Echo.Render.ComponentSync#renderDisplay */
-    renderDisplay: function() {
-        if (this._renderPercentWidthByMeasure) {
-            this._table.style.width = "";
-            var tableParent = this._table.parentNode;
-            var availableWidth = tableParent.offsetWidth;
-            if (tableParent.style.paddingLeft) {
-                availableWidth -= parseInt(tableParent.style.paddingLeft, 10);
-            }
-            if (tableParent.style.paddingRight) {
-                availableWidth -= parseInt(tableParent.style.paddingRight, 10);
-            }
-            var width = ((availableWidth * this._renderPercentWidthByMeasure) / 100) - Core.Web.Measure.SCROLL_WIDTH;
-            if (width > 0) {
-                this._table.style.width = width + "px";
-            }
-        }
-    },
-    
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
         this._columnWidths = null;
@@ -379,7 +362,6 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         }
         this._table = null;
         this._tbody = null;
-        this._renderPercentWidthByMeasure = null;
     },
     
     /**
