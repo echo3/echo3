@@ -3436,6 +3436,8 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * @sp {#ImageReference} minimizeRolloverIcon the minimize button rollover icon
  * @sp {#Extent} minimumHeight the minimum height of the window
  * @sp {#Extent} minimumWidth the minimum width of the window
+ * @sp {Boolean} modal flag indicating whether the window is modal (and will thus
+ *     block input to components not contained within it)
  * @sp {Boolean} movable flag indicating whether the window is movable
  * @sp {Number} openAnimationTime the duration of the open animation, in 
  *     milliseconds (default/zero value will result in no animation)
