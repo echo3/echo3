@@ -3165,7 +3165,7 @@ Echo.Row = Core.extend(Echo.Component, {
  * @ldp {#Alignment} alignment the alignment of the child component within its
  *      subpane
  * @ldp {#Color} background the background of the child component's subpane
- * @ldp {#FillImage} backrgoundImage the background image of the child
+ * @ldp {#FillImage} backgroundImage the background image of the child
  *      component's subpane
  * @ldp {#Insets} insets the insets margin of the child component's subpane
  * @ldp {#Extent} maximumSize the maximum size of the child component's subpane
