@@ -2996,7 +2996,8 @@ Echo.ContentPane = Core.extend(Echo.Component, {
  * @sp {#Border} border the border displayed around the grid, and between cells
  * @sp {#Extent} columnWidth an indexed property whose indices represent the
  *     width of each column of the grid
- * @sp {#Extent} height the overall height of the grid
+ * @sp {#Extent} height the overall height of the grid (may not be specified
+ *     as a percentage value)
  * @sp {#Insets} insets the default inset margin displayed in each cell
  * @sp {Number} orientation a value indicating whether the grid will be laid out
  *     horizontally and then vertically or vice-versa, one of the following
