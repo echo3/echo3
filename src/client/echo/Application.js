@@ -3008,7 +3008,7 @@ Echo.ContentPane = Core.extend(Echo.Component, {
  *     <li><code>ORIENTATION_VERTICAL</code> lay children out vertically,
  *     then horizontally</li>
  *     </ul>
- * @sp {#Extent} rowWidth an indexed property whose indices represent the height
+ * @sp {#Extent} rowHeight an indexed property whose indices represent the height
  *     of each row of the grid
  * @sp {Number} size the number of cells to render before wrapping to the next
  *     column/row (default 2)
