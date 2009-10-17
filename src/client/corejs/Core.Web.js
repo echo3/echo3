@@ -1526,6 +1526,11 @@ Core.Web.HttpConnection = Core.extend({
 Core.Web.Image = {
     
     /**
+     * Expiration time, after which an image monitor will give up.
+     */
+    _EXPIRE_TIME: 5000,
+    
+    /**
      * Work object for monitorImageLoading() method.
      */
     _Monitor: Core.extend({
@@ -1534,16 +1539,22 @@ Core.Web.Image = {
         _processImageLoadRef: null,
         
         /** Currently enqueued runnable. */
-        _queuedRunnable: null,
+        _runnable: null,
         
         /** Listener to notify of successful image loadings. */
         _listener: null,
         
-        /** Minimum Listener callback interval. */
-        _interval: null,
+        /** Images with remaining load listeners. */
+        _images: null,
         
         /** The number of images to be loaded. */
         _count: 0,
+        
+        /** Expiration time.  When system time is greater than this value, monitor will give up. */
+        _expiration: null,
+        
+        /** Flag indicating whether one or more images have been loaded since last update. */ 
+        _imagesLoadedSinceUpdate: false,
         
         /**
          * Creates a new image monitor.
@@ -1554,15 +1565,25 @@ Core.Web.Image = {
          */
         $construct: function(element, listener, interval) {
             this._listener = listener;
-            this._interval = interval || 250;
             this._processImageLoadRef = Core.method(this, this._processImageLoad);
-            var imgs = element.getElementsByTagName("img");
-            this._count = imgs.length;
-            for (var i = 0; i < this._count; ++i) {
-                if (!imgs[i].complete && (Core.Web.Env.QUIRK_UNLOADED_IMAGE_HAS_SIZE || 
-                        (!imgs[i].height && !imgs[i].style.height))) {
-                    Core.Web.DOM.addEventListener(imgs[i], "load", this._processImageLoadRef, false);
+            
+            this._runnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._update), interval || 250, true);
+            
+            // Find all images beneath element, register load listeners on all which are not yet loaded.
+            var nodeList = element.getElementsByTagName("img");
+            this._images = [];
+            for (var i = 0; i < nodeList.length; ++i) {
+                if (!nodeList[i].complete && (Core.Web.Env.QUIRK_UNLOADED_IMAGE_HAS_SIZE || 
+                        (!nodeList[i].height && !nodeList[i].style.height))) {
+                    this._images.push(nodeList[i]);
+                    Core.Web.Event.add(nodeList[i], "load", this._processImageLoadRef, false);
                 }
+            }
+            
+            this._count = this._images.length;
+            if (this._count > 0) {
+                this._expiration = new Date().getTime() + Core.Web.Image._EXPIRE_TIME;
+                Core.Web.Scheduler.add(this._runnable);
             }
         },
         
@@ -1573,19 +1594,49 @@ Core.Web.Image = {
          */
         _processImageLoad: function(e) {
             e = e ? e : window.event;
-            Core.Web.DOM.removeEventListener(Core.Web.DOM.getEventTarget(e), "load", this._processImageLoadRef, false);
+            var image = Core.Web.DOM.getEventTarget(e);
+            
+            this._imagesLoadedSinceUpdate = true;
+            
+            // Remove listener.
+            Core.Web.Event.remove(image, "load", this._processImageLoadRef, false);
+            
+            // Remove image from list of images to be loaded.
+            Core.Arrays.remove(this._images, image);
+            
+            // Decrement remaining image count.
             --this._count;
             
-            if (this._queuedRunnable && this._count === 0) {
-                Core.Web.Scheduler.remove(this._queuedRunnable);
-                this._queuedRunnable = null;
+            // If runnable is enqueued and no more images now remain to be loaded,
+            // remove the enqueued runnable. 
+            if (this._count === 0) {
+                this._stop();
             }
             
-            if (!this._queuedRunnable) {
-                this._queuedRunnable = Core.Web.Scheduler.run(Core.method(this, function() {
-                    this._queuedRunnable = null;
+            if (!this._runnable) {
+                Core.Web.Scheduler.run(Core.method(this, function() {
                     this._listener();
-                }), this._count === 0 ? 0 : this._interval);
+                }));
+            }
+        },
+        
+        _stop: function() {
+            Core.Web.Scheduler.remove(this._runnable);
+            this._runnable = null;
+            
+            for (var i = 0; i < this._images.length; ++i) {
+                Core.Web.Event.remove(this._images[i], "load", this._processImageLoadRef, false);
+            }
+        },
+        
+        _update: function() {
+            if (this._imagesLoadedSinceUpdate) {
+                this._imagesLoadedSinceUpdate = false;
+                this._listener();
+            }
+            
+            if (new Date().getTime() > this._expiration) {
+                this._stop();
             }
         }
     }),
