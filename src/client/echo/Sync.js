@@ -201,7 +201,7 @@ Echo.Sync.Border = {
      * Supports omission of any term, or empty strings.
      * @type RegExp
      */
-    _PARSER: new RegExp("^(-?\\d+(?:px|pt|pc|cm|mm|in|em|ex))?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|" +
+    _PARSER: new RegExp("^(-?\\d+(?:\\.\\d*)?(?:px|pt|pc|cm|mm|in|em|ex))?(?:^|$|(?= )) ?(none|hidden|dotted|dashed|solid|" +
             "double|groove|ridge|inset|outset)?(?:^|$|(?= )) ?(#[0-9a-fA-F]{6})?$"),
             
     /** 

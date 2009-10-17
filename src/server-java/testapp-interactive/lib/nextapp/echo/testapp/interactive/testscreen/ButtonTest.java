@@ -39,6 +39,7 @@ import nextapp.echo.app.Button;
 import nextapp.echo.app.CheckBox;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
+import nextapp.echo.app.DecimalExtent;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Font;
 import nextapp.echo.app.Grid;
@@ -474,6 +475,33 @@ extends SplitPane {
                 apply(new Applicator() {
                     public void apply(AbstractButton button) {
                         button.setBorder(new Border(new Extent(4, Extent.PT), Color.RED, Border.STYLE_GROOVE));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set Border (1em solid red)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setBorder(new Border(new DecimalExtent(1, Extent.EM), Color.RED, Border.STYLE_SOLID));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set Border (1.5em solid red)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setBorder(new Border(new DecimalExtent(1.5, Extent.EM), Color.RED, Border.STYLE_SOLID));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set Border (2em solid red)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setBorder(new Border(new DecimalExtent(2, Extent.EM), Color.RED, Border.STYLE_SOLID));
                     }
                 });
             }

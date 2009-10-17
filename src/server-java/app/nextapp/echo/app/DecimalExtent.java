@@ -75,6 +75,25 @@ public class DecimalExtent extends Extent {
     }
     
     /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null) {
+            return false;
+        } else if (o instanceof DecimalExtent) {
+            DecimalExtent that = (DecimalExtent) o;
+            return this.decimalValue == that.decimalValue && this.getUnits() == that.getUnits();
+        } else if (o instanceof Extent) {
+            Extent that = (Extent) o;
+            return this.decimalValue == that.getValue() && this.getUnits() == that.getUnits();
+        } else {
+            return false;
+        }
+    }    
+    
+    /**
      * Returns the decimal value of the extent.
      * 
      * @return the decimal value

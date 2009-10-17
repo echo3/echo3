@@ -30,6 +30,7 @@
 package nextapp.echo.app.test;
 
 import nextapp.echo.app.Extent;
+import nextapp.echo.app.DecimalExtent;
 import junit.framework.TestCase;
 
 /**
@@ -47,6 +48,8 @@ public class ExtentTest extends TestCase {
     private static final Extent _50_PICAS = new Extent(50, Extent.PC);
     private static final Extent _50_PIXELS = new Extent(50, Extent.PX);
     private static final Extent _50_POINT = new Extent(50, Extent.PT);
+    private static final Extent _50_POINT_DECIMAL = new DecimalExtent(50, Extent.PT);
+    private static final Extent _49_8_POINT_DECIMAL = new DecimalExtent(49.8, Extent.PT);
 
     /**
      * Test extent addition.
@@ -62,6 +65,16 @@ public class ExtentTest extends TestCase {
         assertEquals(new Extent(20, Extent.CM), new Extent(20, Extent.CM));
         assertFalse(new Extent(20, Extent.CM).equals(new Extent(21, Extent.CM)));
         assertFalse(new Extent(20, Extent.MM).equals(new Extent(21, Extent.CM)));
+    }
+
+    /**
+     * Test equality with decimal extents.
+     */
+    public void testDecimalEquals() {
+        assertTrue(_50_POINT_DECIMAL.equals(_50_POINT));
+        assertTrue(_50_POINT.equals(_50_POINT_DECIMAL));
+        assertFalse(_49_8_POINT_DECIMAL.equals(_50_POINT));
+        assertTrue(_50_POINT.equals(_49_8_POINT_DECIMAL));
     }
 
     /**
