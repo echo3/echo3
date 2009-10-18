@@ -714,7 +714,14 @@ public class WindowPaneExamplesTest extends SplitPane {
         ButtonColumn column = new ButtonColumn();
         windowPane.add(column);
         
-        column.addButton("Set Icon", new ActionListener() {
+        column.addButton("Set Icon 16", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setIcon(Styles.ICON_16_TEST);
+                windowPane.setIconInsets(new Insets(4, 2));
+            }
+        });
+        
+        column.addButton("Set Icon 24", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.setIcon(Styles.ICON_24_MAIL_COMPOSE);
                 windowPane.setIconInsets(new Insets(4, 2));

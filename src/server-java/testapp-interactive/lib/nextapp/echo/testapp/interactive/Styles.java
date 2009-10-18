@@ -53,6 +53,7 @@ public class Styles {
     public static final ImageReference ICON_64_WARNING
             = new ResourceImageReference("nextapp/echo/testapp/interactive/resource/image/Icon64Warning.gif");
     
+    public static final ImageReference ICON_16_TEST = new ResourceImageReference(IMAGE_PATH + "Icon16Test.gif"); 
 
     public static final ImageReference ICON_24_MAIL_COMPOSE = new ResourceImageReference(IMAGE_PATH + "Icon24MailCompose.gif"); 
     public static final ImageReference ICON_24_NO = new ResourceImageReference(IMAGE_PATH + "Icon24No.gif"); 
