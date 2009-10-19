@@ -103,7 +103,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     
     /**
      * Flag indicating whether initial automatic sizing operation (which occurs on first invocation of 
-     * <code>renderDisplay()</code> after <code>renderAdd()</code>) has been completed.
+     * <code>renderDisplay()</code> after <code>_renderAddFrame()</code>) has been completed.
      * @type Boolean
      */
     _initialRenderDisplayComplete: false,
@@ -539,7 +539,6 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         this._opening = update.parent == this.component.parent;
-        this._initialRenderDisplayComplete = false;
         this._rtl = !this.component.getRenderLayoutDirection().isLeftToRight();
         this._closeAnimationTime = Core.Web.Env.NOT_SUPPORTED_CSS_OPACITY ? 0 : this.component.render("closeAnimationTime", 0);
         
@@ -583,6 +582,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      * @param {Element} parentElement the parent element to which the rendered frame should be appended 
      */
     _renderAddFrame: function(parentElement) {
+        this._initialRenderDisplayComplete = false;
         this._loadPositionAndSize();
 
         // Load property states.
