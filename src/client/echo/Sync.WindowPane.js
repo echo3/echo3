@@ -836,7 +836,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                     Core.Web.Scheduler.add(new Echo.Sync.WindowPane.FadeRunnable(this._div, false, time, null));
                     this._div.style.opacity = 0;
                 }
-                this._div.style.visibility = "visible";
+                this._div.style.visibility = "";
             }
         }
     },
