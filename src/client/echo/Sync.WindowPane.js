@@ -195,8 +195,17 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     /**
      * Flag indicating whether window is being "opened", i.e., if the most recent update has it being directly added to its
      * parent <code>ContentPane</code>.
+     * @type Boolean
      */
     _opening: false,
+
+    /**
+     * Time at which window started to wait for image loading.  Null in the event that images have completed loading.
+     * This property is used to hold display of the window until images have loaded, unless a certain amount of time
+     * passes before images can load.
+     * @type Number
+     */
+    _imageWaitStartTime: null,
 
     /**
      * Creates a <code>Echo.Sync.WindowPane<code>.
@@ -224,6 +233,10 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                     Echo.Sync.Extent.toPixels(Echo.WindowPane.DEFAULT_TITLE_HEIGHT);
             this._titleBarDiv.style.height = this._titleBarHeight + "px";
             this._contentDiv.style.top = (this._contentInsets.top + this._titleBarHeight) + "px";
+        }
+        
+        if (e.complete) {
+            this._imageWaitStartTime = null;
         }
         
         Echo.Render.renderComponentDisplay(this.component);
@@ -804,18 +817,27 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             // If position was successfully set, perform initial operations related to automatic sizing 
             // (executed on first renderDisplay() after renderAdd()).
             this._initialRenderDisplayComplete = true;
-            Core.Web.Image.monitor(this._div, Core.method(this, this._imageLoadListener));
+            var waiting = Core.Web.Image.monitor(this._div, Core.method(this, this._imageLoadListener));
+            if (waiting) {
+                this._imageWaitStartTime = new Date().getTime();
+            }
         }
         
         if (!this._displayed) {
-            this._displayed = true;
-            var time = (Core.Web.Env.NOT_SUPPORTED_CSS_OPACITY || !this._opening) ? 
-                    0 : this.component.render("openAnimationTime", 0);
-            if (time > 0) {
-                Core.Web.Scheduler.add(new Echo.Sync.WindowPane.FadeRunnable(this._div, false, time, null));
-                this._div.style.opacity = 0;
+            if (this._imageWaitStartTime && new Date().getTime() > this._imageWaitStartTime + 1000) {
+                this._imageWaitStartTime = null;
             }
-            this._div.style.visibility = "visible";
+            
+            if (!this._imageWaitStartTime) {
+                this._displayed = true;
+                var time = (Core.Web.Env.NOT_SUPPORTED_CSS_OPACITY || !this._opening) ? 
+                        0 : this.component.render("openAnimationTime", 0);
+                if (time > 0) {
+                    Core.Web.Scheduler.add(new Echo.Sync.WindowPane.FadeRunnable(this._div, false, time, null));
+                    this._div.style.opacity = 0;
+                }
+                this._div.style.visibility = "visible";
+            }
         }
     },
     
