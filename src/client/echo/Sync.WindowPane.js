@@ -218,6 +218,25 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /**
+     * Vertically centers the window icon.
+     */
+    _centerIcon: function() {
+        if (!this._titleIconImg || !this._titleIconImg.complete || !this._titleIconImg.height) {
+            return;
+        }
+        
+        var insetsPx = Echo.Sync.Insets.toPixels(this.component.render("iconInsets"));
+        var padHeight = parseInt(this._titleBarDiv.style.height, 10) - insetsPx.top - insetsPx.bottom - this._titleIconImg.height;
+        
+        if (padHeight <= 0) {
+            // Title bar sized by icon+insets, make no vertical adjustment.
+            return;
+        }
+        
+        this._titleIconDiv.style.paddingTop = Math.floor(padHeight / 2) + "px";
+    },
+    
+    /**
      * Listener for events fired from <code>Core.Web.Image.Monitor</code> as contained images within
      * the <code>WindowPane</code> load.
      */
@@ -232,6 +251,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             this._titleBarHeight = new Core.Web.Measure.Bounds(this._titleBarDiv).height || 
                     Echo.Sync.Extent.toPixels(Echo.WindowPane.DEFAULT_TITLE_HEIGHT);
             this._titleBarDiv.style.height = this._titleBarHeight + "px";
+            
             this._contentDiv.style.top = (this._contentInsets.top + this._titleBarHeight) + "px";
         }
         
@@ -641,6 +661,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         
         // Render Title Bar
         
+        var titleInsets = this.component.render("titleInsets", Echo.WindowPane.DEFAULT_TITLE_INSETS);
+        
         this._titleBarDiv = document.createElement("div");
         this._titleBarDiv.style.position = "absolute";
         this._titleBarDiv.style.zIndex = 3;
@@ -649,7 +671,20 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         if (icon) {
             this._titleIconDiv = document.createElement("div");
             this._titleIconDiv.style[Core.Web.Env.CSS_FLOAT] = this._rtl ? "right" : "left";
-            Echo.Sync.Insets.render(this.component.render("iconInsets"), this._titleIconDiv, "padding");
+            
+            // Set icon insets.  If icon insets are unset, apply outside setting of title insets  to outside side of icon.
+            var iconInsets = this.component.render("iconInsets");
+            if (iconInsets) {
+                Echo.Sync.Insets.render(iconInsets, this._titleIconDiv, "padding");
+            } else {
+                var titleInsetsPx = Echo.Sync.Insets.toPixels(titleInsets);
+                if (this._rtl) {
+                    this._titleIconDiv.style.paddingRight = titleInsetsPx.right + "px";
+                } else {
+                    this._titleIconDiv.style.paddingLeft = titleInsetsPx.left + "px";
+                }
+            }
+            
             this._titleBarDiv.appendChild(this._titleIconDiv);
 
             this._titleIconImg = document.createElement("img");
@@ -666,8 +701,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         }
         titleTextDiv.style.whiteSpace = "nowrap";
         Echo.Sync.Font.render(this.component.render("titleFont"), titleTextDiv);
-        Echo.Sync.Insets.render(this.component.render("titleInsets", 
-                Echo.WindowPane.DEFAULT_TITLE_INSETS), titleTextDiv, "padding");
+        Echo.Sync.Insets.render(titleInsets, titleTextDiv, "padding");
         titleTextDiv.appendChild(document.createTextNode(title ? title : "\u00a0"));
         this._titleBarDiv.appendChild(titleTextDiv);
         
@@ -812,7 +846,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._setBounds(this._requested, false);
         Core.Web.VirtualPosition.redraw(this._contentDiv);
         Core.Web.VirtualPosition.redraw(this._maskDiv);
-        
+        this._centerIcon();
+
         if (!this._initialRenderDisplayComplete) {
             // If position was successfully set, perform initial operations related to automatic sizing 
             // (executed on first renderDisplay() after renderAdd()).
