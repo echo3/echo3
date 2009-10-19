@@ -106,7 +106,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      * <code>renderDisplay()</code> after <code>renderAdd()</code>) has been completed.
      * @type Boolean
      */
-    _initialAutoSizeComplete: false,
+    _initialRenderDisplayComplete: false,
     
     /**
      * Flag indicating whether the window has been displayed on the screen, i.e., whether CSS visibility property has
@@ -206,6 +206,27 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._processBorderMouseUpRef = Core.method(this, this._processBorderMouseUp);
         this._processTitleBarMouseMoveRef = Core.method(this, this._processTitleBarMouseMove);
         this._processTitleBarMouseUpRef = Core.method(this, this._processTitleBarMouseUp);
+    },
+    
+    /**
+     * Listener for events fired from <code>Core.Web.Image.Monitor</code> as contained images within
+     * the <code>WindowPane</code> load.
+     */
+    _imageLoadListener: function(e) {
+        if (!this.component) { // Verify component still registered.
+            return;
+        }
+        
+        if (this._titleIconImgLoading && this._titleIconImg.complete) {
+            this._titleIconImgLoading = false;
+            this._titleBarDiv.style.height = "";
+            this._titleBarHeight = new Core.Web.Measure.Bounds(this._titleBarDiv).height || 
+                    Echo.Sync.Extent.toPixels(Echo.WindowPane.DEFAULT_TITLE_HEIGHT);
+            this._titleBarDiv.style.height = this._titleBarHeight + "px";
+            this._contentDiv.style.top = (this._contentInsets.top + this._titleBarHeight) + "px";
+        }
+        
+        Echo.Render.renderComponentDisplay(this.component);
     },
     
     /**
@@ -518,7 +539,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         this._opening = update.parent == this.component.parent;
-        this._initialAutoSizeComplete = false;
+        this._initialRenderDisplayComplete = false;
         this._rtl = !this.component.getRenderLayoutDirection().isLeftToRight();
         this._closeAnimationTime = Core.Web.Env.NOT_SUPPORTED_CSS_OPACITY ? 0 : this.component.render("closeAnimationTime", 0);
         
@@ -613,16 +634,18 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         
         var icon = this.component.render("icon");
         if (icon) {
-            var titleIconDiv = document.createElement("div");
-            titleIconDiv.style[Core.Web.Env.CSS_FLOAT] = this._rtl ? "right" : "left";
-            Echo.Sync.Insets.render(this.component.render("iconInsets"), titleIconDiv, "padding");
-            this._titleBarDiv.appendChild(titleIconDiv);
+            this._titleIconDiv = document.createElement("div");
+            this._titleIconDiv.style[Core.Web.Env.CSS_FLOAT] = this._rtl ? "right" : "left";
+            Echo.Sync.Insets.render(this.component.render("iconInsets"), this._titleIconDiv, "padding");
+            this._titleBarDiv.appendChild(this._titleIconDiv);
+
+            this._titleIconImg = document.createElement("img");
+            Echo.Sync.ImageReference.renderImg(icon, this._titleIconImg);
+            this._titleIconDiv.appendChild(this._titleIconImg);
             
-            var img = document.createElement("img");
-            Echo.Sync.ImageReference.renderImg(icon, img);
-            titleIconDiv.appendChild(img);
+            this._titleIconImgLoading = true;
         }
-    
+
         var title = this.component.render("title");
         var titleTextDiv = document.createElement("div");
         if (icon) {
@@ -640,12 +663,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             this._titleBarHeight = Echo.Sync.Extent.toPixels(titleBarHeight);
         }
         if (!titleBarHeight) {
-            var titleMeasure = new Core.Web.Measure.Bounds(this._titleBarDiv);
-            if (titleMeasure.height) {
-                this._titleBarHeight = titleMeasure.height;
-            } else {
-                this._titleBarHeight = Echo.Sync.Extent.toPixels(Echo.WindowPane.DEFAULT_TITLE_HEIGHT);
-            }
+            this._titleBarHeight = new Core.Web.Measure.Bounds(this._titleBarDiv).height || 
+                            Echo.Sync.Extent.toPixels(Echo.WindowPane.DEFAULT_TITLE_HEIGHT);
         }
     
         this._titleBarDiv.style.top = this._contentInsets.top + "px";
@@ -781,16 +800,11 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.VirtualPosition.redraw(this._contentDiv);
         Core.Web.VirtualPosition.redraw(this._maskDiv);
         
-        if (!this._initialAutoSizeComplete) {
+        if (!this._initialRenderDisplayComplete) {
             // If position was successfully set, perform initial operations related to automatic sizing 
             // (executed on first renderDisplay() after renderAdd()).
-            this._initialAutoSizeComplete = true;
-            var imageListener = Core.method(this, function() {
-                if (this.component) { // Verify component still registered.
-                    Echo.Render.renderComponentDisplay(this.component);
-                }
-            });
-            Core.Web.Image.monitor(this._contentDiv, imageListener);
+            this._initialRenderDisplayComplete = true;
+            Core.Web.Image.monitor(this._div, Core.method(this, this._imageLoadListener));
         }
         
         if (!this._displayed) {
@@ -838,6 +852,10 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         
         Core.Web.Event.removeAll(this._titleBarDiv);
         this._titleBarDiv = null;
+        
+        this._titleIconDiv = null;
+        this._titleIconImg = null;
+        this._titleIconImgLoading = false;
         
         this._div = null;
     },
