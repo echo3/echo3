@@ -717,21 +717,24 @@ public class WindowPaneExamplesTest extends SplitPane {
         column.addButton("Set Icon 16", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.setIcon(Styles.ICON_16_TEST);
-                windowPane.setIconInsets(new Insets(4, 2));
             }
         });
         
         column.addButton("Set Icon 24", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.setIcon(Styles.ICON_24_MAIL_COMPOSE);
-                windowPane.setIconInsets(new Insets(4, 2));
+            }
+        });
+        
+        column.addButton("Set Icon 64", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setIcon(Styles.ICON_64_INFORMATION);
             }
         });
         
         column.addButton("Clear Icon", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.setIcon(null);
-                windowPane.setIconInsets(null);
             }
         });
         
