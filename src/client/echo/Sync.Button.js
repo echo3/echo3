@@ -129,7 +129,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
          * @param {Boolean} pressed the new pressed state
          */
         setHighlightState: function(focused, rollover, pressed) {
-            // Determine state.  Priorities are 1: pressed, 2: rollover: 3: focused.
+            // Determine effect property name.  Priorities are 1: pressed, 2: rollover: 3: focused.
             var ep = pressed ? "pressed" : (rollover ? "rollover" : "focused");
             var state = focused || pressed || rollover;
 
@@ -216,24 +216,34 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         return Echo.Render.ComponentSync.FOCUS_PERMIT_ARROW_ALL;
     },
     
+    /**
+     * Returns an adjusted insets value to apply to the button such that the specified border+returned insets will occupy the
+     * same space as the button's default state border+insets.
+     * <p>
+     * For example. consider a button with a border size of 5px, and a default inset of 3px.  
+     * The total border/inset space would be 8px.  If this method is passed a border with
+     * a size of 2px, it will return an inset with a size of 6px to compensate and ensure the border+inset size will be unchanged.
+     * This calculation is performed individually for each side of the border/insets. 
+     * 
+     * @param #Border border the effect border for which insets should be calculated.
+     * @return the adjusted insets
+     * @type #Insets
+     */
     getInsetsForBorder: function(border) {
         var defaultBorder = this.component.render("border");
         if (!border) {
             // Return default insets if provided border is null.
             return this.component.render("insets");
         }
-        var getPx = Echo.Sync.Border.getPixelSize;
+        
         var insetsPx = Echo.Sync.Insets.toPixels(this.component.render("insets"));
-        insetsPx.top += Echo.Sync.Border.getPixelSize(defaultBorder, "top") - Echo.Sync.Border.getPixelSize(border, "top");
-        insetsPx.right += Echo.Sync.Border.getPixelSize(defaultBorder, "right") - Echo.Sync.Border.getPixelSize(border, "right");
-        insetsPx.bottom += Echo.Sync.Border.getPixelSize(defaultBorder, "bottom") - Echo.Sync.Border.getPixelSize(border, "bottom");
-        insetsPx.left += Echo.Sync.Border.getPixelSize(defaultBorder, "left") - Echo.Sync.Border.getPixelSize(border, "left");
         for (var x in insetsPx) {
+            insetsPx[x] += Echo.Sync.Border.getPixelSize(defaultBorder, x) - Echo.Sync.Border.getPixelSize(border, x);
             if (insetsPx[x] < 0) {
                 insetsPx[x] = 0;
             }
         }
-        return insetsPx.top + "px " + insetsPx.right + "px " + insetsPx.bottom + "px "  + insetsPx.left + "px";
+        return insetsPx.top + " " + insetsPx.right + " " + insetsPx.bottom + " "  + insetsPx.left;
     },
         
     /** Processes a focus blur event. */
