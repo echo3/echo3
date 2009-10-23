@@ -583,21 +583,14 @@ Echo.Component = Core.extend({
         focusable: false,
 
         /**
-         * Returns the child component at the specified index after sorting the
-         * children in the order which they should be focused. The default
-         * implementation simply returns the same value as getComponent().
-         * Implementations should override this method when the natural order to
-         * focus child components is different than their normal ordering (e.g.,
-         * when the component at index 1 is positioned above the component at
-         * index 0).
+         * Returns the order in which child components should be focused.
+         * The natural order in which child components should be focused should be returned, without necessarily investigating
+         * whether those children are focusable.  A value of null may be returned if the components should be focused in the
+         * sequential order.
          * 
-         * @param {Number} index the index of the child (in focus order)
-         * @return the child component
-         * @type Echo.Component
+         * @return Array an array of child indices
          */
-        getFocusComponent: function(index) {
-            return this.children[index];
-        },
+        getFocusOrder: null,
         
         /**
          *  Flag indicating whether component is rendered as a pane (pane components consume available height).
@@ -1436,7 +1429,7 @@ Echo.FocusManager = Core.extend({
         
         while (true) {
             // The candidate next component to be focused.
-            var nextComponent = null, componentIndex;
+            var nextComponent = null;
 
             if ((reverse && component == originComponent) || (lastComponent && lastComponent.parent == component)) {
                 // Searching in reverse on origin component (OR) Previously moved up: do not move down.
@@ -1445,7 +1438,13 @@ Echo.FocusManager = Core.extend({
                 if (componentCount > 0) {
                     // Attempt to move down.
                     // Next component is first child (searching forward) or last child (searching reverse).
-                    nextComponent = component.getComponent(reverse ? componentCount - 1 : 0);
+                    var focusOrder = this._getFocusOrder(component);
+                    if (focusOrder) {
+                        nextComponent = component.getComponent(focusOrder[reverse ? componentCount - 1 : 0]);
+                    } else {
+                        nextComponent = component.getComponent(reverse ? componentCount - 1 : 0);
+                    }
+                    
                     if (visitedComponents[nextComponent.renderId]) {
                         // Already visited children, cancel the move.
                         nextComponent = null;
@@ -1456,18 +1455,7 @@ Echo.FocusManager = Core.extend({
             if (nextComponent == null) {
                 // Attempt to move to next/previous sibling.
                 if (component.parent) {
-                    // Get previous sibling.
-                    if (reverse) {
-                        componentIndex = component.parent.indexOf(component);
-                        if (componentIndex > 0) {
-                            nextComponent = component.parent.getComponent(componentIndex - 1);
-                        }
-                    } else {
-                        componentIndex = component.parent.indexOf(component);
-                        if (componentIndex < component.parent.getComponentCount() - 1) {
-                            nextComponent = component.parent.getComponent(componentIndex + 1);
-                        }
-                    }
+                    nextComponent = this._getNextCandidate(component, reverse);
                 }
             }
 
@@ -1567,6 +1555,63 @@ Echo.FocusManager = Core.extend({
             return -1;
         }
         return parent.indexOf(descendant);
+    },
+    
+    /**
+     * Returns and validates the component's natural focus order, if provided.
+     * Null is returned in the event the component's natural focus order is invalid.
+     */
+    _getFocusOrder: function(component) {
+        var focusOrder = component.getFocusOrder ? component.getFocusOrder() : null;
+        if (!focusOrder) {
+            return null;
+        }
+        
+        var testOrder = focusOrder.slice().sort();
+        for (var i = 1; i < testOrder.length; ++i) {
+            if (testOrder[i - 1] >= testOrder[i]) {
+                // Invalid focus order.
+                Core.Debug.consoleWrite("Invalid focus order for component " + component + ": " + focusOrder);
+                return null;
+            }
+        }
+
+        return focusOrder;
+    },
+    
+    _getNextCandidate: function(component, reverse) {
+        if (!component.parent) {
+            return null;
+        }
+        
+        var focusOrder = this._getFocusOrder(component.parent);
+        var componentIndex, orderIndex;
+        
+        if (reverse) {
+            componentIndex = component.parent.indexOf(component);
+            if (focusOrder) {
+                orderIndex = Core.Arrays.indexOf(focusOrder, componentIndex);
+                if (orderIndex > 0) {
+                    return component.parent.children[focusOrder[orderIndex - 1]];
+                }
+            } else {
+                if (componentIndex > 0) {
+                    return component.parent.getComponent(componentIndex - 1);
+                }
+            }
+        } else {
+            componentIndex = component.parent.indexOf(component);
+            if (focusOrder) {
+                orderIndex = Core.Arrays.indexOf(focusOrder, componentIndex);
+                if (orderIndex < focusOrder.length - 1) {
+                    return component.parent.children[focusOrder[orderIndex + 1]];
+                }
+            } else {
+                if (componentIndex < component.parent.getComponentCount() - 1) {
+                    return component.parent.getComponent(componentIndex + 1);
+                }
+            }
+        }
     }
 });
 
@@ -3271,7 +3316,26 @@ Echo.SplitPane = Core.extend(Echo.Component, {
     componentType: "SplitPane",
 
     /** @see Echo.Component#pane */
-    pane: true
+    pane: true,
+    
+    /** @see Echo.Component#getFocusOrder */
+    getFocusOrder: function() {
+        if (this.children.length < 2) {
+            return null;
+        }
+        
+        switch (this.render("orientation")) {
+        case Echo.SplitPane.ORIENTATION_VERTICAL_BOTTOM_TOP:
+        case Echo.SplitPane.ORIENTATION_HORIZONTAL_TRAILING_LEADING:
+            return [1, 0];
+        case Echo.SplitPane.ORIENTATION_HORIZONTAL_LEFT_RIGHT:
+            return this.getRenderLayoutDirection().isLeftToRight() ? null : [1, 0]; 
+        case Echo.SplitPane.ORIENTATION_HORIZONTAL_RIGHT_LEFT:
+            return this.getRenderLayoutDirection().isLeftToRight() ? [1, 0] : null; 
+        default:
+            return null;
+        }
+    }
 });
 
 /**
