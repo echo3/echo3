@@ -1559,7 +1559,12 @@ Echo.FocusManager = Core.extend({
     
     /**
      * Returns and validates the component's natural focus order, if provided.
-     * Null is returned in the event the component's natural focus order is invalid.
+     * Null is returned in the event the component's natural focus order is invalid, i.e., one or more component
+     * indices are repeated.
+     * 
+     * @param {Echo.Component} component the component
+     * @return the focus order, an array of component indices
+     * @type Array
      */
     _getFocusOrder: function(component) {
         var focusOrder = component.getFocusOrder ? component.getFocusOrder() : null;
@@ -1579,6 +1584,16 @@ Echo.FocusManager = Core.extend({
         return focusOrder;
     },
     
+    /**
+     * Returns the next sibling candidate focus component adjacent the specified component.
+     * Uses the focus order provided by <code>Echo.Component.getFocusOrder()</code> if provided.
+     * 
+     * @param {Echo.Component} component the current focused/analyzed component
+     * @param {Boolean} reverse flag indicating whether next component (false) or previous copmonent (true)
+     *        should be returned
+     * @return the next focus candidate
+     * @type Echo.Component
+     */
     _getNextCandidate: function(component, reverse) {
         if (!component.parent) {
             return null;
