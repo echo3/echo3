@@ -80,7 +80,7 @@ Core.Web.DOM = {
      * Temporary storage for the element about to be focused (for clients that require 'delayed' focusing).
      */
     _focusPendingElement: null,
-    
+
     /**
      * Runnable to invoke focus implementation (lazily created).
      * @type Core.Web.Scheduler.Runnable
@@ -151,38 +151,58 @@ Core.Web.DOM = {
      * The focus operation may be placed in the scheduler if the browser requires the focus
      * operation to be performed outside of current JavaScript context (i.e., in the case
      * where the element to be focused was just rendered in this context).
+     * Passing a null element argument will cancel any scheduler runnable attempting to 
+     * set the focus.
      * 
      * @param {Element} element the DOM element to focus
      */
     focusElement: function(element) {
-        if (Core.Web.Env.QUIRK_DELAYED_FOCUS_REQUIRED) {
-            if (!this._focusRunnable) {
-                this._focusRunnable = new Core.Web.Scheduler.MethodRunnable(this._focusElementImpl);
-            }
-            Core.Web.DOM._focusPendingElement = element;
-            Core.Web.Scheduler.add(this._focusRunnable);
-        } else {
-            this._focusElementImpl(element);
+        if (!this._focusRunnable) {
+            this._focusRunnable = new (Core.extend(Core.Web.Scheduler.Runnable, {
+                
+                repeat: true,
+                
+                attempt: 0,
+                
+                timeInterval: 25,
+            
+                run: function() {
+                    element = Core.Web.DOM._focusPendingElement;
+                    Core.Debug.consoleWrite("Focus:" + element + "/" + element.id + "/" + Core.Web.DOM.isDisplayed(element));
+                    
+                    var done = false;
+                    if (Core.Web.DOM.isDisplayed(element)) {
+                        done = true;
+                        try {
+                            element.focus();
+                        } catch (ex) {
+                            // Silently digest IE focus exceptions.
+                        }
+                    }
+                    
+                    done |= this.attempt > 25;
+                    
+                    ++this.attempt;
+                    
+                    if (done) {
+                        Core.Web.DOM._focusPendingElement = null;
+                        Core.Web.Scheduler.remove(this);
+                    }
+                }
+            }))();
         }
-    },
-    
-    /**
-     * Focus element implementation.
-     * 
-     * @param {Element} element the DOM element to focus
-     */
-    _focusElementImpl: function(element) {
-        if (!element) {
-            element = Core.Web.DOM._focusPendingElement;
+
+        if (!(element && element.focus && Core.Web.DOM.isAncestorOf(document.body, element))) {
+            // Cancel and return.
             Core.Web.DOM._focusPendingElement = null;
+            Core.Web.Scheduler.remove(this._focusRunnable);
+            return;
         }
-        if (element && element.focus) {
-            try {
-                element.focus();
-            } catch (ex) {
-                // Silently digest IE focus exceptions.
-            }
-        }
+        
+        this._focusPendingElement = element;
+        
+        this._focusRunnable.attempt = 0;
+        Core.Web.Scheduler.add(this._focusRunnable);
     },
     
     /**
@@ -284,11 +304,46 @@ Core.Web.DOM = {
      */
     isAncestorOf: function(ancestorNode, descendantNode) {
         var testNode = descendantNode;
-        while (testNode !== null) {
+        while (testNode != null) {
             if (testNode == ancestorNode) {
                 return true;
             }
             testNode = testNode.parentNode;
+        }
+        return false;
+    },
+    
+    /**
+     * Determines if the given node is theoretically dispalyed within the document.
+     * The following conditions are verified:
+     * <ul>
+     *  <li><code>node</code> must be a descendant of <code>document.body</code></li>
+     *  <li><code>node</code>'s element ancestry must not contain a element whose CSS <code>visibility</code> state is 
+     *    <code>hidden</code></li>
+     *  <li><code>node</code>'s element ancestry must not contain a element whose CSS <code>display</code> state is 
+     *    <code>none</code></li>
+     * </ul>
+     * 
+     * @param {Node} node to analyze
+     * @return true if the node is displayed 
+     */
+    isDisplayed: function(node) {
+        while (node != null) {
+            if (node.nodeType == 1) {
+                if (node.style) {
+                    if (node.style.visibility == "hidden") {
+                        return false;
+                    }
+                    if (node.style.display == "none") {
+                        return false;
+                    }
+                }
+            }
+            
+            if (node == document.body) {
+                return true;
+            }
+            node = node.parentNode;
         }
         return false;
     },

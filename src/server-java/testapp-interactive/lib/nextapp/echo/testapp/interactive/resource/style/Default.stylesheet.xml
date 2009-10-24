@@ -36,6 +36,8 @@
   <p n="pressedBackground" t="Color">#2f2f3f</p>
   <p n="pressedForeground" t="Color">#ffafaf</p>
   <p n="pressedBorder" t="Border">1px inset #4f4f6f</p>
+  <p n="focusedEnabled" t="b">true</p>
+  <p n="focusedBorder" t="Border">2px dashed #6f6f8f</p>
   <p n="insets" t="Insets">3px 20px</p>
  </s>
  <s b="Default" n="Selected" t="nextapp.echo.app.Button">

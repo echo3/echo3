@@ -500,6 +500,9 @@ Echo.Render = {
                         ", peer does not provide renderFocus() implementation."); 
             }
             focusedComponent.peer.renderFocus();
+        } else {
+            // Cancel any runnable created by Core.Web.DOM.focusElement if no focused component specified.
+            Core.Web.DOM.focusElement(null);
         }
     }
 };
