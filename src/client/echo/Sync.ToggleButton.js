@@ -165,8 +165,8 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
     },
     
     /** @see Echo.Sync.Button#setHighlightState */
-    setHighlightState: function(focused, rollover, pressed) {
-        Echo.Sync.Button.prototype.setHighlightState.call(this, focused, rollover, pressed);
+    setHighlightState: function(rollover, pressed) {
+        Echo.Sync.Button.prototype.setHighlightState.call(this, rollover, pressed);
         var stateIcon = this.getStateIcon(rollover, pressed);
         if (stateIcon) {
             var url = Echo.Sync.ImageReference.getUrl(stateIcon);
