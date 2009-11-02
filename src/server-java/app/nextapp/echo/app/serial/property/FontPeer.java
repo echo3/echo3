@@ -46,6 +46,16 @@ public class FontPeer
 implements SerialPropertyPeer {
     
     /**
+     * Determines if the given attribute value corresponds to true, with either "1" or "true" indicating true.
+     * 
+     * @param value the value to test
+     * @return true if the value is true
+     */
+    private static final boolean isTrue(String value) {
+        return "true".equals(value) || "1".equals(value);
+    }
+    
+    /**
      * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(Context,
      *      Class, org.w3c.dom.Element)
      */
@@ -54,11 +64,11 @@ implements SerialPropertyPeer {
         Element fElement = DomUtil.getChildElementByTagName(propertyElement, "f");
         
         int style = Font.PLAIN;
-        style |= "1".equals(fElement.getAttribute("bo")) ? Font.BOLD : 0;
-        style |= "1".equals(fElement.getAttribute("it")) ? Font.ITALIC : 0;
-        style |= "1".equals(fElement.getAttribute("un")) ? Font.UNDERLINE : 0;
-        style |= "1".equals(fElement.getAttribute("ov")) ? Font.OVERLINE : 0;
-        style |= "1".equals(fElement.getAttribute("lt")) ? Font.LINE_THROUGH : 0;
+        style |= isTrue(fElement.getAttribute("bo")) ? Font.BOLD : 0;
+        style |= isTrue(fElement.getAttribute("it")) ? Font.ITALIC : 0;
+        style |= isTrue(fElement.getAttribute("un")) ? Font.UNDERLINE : 0;
+        style |= isTrue(fElement.getAttribute("ov")) ? Font.OVERLINE : 0;
+        style |= isTrue(fElement.getAttribute("lt")) ? Font.LINE_THROUGH : 0;
         Extent size = null;
 
         if (fElement.hasAttribute("sz")) {
