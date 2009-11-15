@@ -311,7 +311,7 @@ extends Component {
     }
     
     /**
-     * Determines the any <code>ActionListener</code>s are registered.
+     * Determines if any <code>ActionListener</code>s are registered.
      * 
      * @return true if any action listeners are registered
      */
