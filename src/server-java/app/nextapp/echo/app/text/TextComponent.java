@@ -104,7 +104,7 @@ extends Component {
     }
     
     /**
-     * Adds an <code>ActionListener</code> to the <code>TextField</code>.
+     * Adds an <code>ActionListener</code> to the <code>TextComponent</code>.
      * The <code>ActionListener</code> will be invoked when the user
      * presses the ENTER key in the field.
      * 
@@ -136,7 +136,7 @@ extends Component {
     
     /**
      * Returns the action command which will be provided in 
-     * <code>ActionEvent</code>s fired by this <code>TextField</code>.
+     * <code>ActionEvent</code>s fired by this <code>TextComponent</code>.
      * 
      * @return the action command
      */
@@ -358,7 +358,7 @@ extends Component {
     }
     
     /**
-     * Removes an <code>ActionListener</code> from the <code>TextField</code>.
+     * Removes an <code>ActionListener</code> from the <code>TextComponent</code>.
      * 
      * @param l the <code>ActionListener</code> to remove
      */
@@ -374,7 +374,7 @@ extends Component {
     
     /**
      * Sets the action command which will be provided in
-     * <code>ActionEvent</code>s fired by this <code>TextField</code>.
+     * <code>ActionEvent</code>s fired by this <code>TextComponent</code>.
      * 
      * @param newValue the new action command
      */
