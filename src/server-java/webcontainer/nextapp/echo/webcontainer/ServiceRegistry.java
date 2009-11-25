@@ -73,8 +73,11 @@ public class ServiceRegistry {
      */
     public synchronized void add(Service service) {
         if (serviceMap.containsKey(service.getId()) 
-                && serviceMap.get(service.getId()).getClass().getName() != service.getClass().getName()) {
-            throw new IllegalArgumentException("Identifier already in use by another service.");
+                && !serviceMap.get(service.getId()).getClass().getName().equals(service.getClass().getName())) {
+            throw new IllegalArgumentException("Identifier already in use by another service."
+                    + " id: " + service.getId()
+                    + " installed service: " + serviceMap.get(service.getId()).getClass().getName()
+                    + " added service: " + service.getClass().getName());
         }
         serviceMap.put(service.getId(), service);
     }
