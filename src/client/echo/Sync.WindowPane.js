@@ -859,7 +859,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         }
         
         if (!this._displayed) {
-            if (this._imageWaitStartTime && new Date().getTime() > this._imageWaitStartTime + 1000) {
+            if (this._imageWaitStartTime && new Date().getTime() > this._imageWaitStartTime + 300) {
                 this._imageWaitStartTime = null;
             }
             

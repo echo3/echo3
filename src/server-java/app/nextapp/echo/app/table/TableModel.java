@@ -40,7 +40,7 @@ public interface TableModel
 extends Serializable {
     
     /**
-     * Adds a listener that will be notified of changes/
+     * Adds a listener that will be notified of changes.
      *
      * @param l the listener to add
      */
