@@ -158,6 +158,7 @@ class OutputProcessor {
         if (syncState.isOutOfSync()) {
             serverMessage.setResync();
         }
+        
         try {
             // Render output to server message DOM.
             if (serverUpdateManager.isFullRefreshRequired()) {
@@ -170,12 +171,14 @@ class OutputProcessor {
             renderCommands();
             renderFocus();
             renderAsyncState();
-
+        } catch (SerialException ex) {
+            throw new SynchronizationException("Cannot serialize server state.", ex);
+        }
+        
+        try {
             // Render DOM to <code>PrintWriter</code>.
             conn.setContentType(ContentType.TEXT_XML);
             DomUtil.save(serverMessage.getDocument(), conn.getWriter(), null);
-        } catch (SerialException ex) {
-            throw new SynchronizationException("Cannot serialize server state.", ex);
         } catch (SAXException ex) {
             throw new SynchronizationException("Cannot serialize server state.", ex);
         }
