@@ -30,6 +30,7 @@
 package nextapp.echo.webcontainer.service;
 
 import java.io.IOException;
+import java.security.AccessControlException;
 
 import nextapp.echo.webcontainer.Connection;
 import nextapp.echo.webcontainer.Service;
@@ -42,6 +43,16 @@ import nextapp.echo.webcontainer.util.Resource;
  */
 public class JavaScriptService 
 implements Service {
+	
+	private static boolean allowIEcompression = false;
+	static {
+		try {
+			if ("true".equals(System.getProperty("echo.allowiecompression"))) {
+				allowIEcompression = true;
+			}
+		}
+		catch (AccessControlException ignored) {} // if running under a security manager
+	}
     
     /**
      * Creates a new <code>JavaScript</code> service from the specified
@@ -117,7 +128,7 @@ implements Service {
     public void service(Connection conn) 
     throws IOException {
         String userAgent = conn.getRequest().getHeader("user-agent");
-        if (userAgent == null || userAgent.indexOf("MSIE") != -1) {
+        if (!allowIEcompression && (userAgent == null || userAgent.indexOf("MSIE") != -1)) {
             // Due to behavior detailed Microsoft Knowledge Base Article Id 312496, 
             // all HTTP compression support is disabled for this browser.
             // Due to the fact that ClientProperties information is not necessarily 
