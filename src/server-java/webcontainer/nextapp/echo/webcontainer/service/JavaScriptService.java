@@ -43,16 +43,16 @@ import nextapp.echo.webcontainer.util.Resource;
  */
 public class JavaScriptService 
 implements Service {
-	
-	private static boolean allowIEcompression = false;
-	static {
-		try {
-			if ("true".equals(System.getProperty("echo.allowiecompression"))) {
-				allowIEcompression = true;
-			}
-		}
-		catch (AccessControlException ignored) {} // if running under a security manager
-	}
+    
+    private static boolean allowIEcompression = false;
+    static {
+        try {
+            if ("true".equals(System.getProperty("echo.allowiecompression"))) {
+                allowIEcompression = true;
+            }
+        }
+        catch (AccessControlException ignored) {} // if running under a security manager
+    }
     
     /**
      * Creates a new <code>JavaScript</code> service from the specified
