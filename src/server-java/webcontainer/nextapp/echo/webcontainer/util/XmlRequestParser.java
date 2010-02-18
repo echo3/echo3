@@ -47,6 +47,20 @@ import nextapp.echo.app.util.DomUtil;
  */
 public class XmlRequestParser {
     
+    public static class InvalidXmlException extends IOException {
+        
+        private Throwable cause;
+        
+        public InvalidXmlException(String message, Throwable cause) {
+            super(message);
+            this.cause = cause;
+        }
+        
+        public Throwable getCause() {
+            return cause;
+        }
+    }
+    
     /**
      * Trims an XML <code>InputStream</code> to work around the issue 
      * of the XML parser crashing on trailing whitespace.   This issue is present 
@@ -106,17 +120,9 @@ public class XmlRequestParser {
             }
             return DomUtil.getDocumentBuilder().parse(in);
         } catch (final SAXException ex) {
-            throw new IOException("Provided InputStream cannot be parsed.") {
-                public Throwable getCause() {
-                    return ex;
-                }
-            };
+            throw new InvalidXmlException("Provided InputStream cannot be parsed.", ex);
         } catch (final IOException ex) {
-            throw new IOException("Provided InputStream cannot be parsed.") {
-                public Throwable getCause() {
-                    return ex;
-                }
-            };
+            throw new InvalidXmlException("Provided InputStream cannot be parsed.", ex);
         } finally {
             if (in != null) { try { in.close(); } catch (IOException ex) { } }
         }

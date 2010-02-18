@@ -31,6 +31,11 @@ package nextapp.echo.webcontainer;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletResponse;
+
+import nextapp.echo.app.util.Log;
+import nextapp.echo.webcontainer.util.XmlRequestParser.InvalidXmlException;
+
 /**
  * The high-level object which encapsulates the core of the client-server synchronization process for 
  * server-side applications.
@@ -58,8 +63,6 @@ implements SynchronizationState {
     throws IOException {
         super();
         this.conn = conn;
-        inputProcessor = new InputProcessor(this, conn);
-        userInstance = conn.getUserInstance(inputProcessor.getWindowId(), inputProcessor.getInitId());
     }
     
     /**
@@ -93,6 +96,17 @@ implements SynchronizationState {
      */
     public void process() 
     throws IOException {
+        try {
+            inputProcessor = new InputProcessor(this, conn);
+        } catch (InvalidXmlException ex) {
+            // Invalid request made.
+            Log.log("Invalid XML Received, returning 400/Bad Request.", ex);
+            conn.getResponse().sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid XML");
+            return;
+        }
+        
+        userInstance = conn.getUserInstance(inputProcessor.getWindowId(), inputProcessor.getInitId());
+
         synchronized(userInstance) {
             boolean initRequired = !userInstance.isInitialized();
             
