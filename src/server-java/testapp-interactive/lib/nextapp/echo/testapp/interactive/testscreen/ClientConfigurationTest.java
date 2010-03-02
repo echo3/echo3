@@ -98,6 +98,7 @@ public class ClientConfigurationTest extends Column {
         addTextProperty("Session Expiration URI:", ClientConfiguration.SESSION_EXPIRATION_URI);
         addTextProperty("Session Expiration Message:", ClientConfiguration.SESSION_EXPIRATION_MESSAGE);
         addTextProperty("Resync Message:", ClientConfiguration.RESYNC_MESSAGE);
+        addTextProperty("Network Error Message:", ClientConfiguration.NETWORK_ERROR_MESSAGE);
         
         Button updateButton = new Button("Update ClientConfiguration");
         updateButton.setStyleName("Default");

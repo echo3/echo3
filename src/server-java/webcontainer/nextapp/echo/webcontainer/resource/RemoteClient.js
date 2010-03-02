@@ -37,6 +37,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
          * Default client configuration data.
          */
         DEFAULT_CONFIGURATION: {
+            "NetworkError.Message": "A network error has occurred, please try again.",
             "SessionExpiration.Message": "Your session has expired.",
             "Resync.Message": "This window was not synchronized with the server and has been reset.  " + 
                     "Please try your last request again."
@@ -298,6 +299,9 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
             } else {
                 detail = e.source.getResponseText();
             }
+        } else {
+            this._handleNetworkError();
+            return;
         }
         this.fail(detail);
     },
@@ -323,6 +327,19 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
                     window.location.reload();
                 }, Echo.Client.STYLE_MESSAGE);
             }
+        }
+    },
+    
+    _handleNetworkError: function() {
+        var element = this.domainElement;
+        try {
+            this.dispose();
+        } finally {
+            // Display error.
+            this.displayError(element, this.configuration["NetworkError.Message"], null, 
+                    this.configuration["Action.Continue"], function() {
+                window.location.reload();
+            }, Echo.Client.STYLE_MESSAGE);
         }
     },
     

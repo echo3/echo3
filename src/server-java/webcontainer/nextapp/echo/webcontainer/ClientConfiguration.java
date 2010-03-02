@@ -60,6 +60,12 @@ implements Serializable {
      * be restarted in the event session expires.  An alert message will not be shown if this value is set.
      */
     public static final String SESSION_EXPIRATION_RESTART = "SessionExpiration.Restart";
+    
+    /**
+     * Property name constant for the alert message which should be displayed when
+     * a network error occurs.
+     */
+    public static final String NETWORK_ERROR_MESSAGE = "NetworkError.Message";
 
     /**
      * Property name constant for the alert message which should be displayed in
