@@ -444,6 +444,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         }
 
         Core.Web.DOM.focusElement(this.div);
+        this._focused = true;
     },
     
     /** @see Echo.Render.ComponentSync#renderUpdate */
