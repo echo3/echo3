@@ -63,4 +63,11 @@ public class ActionEvent extends EventObject {
     public String getActionCommand() {
         return command;
     }
+    
+    /**
+     * @see java.util.EventObject#toString()
+     */
+    public String toString() {
+        return this.getClass().getName() + "[source=" + getSource() + ", command=" + command + "]";
+    }
 }
