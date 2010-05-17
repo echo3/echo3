@@ -848,18 +848,22 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.VirtualPosition.redraw(this._maskDiv);
         this._centerIcon();
 
+        var waitTime = parseInt(this.component.render("resourceTimeout"), 10) || Echo.WindowPane.DEFAULT_RESOURCE_TIMEOUT;
+        
         if (!this._initialRenderDisplayComplete) {
             // If position was successfully set, perform initial operations related to automatic sizing 
             // (executed on first renderDisplay() after renderAdd()).
             this._initialRenderDisplayComplete = true;
-            var waiting = Core.Web.Image.monitor(this._div, Core.method(this, this._imageLoadListener));
-            if (waiting) {
-                this._imageWaitStartTime = new Date().getTime();
+            
+            if (waitTime) {
+                if (Core.Web.Image.monitor(this._div, Core.method(this, this._imageLoadListener))) {
+                    this._imageWaitStartTime = new Date().getTime();
+                }
             }
         }
         
         if (!this._displayed) {
-            if (this._imageWaitStartTime && new Date().getTime() > this._imageWaitStartTime + 300) {
+            if (this._imageWaitStartTime && new Date().getTime() > this._imageWaitStartTime + waitTime) {
                 this._imageWaitStartTime = null;
             }
             

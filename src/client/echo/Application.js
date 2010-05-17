@@ -3524,6 +3524,9 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * @sp {#Extent} positionX the horizontal (x) position of the window
  * @sp {#Extent} positionY the vertical (y) position of the window
  * @sp {Boolean} resizable flag indicating whether the window is resizable
+ * @sp {Number} resourceTimeout the maximum amount of time to wait before displaying
+ *     the window (in order for resources/images to be loaded such that it may
+ *     initially appear in a fully rendered state)
  * @sp {String} title the title of the window
  * @sp {#Color} titleBackground the background color to display in the title bar
  * @sp {#FillImage} titleBackgroundImage the background image to display in the
@@ -3545,6 +3548,12 @@ Echo.WindowPane = Core.extend(Echo.Component, {
     },
 
     $static: {
+        
+        /**
+         * Default maximum time to wait for resources to load before displaying a new window (milliseconds).
+         * @type Number
+         */
+        DEFAULT_RESOURCE_TIMEOUT: 300,
         
         /** 
          * Default WindowPane border.
