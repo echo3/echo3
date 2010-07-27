@@ -309,7 +309,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         while (it.hasNext()) {
             UserInstance userInstance = (UserInstance) it.next();
             if (userInstance.getApplicationInstance() != null) {
-                userInstance.getApplicationInstance().activate();
+                userInstance.getApplicationInstance().passivate();
             }
         }
         session = null;
