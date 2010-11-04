@@ -104,7 +104,7 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
      * @return a unique initial request identifier
      */
     public String createInitId(Connection conn) {
-        Map parameterMap = conn.getRequest().getParameterMap();
+        Map parameterMap = new HashMap(conn.getRequest().getParameterMap());
         String initId = new Integer(nextInitId++).toString();
         initIdToInitialRequestParameterMap.put(initId, parameterMap);
         return initId;
