@@ -89,7 +89,7 @@ implements Service {
     /**
      * Create a new root window HTML document.
      * 
-     * @param userInstance the user instance
+     * @param conn the <code>Connection</code>
      * @param debug flag indicating whether debug capabilities should be enabled
      * @return the created document
      */
