@@ -539,7 +539,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         this._syncInitTime = new Date().getTime();
 
         var conn = new Core.Web.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST", 
-                this._clientMessage._renderXml(), "text/xml");
+                this._clientMessage._renderXml(), "text/xml;charset=utf-8");
         
         // Create new client message.
         this._clientMessage = new Echo.RemoteClient.ClientMessage(this, null);
