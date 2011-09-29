@@ -32,6 +32,7 @@
 <project name="NextApp_Echo_3" default="dist" basedir=".">
 
     <property environment="env"/>
+    <property file="custom-ant.properties"/>
     <property file="ant.properties"/>
     
     <patternset id="fileset.resources">
