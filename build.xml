@@ -97,7 +97,8 @@
     <target name="compile.app" description="Compile Echo Application Framework">
         <mkdir dir="${dir.build.server-java.app}"/>
         <javac srcdir="${dir.src.server-java.app}" destdir="${dir.build.server-java.app}" 
-                debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" target="${ant.build.javac.target}"/>
+                debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" 
+                target="${ant.build.javac.target}" includeantruntime="false" />
         <copy todir="${dir.build.server-java.app}">
             <fileset dir="${dir.src.server-java.app}">
                 <patternset refid="fileset.resources"/>
@@ -108,12 +109,14 @@
     <target name="dist.app" depends="clean,compile.app">
         <mkdir dir="${dir.dist.lib}"/>
         <jar jarfile="${dir.dist.lib}/${jarfile.echo.app}" basedir="${dir.build.server-java.app}"/>
+        <jar jarfile="${dir.dist.lib}/${srcfile.echo.app}" basedir="${dir.src.server-java.app}"/>
     </target>
     
     <target name="test.compile.app" depends="dist.app">
         <mkdir dir="${dir.build.server-java.app-test}"/>
         <javac srcdir="${dir.src.server-java.app-test}" destdir="${dir.build.server-java.app-test}" 
-                debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" target="${ant.build.javac.target}">
+                debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" 
+                target="${ant.build.javac.target}" includeantruntime="false">
             <classpath>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
             </classpath>
@@ -188,7 +191,8 @@
     <target name="compile.webcontainer.impl" depends="verify.servlet.api, compile.app">
         <mkdir dir="${dir.build.server-java.webcontainer}"/>
         <javac srcdir="${dir.src.server-java.webcontainer}" destdir="${dir.build.server-java.webcontainer}" 
-                debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" target="${ant.build.javac.target}">
+                debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" 
+                target="${ant.build.javac.target}" includeantruntime="false">
             <classpath>
                 <pathelement path="${dir.build.server-java.app}"/>
                 <pathelement path="${servlet.lib.jar}"/>
@@ -212,12 +216,14 @@
     <target name="dist.webcontainer" depends="clean,compile.webcontainer">
         <mkdir dir="${dir.dist.lib}"/>
         <jar jarfile="${dir.dist.lib}/${jarfile.echo.webcontainer}" basedir="${dir.build.server-java.webcontainer}"/>
+        <jar jarfile="${dir.dist.lib}/${srcfile.echo.webcontainer}" basedir="${dir.src.server-java.webcontainer}"/>
     </target>
     
     <target name="test.compile.webcontainer" depends="dist.app, dist.webcontainer">
         <mkdir dir="${dir.build.server-java.webcontainer-test}"/>
         <javac srcdir="${dir.src.server-java.webcontainer-test}" destdir="${dir.build.server-java.webcontainer-test}" 
-                debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" target="${ant.build.javac.target}">
+                debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" 
+                target="${ant.build.javac.target}" includeantruntime="false">
             <classpath>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
@@ -300,7 +306,8 @@
     <target name="compile.style-converter" description="Compile Echo2-Echo3 Style Conversion Utility">
         <mkdir dir="${dir.build.util.style-converter}"/>
         <javac srcdir="${dir.src.util.style-converter}" destdir="${dir.build.util.style-converter}" 
-                debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" target="${ant.build.javac.target}"/>
+                debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" 
+                target="${ant.build.javac.target}" includeantruntime="false"/>
     </target>
     
     <target name="dist.style-converter" depends="clean,compile.style-converter">
@@ -324,7 +331,8 @@
             <fileset dir="${dir.src.server-java.test-ia.htdocs}"/>
         </copy>
         <javac srcdir="${dir.src.server-java.test-ia.lib}" destdir="${dir.build.server-java.testapp}/WEB-INF/classes" 
-                debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" target="${ant.build.javac.target}">
+                debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" 
+                target="${ant.build.javac.target}" includeantruntime="false">
             <classpath>
                 <pathelement path="${servlet.lib.jar}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
@@ -426,11 +434,11 @@
     	if="onWindows">
         <exec executable="cmd">
             <arg value="/c"/>
-            <arg value="mvn install:install-file -DpomFile=resource/maven/echo3-app-pom.xml -Dfile=dist${file.separator}lib${file.separator}Echo3_App.jar"/>
+            <arg value="mvn install:install-file -DpomFile=resource/maven/echo3-app-pom.xml -Dfile=dist${file.separator}lib${file.separator}${jarfile.echo.app}"/>
             </exec>
             <exec executable="cmd">
                 <arg value="/c"/>
-                <arg value="mvn install:install-file -DpomFile=resource/maven/echo3-webcontainer-pom.xml -Dfile=dist${file.separator}lib${file.separator}Echo3_WebContainer.jar"/>
+                <arg value="mvn install:install-file -DpomFile=resource/maven/echo3-webcontainer-pom.xml -Dfile=dist${file.separator}lib${file.separator}${jarfile.echo.webcontainer}"/>
             </exec>
     </target>
 	
@@ -440,12 +448,12 @@
         <exec executable="mvn">
             <arg value="install:install-file"/>
         	<arg value="-DpomFile=resource/maven/echo3-app-pom.xml"/>
-            <arg value="-Dfile=dist${file.separator}lib${file.separator}Echo3_App.jar"/>
+            <arg value="-Dfile=dist${file.separator}lib${file.separator}echo3-app-${release.version}.jar"/>
         </exec>
         <exec executable="mvn">
             <arg value="install:install-file"/>
         	<arg value="-DpomFile=resource/maven/echo3-webcontainer-pom.xml"/>
-            <arg value="-Dfile=dist${file.separator}lib${file.separator}Echo3_WebContainer.jar"/>
+            <arg value="-Dfile=dist${file.separator}lib${file.separator}echo3-webcontainer-${release.version}.jar"/>
         </exec>
     </target>
     
