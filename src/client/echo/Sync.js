@@ -49,9 +49,11 @@ Echo.Sync = {
     renderComponentDefaults: function(component, element) {
         var color;
         if ((color = component.render("foreground"))) {
+            color = Echo.Sync.Color.toTransparent(color);
             element.style.color = color;
         }
         if ((color = component.render("background"))) {
+            color = Echo.Sync.Color.toTransparent(color);
             element.style.backgroundColor = color;
         }
         var font = component.render("font");
@@ -261,7 +263,7 @@ Echo.Sync.Border = {
         if (typeof(border) == "string") {
             // Parse the border.
             var parts = this._PARSER.exec(border);
-            return { size: parts[1], style: parts[2], color: parts[3] }; 
+            return { size: parts[1], style: parts[2], color: parts[3] };
         } else {
             // Parse an individual border side.
             return Echo.Sync.Border.parse(border.top || border.right || border.bottom || border.left);
@@ -425,6 +427,7 @@ Echo.Sync.Color = {
      */
     render: function(color, element, styleAttribute) {
         if (color) {
+            color = this.toTransparent(color);
             element.style[styleAttribute] = color;
         }
     },
@@ -450,9 +453,11 @@ Echo.Sync.Color = {
     renderFB: function(component, element) { 
         var color;
         if ((color = component.render("foreground"))) {
+            color = this.toTransparent(color);
             element.style.color = color;
         }
         if ((color = component.render("background"))) {
+            color = this.toTransparent(color);
             element.style.backgroundColor = color;
         }
     },
@@ -486,6 +491,18 @@ Echo.Sync.Color = {
         return "#" + (red < 16 ? "0" : "") + red.toString(16) +
                 (green < 16 ? "0" : "") + green.toString(16) +
                 (blue < 16 ? "0" : "") + blue.toString(16); 
+    },
+
+    /**
+     * Converts the color to 'transparent' if necessary
+     *
+     * @param {#Color} color to convert
+     * @return the converted color
+     * @type String
+     */
+    toTransparent: function(color) {
+        // the mask for 'transparent' is '#-1'
+        return (color == -1 || color == '#-1' || (color && color.toLowerCase() == '#transparent')) ? 'transparent' : color
     }
 };
 
