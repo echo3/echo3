@@ -130,9 +130,10 @@ Core.Web.DOM = {
                         "application/xml");
             } else {
                 dom = document.implementation.createDocument(namespaceUri, qualifiedName, null);
-                // Advises the IE9 to sent posts back in UTF-8 as expected. See http://echo.nextapp.com/site/node/6658
-                dom.characterSet="utf-8";
-                dom.charset="utf-8";
+                try {
+                    // Advises the IE9 to sent posts back in UTF-8 as expected. See http://echo.nextapp.com/site/node/6658
+                    dom.charset = "utf-8";
+                } catch(e) {} // ignore potential errors. It works without all other browsers.
             }
             if (!dom.documentElement) {
                 dom.appendChild(dom.createElement(qualifiedName));
