@@ -250,6 +250,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         
     /** Processes a focus blur event. */
     _processBlur: function(e) {
+        this._focused = false;
         this.setHighlightState(false, false);
     },
     
