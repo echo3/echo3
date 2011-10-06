@@ -117,6 +117,12 @@ implements Service {
             headElement.appendChild(metaCompElement);
         }
 
+        // Force UTF-8 document code for IE9. See http://echo.nextapp.com/site/node/6658
+        Element contentTypeElement = document.createElement("meta");
+        contentTypeElement.setAttribute("http-equiv", "Content-Type");
+        contentTypeElement.setAttribute("content", "text/html; charset=utf-8");
+        headElement.appendChild(contentTypeElement);
+
         Element titleElement = document.createElement("title");
         titleElement.appendChild(document.createTextNode(" "));
         headElement.appendChild(titleElement);
