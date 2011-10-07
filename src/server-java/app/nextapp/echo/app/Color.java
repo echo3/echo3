@@ -76,6 +76,9 @@ implements Serializable {
     /** The color pink. */
     public static final Color PINK      = new Color(0xff, 0xaf, 0xaf);
 
+    /** The identifier for 'transparent'-color */
+    public static final Color TRANSPARENT = new Color(-1);
+
     private int rgb;
     
     /** 

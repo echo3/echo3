@@ -45,6 +45,7 @@ public class ColorPeer
 implements SerialPropertyPeer {
 
     private static final String COLOR_MASK = "#000000";
+    private static final String COLOR_TRANSPARENT = "#transparent";
     
     /**
      * Generates a <code>Color</code> based on a string representation.
@@ -56,6 +57,9 @@ implements SerialPropertyPeer {
     public static final Color fromString(String value) 
     throws SerialException {
         try {
+            if(value.trim().toLowerCase().equals(COLOR_TRANSPARENT)) {
+                return Color.TRANSPARENT;
+            }
             int colorValue = Integer.parseInt(value.trim().substring(1), 16);
             return new Color(colorValue);
         } catch (IndexOutOfBoundsException ex) {
@@ -75,6 +79,10 @@ implements SerialPropertyPeer {
     public static final String toString(Color color) 
     throws SerialException {
         int rgb = color.getRgb();
+        if(rgb == -1 || color.equals(Color.TRANSPARENT)) {
+            // if we have TRANSPARENT, we return '#-1'
+            return COLOR_MASK.substring(0,1) + rgb;
+        }
         String colorString = Integer.toString(rgb, 16);
         return COLOR_MASK.substring(0, 7 - colorString.length()) + colorString;
     }
