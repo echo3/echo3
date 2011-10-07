@@ -43,17 +43,31 @@ import nextapp.echo.webcontainer.util.Resource;
  */
 public class JavaScriptService 
 implements Service {
-    
-    private static boolean allowIEcompression = false;
+
+    // Toggle to enable GZIP compression for MS IE Browser via system property 'echo.allowiecompression'
+    private static final boolean ALLOW_IE_COMPRESSION;
     static {
+        boolean allowiecompression = false;
         try {
             if ("true".equals(System.getProperty("echo.allowiecompression"))) {
-                allowIEcompression = true;
+                allowiecompression = true;
             }
         }
         catch (AccessControlException ignored) {} // if running under a security manager
+        ALLOW_IE_COMPRESSION = allowiecompression;
     }
-    
+    // Toggle to disable JavaScript compression via system property 'echo.javascript.compression'
+    private static final boolean JAVASCRIPT_COMPRESSION_ENABLED;
+    static {
+        Boolean value = Boolean.FALSE;
+        try {
+            value = Boolean.valueOf(System.getProperty("echo.javascript.compression", Boolean.TRUE.toString()));
+        } catch (SecurityException ex) {
+            System.err.println("SystemProperty 'echo.javascript.compression.disabled' not set, SecurityException " + ex.getMessage());
+        }
+        JAVASCRIPT_COMPRESSION_ENABLED = value.booleanValue();
+    }
+
     /**
      * Creates a new <code>JavaScript</code> service from the specified
      * resource in the <code>CLASSPATH</code>.
@@ -95,7 +109,7 @@ implements Service {
     public JavaScriptService(String id, String content) {
         super();
         this.id = id;
-        this.content = JavaScriptCompressor.compress(content);
+        this.content = JAVASCRIPT_COMPRESSION_ENABLED ? JavaScriptCompressor.compress(content) : content;
         try {
             gzipContent = GZipCompressor.compress(this.content);
         } catch (IOException ex) {
@@ -128,7 +142,7 @@ implements Service {
     public void service(Connection conn) 
     throws IOException {
         String userAgent = conn.getRequest().getHeader("user-agent");
-        if (!allowIEcompression && (userAgent == null || userAgent.indexOf("MSIE") != -1)) {
+        if (!ALLOW_IE_COMPRESSION && (userAgent == null || userAgent.indexOf("MSIE") != -1)) {
             // Due to behavior detailed Microsoft Knowledge Base Article Id 312496, 
             // all HTTP compression support is disabled for this browser.
             // Due to the fact that ClientProperties information is not necessarily 
