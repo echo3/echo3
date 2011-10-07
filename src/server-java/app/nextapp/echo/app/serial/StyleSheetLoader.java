@@ -96,14 +96,16 @@ public class StyleSheetLoader {
     public static StyleSheet load(InputStream in, final ClassLoader classLoader)
     throws SerialException {
         final Document document;
+        DocumentBuilder builder = DomUtil.getDocumentBuilder();
         try {
-            DocumentBuilder builder = DomUtil.getDocumentBuilder();
             document = builder.parse(in);
         } catch (IOException ex) {
             throw new SerialException("Failed to parse InputStream.", ex);
         } catch (SAXException ex) {
             throw new SerialException("Failed to parse InputStream.", ex);
-        }      
+        } finally {
+        	DomUtil.releaseDocumentBuilder(builder);
+        }
         
         Map namedStyleMap = new HashMap();
         

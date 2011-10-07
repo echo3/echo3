@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.DocumentBuilder;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -109,6 +110,7 @@ public class XmlRequestParser {
     public static Document parse(HttpServletRequest request, String characterEncoding) 
     throws IOException {
         InputStream in = null;
+        DocumentBuilder documentBuilder = DomUtil.getDocumentBuilder();
         try {
             String userAgent = request.getHeader("user-agent");
             if (userAgent != null && userAgent.indexOf("onqueror") != -1) {
@@ -118,12 +120,13 @@ public class XmlRequestParser {
             } else {
                 in = request.getInputStream();
             }
-            return DomUtil.getDocumentBuilder().parse(in);
+			return documentBuilder.parse(in);
         } catch (final SAXException ex) {
             throw new InvalidXmlException("Provided InputStream cannot be parsed.", ex);
         } catch (final IOException ex) {
             throw new InvalidXmlException("Provided InputStream cannot be parsed.", ex);
         } finally {
+        	DomUtil.releaseDocumentBuilder(documentBuilder);
             if (in != null) { try { in.close(); } catch (IOException ex) { } }
         }
     }
