@@ -1185,7 +1185,7 @@ Echo.Sync.Font = {
             if (!font.typeface) {
                 element.style.fontFamily = "";
             }
-            if (!font.underline) {
+            if (!font.underline && !font.overline && !font.lineThrough) {
                 element.style.textDecoration = "";
             }
             if (!font.bold) {
