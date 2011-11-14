@@ -1465,7 +1465,12 @@ Core.Web.HttpConnection = Core.extend({
         }
 
         // Execute request.
-        this._xmlHttpRequest.send(this._messageObject ? this._messageObject : null);
+		// if there is a XMLSerializer available we serialize to prevent ie9 to delete or even insert newlines (ie9 tries to format any XML-Document sent by a xmlHttpRequest)
+		if(window.XMLSerializer) {
+		    this._xmlHttpRequest.send(this._messageObject ? new XMLSerializer().serializeToString(this._messageObject) : null);
+		} else {
+		    this._xmlHttpRequest.send(this._messageObject ? this._messageObject : null);
+		}
     },
     
     /**
