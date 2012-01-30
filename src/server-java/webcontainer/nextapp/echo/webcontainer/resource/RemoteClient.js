@@ -232,7 +232,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         if(eventType && typeof eventType === "string") {
             // if it startsWith 'async_' return true ->
             if(eventType.length > 5) {
-                return (eventType.substring(0,5) === 'asnyc_');
+                return (eventType.substring(0,5) === 'async_');
             }
         }
         // if eventType is not a string or even null:
