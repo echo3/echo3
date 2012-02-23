@@ -778,6 +778,13 @@ Core.Web.Env = {
     QUIRK_UNLOADED_IMAGE_HAS_SIZE: null,
 
     /**
+     * Flag indicating if xml-documents should be serialized before
+     * sending them through a xmlHttp request.
+     * @type Boolean
+     */
+    QUIRK_SERIALIZE_XML_BEFORE_XML_HTTP_REQ: null,
+
+    /**
      * User-agent string, in lowercase.
      */
     _ua: null,
@@ -908,6 +915,11 @@ Core.Web.Env = {
                     // Enable 'garbage collection' on large associative arrays to avoid memory leak.
                     Core.Arrays.LargeMap.garbageCollectEnabled = true;
                 }
+            }
+            if(this.BROWSER_VERSION_MAJOR == 9) {
+                // Internet Explorer 9 Flags
+                // if false ie9 will re-format your xml by adding and removing linebreaks
+                this.QUIRK_SERIALIZE_XML_BEFORE_XML_HTTP_REQ = true;
             }
         } else if (this.ENGINE_GECKO) {
             this.QUIRK_KEY_PRESS_FIRED_FOR_SPECIAL_KEYS = true;
@@ -1465,7 +1477,12 @@ Core.Web.HttpConnection = Core.extend({
         }
 
         // Execute request.
-        this._xmlHttpRequest.send(this._messageObject ? this._messageObject : null);
+        if (Core.Web.Env.QUIRK_SERIALIZE_XML_BEFORE_XML_HTTP_REQ) {
+            // serialize before sending
+            this._xmlHttpRequest.send(this._messageObject ? new XMLSerializer().serializeToString(this._messageObject) : null);
+        } else {
+            this._xmlHttpRequest.send(this._messageObject ? this._messageObject : null);
+        }
     },
     
     /**
