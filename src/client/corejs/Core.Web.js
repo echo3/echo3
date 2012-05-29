@@ -2031,7 +2031,7 @@ Core.Web.Library = {
             
             // Execute content to install library.
             Core.Web.Library.evalLine = new Error().lineNumber + 1;
-            eval(this._content);
+            eval.call(window, this._content);
         },
         
         /**
