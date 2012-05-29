@@ -2035,8 +2035,8 @@ Core.Web.Library = {
     		// We use an anonymous function so that context is window
 			// rather than _Item in Firefox
 			(window.execScript || function(data) {
-				window["eval"].call(window, this._content);
-			})(data);
+				window["eval"].call(window, data);
+			})(this._content);
         },
         
         /**
