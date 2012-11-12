@@ -152,6 +152,7 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
                 stateElement.name = "__echo_" + Echo.Sync.RadioButton._nextNameId++;
             }
             stateElement.defaultChecked = this._selected ? true : false;
+            stateElement.disabled = !this.enabled;
             Core.Web.Event.add(stateElement, "change", Core.method(this, this._processStateChange), false);
             Core.Web.Event.add(this.div, "click", Core.method(this, this._processStateChange), false);
         }
