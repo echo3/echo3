@@ -893,11 +893,13 @@ Core.Web.Env = {
             this.QUIRK_DELAYED_FOCUS_REQUIRED = true;
             this.QUIRK_UNLOADED_IMAGE_HAS_SIZE = true;
             this.MEASURE_OFFSET_EXCLUDES_BORDER = true;
-            this.QUIRK_IE_BLANK_SCREEN = true;
             this.QUIRK_IE_HAS_LAYOUT = true;
             this.NOT_SUPPORTED_CSS_OPACITY = true;
             this.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED = true;
             
+            if (this.BROWSER_VERSION_MAJOR < 9) {
+                this.QUIRK_IE_BLANK_SCREEN = true;
+            }
             if (this.BROWSER_VERSION_MAJOR < 8) {
                 // Internet Explorer 6 and 7 Flags.
                 this.QUIRK_TABLE_CELL_WIDTH_EXCLUDES_PADDING = true;
