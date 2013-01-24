@@ -110,9 +110,8 @@ implements Service {
         metaGeneratorElement.setAttribute("content", ApplicationInstance.ID_STRING);
         headElement.appendChild(metaGeneratorElement);
 
-        // Force Internet Explorer 8 and 9 into standards-compliant mode.
-        if (userAgent != null && (USER_AGENT_MSIE8.matcher(userAgent).find() 
-            || USER_AGENT_MSIE9.matcher(userAgent).find())) {
+        // Force Internet Explorer 8 standards-compliant mode.
+        if (userAgent != null && USER_AGENT_MSIE8.matcher(userAgent).find()) {
             Element metaCompElement = document.createElement("meta");
             metaCompElement.setAttribute("http-equiv", "X-UA-Compatible");
             metaCompElement.setAttribute("content", "IE=8");
