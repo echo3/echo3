@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/src/server-java/app/app.iml" filepath="$PROJECT_DIR$/src/server-java/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/server-java/app-test/app-test.iml" filepath="$PROJECT_DIR$/src/server-java/app-test/app-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/client/client.iml" filepath="$PROJECT_DIR$/src/client/client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/echo3.iml" filepath="$PROJECT_DIR$/echo3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/server-java/webcontainer/webcontainer.iml" filepath="$PROJECT_DIR$/src/server-java/webcontainer/webcontainer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/server-java/webcontainer-test/webcontainer-test.iml" filepath="$PROJECT_DIR$/src/server-java/webcontainer-test/webcontainer-test.iml" />
+    </modules>
+  </component>
+</project>
+
