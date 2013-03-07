@@ -82,8 +82,7 @@ implements Service {
     }
     
     private static final Pattern USER_AGENT_MSIE8 = Pattern.compile("MSIE 8\\.");
-    private static final Pattern USER_AGENT_MSIE9 = Pattern.compile("MSIE 9\\.");
-    
+
     /** Singleton instance. */
     public static final WindowHtmlService INSTANCE = new WindowHtmlService();
 
@@ -110,9 +109,8 @@ implements Service {
         metaGeneratorElement.setAttribute("content", ApplicationInstance.ID_STRING);
         headElement.appendChild(metaGeneratorElement);
 
-        // Force Internet Explorer 8 and 9 into standards-compliant mode.
-        if (userAgent != null && (USER_AGENT_MSIE8.matcher(userAgent).find() 
-            || USER_AGENT_MSIE9.matcher(userAgent).find())) {
+        if (userAgent != null && USER_AGENT_MSIE8.matcher(userAgent).find()) {
+            // Force Internet Explorer 8 standards-compliant mode.
             Element metaCompElement = document.createElement("meta");
             metaCompElement.setAttribute("http-equiv", "X-UA-Compatible");
             metaCompElement.setAttribute("content", "IE=8");
