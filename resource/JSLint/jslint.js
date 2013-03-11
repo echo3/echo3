@@ -4983,6 +4983,7 @@ readDir = /* string[] */ function ( /* string */ path, /* opt RegExp */ filterRx
     }
     
     var files = readDir(a[0], new RegExp("\.js$"));
+    var faultyFiles = false;
     for (var fi = 0; fi < files.length; ++fi) { 
         var input = readFile(a[0] + files[fi]);
         if (!input) {
@@ -4997,6 +4998,7 @@ readDir = /* string[] */ function ( /* string */ path, /* opt RegExp */ filterRx
         }
         if (!result) {
             for (var i = 0; i < JSLINT.errors.length; i += 1) {
+                faultyFiles = true;
                 var e = JSLINT.errors[i];
                 if (e) {
                     print('Lint at line ' + (e.line + 1) + ' character ' +
@@ -5010,6 +5012,7 @@ readDir = /* string[] */ function ( /* string */ path, /* opt RegExp */ filterRx
             print("jslint: No problems found in " + files[fi]);
         }
     }
+    quit(faultyFiles ? -1 : 0);
 })(arguments);
 
 // Original single-file version.
