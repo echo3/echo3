@@ -290,7 +290,7 @@
         </javadoc>
     </target>
     
-    <target name="dist" depends="clean, dist.app, dist.webcontainer"/>
+    <target name="dist" depends="clean, test, dist.app, dist.webcontainer"/>
     
     <target name="test" depends="test.app, test.webcontainer"/>
     
