@@ -502,7 +502,7 @@ Echo.Sync.Color = {
      */
     toTransparent: function(color) {
         // the mask for 'transparent' is '#-1'
-        return (color == -1 || color == '#-1' || (color && color.toLowerCase() == '#transparent')) ? 'transparent' : color
+        return (color == -1 || color == '#-1' || (color && color.toLowerCase() == '#transparent')) ? 'transparent' : color;
     }
 };
 
