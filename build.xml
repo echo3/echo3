@@ -112,13 +112,15 @@
         <jar jarfile="${dir.dist.lib}/${srcfile.echo.app}" basedir="${dir.src.server-java.app}"/>
     </target>
     
-    <target name="test.compile.app" depends="dist.app">
+    <target name="test.compile.app" depends="verify.junit, dist.app">
         <mkdir dir="${dir.build.server-java.app-test}"/>
         <javac srcdir="${dir.src.server-java.app-test}" destdir="${dir.build.server-java.app-test}" 
                 debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" 
                 target="${ant.build.javac.target}" includeantruntime="false">
             <classpath>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
+                <pathelement path="${junit.lib.jar}"/>
+                <pathelement path="${hamcrest.lib.jar}"/>
             </classpath>
         </javac>
         <copy todir="${dir.build.server-java.app-test}">
@@ -134,6 +136,8 @@
             <classpath>
                 <pathelement path="${dir.build.server-java.app-test}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
+                <pathelement path="${junit.lib.jar}"/>
+                <pathelement path="${hamcrest.lib.jar}"/>
             </classpath>
             <formatter type="plain"/>
             <batchtest fork="yes" todir="${dir.testoutput.app-test}">
@@ -175,8 +179,22 @@
                 <pathelement path="${servlet.lib.jar}"/>
             </classpath>
         </available>
+        <available property="junit.available" classname="org.junit.runners.JUnit4">
+            <classpath>
+                <pathelement path="${junit.lib.jar}"/>
+            </classpath>
+        </available>
     </target>
-    
+
+    <target name="verify.junit" depends="checkenv" unless="junit.available">
+        <echo message="*************************************************************"/>
+        <echo message="* JUnit4 and Hamcrest Core JAR not found in build classpath *"/>
+        <echo message="*************************************************************"/>
+        <echo message="Specified JUnit4 JAR = ${junit.lib.jar}"/>
+        <echo message="Specified Hamcrest JAR = ${hamcrest.lib.jar}"/>
+        <fail message="${junit.lib.msg}"/>
+    </target>
+
     <target name="verify.servlet.api" depends="checkenv" unless="servlet.api.available">
         <echo message="************************************************************"/>
         <echo message="*         Servlet API not found in build classpath         *"/>
@@ -219,7 +237,7 @@
         <jar jarfile="${dir.dist.lib}/${srcfile.echo.webcontainer}" basedir="${dir.src.server-java.webcontainer}"/>
     </target>
     
-    <target name="test.compile.webcontainer" depends="dist.app, dist.webcontainer">
+    <target name="test.compile.webcontainer" depends="verify.junit, dist.app, dist.webcontainer">
         <mkdir dir="${dir.build.server-java.webcontainer-test}"/>
         <javac srcdir="${dir.src.server-java.webcontainer-test}" destdir="${dir.build.server-java.webcontainer-test}" 
                 debug="${debug}" deprecation="yes" source="${ant.build.javac.source}" 
@@ -228,6 +246,8 @@
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
                 <pathelement path="${servlet.lib.jar}"/>
+                <pathelement path="${junit.lib.jar}"/>
+                <pathelement path="${hamcrest.lib.jar}"/>
             </classpath>
         </javac>
         <copy todir="${dir.build.server-java.webcontainer-test}">
@@ -245,6 +265,8 @@
                 <pathelement path="${servlet.lib.jar}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.webcontainer}"/>
+                <pathelement path="${junit.lib.jar}"/>
+                <pathelement path="${hamcrest.lib.jar}"/>
             </classpath>
             <formatter type="plain"/>
             <batchtest fork="yes" todir="${dir.testoutput.webcontainer-test}">
@@ -290,7 +312,7 @@
         </javadoc>
     </target>
     
-    <target name="dist" depends="clean, test, dist.app, dist.webcontainer"/>
+    <target name="dist" depends="clean, dist.app, dist.webcontainer"/>
     
     <target name="test" depends="test.app, test.webcontainer"/>
     
