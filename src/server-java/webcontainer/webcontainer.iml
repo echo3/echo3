@@ -9,7 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="app" exported="" />
     <orderEntry type="library" exported="" name="servlet-api" level="project" />
-    <orderEntry type="library" exported="" name="yui-compressor" level="project" />
   </component>
   <component name="copyright">
     <Base>
