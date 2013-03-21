@@ -250,8 +250,12 @@ public class Connection {
      */
     public void setContentType(ContentType contentType) {
         UserInstance userInstance = getUserInstance();
-        if (contentType.isBinary() || userInstance == null) {
+        if (contentType.isBinary()) {
             response.setContentType(contentType.getMimeType());
+        } else if (userInstance == null) {
+            // Assume UTF-8 on initial loader document.
+            // Otherwise IE8 assumes ISO-8859-1 and doesn't change it's mind timely.
+            response.setContentType(contentType.getMimeType() + "; charset=utf-8");
         } else {
             response.setContentType(contentType.getMimeType() + "; charset=" + userInstance.getCharacterEncoding());
         }
