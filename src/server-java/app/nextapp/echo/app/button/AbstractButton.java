@@ -33,6 +33,7 @@ import java.util.EventListener;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
+import nextapp.echo.app.BoxShadow;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
@@ -70,6 +71,7 @@ public abstract class AbstractButton extends Component {
     public static final String PROPERTY_FOCUSED_FONT = "focusedFont";
     public static final String PROPERTY_FOCUSED_FOREGROUND = "focusedForeground";
     public static final String PROPERTY_FOCUSED_ICON = "focusedIcon";
+    public static final String PROPERTY_FOCUSED_BOX_SHADOW = "focusedBoxShadow";
     public static final String PROPERTY_HEIGHT = "height";
     public static final String PROPERTY_ICON = "icon";
     public static final String PROPERTY_ALIGNMENT = "alignment";
@@ -298,6 +300,16 @@ public abstract class AbstractButton extends Component {
      */
     public ImageReference getFocusedIcon() {
         return (ImageReference) get(PROPERTY_FOCUSED_ICON);
+    }
+    
+    /**
+     * Returns the box shadow of the button that is displayed when the button is
+     * focused.
+     * 
+     * @return the box shadow
+     */
+    public BoxShadow getFocusedBoxShadow() {
+        return (BoxShadow) get(PROPERTY_FOCUSED_BOX_SHADOW);
     }
 
     /**
@@ -761,6 +773,16 @@ public abstract class AbstractButton extends Component {
      */
     public void setFocusedIcon(ImageReference newValue) {
         set(PROPERTY_FOCUSED_ICON, newValue);
+    }
+    
+    /**
+     * Sets the box shadow of the button that is displayed when the button is 
+     * focused.
+     * 
+     * @param newValue the new box shadow
+     */
+    public void setFocusedBoxShadow(BoxShadow newValue) {
+        set(PROPERTY_FOCUSED_BOX_SHADOW, newValue);
     }
 
     /**
