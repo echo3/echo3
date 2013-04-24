@@ -726,7 +726,7 @@ implements RenderIdSupport, Serializable {
     public LayoutDirection getLayoutDirection() {
         return layoutDirection;
     }
-    
+
     /**
      * Returns the specific locale setting of this component, if any.
      * This method will return null unless a <code>Locale</code> is

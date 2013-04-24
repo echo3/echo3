@@ -98,21 +98,6 @@ public class BoxShadow implements Serializable {
     }
 
     /**
-     * @param hShadow
-     *            the position of the horizontal shadow. Negative values are allowed. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
-     * @param vShadow
-     *            the position of the vertical shadow. Negative values are allowed. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
-     * @param blur
-     *            the blur distance. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
-     * @param spread
-     *            the size of shadow. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
-     * @param color
-     *            the color of the shadow. Look at CSS Color Values for a complete list of possible color values.
-     * @param style
-     *            changes the shadow from an outer shadow (outset) to an inner shadow.
-     */
-
-    /**
      * the position of the horizontal shadow
      * 
      * @return horizontal shadow position
@@ -158,7 +143,7 @@ public class BoxShadow implements Serializable {
     }
 
     /**
-     * OUTSET (default) or INSET stye (to create an inner shadow, rather than the default outer shadow).
+     * outset (default) or inset style (to create an inner shadow, rather than the default outer shadow).
      * 
      * @return the box style
      */
