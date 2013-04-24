@@ -32,125 +32,178 @@ package nextapp.echo.app;
 import java.io.Serializable;
 
 /**
+ * The BoxShadow allows developers to easily implement a drop shadow (outer or inner) on selected components (currently Button and WindowPane). You may specifying values for color, size, blur and
+ * offset.
+ * 
+ * Note: It will not be visible on IE8 or older
+ * 
+ * See also http://www.w3schools.com/cssref/css3_pr_box-shadow.asp for more details
+ * 
  * @author sieskei (XSoft Ltd.)
+ * @author chrismay
  */
 public class BoxShadow implements Serializable {
 
-	/** Serial Version UID. */
-	private static final long serialVersionUID = 20111221L;
+    /** Serial Version UID. */
+    private static final long serialVersionUID = 20111221L;
 
-	public static enum BoxStyle {
-		DEFAULT, INSET
-	};
+    public static enum BoxStyle {
+        DEFAULT, INSET
+    };
 
-	private final Extent hShadowPos;
-	private final Extent vShadowPos;
-	private final Extent blurDistance;
-	private final Extent spreadSize;
-	private final Color color;
-	private final BoxStyle style;
+    private final Extent hShadowPos;
+    private final Extent vShadowPos;
+    private final Extent blurDistance;
+    private final Extent spreadSize;
+    private final Color color;
+    private final BoxStyle style;
 
-	/**
-	 * Creates a new <code>BoxShadow (CSS3)</code>.
-	 * 
-	 * @param hShadow
-	 *            the position of the horizontal shadow. Negative values are allowed. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
-	 * @param vShadow
-	 *            the position of the vertical shadow. Negative values are allowed. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
-	 * @param blur
-	 *            the blur distance. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
-	 * @param spread
-	 *            the size of shadow. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
-	 * @param color
-	 *            the color of the shadow. Look at CSS Color Values for a complete list of possible color values.
-	 * @param style
-	 *            changes the shadow from an outer shadow (outset) to an inner shadow.
-	 */
-	public BoxShadow(Extent hShadow, Extent vShadow, Extent blur, Extent spread, Color color, BoxStyle style) {
-		this.hShadowPos = hShadow;
-		this.vShadowPos = vShadow;
-		this.blurDistance = blur;
-		this.spreadSize = spread;
-		this.color = color;
-		this.style = style;
-	}
+    /**
+     * Creates a new <code>BoxShadow (CSS3)</code>.
+     * 
+     * @param hShadow
+     *            the position of the horizontal shadow. Negative values are allowed. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
+     * @param vShadow
+     *            the position of the vertical shadow. Negative values are allowed. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
+     * @param blur
+     *            the blur distance. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
+     * @param spread
+     *            the size of shadow. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
+     * @param color
+     *            the color of the shadow. Look at CSS Color Values for a complete list of possible color values.
+     * @param style
+     *            changes the shadow from an outer shadow (outset) to an inner shadow.
+     */
+    public BoxShadow(Extent hShadow, Extent vShadow, Extent blur, Extent spread, Color color, BoxStyle style) {
+        this.hShadowPos = hShadow;
+        this.vShadowPos = vShadow;
+        this.blurDistance = blur;
+        this.spreadSize = spread;
+        this.color = color;
+        this.style = style;
+    }
 
-	/**
-	 * @see BoxShadow#BoxShadow(nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Color, int)
-	 */
-	public BoxShadow(int hShadowPx, int vShadowPx) {
-		this(new Extent(hShadowPx), new Extent(vShadowPx), new Extent(0), new Extent(0), Color.BLACK, BoxStyle.DEFAULT);
-	}
+    /**
+     * @see BoxShadow#BoxShadow(nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Color, int)
+     */
+    public BoxShadow(int hShadowPx, int vShadowPx) {
+        this(new Extent(hShadowPx), new Extent(vShadowPx), new Extent(0), new Extent(0), Color.BLACK, BoxStyle.DEFAULT);
+    }
 
-	/**
-	 * @see BoxShadow#BoxShadow(nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Color, int)
-	 */
-	public BoxShadow(int hShadowPx, int vShadowPx, Color color) {
-		this(new Extent(hShadowPx), new Extent(vShadowPx), new Extent(0), new Extent(0), color, BoxStyle.DEFAULT);
-	}
+    /**
+     * @see BoxShadow#BoxShadow(nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Color, int)
+     */
+    public BoxShadow(int hShadowPx, int vShadowPx, Color color) {
+        this(new Extent(hShadowPx), new Extent(vShadowPx), new Extent(0), new Extent(0), color, BoxStyle.DEFAULT);
+    }
 
-	public Extent getHorizontalShadowPosition() {
-		return hShadowPos;
-	}
+    /**
+     * @param hShadow
+     *            the position of the horizontal shadow. Negative values are allowed. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
+     * @param vShadow
+     *            the position of the vertical shadow. Negative values are allowed. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
+     * @param blur
+     *            the blur distance. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
+     * @param spread
+     *            the size of shadow. (this property only supports <code>Extent</code>s with fixed (i.e., not percent) units)
+     * @param color
+     *            the color of the shadow. Look at CSS Color Values for a complete list of possible color values.
+     * @param style
+     *            changes the shadow from an outer shadow (outset) to an inner shadow.
+     */
 
-	public Extent getVerticalShadowPosition() {
-		return vShadowPos;
-	}
+    /**
+     * the position of the horizontal shadow
+     * 
+     * @return horizontal shadow position
+     */
+    public Extent getHorizontalShadowPosition() {
+        return hShadowPos;
+    }
 
-	public Extent getBlurDistance() {
-		return blurDistance;
-	}
+    /**
+     * the position of the vertical shadow
+     * 
+     * @return vertical shadow position
+     */
+    public Extent getVerticalShadowPosition() {
+        return vShadowPos;
+    }
 
-	public Extent getSpreadSize() {
-		return spreadSize;
-	}
+    /**
+     * the blur distance
+     * 
+     * @return the blur distance
+     */
+    public Extent getBlurDistance() {
+        return blurDistance;
+    }
 
-	public Color getColor() {
-		return color;
-	}
+    /**
+     * the size of shadow
+     * 
+     * @return the size of shadow
+     */
+    public Extent getSpreadSize() {
+        return spreadSize;
+    }
 
-	public BoxStyle getStyle() {
-		return style;
-	}
+    /**
+     * the color of the shadow
+     * 
+     * @return the color of the shadow
+     */
+    public Color getColor() {
+        return color;
+    }
 
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final BoxShadow other = (BoxShadow) obj;
-		if (this.hShadowPos != other.hShadowPos && (this.hShadowPos == null || !this.hShadowPos.equals(other.hShadowPos))) {
-			return false;
-		}
-		if (this.vShadowPos != other.vShadowPos && (this.vShadowPos == null || !this.vShadowPos.equals(other.vShadowPos))) {
-			return false;
-		}
-		if (this.blurDistance != other.blurDistance && (this.blurDistance == null || !this.blurDistance.equals(other.blurDistance))) {
-			return false;
-		}
-		if (this.spreadSize != other.spreadSize && (this.spreadSize == null || !this.spreadSize.equals(other.spreadSize))) {
-			return false;
-		}
-		if (this.color != other.color && (this.color == null || !this.color.equals(other.color))) {
-			return false;
-		}
-		if (this.style != other.style) {
-			return false;
-		}
-		return true;
-	}
+    /**
+     * OUTSET (default) or INSET stye (to create an inner shadow, rather than the default outer shadow).
+     * 
+     * @return the box style
+     */
+    public BoxStyle getStyle() {
+        return style;
+    }
 
-	/**
-	 * Returns a string describing the state of the BoxShadow. For debugging purposes only, do not rely on formatting.
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString() {
-		return vShadowPos + " " + hShadowPos + " " + blurDistance + " " + spreadSize + " " + color + (style == BoxStyle.DEFAULT ? "" : style == BoxStyle.INSET ? "inset" : "outset");
-	}
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final BoxShadow other = (BoxShadow) obj;
+        if (this.hShadowPos != other.hShadowPos && (this.hShadowPos == null || !this.hShadowPos.equals(other.hShadowPos))) {
+            return false;
+        }
+        if (this.vShadowPos != other.vShadowPos && (this.vShadowPos == null || !this.vShadowPos.equals(other.vShadowPos))) {
+            return false;
+        }
+        if (this.blurDistance != other.blurDistance && (this.blurDistance == null || !this.blurDistance.equals(other.blurDistance))) {
+            return false;
+        }
+        if (this.spreadSize != other.spreadSize && (this.spreadSize == null || !this.spreadSize.equals(other.spreadSize))) {
+            return false;
+        }
+        if (this.color != other.color && (this.color == null || !this.color.equals(other.color))) {
+            return false;
+        }
+        if (this.style != other.style) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Returns a string describing the state of the BoxShadow. For debugging purposes only, do not rely on formatting.
+     * 
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return vShadowPos + " " + hShadowPos + " " + blurDistance + " " + spreadSize + " " + color + (style == BoxStyle.DEFAULT ? "" : style == BoxStyle.INSET ? "inset" : "outset");
+    }
 }

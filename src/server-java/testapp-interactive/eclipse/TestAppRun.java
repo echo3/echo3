@@ -40,59 +40,55 @@ import javax.servlet.http.HttpServletResponse;
 
 import nextapp.echo.testapp.interactive.InteractiveServlet;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.servlet.Context;
+import org.mortbay.jetty.servlet.ServletHolder;
 
 public class TestAppRun {
+   
+    private static final Class SERVLET_CLASS = InteractiveServlet.class;
+    private static final String CONTEXT_PATH = "/TestApp";
+    private static final String PATH_SPEC = "/app";
+    private static final int PORT = 8001;
 
-	private static final Class SERVLET_CLASS = InteractiveServlet.class;
-	private static final String CONTEXT_PATH = "/TestApp";
-	private static final String PATH_SPEC = "/app";
-	private static final int PORT = 8001;
+    public static void main(String[] arguments)
+    throws Exception {
+        try {
+            URL url = new URL("http://localhost:" + PORT + "/__SHUTDOWN__/");
+            URLConnection conn = url.openConnection();
+            InputStream in = conn.getInputStream();
+            in.close();
+        } catch (ConnectException ex) {
+            // Do nothing.
+        }
+        
+        Server server = new Server(PORT);
+        
+        final Context testContext = new Context(server, CONTEXT_PATH, Context.SESSIONS);
+        testContext.addServlet(new ServletHolder(SERVLET_CLASS), PATH_SPEC);
+        
+        Context shutdownContext = new Context(server, "/__SHUTDOWN__");
+        shutdownContext.addServlet(new ServletHolder(new HttpServlet() {
 
-	public static void main(String[] arguments) throws Exception {
+            private static final long serialVersionUID = 1L;
 
-		try {
-			URL url = new URL("http://localhost:" + PORT + "/__SHUTDOWN__/");
-			URLConnection conn = url.openConnection();
-			InputStream in = conn.getInputStream();
-			in.close();
-		} catch (ConnectException ex) {
-			// Do nothing.
-		}
+            protected void service(HttpServletRequest req, HttpServletResponse resp) 
+            throws ServletException, IOException {
+                try {
+                    // Manually stopping session handler to test Application.dispose().
+                    testContext.getSessionHandler().stop();
+                    System.out.println("Shutdown request received: terminating.");
+                    System.exit(0);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            
+        }), "/");
 
-		Server server = new Server(PORT);
-
-//		final ServletContextHandler context = new ServletContextHandler(server, CONTEXT_PATH, ServletContextHandler.SESSIONS);
-		
-	    final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/app");
-        server.setHandler(context);
-        context.addServlet(new ServletHolder(new InteractiveServlet()), "/");
-		
-		//context.addServlet(new ServletHolder(SERVLET_CLASS), PATH_SPEC);
-
-//		ServletContextHandler shutdownContext = new ServletContextHandler(server, "/__SHUTDOWN__");
-//		shutdownContext.addServlet(new ServletHolder(new HttpServlet() {
-//			private static final long serialVersionUID = 1L;
-//
-//			protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//				try {
-//					// Manually stopping session handler to test Application.dispose().
-//					context.getSessionHandler().stop();
-//					System.out.println("Shutdown request received: terminating.");
-//					System.exit(0);
-//				} catch (Exception ex) {
-//					ex.printStackTrace();
-//				}
-//			}
-//
-//		}), "/");
-
-		System.out.println("Deploying " + SERVLET_CLASS.getName() + " on http://localhost:" + PORT + CONTEXT_PATH + PATH_SPEC);
-
-		server.start();
-		server.join();
-	}
+        System.out.println("Deploying " + SERVLET_CLASS.getName() + " on http://localhost:" + PORT + CONTEXT_PATH + PATH_SPEC); 
+        
+        server.start();
+        server.join();
+    }
 }

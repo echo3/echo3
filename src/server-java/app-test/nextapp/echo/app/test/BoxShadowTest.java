@@ -42,20 +42,20 @@ import nextapp.echo.app.WindowPane;
  */
 public class BoxShadowTest extends TestCase {
 
-	/**
-	 * Test receiving input from client.
-	 */
-	public void testInput() {
-		WindowPane windowPane = new WindowPane();
-		windowPane.add(new Label("a label"));
-		windowPane.setPositionX(TestConstants.EXTENT_100_PX);
-		windowPane.setPositionY(TestConstants.EXTENT_100_PX);
-		BoxShadow boxShadow = new BoxShadow(new Extent(10), new Extent(11), new Extent(12), new Extent(13), Color.BLUE, BoxStyle.INSET);
-		windowPane.setBoxShadow(boxShadow);
-		assertEquals(10, windowPane.getBoxShadow().getHorizontalShadowPosition().getValue());
-		assertEquals(11, windowPane.getBoxShadow().getVerticalShadowPosition().getValue());
-		assertEquals(12, windowPane.getBoxShadow().getBlurDistance().getValue());
-		assertEquals(13, windowPane.getBoxShadow().getSpreadSize().getValue());
-		assertEquals(BoxStyle.INSET, windowPane.getBoxShadow().getStyle());
-	}
+    /**
+     * Test receiving input from client.
+     */
+    public void testInput() {
+        WindowPane windowPane = new WindowPane();
+        windowPane.add(new Label("a label"));
+        windowPane.setPositionX(TestConstants.EXTENT_100_PX);
+        windowPane.setPositionY(TestConstants.EXTENT_100_PX);
+        BoxShadow boxShadow = new BoxShadow(new Extent(10), new Extent(11), new Extent(12), new Extent(13), Color.BLUE, BoxStyle.INSET);
+        windowPane.setBoxShadow(boxShadow);
+        assertEquals(10, windowPane.getBoxShadow().getHorizontalShadowPosition().getValue());
+        assertEquals(11, windowPane.getBoxShadow().getVerticalShadowPosition().getValue());
+        assertEquals(12, windowPane.getBoxShadow().getBlurDistance().getValue());
+        assertEquals(13, windowPane.getBoxShadow().getSpreadSize().getValue());
+        assertEquals(BoxStyle.INSET, windowPane.getBoxShadow().getStyle());
+    }
 }

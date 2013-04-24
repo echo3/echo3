@@ -443,9 +443,10 @@ Echo.Sync.BoxShadow = Core.extend({
      * @type String
      */
     toCssValue: function() {
-      var cssString = this._hShadowPos + " " + this._vShadowPos + " " + this._blur + " " + 
-                      this._spread + " " + this._color; //XXXXXX  + " " + this._style;
-      return cssString;
+        var style = this._style === Echo.Sync.BoxShadow.STYLE_INSET ? "inset" : "";
+        var cssString = this._hShadowPos + " " + this._vShadowPos + " " + this._blur + " " + 
+                      this._spread + " " + this._color  + " " + style;
+        return cssString;
     }
 });
 
