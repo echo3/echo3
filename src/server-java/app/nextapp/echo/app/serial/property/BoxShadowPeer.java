@@ -49,41 +49,41 @@ import org.w3c.dom.Node;
  */
 public class BoxShadowPeer implements SerialPropertyPeer {
 
-	/**
-	 * Creates a <code>Node</code> representation of the box shadow state suitable for appending to a property element.
-	 * 
-	 * @param context
-	 *            the relevant <code>Context</code>
-	 * @param boxShadow
-	 *            the box shadow to render
-	 * @return the created <code>Element</code> node
-	 */
-	public static final Node toNode(Context context, BoxShadow boxShadow) throws SerialException {
-		SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
-		Element boxElement = serialContext.getDocument().createElement("box");
-		boxElement.setAttribute("h", ExtentPeer.toString(boxShadow.getHorizontalShadowPosition()));
-		boxElement.setAttribute("v", ExtentPeer.toString(boxShadow.getVerticalShadowPosition()));
-		boxElement.setAttribute("b", ExtentPeer.toString(boxShadow.getBlurDistance()));
-		boxElement.setAttribute("s", ExtentPeer.toString(boxShadow.getSpreadSize()));
-		boxElement.setAttribute("c", ColorPeer.toString(boxShadow.getColor()));
-		boxElement.setAttribute("i", boxShadow.getStyle().name());
-		return boxElement;
-	}
+    /**
+     * Creates a <code>Node</code> representation of the box shadow state suitable for appending to a property element.
+     * 
+     * @param context
+     *            the relevant <code>Context</code>
+     * @param boxShadow
+     *            the box shadow to render
+     * @return the created <code>Element</code> node
+     */
+    public static final Node toNode(Context context, BoxShadow boxShadow) throws SerialException {
+        SerialContext serialContext = (SerialContext) context.get(SerialContext.class);
+        Element boxElement = serialContext.getDocument().createElement("box");
+        boxElement.setAttribute("h", ExtentPeer.toString(boxShadow.getHorizontalShadowPosition()));
+        boxElement.setAttribute("v", ExtentPeer.toString(boxShadow.getVerticalShadowPosition()));
+        boxElement.setAttribute("b", ExtentPeer.toString(boxShadow.getBlurDistance()));
+        boxElement.setAttribute("s", ExtentPeer.toString(boxShadow.getSpreadSize()));
+        boxElement.setAttribute("c", ColorPeer.toString(boxShadow.getColor()));
+        boxElement.setAttribute("i", boxShadow.getStyle().name());
+        return boxElement;
+    }
 
-	public Object toProperty(Context context, Class objectClass, Element propertyElement) throws SerialException {
-		Element boxElement = DomUtil.getChildElementByTagName(propertyElement, "box");
-		final Extent hShadow = ExtentPeer.fromString(boxElement.getAttribute("h"));
-		final Extent vShadow = ExtentPeer.fromString(boxElement.getAttribute("v"));
-		final Extent blurDistance = ExtentPeer.fromString(boxElement.getAttribute("b"));
-		final Extent spreadSize = ExtentPeer.fromString(boxElement.getAttribute("s"));
-		final Color color = ColorPeer.fromString(boxElement.getAttribute("v"));
-		final BoxStyle style = BoxStyle.valueOf(boxElement.getAttribute("i"));
-		return new BoxShadow(hShadow, vShadow, blurDistance, spreadSize, color, style);
-	}
+    public Object toProperty(Context context, Class objectClass, Element propertyElement) throws SerialException {
+        Element boxElement = DomUtil.getChildElementByTagName(propertyElement, "box");
+        final Extent hShadow = ExtentPeer.fromString(boxElement.getAttribute("h"));
+        final Extent vShadow = ExtentPeer.fromString(boxElement.getAttribute("v"));
+        final Extent blurDistance = ExtentPeer.fromString(boxElement.getAttribute("b"));
+        final Extent spreadSize = ExtentPeer.fromString(boxElement.getAttribute("s"));
+        final Color color = ColorPeer.fromString(boxElement.getAttribute("v"));
+        final BoxStyle style = BoxStyle.valueOf(boxElement.getAttribute("i"));
+        return new BoxShadow(hShadow, vShadow, blurDistance, spreadSize, color, style);
+    }
 
-	public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) throws SerialException {
-		propertyElement.setAttribute("t", "BoxShadow");
-		BoxShadow boxShadow = (BoxShadow) propertyValue;
-		propertyElement.appendChild(toNode(context, boxShadow));
-	}
+    public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) throws SerialException {
+        propertyElement.setAttribute("t", "BoxShadow");
+        BoxShadow boxShadow = (BoxShadow) propertyValue;
+        propertyElement.appendChild(toNode(context, boxShadow));
+    }
 }
