@@ -715,8 +715,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
     /**
      * Sets the <code>BoxShadow (CSS3)</code> of this <code>Component</code>.
      * 
-     * Note: The option INSET will have no effect on this component
-     *
      * @param newValue the new <code>BoxShadow</code>. 
      */
     public void setBoxShadow(BoxShadow newValue) {
