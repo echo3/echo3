@@ -141,6 +141,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
                     this.component, "backgroundImage", ep + "BackgroundImage", state);
             var font = Echo.Sync.getEffectProperty(this.component, "font", ep + "Font", state);
             var border = Echo.Sync.getEffectProperty(this.component, "border", ep + "Border", state);
+            var boxShadow  = Echo.Sync.getEffectProperty(this.component, "boxShadow", ep + "BoxShadow", state);
             
             Echo.Sync.Color.renderClear(foreground, this.div, "color");
             Echo.Sync.Color.renderClear(background, this.div, "backgroundColor");
@@ -152,6 +153,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
                 Echo.Sync.Insets.render(this.component.render("insets"), this.div, "padding");
             }
             Echo.Sync.Border.renderClear(border, this.div);
+            Echo.Sync.BoxShadow.renderClear(boxShadow, this.div);
 
             if (this._textElement) {
                 Echo.Sync.Font.renderClear(font, this._textElement);
@@ -355,6 +357,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         
         Echo.Sync.Insets.render(this.component.render("insets"), this.div, "padding");
         Echo.Sync.Alignment.render(this.component.render("alignment"), this.div, true, this.component);
+        Echo.Sync.BoxShadow.renderClear(this.component.render("boxShadow"), this.div);
         
         var toolTipText = this.component.render("toolTipText");
         if (toolTipText) {

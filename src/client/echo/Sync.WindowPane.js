@@ -547,7 +547,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._div.style.height = this._rendered.height + "px";
     
         this._titleBarDiv.style.width = (this._rendered.width - this._contentInsets.left - this._contentInsets.right) + "px";
-        
+        this._titleBarDiv.style.backgroundSize = "100% 100%";
         Echo.Sync.FillImageBorder.renderContainerDisplay(this._div);
         Core.Web.VirtualPosition.redraw(this._contentDiv);
         Core.Web.VirtualPosition.redraw(this._maskDiv);
@@ -647,6 +647,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             this._div.style.visibility = "hidden";
         }
         
+        Echo.Sync.BoxShadow.renderClear(this.component.render("boxShadow"), this._div);
+        
         this._borderDivs = Echo.Sync.FillImageBorder.getBorder(this._div);
         var mouseDownHandler = this._resizable ? Core.method(this, this._processBorderMouseDown) : null; 
         for (var i = 0; i < 8; ++i) {
@@ -658,6 +660,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                 }
             }
         }
+	this._borderDivs[0].style.backgroundSize = "100% 100%";
+	this._borderDivs[4].style.backgroundSize = "100% 100%";
         
         // Render Title Bar
         

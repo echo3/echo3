@@ -196,6 +196,7 @@ implements RenderIdSupport, Serializable {
     public static final String PROPERTY_FONT = "font";
     public static final String PROPERTY_FOREGROUND = "foreground";
     public static final String PROPERTY_LAYOUT_DATA = "layoutData";
+    public static final String PROPERTY_BOX_SHADOW = "boxShadow";
     
     /**
      * Verifies a character can be used as initial character in a renderId
@@ -725,6 +726,18 @@ implements RenderIdSupport, Serializable {
      */
     public LayoutDirection getLayoutDirection() {
         return layoutDirection;
+    }
+    
+    /**
+     * Returns the specific box shadow (CSS3) setting of this component, if any.
+     * This method will return null unless a <code>BoxShadow</code> is
+     * specifically set on <strong>this</strong> <code>Component</code>.
+     * 
+     * @return the box shadow property of <strong>this</strong>
+     *         <code>Component</code>
+     */
+    public BoxShadow getBoxShadow() {
+        return (BoxShadow) localStyle.get(PROPERTY_BOX_SHADOW);
     }
 
     /**
@@ -1504,6 +1517,15 @@ implements RenderIdSupport, Serializable {
         LayoutDirection oldValue = layoutDirection;
         layoutDirection = newValue;
         firePropertyChange(LAYOUT_DIRECTION_CHANGED_PROPERTY, oldValue, newValue);
+    }
+    
+    /**
+     * Sets the <code>BoxShadow (CSS3)</code> of this <code>Component</code>.
+     * 
+     * @param newValue the new <code>BoxShadow</code>. 
+     */
+    public void setBoxShadow(BoxShadow newValue) {
+        set(PROPERTY_BOX_SHADOW, newValue);
     }
     
     /**
