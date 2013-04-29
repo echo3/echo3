@@ -110,6 +110,7 @@ public class TestPane extends ContentPane {
         controlsColumn.add(testLaunchButtonsColumn);
 
         addTest("Application Rendered Components", "ArcTest");
+        addTest("BoxShadow", "BoxShadowTest");
         addTest("Button", "ButtonTest");
         addTest("Client Configuration", "ClientConfigurationTest");
         addTest("Client Exception", "ClientExceptionTest");

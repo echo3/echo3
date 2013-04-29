@@ -2697,6 +2697,7 @@ Echo.Update.Manager = Core.extend({
  * @sp {#Extent} width the width of the button
  * @event action An event fired when the button is pressed (clicked).  The <code>actionCommand</code> property of the pressed
  *        button is provided as a property.
+ * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the button 
  */
 Echo.AbstractButton = Core.extend(Echo.Component, {
 
@@ -3539,6 +3540,7 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * @event close An event fired when the close button is pressed.
  * @event maximize An event fired when the maximize button is pressed.
  * @event minimize An event fired when the minimize button is pressed.
+ * @sp {#BoxShadow} boxShadow A drop shadow displayed behind the window 
  */
 Echo.WindowPane = Core.extend(Echo.Component, {
 

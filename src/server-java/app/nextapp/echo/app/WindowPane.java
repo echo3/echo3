@@ -91,6 +91,8 @@ implements FloatingPane, ModalSupport, PaneContainer {
     public static final String PROPERTY_TITLE_INSETS = "titleInsets";
     public static final String PROPERTY_WIDTH = "width";
     public static final String PROPERTY_Z_INDEX = "zIndex";
+    public static final String PROPERTY_BOX_SHADOW = "boxShadow";
+
     
     /**
      * A constant for the <code>defaultCloseOperation</code> property 
@@ -229,6 +231,18 @@ implements FloatingPane, ModalSupport, PaneContainer {
         return (FillImageBorder) get(PROPERTY_BORDER);
     }
     
+    /**
+     * Returns the specific box shadow (CSS3) setting of this component, if any.
+     * This method will return null unless a <code>BoxShadow</code> is
+     * specifically set on <strong>this</strong> <code>Component</code>.
+     * 
+     * @return the box shadow property of <strong>this</strong>
+     *         <code>Component</code>
+     */
+    public BoxShadow getBoxShadow() {
+        return (BoxShadow) get(PROPERTY_BOX_SHADOW);
+    }
+
     /**
      * Returns the animation time for the window closing effect.
      * A value of 0 (the default) indicates the window will be immediately closed.
@@ -698,6 +712,15 @@ implements FloatingPane, ModalSupport, PaneContainer {
         set(PROPERTY_BORDER, newValue);
     }
     
+    /**
+     * Sets the <code>BoxShadow (CSS3)</code> of this <code>Component</code>.
+     * 
+     * @param newValue the new <code>BoxShadow</code>. 
+     */
+    public void setBoxShadow(BoxShadow newValue) {
+        set(PROPERTY_BOX_SHADOW, newValue);
+    }
+
     /**
      * Sets whether the window is closable via a provided close button in
      * the title bar.
