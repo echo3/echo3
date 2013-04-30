@@ -2697,7 +2697,8 @@ Echo.Update.Manager = Core.extend({
  * @sp {#Extent} width the width of the button
  * @event action An event fired when the button is pressed (clicked).  The <code>actionCommand</code> property of the pressed
  *        button is provided as a property.
- * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the button 
+ * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the button
+ * @sp {#Insets} radius The radius of the button corners
  */
 Echo.AbstractButton = Core.extend(Echo.Component, {
 

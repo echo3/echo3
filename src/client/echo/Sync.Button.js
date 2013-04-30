@@ -357,6 +357,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         
         Echo.Sync.Insets.render(this.component.render("insets"), this.div, "padding");
         Echo.Sync.Alignment.render(this.component.render("alignment"), this.div, true, this.component);
+        Echo.Sync.RoundedCorner.render(this.component, this.div);
         Echo.Sync.BoxShadow.renderClear(this.component.render("boxShadow"), this.div);
         
         var toolTipText = this.component.render("toolTipText");
