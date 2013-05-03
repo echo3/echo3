@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="testapp">
+    <output-path>$APPLICATION_HOME_DIR$/bin/build/artifacts/testapp</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="echo3" />
+          <element id="module-output" name="webcontainer" />
+          <element id="module-output" name="app" />
+          <element id="module-output" name="client" />
+        </element>
+        <element id="directory" name="lib" />
+      </element>
+      <element id="javaee-facet-resources" facet="echo3/web/testapp" />
+    </root>
+  </artifact>
+</component>

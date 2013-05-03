@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="NumberGuess (JavaScript version)" type="JavascriptDebugSession" factoryName="Local" singleton="true">
+    <JSDebuggerConfigurationSettings>
+      <option name="engineId" value="chrome" />
+      <option name="fileUrl" value="file://$PROJECT_DIR$/src/client/example/number-guess/index-ide.html" />
+    </JSDebuggerConfigurationSettings>
+    <RunnerSettings RunnerId="JavascriptDebugRunner" />
+    <ConfigurationWrapper RunnerId="JavascriptDebugRunner" />
+    <method />
+  </configuration>
+</component>
