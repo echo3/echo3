@@ -100,8 +100,14 @@ public class ServerMessage {
         if (addedLibraries.contains(serviceId)) {
             return;
         }
-        Element libraryElement = document.createElement("lib");
-        libraryElement.appendChild(document.createTextNode(serviceId));
+        final Element libraryElement = document.createElement("lib");		
+        final StringBuilder nodeText = new StringBuilder(serviceId);
+        
+        final Service service = WebContainerServlet.getServiceRegistry().get(serviceId);
+        
+        final String type = service instanceof JavaScriptService ? "js" : service instanceof CascadingStyleSheetsService ? "css" : "unknown";
+        libraryElement.setAttribute("type", type);
+        libraryElement.appendChild(document.createTextNode(nodeText.toString()));	
         librariesElement.appendChild(libraryElement);
         addedLibraries.add(serviceId);
     }

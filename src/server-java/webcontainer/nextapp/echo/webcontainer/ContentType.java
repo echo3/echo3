@@ -52,6 +52,8 @@ implements Serializable {
     public static final ContentType TEXT_PLAIN = new ContentType("text/plain", false);
     public static final ContentType TEXT_XML = new ContentType("text/xml", false);
     public static final ContentType TEXT_CSS = new ContentType("text/css", false);
+    public static final ContentType BINARY = new ContentType("application/octet-stream", true);
+    public static final ContentType FONT_TTF = new ContentType("application/x-font-ttf", true);
     public static final ContentType APPLICATION_FLASH = new ContentType("application/x-shockwave-flash", true);
 
     /** The mime type. */
