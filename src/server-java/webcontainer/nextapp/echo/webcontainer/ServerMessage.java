@@ -32,11 +32,14 @@ package nextapp.echo.webcontainer;
 import java.util.HashSet;
 import java.util.Set;
 
+import nextapp.echo.app.util.DomUtil;
+import nextapp.echo.webcontainer.service.CascadingStyleSheetsService;
+import nextapp.echo.webcontainer.service.JavaScriptService;
+import nextapp.echo.webcontainer.service.StringVersionService;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import nextapp.echo.app.util.DomUtil;
 
 /**
  * The outgoing XML message which synchronizes the state of the client to that
@@ -100,6 +103,7 @@ public class ServerMessage {
         if (addedLibraries.contains(serviceId)) {
             return;
         }
+        
         final Element libraryElement = document.createElement("lib");		
         final StringBuilder nodeText = new StringBuilder(serviceId);
         
@@ -107,7 +111,16 @@ public class ServerMessage {
         
         final String type = service instanceof JavaScriptService ? "js" : service instanceof CascadingStyleSheetsService ? "css" : "unknown";
         libraryElement.setAttribute("type", type);
-        libraryElement.appendChild(document.createTextNode(nodeText.toString()));	
+        
+        if (service instanceof StringVersionService) {
+            StringVersionService svs = (StringVersionService) service;
+            if (svs.getVersionAsString() != null) {
+                nodeText.append("&v=");
+                nodeText.append(((StringVersionService)service).getVersionAsString());
+            }
+        }        
+        
+        libraryElement.appendChild(document.createTextNode(nodeText.toString()));		
         librariesElement.appendChild(libraryElement);
         addedLibraries.add(serviceId);
     }
