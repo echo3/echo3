@@ -1,0 +1,7 @@
+<!--
+Dummy project used as a namespace so that gradle doesn't encounter name conflicts in 
+tasks names.
+-->
+<project>
+	<include file="build.xml" as="ant"/>
+</project>

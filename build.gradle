@@ -1,0 +1,55 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.nextapp.echo3'
+sourceCompatibility = JavaVersion.VERSION_1_6
+
+configurations {
+	testCompile
+}
+
+repositories {
+	mavenCentral()	
+}
+ 
+sourceSets {
+	main {
+		java {
+			srcDir 'src/server-java/app'
+			srcDir 'src/server-java/webcontainer'
+		}
+	}	
+	test {
+		java {
+			srcDir 'src/server-java/app-test'
+			srcDir 'src/server-java/webcontainer-test'
+		}
+	}
+}
+
+dependencies {
+	compile "javax.servlet:javax.servlet-api:3.0.1"
+	compile "org.eclipse.jetty:jetty-servlet:7.4.2.v20110526"            
+	testCompile "junit:junit:4.11"
+}
+
+ant.importBuild 'gradleWrapper.xml'
+
+// Ant build file needs the sevrlet.lib.jar to point to the correct location
+ant.properties['servlet.lib.jar'] = configurations.compile.asPath
+defaultTasks 'uploadArchives'
+
+clean.dependsOn 'ant.clean'
+
+// app and webcontainer variables constitute duplicate names of the ant build file.
+// The ant build file variables contain the version, and that's not suitable for our maven builds 
+def app = 'echo3-app'
+def echoAppFile = file(ant.properties['dir.dist.lib'] + '/' + ant.properties['jarfile.echo.app'])
+
+def webcontainer = 'echo3-webcontainer'
+def echoWebContainerFile = file(ant.properties['dir.dist.lib'] + '/' + ant.properties['jarfile.echo.webcontainer'])
+
+artifacts {
+	archives file: echoAppFile, name: app, type: 'jar'
+	archives file: echoWebContainerFile, name: webcontainer, type: 'jar'
+}

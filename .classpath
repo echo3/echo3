@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="tmp/eclipse_build_js/nextapp/echo/webcontainer/resource" path="src/client/corejs"/>
+	<classpathentry kind="src" output="tmp/eclipse_build_js/nextapp/echo/webcontainer/resource" path="src/client/echo"/>
+	<classpathentry kind="src" path="src/server-java/app"/>
+	<classpathentry kind="src" path="src/server-java/app-test"/>
+	<classpathentry kind="src" path="src/server-java/webcontainer"/>
+	<classpathentry kind="src" path="src/server-java/webcontainer-test"/>
+	<classpathentry kind="src" path="src/server-java/testapp-interactive/deploy"/>
+	<classpathentry kind="src" path="src/server-java/testapp-interactive/eclipse"/>
+	<classpathentry kind="src" path="src/server-java/testapp-interactive/htdocs"/>
+	<classpathentry kind="src" path="src/server-java/testapp-interactive/lib"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
+	<classpathentry kind="output" path="tmp/eclipse_build"/>
+</classpath>

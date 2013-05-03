@@ -3,3 +3,6 @@ build
 custom-ant.properties
 javadoc
 release
+tmp
+.settings
+.gradle
