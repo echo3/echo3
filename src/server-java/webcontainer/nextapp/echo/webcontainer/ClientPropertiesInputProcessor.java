@@ -122,6 +122,9 @@ implements ClientMessage.Processor {
                     throw new SynchronizationException("Illegal property in ClientProperties message: " + propertyName, null);
                 }
                 SerialPropertyPeer propertyPeer = propertyPeerFactory.getPeerForProperty(propertyClass);
+                if (propertyPeer == null) {
+                	throw new IOException("Property peer for " + propertyClass + " not found - possibly not included in SynchronizePeerBindings.properties.");
+                }
                 Object propertyValue = propertyPeer.toProperty(context, propertyClass, pElements[i]);
                 clientProperties.setProperty(propertyName, propertyValue);
             } catch (SerialException ex) {
