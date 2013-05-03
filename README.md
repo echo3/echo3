@@ -135,6 +135,29 @@ Documentation is available online on the official Website at
   <http://echo.nextapp.com/site/echo3/doc>
 
 
+Developing
+-------------
+After checking out the latest source code, please be sure to also
+initialized the linked Git submodules. On the command line this can
+be achieved by executing
+
+    git submodule update --init --recursive
+
+After this you should be able to build Echo by running
+
+    ant dist
+
+As IDE we recommend using IntelliJ IDEA. The source folder already contains
+the project definition which allows you to directly open the project in IDEA.
+On the first run you have to register & select a installed JDK and choose a
+default compilation output folder (choose a new empty folder 'build' in the
+project to avoid errors about missing classes on running the unit tests).
+Test your setup by executing the "All JUnit Tests" target.
+
+The free community edition is sufficient, though the ultimate edition offers
+significant additional comfort (i.e. inline JavaScript debugging).
+
+
 Licensing
 =========
 
