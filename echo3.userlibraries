@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eclipse-userlibraries>
+  <library name="junit">
+    <archive path="/home/ben/projects/echo3.git/lib/hamcrest-core-1.3.jar" />
+    <archive path="/home/ben/projects/echo3.git/lib/junit-4.11.jar" />
+  </library>
+  <library name="servlet-api">
+    <archive path="/home/ben/projects/echo3.git/lib/servlet-api-2.5.jar" />
+  </library>
+</eclipse-userlibraries>
+
