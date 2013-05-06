@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" output="tmp/eclipse_build_js/nextapp/echo/webcontainer/resource" path="corejs"/>
+	<classpathentry kind="src" output="tmp/eclipse_build_js/nextapp/echo/webcontainer/resource" path="echo"/>
+	<classpathentry kind="src" path="/client/example/hello-world"/>
+	<classpathentry kind="src" path="/client/example/number-guess"/>
+	<classpathentry kind="src" path="/client/testapp-interactive"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

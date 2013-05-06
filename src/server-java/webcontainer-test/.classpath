@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="bin/" kind="src" path=""/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/webcontainer"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/junit"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
