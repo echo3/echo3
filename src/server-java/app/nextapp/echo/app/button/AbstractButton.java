@@ -99,6 +99,7 @@ public abstract class AbstractButton extends Component {
     public static final String PROPERTY_TOOL_TIP_TEXT = "toolTipText";
     public static final String PROPERTY_WIDTH = "width";
     public static final String PROPERTY_BOX_SHADOW = "boxShadow";
+    public static final String PROPERTY_CORNER_RADIUS = "radius";
 
     
     /**
@@ -431,6 +432,15 @@ public abstract class AbstractButton extends Component {
      */
     public ImageReference getPressedIcon() {
         return (ImageReference) get(PROPERTY_PRESSED_ICON);
+    }
+
+    /**
+     * Returns the corder radius of the button (or null of radius applied).
+     * 
+     * @return the radius
+     */
+    public Insets getRadius() {
+        return (Insets) get(PROPERTY_CORNER_RADIUS);
     }
 
     /**
@@ -944,6 +954,15 @@ public abstract class AbstractButton extends Component {
      */
     public void setPressedIcon(ImageReference newValue) {
         set(PROPERTY_PRESSED_ICON, newValue);
+    }
+
+    /**
+     * Sets the radius of the corners of the button.
+     * 
+     * @param newValue the new radius
+     */
+    public void setRadius(Insets newValue) {
+        set(PROPERTY_CORNER_RADIUS, newValue);
     }
 
     /**

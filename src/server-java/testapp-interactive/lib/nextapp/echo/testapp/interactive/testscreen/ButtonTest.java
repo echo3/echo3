@@ -1681,8 +1681,68 @@ extends SplitPane {
                 });
             }
         });
+
+        //CSS Radius	
+        controlsColumn = new ButtonColumn();
+        controlGroupsColumn.add(controlsColumn);
+        controlsColumn.add(new Label("CSS Radius"));
+
+        controlsColumn.addButton("Radius = 5px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setRadius(new Insets(5));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Radius top-left = 10px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setRadius(new Insets(10, 0, 0, 0));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Radius top-right = 10px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setRadius(new Insets(0, 10, 0, 0));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Radius bottom-right = 10px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setRadius(new Insets(0, 0, 10, 0));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Radius bottom-left = 10px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setRadius(new Insets(0, 0, 0, 10));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Radius = null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setRadius(null);
+                    }
+                });
+            }
+        });
     }
-    
+
     public void apply(Applicator applicator) {
         AbstractButton[] buttons = (AbstractButton[]) buttonList.toArray(new AbstractButton[buttonList.size()]);
         for (int i = 0; i < buttons.length; ++i) {
