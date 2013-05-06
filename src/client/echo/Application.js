@@ -2658,6 +2658,7 @@ Echo.Update.Manager = Core.extend({
  *     component of the alignment value will not be rendered)
  * @sp {#FillImage} backgroundImage the background image
  * @sp {#Border} border the default button border
+ * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the button
  * @sp {#Color} disabledBackground the disabled background color
  * @sp {#FillImage} disabledBackgroundImage the disabled background image
  * @sp {#Border} disabledBorder the disabled border
@@ -2683,6 +2684,7 @@ Echo.Update.Manager = Core.extend({
  * @sp {#Font} pressedFont the pressed font
  * @sp {#Font} pressedForeground the pressed foreground color
  * @sp {#ImageReference} pressedIcon the pressed icon
+ * @sp {#Insets} radius The radius of the button corners (top-left, top-right, bottom-right, bottom-left)
  * @sp {#Color} rolloverBackground the rollover background color
  * @sp {#FillImage} rolloverBackgroundImage the rollover background image
  * @sp {#Border} rolloverBorder the rollover border
@@ -2697,8 +2699,6 @@ Echo.Update.Manager = Core.extend({
  * @sp {#Extent} width the width of the button
  * @event action An event fired when the button is pressed (clicked).  The <code>actionCommand</code> property of the pressed
  *        button is provided as a property.
- * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the button
- * @sp {#Insets} radius The radius of the button corners
  */
 Echo.AbstractButton = Core.extend(Echo.Component, {
 
