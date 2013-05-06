@@ -1,3 +1,4 @@
 [submodule "lib"]
 	path = lib
-	url = git@github.com:exxcellent/echo3dependencies.git
+	url = https://github.com/echo3/echo-dependencies.git
+
