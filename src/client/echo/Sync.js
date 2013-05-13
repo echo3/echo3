@@ -1890,3 +1890,29 @@ Echo.Sync.TriCellTable = Core.extend({
         }
     }
 });
+
+
+/**
+ * Provides tools for rendering rounded corners
+ */
+Echo.Sync.RoundedCorner = { 
+
+    /**
+     * Renders a corner radius to an element.
+     * 
+     * @param {#Insets} radius the CSS radius(es) to apply to a component
+                        in the order: top-left, top-right, bottom-right, bottom-left 
+     * @param {Element} element the target element
+     */
+    render: function(component, element) {
+        if (!component) return;
+        var radius = component.render("radius");
+        if (!radius) return;
+
+        var ci = Echo.Sync.Insets.toPixels(radius);
+        if (ci.left > 0) element.style["border-top-left-radius"] = ci.left + "px";
+        if (ci.top > 0) element.style["border-top-right-radius"] = ci.top + "px";
+        if (ci.right > 0) element.style["border-bottom-right-radius"] = ci.right + "px";
+        if (ci.bottom > 0) element.style["border-bottom-left-radius"] = ci.bottom + "px";
+    }
+};
