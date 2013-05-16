@@ -29,7 +29,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
 -->
  
-<project name="echo3" default="dist" basedir=".">
+<project name="echo3" default="dist" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
     <property environment="env"/>
     <property file="custom-ant.properties"/>
@@ -456,36 +456,30 @@
         </copy>
     </target>
 
-	<target name="mvn.install" depends="dist, -mvn.generate.pom" description="Installs the current release into the local maven repository">
-        <mvn.run mvnargs="install:install-file -DpomFile=${dir.build}/maven-pom/echo3-app-pom.xml -Dfile=dist${file.separator}lib${file.separator}echo3-app-${release.version}.jar -Dsources=${dir.dist.lib}/${srcfile.echo.app} -Djavadoc=${dir.dist.lib}/${docfile.echo.app}"/>
-        <mvn.run mvnargs="install:install-file -DpomFile=${dir.build}/maven-pom/echo3-webcontainer-pom.xml -Dfile=${dir.dist.lib}/${jarfile.echo.webcontainer} -Dsources=${dir.dist.lib}/${srcfile.echo.webcontainer} -Djavadoc=${dir.dist.lib}/${docfile.echo.webcontainer}"/>
+	<target name="mvn.install" depends="dist, -mvn.generate.pom, -mvn.inittasks" description="Installs the current release into the local maven repository">
+        <!-- Install Echo API module -->
+        <artifact:mvn>
+            <arg value="install:install-file" />
+            <arg value="-DpomFile=${dir.build}/maven-pom/echo3-app-pom.xml" />
+            <arg value="-Dfile=dist${file.separator}lib${file.separator}echo3-app-${release.version}.jar" />
+            <arg value="-Dsources=${dir.dist.lib}/${srcfile.echo.app}" />
+            <arg value="-Djavadoc=${dir.dist.lib}/${docfile.echo.app}" />
+        </artifact:mvn>
+
+        <!-- Install Echo Web Servlet module -->
+        <artifact:mvn>
+            <arg value="install:install-file" />
+            <arg value="-DpomFile=${dir.build}/maven-pom/echo3-webcontainer-pom.xml" />
+            <arg value="-Dfile=${dir.dist.lib}/${jarfile.echo.webcontainer}" />
+            <arg value="-Dsources=${dir.dist.lib}/${srcfile.echo.webcontainer}" />
+            <arg value="-Djavadoc=${dir.dist.lib}/${docfile.echo.webcontainer}" />
+        </artifact:mvn>
 	</target>
 
-    <macrodef name="mvn.run">
-        <attribute name="mvnargs"/>
-        <sequential>
-            <condition property="onWindows">
-                <os family="windows"/>
-            </condition>
-            <antcall target="-mvn.run.win" >
-                <param name="mvnargs" value="@{mvnargs}"/>
-            </antcall>
-            <antcall target="-mvn.run.unix" >
-                <param name="mvnargs" value="@{mvnargs}"/>
-            </antcall>
-        </sequential>
-    </macrodef>
-
-    <target name="-mvn.run.win" if="onWindows">
-        <exec executable="cmd">
-            <arg line="/c mvn ${mvnargs}"/>
-        </exec>
-    </target>
-
-    <target name="-mvn.run.unix" unless="onWindows">
-        <exec executable="mvn">
-            <arg line="${mvnargs}"/>
-        </exec>
+    <target name="-mvn.inittasks" unless="mvntasks.initialized">
+        <taskdef resource="de/exxcellent/ant/tasks.properties" classpath="resource/maven/ant-exxtasks-1.0.jar"/>
+        <extendclasspath path="resource/maven/maven-ant-tasks-2.1.3.jar"/>
+        <available property="mvntasks.initialized" classname="org.apache.maven.project.MavenProject"/>
     </target>
 
     <target name="jslint.corejs" unless="skip.tests">
