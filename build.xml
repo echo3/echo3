@@ -445,50 +445,49 @@
         <gzip src="${dir.release}/${tarfile.release}" zipfile="${dir.release}/${tgzfile.release}"/>
         <delete file="${dir.release}/${tarfile.release}"/>
     </target>
-	
-	<target name="mvn-install" depends="dist" description="Installs the jar into the local maven repository">
+
+    <target name="-mvn.generate.pom">
         <mkdir dir="${dir.build}/maven-pom"/>
-        <copy todir="${dir.build}/maven-pom" filtering="true">
+        <copy todir="${dir.build}/maven-pom" filtering="true" overwrite="true">
             <fileset dir="resource/maven" includes="*.xml"/>
             <filterset id="maven.pom.filters" begintoken="$${" endtoken="}">
                 <filter token="version" value="${release.version}"/>
             </filterset>
         </copy>
-		<condition property="onWindows">
-			<os family="windows"/>
-		</condition>
-		<antcall target="mvn-install-win"/>
-		<antcall target="mvn-install-unix"/>
+    </target>
+
+	<target name="mvn.install" depends="dist, -mvn.generate.pom" description="Installs the current release into the local maven repository">
+        <mvn.run mvnargs="install:install-file -DpomFile=${dir.build}/maven-pom/echo3-app-pom.xml -Dfile=dist${file.separator}lib${file.separator}echo3-app-${release.version}.jar -Dsources=${dir.dist.lib}/${srcfile.echo.app} -Djavadoc=${dir.dist.lib}/${docfile.echo.app}"/>
+        <mvn.run mvnargs="install:install-file -DpomFile=${dir.build}/maven-pom/echo3-webcontainer-pom.xml -Dfile=${dir.dist.lib}/${jarfile.echo.webcontainer} -Dsources=${dir.dist.lib}/${srcfile.echo.webcontainer} -Djavadoc=${dir.dist.lib}/${docfile.echo.webcontainer}"/>
 	</target>
-	
-    <target name="mvn-install-win"
-        description="Installs the jars into the local maven repository (windows environment)"
-    	if="onWindows">
+
+    <macrodef name="mvn.run">
+        <attribute name="mvnargs"/>
+        <sequential>
+            <condition property="onWindows">
+                <os family="windows"/>
+            </condition>
+            <antcall target="-mvn.run.win" >
+                <param name="mvnargs" value="@{mvnargs}"/>
+            </antcall>
+            <antcall target="-mvn.run.unix" >
+                <param name="mvnargs" value="@{mvnargs}"/>
+            </antcall>
+        </sequential>
+    </macrodef>
+
+    <target name="-mvn.run.win" if="onWindows">
         <exec executable="cmd">
-            <arg value="/c"/>
-            <arg value="mvn install:install-file -DpomFile=${dir.build}/maven-pom/echo3-app-pom.xml -Dfile=dist${file.separator}lib${file.separator}${jarfile.echo.app}"/>
-            </exec>
-            <exec executable="cmd">
-                <arg value="/c"/>
-                <arg value="mvn install:install-file -DpomFile=${dir.build}/maven-pom/echo3-webcontainer-pom.xml -Dfile=dist${file.separator}lib${file.separator}${jarfile.echo.webcontainer}"/>
-            </exec>
-    </target>
-	
-    <target name="mvn-install-unix"
-        description="Installs the jar into the local maven repository (unix environment)"
-    	unless="onWindows">
-        <exec executable="mvn">
-            <arg value="install:install-file"/>
-        	<arg value="-DpomFile=${dir.build}/maven-pom/echo3-app-pom.xml"/>
-            <arg value="-Dfile=dist${file.separator}lib${file.separator}echo3-app-${release.version}.jar"/>
-        </exec>
-        <exec executable="mvn">
-            <arg value="install:install-file"/>
-        	<arg value="-DpomFile=${dir.build}/maven-pom/echo3-webcontainer-pom.xml"/>
-            <arg value="-Dfile=dist${file.separator}lib${file.separator}echo3-webcontainer-${release.version}.jar"/>
+            <arg line="/c mvn ${mvnargs}"/>
         </exec>
     </target>
-    
+
+    <target name="-mvn.run.unix" unless="onWindows">
+        <exec executable="mvn">
+            <arg line="${mvnargs}"/>
+        </exec>
+    </target>
+
     <target name="jslint.corejs" unless="skip.tests">
         <java fork="true" jar="${dir.resource.jslint}/rhino.jar" failonerror="true">
             <arg value="${dir.resource.jslint}/jslint.js"/>
