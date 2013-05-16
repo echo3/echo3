@@ -106,10 +106,11 @@
         </copy>
     </target>
     
-    <target name="dist.app" depends="clean,compile.app">
+    <target name="dist.app" depends="clean,compile.app,doc.app">
         <mkdir dir="${dir.dist.lib}"/>
         <jar jarfile="${dir.dist.lib}/${jarfile.echo.app}" basedir="${dir.build.server-java.app}"/>
         <jar jarfile="${dir.dist.lib}/${srcfile.echo.app}" basedir="${dir.src.server-java.app}"/>
+        <jar jarfile="${dir.dist.lib}/${docfile.echo.app}" basedir="${dir.javadoc.app.public}"/>
     </target>
     
     <target name="test.compile.app" depends="verify.junit, dist.app">
@@ -130,7 +131,7 @@
         </copy>
     </target>
 
-    <target name="test.app" depends="test.compile.app" description="Test Echo app Framework">
+    <target name="test.app" depends="test.compile.app" description="Test Echo app Framework" unless="skip.tests">
         <mkdir dir="${dir.testoutput.app-test}"/>
         <junit printsummary="yes" haltonfailure="no">
             <classpath>
@@ -231,10 +232,11 @@
         </copy>
     </target>
     
-    <target name="dist.webcontainer" depends="clean,compile.webcontainer">
+    <target name="dist.webcontainer" depends="clean,compile.webcontainer,doc.webcontainer">
         <mkdir dir="${dir.dist.lib}"/>
         <jar jarfile="${dir.dist.lib}/${jarfile.echo.webcontainer}" basedir="${dir.build.server-java.webcontainer}"/>
         <jar jarfile="${dir.dist.lib}/${srcfile.echo.webcontainer}" basedir="${dir.src.server-java.webcontainer}"/>
+        <jar jarfile="${dir.dist.lib}/${docfile.echo.webcontainer}" basedir="${dir.javadoc.webcontainer.public}"/>
     </target>
     
     <target name="test.compile.webcontainer" depends="verify.junit, dist.app, dist.webcontainer">
@@ -257,7 +259,8 @@
         </copy>
     </target>
 
-    <target name="test.webcontainer" depends="test.compile.webcontainer" description="Test Web Application Container">
+    <target name="test.webcontainer" depends="test.compile.webcontainer" unless="skip.tests"
+            description="Test Web Application Container">
         <mkdir dir="${dir.testoutput.webcontainer-test}"/>
         <junit printsummary="yes" haltonfailure="yes">
             <classpath>
@@ -314,7 +317,7 @@
     
     <target name="dist" depends="clean, jslint, test, dist.app, dist.webcontainer"/>
     
-    <target name="test" depends="test.app, test.webcontainer"/>
+    <target name="test" depends="test.app, test.webcontainer" unless="skip.tests"/>
     
     <target name="doc.public" 
             depends="doc.app, doc.webcontainer"/>
@@ -444,6 +447,13 @@
     </target>
 	
 	<target name="mvn-install" depends="dist" description="Installs the jar into the local maven repository">
+        <mkdir dir="${dir.build}/maven-pom"/>
+        <copy todir="${dir.build}/maven-pom" filtering="true">
+            <fileset dir="resource/maven" includes="*.xml"/>
+            <filterset id="maven.pom.filters" begintoken="$${" endtoken="}">
+                <filter token="version" value="${release.version}"/>
+            </filterset>
+        </copy>
 		<condition property="onWindows">
 			<os family="windows"/>
 		</condition>
@@ -456,11 +466,11 @@
     	if="onWindows">
         <exec executable="cmd">
             <arg value="/c"/>
-            <arg value="mvn install:install-file -DpomFile=resource/maven/echo3-app-pom.xml -Dfile=dist${file.separator}lib${file.separator}${jarfile.echo.app}"/>
+            <arg value="mvn install:install-file -DpomFile=${dir.build}/maven-pom/echo3-app-pom.xml -Dfile=dist${file.separator}lib${file.separator}${jarfile.echo.app}"/>
             </exec>
             <exec executable="cmd">
                 <arg value="/c"/>
-                <arg value="mvn install:install-file -DpomFile=resource/maven/echo3-webcontainer-pom.xml -Dfile=dist${file.separator}lib${file.separator}${jarfile.echo.webcontainer}"/>
+                <arg value="mvn install:install-file -DpomFile=${dir.build}/maven-pom/echo3-webcontainer-pom.xml -Dfile=dist${file.separator}lib${file.separator}${jarfile.echo.webcontainer}"/>
             </exec>
     </target>
 	
@@ -469,38 +479,37 @@
     	unless="onWindows">
         <exec executable="mvn">
             <arg value="install:install-file"/>
-        	<arg value="-DpomFile=resource/maven/echo3-app-pom.xml"/>
+        	<arg value="-DpomFile=${dir.build}/maven-pom/echo3-app-pom.xml"/>
             <arg value="-Dfile=dist${file.separator}lib${file.separator}echo3-app-${release.version}.jar"/>
         </exec>
         <exec executable="mvn">
             <arg value="install:install-file"/>
-        	<arg value="-DpomFile=resource/maven/echo3-webcontainer-pom.xml"/>
+        	<arg value="-DpomFile=${dir.build}/maven-pom/echo3-webcontainer-pom.xml"/>
             <arg value="-Dfile=dist${file.separator}lib${file.separator}echo3-webcontainer-${release.version}.jar"/>
         </exec>
     </target>
     
-    <target name="jslint.corejs">
+    <target name="jslint.corejs" unless="skip.tests">
         <java fork="true" jar="${dir.resource.jslint}/rhino.jar" failonerror="true">
             <arg value="${dir.resource.jslint}/jslint.js"/>
             <arg value="${dir.src.client.corejs}/"/>
         </java>
     </target>
 
-    <target name="jslint.echo">
+    <target name="jslint.echo" unless="skip.tests">
         <java fork="true" jar="${dir.resource.jslint}/rhino.jar" failonerror="true">
             <arg value="${dir.resource.jslint}/jslint.js"/>
             <arg value="${dir.src.client.echo}/"/>
         </java>
     </target>
 
-    <target name="jslint.webcontainer">
+    <target name="jslint.webcontainer" unless="skip.tests">
         <java fork="true" jar="${dir.resource.jslint}/rhino.jar" failonerror="true">
             <arg value="${dir.resource.jslint}/jslint.js"/>
             <arg value="${dir.src.server-java.webcontainer.res}/"/>
         </java>
     </target>
     
-    <target name="jslint" depends="jslint.corejs,jslint.echo,jslint.webcontainer">
-    </target>
+    <target name="jslint" depends="jslint.corejs,jslint.echo,jslint.webcontainer"/>
 
 </project>
