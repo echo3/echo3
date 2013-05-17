@@ -456,24 +456,23 @@
         </copy>
     </target>
 
-	<target name="mvn.install" depends="dist, -mvn.generate.pom, -mvn.inittasks" description="Installs the current release into the local maven repository">
+	<target name="mvn.install" depends="dist, -mvn.generate.pom, -mvn.inittasks"
+            description="Installs the current release into the local maven repository">
         <!-- Install Echo API module -->
-        <artifact:mvn>
-            <arg value="install:install-file" />
-            <arg value="-DpomFile=${dir.build}/maven-pom/echo3-app-pom.xml" />
-            <arg value="-Dfile=dist${file.separator}lib${file.separator}echo3-app-${release.version}.jar" />
-            <arg value="-Dsources=${dir.dist.lib}/${srcfile.echo.app}" />
-            <arg value="-Djavadoc=${dir.dist.lib}/${docfile.echo.app}" />
-        </artifact:mvn>
+        <artifact:pom id="app-pom" file="${dir.build}/maven-pom/echo3-app-pom.xml" />
+        <artifact:install file="${dir.dist.lib}/${jarfile.echo.app}">
+            <pom refid="app-pom"/>
+            <attach file="${dir.dist.lib}/${srcfile.echo.app}" type="jar" classifier="sources"/>
+            <attach file="${dir.dist.lib}/${docfile.echo.app}" type="jar" classifier="javadoc"/>
+        </artifact:install>
 
         <!-- Install Echo Web Servlet module -->
-        <artifact:mvn>
-            <arg value="install:install-file" />
-            <arg value="-DpomFile=${dir.build}/maven-pom/echo3-webcontainer-pom.xml" />
-            <arg value="-Dfile=${dir.dist.lib}/${jarfile.echo.webcontainer}" />
-            <arg value="-Dsources=${dir.dist.lib}/${srcfile.echo.webcontainer}" />
-            <arg value="-Djavadoc=${dir.dist.lib}/${docfile.echo.webcontainer}" />
-        </artifact:mvn>
+        <artifact:pom id="webcontainer-pom" file="${dir.build}/maven-pom/echo3-webcontainer-pom.xml" />
+        <artifact:install file="${dir.dist.lib}/${jarfile.echo.webcontainer}">
+            <pom refid="app-pom"/>
+            <attach file="${dir.dist.lib}/${srcfile.echo.webcontainer}" type="jar" classifier="sources"/>
+            <attach file="${dir.dist.lib}/${docfile.echo.webcontainer}" type="jar" classifier="javadoc"/>
+        </artifact:install>
 	</target>
 
     <target name="-mvn.inittasks" unless="mvntasks.initialized">
