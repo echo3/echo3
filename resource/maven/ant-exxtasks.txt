@@ -1,0 +1,44 @@
+
+EXXCELLENT ANT TASKS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+EXTENDCLASSPATH
+
+Mit diesem Task kann man den ClassPath von and selbst zur Laufzeit erweitern. Das ist an den Stellen notwendig und sinnvoll,
+wo Ant selbst schon eine Task-Implementierung bereitstellt, aber noch weitere Abhängigkeiten im ANT_HOME/lib erwartet
+(welche erst mal nicht vorhanden sind).
+
+Beispiele hierfür sind die Ant Tasks <scp> und <ftp>.
+
+Damit man also ein build-File ausliefern kann, welches diese Tasks verwendet aber NICHT VOM BENUTZER verlangt seine lokale
+Ant-Installation anzupassen, braucht man den extendclasspath Tasks.
+
+### Verwendungsbeispiel: ####
+
+    <target name="-init.ftptask" unless="ftptask.initialized">
+        <taskdef resource="de/exxcellent/ant/tasks.properties" classpath="tools/ant-colony/ant-clover/etc/ant-exxtasks.jar"/>
+        <extendclasspath path="${dir.tools}/ant-optional/commons-net-1.4.1.jar"/>
+        <extendclasspath path="${dir.tools}/ant-optional/jakarta-oro-2.0.8.jar"/>
+        <available property="ftptask.initialized" classname="org.apache.commons.net.ftp.FTPClientConfig"/>
+    </target>
+    
+
+
+LIZENZ
+
+Diese Tasks stehen unter der MIT Lizenz
+
+Copyright (c) 2011 eXXcellent solutions GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
