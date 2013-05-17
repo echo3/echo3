@@ -475,6 +475,101 @@
         </artifact:install>
 	</target>
 
+    <target name="mvn.snapshot" depends="dist, -mvn.generate.pom, -mvn.inittasks"
+            description="Deploy snapshot version to configured Maven snapshot repository">
+        <!-- The artifact:deploy tasks do not repesct settings.xml for proxy/auth, so we use the mvn task -->
+        <!-- Deploy Echo API module. -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file" />
+            <arg value="-Durl=${maven.repository.snapshots.url}" />
+            <arg value="-DrepositoryId=${maven.repository.snapshots.id}" />
+            <arg value="-DpomFile=${dir.build}/maven-pom/echo3-app-pom.xml" />
+            <arg value="-Dfile=${dir.dist.lib}/${jarfile.echo.app}" />
+            <arg value="-Dsources=${dir.dist.lib}/${srcfile.echo.app}" />
+            <arg value="-Djavadoc=${dir.dist.lib}/${docfile.echo.app}" />
+            <arg value="-e" />
+        </artifact:mvn>
+
+        <!-- Deploy Echo API module. -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file" />
+            <arg value="-Durl=${maven.repository.snapshots.url}" />
+            <arg value="-DrepositoryId=${maven.repository.snapshots.id}" />
+            <arg value="-DpomFile=${dir.build}/maven-pom/echo3-webcontainer-pom.xml" />
+            <arg value="-Dfile=${dir.dist.lib}/${jarfile.echo.webcontainer}" />
+            <arg value="-Dsources=${dir.dist.lib}/${srcfile.echo.webcontainer}" />
+            <arg value="-Djavadoc=${dir.dist.lib}/${docfile.echo.webcontainer}" />
+            <arg value="-e" />
+        </artifact:mvn>
+    </target>
+
+    <target name="mvn.stage" depends="dist, -mvn.generate.pom, -mvn.inittasks"
+        description="Deploy snapshot version to configured Maven snapshot repository">
+        <!-- sign and deploy the main artifacts -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+            <arg value="-Durl=${maven.repository.staging.url}" />
+            <arg value="-DrepositoryId=${maven.repository.staging.id}" />
+            <arg value="-DpomFile=${dir.build}/maven-pom/echo3-app-pom.xml" />
+            <arg value="-Dfile=${dir.dist.lib}/${jarfile.echo.app}" />
+            <arg value="-e" />
+            <arg value="-Pgpg" />
+        </artifact:mvn>
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+            <arg value="-Durl=${maven.repository.staging.url}" />
+            <arg value="-DrepositoryId=${maven.repository.staging.id}" />
+            <arg value="-DpomFile=${dir.build}/maven-pom/echo3-webcontainer-pom.xml" />
+            <arg value="-Dfile=${dir.dist.lib}/${jarfile.echo.webcontainer}" />
+            <arg value="-e" />
+            <arg value="-Pgpg" />
+        </artifact:mvn>
+
+        <!-- sign and deploy the sources artifacts -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+            <arg value="-Durl=${maven.repository.staging.url}" />
+            <arg value="-DrepositoryId=${maven.repository.staging.id}" />
+            <arg value="-DpomFile=${dir.build}/maven-pom/echo3-app-pom.xml" />
+            <arg value="-Dfile=${dir.dist.lib}/${srcfile.echo.app}" />
+            <arg value="-Dclassifier=sources" />
+            <arg value="-e" />
+            <arg value="-Pgpg" />
+        </artifact:mvn>
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+            <arg value="-Durl=${maven.repository.staging.url}" />
+            <arg value="-DrepositoryId=${maven.repository.staging.id}" />
+            <arg value="-DpomFile=${dir.build}/maven-pom/echo3-webcontainer-pom.xml" />
+            <arg value="-Dfile=${dir.dist.lib}/${srcfile.echo.webcontainer}" />
+            <arg value="-Dclassifier=sources" />
+            <arg value="-e" />
+            <arg value="-Pgpg" />
+        </artifact:mvn>
+
+        <!-- sign and deploy the javadoc artifacts -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+            <arg value="-Durl=${maven.repository.staging.url}" />
+            <arg value="-DrepositoryId=${maven.repository.staging.id}" />
+            <arg value="-DpomFile=${dir.build}/maven-pom/echo3-app-pom.xml" />
+            <arg value="-Dfile=${dir.dist.lib}/${docfile.echo.app}" />
+            <arg value="-Dclassifier=javadoc" />
+            <arg value="-e" />
+            <arg value="-Pgpg" />
+        </artifact:mvn>
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
+            <arg value="-Durl=${maven.repository.staging.url}" />
+            <arg value="-DrepositoryId=${maven.repository.staging.id}" />
+            <arg value="-DpomFile=${dir.build}/maven-pom/echo3-webcontainer-pom.xml" />
+            <arg value="-Dfile=${dir.dist.lib}/${docfile.echo.webcontainer}" />
+            <arg value="-Dclassifier=javadoc" />
+            <arg value="-e" />
+            <arg value="-Pgpg" />
+        </artifact:mvn>
+    </target>
+
     <target name="-mvn.inittasks" unless="mvntasks.initialized">
         <taskdef resource="de/exxcellent/ant/tasks.properties" classpath="resource/maven/ant-exxtasks-1.0.jar"/>
         <extendclasspath path="resource/maven/maven-ant-tasks-2.1.3.jar"/>
