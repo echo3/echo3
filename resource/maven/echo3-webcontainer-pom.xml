@@ -4,22 +4,79 @@
 	<groupId>com.nextapp</groupId>
 	<artifactId>echo3-webcontainer</artifactId>
 	<packaging>jar</packaging>
-	<name>Echo3</name>
-	<version>3.0.0-SNAPSHOT</version>
-	<description>Echo3 AJAX Framework</description>
-	<issueManagement>
-		<url>http://bugs.nextapp.com/mantis</url>
-	</issueManagement>
-	<scm>
-		<connection>scm:svn:https://svn.nextapp.com/svn/echo3/trunk</connection>
-		<developerConnection>scm:svn:https://svn.nextapp.com/svn/echo3/trunk</developerConnection>
-		<url>https://svn.nextapp.com/svn/echo3/trunk</url>
-	</scm>
+	<name>Echo Servlet</name>
+	<version>${version}</version>
+    <description>Echo Web Framework Servlet</description>
+    <url>http://echo.nextapp.com/site/echo3</url>
+
+    <developers>
+        <developer>
+            <id>tliebeck</id>
+            <name>Tod Liebeck</name>
+            <organization>NextApp, Inc.</organization>
+        </developer>
+        <developer>
+            <id>tliebeck</id>
+            <name>Tod Liebeck</name>
+            <organization>NextApp, Inc.</organization>
+            <email>tliebeck@nextapp.com</email>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>bschmid</id>
+            <name>Benjamin Schmid</name>
+            <organization>eXXcellent solutions GmbH</organization>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>sgodden</id>
+            <name>Simon Godden</name>
+        </developer>
+        <developer>
+            <id>nbeekman</id>
+            <name>Niels Beekman</name>
+        </developer>
+        <developer>
+            <id>ddewit</id>
+            <name>Dan De Wit</name>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>MPL 1.1</name>
+            <url>http://www.mozilla.org/MPL/MPL-1.1.html</url>
+        </license>
+        <license>
+            <name>LGPL 2.1</name>
+            <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+        </license>
+        <license>
+            <name>GPL 2.0</name>
+            <url>http://www.gnu.org/licenses/gpl-2.0.html</url>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <url>https://github.com/echo3/echo3/issues</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git:http://github.com/echo3/echo3.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/echo3/echo3.git</developerConnection>
+        <url>http://github.com/echo3/echo3</url>
+    </scm>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.nextapp</groupId>
 			<artifactId>echo3-app</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>${version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -28,4 +85,5 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
 </project>
