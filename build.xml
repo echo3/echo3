@@ -315,9 +315,9 @@
         </javadoc>
     </target>
     
-    <target name="dist" depends="clean, jslint, test, dist.app, dist.webcontainer"/>
+    <target name="dist" depends="clean, test, dist.app, dist.webcontainer"/>
     
-    <target name="test" depends="test.app, test.webcontainer" unless="skip.tests"/>
+    <target name="test" depends="jslint, test.app, test.webcontainer" unless="skip.tests"/>
     
     <target name="doc.public" 
             depends="doc.app, doc.webcontainer"/>
