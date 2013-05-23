@@ -1905,14 +1905,26 @@ Echo.Sync.RoundedCorner = {
      * @param {Element} element the target element
      */
     render: function(component, element) {
-        if (!component) return;
+        if (!component) {
+            return;
+        }
         var radius = component.render("radius");
-        if (!radius) return;
+        if (!radius) {
+            return;
+        }
 
         var ci = Echo.Sync.Insets.toPixels(radius);
-        if (ci.left > 0) element.style["border-top-left-radius"] = ci.left + "px";
-        if (ci.top > 0) element.style["border-top-right-radius"] = ci.top + "px";
-        if (ci.right > 0) element.style["border-bottom-right-radius"] = ci.right + "px";
-        if (ci.bottom > 0) element.style["border-bottom-left-radius"] = ci.bottom + "px";
+        if (ci.left > 0) {
+            element.style["border-top-left-radius"] = ci.left + "px";
+        }
+        if (ci.top > 0) {
+            element.style["border-top-right-radius"] = ci.top + "px";
+        }
+        if (ci.right > 0) {
+            element.style["border-bottom-right-radius"] = ci.right + "px";
+        }
+        if (ci.bottom > 0) {
+            element.style["border-bottom-left-radius"] = ci.bottom + "px";
+        }
     }
 };
