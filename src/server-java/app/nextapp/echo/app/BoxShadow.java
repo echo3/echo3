@@ -84,14 +84,14 @@ public class BoxShadow implements Serializable {
     }
 
     /**
-     * @see BoxShadow#BoxShadow(nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Color, int)
+     * @see #BoxShadow(Extent, Extent, Extent, Extent, Color, nextapp.echo.app.BoxShadow.BoxStyle)
      */
     public BoxShadow(int hShadowPx, int vShadowPx) {
         this(new Extent(hShadowPx), new Extent(vShadowPx), new Extent(0), new Extent(0), Color.BLACK, BoxStyle.DEFAULT);
     }
 
     /**
-     * @see BoxShadow#BoxShadow(nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Extent, nextapp.echo.app.Color, int)
+     * @see #BoxShadow(Extent, Extent, Extent, Extent, Color, nextapp.echo.app.BoxShadow.BoxStyle)
      */
     public BoxShadow(int hShadowPx, int vShadowPx, Color color) {
         this(new Extent(hShadowPx), new Extent(vShadowPx), new Extent(0), new Extent(0), color, BoxStyle.DEFAULT);
