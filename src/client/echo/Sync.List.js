@@ -484,6 +484,9 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         this.renderDispose(update);
         containerElement.removeChild(element);
         this.renderAdd(update, containerElement);
+        if (this._focused) {
+            Core.Web.DOM.focusElement(this._element);
+        }
         return false; // Child elements not supported: safe to return false.
     },
     
