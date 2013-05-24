@@ -137,18 +137,16 @@ Documentation is available online on the official Website at
 
 Developing
 -------------
-After checking out the latest source code, please be sure to also
-initialized the linked Git submodules. On the command line this can
-be achieved by executing
-
-    git submodule update --init --recursive
-
-After this you should be able to build Echo by running
+Echo can be built by running
 
     ant dist
 
+which will automatically fetch the required dependencies using Maven.
+
 As IDE we recommend using IntelliJ IDEA. The source folder already contains
 the project definition which allows you to directly open the project in IDEA.
+Note that you should run either "ant dist" or "ant dependencies" before opening
+the project to make sure the required libraries are present.
 On the first run you have to register & select a installed JDK and choose a
 default compilation output folder (choose a new empty folder 'build' in the
 project to avoid errors about missing classes on running the unit tests).
