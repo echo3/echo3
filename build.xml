@@ -46,11 +46,37 @@
         <include name="**/*stylesheet"/>
         <include name="**/*css"/>
     </patternset>
+    
+    <target name="-check.dependencies">
+        <available file="${dir.lib}/${junit.lib.jar}.jar" property="dependencies.present"/>
+    </target>
+
+    <target name="mvn.dependencies" depends="-mvn.inittasks"
+            description="Fetches the required dependencies from Maven Central into the lib dir">
+
+        <artifact:dependencies filesetId="dependency.fileset">
+            <dependency groupId="javax.servlet" artifactId="servlet-api" version="${servlet.lib.version}"/>
+            <dependency groupId="javax.servlet" artifactId="servlet-api" version="${servlet.lib.version}" classifier="sources"/>
+            <dependency groupId="junit" artifactId="junit" version="${junit.lib.version}" scope="test"/>
+            <dependency groupId="junit" artifactId="junit" version="${junit.lib.version}" scope="test" classifier="sources"/>
+        </artifact:dependencies>
+
+        <copy todir="${dir.lib}">
+            <fileset refid="dependency.fileset" />
+            <mapper type="flatten" />
+        </copy>
+    </target>
+
+    <target name="dependencies" depends="-check.dependencies" unless="dependencies.present"
+            description="Spot checks for dependency JARs availability and fetches via Maven Central if required">
+        <antcall target="mvn.dependencies"/>
+    </target>
 
     <!-- Minimize -->
     <target name="minimize" depends="clean"
             description="Removes all non-essential files, including Eclipse temporary/build output files">
         <delete dir="${dir.temp}"/>
+        <delete dir="${dir.lib}"/>
     </target>
 
     <!-- Clean -->
@@ -94,7 +120,7 @@
 
     </target>
 
-    <target name="compile.app" description="Compile Echo Application Framework">
+    <target name="compile.app" description="Compile Echo Application Framework" depends="dependencies">
         <mkdir dir="${dir.build.server-java.app}"/>
         <javac srcdir="${dir.src.server-java.app}" destdir="${dir.build.server-java.app}"
                 debug="${debug}" deprecation="yes" source="${ant.build.javac.source}"
@@ -113,7 +139,7 @@
         <jar jarfile="${dir.dist.lib}/${docfile.echo.app}" basedir="${dir.javadoc.app.public}"/>
     </target>
 
-    <target name="test.compile.app" depends="verify.junit, dist.app">
+    <target name="test.compile.app" depends="dependencies, verify.junit, dist.app">
         <mkdir dir="${dir.build.server-java.app-test}"/>
         <javac srcdir="${dir.src.server-java.app-test}" destdir="${dir.build.server-java.app-test}"
                 debug="${debug}" deprecation="yes" source="${ant.build.javac.source}"
@@ -259,7 +285,7 @@
         <jar jarfile="${dir.dist.lib}/${docfile.echo.webcontainer}" basedir="${dir.javadoc.webcontainer.public}"/>
     </target>
 
-    <target name="test.compile.webcontainer" depends="verify.junit, dist.app, dist.webcontainer">
+    <target name="test.compile.webcontainer" depends="dependencies, verify.junit, dist.app, dist.webcontainer">
         <mkdir dir="${dir.build.server-java.webcontainer-test}"/>
         <javac srcdir="${dir.src.server-java.webcontainer-test}" destdir="${dir.build.server-java.webcontainer-test}"
                 debug="${debug}" deprecation="yes" source="${ant.build.javac.source}"
@@ -350,6 +376,11 @@
 
     <target name="doc.private"
             depends="doc.app.private, doc.webcontainer.private"/>
+
+    <target name="doc.jars" depends="doc.public" description="Builds the *-javadoc.jar files">
+        <jar jarfile="${dir.dist.lib}/${docfile.echo.app}" basedir="${dir.javadoc.app.public}"/>
+        <jar jarfile="${dir.dist.lib}/${docfile.echo.webcontainer}" basedir="${dir.javadoc.webcontainer.public}"/>
+    </target>
 
     <target name="doc"
             depends="doc.app, doc.app.private, doc.webcontainer, doc.webcontainer.private"/>
@@ -495,16 +526,16 @@
         <!-- Install Echo Web Servlet module -->
         <artifact:pom id="webcontainer-pom" file="${dir.build}/maven-pom/echo3-webcontainer-pom.xml" />
         <artifact:install file="${dir.dist.lib}/${jarfile.echo.webcontainer}">
-            <pom refid="app-pom"/>
+            <pom refid="webcontainer-pom"/>
             <attach file="${dir.dist.lib}/${srcfile.echo.webcontainer}" type="jar" classifier="sources"/>
             <attach file="${dir.dist.lib}/${docfile.echo.webcontainer}" type="jar" classifier="javadoc"/>
         </artifact:install>
 	</target>
 
-    <target name="mvn.snapshot" depends="dist, -mvn.generate.pom, -mvn.inittasks"
+    <target name="mvn.snapshot" depends="dist, doc.jars, -mvn.generate.pom, -mvn.inittasks"
             description="Deploy snapshot version to configured Maven snapshot repository">
         <!-- The artifact:deploy tasks do not repesct settings.xml for proxy/auth, so we use the mvn task -->
-        <!-- Deploy Echo API module. -->
+        <!-- Deploy Echo App API module. -->
         <artifact:mvn>
             <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file" />
             <arg value="-Durl=${maven.repository.snapshots.url}" />
@@ -516,7 +547,7 @@
             <arg value="-e" />
         </artifact:mvn>
 
-        <!-- Deploy Echo API module. -->
+        <!-- Deploy Echo Webcontainer API module. -->
         <artifact:mvn>
             <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file" />
             <arg value="-Durl=${maven.repository.snapshots.url}" />
@@ -531,7 +562,6 @@
 
     <target name="mvn.stage" depends="dist, -mvn.generate.pom, -mvn.inittasks"
         description="Deploy snapshot version to configured Maven snapshot repository">
-
         <macrodef name="deploysigned">
             <attribute name="module"/>
             <attribute name="file"/>
@@ -555,10 +585,9 @@
         <deploysigned module="app" classifier="sources" file="${srcfile.echo.app}"/>
         <deploysigned module="app" classifier="javadoc" file="${docfile.echo.app}"/>
 
-        <deploysigned module="webcontainer" classifier=""        file="${jarfile.echo.app}"/>
-        <deploysigned module="webcontainer" classifier="sources" file="${srcfile.echo.app}"/>
-        <deploysigned module="webcontainer" classifier="javadoc" file="${docfile.echo.app}"/>
-
+        <deploysigned module="webcontainer" classifier=""        file="${jarfile.echo.webcontainer}"/>
+        <deploysigned module="webcontainer" classifier="sources" file="${srcfile.echo.webcontainer}"/>
+        <deploysigned module="webcontainer" classifier="javadoc" file="${docfile.echo.webcontainer}"/>
     </target>
 
     <target name="-mvn.inittasks" unless="mvntasks.initialized">
