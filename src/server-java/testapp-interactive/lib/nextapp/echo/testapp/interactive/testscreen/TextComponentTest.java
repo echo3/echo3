@@ -520,6 +520,92 @@ public class TextComponentTest extends SplitPane {
                 textArea.setDisabledBackground(null);
             }
         });
+        controlsColumn.addButton("Change Read-Only Border (All Attributes)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Border border = StyleUtil.randomBorder();
+                textField.setReadOnlyBorder(border);
+                passwordField.setReadOnlyBorder(border);
+                textArea.setReadOnlyBorder(border);
+            }
+        });
+        controlsColumn.addButton("Change Read-Only Border Color", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Border border = textField.getReadOnlyBorder();
+                if (border == null) {
+                    return;
+                }
+                border = new Border(border.getSize(), StyleUtil.randomColor(), border.getStyle());
+                textField.setReadOnlyBorder(border);
+                passwordField.setReadOnlyBorder(border);
+                textArea.setReadOnlyBorder(border);
+            }
+        });
+        controlsColumn.addButton("Change Read-Only Border Size", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Border border = StyleUtil.nextBorderSize(textField.getReadOnlyBorder());
+                if (border == null) {
+                    return;
+                }
+                textField.setReadOnlyBorder(border);
+                passwordField.setReadOnlyBorder(border);
+                textArea.setReadOnlyBorder(border);
+            }
+        });
+        controlsColumn.addButton("Change Read-Only Border Style", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Border border = StyleUtil.nextBorderStyle(textField.getReadOnlyBorder());
+                if (border == null) {
+                    return;
+                }
+                textField.setReadOnlyBorder(border);
+                passwordField.setReadOnlyBorder(border);
+                textArea.setReadOnlyBorder(border);
+            }
+        });
+        controlsColumn.addButton("Toggle Read-Only Background Image", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                FillImage backgroundImage = textField.getReadOnlyBackgroundImage();
+                if (backgroundImage == null) {
+                    textField.setReadOnlyBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE);
+                    passwordField.setReadOnlyBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE);
+                    textArea.setReadOnlyBackgroundImage(Styles.BG_SHADOW_LIGHT_BLUE);
+                } else {
+                    textField.setReadOnlyBackgroundImage(null);
+                    passwordField.setReadOnlyBackgroundImage(null);
+                    textArea.setReadOnlyBackgroundImage(null);
+                }
+            }
+        });
+        controlsColumn.addButton("Set Read-Only Foreground", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Color color = StyleUtil.randomColor();
+                textField.setReadOnlyForeground(color);
+                passwordField.setReadOnlyForeground(color);
+                textArea.setReadOnlyForeground(color);
+            }
+        });
+        controlsColumn.addButton("Clear Read-Only Foreground", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.setReadOnlyForeground(null);
+                passwordField.setReadOnlyForeground(null);
+                textArea.setReadOnlyForeground(null);
+            }
+        });
+        controlsColumn.addButton("Set Read-Only Background", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Color color = StyleUtil.randomColor();
+                textField.setReadOnlyBackground(color);
+                passwordField.setReadOnlyBackground(color);
+                textArea.setReadOnlyBackground(color);
+            }
+        });
+        controlsColumn.addButton("Clear Read-Only Background", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.setReadOnlyBackground(null);
+                passwordField.setReadOnlyBackground(null);
+                textArea.setReadOnlyBackground(null);
+            }
+        });
         controlsColumn.addButton("Set MaximumLength=10", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 textField.setMaximumLength(10);
