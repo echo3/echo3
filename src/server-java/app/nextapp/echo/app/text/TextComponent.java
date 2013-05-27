@@ -66,6 +66,11 @@ extends Component {
     public static final String PROPERTY_HORIZONTAL_SCROLL = "horizontalScroll";
     public static final String PROPERTY_INSETS = "insets";
     public static final String PROPERTY_MAXIMUM_LENGTH = "maximumLength";
+    public static final String PROPERTY_READONLY_BACKGROUND = "readOnlyBackground";
+    public static final String PROPERTY_READONLY_BACKGROUND_IMAGE = "readOnlyBackgroundImage";
+    public static final String PROPERTY_READONLY_BORDER = "readOnlyBorder";
+    public static final String PROPERTY_READONLY_FONT = "readOnlyFont";
+    public static final String PROPERTY_READONLY_FOREGROUND = "readOnlyForeground";
     public static final String PROPERTY_TOOL_TIP_TEXT = "toolTipText";
     public static final String PROPERTY_VERTICAL_SCROLL = "verticalScroll";
     public static final String PROPERTY_WIDTH = "width";
@@ -268,6 +273,56 @@ extends Component {
     public int getMaximumLength() {
         Integer value = (Integer) get(PROPERTY_MAXIMUM_LENGTH);
         return value == null ? -1 : value.intValue();
+    }
+
+    /**
+     * Returns the background color displayed when the text component is
+     * read only.
+     *
+     * @return the color
+     */
+    public Color getReadOnlyBackground() {
+        return (Color) get(PROPERTY_READONLY_BACKGROUND);
+    }
+
+    /**
+     * Returns the background image displayed when the text component is
+     * read only.
+     *
+     * @return the background image
+     */
+    public FillImage getReadOnlyBackgroundImage() {
+        return (FillImage) get(PROPERTY_READONLY_BACKGROUND_IMAGE);
+    }
+
+    /**
+     * Returns the border displayed when the text component is
+     * read only.
+     *
+     * @return the border
+     */
+    public Border getReadOnlyBorder() {
+        return (Border) get(PROPERTY_READONLY_BORDER);
+    }
+
+    /**
+     * Returns the font displayed when the text component is
+     * read only.
+     *
+     * @return the font
+     */
+    public Font getReadOnlyFont() {
+        return (Font) get(PROPERTY_READONLY_FONT);
+    }
+
+    /**
+     * Returns the foreground color displayed when the text component is
+     * read only.
+     *
+     * @return the color
+     */
+    public Color getReadOnlyForeground() {
+        return (Color) get(PROPERTY_READONLY_FOREGROUND);
     }
     
     /**
@@ -525,6 +580,51 @@ extends Component {
         } else {
             set(PROPERTY_MAXIMUM_LENGTH, new Integer(newValue));
         }
+    }
+
+    /**
+     * Sets the background color displayed when the component is read only.
+     *
+     * @param newValue the new <code>Color</code>
+     */
+    public void setReadOnlyBackground(Color newValue) {
+        set(PROPERTY_READONLY_BACKGROUND, newValue);
+    }
+
+    /**
+     * Sets the background image displayed when the component is read only.
+     *
+     * @param newValue the new background image
+     */
+    public void setReadOnlyBackgroundImage(FillImage newValue) {
+        set(PROPERTY_READONLY_BACKGROUND_IMAGE, newValue);
+    }
+
+    /**
+     * Sets the border displayed when the component is read only.
+     *
+     * @param newValue the new border
+     */
+    public void setReadOnlyBorder(Border newValue) {
+        set(PROPERTY_READONLY_BORDER, newValue);
+    }
+
+    /**
+     * Sets the font displayed when the component is read only.
+     *
+     * @param newValue the new <code>Font</code>
+     */
+    public void setReadOnlyFont(Font newValue) {
+        set(PROPERTY_READONLY_FONT, newValue);
+    }
+
+    /**
+     * Sets the foreground color displayed when the component is read only.
+     *
+     * @param newValue the new <code>Color</code>
+     */
+    public void setReadOnlyForeground(Color newValue) {
+        set(PROPERTY_READONLY_FOREGROUND, newValue);
     }
     
     /**
