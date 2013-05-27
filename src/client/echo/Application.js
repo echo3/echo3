@@ -3377,6 +3377,11 @@ Echo.SplitPane = Core.extend(Echo.Component, {
  * @sp {#Insets} insets the inset margin between the border and the text content
  * @sp {Number} maximumLength the maximum number of characters which may be
  *     entered
+ * @sp {#Color} readOnlyBackground the read-only background color
+ * @sp {#Color} readOnlyBackgroundImage the read-only background image
+ * @sp {#Border} readOnlyBorder the read-only border
+ * @sp {#Font} readOnlyFont the read-only font
+ * @sp {#Color} readOnlyForeground the read-only foreground color
  * @sp {Number} selectionStart the character index of the beginning of the selection
  * @sp {Number} selectionEnd the character index of the end of the selection
  * @sp {String} toolTipText the tool tip text
