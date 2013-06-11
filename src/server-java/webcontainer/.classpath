@@ -4,6 +4,5 @@
 	<classpathentry kind="src" path=""/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/app"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/servlet-api"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lib"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
