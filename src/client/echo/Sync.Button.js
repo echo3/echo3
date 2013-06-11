@@ -343,6 +343,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             Echo.Sync.Border.render(this.component.render("border"), this.div);
             Echo.Sync.FillImage.render(this.component.render("backgroundImage"), this.div);
         } else {
+            this.div.style.cursor = "auto";
             Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
                     this.div, "color");
             Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "background", "disabledBackground", true), 
