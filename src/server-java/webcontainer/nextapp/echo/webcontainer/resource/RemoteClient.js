@@ -223,6 +223,25 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     },
     
     /**
+     * Test a given event, if it is a async event.
+     * An async-event starts by convention with 'async_' on property eventType.
+     *
+     * @param eventType the string-identifier of the event
+     * @return true, if it is a async event, false if not
+     * @type Boolean
+     */
+    _isAsyncEvent: function(eventType) {
+        if(eventType && typeof eventType === "string") {
+            // if it startsWith 'async_' return true ->
+            if(eventType.length > 5) {
+                return (eventType.substring(0,5) === 'async_');
+            }
+        }
+        // if eventType is not a string or even null:
+        return false;
+    },
+
+    /**
      * Enqueues a command to be processed after component synchronization has been completed.
      * 
      * @param commandPeer the command peer to execute
@@ -396,9 +415,10 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         this._syncRequested = true;
         Core.Web.Scheduler.run(Core.method(this, this.sync));
 
-        /* if (!this._inputRestrictionId) {
-           this._inputRestrictionId = this.createInputRestriction();
-        }*/
+        // added: && !this._isAsyncEvent(e.type) to handle async events w/o input restriction
+        if (!this._inputRestrictionId && !this._isAsyncEvent(e.type)) {
+            this._inputRestrictionId = this.createInputRestriction();
+        }
     },
 
     /**
@@ -562,14 +582,16 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         
         this._transactionInProgress = true;
         this._syncRequested = false;
-        if (!this._inputRestrictionId) {
+        // added: && !this._isAsyncEvent(this._clientMessage._eventType) to handle async events
+        if (!this._inputRestrictionId && !this._isAsyncEvent(this._clientMessage._eventType)) {
             this._inputRestrictionId = this.createInputRestriction();
         }
         if (this._asyncManager) {
             this._asyncManager._stop();
         }
         this._syncInitTime = new Date().getTime();
-        var conn = new Core.Web.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST", 
+
+        var conn = new Core.Web.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST",
                 this._clientMessage._renderXml(), "text/xml;charset=utf-8");
         
         // Create new client message.

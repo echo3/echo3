@@ -39,7 +39,7 @@ import javax.servlet.http.HttpSession;
  * 
  * @author Miro Yozov
  */
-public class WSConnection extends AbstractConnection {
+public class WebSocketConnection extends AbstractConnection {
 
     /**
      * Prefix to use for <code>UserInstanceContainer</code>
@@ -54,7 +54,7 @@ public class WSConnection extends AbstractConnection {
     private final String protocol;
     private ApplicationWebSocket applicationWebSocket = null;
 
-    public WSConnection(HttpServlet servlet, HttpServletRequest request, String protocol) {
+    public WebSocketConnection(HttpServlet servlet, HttpServletRequest request, String protocol) {
         super(servlet, request);
         this.protocol = protocol;
         HttpSession session = request.getSession();
@@ -87,20 +87,20 @@ public class WSConnection extends AbstractConnection {
 
     public void postInit(ApplicationWebSocket appws) {
         if (this.userInstanceContainer == null) {
-            throw new Error("WSConnection is not preinitialized!");
+            throw new Error("WebSocketConnection is not preinitialized!");
         }
         applicationWebSocket = appws;
         final HttpSession session = request.getSession();
         session.setAttribute(getWebSocketSessionKey(this.servlet), this.applicationWebSocket);
-        userInstance.initWS(this);
+        userInstance.initWebSocket(this);
     }
 
     /**
-     * Determines if the <code>WSConnection</code> has been initialized, i.e.,
+     * Determines if the <code>WebSocketConnection</code> has been initialized, i.e.,
      * whether its <code>preInit()</code> && <code>postInit()</code> methods has
      * been invoked.
      * 
-     * @return true if the <code>WSConnection</code> is initialized
+     * @return true if the <code>WebSocketConnection</code> is initialized
      */
     public boolean isReady() {
         return userInstanceContainer != null && userInstance != null;

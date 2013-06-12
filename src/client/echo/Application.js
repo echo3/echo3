@@ -133,8 +133,6 @@ Echo.Application = Core.extend({
      */
     focusManager: null,
 
-    _pending_lfevents: null,
-    
     /**
      * Creates a new application instance.  
      * @constructor
@@ -148,7 +146,6 @@ Echo.Application = Core.extend({
         this._modalComponents = [];
         this.updateManager = new Echo.Update.Manager(this);
         this.focusManager = new Echo.FocusManager(this);
-        this._pending_lfevents = [];
     },
 
     /**
@@ -385,27 +382,8 @@ Echo.Application = Core.extend({
         
         this._focusedComponent = newValue;
         this._listenerList.fireEvent({type: "focus", source: this, oldValue: oldValue, newValue: newValue });
-
-        if (oldValue != null) {
-            if(this.client.hasRestrictionListener(oldValue)) {
-                this.client.registerRemoveInputRestrictionListener( Core.method(this, this._removeInputRestrictionListener) );
-                this._pending_lfevents.push(oldValue);
-            } else {
-                //oldValue.lostFocus();
-            }
-        }
-
-        if( this._focusedComponent != null ) {
-            //this._focusedComponent.gotFocus();
-        }
     },
     
-    _removeInputRestrictionListener: function() {
-        while(this._pending_lfevents.length >  0) {
-            //this._pending_lfevents.shift().lostFocus();
-        }
-    },
-
     /**
      * Sets the application default layout direction.
      * 

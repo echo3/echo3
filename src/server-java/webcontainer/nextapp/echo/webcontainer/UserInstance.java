@@ -482,7 +482,7 @@ public class UserInstance implements Serializable {
      * The <code>ApplicationInstance</code> will not be initialized until
      * <code>getApplicationInstance()</code> is invoked for the first time.
      *
-     * @param conn the relevant <code>HTTPConnection</code>
+     * @param conn the relevant <code>Connection</code>
      */
     public void initHTTP(Connection conn) {
         if (initialized) {
@@ -508,8 +508,13 @@ public class UserInstance implements Serializable {
     public boolean isInitialized() {
         return initialized;
     }
-    
-    public void initWS(WSConnection conn) {
+
+    /**
+     * Associates a <code>WebSocketConnection</code> to the UserInstance.
+     *
+     * @param conn the relevant <code>WebSocketConnection</code>
+     */
+    public void initWebSocket(WebSocketConnection conn) {
         this.applicationWebSocket = conn.getApplicationWebSocket();
     }
     
