@@ -110,6 +110,18 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             Echo.Sync.renderComponentDefaults(this.component, this.input);
             Echo.Sync.Border.render(this.component.render("border"), this.input);
             Echo.Sync.FillImage.render(this.component.render("backgroundImage"), this.input);
+            if (this.input.readOnly) {
+                Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "foreground", "readOnlyForeground", true),
+                    this.input, "color");
+                Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "background", "readOnlyBackground", true),
+                    this.input, "backgroundColor");
+                Echo.Sync.Border.render(Echo.Sync.getEffectProperty(this.component, "border", "readOnlyBorder", true),
+                    this.input);
+                Echo.Sync.Font.render(Echo.Sync.getEffectProperty(this.component, "font", "readOnlyFont", true),
+                    this.input);
+                Echo.Sync.FillImage.render(Echo.Sync.getEffectProperty(this.component,
+                    "backgroundImage", "readOnlyBackgroundImage", true), this.input);
+            }
         } else {
             Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this.input);
             Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
@@ -361,6 +373,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
                 var editableUpdate = update.getUpdatedProperty("editable");
                 if (editableUpdate != null) {
                     this.input.readOnly = !editableUpdate.newValue;
+                    this._renderStyle(this.input);
                 }
             }
         }
