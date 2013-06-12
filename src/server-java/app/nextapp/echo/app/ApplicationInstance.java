@@ -55,7 +55,7 @@ public abstract class ApplicationInstance implements Serializable {
     private static final long serialVersionUID = 20070101L;
 
     /** The name and version of the Echo API in use. */
-    public static final String ID_STRING = "NextApp Echo v3.1";
+    public static final String ID_STRING = "Echo v3.1";
 
     public static final String FOCUSED_COMPONENT_CHANGED_PROPERTY = "focusedComponent";
     public static final String LOCALE_CHANGED_PROPERTY = "locale";
@@ -207,7 +207,7 @@ public abstract class ApplicationInstance implements Serializable {
      * Flag indicating whether the application has been disposed, i.e., whether <code>ApplicationInstance.dispose()</code>
      * has been invoked.
      */
-    private boolean disposed = false;
+    private volatile boolean disposed = false;
     
     /** 
      * Creates an <code>ApplicationInstance</code>. 

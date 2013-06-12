@@ -2765,11 +2765,11 @@ Core.Web.Scheduler = {
      * Performs no action if specified runnable is not currently enqueued.
      * 
      * @param {Core.Web.Scheduler.Runnable} runnable the runnable to update
-     * @param {Boolean} toBeAdded add to Core.Web.Scheduler if specified runnable is not currently enqueued.
+     * @param {Boolean} schedulerEnqueue If true, add runnable to Core.Web.Scheduler if specified runnable is not currently enqueued.
      */
-    update: function(runnable, toBeAdded) {
+    update: function(runnable, schedulerEnqueue) {
         if (Core.Arrays.indexOf(Core.Web.Scheduler._runnables, runnable) == -1) {
-            if (toBeAdded) {
+            if (schedulerEnqueue) {
                 Core.Web.Scheduler.add(runnable);
             }
             return;

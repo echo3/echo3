@@ -176,8 +176,6 @@ Echo.Client = Core.extend({
      */
     _failed: false,
 
-    _removeInputRestrictionListener: null,
-
     /**
      * Creates a new Client instance.  Derived classes must invoke.
      */
@@ -642,10 +640,6 @@ Echo.Client = Core.extend({
         this._inputRestrictionListeners[component.renderId] = l;
     },
     
-    registerRemoveInputRestrictionListener: function(l) {
-        this._removeInputRestrictionListener = l;
-    },
-
     hasRestrictionListener: function(component) {
       return this._inputRestrictionListeners && this._inputRestrictionListeners[component.renderId] !== undefined;
     },
@@ -678,11 +672,6 @@ Echo.Client = Core.extend({
                 for (var x in listeners) {
                     listeners[x]();
                 }
-            }
-            var rem_listener = this._removeInputRestrictionListener;
-            if(rem_listener != null) {
-                this._removeInputRestrictionListener = null;
-                rem_listener();
             }
         }
     },

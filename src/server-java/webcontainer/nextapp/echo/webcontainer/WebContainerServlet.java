@@ -452,20 +452,19 @@ public abstract class WebContainerServlet extends HttpServlet {
     }
     
     /**
-     * Exception handler for process() method.
+     * Exception handler for process() method. The current implementation writes an Exception ID to the client.
      * 
-     * @param request the HTTP request
-     * @param response the HTTP response
-     * @param ex the exception 
-     * @throws ServletException
-     * @throws IOException
+     * @param request The current HTTP request in progress
+     * @param response The HTTP response
+     * @param ex The exception triggering this error handleing.
+     * @throws IOException May be thrown on issues writing to the HTTP response.
      */
     private void processError(Connection conn, HttpServletRequest request, HttpServletResponse response, Exception ex) 
-            throws ServletException, IOException {
+            throws IOException {
         if (conn != null) {
             try {
                 conn.disposeUserInstance();
-            } catch (Exception e) {
+            } catch (Exception ignore) {
                 //do nothing...
             }
         }

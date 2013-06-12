@@ -39,8 +39,8 @@ import nextapp.echo.app.util.Uid;
 
 /**
  * An abstract WebSocket connection handler. Implementations must provide a container 
- * specific implementation (currently only available for Jetty) till JSR 356
- * (http://jcp.org/en/jsr/detail?id=356) is commonly available
+ * specific implementation (currently only available for Jetty) until a common JSR-356 API
+ * (http://jcp.org/en/jsr/detail?id=356) is available
  * 
  * @author Miro Yozov
  */
@@ -57,13 +57,13 @@ public abstract class WebSocketConnectionHandler {
     }
 
     public ApplicationWebSocket process(HttpServlet servlet, HttpServletRequest request, String protocol) {
-        WSConnection conn = null;
+        WebSocketConnection conn = null;
         try {
-            conn = new WSConnection(servlet, request, protocol);
+            conn = new WebSocketConnection(servlet, request, protocol);
             if (!conn.isReady()) {
                 final HttpSession session = request.getSession();
                 if (session == null) {
-                    throw new RuntimeException("WebSocketConnectionHandler: initialization of WSConnection is impossible without session!");
+                    throw new RuntimeException("WebSocketConnectionHandler: initialization of WebSocketConnection is impossible without session!");
                 }
                 String key = AbstractConnection.getUserInstanceContainerSessionKey(this.parent);
                 UserInstanceContainer userInstanceContainer = (UserInstanceContainer) session.getAttribute(key);
