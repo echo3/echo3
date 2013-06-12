@@ -112,7 +112,7 @@ implements SynchronizationState {
             
             if (initRequired) {
                 // Initialize user instance.
-                userInstance.init(conn);
+                userInstance.initHTTP(conn);
             }
 
             userInstance.setActive(true);

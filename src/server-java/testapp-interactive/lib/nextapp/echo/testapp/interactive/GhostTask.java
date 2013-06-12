@@ -41,8 +41,7 @@ import nextapp.echo.app.Button;
  * See the documentation for examples of how asynchronous tasks
  * might normally be used.
  */
-public class GhostTask 
-implements Serializable {
+public class GhostTask implements Serializable {
     
     private InteractiveApp app;
     private int clicksPerIteration = 1;
@@ -51,16 +50,13 @@ implements Serializable {
     private String[] script;
     private int scriptIndex = 0;
     private String[] startupScript;
-    private boolean countOnly = false;
-    
-    private TaskQueueHandle taskQueue;
-    
+    private boolean countOnly = false;    
+    private TaskQueueHandle taskQueue;    
     private int totalIterations = -1;
     private int runTime = -1;
     private long stopTime = -1;
 
-    private Runnable task = new Runnable() {
-    
+    private Runnable task = new Runnable() {    
         /**
          * @see java.lang.Runnable#run()
          */
@@ -80,6 +76,10 @@ implements Serializable {
                         if (scriptIndex >= script.length) {
                             scriptIndex = 0;
                         }
+                    }
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
                     }
                 }
                 if (stopTime != -1 && System.currentTimeMillis() > stopTime) {
