@@ -91,12 +91,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     _inputRestrictionId: null,
     
     /**
-     * Function wrapper to invoke _processClientUpdate() method.
-     * @type Function
-     */
-    _processClientUpdateRef: null,
-    
-    /**
      * Function wrapper to invoke _processClientEvent() method.
      * @type Function
      */
@@ -122,7 +116,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
     
     /**
      * AsyncManager instance which will invoke server-pushed operations.
-     * @type Echo.RemoteClient.AsyncManager
+     * @type Echo.RemoteClient.HTTPAsyncManager
      */
     _asyncManager: null,
     
@@ -149,7 +143,17 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @type Number
      */
     transactionId: 0,
+
+    /**
+     * Events waiting for process.
+     */
+    _pending_events: null,
     
+    /**
+     * MethodRunnable that handle client async property updates.
+     */
+    _asyncUpdatesHandler: null,
+
     /**
      * Creates a new RemoteClient instance.
      * 
@@ -158,21 +162,19 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      */
     $construct: function(serverUrl, initId) {
         Echo.RemoteClient.init();
-    
         Echo.Client.call(this);
-        
+
         // Install default configuration.
         for (var x in Echo.RemoteClient.DEFAULT_CONFIGURATION) {
             this.configuration[x] = Echo.RemoteClient.DEFAULT_CONFIGURATION[x];    
         }
-        
         this._serverUrl = serverUrl;
         
-        this._processClientUpdateRef = Core.method(this, this._processClientUpdate);
         this._processClientEventRef = Core.method(this, this._processClientEvent);
         this._commandQueue = null;
         this._clientMessage = new Echo.RemoteClient.ClientMessage(this, initId);
-        this._asyncManager = new Echo.RemoteClient.AsyncManager(this);
+        this._pending_events = [];
+        this._asyncUpdatesHandler = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._performAsyncUpdates), 250, false);
     },
     
     /**
@@ -220,25 +222,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         }
     },
     
-    /**
-     * Test a given event, if it is a async event.
-     * An async-event starts by convention with 'async_' on property eventType.
-     *
-     * @param eventType the string-identifier of the event
-     * @return true, if it is a async event, false if not
-     * @type Boolean
-     */
-    _isAsyncEvent: function(eventType) {
-        if(eventType && typeof eventType === "string") {
-            // if it startsWith 'async_' return true ->
-            if(eventType.length > 5) {
-                return (eventType.substring(0,5) === 'async_');
-            }
-        }
-        // if eventType is not a string or even null:
-        return false;
-    },
-
     /**
      * Enqueues a command to be processed after component synchronization has been completed.
      * 
@@ -399,7 +382,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         
         // Register an update listener to receive notification of user actions such that they
         // may be remarked in the outgoing ClientMessage.
-        application.addListener("componentUpdate", this._processClientUpdateRef);
+        application.addListener("componentUpdate", Core.method(this, this._processClientUpdate));
         
         // Perform general purpose client configuration.
         this.configure(application, domainElement);
@@ -408,22 +391,27 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         this._initialized = true;
     },
     
+    _processPrendingClientEvent: function(e) {
+        this._clientMessage.setEvent(e.source.renderId, e.type, e.data);
+        this._syncRequested = true;
+        Core.Web.Scheduler.run(Core.method(this, this.sync));
+
+        /* if (!this._inputRestrictionId) {
+           this._inputRestrictionId = this.createInputRestriction();
+        }*/
+    },
+
     /**
      * Processes an event from a component that requires immediate server interaction.
      * 
      * @param e the event to process
      */
     _processClientEvent: function(e) {
-        if (this._syncRequested || this._transactionInProgress) {
+        if (this._syncRequested || this._transactionInProgress || this._pending_events.length > 0) {
+            this._pending_events.push( e );
             return;
         }
-        this._clientMessage.setEvent(e.source.renderId, e.type, e.data);
-        // added: && !this._isAsyncEvent(e.type) to handle async events
-        if (!this._inputRestrictionId && !this._isAsyncEvent(e.type)) {
-           this._inputRestrictionId = this.createInputRestriction();
-        }
-        this._syncRequested = true;
-        Core.Web.Scheduler.run(Core.method(this, this.sync));
+        this._processPrendingClientEvent(e);
     },
     
     /**
@@ -433,16 +421,29 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @param e the property update event from the component
      */
     _processClientUpdate: function(e) {
-        if (this._transactionInProgress) {
-            return;
+        if (this._processServerMessage) {
+            //ignore updates that are from serverMessage
+        } else {
+            //Store property update from the component. (by peer or clientMessage)
+            if (e.parent.peer && e.parent.peer.storeProperty && e.parent.peer.storeProperty(this._clientMessage, e.propertyName)) {
+                //property is stored by peer
+            } else {
+                this._clientMessage.storeProperty(e.parent.renderId, e.propertyName, e.newValue);
+            }
+            if (!this._transactionInProgress) {
+                // has an asynchronous update (e.g: timer periodically set a property)
+                Core.Web.Scheduler.update(this._asyncUpdatesHandler, true);
+            }
         }
-        
-        var stored = false;
-        if (e.parent.peer.storeProperty) {
-            stored = e.parent.peer.storeProperty(this._clientMessage, e.propertyName);
-        }
-        if (!stored) {
-            this._clientMessage.storeProperty(e.parent.renderId, e.propertyName, e.newValue);
+    },
+
+   /**
+    * Invoked when there is asynchronous property updates.
+    */
+    _performAsyncUpdates: function() {
+        if (!this._transactionInProgress && !this._syncRequested && this._clientMessage.hasStoredProperties()) {
+            this._syncRequested = true;
+            this.sync();
         }
     },
     
@@ -452,6 +453,8 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @param e the server message completion event
      */
     _processSyncComplete: function(e) {
+        this._processServerMessage = false;
+
         // Mark time of serialization completion with profiling timer.
         if (Echo.Client.profilingTimer) {
             Echo.Client.profilingTimer.mark("ser");
@@ -460,9 +463,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         this.processUpdates();
         this._executeCommands();
 
-        // Register component update listener 
-        this.application.addListener("componentUpdate", this._processClientUpdateRef);
-        
         // Flag transaction as being complete.
         this._transactionInProgress = false;
         this.removeInputRestriction(this._inputRestrictionId);
@@ -481,6 +481,20 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         if (e.source.resync) {
             this.displayError(this.domainElement, this.configuration["Resync.Message"], null, 
                     this.configuration["Action.Continue"], null, Echo.Client.STYLE_MESSAGE);
+        }
+
+        if (this._pending_events.length > 0) {
+            // if have pending events no need to check for "subupdates"
+            this._processPrendingClientEvent(this._pending_events.shift());
+        } else if (this.application.updateManager.hasUpdates()) {
+            // current updates have created a new updates
+            // make a new synchronization
+            this._syncRequested = true;
+            Core.Web.Scheduler.run(Core.method(this, this.sync));
+        }
+
+        if (this._asyncManager && this._asyncManager._syncComplete) {
+            this._asyncManager._syncComplete();
         }
     },
     
@@ -509,10 +523,6 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         // Profiling Timer (Un-comment to enable, comment to disable).
         Echo.Client.profilingTimer = new Echo.Client.Timer();
         
-        // Remove component update listener from application.  This listener is listening
-        // for user input.  
-        this.application.removeListener("componentUpdate", this._processClientUpdateRef);
-        
         // Create new ServerMessage object with response document.
         var serverMessage = new Echo.RemoteClient.ServerMessage(this, responseDocument);
         
@@ -523,6 +533,7 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         serverMessage.addCompletionListener(Core.method(this, this._processSyncComplete));
         
         // Start server message processing.
+        this._processServerMessage = true;
         serverMessage.process();
     },
     
@@ -551,14 +562,13 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         
         this._transactionInProgress = true;
         this._syncRequested = false;
-        // added: && !this._isAsyncEvent(this._clientMessage._eventType) to handle async events
-        if (!this._inputRestrictionId && !this._isAsyncEvent(this._clientMessage._eventType)) {
+        if (!this._inputRestrictionId) {
             this._inputRestrictionId = this.createInputRestriction();
         }
-
-        this._asyncManager._stop();    
+        if (this._asyncManager) {
+            this._asyncManager._stop();
+        }
         this._syncInitTime = new Date().getTime();
-
         var conn = new Core.Web.HttpConnection(this.getServiceUrl("Echo.Sync"), "POST", 
                 this._clientMessage._renderXml(), "text/xml;charset=utf-8");
         
@@ -603,31 +613,213 @@ Echo.RemoteClient.DirectiveProcessor = Core.extend({
 /**
  * Manages server-pushed updates to the client. 
  */
-Echo.RemoteClient.AsyncManager = Core.extend({
+Echo.RemoteClient.AbstractAsyncManager = Core.extend({
 
     $static: {
+      
+      /**
+        * Number of times the client should attempt to contact the server.
+        * 
+        * @type Number
+        */
+        MAX_CONNECT_ATTEMPTS: 3
+    },
+
+   /**
+    * The supported client.
+    *
+    * @type Echo.RemoteClient
+    */
+    _client: null,
+    
+   /**
+    * The number of times the client has unsuccessfully attempted to contact the server.
+    *
+    * @type Number
+    */
+    _failedConnectAttempts: null,
+
+   /** 
+    * Creates a new asynchronous manager.
+    *
+    * @param {Echo.RemoteClient} client the supported client
+    */
+    $construct: function(client) {
+        this._client = client;
+    },
+
+    $abstract: true,
+
+    $virtual: {
+        /**
+          * Starts server polling for asynchronous tasks.
+          */
+        _start: function() { },
+
+        /**
+          * Stops server polling for asynchronous tasks.
+          */
+        _stop: function() { }
+    }
+});
+
+Echo.RemoteClient.WebSocketAsyncManager = Core.extend(Echo.RemoteClient.AbstractAsyncManager, {
+  
+    $static: {
+      
+        /**
+         * Message from server when requaried synchronization.
+         */
+        RQ_SYNC_MESSAGE: "request-sync",
         
         /**
-         * Number of times the client should attempt to contact the server.
-         * 
-         * @type Number
+         * Close code when the user opens a new socket. (e.g: new browser tab).
          */
-        MAX_CONNECT_ATTEMPTS: 3
+        SYNC_CLOSE_CODE: 8807,
+        
+        /**
+         * Close code when application instance is disposed.
+         */
+        DISPOSE_CLOSE_CODE: 8806
     },
     
     /**
-     * The supported client.
+     * Socket that listens for messages from the server.
      *
-     * @type Echo.RemoteClient
+     * @type Core.Web.WebSocketConnection
      */
-    _client: null,
+    _wsConnection: null,
+
+    /**
+     * Function wrapper to invoke _onEvents() method.
+     * @type Function
+     */
+    _eventsHandler: null,
     
     /**
-     * The number of times the client has unsuccessfully attempted to contact the server.
-     *
-     * @type Number
+     * Indicates that is sync successfully.
      */
-    _failedConnectAttempts: null,
+    _unsync: null,    
+
+    /** 
+     * Creates a new asynchronous manager basedon Core.Web.WebSocketConnection.
+     *
+     * @param {Echo.RemoteClient} client the supported client
+     */
+    $construct: function(client) {
+        Echo.RemoteClient.AbstractAsyncManager.call(this, client);
+                
+        var loc = window.location;
+        var protocol = loc.protocol == "http:" ? "ws:" : loc.protocol == "https:" ? "wss:" : null;
+        if (!protocol) {
+            throw new Error("Echo.RemoteClient.WebSocketAsyncManager: unknown protocol!");
+        }
+        
+        var URL = protocol + "//" + loc.hostname + ":" + loc.port + loc.pathname + "ws";
+        if (this._client.uiid) {
+            URL += "?uiid=" + this._client._uiid;
+        }
+        
+        this._wsConnection = new Core.Web.WebSocketConnection(URL);
+        this._eventsHandler = Core.method(this, this._onEvents);
+    },
+
+    /**
+     * Open web socket connection.
+     * Register for the required events.
+     */
+    _start: function() {
+        var state = this._wsConnection.getState();
+        if (state == Core.Web.WebSocketConnection.STATE_DISPOSED) {
+            this._wsConnection.addEventListener(Core.Web.WebSocketConnection.EVENT_OPEN, this._eventsHandler);
+            this._wsConnection.addEventListener(Core.Web.WebSocketConnection.EVENT_CLOSE, this._eventsHandler);
+            this._wsConnection.addEventListener(Core.Web.WebSocketConnection.EVENT_MESSAGE, this._eventsHandler);
+            this._wsConnection.addEventListener(Core.Web.WebSocketConnection.EVENT_ERROR, this._eventsHandler);
+        }
+        this._wsConnection.open();
+    },
+
+    /**
+     * Close current web socket connection.
+     */
+    _stop: function(real) {
+        if (real) {
+            this._wsConnection.close();
+        }
+    },
+
+    /**
+     * Call is when an event occurs.
+     *
+     * For various events taking different approaches.
+     */
+    _onEvents: function(e) {
+        switch(e.type) {
+            case Core.Web.WebSocketConnection.EVENT_OPEN:
+                this._failedConnectAttempts = 0;
+                if (!this._executeSync()) {
+                    this.unsync = true;
+                }
+                break;
+            case Core.Web.WebSocketConnection.EVENT_MESSAGE:
+                if (e.data.data == Echo.RemoteClient.WebSocketAsyncManager.RQ_SYNC_MESSAGE) {
+                    if (!this._executeSync()) {
+                        this._unsync = true;
+                    }
+                }
+                break;
+            case Core.Web.WebSocketConnection.EVENT_CLOSE:
+                if (e.data.code == Echo.RemoteClient.WebSocketAsyncManager.DISPOSE_CLOSE_CODE) {
+                    this._client.fail(e.data.reason);
+                } else if (e.data.code == Echo.RemoteClient.WebSocketAsyncManager.SYNC_CLOSE_CODE || 
+                        ++this._failedConnectAttempts >= Echo.RemoteClient.AbstractAsyncManager.MAX_CONNECT_ATTEMPTS) {
+                    this._notifyForNetworkError();
+                } else {
+                    this._start();
+                }
+                break;
+            case Core.Web.WebSocketConnection.EVENT_ERROR:
+                this._notifyForNetworkError();
+                break;
+        }
+    },
+
+    /**
+     * Call when synchronization finished.
+     * If is unsync, start again.
+     */
+    _syncComplete: function() {        
+        if (this._unsync && this._executeSync()) {
+            this._unsync = false;
+        }
+    },
+    
+    /**
+     * Make sync in new thread.
+     * 
+     * @return {Boolean} whether the sync method is started.
+     */
+    _executeSync: function() {
+        if (!this._client._transactionInProgress && !this._client._syncRequested) {
+            this._client._syncRequested = true;
+            this._client.sync();
+            return true;
+        } else {
+            return false;
+        }
+    },
+    
+    /**
+     * Notify client for network errors.
+     * Close WebScoket.
+     */
+    _notifyForNetworkError: function() {
+        Core.Web.Scheduler.run(Core.method(this, function() { this._stop(true); }));
+        this._client._handleNetworkError();
+    }
+});
+
+Echo.RemoteClient.HTTPAsyncManager = Core.extend(Echo.RemoteClient.AbstractAsyncManager, {
     
     /**
      * The repeating runnable used for server polling.
@@ -637,12 +829,12 @@ Echo.RemoteClient.AsyncManager = Core.extend({
     _runnable: null,
 
     /** 
-     * Creates a new asynchronous manager.
+     * Creates a new asynchronous manager basedon Core.Web.HttpConnection.
      *
      * @param {Echo.RemoteClient} client the supported client
      */
     $construct: function(client) {
-        this._client = client;
+        Echo.RemoteClient.AbstractAsyncManager.call(this, client);
         this._runnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._pollServerForUpdates), 1000, false);
     },
     
@@ -674,7 +866,7 @@ Echo.RemoteClient.AsyncManager = Core.extend({
                 }
                 return;
             }
-        } else if (++this._failedConnectAttempts >= Echo.RemoteClient.AsyncManager.MAX_CONNECT_ATTEMPTS) {
+        } else if (++this._failedConnectAttempts >= Echo.RemoteClient.AbstractAsyncManager.MAX_CONNECT_ATTEMPTS) {
             this._client._handleInvalidResponse(e); 
             this._failedConnectAttempts = 0;
             return;
@@ -972,6 +1164,15 @@ Echo.RemoteClient.ClientMessage = Core.extend({
             this._componentIdToPropertyMap[componentId] = propertyMap;
         }
         propertyMap[propertyName] = propertyValue;
+    },
+    
+    hasStoredProperties: function() {
+        for(var property in this._componentIdToPropertyMap) {
+            if(this._componentIdToPropertyMap.hasOwnProperty(property)) {
+                return true;
+            }
+        }
+        return false;
     }
 });
 
@@ -1091,7 +1292,8 @@ Echo.RemoteClient.ServerMessage = Core.extend({
                 if (element.nodeType == 1) {
                     if (element.nodeName == "lib") {
                         var url = this.client._getLibraryServiceUrl(element.firstChild.data);
-                        libraryGroup.add(url);
+                        var type = element.getAttribute("type");
+                        libraryGroup.add(url, type);
                     }
                 }
                 element = element.nextSibling;
@@ -1146,8 +1348,19 @@ Echo.RemoteClient.ServerMessage = Core.extend({
             this._listenerList.fireEvent({type: "completion", source: this});
             
             // Start server push listener if required.
-            if (this.document.documentElement.getAttribute("async-interval")) {
-                this.client._asyncManager._setInterval(parseInt(this.document.documentElement.getAttribute("async-interval"), 10));
+            var async_interval = parseInt(this.document.documentElement.getAttribute("async-interval"), 10);
+            var ws_enable = this.document.documentElement.getAttribute("ws-enable") == "true";
+            if (async_interval) {
+                if (Core.Web.WebSocketConnection.isAvailable() && ws_enable) {
+                    if (!this.client._asyncManager) {
+                        this.client._asyncManager = new Echo.RemoteClient.WebSocketAsyncManager(this.client);
+                    }
+                } else {
+                    if (!this.client._asyncManager) {
+                        this.client._asyncManager = new Echo.RemoteClient.HTTPAsyncManager(this.client);
+                    }
+                    this.client._asyncManager._setInterval(async_interval);
+                }
                 this.client._asyncManager._start();
             }
         } catch (ex) {
@@ -1233,7 +1446,7 @@ Echo.RemoteClient.CommandExecProcessor = Core.extend(Echo.RemoteClient.Directive
             var type = cmdElement.getAttribute("t");
             var commandPeer = Echo.RemoteClient.CommandExecProcessor._typeToPeerMap[type];
             if (!commandPeer) {
-                throw new Error("Peer not found for: " + type);
+                throw new Error("Command peer not found for: " + type);
             }
             var commandData = {};
             var pElement = cmdElement.firstChild;
