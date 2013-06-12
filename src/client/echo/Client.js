@@ -640,6 +640,10 @@ Echo.Client = Core.extend({
         this._inputRestrictionListeners[component.renderId] = l;
     },
     
+    hasRestrictionListener: function(component) {
+      return this._inputRestrictionListeners && this._inputRestrictionListeners[component.renderId] !== undefined;
+    },
+
     /**
      * Removes an input restriction.
      *

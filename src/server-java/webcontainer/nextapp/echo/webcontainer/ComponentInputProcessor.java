@@ -166,6 +166,9 @@ implements ClientMessage.Processor {
         while (updatedComponentIdIt.hasNext()) {
             String componentId = (String) updatedComponentIdIt.next();
             Component component = userInstance.getComponentByClientRenderId(componentId);
+            if( component == null ) {
+                continue;
+            }
             ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
             
             // Process updated properties.
@@ -203,6 +206,9 @@ implements ClientMessage.Processor {
         // Process event which caused client-server synchronization request, if applicable.
         if (getEvent() != null) {
             Component component = userInstance.getComponentByClientRenderId(getEventComponentId());
+            if( component == null ) {
+                return;
+            }
             ComponentSynchronizePeer componentPeer = SynchronizePeerFactory.getPeerForComponent(component.getClass());
             Class eventDataClass = componentPeer.getEventDataClass(getEventType());
             if (eventDataClass == null) {
