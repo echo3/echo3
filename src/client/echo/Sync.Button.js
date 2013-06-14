@@ -94,31 +94,14 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         },
         
         /**
-         * Renders the content (e.g. text and/or icon) of the button.
+         * Renders the content (e.g. text and/or icon) of the additional elements
+         * namely checkbox or radiobutton items
          * Appends rendered content to bounding element (<code>this.div</code>).
+         *
+         * @param {Echo.Sync.Button.ContentContainer} the content container for creating the cells
          */
-        renderContent: function() {
-            var text = this.component.render("text");
-            var icon = Echo.Sync.getEffectProperty(this.component, "icon", "disabledIcon", !this.enabled);
-            if (text != null) {
-                if (icon) {
-                    // Text and icon.
-                    var iconTextMargin = this.component.render("iconTextMargin", 
-                            Echo.Sync.Button._defaultIconTextMargin);
-                    var orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
-                    var tct = new Echo.Sync.TriCellTable(orientation, 
-                            Echo.Sync.Extent.toPixels(iconTextMargin));
-                    this.renderButtonText(tct.tdElements[0], text);
-                    this.iconImg = this.renderButtonIcon(tct.tdElements[1], icon);
-                    this.div.appendChild(tct.tableElement);
-                } else {
-                    // Text only.
-                    this.renderButtonText(this.div, text);
-                }
-            } else if (icon) {
-                // Icon only.
-                this.iconImg = this.renderButtonIcon(this.div, icon);
-            }
+        renderAdditionalContent: function(contentContainer) {
+            //empty, to be implemented by subclasses
         },
 
         /**
@@ -357,7 +340,6 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         }
         
         Echo.Sync.Insets.render(this.component.render("insets"), this.div, "padding");
-        Echo.Sync.Alignment.render(this.component.render("alignment"), this.div, true, this.component);
         Echo.Sync.RoundedCorner.render(this.component, this.div);
         Echo.Sync.BoxShadow.renderClear(this.component.render("boxShadow"), this.div);
         
@@ -375,8 +357,32 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             this.div.style.overflow = "hidden";
         }
         
-        this.renderContent();
+        var text = this.component.render("text");
+        var icon = Echo.Sync.getEffectProperty(this.component, "icon", "disabledIcon", !this.enabled);
+        var iconTextMargin = icon ? this.component.render("iconTextMargin", Echo.Sync.Button._defaultIconTextMargin) : 0;
+        var orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
+        var alignment = this.component.render("alignment");
+        var horizontal = Echo.Sync.Alignment.getRenderedHorizontal(alignment);
+        var vertical = typeof(alignment) == "object" ? alignment.vertical : alignment;
+        if (vertical !== "top" && vertical !== "bottom") {
+            //default vertical alignment is middle!
+            vertical = "middle";
+        }
         
+        var contentContainer = new Echo.Sync.Button.ContentContainer(orientation,
+                Echo.Sync.Extent.toPixels(iconTextMargin), vertical);
+        if (text) {
+            this.renderButtonText(contentContainer.addCell(), text);
+        }
+        if(icon) {
+            this.iconImg = this.renderButtonIcon(contentContainer.addCell(), icon);
+        }
+        this.renderAdditionalContent(contentContainer);
+
+        contentContainer.createLayout();
+        this.div.align = horizontal;
+        this.div.appendChild(contentContainer._tableDiv);
+
         if (this.enabled) {
             // Add event listeners for focus and mouse rollover.  When invoked, these listeners will register the full gamut
             // of button event listeners.  There may be a large number of such listeners depending on how many effects
@@ -398,8 +404,12 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         this._textElement = element;
         var textAlignment = this.component.render("textAlignment"); 
         if (textAlignment) {
+            //text align only applies to horizontal alignment
+            //vertically it would conflict with the overall alignment property
             Echo.Sync.Alignment.render(textAlignment, element, true, this.component);
+            element.style.width = "100%";
         }
+
         if (this.enabled) {
             Echo.Sync.Font.render(this.component.render("font"), this._textElement);
         } else {
@@ -415,7 +425,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     /** 
      * Renders the button icon.
      * 
-     * @param elemnt the element which should contain the icon.
+     * @param element the element which should contain the icon.
      * @param icon the icon property to render
      */
     renderButtonIcon: function(element, icon) {
@@ -461,5 +471,126 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         containerElement.removeChild(element);
         this.renderAdd(update, containerElement);
         return false; // Child elements not supported: safe to return false.
+    }
+});
+
+Echo.Sync.Button.ContentContainer = Core.extend({
+
+    $static: {
+        _rowPrototype: null,
+
+        _createRowPrototype: function() {
+            var trDiv = document.createElement("div");
+            trDiv.style.display = "table-row";
+            trDiv.style.padding = "0";
+            return trDiv;
+        }
+    },
+
+    $load: function() {
+        this._rowPrototype = this._createRowPrototype();
+    },
+
+    _tableDiv: null,
+    _cellElements: null,
+    _marginCellElement: null,
+    _orientation: null,
+    _margin: null,
+    _verticalAlignment: null,
+
+    $construct: function(orientation, margin, verticalAlignment) {
+        this._cellElements = [];
+        this._orientation = orientation;
+        this._margin = margin;
+        this._verticalAlignment = verticalAlignment;
+    },
+
+    /**
+     * Creates a cell div
+     */
+    addCell: function() {
+        var tdDiv = document.createElement("div");
+        tdDiv.style.display = "table-cell";
+        tdDiv.style.padding = "0";
+        tdDiv.style.verticalAlign = this._verticalAlignment;
+        this._cellElements.push(tdDiv);
+        return tdDiv;
+    },
+
+    /**
+     * Creates the layout (table/rows/cells)
+     */
+    createLayout: function() {
+        this._tableDiv = document.createElement("div");
+        this._tableDiv.style.display = "table";
+        this._tableDiv.style.borderCollapse = "collapse";
+        this._tableDiv.style.padding = "0";
+        this._tableDiv.style.height = "100%";
+
+        //define margins
+        if (this._margin) {
+            this._marginCellElement = document.createElement("div");
+            if ((this._orientation & Echo.Sync.TriCellTable.VERTICAL) === 0) {
+                this._marginCellElement.style.cssText = "display:table-cell;width:" +
+                    this._margin + "px;height:1px;font-size:1px;line-height:0;";
+            } else {
+                this._marginCellElement.style.cssText = "display:table-cell;width:1px;height:" +
+                    this._margin + "px;font-size:1px;line-height:0;";
+            }
+        }
+
+        //add rows and cells
+        var i;
+        if (this._orientation & Echo.Sync.TriCellTable.VERTICAL) {
+            // Vertically oriented.
+            if (this._orientation & Echo.Sync.TriCellTable.INVERTED) {
+                // Inverted (bottom to top).
+                for (i = this._cellElements.length - 1; i > 0; i--) {
+                    this._addRow(this._cellElements[i]);
+                    this._addRow(this._marginCellElement);
+                }
+                this._addRow(this._cellElements[0]);
+            } else {
+                // Normal (top to bottom).
+                this._addRow(this._cellElements[0]);
+                for (i = 1; i < this._cellElements.length; i++) {
+                    this._addRow(this._marginCellElement);
+                    this._addRow(this._cellElements[i]);
+                }
+            }
+        } else {
+            // Horizontally oriented.
+            var trDiv = Echo.Sync.Button.ContentContainer._rowPrototype.cloneNode(false);
+            if (this._orientation & Echo.Sync.TriCellTable.INVERTED) {
+                // Trailing to leading.
+                for (i = this._cellElements.length - 1; i > 0; i--) {
+                    this._addColumn(trDiv, this._cellElements[i]);
+                    this._addColumn(trDiv, this._marginCellElement);
+                }
+                this._addColumn(trDiv, this._cellElements[0]);
+            } else {
+                // Leading to trailing.
+                this._addColumn(trDiv, this._cellElements[0]);
+                for (i = 1; i < this._cellElements.length; i++) {
+                    this._addColumn(trDiv, this._cellElements[i]);
+                    this._addColumn(trDiv, this._marginCellElement);
+                }
+            }
+            this._tableDiv.appendChild(trDiv);
+        }
+    },
+
+    _addColumn: function(trDiv, tdDiv) {
+        if (tdDiv != null) {
+            trDiv.appendChild(tdDiv);
+        }
+    },
+
+    _addRow: function(tdDiv) {
+        if (tdDiv != null) {
+            var trDiv = Echo.Sync.Button.ContentContainer._rowPrototype.cloneNode(false);
+            trDiv.appendChild(tdDiv);
+            this._tableDiv.appendChild(trDiv);
+        }
     }
 });
