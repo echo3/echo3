@@ -497,7 +497,7 @@ Echo.Sync.Button.ContentContainer = Core.extend({
     _verticalAlignment: null,
 
     $construct: function(orientation, margin, verticalAlignment) {
-        this._cellElements = new Array();
+        this._cellElements = [];
         this._orientation = orientation;
         this._margin = margin;
         this._verticalAlignment = verticalAlignment;
@@ -529,20 +529,21 @@ Echo.Sync.Button.ContentContainer = Core.extend({
         if (this._margin) {
             this._marginCellElement = document.createElement("div");
             if ((this._orientation & Echo.Sync.TriCellTable.VERTICAL) === 0) {
-                this._marginCellElement.style.cssText = "display:table-cell;width:"
-                    + this._margin + "px;height:1px;font-size:1px;line-height:0;";
+                this._marginCellElement.style.cssText = "display:table-cell;width:" +
+                    this._margin + "px;height:1px;font-size:1px;line-height:0;";
             } else {
-                this._marginCellElement.style.cssText = "display:table-cell;width:1px;height:" 
-                    + this._margin + "px;font-size:1px;line-height:0;";
+                this._marginCellElement.style.cssText = "display:table-cell;width:1px;height:" +
+                    this._margin + "px;font-size:1px;line-height:0;";
             }
         }
 
         //add rows and cells
+        var i;
         if (this._orientation & Echo.Sync.TriCellTable.VERTICAL) {
             // Vertically oriented.
             if (this._orientation & Echo.Sync.TriCellTable.INVERTED) {
                 // Inverted (bottom to top).
-                for (var i = this._cellElements.length - 1; i > 0; i--) {
+                for (i = this._cellElements.length - 1; i > 0; i--) {
                     this._addRow(this._cellElements[i]);
                     this._addRow(this._marginCellElement);
                 }
@@ -550,7 +551,7 @@ Echo.Sync.Button.ContentContainer = Core.extend({
             } else {
                 // Normal (top to bottom).
                 this._addRow(this._cellElements[0]);
-                for (var i = 1; i < this._cellElements.length; i++) {
+                for (i = 1; i < this._cellElements.length; i++) {
                     this._addRow(this._marginCellElement);
                     this._addRow(this._cellElements[i]);
                 }
@@ -560,19 +561,16 @@ Echo.Sync.Button.ContentContainer = Core.extend({
             var trDiv = Echo.Sync.Button.ContentContainer._rowPrototype.cloneNode(false);
             if (this._orientation & Echo.Sync.TriCellTable.INVERTED) {
                 // Trailing to leading.
-                for (var i = this._cellElements.length - 1; i > 0; i--) {
-                    var cell = this._cellElements[i];
-                    trDiv.appendChild(cell);
-                    this._addColumn(trDiv, cell);
+                for (i = this._cellElements.length - 1; i > 0; i--) {
+                    this._addColumn(trDiv, this._cellElements[i]);
                     this._addColumn(trDiv, this._marginCellElement);
                 }
                 this._addColumn(trDiv, this._cellElements[0]);
             } else {
                 // Leading to trailing.
                 this._addColumn(trDiv, this._cellElements[0]);
-                for (var i = 1; i < this._cellElements.length; i++) {
-                    var cell = this._cellElements[i];
-                    this._addColumn(trDiv, cell);
+                for (i = 1; i < this._cellElements.length; i++) {
+                    this._addColumn(trDiv, this._cellElements[i]);
                     this._addColumn(trDiv, this._marginCellElement);
                 }
             }
