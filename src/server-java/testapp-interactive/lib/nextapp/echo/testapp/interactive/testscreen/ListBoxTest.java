@@ -30,6 +30,7 @@
 package nextapp.echo.testapp.interactive.testscreen;
 
 import nextapp.echo.app.Border;
+import nextapp.echo.app.BoxShadow;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
@@ -42,6 +43,7 @@ import nextapp.echo.app.ListBox;
 import nextapp.echo.app.SelectField;
 import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.WindowPane;
+import nextapp.echo.app.BoxShadow.BoxStyle;
 import nextapp.echo.app.event.ActionEvent;
 import nextapp.echo.app.event.ActionListener;
 import nextapp.echo.app.event.ChangeEvent;
@@ -202,7 +204,7 @@ public class ListBoxTest extends SplitPane {
         add(controlsColumn);
 
         testColumn = new Column();
-        testColumn.setCellSpacing(new Extent(15));
+        testColumn.setCellSpacing(new Extent(25));
         splitPaneLayoutData = new SplitPaneLayoutData();
         splitPaneLayoutData.setInsets(new Insets(15));
         testColumn.setLayoutData(splitPaneLayoutData);
@@ -359,6 +361,25 @@ public class ListBoxTest extends SplitPane {
                 apply(new Applicator() {
                     public void apply(AbstractListComponent listComponent) {
                         listComponent.setBorder(null);
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractListComponent listComponent) {
+                        BoxShadow boxShadow = new BoxShadow(new Extent(5), new Extent(8), new Extent(8), new Extent(3), Color.DARKGRAY, BoxStyle.DEFAULT);
+                        listComponent.setBoxShadow(boxShadow);
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Clear BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractListComponent listComponent) {
+                        listComponent.setBoxShadow(null);
                     }
                 });
             }
