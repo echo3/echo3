@@ -72,8 +72,9 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
     _element: null,
     
     /**
-     * Rendered DIV element when alternate listbox rendering is enabled.
-     * Null if list is rendered as a SELECT element.
+     * Rendered DIV element
+     * When in alternate mode than as an IE6 work-around
+     * Otherwise as element on where to apply the boxshadow property
      * @type Element.
      */
     _div: null,
@@ -247,10 +248,8 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
     renderDispose: function(update) { 
         Core.Web.Event.removeAll(this._element);
         this._element = null;
-        if (this._div) {
-            Core.Web.Event.removeAll(this._div);
-            this._div = null;
-        }
+        Core.Web.Event.removeAll(this._div);
+        this._div = null;
     },
     
     /** @see Echo.Render.ComponentSync#renderFocus */
@@ -351,6 +350,9 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
      * @param {Element} parent the parent DOM element 
      */
     _renderMainAsSelect: function(update, parentElement) {
+        this._div = document.createElement("div");
+        this._div.style.display = "table";
+    
         this._element = document.createElement("select");
         this._element.id = this.component.renderId;
         this._element.size = this.listBox ? 6 : 1;
@@ -368,9 +370,11 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         if (width) {
             if (Echo.Sync.Extent.isPercent(width)) {
                 if (!Core.Web.Env.QUIRK_IE_SELECT_PERCENT_WIDTH) {
-                    this._element.style.width = width;
+                    this._div.style.width = width;
+                    this._element.style.width = "100%";
                 }
             } else {
+                this._div.style.width = Echo.Sync.Extent.toCssValue(width, true, false);                
                 this._element.style.width = Echo.Sync.Extent.toCssValue(width, true, false);
             }
         }
@@ -384,9 +388,12 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
                     this._element, "backgroundColor");
             Echo.Sync.Font.render(Echo.Sync.getEffectProperty(this.component, "font", "disabledFont", true),this._element);
         }
-        Echo.Sync.Border.render(Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), 
-                this._element);
-        Echo.Sync.Insets.render(this.component.render("insets"), this._element, "padding");
+
+        //don't use the select field border but the span border instead
+        this._element.style.border = "0";
+        Echo.Sync.Border.render(Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), this._div);
+        Echo.Sync.BoxShadow.renderClear(this.component.render("boxShadow"), this._div);
+        Echo.Sync.Insets.render(this.component.render("insets"), this._div, "padding");
 
         var items = this.component.get("items");
         if (items) {
@@ -416,7 +423,8 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
             Core.Web.Event.add(this._element, "focus", Core.method(this, this._processFocus), false);
         }
 
-        parentElement.appendChild(this._element);
+        this._div.appendChild(this._element);
+        parentElement.appendChild(this._div);
     },
 
     /**
@@ -474,7 +482,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
             this._selectedIdPriority = true;
         }
     
-        var element = this._element;
+        var element = this._alternateRender ? this._element : this._div;
         var containerElement = element.parentNode;
         this.renderDispose(update);
         containerElement.removeChild(element);

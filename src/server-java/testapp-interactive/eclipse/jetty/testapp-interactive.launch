@@ -12,6 +12,7 @@
 <booleanAttribute key="run_jetty_run.ENABLE_SSL_ATTR" value="false"/>
 <booleanAttribute key="run_jetty_run.IGNORE_SCAN_CLASS_WHEN_DEBUG_MODE" value="true"/>
 <stringAttribute key="run_jetty_run.JETTY_XML_PATH" value=""/>
+<stringAttribute key="run_jetty_run.KEYSTORE_ATTR" value=""/>
 <stringAttribute key="run_jetty_run.KEY_PWD_ATTR" value="changeit"/>
 <stringAttribute key="run_jetty_run.PORT_ATTR" value="8080"/>
 <stringAttribute key="run_jetty_run.PWD_ATTR" value="changeit"/>
