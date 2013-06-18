@@ -305,6 +305,10 @@
         </copy>
     </target>
 
+    <target name="test.testapp" depends="compile.testapp" unless="skip.tests">
+        <!-- No unit tests yet. Compile test only -->
+    </target>
+
     <target name="test.webcontainer" depends="test.compile.webcontainer" unless="skip.tests"
             description="Test Web Application Container">
         <mkdir dir="${dir.testoutput.webcontainer-test}"/>
@@ -369,7 +373,7 @@
 
     <target name="dist" depends="clean, test, dist.app, dist.webcontainer"/>
 
-    <target name="test" depends="jslint, test.app, test.webcontainer, test.doc" unless="skip.tests"/>
+    <target name="test" depends="jslint, test.app, test.webcontainer, test.testapp, test.doc" unless="skip.tests"/>
 
     <target name="doc.public"
             depends="doc.app, doc.webcontainer"/>
@@ -401,7 +405,7 @@
         </jar>
     </target>
 
-    <target name="compile.testapp" depends="dist">
+    <target name="compile.testapp">
         <mkdir dir="${dir.build.server-java.testapp}/WEB-INF/classes"/>
         <mkdir dir="${dir.build.server-java.testapp}/WEB-INF/lib"/>
         <copy todir="${dir.build.server-java.testapp}/WEB-INF/lib" file="${dir.dist.lib}/${jarfile.echo.app}"/>
@@ -428,7 +432,7 @@
         </copy>
     </target>
 
-    <target name="dist.testapp" depends="compile.testapp"
+    <target name="dist.testapp" depends="dist, compile.testapp"
             description="Builds a web archive of the interactive test application">
         <mkdir dir="${dir.dist.testapp}"/>
         <jar jarfile="${dir.dist.testapp}/${warfile.testapp}" basedir="${dir.build.server-java.testapp}"/>
