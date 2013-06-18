@@ -32,6 +32,7 @@ package nextapp.echo.app.serial.property;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
+import java.util.Locale;
 import org.w3c.dom.Element;
 
 import nextapp.echo.app.serial.SerialContext;
@@ -58,7 +59,7 @@ implements SerialPropertyPeer {
         String valueText = propertyElement.hasAttribute("v") 
                 ? propertyElement.getAttribute("v") : DomUtil.getElementText(propertyElement);
         try {
-            return DecimalFormat.getInstance().parseObject(valueText);
+            return DecimalFormat.getInstance(Locale.ENGLISH).parseObject(valueText);
         } catch (ParseException ex) {
             throw new SerialException("Cannot parse as number: " + valueText, ex); 
         }
