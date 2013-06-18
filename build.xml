@@ -159,7 +159,7 @@
 
     <target name="test.app" depends="test.compile.app" description="Test Echo app Framework" unless="skip.tests">
         <mkdir dir="${dir.testoutput.app-test}"/>
-        <junit printsummary="yes" haltonfailure="no">
+        <junit printsummary="yes" haltonfailure="yes" failureproperty="test.failed">
             <classpath>
                 <pathelement path="${dir.build.server-java.app-test}"/>
                 <pathelement path="${dir.dist.lib}/${jarfile.echo.app}"/>
@@ -169,7 +169,7 @@
             <formatter type="plain"/>
             <batchtest fork="yes" todir="${dir.testoutput.app-test}">
                 <fileset dir="${dir.src.server-java.app-test}">
-                   <include name="**/*Test*.java"/>
+                   <include name="**/*Test.java"/>
                 </fileset>
             </batchtest>
         </junit>
@@ -312,7 +312,7 @@
     <target name="test.webcontainer" depends="test.compile.webcontainer" unless="skip.tests"
             description="Test Web Application Container">
         <mkdir dir="${dir.testoutput.webcontainer-test}"/>
-        <junit printsummary="yes" haltonfailure="yes">
+        <junit printsummary="yes" haltonfailure="yes" failureproperty="test.failed">
             <classpath>
                 <pathelement path="${dir.build.server-java.webcontainer-test}"/>
                 <pathelement path="${servlet.lib.jar}"/>
@@ -373,7 +373,9 @@
 
     <target name="dist" depends="clean, test, dist.app, dist.webcontainer"/>
 
-    <target name="test" depends="jslint, test.app, test.webcontainer, test.testapp, test.doc" unless="skip.tests"/>
+    <target name="test" depends="jslint, test.app, test.webcontainer, test.testapp, test.doc" unless="skip.tests">
+        <fail if="test.failed">Some tests failed!</fail>
+    </target>
 
     <target name="doc.public"
             depends="doc.app, doc.webcontainer"/>
