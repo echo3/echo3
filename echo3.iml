@@ -38,6 +38,7 @@
         </descriptors>
         <webroots>
           <root url="file://$MODULE_DIR$/src/server-java/testapp-interactive/deploy" relative="/WEB-INF" />
+          <root url="file://$MODULE_DIR$/src/server-java/testapp-interactive/htdocs" relative="/" />
         </webroots>
       </configuration>
     </facet>
