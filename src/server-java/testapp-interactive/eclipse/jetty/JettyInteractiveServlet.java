@@ -1,6 +1,6 @@
 /* 
  * This file is part of the Echo Web Application Framework (hereinafter "Echo").
- * Copyright (C) 2002-2012 NextApp, Inc.
+ * Copyright (C) 2002-2009 NextApp, Inc.
  *
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -29,20 +29,38 @@
 
 package jetty;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.eclipse.jetty.websocket.WebSocket;
-import org.eclipse.jetty.websocket.WebSocketServlet;
+import nextapp.echo.app.ApplicationInstance;
+import nextapp.echo.testapp.interactive.InteractiveServlet;
+import nextapp.echo.webcontainer.ApplicationWebSocket;
+import nextapp.echo.webcontainer.WebSocketConnectionHandler;
 
 /**
- * Servlet implementation for servicing websocket requests
- * 
- * @author chrismay2
+ * Interactive Test Application <code>WebContainerServlet</code> implementation
+ * using Jetty WebSocket implementation
  */
-public class EchoWebSocketServlet extends WebSocketServlet {
+public class JettyInteractiveServlet extends InteractiveServlet {
 
-    @Override
-    public WebSocket doWebSocketConnect(HttpServletRequest request, String protocol) {
-        return (WebSocket)JettyInteractiveServlet.wsHandler.process(this, request, protocol);
+    static {
+        System.setProperty("echo.js.enablecaching", "true");
+        System.setProperty("echo.allowiecompression", "true");
+    }
+
+    public static final WebSocketConnectionHandler wsHandler = new WebSocketConnectionHandler() {
+        @Override
+        public ApplicationWebSocket newApplicationWebSocket(ApplicationInstance applicationInstance) {
+            return new JettyWebSocket();
+        }
+    };
+
+    public JettyInteractiveServlet() {
+        super();
+        setWebSocketConnectionHandler(wsHandler);
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.WebContainerServlet#getInstanceMode()
+     */
+    public int getInstanceMode() {
+        return INSTANCE_MODE_SINGLE;
     }
 }

@@ -6,7 +6,7 @@
 
   <servlet>
     <servlet-name>demoServlet</servlet-name>
-    <servlet-class>nextapp.echo.testapp.interactive.InteractiveServlet</servlet-class>
+    <servlet-class>jetty.JettyInteractiveServlet</servlet-class>
   </servlet>
   
   <servlet>
