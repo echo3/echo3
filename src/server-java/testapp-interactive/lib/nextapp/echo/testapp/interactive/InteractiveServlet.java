@@ -29,7 +29,6 @@
 
 package nextapp.echo.testapp.interactive;
 
-import jetty.JettyWebSocket;
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.webcontainer.ApplicationWebSocket;
 import nextapp.echo.webcontainer.Service;
@@ -68,7 +67,12 @@ public class InteractiveServlet extends WebContainerServlet {
     public static final WebSocketConnectionHandler wsHandler = new WebSocketConnectionHandler() {
         @Override
         public ApplicationWebSocket newApplicationWebSocket(ApplicationInstance applicationInstance) {
-            return new JettyWebSocket();
+            try {
+                Class<?> clazz = Class.forName("jetty.JettyWebSocket");
+                return (ApplicationWebSocket)clazz.newInstance();
+            } catch (Exception e) {
+            }
+            return null;
         }
     };
 
