@@ -4,12 +4,26 @@
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
-          <element id="module-output" name="echo3" />
-          <element id="module-output" name="webcontainer" />
-          <element id="module-output" name="app" />
-          <element id="module-output" name="client" />
+          <element id="module-output" name="testapp-interactive" />
         </element>
-        <element id="directory" name="lib" />
+        <element id="directory" name="lib">
+          <element id="archive" name="echo-app.jar">
+            <element id="module-output" name="app" />
+          </element>
+          <element id="archive" name="echo-webcontainer.jar">
+            <element id="module-output" name="webcontainer" />
+            <element id="directory" name="nextapp">
+              <element id="directory" name="echo">
+                <element id="directory" name="webcontainer">
+                  <element id="directory" name="resource">
+                    <element id="dir-copy" path="$PROJECT_DIR$/src/client/corejs" />
+                    <element id="dir-copy" path="$PROJECT_DIR$/src/client/echo" />
+                  </element>
+                </element>
+              </element>
+            </element>
+          </element>
+        </element>
       </element>
       <element id="javaee-facet-resources" facet="echo3/web/testapp" />
     </root>
