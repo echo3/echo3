@@ -226,6 +226,9 @@ public class InteractiveApp extends ApplicationInstance {
             return;
         }
         ghostTaskQueue = createTaskQueue();
+        ContainerContext containerContext = 
+                (ContainerContext) getContextProperty(ContainerContext.CONTEXT_PROPERTY_NAME);
+        containerContext.setTaskQueueCallbackInterval(ghostTaskQueue, interval);
         ghostTask.startTask(this, ghostTaskQueue);
     }
     
