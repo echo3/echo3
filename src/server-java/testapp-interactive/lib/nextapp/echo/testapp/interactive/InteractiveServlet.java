@@ -29,12 +29,9 @@
 
 package nextapp.echo.testapp.interactive;
 
-import jetty.JettyWebSocket;
 import nextapp.echo.app.ApplicationInstance;
-import nextapp.echo.webcontainer.ApplicationWebSocket;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
-import nextapp.echo.webcontainer.WebSocketConnectionHandler;
 import nextapp.echo.webcontainer.service.JavaScriptService;
 import nextapp.echo.webcontainer.service.StaticTextService;
 
@@ -59,22 +56,8 @@ public class InteractiveServlet extends WebContainerServlet {
     private static final Service CUSTOM_STYLE_SHEET = StaticTextService.forResource("CustomCSS", "text/css",
             "nextapp/echo/testapp/interactive/resource/css/Custom.css");
     
-    
-    static {
-        System.setProperty("echo.js.enablecaching", "true");
-        System.setProperty("echo.allowiecompression", "true");
-    }
-
-    public static final WebSocketConnectionHandler wsHandler = new WebSocketConnectionHandler() {
-        @Override
-        public ApplicationWebSocket newApplicationWebSocket(ApplicationInstance applicationInstance) {
-            return new JettyWebSocket();
-        }
-    };
-
     public InteractiveServlet() {
         super();
-        setWebSocketConnectionHandler(wsHandler);
         if (USE_CUSTOM_WAIT_INDICATOR) {
             addInitScript(CUSTOM_WAIT_INDICATOR);
         }
@@ -87,7 +70,7 @@ public class InteractiveServlet extends WebContainerServlet {
      * @see nextapp.echo.webcontainer.WebContainerServlet#getInstanceMode()
      */
     public int getInstanceMode() {
-        return INSTANCE_MODE_SINGLE;
+        return INSTANCE_MODE_WINDOW;
     }
 
     /**

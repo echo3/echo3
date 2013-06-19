@@ -252,7 +252,6 @@ public abstract class WebContainerServlet extends HttpServlet {
     /** Collection of CSS style sheet <code>Service</code>s which should be initially loaded. */
     private List initStyleSheets = null;
     
-    private WebSocketConnectionHandler wsHandler = null;
     /**
      * Default constructor.
      */
@@ -297,19 +296,6 @@ public abstract class WebContainerServlet extends HttpServlet {
         initStyleSheets.add(service);
     }
     
-    protected final void setWebSocketConnectionHandler(WebSocketConnectionHandler handler) {
-        this.wsHandler = handler;
-        this.wsHandler.assignParent(this);
-    }
-    
-    protected final void removeWebSocketConnectionHandler() {
-        wsHandler = null;
-    }
-    
-    public final boolean hasWebSocketConnectionHandler() {
-        return wsHandler != null;
-    }
-    
     /**
      * Handles a GET request.
      *
@@ -337,6 +323,9 @@ public abstract class WebContainerServlet extends HttpServlet {
      * @return The service corresponding to the specified Id.
      */
     private static Service getService(String id, boolean hasInstance) {
+        Service service;
+        
+        service = services.get(id);
         if (id == null) {
             if (hasInstance) {
                 id = SERVICE_ID_DEFAULT;
@@ -349,7 +338,8 @@ public abstract class WebContainerServlet extends HttpServlet {
             }
         }
         
-        Service service = services.get(id);
+        service = services.get(id);
+
         if (service == null) {
             if (SERVICE_ID_DEFAULT.equals(id)) {
                 throw new RuntimeException("Service not registered: SERVICE_ID_DEFAULT");
@@ -359,6 +349,7 @@ public abstract class WebContainerServlet extends HttpServlet {
                 throw new RuntimeException("Service not registered: SERVICE_ID_SESSION_EXPIRED");
             }
         }
+        
         return service;
     }
     
@@ -429,8 +420,8 @@ public abstract class WebContainerServlet extends HttpServlet {
                 // with Internet Explorer 6.  Without "Last-Modified", IE6 appears to not
                 // cache images properly resulting in an substantially greater than expected
                 // performance impact.
-                response.setHeader("Cache-Control", "max-age=3600, public");
-                response.setDateHeader("Expires", System.currentTimeMillis() + (3600 * 1000));
+                response.setHeader("Cache-Control", "max-age=3600");
+                response.setDateHeader("Expires", System.currentTimeMillis() + (86400000));
                 response.setDateHeader("Last-Modified", startupTime);
             } else {
                 response.setHeader("Pragma", "no-cache");
@@ -441,34 +432,36 @@ public abstract class WebContainerServlet extends HttpServlet {
             service.service(conn);
             
         } catch (ServletException ex) {
-            processError(conn, request, response, ex);
+            if (conn != null) {
+                conn.disposeUserInstance();
+            }
+            processError(request, response, ex);
         } catch (IOException ex) {
-            processError(conn, request, response, ex);
+            if (conn != null) {
+                conn.disposeUserInstance();
+            }
+            processError(request, response, ex);
         } catch (RuntimeException ex) {
-            processError(conn, request, response, ex);
+            if (conn != null) {
+                conn.disposeUserInstance();
+            }
+            processError(request, response, ex);
         } finally {
             activeConnection.set(null);
         }
     }
     
     /**
-     * Exception handler for process() method. The current implementation writes an Exception ID to the client.
+     * Exception handler for process() method.
      * 
-     * @param request The current HTTP request in progress
-     * @param response The HTTP response
-     * @param ex The exception triggering this error handleing.
-     * @throws IOException May be thrown on issues writing to the HTTP response.
+     * @param request the HTTP request
+     * @param response the HTTP response
+     * @param ex the exception 
+     * @throws ServletException
+     * @throws IOException
      */
-    private void processError(Connection conn, HttpServletRequest request, HttpServletResponse response, Exception ex) 
-            throws IOException {
-        if (conn != null) {
-            try {
-                conn.disposeUserInstance();
-            } catch (Exception ignore) {
-                //do nothing...
-            }
-        }
-
+    private void processError(HttpServletRequest request, HttpServletResponse response, Exception ex) 
+    throws ServletException, IOException {
         String exceptionId = Uid.generateUidString();
         Log.log("Server Exception. ID: " + exceptionId, ex);
         response.setContentType("text/plain");

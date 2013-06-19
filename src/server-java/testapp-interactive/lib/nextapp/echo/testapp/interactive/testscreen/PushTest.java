@@ -46,54 +46,66 @@ import nextapp.echo.testapp.interactive.InteractiveApp;
  * Test for asynchronous (server push) operations.
  */
 public class PushTest extends Column {
-
+    
     /**
-     * Thread to simulate long-running operation on server. Note that threading
-     * is not allowed by J2EE containers conforming to the 1.3 (or earlier) J2EE
-     * specification. If you plan on deploying an Echo user interface to such a
-     * container, please refrain from using this class as an example.
+     * Thread to simulate long-running operation on server.
+     * Note that threading is not allowed by J2EE containers
+     * conforming to the 1.3 (or earlier) J2EE specification.
+     * If you plan on deploying an Echo user interface to such
+     * a container, please refrain from using this class as 
+     * an example.
      */
-    private class SimulatedServerOperation extends Thread {
-
+    private class SimulatedServerOperation 
+    extends Thread {
+        
         private int percentComplete = 0;
         private boolean slow;
-
-        SimulatedServerOperation() {
+        
+        SimulatedServerOperation(boolean slow) {
             super();
+            this.slow = slow;
         }
-
+        
         public void run() {
             while (percentComplete < 100) {
-                percentComplete += 1;
+                percentComplete += (Math.random() * 20);
                 if (percentComplete > 100) {
                     percentComplete = 100;
                 }
                 ApplicationInstance app = getApplicationInstance();
                 if (app != null) {
-                    app.enqueueTask(taskQueue, new ProgressUpdateTask(percentComplete));
+                    app.enqueueTask(taskQueue, new ProgressUpdateTask(percentComplete, slow));
                     try {
-                        Thread.sleep(80);
-                    } catch (InterruptedException ex) {
-                    }
+                        Thread.sleep((long) (Math.random() * 1000));
+                    } catch (InterruptedException ex) { }
                 }
             }
         }
     }
-
-    private class ProgressUpdateTask implements Runnable {
-
+    
+    private class ProgressUpdateTask 
+    implements Runnable {
+        
         private int percentComplete;
-
-        private ProgressUpdateTask(int percentComplete) {
+        private boolean slow;
+        
+        private ProgressUpdateTask(int percentComplete, boolean slow) {
             this.percentComplete = percentComplete;
+            this.slow = slow;
         }
-
+        
         /**
          * @see java.lang.Runnable#run()
          */
         public void run() {
+            if (slow) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) { }  
+            }
             if (percentComplete < 100) {
-                statusLabel.setText("Asynchronous operation in progress; " + percentComplete + "% complete, text field value=" + textField.getText());
+                statusLabel.setText("Asynchronous operation in progress; " + percentComplete 
+                        + "% complete, text field value=" + textField.getText());
             } else {
                 statusLabel.setText("Asynchronous operation complete, text field value=" + textField.getText());
                 getApplicationInstance().removeTaskQueue(taskQueue);
@@ -101,50 +113,62 @@ public class PushTest extends Column {
             }
         }
     }
-
+    
     private TaskQueueHandle taskQueue;
     private Label statusLabel;
     private TextField textField;
-
+    
     public PushTest() {
         super();
-
+        
         SplitPaneLayoutData splitPaneLayoutData = new SplitPaneLayoutData();
         splitPaneLayoutData.setInsets(new Insets(10));
         setLayoutData(splitPaneLayoutData);
-
+        
         setCellSpacing(new Extent(20));
-
+        
         statusLabel = new Label("Asynchronous operation not active.");
         add(statusLabel);
-
+        
         Button startButton = new Button("Start Asynchronous (Server Push) Operation");
         startButton.setStyleName("Default");
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (taskQueue == null) {
-                    // Only start new operation if taskQueue is null, indicating
-                    // that last operation has completed.
+                    // Only start new operation if taskQueue is null, indicating that last operation has completed.
                     taskQueue = getApplicationInstance().createTaskQueue();
-                    new SimulatedServerOperation().start();
+                    new SimulatedServerOperation(false).start();
                 }
             }
         });
         add(startButton);
-
+        
+        Button startDelayButton = new Button("Start Asynchronous (Server Push) Operation, SLOW Syncs");
+        startDelayButton.setStyleName("Default");
+        startDelayButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (taskQueue == null) {
+                    // Only start new operation if taskQueue is null, indicating that last operation has completed.
+                    taskQueue = getApplicationInstance().createTaskQueue();
+                    new SimulatedServerOperation(true).start();
+                }
+            }
+        });
+        add(startDelayButton);
+        
         Button queryTextButton = new Button("Query Text Field");
         queryTextButton.setStyleName("Default");
-        queryTextButton.addActionListener(new ActionListener() {
+        queryTextButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 InteractiveApp.getApp().consoleWrite("Text Value: \"" + textField.getText() + "\"");
             }
         });
         add(queryTextButton);
-
+        
         textField = new TextField();
         add(textField);
     }
-
+    
     /**
      * @see nextapp.echo.app.Component#dispose()
      */
@@ -154,5 +178,5 @@ public class PushTest extends Column {
         }
         super.dispose();
     }
-
+    
 }

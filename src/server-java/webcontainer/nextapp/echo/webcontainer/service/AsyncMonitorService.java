@@ -59,11 +59,6 @@ implements Service {
     public static final String SERVICE_ID = "Echo.AsyncMonitor";
     
     /**
-     * The request-sync attribute in async-monitor tag.
-     */
-    public static final String REQUEST_SYNC_ATTR = "request-sync";
-    
-    /**
      * Private constructor: use singleton <code>INSTANCE</code>.
      */
     private AsyncMonitorService() { }
@@ -87,6 +82,10 @@ implements Service {
      */
     public void service(Connection conn) throws IOException {
         conn.setContentType(ContentType.TEXT_XML);
-        conn.getWriter().write("<async-monitor " + REQUEST_SYNC_ATTR + "=\"" + Boolean.toString(conn.getUserInstance().getApplicationInstance().hasQueuedTasks()) + "\"/>");
+        if (conn.getUserInstance().getApplicationInstance().hasQueuedTasks()) {
+            conn.getWriter().write("<async-monitor request-sync=\"true\"/>");
+        } else {
+            conn.getWriter().write("<async-monitor request-sync=\"false\"/>");
+        }
     }
 }

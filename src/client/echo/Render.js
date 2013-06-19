@@ -234,24 +234,19 @@ Echo.Render = {
             updates[i].renderContext = {};
         
             peer = updates[i].parent.peer;
-            if (peer == null) {
-                if (updates[i].parent.componentType == "Root") {
-                    Echo.Render._loadPeer(client, updates[i].parent); 
-                } else {
-                    // If the peer is not loaded, ignore update!
-                    // Component may not be rendered!
-                    updates[i].markAsProcessed();
-                    updates[i] = null;
-                }
+            if (peer == null && updates[i].parent.componentType == "Root") {
+                Echo.Render._loadPeer(client, updates[i].parent);
             }
         }
     
         // Remove Phase: Invoke renderDispose on all updates.
         for (i = updates.length - 1; i >= 0; --i) {
-            if (updates[i] != null && !updates[i].isProcessed()) {
-                peer = updates[i].parent.peer;
-                Echo.Render._processDispose(updates[i]);
+            if (updates[i] == null) {
+                // Skip removed updates.
+                continue;
             }
+            peer = updates[i].parent.peer;
+            Echo.Render._processDispose(updates[i]);
         }
         
         // Profiling: Mark completion of remove phase. 
@@ -261,7 +256,7 @@ Echo.Render = {
         
         // Update Phase: Invoke renderUpdate on all updates.
         for (i = 0; i < updates.length; ++i) {
-            if (updates[i] == null || updates[i].isProcessed()) {
+            if (updates[i] == null) {
                 // The update has been removed, skip it.
                 continue;
             }
@@ -271,15 +266,12 @@ Echo.Render = {
             
             // Perform update by invoking peer's renderUpdate() method.
             var fullRender = peer.renderUpdate(updates[i]);
-            updates[i].parent.fireEvent({type: "updated", source: updates[i].parent, data: updates[i]});
-
+            
             // If the update required re-rendering descendants of the updated component,
             // null-out any pending updates to descendant components.
             if (fullRender) {
                 for (j = i + 1; j < updates.length; ++j) {
                     if (updates[j] != null && updates[i].parent.isAncestorOf(updates[j].parent)) {
-                        updates[j].parent.fireEvent({type: "updated", source: updates[j].parent, data: updates[j]});
-                        updates[j].markAsProcessed();
                         updates[j] = null;
                     }
                 }
@@ -300,7 +292,7 @@ Echo.Render = {
         // This is done to avoid invoking renderDisplay() multiple times on a single component during a single rendering.
         var displayed = [];
         for (i = 0; i < updates.length; ++i) {
-            if (updates[i] == null || updates[i].isProcessed()) {
+            if (updates[i] == null) {
                 // Skip removed updates.
                 continue;
             }
@@ -344,12 +336,7 @@ Echo.Render = {
         // Clear disposed component list.
         Echo.Render._disposedComponents = null;
         
-        // Inform UpdateManager that updates from current invocation have been completed.
-        for (var k in updates) {
-            if (updates[k] != null) {
-                updates[k].markAsProcessed();
-            }
-        }
+        // Inform UpdateManager that all updates have been completed.
         updateManager.purge();
         
         // Perform focus update.
@@ -493,7 +480,7 @@ Echo.Render = {
         component.peer.client = null;
         component.peer.component = null;
         component.peer = null;
-        --this._loadedPeerCount;
+        --this._loadedPeerCount;        
     },
 
     /**

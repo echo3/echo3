@@ -1342,201 +1342,6 @@ Core.Web.Event = {
 };
 
 /**
- * An WebSocket connection to the hosting server. 
-  */
-Core.Web.WebSocketConnection = Core.extend({
-
-    $static: {
-        /** The connection has not yet been established. */
-        STATE_CONNECTING: 0,
-
-        /** The WebSocket connection is established and communication is possible. */
-        STATE_OPEN: 1,
-
-        /** The connection is going through the closing handshake. */
-        STATE_CLOSING: 2,
-
-        /** The connection has been closed or could not be opened. */
-        STATE_CLOSED: 3,
-        
-        /** The connection has been disposed. */
-        STATE_DISPOSED: 4,
-
-        /** This event occurs when socket connection is established. */
-        EVENT_OPEN: "open",
-
-        /** This event occurs when connection is closed. */
-        EVENT_CLOSE: "close",
-
-        /** This event occurs when there is any error in communication. */
-        EVENT_ERROR: "error",
-
-        /** This event occurs when client receives data from server. */
-        EVENT_MESSAGE: "message",
-
-        isAvailable: function() {
-            return !!window.WebSocket;
-        }
-    },
-
-    /** The URL. */
-    _url: null,
-
-    /** Specifies a sub-protocol that the server must support for the connection to be successful. */
-    _protocols: null,
-
-    /**
-     * Listener storage facility.
-     * @type Core.ListenerList
-     */
-    _listenerList: null,
-
-    /** 
-     * WebSocket object 
-     * @type WebSocket
-     */
-    _webSocket: null,
-
-   /**
-    * Function wrapper to invoke _processReceivedEvents() method.
-    * @type Function
-    */
-    _eventsHandler: null,
-    
-    _disposed: false,
-
-   /**
-    * Creates a new <code>WebSocketConnection</code>.
-    * This method simply configures the connection, the connection
-    * will not be opened until <code>open()</code> is invoked.
-    *
-    * @param {String} url the target URL
-    * @param {String or Array of Strings} protocols specifies a sub-protocol (optional)
-    * @constructor
-    */
-    $construct: function(url, protocols) {
-        this._url = url;
-        this._protocols = [].concat(protocols);
-        this._listenerList = new Core.ListenerList();
-        this._eventsHandler = new Core.method(this, this._processReceivedEvents);
-    },
-
-   /**
-    * Returns the state code of the WebSocket connection, if available.
-    * 
-    * @return the state code
-    * @type Integer
-    */
-    getState: function() {
-        if (this._disposed || !this._webSocket) {
-            return Core.Web.WebSocketConnection.STATE_DISPOSED;
-        } else {
-            return this._webSocket.readyState;
-        }
-    },
-
-   /**
-    * Adds a event listener to be notified when a events (open, close, error, message) is received from the websocket.
-    *
-    * @param {String} event type
-    * @param {Function} l the listener to add
-    */
-    addEventListener: function(eventType, l) {
-        switch(eventType) {
-            case Core.Web.WebSocketConnection.EVENT_OPEN:
-            case Core.Web.WebSocketConnection.EVENT_CLOSE:
-            case Core.Web.WebSocketConnection.EVENT_ERROR:
-            case Core.Web.WebSocketConnection.EVENT_MESSAGE:
-                this._listenerList.addListener(eventType, l);
-                break;
-            default:
-                throw new Error("Core.Web.WebSocketConnection.addEventsListener - invalid eventType: " + eventType + "!");
-        }
-    },
-
-   /**
-    * Removes a response listener to be notified when a events (open, close, error, message) is received from the websocket.
-    * 
-    * @param {String} event type
-    * @param {Function} l the listener to remove
-    */
-    removeEventListener: function(eventType, l) {
-        switch(eventType) {
-            case Core.Web.WebSocketConnection.EVENT_OPEN:
-            case Core.Web.WebSocketConnection.EVENT_CLOSE:
-            case Core.Web.WebSocketConnection.EVENT_ERROR:
-            case Core.Web.WebSocketConnection.EVENT_MESSAGE:
-                this._listenerList.removeListener(eventType, l);
-                break;
-            default:
-                throw new Error("Core.Web.WebSocketConnection.removeEventsListener - invalid eventType: " + eventType + "!");
-        }
-    },
-
-   /**
-    * Transmits data using the socket.
-    * If the socket is not open, it must throw an exception.
-    * 
-    * @param {String, Blob or ArrayBuffer} data to be sent
-    */
-    sendData: function(data) {
-      if (!this.isOpen()) {
-          throw new Error("Core.Web.WebSocketConnection.sendData - trying to send data to a not open connection!");
-      }
-      this._webSocket.send(data);
-    },
-
-   /**
-    * Event listener for <code>open, close, error, message</code> 
-    * events received from the <code>WebSocket</code>.
-    */
-    _processReceivedEvents: function(e) {
-        this._listenerList.fireEvent({type: e.type, source: this, data: e});
-    },
-
-   /**
-    * Open the web socket.
-    * This method will return before the Web Socket has received a event.
-    */
-    open: function() {
-        var state = this.getState();
-        if (state == Core.Web.WebSocketConnection.STATE_CONNECTING || state == Core.Web.WebSocketConnection.STATE_OPEN) {
-            return;
-        }
-        
-        this._webSocket = new WebSocket(this._url);  //, this._protocols);  <- not working on iOS 5.1!
-        this._webSocket.onopen = this._eventsHandler;
-        this._webSocket.onclose = this._eventsHandler;
-        this._webSocket.onerror = this._eventsHandler;
-        this._webSocket.onmessage = this._eventsHandler;
-        this._disposed = false;
-    },
-
-   /**
-    * Closes of the socket.
-    * This method must be invoked when the socket will no longer be used/processed.
-    */
-    close: function() {
-        if (this._disposed) {
-            return;
-        }
-      
-        try {
-            var state = this.getState();
-            if (state == Core.Web.WebSocketConnection.STATE_CONNECTING || state == Core.Web.WebSocketConnection.STATE_OPEN) {
-                this._webSocket.close();
-            }        
-        }
-        finally {
-            this._listenerList.removeAllListeners();
-            this._listenerList = null;
-            this._webSocket = null;
-            this._disposed = true;
-        }
-    }
-});
-
-/**
  * An HTTP connection to the hosting server.  This method provides a cross
  * platform wrapper for XMLHttpRequest and additionally allows method
  * reference-based listener registration.  
@@ -1763,14 +1568,8 @@ Core.Web.HttpConnection = Core.extend({
             }
             
             Core.Web.Scheduler.run(Core.method(this, function() {
-                if (this._disposed) {
-                    return;
-                }
-                try {
-                    this._listenerList.fireEvent(responseEvent);
-                } finally {
-                    this.dispose();
-                }
+                this._listenerList.fireEvent(responseEvent);
+                this.dispose();
             }));
         }
     },
@@ -2765,13 +2564,9 @@ Core.Web.Scheduler = {
      * Performs no action if specified runnable is not currently enqueued.
      * 
      * @param {Core.Web.Scheduler.Runnable} runnable the runnable to update
-     * @param {Boolean} schedulerEnqueue If true, add runnable to Core.Web.Scheduler if specified runnable is not currently enqueued.
      */
-    update: function(runnable, schedulerEnqueue) {
+    update: function(runnable) {
         if (Core.Arrays.indexOf(Core.Web.Scheduler._runnables, runnable) == -1) {
-            if (schedulerEnqueue) {
-                Core.Web.Scheduler.add(runnable);
-            }
             return;
         }
         var currentTime = new Date().getTime();

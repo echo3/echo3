@@ -49,20 +49,20 @@ import nextapp.echo.app.util.Uid;
 /**
  * A single user-instance of an Echo application.
  */
-public abstract class ApplicationInstance implements Serializable {
+public abstract class ApplicationInstance 
+implements Serializable {
     
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
     /** The name and version of the Echo API in use. */
-    public static final String ID_STRING = "Echo v3.1";
+    public static final String ID_STRING = "NextApp Echo v3.0.rc1";
 
     public static final String FOCUSED_COMPONENT_CHANGED_PROPERTY = "focusedComponent";
     public static final String LOCALE_CHANGED_PROPERTY = "locale";
     public static final String MODAL_COMPONENTS_CHANGED_PROPERTY = "modalComponents";
     public static final String STYLE_SHEET_CHANGED_PROPERTY = "styleSheet";
     public static final String WINDOWS_CHANGED_PROPERTY = "windows";
-    public static final String LAST_ENQUEUE_TASK_PROPERTY = "lastEnqueueTask";
     
     /** 
      * A <code>ThreadLocal</code> reference to the 
@@ -202,12 +202,6 @@ public abstract class ApplicationInstance implements Serializable {
      * @see #generateId()
      */
     private long nextId;
-            
-    /**
-     * Flag indicating whether the application has been disposed, i.e., whether <code>ApplicationInstance.dispose()</code>
-     * has been invoked.
-     */
-    private volatile boolean disposed = false;
     
     /** 
      * Creates an <code>ApplicationInstance</code>. 
@@ -269,19 +263,12 @@ public abstract class ApplicationInstance implements Serializable {
      * Implementations must invoke <code>super.dispose()</code>.
      */
     public void dispose() {
-        if (disposed) {
-            throw new IllegalStateException("Attempt to invoke ApplicationInstance.dispose() on disposed instance.");
-        }        
-        try {
-            if (defaultWindow != null) {
-                defaultWindow.doDispose();
-                defaultWindow.register(null);
-            }
-            synchronized (taskQueueMap) {
-                taskQueueMap.clear();
-            }
-        } finally {
-            disposed = true;
+        if (defaultWindow != null) {
+            defaultWindow.doDispose();
+            defaultWindow.register(null);
+        }
+        synchronized (taskQueueMap) {
+            taskQueueMap.clear();
         }
     }
 
@@ -356,7 +343,6 @@ public abstract class ApplicationInstance implements Serializable {
                 taskQueueMap.put(taskQueue, taskList);
             }
             taskList.add(task);
-            firePropertyChange(LAST_ENQUEUE_TASK_PROPERTY, null, new Long(System.currentTimeMillis()));
         }
     }
     
@@ -669,7 +655,7 @@ public abstract class ApplicationInstance implements Serializable {
             }
         }
         Iterator it = currentTasks.iterator();
-        while (it.hasNext() && !disposed) {
+        while (it.hasNext()) {
             ((Runnable) it.next()).run();
         }
     }
@@ -689,10 +675,9 @@ public abstract class ApplicationInstance implements Serializable {
         if (renderId == null || renderIdToComponentMap.containsKey(renderId)) {
             // Note that the render id is reassigned if it currently exists renderIdToComponentMap.  This could be the case
             // in the event a Component was being used in a pool.
-            renderId = generateId();
-            component.assignRenderId(renderId);            
+            component.assignRenderId(generateId());
         }
-        renderIdToComponentMap.put(renderId, component);
+        renderIdToComponentMap.put(component.getRenderId(), component);
         if (component instanceof ModalSupport && ((ModalSupport) component).isModal()) {
             setModal(component, true);
         }
@@ -851,9 +836,7 @@ public abstract class ApplicationInstance implements Serializable {
      * @see Component#register(ApplicationInstance)
      */
     void unregisterComponent(Component component) {
-        final String renderId = component.getRenderId();
-        component.assignLastRenderId(renderId);
-        renderIdToComponentMap.remove(renderId);
+        renderIdToComponentMap.remove(component.getRenderId());
         if (component instanceof ModalSupport && ((ModalSupport) component).isModal()) {
             setModal(component, false);
         }

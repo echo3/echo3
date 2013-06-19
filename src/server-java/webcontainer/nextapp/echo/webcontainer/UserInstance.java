@@ -47,7 +47,6 @@ import nextapp.echo.app.Component;
 import nextapp.echo.app.TaskQueueHandle;
 import nextapp.echo.app.update.ServerComponentUpdate;
 import nextapp.echo.app.update.UpdateManager;
-import nextapp.echo.webcontainer.service.AsyncMonitorService;
 import nextapp.echo.webcontainer.util.IdTable;
 
 /**
@@ -88,11 +87,6 @@ public class UserInstance implements Serializable {
     private ApplicationInstance applicationInstance;
     
     /**
-     * The <code>ApplicationWebSocket</code>.
-     */
-    private ApplicationWebSocket applicationWebSocket;
-    
-    /**
      * <code>ClientConfiguration</code> information containing 
      * application-specific client behavior settings.
      */
@@ -113,17 +107,12 @@ public class UserInstance implements Serializable {
      * <code>PropertyChangeListener</code> for supported <code>ApplicationInstance</code>.
      */
     private PropertyChangeListener applicationPropertyChangeListener = new SerializablePropertyChangeListener() {
+    
         /**
          * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
          */
-        @Override
         public void propertyChange(PropertyChangeEvent e) {
-            String propertyName = e.getPropertyName();
-            if (ApplicationInstance.LAST_ENQUEUE_TASK_PROPERTY.equals(propertyName)) {                
-                if (applicationWebSocket != null && applicationWebSocket.isOpen()) {
-                    UserInstance.this.applicationWebSocket.sendMessage(AsyncMonitorService.REQUEST_SYNC_ATTR);
-                }
-            } else if (ApplicationInstance.STYLE_SHEET_CHANGED_PROPERTY.equals(propertyName)) {
+            if (ApplicationInstance.STYLE_SHEET_CHANGED_PROPERTY.equals(e.getPropertyName())) {
                 updatedPropertyNames.add(ApplicationInstance.STYLE_SHEET_CHANGED_PROPERTY);
             }
         }
@@ -203,16 +192,6 @@ public class UserInstance implements Serializable {
     }
     
     /**
-     * Returns the corresponding <code>ApplicationWebSocket</code>
-     * for this user instance.
-     * 
-     * @return the relevant <code>ApplicationWebSocket</code>
-     */
-    public ApplicationWebSocket getApplicationWebSocket() {
-        return applicationWebSocket;
-    }
-    
-    /**
      * Determines the application-specified asynchronous monitoring
      * service callback interval.
      * 
@@ -272,17 +251,7 @@ public class UserInstance implements Serializable {
      * @return the client-side render id
      */
     public String getClientRenderId(Component component) {
-        return getClientRenderId(component.getRenderId());
-    }
-    
-    /**
-     * @see UserInstance#getClientRenderId(nextapp.echo.app.Component)
-     * 
-     * @param componentRenderId component render id
-     * @return the client-side render id
-     */
-    public String getClientRenderId(final String componentRenderId) {
-        return "C."+ componentRenderId;
+        return "C." + component.getRenderId();
     }
     
     /**
@@ -465,11 +434,8 @@ public class UserInstance implements Serializable {
         if (applicationInstance != null) {
             try {
                 ApplicationInstance.setActive(applicationInstance);
-                applicationInstance.dispose();
-                if (applicationWebSocket != null) {
-                    applicationWebSocket.dispose();
-                }
                 applicationInstance.removePropertyChangeListener(applicationPropertyChangeListener);
+                applicationInstance.dispose();
             } finally {
                 ApplicationInstance.setActive(null);
             }
@@ -484,12 +450,11 @@ public class UserInstance implements Serializable {
      *
      * @param conn the relevant <code>Connection</code>
      */
-    public void initHTTP(Connection conn) {
+    public void init(Connection conn) {
         if (initialized) {
             throw new IllegalStateException("Attempt to invoke UserInstance.init() on initialized instance.");
         }
-        WebContainerServlet servlet = conn.getServlet();
-        
+        WebContainerServlet servlet = (WebContainerServlet) conn.getServlet();
         applicationInstance = servlet.newApplicationInstance();
         applicationInstance.addPropertyChangeListener(applicationPropertyChangeListener);
         
@@ -507,15 +472,6 @@ public class UserInstance implements Serializable {
      */
     public boolean isInitialized() {
         return initialized;
-    }
-
-    /**
-     * Associates a <code>WebSocketConnection</code> to the UserInstance.
-     *
-     * @param conn the relevant <code>WebSocketConnection</code>
-     */
-    public void initWebSocket(WebSocketConnection conn) {
-        this.applicationWebSocket = conn.getApplicationWebSocket();
     }
     
     /**
@@ -634,7 +590,6 @@ public class UserInstance implements Serializable {
     /**
      * @see java.lang.Object#toString()
      */
-    @Override
     public String toString() {
         return "UserInstance id=" + id + ", Application=" 
                 + (applicationInstance == null ? null : applicationInstance.getClass().getName());

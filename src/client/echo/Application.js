@@ -132,7 +132,7 @@ Echo.Application = Core.extend({
      * @type Echo.FocusManager
      */
     focusManager: null,
-
+    
     /**
      * Creates a new application instance.  
      * @constructor
@@ -157,10 +157,6 @@ Echo.Application = Core.extend({
      */
     addListener: function(eventType, eventTarget) {
         this._listenerList.addListener(eventType, eventTarget);
-    },
-
-    hasComponentUpdateListeners: function() {
-      return this._listenerList.hasListeners("componentUpdate");
     },
     
     /**
@@ -318,9 +314,7 @@ Echo.Application = Core.extend({
             this._listenerList.fireEvent({type: "componentUpdate", parent: parent, propertyName: propertyName, 
                     oldValue: oldValue, newValue: newValue});
         }
-        // only if parent is rendered (peer is loaded) OR componentType is Root
-        // Echo.Component that have componentType == "Root" their peers are loaded from Render.processUpdates(client))
-        if ((parent.peer || parent.componentType == "Root") && !rendered) {
+        if (!rendered) {
             this.updateManager._processComponentUpdate(parent, propertyName, oldValue, newValue);
         }
     },
@@ -778,13 +772,13 @@ Echo.Component = Core.extend({
      * @param {Function} eventTarget the method to invoke when the event occurs 
      *        (the event will be passed as the single argument)
      */
-    addListener: function(eventType, eventTarget, rendered) {
+    addListener: function(eventType, eventTarget) {
         if (this._listenerList == null) {
             this._listenerList = new Core.ListenerList();
         }
         this._listenerList.addListener(eventType, eventTarget);
         if (this.application) {
-            this.application.notifyComponentUpdate(this, "listeners", null, eventType, rendered);
+            this.application.notifyComponentUpdate(this, "listeners", null, eventType);
         }
     },
     
@@ -1206,23 +1200,13 @@ Echo.Component = Core.extend({
      * @param {Function} eventTarget the method to invoke when the event occurs 
      *        (the event will be passed as the single argument)
      */
-    removeListener: function(eventType, eventTarget, rendered) {
+    removeListener: function(eventType, eventTarget) {
         if (this._listenerList == null) {
             return;
         }
         this._listenerList.removeListener(eventType, eventTarget);
         if (this.application) {
-            this.application.notifyComponentUpdate(this, "listeners", eventType, rendered);
-        }
-    },
-    
-    removeAllListeners: function(eventType, rendered) {
-        if (this._listenerList == null) {
-            return;
-        }
-        this._listenerList.removeAllListeners(eventType);
-        if (this.application) {
-            this.application.notifyComponentUpdate(this, "listeners", eventType, rendered);
+            this.application.notifyComponentUpdate(this, "listeners", eventType, null);
         }
     },
     
@@ -1904,11 +1888,6 @@ Echo.Update.ComponentUpdate = Core.extend({
      * the notion that listeners of a type have been added or removed.
      */
     _listenerUpdates: null,
-    
-    /**
-     * Indicates that current update is processed.
-     */
-    _processed: false,
 
     /**
      * Creates a new ComponentUpdate.
@@ -2110,40 +2089,6 @@ Echo.Update.ComponentUpdate = Core.extend({
     },
     
     /**
-     * Determines if any children had their update during this update.
-     *
-     * @return true if manager who serves this update contains updates for the children
-     * @type Boolean
-     */
-    hasUpdatedChildren: function() {
-        for (var i = 0; i < this.parent.children.length; ++i) {
-            if (this._manager._componentUpdateMap[this.parent.children[i].renderId]) {
-                return true;
-            }
-        }
-        return false;
-    },
-        
-    /**
-     * Returns a collection of <code>Echo.Update.ComponentUpdate</code> 
-     * contains child's update during this update.
-     *
-     * @return updates of all updated children during this update
-     * @type Array
-     */
-    getChildrenUpdate: function() {
-        var updates = [];
-        for (var i = 0; i < this.parent.children.length; ++i) {
-            var update = this._manager._componentUpdateMap[this.parent.children[i].renderId];
-            if (update) {
-                updates.push(update);
-            }
-        }
-        return updates;
-    },
-    
-    
-    /**
      * Determines if any listeners of a specific type were added or removed
      * from the component.
      * 
@@ -2258,8 +2203,8 @@ Echo.Update.ComponentUpdate = Core.extend({
         for (var i = 0; i < descendant.children.length; ++i) {
             this._removeDescendant(descendant.children[i]);
         }
-    },    
-
+    },
+    
     /**
      * Returns a string representation.
      * 
@@ -2276,7 +2221,7 @@ Echo.Update.ComponentUpdate = Core.extend({
         s += "- LayoutDatas: " + this._updatedLayoutDataChildIds + "\n";
         return s;
     },
-
+    
     /**
      * Records the update of the LayoutData of a child component.
      * 
@@ -2315,24 +2260,6 @@ Echo.Update.ComponentUpdate = Core.extend({
         }
         var propertyUpdate = new Echo.Update.ComponentUpdate.PropertyUpdate(oldValue, newValue);
         this._propertyUpdates[propertyName] = propertyUpdate;
-     },
-    
-    /**
-     * Mark a current update as processed. (from Echo.Render.processUpdates(client))
-     */
-    markAsProcessed: function() {
-        this._processed = true;
-    },
-    
-
-    /**
-     * Checks whether the current update is processed!
-     *
-     * @return processed whether or not
-     * @type boolean
-     */
-    isProcessed: function() {
-        return this._processed;
     }
 });
 
@@ -2680,30 +2607,18 @@ Echo.Update.Manager = Core.extend({
     },
 
     /**
-     * Purges updates that are processed from the manager.
+     * Purges all updates from the manager.
      * Invoked after the client has repainted the screen.
      */
     purge: function() {
-        var key = null;
+        this.fullRefreshRequired = false;
+        this._componentUpdateMap = { };
+        this._idMap = { };
+        this._removedIdMap = { };
         this._hasUpdates = false;
-        for (key in this._componentUpdateMap) {
-            var update = this._componentUpdateMap[key];
-            if (update.isProcessed()) {                
-                delete this._componentUpdateMap[key];
-                delete this._idMap[update.parent.renderId];
-                delete this._removedIdMap[update.parent.renderId];
-            } else {
-                // has unprocessed updates (e.g: set property from renderUpdate(update))
-                this._hasUpdates = true;
-            }
-        }
-
-        if (!this._hasUpdates) {
-            this.fullRefreshRequired = false;
-            this._lastAncestorTestParentId = null;
-        }
+        this._lastAncestorTestParentId = null;
     },
-
+    
     /**
      * Removes a listener from receiving notification of update events.
      * 
@@ -3460,7 +3375,8 @@ Echo.SplitPane = Core.extend(Echo.Component, {
  * @sp {#Extent} height the height of the component
  * @sp {#Extent} horizontalScroll the horizontal scrollbar position
  * @sp {#Insets} insets the inset margin between the border and the text content
- * @sp {Number} maximumLength the maximum number of characters which may be entered
+ * @sp {Number} maximumLength the maximum number of characters which may be
+ *     entered
  * @sp {#Color} readOnlyBackground the read-only background color
  * @sp {#Color} readOnlyBackgroundImage the read-only background image
  * @sp {#Border} readOnlyBorder the read-only border
@@ -3471,7 +3387,8 @@ Echo.SplitPane = Core.extend(Echo.Component, {
  * @sp {String} toolTipText the tool tip text
  * @sp {#Extent} verticalScroll the vertical scrollbar position
  * @sp {#Extent} width the width of the component
- * @event action An event fired when the enter/return key is pressed while the field is focused.
+ * @event action An event fired when the enter/return key is pressed while the
+ *        field is focused.
  */
 Echo.TextComponent = Core.extend(Echo.Component, {
 
@@ -3490,7 +3407,7 @@ Echo.TextComponent = Core.extend(Echo.Component, {
         doAction: function() {
             this.fireEvent({type: "action", source: this, actionCommand: this.get("actionCommand")});
         },
-
+        
         /**
          * Notifies listeners of a key down event.
          * 
