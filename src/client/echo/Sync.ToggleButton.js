@@ -74,54 +74,14 @@ Echo.Sync.ToggleButton = Core.extend(Echo.Sync.Button, {
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         this._selected = this.component.render("selected");
-        
         Echo.Sync.Button.prototype.renderAdd.call(this, update, parentElement);
     },
-    
-    /** @see Echo.Sync.Button.renderContent */
-    renderContent: function() {
-        var text = this.component.render("text");
-        var icon = this.component.render("icon");
-        var orientation, margin, tct;
-        
-        var entityCount = (text != null ? 1 : 0) + (icon ? 1 : 0) + 1; // +1 for state element.
-        if (entityCount == 1) {
-            if (text != null) {
-                this.renderButtonText(this.div, text);
-            } else if (icon) {
-                this.iconImg = this.renderButtonIcon(this.div, icon);
-            } else {
-                this._stateElement = this._renderButtonState(this.div);
-            }
-        } else if (entityCount == 2) {
-            orientation = Echo.Sync.TriCellTable.getInvertedOrientation(this.component, "statePosition", "leading");
-            margin = this.component.render("stateMargin", Echo.Sync.Button._defaultIconTextMargin);
-            tct = new Echo.Sync.TriCellTable(orientation, Echo.Sync.Extent.toPixels(margin));
-            if (text != null) {
-                this.renderButtonText(tct.tdElements[0], text);
-                if (icon) {
-                    this.iconImg = this.renderButtonIcon(tct.tdElements[1], icon);
-                } else {
-                    this._stateElement = this._renderButtonState(tct.tdElements[1]);
-                }
-            } else {
-                this.iconImg = this.renderButtonIcon(tct.tdElements[0], icon);
-                this._stateElement = this._renderButtonState(tct.tdElements[1]);
-            }
-            this.div.appendChild(tct.tableElement);
-        } else if (entityCount == 3) {
-            orientation = Echo.Sync.TriCellTable.getOrientation(this.component, "textPosition");
-            margin = this.component.render("iconTextMargin", Echo.Sync.Button._defaultIconTextMargin);
-            var stateOrientation = Echo.Sync.TriCellTable.getInvertedOrientation(this.component, "statePosition", "leading");
-            var stateMargin = this.component.render("stateMargin", Echo.Sync.Button._defaultIconTextMargin);
-            tct = new Echo.Sync.TriCellTable(orientation, 
-                    Echo.Sync.Extent.toPixels(margin), stateOrientation, Echo.Sync.Extent.toPixels(stateMargin));
-            this.renderButtonText(tct.tdElements[0], text);
-            this.iconImg = this.renderButtonIcon(tct.tdElements[1], icon);
-            this._stateElement = this._renderButtonState(tct.tdElements[2]);
-            this.div.appendChild(tct.tableElement);
-        }
+
+    /** @see Echo.Sync.Button.renderAdditionalContent */
+    renderAdditionalContent: function(contentContainer) {
+    	this._stateElement = this._renderButtonState(contentContainer.addCell());
     },
+
     
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {

@@ -1181,6 +1181,33 @@ extends SplitPane {
                 });
             }
         });
+        controlsColumn.addButton("Alignment = Top", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setAlignment(new Alignment(Alignment.DEFAULT, Alignment.TOP));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Alignment = Center (V)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setAlignment(new Alignment(Alignment.DEFAULT, Alignment.CENTER));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Alignment = Bottom", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setAlignment(new Alignment(Alignment.DEFAULT, Alignment.BOTTOM));
+                    }
+                });
+            }
+        });
         controlsColumn.addButton("Alignment = Left", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator() {
@@ -1204,6 +1231,15 @@ extends SplitPane {
                 apply(new Applicator() {
                     public void apply(AbstractButton button) {
                         button.setAlignment(new Alignment(Alignment.RIGHT, Alignment.DEFAULT));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Alignment = Center/Center", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setAlignment(new Alignment(Alignment.CENTER, Alignment.CENTER));
                     }
                 });
             }
