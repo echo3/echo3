@@ -32,8 +32,10 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 import nextapp.echo.webcontainer.Connection;
 import nextapp.echo.webcontainer.ContentType;
+import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.util.GZipCompressor;
 import nextapp.echo.webcontainer.util.JavaScriptCompressor;
 
