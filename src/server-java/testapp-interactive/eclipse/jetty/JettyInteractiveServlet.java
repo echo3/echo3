@@ -27,64 +27,40 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  */
 
-package nextapp.echo.testapp.interactive;
+package jetty;
 
 import nextapp.echo.app.ApplicationInstance;
-import nextapp.echo.webcontainer.Service;
-import nextapp.echo.webcontainer.WebContainerServlet;
-import nextapp.echo.webcontainer.service.JavaScriptService;
-import nextapp.echo.webcontainer.service.StaticTextService;
+import nextapp.echo.testapp.interactive.InteractiveServlet;
+import nextapp.echo.webcontainer.ApplicationWebSocket;
+import nextapp.echo.webcontainer.WebSocketConnectionHandler;
 
 /**
- * Interactive Test Application <code>WebContainerServlet</code> implementation.
- * using polling as push mechanism
- * (use the JettyInteractiveServlet if you want to try with WebSocket implementation) 
+ * Interactive Test Application <code>WebContainerServlet</code> implementation
+ * using Jetty WebSocket implementation
  */
-public class InteractiveServlet extends WebContainerServlet {
+public class JettyInteractiveServlet extends InteractiveServlet {
 
-    /**
-     * Enable/disable this flag to test custom wait indicator.
-     */
-    private static final boolean USE_CUSTOM_WAIT_INDICATOR = false;
-
-    /**
-     * Enable/disable this flag to test custom CSS.
-     */
-    private static final boolean USE_CUSTOM_CSS = false;
-
-    private static final Service CUSTOM_WAIT_INDICATOR = JavaScriptService.forResource("CustomWaitIndicator", 
-            "nextapp/echo/testapp/interactive/resource/js/CustomWaitIndicator.js");
-
-    private static final Service CUSTOM_STYLE_SHEET = StaticTextService.forResource("CustomCSS", "text/css",
-            "nextapp/echo/testapp/interactive/resource/css/Custom.css");
-    
-    
     static {
         System.setProperty("echo.js.enablecaching", "true");
         System.setProperty("echo.allowiecompression", "true");
     }
 
-    public InteractiveServlet() {
+    public static final WebSocketConnectionHandler wsHandler = new WebSocketConnectionHandler() {
+        @Override
+        public ApplicationWebSocket newApplicationWebSocket(ApplicationInstance applicationInstance) {
+            return new JettyWebSocket();
+        }
+    };
+
+    public JettyInteractiveServlet() {
         super();
-        if (USE_CUSTOM_WAIT_INDICATOR) {
-            addInitScript(CUSTOM_WAIT_INDICATOR);
-        }
-        if (USE_CUSTOM_CSS) {
-            addInitStyleSheet(CUSTOM_STYLE_SHEET);
-        }
+        setWebSocketConnectionHandler(wsHandler);
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.WebContainerServlet#getInstanceMode()
      */
     public int getInstanceMode() {
-        return INSTANCE_MODE_WINDOW;
-    }
-
-    /**
-     * @see nextapp.echo.webcontainer.WebContainerServlet#newApplicationInstance()
-     */
-    public ApplicationInstance newApplicationInstance() {
-        return new InteractiveApp();
+        return INSTANCE_MODE_SINGLE;
     }
 }

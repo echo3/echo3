@@ -8,5 +8,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/app"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webcontainer"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jetty"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/servlet-api"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
