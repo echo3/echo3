@@ -29,6 +29,8 @@
 
 package nextapp.echo.app;
 
+import nextapp.echo.app.layout.ColumnLayoutData;
+
 /**
  * Column component: a layout container which renders its content in a single vertical column of cells.
  * May have zero or more child components.  Does not support <code>Pane</code> components as children.
@@ -54,7 +56,25 @@ public class Column extends Component {
     public Column() {
         super();
     }
-    
+
+    /**
+     *  {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ColumnLayoutData add(Component c) throws IllegalChildException, IllegalArgumentException {
+        return super.add(c, -1);
+    }
+
+    /**
+     *  {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ColumnLayoutData add(Component c, int n) throws IllegalChildException, IllegalArgumentException {
+        return super.add(c, n);
+    }
+
     /**
      * Returns the <code>Border</code> that encloses the entire <code>Column</code>.
      * 
@@ -85,7 +105,15 @@ public class Column extends Component {
     public Insets getInsets() {
         return (Insets) get(PROPERTY_INSETS);
     }
-    
+
+    /**
+     *  {@inheritDoc}
+     */
+    @Override
+    protected Class<ColumnLayoutData> getLayoutDataClass() {
+        return ColumnLayoutData.class;
+    }
+
      /**
      * Sets the <code>Border</code> that encloses the entire <code>Column</code>.
      * 

@@ -35,7 +35,7 @@ import nextapp.echo.app.Extent;
  * A <code>LayoutData</code> object used to describe how a 
  * <code>Component</code> is rendered within a <code>Row</code>. 
  */
-public class RowLayoutData extends CellLayoutData {
+public class RowLayoutData extends CellLayoutData<RowLayoutData> {
 
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
@@ -54,13 +54,25 @@ public class RowLayoutData extends CellLayoutData {
     }
     
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isChanged() {
+        if (width != null) return true;
+        return super.isChanged();
+    }
+    
+    /**
      * Sets the width of the cell.
      * This property only supports <code>Extent</code>s with
      * fixed (i.e., not percent) units.
      * 
      * @param width The cell height
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setWidth(Extent width) {
+    public RowLayoutData setWidth(Extent width) {
         this.width = width;
+        return this;
     }
 }

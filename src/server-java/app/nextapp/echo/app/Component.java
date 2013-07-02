@@ -105,8 +105,7 @@ import nextapp.echo.app.event.EventListenerList;
  * <code>hasEventListenerList()</code> should be queried prior to invoking
  * <code>getEventListenerList()</code>.
  */
-public abstract class Component 
-implements RenderIdSupport, Serializable {
+public abstract class Component implements RenderIdSupport, Serializable {
     
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
@@ -312,9 +311,16 @@ implements RenderIdSupport, Serializable {
      * index.
      *
      * @param c the child <code>Component</code> to add
+     * @return if applicable: the layoutData object assigned to the child or 
+     *         a new instance, otherwise: null
+     * @throws IllegalChildException if the child is not allowed to be added
+     *         to this component, because it is either not valid for the 
+     *         component's state or is of an invalid type 
+     * @throws IllegalArgumentException if the type of the provided child layoutData
+     *         object is not applicable to this (container) component 
      */ 
-    public void add(Component c) {
-        add(c, -1);
+    public <T extends LayoutData> T add(Component c) throws IllegalChildException, IllegalArgumentException {
+        return add(c, -1);
     }
 
     /**
@@ -332,12 +338,16 @@ implements RenderIdSupport, Serializable {
      * @param c the child component to add
      * @param n the index at which to add the child component, or -1 to add the
      *          component at the end
+     * @return if applicable: the layoutData object assigned to the child or 
+     *         a new instance, otherwise: null
      * @throws IllegalChildException if the child is not allowed to be added
-     *         to this component, because it is either not valid for the 
+     *         to this component, because it is either not valid for the
      *         component's state or is of an invalid type
+     * @throws IllegalArgumentException if the type of the provided child layoutData
+     *         object is not applicable to this (container) component
      */
-    public void add(Component c, int n) 
-    throws IllegalChildException {
+    @SuppressWarnings("unchecked")
+    public <T extends LayoutData> T add(Component c, int n) throws IllegalChildException, IllegalArgumentException {
         
         // Ensure child is acceptable to this component.
         if (!isValidChild(c)) {
@@ -377,8 +387,35 @@ implements RenderIdSupport, Serializable {
 
         // Initialize component.
         c.doInit();
+
+        Class<?> layoutDataClass = getLayoutDataClass();
+        if (layoutDataClass == null) {
+            //this class does not support layoutData
+            return null;
+        }
+
+        @SuppressWarnings("unchecked")
+        T layoutData = (T)c.getLayoutData();
+        if (layoutData != null) {
+            //layoutdata have been provided via the child component
+            //check if it is of the correct type
+            if (!layoutData.getClass().isAssignableFrom(layoutDataClass)) {
+                String msg = "Parent class requires layout data of type " + layoutDataClass + ", " +
+                        "object of invalid type " + layoutData.getClass() + " had been provided instead!";
+                throw new IllegalArgumentException(msg);
+            }
+        } else {
+            //create a new LayoutData object
+            try {
+                layoutData = (T)layoutDataClass.newInstance();
+            } catch (Exception e) {
+                throw new IllegalArgumentException(e.getMessage());
+            }
+            c.setLayoutData(layoutData);
+        }
+        return layoutData;
     }
-    
+
     /**
      * Adds a property change listener to this <code>Component</code>.
      *
@@ -725,6 +762,19 @@ implements RenderIdSupport, Serializable {
      */
     public LayoutData getLayoutData() {
         return (LayoutData) localStyle.get(PROPERTY_LAYOUT_DATA);
+    }
+
+    /**
+     * Returns the <code>LayoutData</code> class used to describe how child
+     * <code>Component</code>s should be laid out within this parent container.
+     * 
+     * If this component does not support children or LayoutData then
+     * returns null
+     * 
+     * @return The LayoutData class for applicable for this (container) component
+     */
+    protected Class<? extends LayoutData> getLayoutDataClass() {
+        return null;
     }
 
     /**

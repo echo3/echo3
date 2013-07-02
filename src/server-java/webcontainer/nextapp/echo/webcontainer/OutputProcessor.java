@@ -35,15 +35,16 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.Command;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
+import nextapp.echo.app.LayoutData;
 import nextapp.echo.app.Style;
 import nextapp.echo.app.StyleSheet;
 import nextapp.echo.app.Window;
@@ -534,6 +535,12 @@ class OutputProcessor {
         if (propertyValue == null && !renderNulls) {
             // Abort immediately if rendering of nulls is not desired.
             return;
+        }
+        if (propertyValue instanceof LayoutData && !renderNulls) {
+            if (!((LayoutData)propertyValue).isChanged()) {
+                //do not render LayoutData if no value has been set
+                return;
+            }
         }
         
         // Create property element.

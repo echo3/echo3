@@ -40,8 +40,7 @@ import nextapp.echo.app.LayoutData;
  * A <code>LayoutData</code> object used to describe how a 
  * <code>Component</code> is rendered within a <code>SplitPane</code>. 
  */
-public class SplitPaneLayoutData 
-implements LayoutData {
+public class SplitPaneLayoutData implements LayoutData {
     
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
@@ -131,21 +130,42 @@ implements LayoutData {
     }
     
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isChanged() {
+        if (overflow != 0) return true;
+        if (alignment != null) return true;
+        if (background != null) return true;
+        if (maximumSize != null) return true;
+        if (minimumSize != null) return true;
+        if (backgroundImage != null) return true;
+        if (insets != null) return true;
+        return false;
+    }
+    
+    /**
      * Sets the alignment of the containing pane.
      * 
      * @param newValue the new alignment
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setAlignment(Alignment newValue) {
+    public SplitPaneLayoutData setAlignment(Alignment newValue) {
         alignment = newValue;
+        return this;
     }
     
     /**
      * Sets the background color of the containing pane.
      * 
      * @param newValue the new background color
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setBackground(Color newValue) {
+    public SplitPaneLayoutData setBackground(Color newValue) {
         background = newValue;
+        return this;
     }
     
     /**
@@ -153,9 +173,12 @@ implements LayoutData {
      * containing pane.
      * 
      * @param newValue the new <code>BackgroundImage</code>
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setBackgroundImage(FillImage newValue) {
+    public SplitPaneLayoutData setBackgroundImage(FillImage newValue) {
         backgroundImage = newValue;
+        return this;
     }
     
     /**
@@ -164,27 +187,36 @@ implements LayoutData {
      * instance is attached to a <code>Pane</code> component.
      * 
      * @param newValue the new inset margins
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setInsets(Insets newValue) {
+    public SplitPaneLayoutData setInsets(Insets newValue) {
         insets = newValue;
+        return this;
     }
     
     /**
      * Sets the preferred maximum size of the containing pane.
      * 
      * @param newValue the new maximum size
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setMaximumSize(Extent newValue) {
+    public SplitPaneLayoutData setMaximumSize(Extent newValue) {
         maximumSize = newValue;
+        return this;
     }
     
     /**
      * Sets the preferred minimum size of the containing pane.
      * 
      * @param newValue the new minimum size
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setMinimumSize(Extent newValue) {
+    public SplitPaneLayoutData setMinimumSize(Extent newValue) {
         minimumSize = newValue;
+        return this;
     }
 
     /**
@@ -197,8 +229,11 @@ implements LayoutData {
      *         <li><code>OVERFLOW_HIDDEN</code>: never display scrollbars, hide overflow content</li>
      *         <li><code>OVERFLOW_SCROLL</code>: always display scrollbars</li>
      *        </ul>
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setOverflow(int newValue) {
+    public SplitPaneLayoutData setOverflow(int newValue) {
         overflow = newValue;
+        return this;
     }
 }

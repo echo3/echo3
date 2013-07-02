@@ -29,6 +29,9 @@
 
 package nextapp.echo.app;
 
+import nextapp.echo.app.layout.SplitPaneLayoutData;
+
+
 /**
  * SplitPane component: a pane component which displays two components horizontally or vertically
  * adjacent to one another, optionally allowing the user to apportion space between the two using a resize handle.
@@ -196,6 +199,33 @@ implements Pane, PaneContainer {
         }
     }
     
+
+    /**
+     *  {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public SplitPaneLayoutData add(Component c) throws IllegalChildException, IllegalArgumentException {
+        return super.add(c, -1);
+    }
+
+    /**
+     *  {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public SplitPaneLayoutData add(Component c, int n) throws IllegalChildException, IllegalArgumentException {
+        return super.add(c, n);
+    }
+
+    /**
+     *  {@inheritDoc}
+     */
+    @Override
+    protected Class<SplitPaneLayoutData> getLayoutDataClass() {
+        return SplitPaneLayoutData.class;
+    }
+
     /**
      * Returns the orientation of the <code>SplitPane</code>.
      * 

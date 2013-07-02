@@ -247,11 +247,13 @@ public class Table extends Component {
     /**
      * @see nextapp.echo.app.Component#add(nextapp.echo.app.Component, int)
      */
-    public void add(Component c, int n) throws IllegalChildException {
+    @Override
+    @SuppressWarnings("unchecked")
+    public LayoutData add(Component c, int n) throws IllegalChildException, IllegalArgumentException {
         if (!rendering) {
             throw new IllegalStateException("Programmatic addition or removal of Table children is prohibited.");
         }
-        super.add(c, n);
+        return super.add(c, n);
     }
 
     /**

@@ -29,6 +29,8 @@
 
 package nextapp.echo.app;
 
+import nextapp.echo.app.layout.RowLayoutData;
+
 /**
  * A layout container which renders its content in a single horizontal row of cells.
  * May have zero or more child components.  Does not support <code>Pane</code> components as children.
@@ -54,6 +56,24 @@ public class Row extends Component {
      */
     public Row() {
         super();
+    }
+
+    /**
+     *  {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public RowLayoutData add(Component c) throws IllegalChildException, IllegalArgumentException {
+        return super.add(c, -1);
+    }
+
+    /**
+     *  {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public RowLayoutData add(Component c, int n) throws IllegalChildException, IllegalArgumentException {
+        return super.add(c, n);
     }
 
     /**
@@ -93,6 +113,14 @@ public class Row extends Component {
      */
     public Insets getInsets() {
         return (Insets) get(PROPERTY_INSETS);
+    }
+
+    /**
+     *  {@inheritDoc}
+     */
+    @Override
+    protected Class<RowLayoutData> getLayoutDataClass() {
+        return RowLayoutData.class;
     }
 
     /**

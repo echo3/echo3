@@ -50,10 +50,19 @@ import java.io.Serializable;
  * parent component's documentation.
  * <p>
  * <strong>WARNING: </strong> Setting an incompatible <code>LayoutData</code>
- * property on a <code>Component</code> may result in a render-time exception
- * being thrown. Take care to check the requirements specified by the
- * documentation of a container <code>Component</code> before setting a
- * <code>LayoutData</code> on a child of that container.
+ * property on a <code>Component</code> may result in a run-time exception
+ * being thrown. Instead, use the add() method of the container component to
+ * create and automatically assign the appropriate LayoutData object, and use
+ * it subsequently according to the Fluent Interface Pattern
+ * (see also http://de.wikipedia.org/wiki/Fluent_Interface)
  */
-public interface LayoutData 
-extends Serializable { }
+public interface LayoutData extends Serializable {
+    
+    /**
+     * Has at least one of the properties been changed?
+     * 
+     * If not, this LayoutData will not be sent to the client
+     * in order to avoid unnecessary traffic
+     */
+    public boolean isChanged();
+}

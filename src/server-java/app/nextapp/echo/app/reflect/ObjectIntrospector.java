@@ -49,6 +49,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import nextapp.echo.app.LayoutData;
+
 /**
  * Provides introspection/reflection capabilities for components, properties, 
  * and layout data objects.  Wraps Java beans and reflection APIs.
@@ -345,9 +347,26 @@ public class ObjectIntrospector {
                     propertyDescriptorMap.put(name, propertyDescriptors[index]);
                 }
             } else {
+                String name = propertyDescriptors[index].getName();
+                //WORK_AROUND:
+                //write method is null when returning a non-null value due to a bug
+                //in JDK7 (http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7172865) 
+                //so this messes up with the Fluent Interface used in conjunction with LayoutData
+                //so we set the write methods manually in case they are not there
+                if (propertyDescriptors[index].getWriteMethod() == null && LayoutData.class.isAssignableFrom(objectClass)) {
+                    String methodName = "set" + name.substring(0,  1).toUpperCase() + name.substring(1);
+                    try {
+                        Method writeMethod = objectClass.getMethod(methodName, propertyDescriptors[index].getPropertyType());
+                        propertyDescriptors[index].setWriteMethod(writeMethod);
+                    } catch (NoSuchMethodException e) {
+                        //ignore if no setter provided
+                    } catch (SecurityException e) {
+                        //should never happen...
+                    } catch (IntrospectionException e) {
+                        //should never happen...
+                    }
+                }
                 if (propertyDescriptors[index].getWriteMethod() != null) {
-                    String name = propertyDescriptors[index].getName();
-                    
                     // Store JavaBean PropertyDescriptor.
                     propertyDescriptorMap.put(name, propertyDescriptors[index]);
                 }
