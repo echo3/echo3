@@ -278,6 +278,26 @@ public class ColumnTest extends SplitPane {
                 testColumn.setBorder(null);
             }
         });
+        controlsColumn.addButton("Set BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testColumn.setBoxShadow(StyleUtil.getBoxShadow());
+            }
+        });
+        controlsColumn.addButton("Remove BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testColumn.setBoxShadow(null);
+            }
+        });
+        controlsColumn.addButton("Set Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testColumn.setRadius(new Insets(20));
+            }
+        });
+        controlsColumn.addButton("Remove Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testColumn.setRadius(null);
+            }
+        });
         controlsColumn.addButton("Cell Spacing -> 0px", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testColumn.setCellSpacing(new Extent(0, Extent.PX));

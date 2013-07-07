@@ -365,12 +365,29 @@ public class ListBoxTest extends SplitPane {
                 });
             }
         });
+        controlsColumn.addButton("Set Insets", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractListComponent listComponent) {
+                        listComponent.setInsets(new Insets(10, 6));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Clear Border", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractListComponent listComponent) {
+                        listComponent.setInsets(null);
+                    }
+                });
+            }
+        });
         controlsColumn.addButton("Set BoxShadow", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 apply(new Applicator() {
                     public void apply(AbstractListComponent listComponent) {
-                        BoxShadow boxShadow = new BoxShadow(new Extent(5), new Extent(8), new Extent(8), new Extent(3), Color.DARKGRAY, BoxStyle.DEFAULT);
-                        listComponent.setBoxShadow(boxShadow);
+                        listComponent.setBoxShadow(StyleUtil.getBoxShadow());
                     }
                 });
             }
@@ -380,6 +397,24 @@ public class ListBoxTest extends SplitPane {
                 apply(new Applicator() {
                     public void apply(AbstractListComponent listComponent) {
                         listComponent.setBoxShadow(null);
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractListComponent listComponent) {
+                        listComponent.setRadius(new Insets(10));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Clear Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractListComponent listComponent) {
+                        listComponent.setRadius(null);
                     }
                 });
             }

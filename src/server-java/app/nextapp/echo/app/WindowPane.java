@@ -51,6 +51,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
     
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
     public static final String PROPERTY_BORDER = "border";
+    public static final String PROPERTY_BOX_SHADOW = "boxShadow";
     public static final String PROPERTY_CLOSABLE = "closable";
     public static final String PROPERTY_CLOSE_ANIMATION_TIME = "closeAnimationTime";
     public static final String PROPERTY_CLOSE_ICON = "closeIcon";
@@ -81,6 +82,7 @@ implements FloatingPane, ModalSupport, PaneContainer {
     public static final String PROPERTY_OPEN_ANIMATION_TIME = "openAnimationTime";
     public static final String PROPERTY_POSITION_X = "positionX";
     public static final String PROPERTY_POSITION_Y = "positionY";
+    public static final String PROPERTY_RADIUS = "radius";
     public static final String PROPERTY_RESIZABLE = "resizable";
     public static final String PROPERTY_TITLE = "title";
     public static final String PROPERTY_TITLE_BACKGROUND = "titleBackground";
@@ -91,7 +93,6 @@ implements FloatingPane, ModalSupport, PaneContainer {
     public static final String PROPERTY_TITLE_INSETS = "titleInsets";
     public static final String PROPERTY_WIDTH = "width";
     public static final String PROPERTY_Z_INDEX = "zIndex";
-    public static final String PROPERTY_BOX_SHADOW = "boxShadow";
 
     
     /**
@@ -495,6 +496,15 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public Extent getPositionY() {
         return (Extent) get(PROPERTY_POSITION_Y);
+    }
+    
+    /**
+     * Returns the corder radius of the component (or null of radius applied).
+     * 
+     * @return the radius
+     */
+    public Insets getRadius() {
+        return (Insets) get(PROPERTY_RADIUS);
     }
     
     /**
@@ -1022,6 +1032,15 @@ implements FloatingPane, ModalSupport, PaneContainer {
      */
     public void setPositionY(Extent newValue) {
         set(PROPERTY_POSITION_Y, newValue);
+    }
+
+    /**
+     * Sets the radius of the corners of the component.
+     * 
+     * @param newValue the new radius
+     */
+    public void setRadius(Insets newValue) {
+        set(PROPERTY_RADIUS, newValue);
     }
 
     /**

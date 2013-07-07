@@ -32,7 +32,7 @@ package nextapp.echo.app;
 /**
  * Label component: displays a text string, an icon, or both.  May not contain child components.
  */
-public class Label extends Component {
+public class Label extends BorderedComponent {
 
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;

@@ -169,6 +169,26 @@ public class WindowPaneTest extends SplitPane {
                 windowPane.setBorder(null);
             }
         });
+        controlsColumn.addButton("Set BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setBoxShadow(StyleUtil.getBoxShadow());
+            }
+        });
+        controlsColumn.addButton("Clear BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setBoxShadow(null);
+            }
+        });
+        controlsColumn.addButton("Set Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setRadius(new Insets(20));
+            }
+        });
+        controlsColumn.addButton("Clear Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                windowPane.setRadius(null);
+            }
+        });
         controlsColumn.addButton("Set Foreground", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 windowPane.setForeground(StyleUtil.randomColor());

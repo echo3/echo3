@@ -39,12 +39,11 @@ package nextapp.echo.app;
  * 
  * @see nextapp.echo.app.layout.ColumnLayoutData
  */
-public class Column extends Component {
+public class Column extends BorderedComponent {
 
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
-    public static final String PROPERTY_BORDER = "border";
     public static final String PROPERTY_CELL_SPACING = "cellSpacing";
     public static final String PROPERTY_INSETS = "insets";
     
@@ -53,15 +52,6 @@ public class Column extends Component {
      */
     public Column() {
         super();
-    }
-    
-    /**
-     * Returns the <code>Border</code> that encloses the entire <code>Column</code>.
-     * 
-     * @return the border
-     */
-    public Border getBorder() {
-        return (Border) get(PROPERTY_BORDER);
     }
     
     /**
@@ -84,15 +74,6 @@ public class Column extends Component {
      */
     public Insets getInsets() {
         return (Insets) get(PROPERTY_INSETS);
-    }
-    
-     /**
-     * Sets the <code>Border</code> that encloses the entire <code>Column</code>.
-     * 
-     * @param newValue the new border
-     */
-    public void setBorder(Border newValue) {
-        set(PROPERTY_BORDER, newValue);
     }
     
     /**

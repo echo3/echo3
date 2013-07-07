@@ -32,13 +32,14 @@ package nextapp.echo.testapp.interactive.testscreen;
 import java.util.Locale;
 
 import nextapp.echo.app.Alignment;
+import nextapp.echo.app.Border;
 import nextapp.echo.app.Color;
+import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Font;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
-import nextapp.echo.app.Column;
 import nextapp.echo.app.LayoutDirection;
 import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.event.ActionEvent;
@@ -145,6 +146,85 @@ public class LabelTest extends SplitPane {
                 });
             }
         });
+        
+        controlsColumn.addButton("Change Border (All Attributes)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(Label label) {
+                        label.setBorder(StyleUtil.randomBorder());
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Change Border Color", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(Label label) {
+                        Border border = label.getBorder();
+                        if (border == null) {
+                            label.setBorder(new Border(2, StyleUtil.randomColor(), Border.STYLE_SOLID));
+                        } else {
+                            label.setBorder(new Border(border.getSize(), StyleUtil.randomColor(), border.getStyle()));
+                        }
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Change Border Size", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(Label label) {
+                        label.setBorder(StyleUtil.nextBorderSize(label.getBorder()));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Change Border Style", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(Label label) {
+                        label.setBorder(StyleUtil.nextBorderStyle(label.getBorder()));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(Label label) {
+                        label.setBoxShadow(StyleUtil.getBoxShadow());
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Remove BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(Label label) {
+                        label.setBoxShadow(null);
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Set Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(Label label) {
+                        label.setRadius(new Insets(10));
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Remove Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(Label label) {
+                        label.setRadius(null);
+                    }
+                });
+            }
+        });
+        
         controlsColumn.addButton("Set Font", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 final Font font = StyleUtil.randomFont();

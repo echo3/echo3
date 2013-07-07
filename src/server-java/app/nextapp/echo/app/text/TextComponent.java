@@ -33,6 +33,7 @@ import java.util.EventListener;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
+import nextapp.echo.app.BorderedComponent;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
@@ -47,15 +48,13 @@ import nextapp.echo.app.event.DocumentListener;
 /**
  * Abstract base class for text-entry components.
  */
-public abstract class TextComponent 
-extends Component {
+public abstract class TextComponent extends BorderedComponent {
     
     public static final String INPUT_ACTION = "action";
 
     public static final String PROPERTY_ACTION_COMMAND = "actionCommand";
     public static final String PROPERTY_ALIGNMENT = "alignment";
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
-    public static final String PROPERTY_BORDER = "border";
     public static final String PROPERTY_DISABLED_BACKGROUND = "disabledBackground";
     public static final String PROPERTY_DISABLED_BACKGROUND_IMAGE = "disabledBackgroundImage";
     public static final String PROPERTY_DISABLED_BORDER = "disabledBorder";
@@ -165,15 +164,6 @@ extends Component {
      */
     public FillImage getBackgroundImage() {
         return (FillImage) get(PROPERTY_BACKGROUND_IMAGE);
-    }
-    
-    /**
-     * Returns the border of the text component.
-     * 
-     * @return the border
-     */
-    public Border getBorder() {
-        return (Border) get(PROPERTY_BORDER);
     }
     
     /**
@@ -455,15 +445,6 @@ extends Component {
         set(PROPERTY_BACKGROUND_IMAGE, newValue);
     }
     
-    /**
-     * Sets the border of the text component.
-     * 
-     * @param newValue the new border
-     */
-    public void setBorder(Border newValue) {
-        set(PROPERTY_BORDER, newValue);
-    }
-
     /**
      * Sets the background color displayed when the component is disabled.
      * 

@@ -270,6 +270,26 @@ public class PanelTest extends SplitPane {
                 panel.setBorder(null);
             }
         });
+        controlsColumn.addButton("Set BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setBoxShadow(StyleUtil.getBoxShadow());
+            }
+        });
+        controlsColumn.addButton("Clear BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setBoxShadow(null);
+            }
+        });
+        controlsColumn.addButton("Set Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setRadius(new Insets(20));
+            }
+        });
+        controlsColumn.addButton("Clear Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panel.setRadius(null);
+            }
+        });
         controlsColumn.addButton("Insets -> null", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 panel.setInsets(null);
