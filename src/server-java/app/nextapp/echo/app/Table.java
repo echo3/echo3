@@ -61,7 +61,7 @@ import nextapp.echo.app.table.TableModel;
  *
  * @see nextapp.echo.app.table
  */
-public class Table extends Component {
+public class Table extends BorderedComponent {
     
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
@@ -72,7 +72,6 @@ public class Table extends Component {
     public static final TableCellRenderer DEFAULT_TABLE_CELL_RENDERER = new DefaultTableCellRenderer();
 
     public static final String PROPERTY_ACTION_COMMAND = "actionCommand";
-    public static final String PROPERTY_BORDER = "border";
     public static final String PROPERTY_INSETS = "insets";
     public static final String PROPERTY_ROLLOVER_BACKGROUND = "rolloverBackground";
     public static final String PROPERTY_ROLLOVER_BACKGROUND_IMAGE = "rolloverBackgroundImage";
@@ -383,15 +382,6 @@ public class Table extends Component {
         }
     }
     
-    /**
-     * Returns the <code>Border</code>.
-     * 
-     * @return the border
-     */
-    public Border getBorder() {
-        return (Border) get(PROPERTY_BORDER);
-    }
-
     /** 
      * Returns the <code>TableColumnModel</code> describing this table's 
      * columns.
@@ -670,15 +660,6 @@ public class Table extends Component {
         
         firePropertyChange(AUTO_CREATE_COLUMNS_FROM_MODEL_CHANGED_PROPERTY, 
                 Boolean.valueOf(oldValue), Boolean.valueOf(newValue));
-    }
-
-    /**
-     * Sets the <code>Border</code>.
-     * 
-     * @param newValue the new border
-     */
-    public void setBorder(Border newValue) {
-        set(PROPERTY_BORDER, newValue);
     }
     
     /** 

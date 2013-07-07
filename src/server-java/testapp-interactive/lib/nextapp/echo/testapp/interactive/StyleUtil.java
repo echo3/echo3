@@ -31,9 +31,11 @@ package nextapp.echo.testapp.interactive;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
+import nextapp.echo.app.BoxShadow;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Font;
+import nextapp.echo.app.BoxShadow.BoxStyle;
 
 /**
  * 
@@ -160,5 +162,9 @@ public class StyleUtil {
             return new Border(BORDER_SIZES[nextBorderSize++ % BORDER_SIZES.length],
                     border.getColor(), border.getStyle());
         }
+    }
+    
+    public static BoxShadow getBoxShadow() {
+        return new BoxShadow(new Extent(10), new Extent(10), new Extent(10), new Extent(3), Color.DARKGRAY, BoxStyle.DEFAULT);
     }
 }

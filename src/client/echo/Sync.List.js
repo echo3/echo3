@@ -373,25 +373,31 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
                     this._element.style.width = width;
                 }
             } else {
-                this._div.style.width = Echo.Sync.Extent.toCssValue(width, true, false);                
                 this._element.style.width = Echo.Sync.Extent.toCssValue(width, true, false);
             }
         }
         if (this._enabled) {
             Echo.Sync.renderComponentDefaults(this.component, this._element);
+            Echo.Sync.Color.render(this.component.render("background"), this._div, "backgroundColor");
         } else {
             Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this._element);
             Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
                     this._element, "color");
             Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "background", "disabledBackground", true), 
-                    this._element, "backgroundColor");
+                    this._div, "backgroundColor");
             Echo.Sync.Font.render(Echo.Sync.getEffectProperty(this.component, "font", "disabledFont", true),this._element);
         }
 
-        //don't use the select field border but the span border instead
+        //don't use the select field border but the div border instead
         this._element.style.border = "0";
-        Echo.Sync.Border.render(Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), this._div);
-        Echo.Sync.BoxShadow.renderClear(this.component.render("boxShadow"), this._div);
+        var border = Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled);
+        //if no border defined then apply a default border
+        if (border == null) {
+            border = "1px solid #ABADB3";  //emulate the default color of the native select element
+        }
+        Echo.Sync.Border.render(border, this._div);
+        Echo.Sync.BoxShadow.render(this.component.render("boxShadow"), this._div);
+        Echo.Sync.RoundedCorner.render(this.component.render("radius"), this._div);
         Echo.Sync.Insets.render(this.component.render("insets"), this._div, "padding");
 
         var items = this.component.get("items");

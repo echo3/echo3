@@ -39,7 +39,7 @@ package nextapp.echo.app;
  * 
  * @see nextapp.echo.app.layout.GridLayoutData
  */
-public class Grid extends Component {
+public class Grid extends BorderedComponent {
 
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
@@ -60,7 +60,6 @@ public class Grid extends Component {
      */
     public static final int ORIENTATION_VERTICAL = 1;
     
-    public static final String PROPERTY_BORDER = "border";
     public static final String PROPERTY_COLUMN_WIDTH = "columnWidth";
     public static final String PROPERTY_HEIGHT = "height";
     public static final String PROPERTY_INSETS = "insets";
@@ -87,15 +86,6 @@ public class Grid extends Component {
     public Grid(int size) {
         super();
         setSize(size);
-    }
-
-    /**
-     * Returns the <code>Border</code>.
-     * 
-     * @return the border
-     */
-    public Border getBorder() {
-        return (Border) get(PROPERTY_BORDER);
     }
 
     /**
@@ -197,15 +187,6 @@ public class Grid extends Component {
      */
     public Extent getWidth() {
         return (Extent) get(PROPERTY_WIDTH);
-    }
-    
-    /**
-     * Sets the <code>Border</code>.
-     * 
-     * @param newValue the new border
-     */
-    public void setBorder(Border newValue) {
-        set(PROPERTY_BORDER, newValue);
     }
     
     /**

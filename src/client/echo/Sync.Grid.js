@@ -15,6 +15,8 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
          */
         _createPrototypeTable: function() {
             var div = document.createElement("div");
+            div.style.display = "table";
+            div.style.overflow = "hidden";
             
             var table = document.createElement("table");
             table.style.outlineStyle = "none";
@@ -574,6 +576,9 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         
         Echo.Sync.renderComponentDefaults(this.component, table);
         Echo.Sync.Border.render(defaultBorder, table);
+        Echo.Sync.BoxShadow.render(this.component.render("boxShadow"), this._div);
+        Echo.Sync.RoundedCorner.render(this.component.render("radius"), this._div);
+        
         table.style.padding = defaultInsets; 
         
         // Render percent widths using measuring for IE to avoid potential horizontal scrollbars.
@@ -583,17 +588,19 @@ Echo.Sync.Grid = Core.extend(Echo.Render.ComponentSync, {
         
         // Set overall width/height.
         if (width) {
+            table.style.width = "100%";
             if (Echo.Sync.Extent.isPercent(width)) {
-                table.style.width = width;
+                this._div.style.width = width;
             } else {
-                table.style.width = Echo.Sync.Extent.toCssValue(width, true);
+                this._div.style.width = Echo.Sync.Extent.toCssValue(width, true);
             }
         }
         if (height) {
+            table.style.height = "100%";
             if (Echo.Sync.Extent.isPercent(height)) {
-                table.style.height = height;
+                this._div.style.height = height;
             } else {
-                table.style.height = Echo.Sync.Extent.toCssValue(height, false);
+                this._div.style.height = Echo.Sync.Extent.toCssValue(height, false);
             }
         }
 

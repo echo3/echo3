@@ -63,10 +63,6 @@ Echo.Sync = {
         if (component.getLayoutDirection()) {
             element.dir = component.getLayoutDirection().isLeftToRight() ? "ltr" : "rtl";
         }
-        var boxShadow = component.render("boxShadow");
-        if (boxShadow) {
-          Echo.Sync.BoxShadow.render(boxShadow, element);
-        }
     }
 };
 
@@ -393,26 +389,16 @@ Echo.Sync.BoxShadow = Core.extend({
          * @param {Element} the target DOM element
          */
         render: function(boxShadow, element) {
-            if (!(boxShadow instanceof Echo.Sync.BoxShadow)) {
-                throw new Error("Echo.Sync.BoxShadow.render: unsupported object.");
-            } 
-            element.style["boxShadow"] = boxShadow.toCssValue();
-        },
-        
-        /**
-         * Renders a box shadow to a DOM element, clearing an existing box shadow if the border value is null.
-         * 
-         * @param {#BoxShadow} boxShadow the box shadow to render
-         * @param {Element} the target DOM element
-         */
-        renderClear: function(boxShadow, element) {
-            if (boxShadow) {
-                if (boxShadow instanceof Echo.Sync.BoxShadow) {
-                    element.style.boxShadow = "";
-                }
-                Echo.Sync.BoxShadow.render(boxShadow, element);
-            } else {
+            if (!element.style) {
+                throw new Error("Element does have no style attribute!");
+            }
+            if (!boxShadow) {
                 element.style.boxShadow = "";
+            } else if (boxShadow instanceof Echo.Sync.BoxShadow) {
+                element.style.boxShadow = boxShadow.toCssValue();
+            } else {
+                //plain String, e.g. "0px 0px 5px 5px white"
+                element.style.boxShadow = boxShadow;
             }
         }
     },
@@ -959,7 +945,7 @@ Echo.Sync.FillImageBorder = {
     },
     
     /***
-     * Rerturns the array of border DIV elements, in  the following order:
+     * Returns the array of border DIV elements, in  the following order:
      * top, top-right, right, bottom-right, bottom, bottom-left, left, top-left.
      * The array will have a value of null for any position that is not rendered due to the border having a zero dimension on 
      * that side.
@@ -1110,6 +1096,10 @@ Echo.Sync.FillImageBorder = {
         
         // Render FillImageBorder.
         child = firstChild;
+        var radiusInsets = null;
+        if (configuration.radius) {
+            radiusInsets = Echo.Sync.Insets.toPixels(configuration.radius);
+        }
         for (i = 0; i < 8; ++i) {
             if (!map[i]) {
                 // Loaded map indicates no border element in this position: skip.
@@ -1134,6 +1124,22 @@ Echo.Sync.FillImageBorder = {
             } else if (i >= 5) { // 5,6,7 = left
                 child.style.width = bi.left + "px";
             }
+            
+            if (radiusInsets) {
+                if (i === 7 && radiusInsets.left > 0) {
+                    child.style.borderTopLeftRadius = radiusInsets.left + "px";
+                }
+                if (i === 1 && radiusInsets.top > 0) {
+                    child.style.borderTopRightRadius = radiusInsets.top + "px";
+                }
+                if (i === 3 && radiusInsets.right > 0) {
+                    child.style.borderBottomRightRadius = radiusInsets.right + "px";
+                }
+                if (i === 5 && radiusInsets.bottom > 0) {
+                    child.style.borderBottomLeftRadius = radiusInsets.bottom + "px";
+                }
+            }
+            
             Echo.Sync.FillImage.render(fillImageBorder[this._NAMES[i]], child, Echo.Sync.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER);
             child = child.nextSibling;
         }
@@ -1900,31 +1906,30 @@ Echo.Sync.RoundedCorner = {
     /**
      * Renders a corner radius to an element.
      * 
-     * @param {#Insets} radius the CSS radius(es) to apply to a component
+     * @param {#Insets} radius the radius(es) to apply to a component
                         in the order: top-left, top-right, bottom-right, bottom-left 
      * @param {Element} element the target element
      */
-    render: function(component, element) {
-        if (!component) {
-            return;
-        }
-        var radius = component.render("radius");
+    render: function(radius, element) {
         if (!radius) {
             return;
         }
-
         var ci = Echo.Sync.Insets.toPixels(radius);
-        if (ci.left > 0) {
-            element.style["border-top-left-radius"] = ci.left + "px";
-        }
-        if (ci.top > 0) {
-            element.style["border-top-right-radius"] = ci.top + "px";
-        }
-        if (ci.right > 0) {
-            element.style["border-bottom-right-radius"] = ci.right + "px";
-        }
-        if (ci.bottom > 0) {
-            element.style["border-bottom-left-radius"] = ci.bottom + "px";
+        if (ci.left > 0 && ci.left == ci.top  && ci.left == ci.right && ci.left == ci.bottom) {
+            element.style.borderRadius = ci.left + "px";
+        } else {
+            if (ci.left > 0) {
+                element.style.borderTopLeftRadius = ci.left + "px";
+            }
+            if (ci.top > 0) {
+                element.style.borderTopRightRadius = ci.top + "px";
+            }
+            if (ci.right > 0) {
+                element.style.borderBottomRightRadius = ci.right + "px";
+            }
+            if (ci.bottom > 0) {
+                element.style.borderBottomLeftRadius = ci.bottom + "px";
+            }
         }
     }
 };

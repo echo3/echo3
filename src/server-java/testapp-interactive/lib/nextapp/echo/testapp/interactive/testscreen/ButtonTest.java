@@ -1718,10 +1718,10 @@ extends SplitPane {
             }
         });
 
-        //CSS Radius	
+        //Corner Radius	
         controlsColumn = new ButtonColumn();
         controlGroupsColumn.add(controlsColumn);
-        controlsColumn.add(new Label("CSS Radius"));
+        controlsColumn.add(new Label("Radius & BoxShadow"));
 
         controlsColumn.addButton("Radius = 5px", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -1777,6 +1777,25 @@ extends SplitPane {
                 });
             }
         });
+        controlsColumn.addButton("Set BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setBoxShadow(StyleUtil.getBoxShadow());
+                    }
+                });
+            }
+        });
+        controlsColumn.addButton("Remove BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                apply(new Applicator() {
+                    public void apply(AbstractButton button) {
+                        button.setBoxShadow(null);
+                    }
+                });
+            }
+        });
+
     }
 
     public void apply(Applicator applicator) {

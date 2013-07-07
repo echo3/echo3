@@ -33,6 +33,7 @@ import java.util.EventListener;
 
 import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
+import nextapp.echo.app.BorderedComponent;
 import nextapp.echo.app.BoxShadow;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Component;
@@ -48,7 +49,7 @@ import nextapp.echo.app.event.ActionListener;
  * An abstract base class for button components.  Provides basic properties, a
  * model, and event handling facilities.
  */
-public abstract class AbstractButton extends Component {
+public abstract class AbstractButton extends BorderedComponent {
     
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
@@ -57,7 +58,6 @@ public abstract class AbstractButton extends Component {
     
     public static final String ACTION_LISTENERS_CHANGED_PROPERTY = "actionListeners";
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
-    public static final String PROPERTY_BORDER = "border";
     public static final String PROPERTY_DISABLED_BACKGROUND = "disabledBackground";
     public static final String PROPERTY_DISABLED_BACKGROUND_IMAGE = "disabledBackgroundImage";
     public static final String PROPERTY_DISABLED_BORDER = "disabledBorder";
@@ -98,8 +98,6 @@ public abstract class AbstractButton extends Component {
     public static final String PROPERTY_TEXT_POSITION = "textPosition";
     public static final String PROPERTY_TOOL_TIP_TEXT = "toolTipText";
     public static final String PROPERTY_WIDTH = "width";
-    public static final String PROPERTY_BOX_SHADOW = "boxShadow";
-    public static final String PROPERTY_CORNER_RADIUS = "radius";
 
     
     /**
@@ -184,27 +182,6 @@ public abstract class AbstractButton extends Component {
         return (FillImage) get(PROPERTY_BACKGROUND_IMAGE);
     }
 
-    /**
-     * Returns the border displayed around the button.
-     * 
-     * @return the border
-     */
-    public Border getBorder() {
-        return (Border) get(PROPERTY_BORDER);
-    }
-    
-    /**
-     * Returns the specific box shadow (CSS3) setting of this component, if any.
-     * This method will return null unless a <code>BoxShadow</code> is
-     * specifically set on <strong>this</strong> <code>Component</code>.
-     * 
-     * @return the box shadow property of <strong>this</strong>
-     *         <code>Component</code>
-     */
-    public BoxShadow getBoxShadow() {
-        return (BoxShadow) get(PROPERTY_BOX_SHADOW);
-    }
-    
     /**
      * Returns the background color of the button when the button is disabled.
      * 
@@ -435,15 +412,6 @@ public abstract class AbstractButton extends Component {
     }
 
     /**
-     * Returns the corder radius of the button (or null of radius applied).
-     * 
-     * @return the radius
-     */
-    public Insets getRadius() {
-        return (Insets) get(PROPERTY_CORNER_RADIUS);
-    }
-
-    /**
      * Returns the background color of the button when the mouse cursor is
      * inside its bounds.
      * 
@@ -667,24 +635,6 @@ public abstract class AbstractButton extends Component {
      */
     public void setBackgroundImage(FillImage newValue) {
         set(PROPERTY_BACKGROUND_IMAGE, newValue);
-    }
-
-    /**
-     * Sets the border displayed around the button.
-     * 
-     * @param newValue the new border
-     */
-    public void setBorder(Border newValue) {
-        set(PROPERTY_BORDER, newValue);
-    }
-
-    /**
-     * Sets the <code>BoxShadow (CSS3)</code> of this <code>Component</code>.
-     * 
-     * @param newValue the new <code>BoxShadow</code>. 
-     */
-    public void setBoxShadow(BoxShadow newValue) {
-        set(PROPERTY_BOX_SHADOW, newValue);
     }
 
     /**
@@ -954,15 +904,6 @@ public abstract class AbstractButton extends Component {
      */
     public void setPressedIcon(ImageReference newValue) {
         set(PROPERTY_PRESSED_ICON, newValue);
-    }
-
-    /**
-     * Sets the radius of the corners of the button.
-     * 
-     * @param newValue the new radius
-     */
-    public void setRadius(Insets newValue) {
-        set(PROPERTY_CORNER_RADIUS, newValue);
     }
 
     /**
