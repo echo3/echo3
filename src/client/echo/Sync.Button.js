@@ -380,7 +380,12 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         this.renderAdditionalContent(contentContainer);
 
         contentContainer.createLayout();
-        this.div.align = horizontal;
+        if (horizontal === "center") {
+            contentContainer._tableDiv.style.margin = "auto";
+        } else if (horizontal === "right") {
+            contentContainer._tableDiv.style.marginLeft = "auto";
+            contentContainer._tableDiv.style.marginRight = "0px";
+        }
         this.div.appendChild(contentContainer._tableDiv);
 
         if (this.enabled) {
@@ -404,10 +409,15 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         this._textElement = element;
         var textAlignment = this.component.render("textAlignment"); 
         if (textAlignment) {
+            element.style.width = "100%";
             //text align only applies to horizontal alignment
             //vertically it would conflict with the overall alignment property
-            Echo.Sync.Alignment.render(textAlignment, element, true, this.component);
-            element.style.width = "100%";
+            var horizontal = Echo.Sync.Alignment.getRenderedHorizontal(textAlignment);
+            if (!horizontal) {
+                element.style.textAlign = "center";
+            } else if (horizontal === "right") {
+                element.style.textAlign = "right";
+            }
         }
 
         if (this.enabled) {
@@ -429,10 +439,6 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
      * @param icon the icon property to render
      */
     renderButtonIcon: function(element, icon) {
-        var alignment = this.component.render("alignment"); 
-        if (alignment) {
-            Echo.Sync.Alignment.render(alignment, element, true, this.component);
-        }
         var imgElement = document.createElement("img");
         Echo.Sync.ImageReference.renderImg(icon, imgElement);
         element.appendChild(imgElement);
