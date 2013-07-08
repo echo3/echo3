@@ -297,12 +297,16 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             if (Core.Web.Env.ENGINE_MSHTML) {
                 // Add additional 1px for IE.
                 borderSize += 1;
-                // Add default windows scroll bar width to border size for Internet Explorer browsers.
-                if (this.container) {
-                    this.container.style.width = this._adjustPercentWidth(100, Core.Web.Measure.SCROLL_WIDTH, 
-                            this.input.parentNode.offsetWidth) + "%";
-                } else {
-                    borderSize += Core.Web.Measure.SCROLL_WIDTH;
+                // Add default windows scroll bar width to border size for Internet Explorer browsers. Seems to be not
+                // needed in IE versions 8 and higher and instead causes problems when text components are embedded in
+                // e.g. tables.
+                if (Core.Web.Env.BROWSER_VERSION_MAJOR < 8) {
+                    if (this.container) {
+                        this.container.style.width = this._adjustPercentWidth(100, Core.Web.Measure.SCROLL_WIDTH,
+                                this.input.parentNode.offsetWidth) + "%";
+                    } else {
+                        borderSize += Core.Web.Measure.SCROLL_WIDTH;
+                    }
                 }
             } else if (Core.Web.Env.BROWSER_CHROME && this.input.nodeName.toLowerCase() == "textarea") {
                 // Add additional 3px to TEXTAREA elements for Chrome.
