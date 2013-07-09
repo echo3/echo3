@@ -195,14 +195,12 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
                 this._element.appendChild(optionElement);
             }
         }
-    
+
         if (this._enabled) {
             Core.Web.Event.add(this._element, "change", Core.method(this, this._processChange), false);
             Core.Web.Event.add(this._element, "blur", Core.method(this, this._processBlur), false);
             Core.Web.Event.add(this._element, "focus", Core.method(this, this._processFocus), false);
         }
-        
-        console.log("::1: " + this._element.__eventProcessorId)
         parentElement.appendChild(this._element);
     },
 
@@ -212,9 +210,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /** @see Echo.Render.ComponentSync#renderDispose */
-    renderDispose: function(update) { 
-    
-    	console.log("::: " + this._element);
+    renderDispose: function(update) {
         Core.Web.Event.removeAll(this._element);
         this._element = null;
     },
