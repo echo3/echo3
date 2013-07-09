@@ -2904,6 +2904,7 @@ Echo.RadioButton = Core.extend(Echo.ToggleButton, {
  *     selected items when multiple items are selected
  * 
  * @sp {#Border} border the default border
+ * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the component
  * @sp {#Color} disabledBackground the disabled background color
  * @sp {#Border} disabledBorder the disabled border
  * @sp {#Font} disabledFont the disabled font
@@ -2911,6 +2912,7 @@ Echo.RadioButton = Core.extend(Echo.ToggleButton, {
  * @sp {#Extent} height the component height
  * @sp {#Insets} insets the inset margin between the border and the items of the
  *     list component
+ * @sp {#Insets} radius The radius of the component's corners (top-left, top-right, bottom-right, bottom-left)
  * @sp {#Color} rolloverBackground the rollover background color
  * @sp {#Border} rolloverBorder the rollover border
  * @sp {#Font} rolloverFont the rollover font
@@ -3005,17 +3007,19 @@ Echo.SelectField = Core.extend(Echo.AbstractListComponent, {
  * support pane components as children.
  * 
  * @sp {#Border} border the border displayed around the entire column
+ * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the column
  * @sp {#Extent} cellSpacing the extent margin between cells of the column
  * @sp {#Insets} insets the inset margin between the column border and its cells
  * 
  * @ldp {#Alignment} alignment the alignment of the child component within its
  *      cell
  * @ldp {#Color} background the background of the child component's cell
- * @ldp {#FillImage} backrgoundImage the background image of the child
+ * @ldp {#FillImage} backgroundImage the background image of the child
  *      component's cell
  * @ldp {#Extent} height the height of the child component's cell
  * @ldp {#Insets} insets the insets margin of the child component's cell (this
  *      inset is added to any inset set on the container component)
+ * @sp {#Insets} radius The radius of the column's corners (top-left, top-right, bottom-right, bottom-left)
  */
 Echo.Column = Core.extend(Echo.Component, {
 
@@ -3062,10 +3066,12 @@ Echo.Composite = Core.extend(Echo.Component, {
  * @sp {#Alignment} alignment the alignment of the child component within the panel
  * @sp {#FillImage} backgroundImage the background image
  * @sp {#Border} border the border surrounding the child component
+ * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the panel
  * @sp {#Extent} height the height of the panel
  * @sp {#FillImageBorder} imageBorder an image-based border surrounding the child component (overrides <code>border</code>
  *     property when set)
  * @sp {#Insets} insets the inset padding margin between the panel border and its content
+ * @sp {#Insets} radius The radius of the panel's corners (top-left, top-right, bottom-right, bottom-left)
  * @sp {#Extent} width the width of the panel
  */
 Echo.Panel = Core.extend(Echo.Composite, {
@@ -3141,6 +3147,7 @@ Echo.ContentPane = Core.extend(Echo.Component, {
  * May not contain panes as children.
  * 
  * @sp {#Border} border the border displayed around the grid, and between cells
+ * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the grid
  * @sp {#Extent} columnWidth an indexed property whose indices represent the
  *     width of each column of the grid
  * @sp {#Extent} height the overall height of the grid (may not be specified
@@ -3171,6 +3178,7 @@ Echo.ContentPane = Core.extend(Echo.Component, {
  *      used in this property for horizontally oriented grids)
  * @ldp {#Insets} insets the insets margin of the child component's cell (this
  *      inset is added to any inset set on the container component)
+ * @sp {#Insets} radius The radius of the grid's corners (top-left, top-right, bottom-right, bottom-left)
  * @ldp {Number} rowSpan the number of rows the containing cell should span (a
  *      value of <code>SPAN_FILL</code> indicates that cell should fill all
  *      rows until the end of the grid is reached; this value may only be used
@@ -3222,6 +3230,8 @@ Echo.Grid = Core.extend(Echo.Component, {
  * Label component: displays a text string, an icon, or both. May not contain
  * child components.
  * 
+ * @sp {#Border} border the border displayed around the label
+ * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the label
  * @sp {Boolean} formatWhitespace a boolean flag indicating whether whitespace
  *     formatting should be applied to the label
  * @sp {Boolean} lineWrap a boolean flag indicating whether long lines should be
@@ -3229,6 +3239,7 @@ Echo.Grid = Core.extend(Echo.Component, {
  * @sp {#ImageReference} icon the icon/image to display in the label
  * @sp {#Extent} iconTextMargin an extent setting describing the distance
  *     between the label and icon
+ * @sp {#Insets} radius The radius of the label's corners (top-left, top-right, bottom-right, bottom-left)
  * @sp {String} text the text to display in the label
  * @sp {#Alignment} textAlignment an alignment setting describing the alignment
  *     of the label's text
@@ -3251,6 +3262,7 @@ Echo.Label = Core.extend(Echo.Component, {
  * May have zero or more child components.  Does not support pane components as children.
  *
  * @sp {#Border} border the border displayed around the entire column
+ * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the column
  * @sp {#Extent} cellSpacing the extent margin between cells of the column
  * @sp {#Insets} insets the inset margin between the column border and its cells
  *
@@ -3259,6 +3271,7 @@ Echo.Label = Core.extend(Echo.Component, {
  * @ldp {#FillImage} backrgoundImage the background image of the child component's cell
  * @ldp {#Insets} insets the insets margin of the child component's cell 
  *      (this inset is added to any inset set on the container component)
+ * @sp {#Insets} radius The radius of the row's corners (top-left, top-right, bottom-right, bottom-left)
  * @ldp {#Extent} width the width of the child component's cell
  */
 Echo.Row = Core.extend(Echo.Component, {
@@ -3451,6 +3464,7 @@ Echo.SplitPane = Core.extend(Echo.Component, {
  * @sp {#FillImage} backgroundImage the background image to display in the
  *     component
  * @sp {#Border} border the border to display around the component
+ * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the component
  * @sp {#Color} disabledBackground the disabled background color
  * @sp {#Color} disabledBackgroundImage the disabled background image
  * @sp {#Border} disabledBorder the disabled border
@@ -3461,6 +3475,7 @@ Echo.SplitPane = Core.extend(Echo.Component, {
  * @sp {#Extent} horizontalScroll the horizontal scrollbar position
  * @sp {#Insets} insets the inset margin between the border and the text content
  * @sp {Number} maximumLength the maximum number of characters which may be entered
+ * @sp {#Insets} radius The radius of the component's corners (top-left, top-right, bottom-right, bottom-left)
  * @sp {#Color} readOnlyBackground the read-only background color
  * @sp {#Color} readOnlyBackgroundImage the read-only background image
  * @sp {#Border} readOnlyBorder the read-only border
@@ -3575,6 +3590,7 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  * @sp {#FillImage} backgroundImage the background image to display within the
  *     content area
  * @sp {#FillImageBorder} border the border frame containing the WindowPane
+ * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the window
  * @sp {Boolean} closable flag indicating whether the window is closable
  * @sp {Number} closeAnimationTime the duration of the close animation, in 
  *     milliseconds (default/zero value will result in no animation)
@@ -3613,6 +3629,7 @@ Echo.PasswordField = Core.extend(Echo.TextField, {
  *     milliseconds (default/zero value will result in no animation)
  * @sp {#Extent} positionX the horizontal (x) position of the window
  * @sp {#Extent} positionY the vertical (y) position of the window
+ * @sp {#Insets} radius The radius of the window's corners (top-left, top-right, bottom-right, bottom-left)
  * @sp {Boolean} resizable flag indicating whether the window is resizable
  * @sp {Number} resourceTimeout the maximum amount of time to wait before displaying
  *     the window (in order for resources/images to be loaded such that it may

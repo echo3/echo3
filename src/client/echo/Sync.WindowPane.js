@@ -636,7 +636,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         var fillImageFlags = this.component.render("ieAlphaRenderBorder") ? Echo.Sync.FillImage.FLAG_ENABLE_IE_PNG_ALPHA_FILTER : 0;
         
         // Create main component DIV.
-        this._div = Echo.Sync.FillImageBorder.renderContainer(border, { absolute: true });
+        var radius = this.component.render("radius");
+        this._div = Echo.Sync.FillImageBorder.renderContainer(border, { absolute: true, radius: radius});
         this._div.id = this.component.renderId;
         this._div.tabIndex = "0";
         this._div.style.outlineStyle = "none";
@@ -646,7 +647,8 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
             this._div.style.visibility = "hidden";
         }
         
-        Echo.Sync.BoxShadow.renderClear(this.component.render("boxShadow"), this._div);
+        Echo.Sync.BoxShadow.render(this.component.render("boxShadow"), this._div);
+        Echo.Sync.RoundedCorner.render(radius, this._div);
         
         this._borderDivs = Echo.Sync.FillImageBorder.getBorder(this._div);
         var mouseDownHandler = this._resizable ? Core.method(this, this._processBorderMouseDown) : null; 
@@ -719,6 +721,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._titleBarDiv.style.left = this._contentInsets.left + "px";
         this._titleBarDiv.style.height = this._titleBarHeight + "px";
         this._titleBarDiv.style.overflow = "hidden";
+        
         if (movable) {
             this._titleBarDiv.style.cursor = "move";
             Core.Web.Event.add(this._titleBarDiv, "mousedown", Core.method(this, this._processTitleBarMouseDown), true);
@@ -782,6 +785,16 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         Echo.Sync.FillImage.render(this.component.render("backgroundImage"), this._contentDiv);
         this._div.appendChild(this._contentDiv);
 
+        //apply corner radius if needed (in order to not cover the radius'es of the underlying handle/border divs)
+        if (radius) {
+            var ci = Echo.Sync.Insets.toPixels(radius);
+            this._titleBarDiv.style.borderTopLeftRadius = ci.left + "px";
+            this._titleBarDiv.style.borderTopRightRadius = ci.top + "px";
+            this._contentDiv.style.borderBottomRightRadius = ci.right + "px";
+            this._contentDiv.style.borderBottomLeftRadius = ci.bottom + "px";
+        }
+        
+         
         // Add Internet Explorer 6-specific windowed control-blocking IFRAME.
         if (Core.Web.Env.QUIRK_IE_SELECT_Z_INDEX) {
             this._div.appendChild(this._maskDiv);

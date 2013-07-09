@@ -33,12 +33,12 @@ import nextapp.echo.app.Alignment;
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Button;
 import nextapp.echo.app.Color;
+import nextapp.echo.app.Column;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
 import nextapp.echo.app.Grid;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.Label;
-import nextapp.echo.app.Column;
 import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.TextArea;
 import nextapp.echo.app.TextField;
@@ -245,7 +245,27 @@ public class GridTest extends SplitPane {
                 grid.setBorder(StyleUtil.nextBorderStyle(grid.getBorder()));
             }
         });
-        
+        controlsColumn.addButton("Set BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                grid.setBoxShadow(StyleUtil.getBoxShadow());
+            }
+        });
+        controlsColumn.addButton("Remove BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                grid.setBoxShadow(null);
+            }
+        });
+        controlsColumn.addButton("Set Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                grid.setRadius(new Insets(20));
+            }
+        });
+        controlsColumn.addButton("Remove Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                grid.setRadius(null);
+            }
+        });
+
         controlsColumn.addButton("Set Insets 0px", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 grid.setInsets(new Insets(0));
@@ -279,6 +299,21 @@ public class GridTest extends SplitPane {
         controlsColumn.addButton("Set Width = 100%", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 grid.setWidth(new Extent(100, Extent.PERCENT));
+            }
+        });
+        controlsColumn.addButton("Set Height = null", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                grid.setHeight(null);
+            }
+        });
+        controlsColumn.addButton("Set Height = 300px", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                grid.setHeight(new Extent(300));
+            }
+        });
+        controlsColumn.addButton("Set Height = 100% (invalid)", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                grid.setHeight(new Extent(100, Extent.PERCENT));
             }
         });
         

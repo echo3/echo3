@@ -136,7 +136,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
                 Echo.Sync.Insets.render(this.component.render("insets"), this.div, "padding");
             }
             Echo.Sync.Border.renderClear(border, this.div);
-            Echo.Sync.BoxShadow.renderClear(boxShadow, this.div);
+            Echo.Sync.BoxShadow.render(boxShadow, this.div);
 
             if (this._textElement) {
                 Echo.Sync.Font.renderClear(font, this._textElement);
@@ -340,8 +340,8 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         }
         
         Echo.Sync.Insets.render(this.component.render("insets"), this.div, "padding");
-        Echo.Sync.RoundedCorner.render(this.component, this.div);
-        Echo.Sync.BoxShadow.renderClear(this.component.render("boxShadow"), this.div);
+        Echo.Sync.RoundedCorner.render(this.component.render("radius"), this.div);
+        Echo.Sync.BoxShadow.render(this.component.render("boxShadow"), this.div);
         
         var toolTipText = this.component.render("toolTipText");
         if (toolTipText) {

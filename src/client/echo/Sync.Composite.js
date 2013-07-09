@@ -103,6 +103,8 @@ Echo.Sync.Panel = Core.extend(Echo.Sync.Composite, {
         } else {
             Echo.Sync.Border.render(this.component.render("border"), this.contentDiv);
         }
+        Echo.Sync.RoundedCorner.render(this.component.render("radius"), this.contentDiv);
+        Echo.Sync.BoxShadow.render(this.component.render("boxShadow"), this.contentDiv);
         Echo.Sync.renderComponentDefaults(this.component, this.contentDiv);
         if (!child || !child.pane) {
             Echo.Sync.Insets.render(this.component.render("insets"), this.contentDiv, "padding");

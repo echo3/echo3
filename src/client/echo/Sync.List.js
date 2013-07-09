@@ -4,27 +4,6 @@
  */
 Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
 
-    $static: {
-    
-        /** 
-         * Alternate rendering: default border style.
-         * @type #Border
-         */
-        DEFAULT_DIV_BORDER: "1px solid #7f7f7f",
-        
-        /** 
-         * Alternate rendering: default selected item background.
-         * @type #Color
-         */
-        DEFAULT_SELECTED_BACKGROUND: "#0a246a",
-        
-        /** 
-         * Alternate rendering: default selected item foreground.
-         * @type #Color
-         */
-        DEFAULT_SELECTED_FOREGROUND: "#ffffff"
-    },
-
     $abstract: {
         
         /**
@@ -55,14 +34,6 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
     _selectedIdPriority: false,
 
     /**
-     * Flag indicating that component will be rendered as a DHTML-based ListBox.
-     * This form of rendering is necessary on Internet Explorer 6 browsers due to unstable
-     * code in this web browser when using listbox-style SELECT elements.
-     * @type Boolean
-     */
-    _alternateRender: false,
-    
-    /**
      * The "main" element upon which contains items and upon which listeners are registered.  
      * For normal rendering, this is the SELECT, which directly contains individual OPTION elements.
      * For the alternate rendering, this is the TABLE, whose TBODY element contains individual
@@ -70,14 +41,6 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
      * @type Element
      */
     _element: null,
-    
-    /**
-     * Rendered DIV element
-     * When in alternate mode than as an IE6 work-around
-     * Otherwise as element on where to apply the boxshadow property
-     * @type Element.
-     */
-    _div: null,
     
     /**
      * Rendered focus state of component, based on received DOM focus/blur events.
@@ -129,61 +92,7 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
     },
     
     /**
-     * Processes a click event.
-     * This event handler is registered only in the case of the "alternate" DHTML-based rendered
-     * listbox for IE6, i.e., the _alternateRender flag will be true. 
-     */
-    _processClick: function(e) {
-        if (!this.client || !this.client.verifyInput(this.component)) {
-            Core.Web.DOM.preventEventDefault(e);
-            this._renderSelection();
-            return true;
-        }
-        
-        var child = this._div.firstChild;
-        var i = 0;
-        while (child) {
-            if (child == e.target) {
-                break;
-            }
-            child = child.nextSibling;
-            ++i;
-        }
-        if (child == null) {
-            return;
-        }
-        
-        if (this._multipleSelect && e.ctrlKey) {
-            // Multiple selection and user has pressed ctrl key to select multiple items.
-            var selection = this._getSelection();
-            if (selection == null) {
-                selection = [];
-            } else if (!(selection instanceof Array)) {
-                selection = [selection];
-            } else {
-                // Clone array (required to ensure oldValue != newValue on property set).
-                selection = selection.slice();
-            }
-            var arrayIndex = Core.Arrays.indexOf(selection, i); 
-            if (arrayIndex == -1) {
-                // Add item to selection if not present.
-                selection.push(i);
-            } else {
-                // Remove item from selection if already present.
-                selection.splice(arrayIndex, 1);
-            }
-        } else {
-            selection = i;
-        }
-        
-        this._setSelection(selection);
-        this.component.doAction();
-        this._renderSelection();
-    },
-    
-    /**
      * Processes a selection change event.
-     * This event handler is registered only for traditional SELECT elements, i.e., the _alternateRender flag will be false.
      */
     _processChange: function(e) {
         if (!this.client || !this.client.verifyInput(this.component)) {
@@ -218,141 +127,12 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
         }
         this.client.application.setFocusedComponent(this.component);
     },
-    
-    /** IE-specific event handler to prevent mouse-selection of text in DOM-rendered listbox component. */
-    _processSelectStart: function(e) {
-        Core.Web.DOM.preventEventDefault(e);
-    },
 
     /** @see Echo.Render.ComponentSync#renderAdd */
     renderAdd: function(update, parentElement) {
         this._multipleSelect = this.component.get("selectionMode") == Echo.ListBox.MULTIPLE_SELECTION;
-        if (this.listBox && Core.Web.Env.QUIRK_IE_SELECT_LIST_DOM_UPDATE) {
-            this._alternateRender = true;
-        }
         this._enabled = this.component.isRenderEnabled();
         
-        if (this._alternateRender) {
-            this._renderMainAsDiv(update, parentElement);
-        } else {
-            this._renderMainAsSelect(update, parentElement);
-        }
-    },
-
-    /** @see Echo.Render.ComponentSync#renderDisplay */
-    renderDisplay: function() {
-        this._renderSelection();
-    },
-    
-    /** @see Echo.Render.ComponentSync#renderDispose */
-    renderDispose: function(update) { 
-        Core.Web.Event.removeAll(this._element);
-        this._element = null;
-        Core.Web.Event.removeAll(this._div);
-        this._div = null;
-    },
-    
-    /** @see Echo.Render.ComponentSync#renderFocus */
-    renderFocus: function() {
-        if (this._focused) {
-            return;
-        }
-        
-        this._focused = true;
-        Core.Web.DOM.focusElement(this._element);
-    },
-    
-    /**
-     * Renders a list box as a DIV element containing DIV elements of selectable items.
-     * This strategy is used on IE6 due to bugs in this browser's rendering engine.
-     * This strategy is used when the _alternateRender flag is true.
-     * 
-     * @param {Echo.Update.ComponentUpdate} update the update
-     * @param {Element} parent the parent DOM element 
-     */
-    _renderMainAsDiv: function(update, parentElement) {
-        this._element = document.createElement("table");
-        this._element.id = this.component.renderId;
-        
-        var tbodyElement = document.createElement("tbody");
-        this._element.appendChild(tbodyElement);
-        var trElement = document.createElement("tr");
-        tbodyElement.appendChild(trElement);
-        var tdElement = document.createElement("td");
-        trElement.appendChild(tdElement);
-        
-        this._div = document.createElement("div");
-        tdElement.appendChild(this._div);
-        
-        this._div.style.cssText = "cursor:default;overflow:auto;";
-        this._div.style.height = Echo.Sync.Extent.toCssValue(this.component.render("height", "6em"), false, false);
-        var width = this.component.render("width");
-        if (!Echo.Sync.Extent.isPercent(width)) {
-            this._div.style.width = Echo.Sync.Extent.toCssValue(width, true, false);
-        }
-        if (this._enabled) {
-            Echo.Sync.renderComponentDefaults(this.component, this._element);
-        } else {
-            Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this._element);
-            Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
-                    this._div, "color");
-            Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "background", "disabledBackground", true), 
-                    this._div, "backgroundColor");
-            Echo.Sync.Font.render(Echo.Sync.getEffectProperty(this.component, "font", "disabledFont", true), this._div);
-        }
-        Echo.Sync.Border.render(
-                Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled, 
-                Echo.Sync.ListComponent.DEFAULT_DIV_BORDER, null), 
-                this._div);
-        Echo.Sync.Insets.render(this.component.render("insets"), this._div, "padding");
-
-        var items = this.component.get("items");
-        if (items) {
-            for (var i = 0; i < items.length; ++i) {
-                var optionElement = document.createElement("div");
-                if (items[i].text) {
-                    optionElement.appendChild(document.createTextNode(items[i].text));
-                } else {
-                    optionElement.appendChild(document.createTextNode(items[i].toString()));
-                }
-                if (items[i].foreground) {
-                    Echo.Sync.Color.render(items[i].foreground, optionElement, "color");
-                }
-                if (items[i].background) {
-                    Echo.Sync.Color.render(items[i].background, optionElement, "backgroundColor");
-                }
-                if (items[i].font) {
-                    Echo.Sync.Font.render(items[i].font, optionElement);
-                }
-                this._div.appendChild(optionElement);
-            }
-        }
-        
-        if (this._enabled) {
-            Core.Web.Event.add(this._element, "blur", Core.method(this, this._processBlur), false);
-            Core.Web.Event.add(this._element, "focus", Core.method(this, this._processFocus), false);
-            Core.Web.Event.add(this._div, "click", Core.method(this, this._processClick), false);
-            Core.Web.Event.add(this._div, "selectstart", Core.method(this, this._processSelectStart), false);
-        }
-        
-        parentElement.appendChild(this._element);
-    },
-    
-    /**
-     * Renders the list selection component as a standard SELECT element.
-     * This strategy is always used in all browsers except IE6, and is used in IE6
-     * for drop-down select fields.  IE6 cannot use this strategy for listboxes
-     * do to major bugs in this browser (listboxes randomly change back into selectfields
-     * when rendered by DOM manipulation).
-     * This strategy is used when the _alternateRender flag is false.
-     * 
-     * @param {Echo.Update.ComponentUpdate} update the update
-     * @param {Element} parent the parent DOM element 
-     */
-    _renderMainAsSelect: function(update, parentElement) {
-        this._div = document.createElement("div");
-        this._div.style.display = "table";
-
         this._element = document.createElement("select");
         this._element.id = this.component.renderId;
         this._element.size = this.listBox ? 6 : 1;
@@ -373,12 +153,12 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
                     this._element.style.width = width;
                 }
             } else {
-                this._div.style.width = Echo.Sync.Extent.toCssValue(width, true, false);                
                 this._element.style.width = Echo.Sync.Extent.toCssValue(width, true, false);
             }
         }
         if (this._enabled) {
             Echo.Sync.renderComponentDefaults(this.component, this._element);
+            Echo.Sync.Color.render(this.component.render("background"), this._element, "backgroundColor");
         } else {
             Echo.Sync.LayoutDirection.render(this.component.getLayoutDirection(), this._element);
             Echo.Sync.Color.render(Echo.Sync.getEffectProperty(this.component, "foreground", "disabledForeground", true), 
@@ -388,11 +168,11 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
             Echo.Sync.Font.render(Echo.Sync.getEffectProperty(this.component, "font", "disabledFont", true),this._element);
         }
 
-        //don't use the select field border but the span border instead
-        this._element.style.border = "0";
-        Echo.Sync.Border.render(Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled), this._div);
-        Echo.Sync.BoxShadow.renderClear(this.component.render("boxShadow"), this._div);
-        Echo.Sync.Insets.render(this.component.render("insets"), this._div, "padding");
+        var border = Echo.Sync.getEffectProperty(this.component, "border", "disabledBorder", !this._enabled);
+        Echo.Sync.Border.render(border, this._element);
+        Echo.Sync.BoxShadow.render(this.component.render("boxShadow"), this._element);
+        Echo.Sync.RoundedCorner.render(this.component.render("radius"), this._element);
+        Echo.Sync.Insets.render(this.component.render("insets"), this._element, "padding");
 
         var items = this.component.get("items");
         if (items) {
@@ -415,62 +195,53 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
                 this._element.appendChild(optionElement);
             }
         }
-    
+
         if (this._enabled) {
             Core.Web.Event.add(this._element, "change", Core.method(this, this._processChange), false);
             Core.Web.Event.add(this._element, "blur", Core.method(this, this._processBlur), false);
             Core.Web.Event.add(this._element, "focus", Core.method(this, this._processFocus), false);
         }
-
-        this._div.appendChild(this._element);
-        parentElement.appendChild(this._div);
+        parentElement.appendChild(this._element);
     },
 
+    /** @see Echo.Render.ComponentSync#renderDisplay */
+    renderDisplay: function() {
+        this._renderSelection();
+    },
+    
+    /** @see Echo.Render.ComponentSync#renderDispose */
+    renderDispose: function(update) {
+        Core.Web.Event.removeAll(this._element);
+        this._element = null;
+    },
+    
+    /** @see Echo.Render.ComponentSync#renderFocus */
+    renderFocus: function() {
+        if (this._focused) {
+            return;
+        }
+        
+        this._focused = true;
+        Core.Web.DOM.focusElement(this._element);
+    },
+    
     /**
      * Renders the current selection state.
      */
     _renderSelection: function() {
-        var selection = this._getSelection(),
-            i;
+        var selection = this._getSelection();
         
-        if (this._alternateRender) {
-            if (this._hasRenderedSelectedItems) {
-                var items = this.component.get("items");
-                for (i = 0; i < items.length; ++i) {
-                    Echo.Sync.Color.renderClear(items[i].foreground, this._div.childNodes[i], 
-                            "color");
-                    Echo.Sync.Color.renderClear(items[i].background, this._div.childNodes[i], 
-                            "backgroundColor");
+        if (this._hasRenderedSelectedItems) {
+             this._element.selectedIndex = -1;
+        }
+        if (selection instanceof Array) {
+            for (var i = 0; i < selection.length; ++i) {
+                if (selection[i] >= 0 && selection[i] < this._element.options.length) {
+                    this._element.options[selection[i]].selected = true;
                 }
             }
-            if (selection instanceof Array) {
-                for (i = 0; i < selection.length; ++i) {
-                    if (selection[i] >= 0 && selection[i] < this._div.childNodes.length) {
-                        Echo.Sync.Color.render(Echo.Sync.ListComponent.DEFAULT_SELECTED_FOREGROUND,
-                                this._div.childNodes[selection[i]], "color");
-                        Echo.Sync.Color.render(Echo.Sync.ListComponent.DEFAULT_SELECTED_BACKGROUND,
-                                this._div.childNodes[selection[i]], "backgroundColor");
-                    }
-                }
-            } else if (selection >= 0 && selection < this._div.childNodes.length) {
-                Echo.Sync.Color.render(Echo.Sync.ListComponent.DEFAULT_SELECTED_FOREGROUND,
-                        this._div.childNodes[selection], "color");
-                Echo.Sync.Color.render(Echo.Sync.ListComponent.DEFAULT_SELECTED_BACKGROUND,
-                        this._div.childNodes[selection], "backgroundColor");
-            }
-        } else {
-            if (this._hasRenderedSelectedItems) {
-                this._element.selectedIndex = -1;
-            }
-            if (selection instanceof Array) {
-                for (i = 0; i < selection.length; ++i) {
-                    if (selection[i] >= 0 && selection[i] < this._element.options.length) {
-                        this._element.options[selection[i]].selected = true;
-                    }
-                }
-            } else if (selection >= 0 && selection < this._element.options.length) {
-                this._element.options[selection].selected = true;
-            }
+        } else if (selection >= 0 && selection < this._element.options.length) {
+            this._element.options[selection].selected = true;
         }
         this._hasRenderedSelectedItems = true;
     },
@@ -478,10 +249,10 @@ Echo.Sync.ListComponent = Core.extend(Echo.Render.ComponentSync, {
     /** @see Echo.Render.ComponentSync#renderUpdate */
     renderUpdate: function(update) {
         if (update.getUpdatedProperty("selectedId") && !update.getUpdatedProperty("selection")) {
-            this._selectedIdPriority = true;
+            this._selectedIdPriority = true;            
         }
-    
-        var element = this._alternateRender ? this._element : this._div;
+        
+        var element = this._element;
         var containerElement = element.parentNode;
         this.renderDispose(update);
         containerElement.removeChild(element);

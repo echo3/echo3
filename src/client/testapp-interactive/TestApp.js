@@ -27,6 +27,7 @@ TestApp = Core.extend(Echo.Application, {
         testScreen.addTest("SplitPane");
         testScreen.addTest("TextComponent");
         testScreen.addTest("WindowPane");
+        testScreen.addTest("List");
         this.rootComponent.add(testScreen);
     }
 });
@@ -420,5 +421,69 @@ TestApp.Tests.WindowPane = Core.extend(TestApp.TestPane, {
 
     _setTitleNull: function() {
         this.windowPane.set("title", null);
+    }
+});
+
+TestApp.Tests.List = Core.extend(Echo.Grid, {
+
+    $construct: function() {
+        Echo.Grid.call(this, {
+            size: 4,
+            insets: "10px 20px",
+            background: "#ddeeff",
+        });
+
+        this._addSelectField("No border", {
+        });
+
+        this._addSelectField("Insets 10px", {
+            insets: "10px 8px"
+        });
+
+        this._addSelectField("Radius 5p", {
+            radius: "10px"
+        });
+
+        this._addSelectField("Insets and Radius", {
+            insets: "10px 8px",
+            radius: "10px"
+        });
+        
+        this._addSelectField("Border", {
+            border: "4px solid #ff00ff"
+        });
+        
+        this._addSelectField("Border + Radius", {
+            border: "4px solid #ff00ff",
+            radius: "10px"
+        });
+
+        this._addSelectField("Border + Radius + Insets", {
+            border: "4px solid #ff00ff",
+            insets: "10px 8px",
+            radius: "16px"
+        });
+        
+    },
+
+    _addSelectField: function(caption, attributes) {
+        attributes.items = [{text: "One", id: 1}, {text: "Two", id: 2}, {text: "Three", id: 3}];
+
+        this.add(new Echo.Label({text: caption}));
+		var select = new Echo.SelectField(attributes);
+        this.add(select);
+        
+        var bla = function() {
+        	var value = select.render("selectedId", 1);
+        	value++;
+        	if (value > 3) value = 1;
+	        select.set("selectedId", value);
+        };
+        attributes.events = {action: bla};
+        attributes.boxShadow = "3px 3px 12px 2px black";
+        this.add(new Echo.SelectField(attributes));
+        
+        attributes.background = "#aaffaa";
+        this.add(new Echo.SelectField(attributes));        
     }
 });
