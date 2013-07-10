@@ -39,8 +39,7 @@ import nextapp.echo.app.LayoutData;
  * An abstract base layout data object for components which render their
  * children in cells.
  */
-public abstract class CellLayoutData 
-implements LayoutData {
+public abstract class CellLayoutData<T extends CellLayoutData<?>> implements LayoutData {
     
     private Color background;
     private FillImage backgroundImage;
@@ -84,38 +83,66 @@ implements LayoutData {
     }
     
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isChanged() {
+        if (background != null) return true;
+        if (backgroundImage != null) return true;
+        if (insets != null) return true;
+        if (alignment != null) return true;
+        return false;
+    }
+    
+    /**
      * Sets the alignment of the cell.
      * 
      * @param newValue the new alignment
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setAlignment(Alignment newValue) {
+    @SuppressWarnings("unchecked")
+    public T setAlignment(Alignment newValue) {
         alignment = newValue;
+        return (T)this;
     }
     
     /**
      * Sets the background color of the cell.
      * 
      * @param newValue the new background color
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setBackground(Color newValue) {
+    @SuppressWarnings("unchecked")
+    public T setBackground(Color newValue) {
         background = newValue;
+        return (T)this;
     }
     
     /**
      * Sets the background image of the cell.
      * 
      * @param newValue the new background image
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setBackgroundImage(FillImage newValue) {
+    @SuppressWarnings("unchecked")
+    public T setBackgroundImage(FillImage newValue) {
         backgroundImage = newValue;
+        return (T)this;
     }
     
     /**
      * Sets the inset margins of the cell.
      * 
      * @param newValue the inset margins
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setInsets(Insets newValue) {
+    @SuppressWarnings("unchecked")
+    public T setInsets(Insets newValue) {
         insets = newValue;
+        return (T)this;
     }
 }

@@ -275,7 +275,7 @@ public class UpdateManagerTest extends TestCase  {
 
         componentUpdates = manager.getServerUpdateManager().getComponentUpdates();
         assertEquals(1, componentUpdates.length);
-        assertEquals(false, componentUpdates[0].hasUpdatedLayoutDataChildren());
+        assertEquals(true, componentUpdates[0].hasUpdatedLayoutDataChildren());
         
         manager.purge();
         

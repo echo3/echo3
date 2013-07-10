@@ -63,11 +63,7 @@ public class TestGrid extends Grid {
      * @param text the header text
      */
     public void addHeaderRow(String text) {
-        Label label = new Label(text);
-        GridLayoutData layoutData = new GridLayoutData(2, 1);
-        layoutData.setBackground(HEADER_CELL_BACKGROUND);
-        label.setLayoutData(layoutData);
-        add(label);
+        add(new Label(text)).setColumnSpan(2).setBackground(HEADER_CELL_BACKGROUND);
     }
     
     /**
@@ -77,12 +73,7 @@ public class TestGrid extends Grid {
      * @param testComponent the item <code>Component</code>
      */
     public void addTestRow(String descriptor, Component testComponent) {
-        Label label = new Label(descriptor);
-        GridLayoutData layoutData = new GridLayoutData();
-        layoutData.setBackground(DESCRIPTOR_CELL_BACKGROUND);
-        label.setLayoutData(layoutData);
-        add(label);
+        add(new Label(descriptor)).setBackground(DESCRIPTOR_CELL_BACKGROUND);
         add(testComponent);
     }
-
 }

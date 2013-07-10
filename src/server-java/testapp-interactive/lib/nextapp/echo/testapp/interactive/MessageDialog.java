@@ -126,11 +126,7 @@ public class MessageDialog extends WindowPane {
         splitPane1.add(row1);
         iconLabel = new Label();
         iconLabel.setVisible(false);
-        RowLayoutData iconLabelLayoutData = new RowLayoutData();
-        iconLabelLayoutData.setAlignment(new Alignment(Alignment.DEFAULT,
-                Alignment.TOP));
-        iconLabel.setLayoutData(iconLabelLayoutData);
-        row1.add(iconLabel);
+        row1.add(iconLabel).setAlignment(new Alignment(Alignment.DEFAULT, Alignment.TOP));
         contentLabel = new Label();
         contentLabel.setStyleName("MessageDialog.ContentLabel");
         row1.add(contentLabel);

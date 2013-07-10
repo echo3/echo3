@@ -29,6 +29,8 @@
 
 package nextapp.echo.app;
 
+import nextapp.echo.app.layout.GridLayoutData;
+
 /**
  * Grid component: a layout container which displays children in a grid. Individual child component cells may be configured to span
  * multiple rows or columns using <code>GridLayoutData</code>. May contain zero or more components as children. May not contain
@@ -90,6 +92,25 @@ public class Grid extends Component {
     }
 
     /**
+     *  {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public GridLayoutData add(Component c) throws IllegalChildException, IllegalArgumentException {
+        return super.add(c, -1);
+    }
+
+    /**
+     *  {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public GridLayoutData add(Component c, int n) throws IllegalChildException, IllegalArgumentException {
+        return super.add(c, n);
+    }
+
+        
+    /**
      * Returns the <code>Border</code>.
      * 
      * @return the border
@@ -130,6 +151,14 @@ public class Grid extends Component {
      */
     public Insets getInsets() {
         return (Insets) get(PROPERTY_INSETS);
+    }
+    
+    /**
+     *  {@inheritDoc}
+     */
+    @Override
+    protected Class<GridLayoutData> getLayoutDataClass() {
+        return GridLayoutData.class;
     }
     
     /**

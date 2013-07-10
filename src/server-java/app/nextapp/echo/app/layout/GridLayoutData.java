@@ -33,7 +33,7 @@ package nextapp.echo.app.layout;
  * A <code>LayoutData</code> object used to describe how a 
  * <code>Component</code> is rendered within a <code>Grid</code>. 
  */
-public class GridLayoutData extends CellLayoutData {
+public class GridLayoutData extends CellLayoutData<GridLayoutData> {
     
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
@@ -72,7 +72,7 @@ public class GridLayoutData extends CellLayoutData {
     }
     
     /**
-     * Returns the column span of the cell.  A value of 1 indicates only column row is occupied.
+     * Returns the column span of the cell.  A value of 1 indicates only one column is occupied.
      * 
      * @return the column span
      */
@@ -90,20 +90,36 @@ public class GridLayoutData extends CellLayoutData {
     }
     
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isChanged() {
+        if (rowSpan != 1) return true;
+        if (columnSpan != 1) return true;
+        return super.isChanged();
+    }
+    
+    /**
      * Sets the column span of the cell.  A value of 1 indicates only column row is occupied.
      * 
      * @param newValue the new column span
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setColumnSpan(int newValue) {
+    public GridLayoutData setColumnSpan(int newValue) {
         columnSpan = newValue;
+        return this;
     }
     
     /**
      * Sets the row span of the cell.  A value of 1 indicates only one row is occupied.
      * 
      * @param newValue the new row span
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setRowSpan(int newValue) {
+    public GridLayoutData setRowSpan(int newValue) {
         rowSpan = newValue;
+        return this;
     }
 }

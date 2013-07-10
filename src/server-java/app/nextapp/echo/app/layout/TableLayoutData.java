@@ -32,7 +32,7 @@ package nextapp.echo.app.layout;
 /**
  * A <code>LayoutData</code> object for rendered table cells.
  */
-public class TableLayoutData extends CellLayoutData {
+public class TableLayoutData extends CellLayoutData<TableLayoutData> {
 
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;

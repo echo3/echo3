@@ -35,7 +35,7 @@ import nextapp.echo.app.Extent;
  * A <code>LayoutData</code> object used to describe how a 
  * <code>Component</code> is rendered within a <code>Column</code>. 
  */
-public class ColumnLayoutData extends CellLayoutData {
+public class ColumnLayoutData extends CellLayoutData<ColumnLayoutData> {
 
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
@@ -54,13 +54,25 @@ public class ColumnLayoutData extends CellLayoutData {
     }
     
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isChanged() {
+        if (height != null) return true;
+        return super.isChanged();
+    }
+    
+    /**
      * Sets the height of the cell.
      * This property only supports <code>Extent</code>s with
      * fixed (i.e., not percent) units.
      * 
      * @param height The cell height
+     * 
+     * @return a self-reference (usable for fluent-interface patterns)
      */
-    public void setHeight(Extent height) {
+    public ColumnLayoutData setHeight(Extent height) {
         this.height = height;
+        return this;
     }
 }
