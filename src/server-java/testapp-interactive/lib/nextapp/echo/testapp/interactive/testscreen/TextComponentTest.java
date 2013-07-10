@@ -29,15 +29,15 @@
 
 package nextapp.echo.testapp.interactive.testscreen;
 
-import nextapp.echo.app.Component;
-import nextapp.echo.app.FillImage;
 import nextapp.echo.app.Border;
 import nextapp.echo.app.Color;
+import nextapp.echo.app.Column;
+import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
+import nextapp.echo.app.FillImage;
 import nextapp.echo.app.Grid;
 import nextapp.echo.app.Insets;
 import nextapp.echo.app.PasswordField;
-import nextapp.echo.app.Column;
 import nextapp.echo.app.SplitPane;
 import nextapp.echo.app.TextArea;
 import nextapp.echo.app.TextField;
@@ -388,6 +388,34 @@ public class TextComponentTest extends SplitPane {
                 textField.setBorder(border);
                 passwordField.setBorder(border);
                 textArea.setBorder(border);
+            }
+        });
+        controlsColumn.addButton("Set BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.setBoxShadow(StyleUtil.getBoxShadow());
+                passwordField.setBoxShadow(StyleUtil.getBoxShadow());
+                textArea.setBoxShadow(StyleUtil.getBoxShadow());
+            }
+        });
+        controlsColumn.addButton("Clear BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.setBoxShadow(null);
+                passwordField.setBoxShadow(null);
+                textArea.setBoxShadow(null);
+            }
+        });
+        controlsColumn.addButton("Set Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.setRadius(new Insets(10));
+                passwordField.setRadius(new Insets(10));
+                textArea.setRadius(new Insets(10));
+            }
+        });
+        controlsColumn.addButton("Clear Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                textField.setRadius(null);
+                passwordField.setRadius(null);
+                textArea.setRadius(null);
             }
         });
         controlsColumn.addButton("Toggle Background Image", new ActionListener() {

@@ -35,15 +35,13 @@ package nextapp.echo.app;
  * components to containers which do not allow <code>Pane</code> components as children. In such a case it may be necessary to
  * manually set the height property of the <code>Panel</code> itself.
  */
-public class Panel extends Composite 
-implements PaneContainer {
+public class Panel extends BorderedComponent implements PaneContainer {
 
     /** Serial Version UID. */
     private static final long serialVersionUID = 20090103L;
 
     public static final String PROPERTY_ALIGNMENT = "alignment";
     public static final String PROPERTY_BACKGROUND_IMAGE = "backgroundImage";
-    public static final String PROPERTY_BORDER = "border";
     public static final String PROPERTY_IMAGE_BORDER = "imageBorder";
     public static final String PROPERTY_INSETS = "insets";
     public static final String PROPERTY_WIDTH = "width";
@@ -65,15 +63,6 @@ implements PaneContainer {
      */
     public Alignment getAlignment() {
         return (Alignment) get(PROPERTY_ALIGNMENT);
-    }
-    
-    /**
-     * Returns the <code>Border</code> that encloses the entire <code>Panel</code>.
-     * 
-     * @return the border
-     */
-    public Border getBorder() {
-        return (Border) get(PROPERTY_BORDER);
     }
     
     /**
@@ -135,15 +124,6 @@ implements PaneContainer {
         set(PROPERTY_BACKGROUND_IMAGE, newValue);
     }
 
-    /**
-     * Sets the <code>Border</code> that encloses the entire <code>Panel</code>.
-     * 
-     * @param newValue the new border
-     */
-    public void setBorder(Border newValue) {
-        set(PROPERTY_BORDER, newValue);
-    }
-    
     /**
      * Sets the height.
      * If unset, the <code>Panel</code> will be sized by the height of its content, unless it contains a <code>Pane</code> 

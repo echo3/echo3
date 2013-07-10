@@ -32,7 +32,7 @@ package nextapp.echo.app.list;
 import java.util.EventListener;
 
 import nextapp.echo.app.Border;
-import nextapp.echo.app.BoxShadow;
+import nextapp.echo.app.BorderedComponent;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Extent;
@@ -48,7 +48,7 @@ import nextapp.echo.app.event.ListDataListener;
 /**
  * Abstract base class for selection list components (i.e., <code>SelectField</code>s and <code>ListBox</code>es).
  */
-public abstract class AbstractListComponent extends Component {
+public abstract class AbstractListComponent extends BorderedComponent {
 
     public static final String INPUT_ACTION = "action";
 
@@ -61,8 +61,6 @@ public abstract class AbstractListComponent extends Component {
     public static final String SELECTION_MODEL_CHANGED_PROPERTY = "listSelectionModel";
     public static final String SELECTION_CHANGED_PROPERTY = "listSelectionChanged";
 
-    public static final String PROPERTY_BORDER = "border";
-    public static final String PROPERTY_BOX_SHADOW = "boxShadow";
     public static final String PROPERTY_DISABLED_BACKGROUND = "disabledBackground";
     public static final String PROPERTY_DISABLED_BORDER = "disabledBorder";
     public static final String PROPERTY_DISABLED_FONT = "disabledFont";
@@ -196,27 +194,6 @@ public abstract class AbstractListComponent extends Component {
         return (String) get(PROPERTY_ACTION_COMMAND);
     }
     
-    /**
-     * Returns the <code>Border</code> surrounding the list component.
-     * 
-     * @return the border
-     */
-    public Border getBorder() {
-        return (Border) get(PROPERTY_BORDER);
-    }
-    
-    /**
-     * Returns the specific box shadow (CSS3) setting of this component, if any.
-     * This method will return null unless a <code>BoxShadow</code> is
-     * specifically set on <strong>this</strong> <code>Component</code>.
-     * 
-     * @return the box shadow property of <strong>this</strong>
-     *         <code>Component</code>
-     */
-    public BoxShadow getBoxShadow() {
-        return (BoxShadow) get(PROPERTY_BOX_SHADOW);
-    }
-
     /**
      * Returns the <code>ListCellRenderer</code> used to render items.
      * 
@@ -424,24 +401,6 @@ public abstract class AbstractListComponent extends Component {
         set(PROPERTY_ACTION_COMMAND, newValue);
     }
     
-    /**
-     * Sets the <code>Border</code> surrounding the list component.
-     * 
-     * @param newValue the new <code>Border</code>
-     */
-    public void setBorder(Border newValue) {
-        set(PROPERTY_BORDER, newValue);
-    }
-
-    /**
-     * Sets the <code>BoxShadow (CSS3)</code> of this <code>Component</code>.
-     * 
-     * @param newValue the new <code>BoxShadow</code>. 
-     */
-    public void setBoxShadow(BoxShadow newValue) {
-        set(PROPERTY_BOX_SHADOW, newValue);
-    }
-
     /**
      * Sets the renderer for items.
      * The renderer may not be null (use <code>DEFAULT_LIST_CELL_RENDERER</code>

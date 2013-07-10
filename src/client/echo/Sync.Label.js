@@ -52,9 +52,13 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
             text = this.component.render("text"),
             foreground = this.component.render("foreground"),
             background = this.component.render("background"),
+            border = this.component.render("border"),
+            radius = this.component.render("radius"),
+            boxShadow = this.component.render("boxShadow"),
             toolTip = this.component.render("toolTipText"),
             img;
-    
+        var formatting = true;
+
         if (text != null) {
             var lineWrap = this.component.render("lineWrap", true);
             var formatWhitespace = this.component.render("formatWhitespace", false) &&
@@ -80,11 +84,14 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
                 this._node = tct.tableElement;
                 this._node.id = this.component.renderId;
                 Echo.Sync.renderComponentDefaults(this.component, this._node);
+                this._node.style.borderCollapse = "separate";  //otherwise corner radius wouldn't work
             } else {
                 // Text without icon.
                 var font = this.component.render("font");
-                if (!this.client.designMode && !toolTip && !font && lineWrap && !foreground && !background && 
-                        !formatWhitespace && !this.component.getLayoutDirection()) {
+                formatting = this.client.designMode || toolTip || font || !lineWrap || foreground || background ||
+                        border || radius || boxShadow || formatWhitespace || this.component.getLayoutDirection();
+                if (!formatting) {
+                    //no formatting at all
                     this._node = document.createTextNode(text);
                 } else {
                     this._node = document.createElement("span");
@@ -103,8 +110,9 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
         } else if (icon) {
             img = document.createElement("img");
             Echo.Sync.ImageReference.renderImg(icon, img);
-            this._node = document.createElement("span");
+            this._node = document.createElement("div");
             this._node.id = this.component.renderId;
+            this._node.style.display = "table";
             this._node.appendChild(img);
             Echo.Sync.Color.render(this.component.render("background"), this._node, "backgroundColor");
         } else {
@@ -118,6 +126,12 @@ Echo.Sync.Label = Core.extend(Echo.Render.ComponentSync, {
         }
     
         if (this._node) {
+            if (formatting) {
+                Echo.Sync.Border.render(border, this._node);
+                Echo.Sync.RoundedCorner.render(radius, this._node);
+                Echo.Sync.BoxShadow.render(boxShadow, this._node);
+            }
+            
             if (toolTip) {
                 this._node.title = toolTip;
             }

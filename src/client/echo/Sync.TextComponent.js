@@ -135,6 +135,8 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             Echo.Sync.FillImage.render(Echo.Sync.getEffectProperty(this.component, 
                     "backgroundImage", "disabledBackgroundImage", true), this.input);
         }
+        Echo.Sync.BoxShadow.render(this.component.render("boxShadow"), this.input);
+        Echo.Sync.RoundedCorner.render(this.component.render("radius"), this.input);
         Echo.Sync.Alignment.render(this.component.render("alignment"), this.input, false, null);
         Echo.Sync.Insets.render(this.component.render("insets"), this.input, "padding");
         var width = this.component.render("width");

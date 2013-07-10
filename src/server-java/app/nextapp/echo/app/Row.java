@@ -39,13 +39,12 @@ package nextapp.echo.app;
  * 
  * @see nextapp.echo.app.layout.RowLayoutData
  */
-public class Row extends Component {
+public class Row extends BorderedComponent {
     
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
     public static final String PROPERTY_ALIGNMENT = "alignment";
-    public static final String PROPERTY_BORDER = "border";
     public static final String PROPERTY_CELL_SPACING = "cellSpacing";
     public static final String PROPERTY_INSETS = "insets";
     
@@ -66,15 +65,6 @@ public class Row extends Component {
         return (Alignment) get(PROPERTY_ALIGNMENT);
     }
 
-    /**
-     * Returns the <code>Border</code> that encloses the entire <code>Row</code>.
-     * 
-     * @return the border
-     */
-    public Border getBorder() {
-        return (Border) get(PROPERTY_BORDER);
-    }
-    
     /**
      * Returns the spacing between individual cells of the <code>Row</code>.
      * This property only supports <code>Extent</code>s with
@@ -103,15 +93,6 @@ public class Row extends Component {
      */
     public void setAlignment(Alignment newValue) {
         set(PROPERTY_ALIGNMENT, newValue);
-    }
-    
-    /**
-     * Sets the <code>Border</code> that encloses the entire <code>Row</code>.
-     * 
-     * @param newValue the new border
-     */
-    public void setBorder(Border newValue) {
-        set(PROPERTY_BORDER, newValue);
     }
     
     /**

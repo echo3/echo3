@@ -349,6 +349,10 @@ public class TableTest extends SplitPane {
         testColumn.setLayoutData(splitPaneLayoutData);
         add(testColumn);
 
+        testTable = new Table(new MultiplicationTableModel(12));
+        testTable.setBorder(new Border(new Extent(1), Color.BLUE, Border.STYLE_SOLID));
+        testColumn.add(testTable);
+
         ButtonColumn controlsColumn;
         
         controlsColumn = new ButtonColumn();
@@ -492,10 +496,6 @@ public class TableTest extends SplitPane {
             }
         });
         
-        testTable = new Table(new MultiplicationTableModel(12));
-        testTable.setBorder(new Border(new Extent(1), Color.BLUE, Border.STYLE_SOLID));
-        testColumn.add(testTable);
-
         controlsColumn.add(new Label("Appearance"));
         
         controlsColumn.addButton("Change Foreground", new ActionListener() {
@@ -529,7 +529,26 @@ public class TableTest extends SplitPane {
                 testTable.setBorder(StyleUtil.nextBorderStyle(testTable.getBorder()));
             }
         });
-        
+        controlsColumn.addButton("Set BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testTable.setBoxShadow(StyleUtil.getBoxShadow());
+            }
+        });
+        controlsColumn.addButton("Clear BoxShadow", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testTable.setBoxShadow(null);
+            }
+        });
+        controlsColumn.addButton("Set Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testTable.setRadius(new Insets(20));
+            }
+        });
+        controlsColumn.addButton("Clear Radius", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testTable.setRadius(null);
+            }
+        });
         controlsColumn.addButton("Set Insets 0px", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testTable.setInsets(new Insets(0));
@@ -569,7 +588,7 @@ public class TableTest extends SplitPane {
             public void actionPerformed(ActionEvent e) {
                 TableColumnModel columnModel = testTable.getColumnModel();
                 int columnCount = columnModel.getColumnCount();
-                    if (columnCount > 0) {
+                if (columnCount > 0) {
                     Extent width = new Extent(100 / columnCount, Extent.PERCENT);
                     for (int i = 0; i < columnCount; ++i) {
                         columnModel.getColumn(i).setWidth(width);
@@ -581,7 +600,7 @@ public class TableTest extends SplitPane {
             public void actionPerformed(ActionEvent e) {
                 TableColumnModel columnModel = testTable.getColumnModel();
                 int columnCount = columnModel.getColumnCount();
-                    if (columnCount > 0) {
+                if (columnCount > 0) {
                     for (int i = 0; i < columnCount; ++i) {
                         Extent width = new Extent((i % 2 == 0) ? 100 : 200, Extent.PX);
                         columnModel.getColumn(i).setWidth(width);

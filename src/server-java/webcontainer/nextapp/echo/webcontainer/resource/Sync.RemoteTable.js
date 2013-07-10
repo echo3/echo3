@@ -274,6 +274,10 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
         
         this._div = document.createElement("div");
         this._div.id = this.component.renderId;
+        this._div.style.display = "table";
+        this._div.style.overflow = "hidden";
+        Echo.Sync.RoundedCorner.render(this.component.render("radius"), this._div);
+        Echo.Sync.BoxShadow.render(this.component.render("boxShadow"), this._div);
         
         this._table = document.createElement("table");
         this._table.style.borderCollapse = "collapse";
@@ -292,7 +296,8 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
 
         var width = this.component.render("width");
         if (width) {
-            this._table.style.width = width;
+            this._div.style.width = width;
+            this._table.style.width = "100%";
             // Render percent widths using measuring for IE to avoid potential horizontal scrollbars.
             if (Core.Web.Env.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR && Echo.Sync.Extent.isPercent(width)) {
                 this._div.style.zoom = 1;
@@ -471,7 +476,7 @@ Echo.Sync.RemoteTableSync = Core.extend(Echo.Render.ComponentSync, {
             }
         }
         // full update
-        var element = this._table;
+        var element = this._div;
         var containerElement = element.parentNode;
         Echo.Render.renderComponentDispose(update, update.parent);
         containerElement.removeChild(element);
