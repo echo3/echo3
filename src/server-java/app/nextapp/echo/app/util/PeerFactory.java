@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import nextapp.echo.app.util.PropertiesDiscovery;
+import nextapp.echo.app.Component;
 
 /**
  * A mechanism for retrieving instances of singleton peer objects which are 
@@ -48,7 +48,10 @@ import nextapp.echo.app.util.PropertiesDiscovery;
  */
 public class PeerFactory {
     
-    private final Map objectClassNameToPeerMap = new HashMap();
+    /**
+     * Maps a component (identified by its canonical name) to its peer
+     */
+    private final Map<String, Object> objectClassNameToPeerMap = new HashMap<String, Object>();
     
     /**
      * Creates a new <code>PeerFactory</code>.
@@ -68,7 +71,7 @@ public class PeerFactory {
             while (it.hasNext()) {
                 String objectClassName = ((String) it.next()).trim();
                 String peerClassName = ((String) peerNameMap.get(objectClassName)).trim();
-                Class peerClass = classLoader.loadClass(peerClassName);
+                Class<?> peerClass = classLoader.loadClass(peerClassName);
                 Object peer = peerClass.newInstance();
                 objectClassNameToPeerMap.put(objectClassName, peer);
             }
@@ -113,5 +116,15 @@ public class PeerFactory {
             }
         } while (searchSuperClasses && objectClass != null);
         return null;
+    }
+
+    /**
+     * Register a peer to its corresponding component class
+     * 
+     * @param componentClass The class of the component to register
+     * @param peer The peer instance for the component
+     */
+    public void registerPeer(Class<? extends Component> componentClass, Object peer) {
+        objectClassNameToPeerMap.put(componentClass.getCanonicalName(), peer);
     }
 }

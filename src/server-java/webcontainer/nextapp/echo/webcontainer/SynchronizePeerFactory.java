@@ -29,7 +29,12 @@
 
 package nextapp.echo.webcontainer;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import nextapp.echo.app.Component;
 import nextapp.echo.app.util.PeerFactory;
+
 
 /**
  * Factory for obtaining <code>XXXSynchronizePeer</code> implementations.
@@ -42,7 +47,10 @@ public class SynchronizePeerFactory {
     /** Peer factory for retrieving synchronization peers. */
     private static final PeerFactory peerFactory 
             = new PeerFactory(RESOURCE_NAME, Thread.currentThread().getContextClassLoader());
-    
+
+    /** Peer factory for retrieving synchronization peers. */
+    private static final Map<Class, ComponentSynchronizePeer> peerRegistry = new HashMap<Class, ComponentSynchronizePeer>();
+
     /**
      * Non-instantiable class.
      */
@@ -80,6 +88,22 @@ public class SynchronizePeerFactory {
      * @return the appropriate <code>ComponentSynchronizePeer</code>
      */
     public static ComponentSynchronizePeer getPeerForComponent(Class componentClass, boolean searchSuperClasses) {
-        return (ComponentSynchronizePeer) peerFactory.getPeerForObject(componentClass, searchSuperClasses);
+        ComponentSynchronizePeer peer = peerRegistry.get(componentClass);
+        if (peer == null) {
+            peer = (ComponentSynchronizePeer) peerFactory.getPeerForObject(componentClass, searchSuperClasses);
+        }
+        return peer;
+    }
+    
+    /**
+     * Register manually a peer for a given component class
+     * Peers do not have to be registered in SynchronizePeerBindings.properties
+     * 
+     * @param componentClass the component class
+     * @param peer the peer corresponding to the component class
+     */
+    public static void registerSynchronizePeer(Class<? extends Component> componentClass, ComponentSynchronizePeer peer) {
+        peerRegistry.put(componentClass, peer);
+        peerFactory.registerPeer(componentClass, peer);
     }
 }
