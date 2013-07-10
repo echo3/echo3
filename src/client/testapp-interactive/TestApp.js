@@ -27,6 +27,7 @@ TestApp = Core.extend(Echo.Application, {
         testScreen.addTest("SplitPane");
         testScreen.addTest("TextComponent");
         testScreen.addTest("WindowPane");
+        testScreen.addTest("ButtonAlignment");
         this.rootComponent.add(testScreen);
     }
 });
@@ -420,5 +421,131 @@ TestApp.Tests.WindowPane = Core.extend(TestApp.TestPane, {
 
     _setTitleNull: function() {
         this.windowPane.set("title", null);
+    }
+});
+
+TestApp.Tests.ButtonAlignment = Core.extend(TestApp.TestPane, {
+
+    $construct: function() {
+        TestApp.TestPane.call(this);
+
+        var middlealign = {horizontal: "center", vertical: "middle"};
+        var rightalign = {horizontal: "right", vertical: "middle"};
+        var bottomalign = {horizontal: "center", vertical: "bottom"};
+        var textMiddle = {horizontal: "middle"};
+        var textRight = {horizontal: "right"};
+        var img = "img/test.png";
+        var grid = new Echo.Grid({
+            size: 6,
+            insets: "3px",
+            background: "green",
+            width: "200px",
+            children: [
+                new Echo.Label({text: ""}),
+                new Echo.Label({text: "Text only"}),
+                new Echo.Label({text: "Icon only"}),
+                new Echo.Label({text: "Text and Icon"}),
+                new Echo.Label({text: "Text-align middle"}),
+                new Echo.Label({text: "Text-align right"}),
+                new Echo.Label({text: "Left", layoutData: { rowSpan: 3}}),
+
+                new Echo.Button({width: "100", text: "text", height: "65px", background: "yellow"}),
+                new Echo.Button({width: "100", icon: img, height: "65px", background: "orange"}),
+                new Echo.Button({width: "140", text: "text", icon: img, height: "65px", background: "magenta"}),
+                new Echo.Button({width: "140", text: "text", icon: img, height: "65px", background: "cyan", textAlignment: textMiddle}),
+                new Echo.Button({width: "140", text: "text", icon: img, height: "65px", background: "lightgray", textAlignment: textRight}),
+
+                new Echo.RadioButton({width: "100", text: "text", height: "65px", background: "yellow"}),
+                new Echo.RadioButton({width: "100", icon: img, height: "65px", background: "orange"}),
+                new Echo.RadioButton({width: "140", text: "text", icon: img, height: "65px", background: "magenta"}),
+                new Echo.RadioButton({width: "140", text: "text", icon: img, height: "65px", background: "cyan", textAlignment: textMiddle}),
+                new Echo.RadioButton({width: "140", text: "text", icon: img, height: "65px", background: "lightgray", textAlignment: textRight}),
+
+                new Echo.CheckBox({width: "100", text: "text", height: "65px", background: "yellow"}),
+                new Echo.CheckBox({width: "100", icon: img, height: "65px", background: "orange"}),
+                new Echo.CheckBox({width: "140", text: "text", icon: img, height: "65px", background: "magenta"}),
+                new Echo.CheckBox({width: "140", text: "text", icon: img, height: "65px", background: "cyan", textAlignment: textMiddle}),
+                new Echo.CheckBox({width: "140", text: "text", icon: img, height: "65px", background: "lightgray", textAlignment: textRight}),
+
+                new Echo.Label({text: ""}),
+                new Echo.Label({text: "Text only"}),
+                new Echo.Label({text: "Icon only"}),
+                new Echo.Label({text: "Text and Icon"}),
+                new Echo.Label({text: "Text-align middle"}),
+                new Echo.Label({text: "Text-align right"}),
+                new Echo.Label({text: "Middle", layoutData: { rowSpan: 3}}),
+
+                new Echo.Button({text: "text", height: "65px", background: "yellow", alignment: middlealign}),
+                new Echo.Button({ icon: img, height: "65px", background: "orange", alignment: middlealign}),
+                new Echo.Button({ text: "text", icon: img, height: "65px", background: "magenta", alignment: middlealign}),
+                new Echo.Button({ text: "text", icon: img, height: "65px", background: "cyan", alignment: middlealign, textAlignment: textMiddle}),
+                new Echo.Button({ text: "text", icon: img, height: "65px", background: "lightgray", alignment: middlealign, textAlignment: textRight}),
+
+                new Echo.RadioButton({text: "text", height: "65px", background: "yellow", alignment: middlealign}),
+                new Echo.RadioButton({ icon: img, height: "65px", background: "orange", alignment: middlealign}),
+                new Echo.RadioButton({ text: "text", icon: img, height: "65px", background: "magenta", alignment: middlealign}),
+                new Echo.RadioButton({ text: "text", icon: img, height: "65px", background: "cyan", alignment: middlealign, textAlignment: textMiddle}),
+                new Echo.RadioButton({ text: "text", icon: img, height: "65px", background: "lightgray", alignment: middlealign, textAlignment: textRight}),
+
+                new Echo.CheckBox({text: "text", height: "65px", background: "yellow", alignment: middlealign}),
+                new Echo.CheckBox({ icon: img, height: "65px", background: "orange", alignment: middlealign}),
+                new Echo.CheckBox({ text: "text", icon: img, height: "65px", background: "magenta", alignment: middlealign}),
+                new Echo.CheckBox({ text: "text", icon: img, height: "65px", background: "cyan", alignment: middlealign, textAlignment: textMiddle}),
+                new Echo.CheckBox({ text: "text", icon: img, height: "65px", background: "lightgray", alignment: middlealign, textAlignment: textRight}),
+
+                new Echo.Label({text: ""}),
+                new Echo.Label({text: "Text only"}),
+                new Echo.Label({text: "Icon only"}),
+                new Echo.Label({text: "Text and Icon"}),
+                new Echo.Label({text: "Text-align middle"}),
+                new Echo.Label({text: "Text-align right"}),
+                new Echo.Label({text: "Right", layoutData: { rowSpan: 3}}),
+
+                new Echo.Button({text: "text", height: "65px", background: "yellow", alignment: rightalign}),
+                new Echo.Button({ icon: img, height: "65px", background: "orange", alignment: rightalign}),
+                new Echo.Button({ text: "text", icon: img, height: "65px", background: "magenta", alignment: rightalign}),
+                new Echo.Button({ text: "text", icon: img, height: "65px", background: "cyan", alignment: rightalign, textAlignment: textMiddle}),
+                new Echo.Button({ text: "text", icon: img, height: "65px", background: "lightgray", alignment: rightalign, textAlignment: textRight}),
+
+                new Echo.RadioButton({text: "text", height: "65px", background: "yellow", alignment: rightalign}),
+                new Echo.RadioButton({ icon: img, height: "65px", background: "orange", alignment: rightalign}),
+                new Echo.RadioButton({ text: "text", icon: img, height: "65px", background: "magenta", alignment: rightalign}),
+                new Echo.RadioButton({ text: "text", icon: img, height: "65px", background: "cyan", alignment: rightalign, textAlignment: textMiddle}),
+                new Echo.RadioButton({ text: "text", icon: img, height: "65px", background: "lightgray", alignment: rightalign, textAlignment: textRight}),
+
+                new Echo.CheckBox({text: "text", height: "65px", background: "yellow", alignment: rightalign}),
+                new Echo.CheckBox({ icon: img, height: "65px", background: "orange", alignment: rightalign}),
+                new Echo.CheckBox({ text: "text", icon: img, height: "65px", background: "magenta", alignment: rightalign}),
+                new Echo.CheckBox({ text: "text", icon: img, height: "65px", background: "cyan", alignment: rightalign, textAlignment: textMiddle}),
+                new Echo.CheckBox({ text: "text", icon: img, height: "65px", background: "lightgray", alignment: rightalign, textAlignment: textRight}),
+
+                new Echo.Label({text: ""}),
+                new Echo.Label({text: "Text only"}),
+                new Echo.Label({text: "Icon only"}),
+                new Echo.Label({text: "Text and Icon"}),
+                new Echo.Label({text: "Text-align middle"}),
+                new Echo.Label({text: "Text-align right"}),
+                new Echo.Label({text: "Bottom", layoutData: { rowSpan: 3}}),
+
+                new Echo.Button({text: "text", height: "65px", background: "yellow", alignment: bottomalign}),
+                new Echo.Button({ icon: img, height: "65px", background: "orange", alignment: bottomalign}),
+                new Echo.Button({ text: "text", icon: img, height: "65px", background: "magenta", alignment: bottomalign}),
+                new Echo.Button({ text: "text", icon: img, height: "65px", background: "cyan", alignment: bottomalign, textAlignment: textMiddle}),
+                new Echo.Button({ text: "text", icon: img, height: "65px", background: "lightgray", alignment: bottomalign, textAlignment: textRight}),
+
+                new Echo.RadioButton({text: "text", height: "65px", background: "yellow", alignment: bottomalign}),
+                new Echo.RadioButton({ icon: img, height: "65px", background: "orange", alignment: bottomalign}),
+                new Echo.RadioButton({ text: "text", icon: img, height: "65px", background: "magenta", alignment: bottomalign}),
+                new Echo.RadioButton({ text: "text", icon: img, height: "65px", background: "cyan", alignment: bottomalign, textAlignment: textMiddle}),
+                new Echo.RadioButton({ text: "text", icon: img, height: "65px", background: "lightgray", alignment: bottomalign, textAlignment: textRight}),
+
+                new Echo.CheckBox({text: "text", height: "65px", background: "yellow", alignment: bottomalign}),
+                new Echo.CheckBox({ icon: img, height: "65px", background: "orange", alignment: bottomalign}),
+                new Echo.CheckBox({ text: "text", icon: img, height: "65px", background: "magenta", alignment: bottomalign}),
+                new Echo.CheckBox({ text: "text", icon: img, height: "65px", background: "cyan", alignment: bottomalign, textAlignment: textMiddle}),
+                new Echo.CheckBox({ text: "text", icon: img, height: "65px", background: "lightgray", alignment: bottomalign, textAlignment: textRight})
+            ]
+        });
+       this.add(grid);
     }
 });
