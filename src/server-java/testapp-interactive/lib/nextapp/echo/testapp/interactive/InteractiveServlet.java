@@ -33,6 +33,7 @@ import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.webcontainer.Service;
 import nextapp.echo.webcontainer.WebContainerServlet;
 import nextapp.echo.webcontainer.service.JavaScriptService;
+import nextapp.echo.webcontainer.service.StaticBinaryService;
 import nextapp.echo.webcontainer.service.StaticTextService;
 
 /**
@@ -57,7 +58,13 @@ public class InteractiveServlet extends WebContainerServlet {
 
     private static final Service CUSTOM_STYLE_SHEET = StaticTextService.forResource("CustomCSS", "text/css",
             "nextapp/echo/testapp/interactive/resource/css/Custom.css");
-    
+
+    private static final Service CUSTOM_FONT = StaticBinaryService.forResource("AlexBrushFont", "application/x-font-woff",
+            "nextapp/echo/testapp/interactive/resource/font/alexbrush-regular-otf-webfont.woff");
+
+    private static final Service CUSTOM_FONT_JS = JavaScriptService.forResource("CustomFontJS", 
+            "nextapp/echo/testapp/interactive/resource/js/CustomFont.js");
+
     
     static {
         System.setProperty("echo.js.enablecaching", "true");
@@ -72,6 +79,9 @@ public class InteractiveServlet extends WebContainerServlet {
         if (USE_CUSTOM_CSS) {
             addInitStyleSheet(CUSTOM_STYLE_SHEET);
         }
+        
+        addInitScript(CUSTOM_FONT_JS);
+        getServiceRegistry().add(CUSTOM_FONT);
     }
     
     /**
