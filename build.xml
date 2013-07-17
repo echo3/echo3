@@ -547,11 +547,15 @@
             </not>
         </condition>
         <fail unless="secure_env" message="No secure environment variables available, skipping snapshot deployment" />
-        <antcall target="mvn.snapshot" />
+        <antcall target="-mvn.snapshot" />
     </target>
 
-    <target name="mvn.snapshot" depends="dist, doc.jars, -mvn.generate.pom, -mvn.inittasks"
+    <target name="mvn.snapshot" depends="dist, doc.jars, -mvn.snapshot"
             description="Deploy snapshot version to configured Maven snapshot repository">
+    </target>
+
+    <!-- Synthetic Implementation target for code reuse -->
+    <target name="-mvn.snapshot" depends="-mvn.generate.pom, -mvn.inittasks">
         <!-- The artifact:deploy tasks do not repesct settings.xml for proxy/auth, so we use the mvn task -->
         <!-- Deploy Echo App API module. -->
         <artifact:mvn>
