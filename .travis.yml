@@ -1,1 +1,15 @@
 language: java
+
+# Snapshot deployment to Sonatype Maven repository
+# The password is encrypted using "travis encrypt -r echo3/echo3 SONATYPE_PASSWORD=password"
+# and only decrypted and set as environment variable by travis-ci if the build runs in the context of
+# the echo3/echo3 github repository.
+
+env:
+  global:
+  - SONATYPE_USERNAME=bschmid
+  - secure: "UTEI77pRoUliei20VAnOTJ7C0SuR234w3lbdR3NqBxvItyMJBHpv+/1nxNLhtvbx0L7DXOvdqqUnAn2vFPXmUtJFUq+G038FjNKhHHVki9YKN9++72a73DuCKQC2vgK+5rNTpcKjy3y48lPJSCkXfcA4J87uovW5woKW7GIHyJo="
+
+after_success:
+- python resource/travis-ci/addServer.py
+- ant travis.mvn.snapshot

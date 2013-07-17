@@ -538,6 +538,18 @@
         </artifact:install>
 	</target>
 
+    <!-- Deploy snapshot to Sonatype Maven repository. Called by Travis-CI -->
+    <target name="travis.mvn.snapshot">
+        <property environment="env"/>
+        <condition property="secure_env">
+            <not>
+                <equals arg1="${env.TRAVIS_SECURE_ENV_VARS}" arg2="false"/>
+            </not>
+        </condition>
+        <fail unless="secure_env" message="No secure environment variables available, skipping snapshot deployment" />
+        <antcall target="mvn.snapshot" />
+    </target>
+
     <target name="mvn.snapshot" depends="dist, doc.jars, -mvn.generate.pom, -mvn.inittasks"
             description="Deploy snapshot version to configured Maven snapshot repository">
         <!-- The artifact:deploy tasks do not repesct settings.xml for proxy/auth, so we use the mvn task -->
