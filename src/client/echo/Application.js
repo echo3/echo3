@@ -2739,8 +2739,7 @@ Echo.Update.Manager = Core.extend({
  *
  * @sp {String} actionCommand the action command fired in action events 
  *     when the button is pushed
- * @sp {#Alignment} alignment the alignment of the button's content (only horizontal alignments are supported, any vertical
- *     component of the alignment value will not be rendered)
+ * @sp {#Alignment} alignment the alignment of the button's content
  * @sp {#FillImage} backgroundImage the background image
  * @sp {#Border} border the default button border
  * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the button
