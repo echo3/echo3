@@ -183,7 +183,7 @@ class OutputProcessor {
             throw new SynchronizationException("Cannot serialize server state.", ex);
         }
         
-        if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
+        if (ServerConfiguration.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
             // Print ServerMessage DOM to console. 
             try {
                 System.err.println("======== Response: " + userInstance.getCurrentTransactionId() + " ========");
