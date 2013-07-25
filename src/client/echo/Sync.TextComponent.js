@@ -269,7 +269,7 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
      * @param parentElement the parent element
      */
     renderAddToParent: function(parentElement) {
-        if (Core.Web.Env.ENGINE_MSHTML && this.percentWidth) {
+        if (Core.Web.Env.ENGINE_MSHTML && this.percentWidth && Core.Web.Env.BROWSER_VERSION_MAJOR < 8) {
             this.container = document.createElement("div");
             this.container.appendChild(this.input);
             parentElement.appendChild(this.container);
@@ -297,9 +297,8 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
             if (Core.Web.Env.ENGINE_MSHTML) {
                 // Add additional 1px for IE.
                 borderSize += 1;
-                // Add default windows scroll bar width to border size for Internet Explorer browsers. Seems to be not
-                // needed in IE versions 8 and higher and instead causes problems when text components are embedded in
-                // e.g. tables.
+                // Add default windows scroll bar width to border size for Internet Explorer browsers.
+                // For IE8+, we don't need a container div and can simply use the CSS property box-sizing=border-box instead.
                 if (Core.Web.Env.BROWSER_VERSION_MAJOR < 8) {
                     if (this.container) {
                         this.container.style.width = this._adjustPercentWidth(100, Core.Web.Measure.SCROLL_WIDTH,
@@ -307,6 +306,10 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
                     } else {
                         borderSize += Core.Web.Measure.SCROLL_WIDTH;
                     }
+                } else {
+                    this.input.style.width = width;
+                    this.input.style.boxSizing = "border-box";
+                    return;
                 }
             } else if (Core.Web.Env.BROWSER_CHROME && this.input.nodeName.toLowerCase() == "textarea") {
                 // Add additional 3px to TEXTAREA elements for Chrome.
