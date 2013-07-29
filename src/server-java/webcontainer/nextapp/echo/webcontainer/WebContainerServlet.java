@@ -42,10 +42,7 @@ import nextapp.echo.webcontainer.service.SynchronizeService;
 import nextapp.echo.webcontainer.service.WindowHtmlService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -59,20 +56,8 @@ import javax.servlet.http.HttpServletResponse;
  * deployment descriptor.
  */
 public abstract class WebContainerServlet extends HttpServlet {
-    
-    /**
-     * Flag indicating whether client/server messages should be dumped to console.
-     */
-    public static final boolean DEBUG_PRINT_MESSAGES_TO_CONSOLE;
-    static {
-        boolean value;
-        try {
-            value = "true".equals(System.getProperty("echo.syncdump"));
-        } catch (SecurityException ex) {
-            value = false;
-        }
-        DEBUG_PRINT_MESSAGES_TO_CONSOLE = value;
-    }
+
+
     
     /** A <code>ThreadLocal</code> reference to the <code>Connection</code> relevant to the current thread. */ 
     private static final ThreadLocal activeConnection = new ThreadLocal();
@@ -264,7 +249,29 @@ public abstract class WebContainerServlet extends HttpServlet {
         services.add(WindowHtmlService.INSTANCE);
         services.add(AsyncMonitorService.INSTANCE);
     }
-    
+
+    public void init() throws ServletException {
+        super.init();
+
+        // Read servlet init parameters and update server configuration
+        ServerConfiguration.adoptServletConfiguration(getInitParameterMap());
+    }
+
+    /**
+     * Return the servlet's init parameters as a map.
+     *
+     * @return servlet init parameters as map
+     */
+    private Map getInitParameterMap() {
+        Map initParameters = new HashMap();
+        Enumeration parameterNames = getInitParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String name = (String) parameterNames.nextElement();
+            initParameters.put(name, getInitParameter(name));
+        }
+        return initParameters;
+    }
+
     /**
      * Adds a JavaScript service to be loaded at initialization.
      * 
