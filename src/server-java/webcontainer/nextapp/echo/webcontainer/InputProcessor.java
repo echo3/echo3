@@ -141,13 +141,13 @@ public class InputProcessor {
             // Flag full refresh for an out of sync client.
             updateManager.getServerUpdateManager().processFullRefresh();
             this.syncState.setOutOfSync();
-            if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
+            if (ServerConfiguration.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
                 Log.log("Client out of sync: client id = " + clientMessage.getTransactionId() + 
                         ", server id = " + userInstance.getCurrentTransactionId());
             }
         }
         
-        if (WebContainerServlet.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
+        if (ServerConfiguration.DEBUG_PRINT_MESSAGES_TO_CONSOLE) {
             // Print ClientMessage to console. 
             try {
                 System.err.println("======== Request: " + userInstance.getCurrentTransactionId() + " ========");
