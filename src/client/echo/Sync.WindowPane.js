@@ -94,10 +94,27 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
                     }
                 }
             }
-        })
+        }),
+
+        /**
+         * Reference to the modal overlay prototype DIV element.
+         * @type Element
+         */
+        _prototypeModalOverlay: null,
+
+        /**
+         * Creates the prototype DOM hierarchy for the semi-transparent overlay displayed when the window is modal.
+         * @type Element
+         */
+        _createPrototypeModalOverlay: function() {
+            var div = document.createElement("div");
+            div.style.cssText =  "-ms-filter: \"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)\"; background-color: #000; filter: alpha(opacity = 50); opacity: 0.5; z-index: 1; position: fixed; left: 0px; top: 0px; width: 100%; height: 100%;";
+            return div;
+        }
     },
     
     $load: function() {
+        this._prototypeModalOverlay = this._createPrototypeModalOverlay();
         Echo.Render.registerPeer("WindowPane", this);
     },
     
@@ -184,6 +201,16 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
      * @type Element
      */
     _overlay: null,
+
+    /**
+     * Semi-transparent overlay DIV which covers all other elements behind the window, if it is set to modal.
+     */
+    _modalOverlayDiv: null,
+
+    /**
+     * Internal reference to the window pane's modal change listener.
+     */
+    _handleModalChangeRef: null,
 
     /**
      * The closing animation time, in milliseconds.  Stored in instance variable due to unavailability of 
@@ -573,6 +600,9 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._opening = update.parent == this.component.parent;
         this._rtl = !this.component.getRenderLayoutDirection().isLeftToRight();
         this._closeAnimationTime = Core.Web.Env.NOT_SUPPORTED_CSS_OPACITY ? 0 : this.component.render("closeAnimationTime", 0);
+
+        this._handleModalChangeRef = Core.method(this, this._handleModalChange);
+        this.client.application.addListener("modal", this._handleModalChangeRef);
         
         // Create content DIV.
         // Content DIV will be appended to main DIV by _renderAddFrame().
@@ -641,7 +671,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         this._div.id = this.component.renderId;
         this._div.tabIndex = "0";
         this._div.style.outlineStyle = "none";
-        this._div.style.overflow = "hidden";
+        //this._div.style.overflow = "hidden";
         this._div.style.zIndex = 1;
         if (!this._displayed) {
             this._div.style.visibility = "hidden";
@@ -769,10 +799,11 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
         // The object this._contentDiv will have been created by renderAdd(). 
         // Note that overflow is set to 'hidden' if child is a pane component, this is necessary to workaround what
         // what is presumably a bug in Safari 3.0.x.  It should otherwise not be required.
-        this._contentDiv.style.cssText = "position:absolute;z-index:2;top:" + 
+        // For modal overlay drawing we can't use hidden however, so this might break the Safari fix
+        this._contentDiv.style.cssText = "position:absolute;z-index:3;top:" +
                 (this._contentInsets.top + this._titleBarHeight) + "px;bottom:" + this._contentInsets.bottom + "px;left:" + 
                 this._contentInsets.left + "px;right:" + this._contentInsets.right + "px;" +
-                "overflow:"+ ((this.component.children.length === 0 || this.component.children[0].pane) ? "hidden;" : "auto;");
+                "overflow:"+ ((this.component.children.length === 0 || this.component.children[0].pane) ? "visible;" : "auto;");
         Echo.Sync.Font.renderClear(this.component.render("font"), this._contentDiv);
         if (this.component.children.length > 0 && !this.component.children[0].pane) {
             Echo.Sync.Insets.render(this.component.render("insets"), this._contentDiv, "padding");
@@ -804,6 +835,23 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
 
         // Append main DIV to parent.
         parentElement.appendChild(this._div);
+
+        if (this.component.application.getModalContextRoot() == this.component) {
+            this._modalOverlayDiv = Echo.Sync.WindowPane._prototypeModalOverlay.cloneNode(false);
+            parentElement.insertBefore(this._modalOverlayDiv, this._div);
+        }
+    },
+
+    _handleModalChange: function(e) {
+        if (!e.modal || this.component.application.getModalContextRoot() != this.component) {
+            if (this._modalOverlayDiv) {
+                this._modalOverlayDiv.parentNode.removeChild(this._modalOverlayDiv);
+                this._modalOverlayDiv = null;
+            }
+        } else if (this.component.application.getModalContextRoot() == this.component && this._div && !this._modalOverlayDiv) {
+            this._modalOverlayDiv = Echo.Sync.WindowPane._prototypeModalOverlay.cloneNode(false);
+            this._div.parentNode.insertBefore(this._modalOverlayDiv, this._div);
+        }
     },
 
     /**
@@ -896,6 +944,7 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
+        this.client.application.removeListener("modal", this._handleModalChangeRef);
         this._overlayRemove();
         this._renderDisposeFrame();
         this._maskDiv = null;

@@ -76,7 +76,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         this._div.style.position = "absolute";
         this._div.style.width = "100%";
         this._div.style.height = "100%";
-        this._div.style.overflow = "hidden";
+        this._div.style.overflow = "visible";
         this._div.style.zIndex = "0";
         
         Echo.Sync.renderComponentDefaults(this.component, this._div);
@@ -247,7 +247,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
     _renderFloatingPaneZIndices: function() {
         for (var i = 0; i < this._floatingPaneStack.length; ++i) {
             var childElement = this._childIdToElementMap[this._floatingPaneStack[i].renderId];
-            childElement.style.zIndex = 2 + i;
+            childElement.style.zIndex = 3 + i;
         }
         this._zIndexRenderRequired = false;
     },
