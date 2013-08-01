@@ -1386,7 +1386,7 @@ Echo.RemoteClient.ServerMessage = Core.extend({
                 this.client._asyncManager._start();
             }
         } catch (ex) {
-            this.client.fail("Exception: " + ex);
+            this.client.fail("Exception: " + ex + " -> " + ex.stack);
         }
     },
     
