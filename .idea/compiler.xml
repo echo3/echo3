@@ -18,6 +18,11 @@
       <entry name="?*.tld" />
       <entry name="?*.js" />
       <entry name="?*.css" />
+      <entry name="?*.eot" />
+      <entry name="?*.ttf" />
+      <entry name="?*.svg" />
+      <entry name="?*.otf" />
+      <entry name="?*.woff" />
     </wildcardResourcePatterns>
     <annotationProcessing>
       <profile default="true" name="Default" enabled="false">

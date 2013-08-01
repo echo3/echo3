@@ -45,6 +45,11 @@
         <include name="**/*xml"/>
         <include name="**/*stylesheet"/>
         <include name="**/*css"/>
+        <include name="**/*.eot"/>
+        <include name="**/*.otf"/>
+        <include name="**/*.svg"/>
+        <include name="**/*.ttf"/>
+        <include name="**/*.woff"/>
     </patternset>
     
     <target name="-check.dependencies">
