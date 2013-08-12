@@ -56,7 +56,7 @@ Echo.Client = Core.extend({
     $load: function() {
         // Register resize listener on containing window one time.
         Core.Web.DOM.addEventListener(window, "resize", this._globalWindowResizeListener, false);
-        
+
         var re = /EchoWindowId=([0-9a-f]*\.[0-9a-f]*);/i;
         var match = re.exec(window.name || "");
         this.windowId = match && match[1];
@@ -139,7 +139,13 @@ Echo.Client = Core.extend({
      * Flag indicating wait indicator is active.
      * @type Boolean
      */
-    _waitIndicatorActive: false, 
+    _waitIndicatorActive: false,
+
+    /**
+     * Outdated browser warning.
+     * @type Echo.Client.OutdatedBrowserWarning
+     */
+    _outdatedBrowserWarning: null,
     
     /**
      * Method reference to this._processApplicationFocus().
@@ -189,6 +195,7 @@ Echo.Client = Core.extend({
         this._processKeyRef = Core.method(this, this._processKey);
         this._processApplicationFocusRef = Core.method(this, this._processApplicationFocus);
         this._waitIndicator = new Echo.Client.DefaultWaitIndicator();
+        this._outdatedBrowserWarning = new Echo.Client.DefaultOutdatedBrowserWarning();
         this._waitIndicatorRunnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._waitIndicatorActivate), 
                 this._preWaitIndicatorDelay, false);
     },
@@ -300,7 +307,7 @@ Echo.Client = Core.extend({
         // Update state.
         this.application = application;
         this.domainElement = domainElement;
-        
+
         if (this.application) {
             // Configure new application if being set.
             this.application.client = this;
@@ -310,7 +317,25 @@ Echo.Client = Core.extend({
             Echo.Client._activeClients.push(this);
         }
     },
-    
+
+    /**
+      * Returns whether the detected browser is considered outdated for the current echo JS client implementation.
+      *
+      * @return true, if the browser is outdated - false, if the browser is unknown or supported.
+      */
+    _isBrowserOutdated: function() {
+        return (Core.Web.Env.ENGINE_MSHTML && Core.Web.Env.BROWSER_VERSION_MAJOR < 6); // IE < 6 is outdated
+    },
+
+    /**
+      * Display a warning message about an outdated browser.
+      */
+    _showBrowserWarning: function() {
+        if (this.domainElement && !(this.configuration && this.configuration['OutdatedBrowserWarning.NoWarning'])) {
+            this._outdatedBrowserWarning.show(this);
+        }
+    },
+
     /**
      * Registers a new input restriction.  Input will be restricted until this and all other
      * input restrictions are removed.
@@ -505,6 +530,16 @@ Echo.Client = Core.extend({
     getWaitIndicator: function() {
         return this._waitIndicator;
     },
+
+    /**
+     * Returns the configured outdated browser warning.
+     *
+     * @return the outdated browser warning
+     * @type Echo.Client.OutdatedBrowserWarning
+     */
+    getOutdatedBrowserWarning: function() {
+        return this._outdatedBrowserWarning;
+    },
     
     /**
      * Listener for application change of component focus:
@@ -639,7 +674,7 @@ Echo.Client = Core.extend({
         }
         this._inputRestrictionListeners[component.renderId] = l;
     },
-    
+
     /**
      * Removes an input restriction.
      *
@@ -714,7 +749,20 @@ Echo.Client = Core.extend({
         }
         this._waitIndicator = waitIndicator;
     },
-    
+
+    /**
+     * Set the outdated browser warning that will be displayed when the client starts in browser
+     * browser version that is considered outdated.
+     *
+     * @Param {Echo.Client.OutdatedBrowserWarning} warning the new outdated browser warning
+     */
+    setOutdatedBrowserWarning: function(warning) {
+        if (this._outdatedBrowserWarning && this._outdatedBrowserWarning.dispose) {
+            this._outdatedBrowserWarning.dispose(this);
+        }
+        this._outdatedBrowserWarning = warning;
+    },
+
     /**
      * Unregisters an element (which is not a descendant of <code>domainElement</code>) that will contain rendered components.
      * 
@@ -794,6 +842,88 @@ Echo.Client.Timer = Core.extend({
         }
         out += "TOT:" + (this._times[this._times.length - 1] - this._times[0]) + "ms";
         return out;
+    }
+});
+
+/**
+ * Abstract base class for message windows about outdated browser, which is displayed
+ * when the client starts up in a browser version that is considered outdated.
+ */
+Echo.Client.OutdatedBrowserWarning = Core.extend({
+    $abstract: {
+        /**
+         * Invoked when the message window about an outdated browser
+         * should be shown. The implementation should add the message
+         * to the DOM and provide a way to dismiss the warning message,
+         * if desired.
+         *
+         * @param {Echo.Client} the client
+         */
+        show: function(client) { }
+    },
+
+    $virtual: {
+        /**
+         * Disposes of the outdated browser warning.
+         *
+         * @param {Echo.Client} the client
+         */
+        dispose: null
+    }
+});
+
+/**
+ * Default outdated browser warning implementation
+ */
+Echo.Client.DefaultOutdatedBrowserWarning = Core.extend(Echo.Client.OutdatedBrowserWarning, {
+    /** Container div */
+    _div: null,
+
+    /** Anchor element within the container div used to dismiss the warning */
+    _aClose: null,
+
+    /** Creates a new DefaultWaitIndicator. */
+    $construct: function() {
+        this._div = document.createElement("div");
+        this._div.id = "outdatedBrowserHint";
+
+        // Style the message window
+        this._div.style.cssText = "border: 1px solid black; position:absolute;z-index:32767;width:100%;overflow:hidden; " +
+            "background-color:white;color:black;text-align:center;padding:10px";
+
+        // Anchor element that can be clicked to dismiss the warning
+        this._aClose = document.createElement("a");
+        this._aClose.style.cssText = "text-decoration: underline; cursor: pointer; color: blue;";
+        this._aClose.setAttribute("onClick", "document.getElementById('"+this._div.id+"').parentNode.removeChild(document.getElementById('"+this._div.id+"')); return false;");
+    },
+
+    /** @see Echo.Client.OutdatedBrowserWarning#show */
+    show: function(client) {
+        if (client.configuration && client.configuration["OutdatedBrowserWarning.Text"]) {
+            this._div.innerHTML = client.configuration["OutdatedBrowserWarning.Text"];
+        } else {
+            this._div.innerHTML = 'You are using an outdated browser. Please update to a more recent version: ' +
+                '<a href="http://whatbrowser.org">http://whatbrowser.org</a> ';
+        }
+
+        if (client.configuration && client.configuration["OutdatedBrowserWarning.CloseText"]) {
+            this._aClose.innerHTML = client.configuration["OutdatedBrowserWarning.CloseText"];
+        } else {
+            this._aClose.innerHTML = "Click to dismiss the warning";
+        }
+
+        this._div.appendChild(this._aClose);
+
+        // Insert div as the first child of the parent element of the application root element (usually the body)
+        client.domainElement.parentNode.insertBefore(this._div, client.domainElement);
+    },
+
+    /** @see Echo.Client.OutdatedBrowserWarning#dispose */
+    dispose: function(client) {
+        if (this._div && this._div.parentNode) {
+            this._div.parentNode.removeChild(this._div);
+        }
+        this._div = null;
     }
 });
 
