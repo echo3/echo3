@@ -65,7 +65,9 @@ public class InteractiveServlet extends WebContainerServlet {
     private static final Service CUSTOM_FONT_JS = JavaScriptService.forResource("CustomFontJS", 
             "nextapp/echo/testapp/interactive/resource/js/CustomFont.js");
 
-    
+    private static final Service CUSTOM_OUTDATED_BROWSER_WARNING = JavaScriptService.forResource("CustomOutdatedBrowserWarning",
+            "nextapp/echo/testapp/interactive/resource/js/CustomOutdatedBrowserWarning.js");
+
     static {
         System.setProperty("echo.js.enablecaching", "true");
         System.setProperty("echo.allowiecompression", "true");
@@ -82,6 +84,7 @@ public class InteractiveServlet extends WebContainerServlet {
         
         addInitScript(CUSTOM_FONT_JS);
         getServiceRegistry().add(CUSTOM_FONT);
+        addInitScript(CUSTOM_OUTDATED_BROWSER_WARNING);
     }
     
     /**

@@ -148,7 +148,9 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * Events waiting for process.
      */
     _pending_events: null,
-    
+
+    _initialSyncComplete: false,
+
     /**
      * MethodRunnable that handle client async property updates.
      */
@@ -515,6 +517,13 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
 
         if (this._asyncManager && this._asyncManager._syncComplete) {
             this._asyncManager._syncComplete();
+        }
+
+        if (!this._initialSyncComplete) {
+            if (this._isBrowserOutdated()) {
+                this._showBrowserWarning();
+            }
+            this._initialSyncComplete = true;
         }
     },
     

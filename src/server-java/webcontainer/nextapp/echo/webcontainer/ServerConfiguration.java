@@ -62,6 +62,16 @@ public class ServerConfiguration {
      */
     public static boolean IE_EDGE_MODE;
 
+    /**
+     * Message to display when the browser does not have JavaScript enabled.
+     */
+    public static String NOSCRIPT_MESSAGE;
+
+    /**
+     * URL to display as link following the message when JavaScript is disabled.
+     */
+    public static String NOSCRIPT_URL;
+
     static {
         // Initialize configuration with System properties, if available
         readConfiguration(null);
@@ -78,6 +88,9 @@ public class ServerConfiguration {
         ALLOW_IE_COMPRESSION = getConfigValue("echo.allowiecompression", initParameters, false);
         JAVASCRIPT_COMPRESSION_ENABLED = getConfigValue("echo.javascript.compression", initParameters, false);
         IE_EDGE_MODE = getConfigValue("echo.ie-edge-mode", initParameters, true);
+        NOSCRIPT_MESSAGE = getConfigValue("echo.noscript.message", initParameters, "This site only works with JavaScript " +
+                "enabled. Please enable JavaScript and reload the page. Hints how to enable JavaScript can be found at: ");
+        NOSCRIPT_URL = getConfigValue("echo.noscript.url", initParameters, "http://www.enable-javascript.com/");
     }
 
     /**
