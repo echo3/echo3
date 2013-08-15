@@ -103,6 +103,9 @@ Echo.FreeClient = Core.extend(Echo.Client, {
      */
     init: function() {
         Core.Web.init();
+        if (this._isBrowserOutdated()) {
+            this._showBrowserWarning();
+        }
         this.application.updateManager.addUpdateListener(this._processUpdateRef);
     },
     

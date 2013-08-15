@@ -149,6 +149,8 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * @type Number
      */
     transactionId: 0,
+
+    _initialSyncComplete: false,
     
     /**
      * Creates a new RemoteClient instance.
@@ -481,6 +483,13 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
         if (e.source.resync) {
             this.displayError(this.domainElement, this.configuration["Resync.Message"], null, 
                     this.configuration["Action.Continue"], null, Echo.Client.STYLE_MESSAGE);
+        }
+
+        if (!this._initialSyncComplete) {
+            if (this._isBrowserOutdated()) {
+                this._showBrowserWarning();
+            }
+            this._initialSyncComplete = true;
         }
     },
     

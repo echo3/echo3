@@ -55,6 +55,9 @@ public class InteractiveServlet extends WebContainerServlet {
 
     private static final Service CUSTOM_STYLE_SHEET = StaticTextService.forResource("CustomCSS", "text/css",
             "nextapp/echo/testapp/interactive/resource/css/Custom.css");
+
+    private static final Service CUSTOM_OUTDATED_BROWSER_WARNING = JavaScriptService.forResource("CustomOutdatedBrowserWarning",
+            "nextapp/echo/testapp/interactive/resource/js/CustomOutdatedBrowserWarning.js");
     
     public InteractiveServlet() {
         super();
@@ -64,6 +67,7 @@ public class InteractiveServlet extends WebContainerServlet {
         if (USE_CUSTOM_CSS) {
             addInitStyleSheet(CUSTOM_STYLE_SHEET);
         }
+        addInitScript(CUSTOM_OUTDATED_BROWSER_WARNING);
     }
     
     /**

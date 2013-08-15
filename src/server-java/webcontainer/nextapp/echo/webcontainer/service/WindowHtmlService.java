@@ -182,7 +182,23 @@ implements Service {
         rootDivElement.setAttribute("style", "position:absolute;width:100%;height:100%;");
         rootDivElement.setAttribute("id", userInstanceContainer.getRootHtmlElementId());
         bodyElement.appendChild(rootDivElement);
-        
+
+        // Add a <noscript> element that shows up when JavaScript is disabled in the browser (and echo therefor
+        // does not work at all)
+        if (ServerConfiguration.NOSCRIPT_MESSAGE != null && !"".equals(ServerConfiguration.NOSCRIPT_MESSAGE)) {
+            Element jsDisabledDiv = document.createElement("noscript");
+            jsDisabledDiv.setTextContent(ServerConfiguration.NOSCRIPT_MESSAGE);
+            jsDisabledDiv.setAttribute("style", "padding: 10px; font-weight: bold; font-size: 14pt;");
+            bodyElement.appendChild(jsDisabledDiv);
+
+            if (ServerConfiguration.NOSCRIPT_URL != null && !"".equals(ServerConfiguration.NOSCRIPT_URL)) {
+                Element jsA = document.createElement("a");
+                jsA.setAttribute("href", ServerConfiguration.NOSCRIPT_URL);
+                jsA.setTextContent(ServerConfiguration.NOSCRIPT_URL);
+                jsDisabledDiv.appendChild(jsA);
+            }
+        }
+
         return document;
     }
     
