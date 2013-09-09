@@ -60,6 +60,21 @@ implements Serializable {
      * be restarted in the event session expires.  An alert message will not be shown if this value is set.
      */
     public static final String SESSION_EXPIRATION_RESTART = "SessionExpiration.Restart";
+
+    /**
+     * Property name constant for boolean flag indicating whether the application should automatically
+     * be restarted in the event a XMLHttpRequest response is invalid (non-2xx status codes, no XML in response).
+     * This can happen if for example a web access management agent or proxy intercepts the AJAX request and returns
+     * a login page instead.
+     * An alert message will not be shown if this value is set.
+     */
+    public static final String INVALID_RESPONSE_RESTART = "InvalidResponse.Restart";
+
+    /**
+     * Property name constant for the URI which should be displayed in the event
+     * a response is invalid. An alert message will not be shown if this value is set.
+     */
+    public static final String INVALID_RESPONSE_URI = "InvalidResponse.URI";
     
     /**
      * Property name constant for the alert message which should be displayed when
