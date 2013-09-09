@@ -318,6 +318,13 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
                 this._handleSessionExpiration();
                 return;
             } else {
+                if (this.configuration["InvalidResponse.Restart"]) {
+                    window.location.reload();
+                    return;
+                } else if (this.configuration["InvalidResponse.URI"]) {
+                    window.location.href = this.configuration["InvalidResponse.URI"];
+                    return;
+                }
                 detail = e.source.getResponseText();
             }
         } else {
