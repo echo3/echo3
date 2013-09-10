@@ -440,7 +440,7 @@ Echo.Sync.Color = {
      * @param {String} styleAttribute the name of the style attribute, e.g., "color", "backgroundColor" 
      */
     renderClear: function(color, element, styleAttribute) {
-        element.style[styleAttribute] = color ? color : "";
+        element.style[styleAttribute] = color ? this.toTransparent(color) : "";
     },
     
     /**
