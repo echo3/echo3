@@ -843,12 +843,12 @@ Echo.Sync.WindowPane = Core.extend(Echo.Render.ComponentSync, {
     },
 
     _handleModalChange: function(e) {
-        if (!e.modal || this.component.application.getModalContextRoot() != this.component) {
+        if (!e.modal || (this.component.application && this.component.application.getModalContextRoot() != this.component)) {
             if (this._modalOverlayDiv) {
                 this._modalOverlayDiv.parentNode.removeChild(this._modalOverlayDiv);
                 this._modalOverlayDiv = null;
             }
-        } else if (this.component.application.getModalContextRoot() == this.component && this._div && !this._modalOverlayDiv) {
+        } else if (this.component.application && this.component.application.getModalContextRoot() == this.component && this._div && !this._modalOverlayDiv) {
             this._modalOverlayDiv = Echo.Sync.WindowPane._prototypeModalOverlay.cloneNode(false);
             this._div.parentNode.insertBefore(this._modalOverlayDiv, this._div);
         }
