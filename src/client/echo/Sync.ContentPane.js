@@ -88,20 +88,23 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         if (!background && !backgroundImage) {
             Echo.Sync.FillImage.render(this.client.getResourceUrl("Echo", "resource/Transparent.gif"), this._div);  
         }
-    
+
+        // Store values of horizontal/vertical scroll such that
+        // renderDisplay() will adjust scrollbars appropriately after rendering.
+        this._pendingScrollX = this.component.render("horizontalScroll");
+        this._pendingScrollY = this.component.render("verticalScroll");
+        this._scrollcapture = this.component.render("scrollcaptureEnabled");
+
         this._childIdToElementMap = {};
+        this._nonFloatingChild = null;
         
         var componentCount = this.component.getComponentCount();
         for (i = 0; i < componentCount; ++i) {
             var child = this.component.getComponent(i);
             this._renderAddChild(update, child);
         }
-    
-        // Store values of horizontal/vertical scroll such that 
-        // renderDisplay() will adjust scrollbars appropriately after rendering.
-        this._pendingScrollX = this.component.render("horizontalScroll");
-        this._pendingScrollY = this.component.render("verticalScroll");
-        
+        this._updateScrollableChild();
+
         parentElement.appendChild(this._div);
 
         if (this._zIndexRenderRequired) {
@@ -178,64 +181,58 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
             child = child.nextSibling;
         }
     
-        // If a scrollbar adjustment has been requested by renderAdd, perform it.
-        if (this._pendingScrollX || this._pendingScrollY) {
-            var componentCount = this.component.getComponentCount();
-            for (var i = 0; i < componentCount; ++i) {
-                child = this.component.getComponent(i);
-                if (!child.floatingPane) {
-                    var contentElement = this._childIdToElementMap[child.renderId];
-                    var position, percent;
+        var contentElement = this._nonFloatingChild;
+        var position, percent;
 
-                    // Adjust horizontal scroll position, if required.
-                    if (this._pendingScrollX) {
-                        var x = Echo.Sync.Extent.toPixels(this._pendingScrollX);
-                        if (Echo.Sync.Extent.isPercent(this._pendingScrollX) || x < 0) {
-                            percent = x < 0 ? 100 : parseInt(this._pendingScrollX, 10);
-                            position = Math.round((contentElement.scrollWidth - contentElement.offsetWidth) * percent / 100);
-                            if (position > 0) {
-                                contentElement.scrollLeft = position;
-                                if (Core.Web.Env.ENGINE_MSHTML) {
-                                    // IE needs to be told twice.
-                                    position = Math.round((contentElement.scrollWidth - contentElement.offsetWidth) * 
-                                            percent / 100);
-                                    contentElement.scrollLeft = position;
-                                }
-                            }
-                        } else {
-                            contentElement.scrollLeft = x;
-                        }
-                        this._pendingScrollX = null;
+        // Adjust horizontal scroll position, if required.
+        if (this._pendingScrollX) {
+            var x = Echo.Sync.Extent.toPixels(this._pendingScrollX);
+            if (Echo.Sync.Extent.isPercent(this._pendingScrollX) || x < 0) {
+                percent = x < 0 ? 100 : parseInt(this._pendingScrollX, 10);
+                position = Math.round((contentElement.scrollWidth - contentElement.offsetWidth) * percent / 100);
+                if (position > 0) {
+                    contentElement.scrollLeft = position;
+                    if (Core.Web.Env.ENGINE_MSHTML) {
+                        // IE needs to be told twice.
+                        position = Math.round((contentElement.scrollWidth - contentElement.offsetWidth) *
+                                percent / 100);
+                        contentElement.scrollLeft = position;
                     }
-
-                    // Adjust vertical scroll position, if required.
-                    if (this._pendingScrollY) {
-                        var y = Echo.Sync.Extent.toPixels(this._pendingScrollY);
-                        if (Echo.Sync.Extent.isPercent(this._pendingScrollY) || y < 0) {
-                            percent = y < 0 ? 100 : parseInt(this._pendingScrollY, 10);
-                            position = Math.round((contentElement.scrollHeight - contentElement.offsetHeight) * percent / 100);
-                            if (position > 0) {
-                                contentElement.scrollTop = position;
-                                if (Core.Web.Env.ENGINE_MSHTML) {
-                                    // IE needs to be told twice.
-                                    position = Math.round((contentElement.scrollHeight - contentElement.offsetHeight) *
-                                            percent / 100);
-                                    contentElement.scrollTop = position;
-                                }
-                            }
-                        } else {
-                            contentElement.scrollTop = y;
-                        }
-                        this._pendingScrollY = null;
-                    }
-                    break;
                 }
+            } else {
+                contentElement.scrollLeft = x;
             }
+            this._pendingScrollX = null;
+        }
+
+        // Adjust vertical scroll position, if required.
+        if (this._pendingScrollY) {
+            var y = Echo.Sync.Extent.toPixels(this._pendingScrollY);
+            if (Echo.Sync.Extent.isPercent(this._pendingScrollY) || y < 0) {
+                percent = y < 0 ? 100 : parseInt(this._pendingScrollY, 10);
+                position = Math.round((contentElement.scrollHeight - contentElement.offsetHeight) * percent / 100);
+                if (position > 0) {
+                    contentElement.scrollTop = position;
+                    if (Core.Web.Env.ENGINE_MSHTML) {
+                        // IE needs to be told twice.
+                        position = Math.round((contentElement.scrollHeight - contentElement.offsetHeight) *
+                                percent / 100);
+                        contentElement.scrollTop = position;
+                    }
+                }
+            } else {
+                contentElement.scrollTop = y;
+            }
+            this._pendingScrollY = null;
         }
     },
 
     /** @see Echo.Render.ComponentSync#renderDispose */
     renderDispose: function(update) {
+        if (this._nonFloatingChild) {
+            Core.Web.Event.removeAll(this._nonFloatingChild);
+            this._nonFloatingChild = null;
+        }
         this._childIdToElementMap = null;
         this._div = null;
     },
@@ -324,6 +321,8 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
                     this._renderFloatingPaneZIndices();
                 }
             }
+
+            this._updateScrollableChild();
         }
         if (fullRender) {
             this._floatingPaneStack = [];
@@ -342,5 +341,38 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         for (var i = 0; i < this._floatingPaneStack.length; ++i) {
             this._floatingPaneStack[i].set("zIndex", i);
         }
+    },
+
+    /**
+     * Searches the content panes for a non-floating child and updates the property _nonFloatingChild
+     * and the current scroll positions accordingly.
+     */
+    _updateScrollableChild: function() {
+        if (this._scrollcapture && this._nonFloatingChild) {
+            Core.Web.Event.remove(this._nonFloatingChild, "scroll", this, false);
+        }
+
+        this._nonFloatingChild = null;
+        var componentCount = this.component.getComponentCount();
+        for (var i = 0; i < componentCount; ++i) {
+            child = this.component.getComponent(i);
+
+            // A ContentPane may contain at most one non-FloatingPane component as a child.
+            if (!child.floatingPane) {
+                this._nonFloatingChild = this._childIdToElementMap[child.renderId];
+
+                if (this._scrollcapture) {
+                    Core.Web.Event.add(this._nonFloatingChild, "scroll", Core.method(this, this._processScroll), false);
+                }
+
+                break;
+            }
+        }
+    },
+
+    /** Updates the scroll positions on every scrolling update. */
+    _processScroll: function() {
+        this.component.set("horizontalScroll", this._nonFloatingChild.scrollLeft, true);
+        this.component.set("verticalScroll", this._nonFloatingChild.scrollTop, true);
     }
 });

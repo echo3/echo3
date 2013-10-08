@@ -3011,6 +3011,7 @@ Echo.Panel = Core.extend(Echo.Composite, {
  *     <li><code>OVERFLOW_SCROLL</code> always display scrollbars</li>
  *     </ul>
  * @sp {#Extent} verticalScroll the vertical scroll position
+ * @sp {Boolean} scrollcaptureEnabled Determines, if the component tracks updates of the srollbar into the scroll properties.
  */
 Echo.ContentPane = Core.extend(Echo.Component, {
 
