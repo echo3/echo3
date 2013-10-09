@@ -95,6 +95,8 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         this._pendingScrollY = this.component.render("verticalScroll");
         this._scrollcapture = this.component.render("scrollcaptureEnabled");
 
+        Core.Debug.consoleWrite("ContentPane renderAdd() for " + this.component.renderId + ". Scroll properties: " + this._pendingScrollX + "/" + this._pendingScrollY);
+
         this._childIdToElementMap = {};
         this._nonFloatingChild = null;
         
@@ -172,20 +174,16 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         Echo.Render.renderComponentAdd(update, child, childDiv);
         this._div.appendChild(childDiv);
     },
-    
-    /** @see Echo.Render.ComponentSync#renderDisplay */
-    renderDisplay: function() {
-        var child = this._div.firstChild;
-        while (child) {
-            Core.Web.VirtualPosition.redraw(child);
-            child = child.nextSibling;
-        }
-    
+
+    _applyScrollPosition: function () {
         var contentElement = this._nonFloatingChild;
         var position, percent;
 
+        Core.Debug.consoleWrite("Applying scroll properties: " + this._pendingScrollX + "/" + this._pendingScrollY +
+                                    " for " + this.component.renderId);
+
         // Adjust horizontal scroll position, if required.
-        if (this._pendingScrollX) {
+        if (this._pendingScrollX !== null && this._pendingScrollX !== undefined) {
             var x = Echo.Sync.Extent.toPixels(this._pendingScrollX);
             if (Echo.Sync.Extent.isPercent(this._pendingScrollX) || x < 0) {
                 percent = x < 0 ? 100 : parseInt(this._pendingScrollX, 10);
@@ -194,8 +192,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
                     contentElement.scrollLeft = position;
                     if (Core.Web.Env.ENGINE_MSHTML) {
                         // IE needs to be told twice.
-                        position = Math.round((contentElement.scrollWidth - contentElement.offsetWidth) *
-                                percent / 100);
+                        position = Math.round((contentElement.scrollWidth - contentElement.offsetWidth) * percent / 100);
                         contentElement.scrollLeft = position;
                     }
                 }
@@ -206,7 +203,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
         }
 
         // Adjust vertical scroll position, if required.
-        if (this._pendingScrollY) {
+        if (this._pendingScrollY !== null && this._pendingScrollY !== undefined) {
             var y = Echo.Sync.Extent.toPixels(this._pendingScrollY);
             if (Echo.Sync.Extent.isPercent(this._pendingScrollY) || y < 0) {
                 percent = y < 0 ? 100 : parseInt(this._pendingScrollY, 10);
@@ -215,8 +212,7 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
                     contentElement.scrollTop = position;
                     if (Core.Web.Env.ENGINE_MSHTML) {
                         // IE needs to be told twice.
-                        position = Math.round((contentElement.scrollHeight - contentElement.offsetHeight) *
-                                percent / 100);
+                        position = Math.round((contentElement.scrollHeight - contentElement.offsetHeight) * percent / 100);
                         contentElement.scrollTop = position;
                     }
                 }
@@ -225,6 +221,17 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
             }
             this._pendingScrollY = null;
         }
+        this._lastScrollAdjustmentTime = new Date().getTime();
+    },
+
+    /** @see Echo.Render.ComponentSync#renderDisplay */
+    renderDisplay: function() {
+        var child = this._div.firstChild;
+        while (child) {
+            Core.Web.VirtualPosition.redraw(child);
+            child = child.nextSibling;
+        }
+        this._applyScrollPosition();
     },
 
     /** @see Echo.Render.ComponentSync#renderDispose */
@@ -371,8 +378,24 @@ Echo.Sync.ContentPane = Core.extend(Echo.Render.ComponentSync, {
     },
 
     /** Updates the scroll positions on every scrolling update. */
-    _processScroll: function() {
-        this.component.set("horizontalScroll", this._nonFloatingChild.scrollLeft, true);
-        this.component.set("verticalScroll", this._nonFloatingChild.scrollTop, true);
+    _processScroll: function(e) {
+        // This is a semi-dirty hack: Echo sets the focused component using a timed process
+        // *after* all rendering occured (probably to cirumvent browser bugs. But on changing focus
+        // the browsers scroll so the focus gets visible. So we need to scroll back, afterwards
+
+        // Less than 100ms since last application triggered scroll-position? Then rescroll back!
+        var msSinceScrollAdjustment = new Date().getTime() - this._lastScrollAdjustmentTime;
+        if (msSinceScrollAdjustment  < 500) {
+            this._pendingScrollX = this.component.render("horizontalScroll");
+            this._pendingScrollY = this.component.render("verticalScroll");
+            Core.Debug.consoleWrite("Scrolling quickly after last ajdustment "+msSinceScrollAdjustment+"ms before. " +
+                                    "Position is : " + this._nonFloatingChild.scrollLeft + "/" + this._nonFloatingChild.scrollTop +
+                                    " but should be : "+ this._pendingScrollX + "/" + this._pendingScrollY+ ". Retriggering.");
+            this._applyScrollPosition();
+        } else {
+            this.component.set("horizontalScroll", this._nonFloatingChild.scrollLeft, true);
+            this.component.set("verticalScroll", this._nonFloatingChild.scrollTop, true);
+            Core.Debug.consoleWrite("Store scroll for " + this.component.renderId + " : " + this._nonFloatingChild.scrollLeft + "/" + this._nonFloatingChild.scrollTop);
+        }
     }
 });
