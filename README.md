@@ -11,28 +11,28 @@
 What is Echo?
 =============
 
-Echo is an open-source framework for developing rich web applications. From the 
-developer's perspective, Echo behaves as a user interface toolkit--like Swing or 
-Eclipse SWT. 
-
-AJAX technology is employed to deliver a user experience to web clients that 
-approaches that of desktop-based applications. Echo applications can be created 
-entirely in server-side Java code using a component-oriented and event-driven 
-API or as client-side applications written in JavaScript.
+Echo is an open source framework for developing rich web applications. From the
+developer's perspective, Echo behaves as a user interface toolkit like Java's
+Swing or Eclipse SWT and completely abstracts developers from the web tier. Ajax
+technology is employed to deliver a user experience to web clients that
+approaches that of traditional desktop applications. Echo applications can be
+created entirely in server-side Java code using a component-oriented and
+event-driven API or as client-side applications written entirely in JavaScript.
 
 
 Why Echo?
 =========
 
-Though MVC and Swing are well established and well known, most web application
-frameworks on the market are still stuck in the paradigm of page-flow oriented
-design principles and require a heavy mixture of different technologies like
-XML, Java, JSP, Tag libraries, etc.
-This has heavy implications on the development process as it disables full
-reuse but requires to generate, write and maintain many different artifacts
-during the whole process. Think of JSP template files, XML based page flow
-descriptions, required form beans, and so on: All of these must be written,
-maintained and kept in sync for every dialog of your project.
+Although Model-View-Controller (MVC) design principles and the Java Swing API
+are well established and well known, most web application frameworks on the
+market are still stuck in the paradigm of page-flow oriented design principles
+and require a heavy mixture of different technologies like XML, Java, JSP, tag
+libraries, etc. Such a paradigm has significant impacts on the development
+process as it disables full reuse and requires developers to generate, write,
+and maintain many different artifacts during the whole process: Think of JSP
+template files, XML-based page flow descriptions, required form beans, and so
+on; all of these must be written, maintained, and kept in sync for every element
+of your project's user interface.
 
 In contrast Echo offers a very efficient and sophisticated way to implement
 and design complex real-world applications in pure Java, enabling to fully
@@ -54,11 +54,11 @@ Features
 
 
 ### Client-Side JavaScript API
-  The entirity of the Echo framework has been ported to JavaScript, such that 
-  applications may be developed entirely in JavaScript and function entirely 
-  without any server round trips. This allows to shift between Server-Side and 
-  Client-Side Web Application paradigms. 
-  The API of the client-side version is similar to the server-side framework. 
+  The Echo framework is available to applications developed entirely within the
+  web browser by using the client-side JavaScript API. The API of the
+  client-side version is similar to the server-side framework and as such
+  employs an API design that should be somewhat familiar to desktop application
+  developers.
   
 * Delayed Batch Rendering  
     The client application framework renders changes to its component hierarchy 
@@ -66,13 +66,14 @@ Features
     potential screen flickering issues.
   
 * Application Rendered Components (ARCs)  
-    Client-side component synchronization peers may render components to HTML 
-    by creating a container HTML element (e.g. a DIV) and then loading a 
-    new client-side-only Echo application within the DIV. The Echo3Extras Rich 
-    Text Editor uses this feature to display a MenuBarPane, WindowPane-based 
-    dialogs, ColorSelects, toolbars and other UI elements. By writing the Rich 
-    Text Editor as a client-side Echo application, much time was saved and the 
-    editor is far more feature rich.      
+    Client-side component synchronization peers render components in the web
+    browser by creating a container HTML element (e.g., a DIV) and then loading
+    a new client-side Echo application within the DIV. For example, the
+    Echo3Extras project's Rich Text Editor component uses this feature to
+    display a menu bar, dialogs, color selection controls, toolbars and other
+    user interface elements. By writing the Rich Text Editor as a client-side
+    Echo application, a lot of time was saved and the editor is more feature
+    rich as a result.
 
 ### Java-Like development on Client-Side (CoreJS Library):
   Echo3 is built atop the CoreJS JavaScript Library, which provides cross-
@@ -122,10 +123,9 @@ The Latest Version
 Details of the latest official releases can be found on the wingS
 GitHub web site <https://github.com/echo3/echo3>.
 
-If you want to be in touch with the latest development we recommend
-to retrieve the latest version directly out of Git. Details on how to 
-access the public Git repository on GitHub can be found on the official
-GitHub pages.
+If you want to be stay current with the latest development, we recommend that
+you retrieve the latest version directly out of Git. Details on how to access
+the public Git repository on GitHub can be found on the official GitHub pages.
 
 
 Documentation
@@ -135,8 +135,8 @@ Documentation is available online on the official Website at
   <http://echo.nextapp.com/site/echo3/doc>
 
 
-Developing
--------------
+Development
+===========
 Echo can be built by running
 
     ant dist
@@ -152,12 +152,13 @@ default compilation output folder (choose a new empty folder 'build' in the
 project to avoid errors about missing classes on running the unit tests).
 Test your setup by executing the "All JUnit Tests" target.
 
-The free community edition is sufficient, though the ultimate edition offers
-significant additional comfort (i.e. inline JavaScript debugging).
+The free Community Edition of the IntelliJ IDEA IDE is sufficient, but the
+Ultimate Edition offers significant additional features worth considering (e.g.,
+inline JavaScript debugging).
 
 
-Licensing
-=========
+License
+=======
 
 Echo is licensed under the terms of the open-source Mozilla Public License. 
 The terms of the Mozilla Public License provide software developers with the 
@@ -165,10 +166,7 @@ ability to use the product royalty free to develop both open-source and
 closed-source (proprietary) applications. 
 
 Developers may also modify the source code to the Echo framework itself, but in 
-this case are required to submit their changes back to the community. If 
-desired, a developer may choose to instead license the Echo under the GNU 
-Lesser General Public License or the GNU General Public License. Use of the GNU 
-licenses is entirely optional.
-
-
-Thanks for choosing Echo!
+such a case they are required to submit their changes back to the community. If
+desired, a developer may license Echo under the GNU Lesser General Public
+License or the GNU General Public License. Use of the GNU licenses is entirely
+optional.
