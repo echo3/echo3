@@ -2739,7 +2739,7 @@ Echo.Button = Core.extend(Echo.AbstractButton, {
     },
 
     /** @see Echo.Component#componentType */
-    componentType: "Button"
+    componentType: "Button",
 
     $virtual: {
 
