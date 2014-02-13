@@ -324,6 +324,9 @@ Echo.Client = Core.extend({
       * @return true, if the browser is outdated - false, if the browser is unknown or supported.
       */
     _isBrowserOutdated: function() {
+        if (Core.Web.Env.BROWSER_VERSION_MAJOR === null) {
+            return false; // Unknown version, assume supported
+        }
         return (Core.Web.Env.ENGINE_MSHTML && Core.Web.Env.BROWSER_VERSION_MAJOR < 6); // IE < 6 is outdated
     },
 
