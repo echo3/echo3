@@ -167,6 +167,21 @@ Echo.Sync.TextComponent = Core.extend(Echo.Render.ComponentSync, {
         Core.Web.Event.add(this.input, "click", Core.method(this, this._processClick), false);
         Core.Web.Event.add(this.input, "focus", Core.method(this, this.processFocus), false);
         Core.Web.Event.add(this.input, "blur", Core.method(this, this.processBlur), false);
+
+        // Register a paste event handler directly with the DOM element to bypass regular Echo event handling
+        // which would stop the default action of a paste (i.e. let the browser update the input field)
+        Core.Web.DOM.addEventListener(this.input, "paste", Core.method(this, this._processPaste), false);
+    },
+
+    /**
+      * Processes a text paste event to update the internally stored value.
+      */
+    _processPaste: function(e) {
+       var _this = this;
+       // Schedule a callback with setTimeout to run right after the browser updated the input value
+       setTimeout(function() {
+           _this._storeValue(e);
+       }, 0);
     },
     
     /**
