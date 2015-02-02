@@ -1,4 +1,4 @@
-/* 
+/*
  * This file is part of the Echo Web Application Framework (hereinafter "Echo").
  * Copyright (C) 2002-2009 NextApp, Inc.
  *
@@ -30,38 +30,38 @@
 package nextapp.echo.app.layout;
 
 /**
- * A <code>LayoutData</code> object used to describe how a 
- * <code>Component</code> is rendered within a <code>Grid</code>. 
+ * A <code>LayoutData</code> object used to describe how a
+ * <code>Component</code> is rendered within a <code>Grid</code>.
  */
 public class GridLayoutData extends CellLayoutData {
-    
+
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
     /**
      * A constant value for column and row spans indicating that a cell should
-     * fill all remaining cells.  
+     * fill all remaining cells.
      * <p>
      * <strong>WARNING</strong>: This value may ONLY be used for spans in the
-     * direction of the layout of the <code>Grid</code>, i.e., it may only be 
+     * direction of the layout of the <code>Grid</code>, i.e., it may only be
      * used for column-spans if the orientation is horizontal, and it may only
      * be used for row-spans if the orientation is vertical.
      */
     public static final int SPAN_FILL = -1;
-    
+
     private int columnSpan;
     private int rowSpan;
-    
+
     /**
-     * Creates a new <code>>GridLayoutData</code> instance with no column span/row span. 
+     * Creates a new <code>GridLayoutData</code> instance with no column span/row span. 
      */
     public GridLayoutData() {
         this(1, 1);
     }
-    
+
     /**
      * Creates a new <code>GridLayoutData</code> instance with the specified column and row spans.
-     * 
+     *
      * @param columnSpan the columnSpan (a value of 1 indicates only one column is occupied)
      * @param rowSpan the rowSpan (a value of 1 indicates only one row is occupied)
      */
@@ -70,37 +70,37 @@ public class GridLayoutData extends CellLayoutData {
         this.columnSpan = columnSpan;
         this.rowSpan = rowSpan;
     }
-    
+
     /**
      * Returns the column span of the cell.  A value of 1 indicates only column row is occupied.
-     * 
+     *
      * @return the column span
      */
     public int getColumnSpan() {
         return columnSpan;
     }
-    
+
     /**
      * Returns the row span of the cell.  A value of 1 indicates only one row is occupied.
-     * 
+     *
      * @return the row span
      */
     public int getRowSpan() {
         return rowSpan;
     }
-    
+
     /**
      * Sets the column span of the cell.  A value of 1 indicates only column row is occupied.
-     * 
+     *
      * @param newValue the new column span
      */
     public void setColumnSpan(int newValue) {
         columnSpan = newValue;
     }
-    
+
     /**
      * Sets the row span of the cell.  A value of 1 indicates only one row is occupied.
-     * 
+     *
      * @param newValue the new row span
      */
     public void setRowSpan(int newValue) {
