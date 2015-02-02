@@ -1,4 +1,4 @@
-/* 
+/*
  * This file is part of the Echo Web Application Framework (hereinafter "Echo").
  * Copyright (C) 2002-2009 NextApp, Inc.
  *
@@ -61,25 +61,25 @@ import nextapp.echo.webcontainer.util.MultiIterator;
  * Base synchronization peer for <code>AbstractListComponent</code>s.
  */
 public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer  {
-    
+
     /**
-     * Property object describing rendered list data, 
-     * i.e., the <code>ListModel</code> and </code>ListCellRenderer</code>. 
+     * Property object describing rendered list data,
+     * i.e., the <code>ListModel</code> and <code>ListCellRenderer</code>. 
      */
     private class ListData {
 
         /** The <code>ListModel</code>. */
         private ListModel model;
-        
+
         /** The <code>ListCellRenderer</code>. */
         private ListCellRenderer renderer;
-        
+
         /** The <code>AbstractListComponent</code>. */
         private AbstractListComponent listComponent;
 
-        /** 
+        /**
          * Creates a new <code>ListData</code>.
-         * 
+         *
          * @param component the list component
          */
         ListData(AbstractListComponent component) {
@@ -98,12 +98,12 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
             }
             ListData that = (ListData) o;
 
-            if (!(this.model == that.model 
+            if (!(this.model == that.model
                     || (this.model != null && this.model.equals(that.model)))) {
                 return false;
             }
 
-            if (!(this.renderer == that.renderer 
+            if (!(this.renderer == that.renderer
                     || (this.renderer != null && this.renderer.equals(that.renderer)))) {
                 return false;
             }
@@ -122,28 +122,28 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
     /**
      * Server-to-client serialization peer for <code>ListData</code> objects.
      */
-    public static class ListDataPeer 
+    public static class ListDataPeer
     implements SerialPropertyPeer {
 
         /**
-         * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(nextapp.echo.app.util.Context, 
+         * @see nextapp.echo.app.serial.SerialPropertyPeer#toProperty(nextapp.echo.app.util.Context,
          *      java.lang.Class, org.w3c.dom.Element)
          */
-        public Object toProperty(Context context, Class objectClass, Element propertyElement) 
+        public Object toProperty(Context context, Class objectClass, Element propertyElement)
         throws SerialException {
             throw new UnsupportedOperationException();
         }
 
         /**
-         * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context, 
+         * @see nextapp.echo.app.serial.SerialPropertyPeer#toXml(nextapp.echo.app.util.Context,
          *      java.lang.Class, org.w3c.dom.Element, java.lang.Object)
          */
-        public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue) 
+        public void toXml(Context context, Class objectClass, Element propertyElement, Object propertyValue)
         throws SerialException {
             SerialPropertyPeer fontPeer = null;
             SerialContext serialContext = ((SerialContext) context.get(SerialContext.class));
             Document document = serialContext.getDocument();
-            ListData listData = (ListData) propertyValue; 
+            ListData listData = (ListData) propertyValue;
             propertyElement.setAttribute("t", "RemoteListData");
             int size = listData.model.size();
             for (int i = 0; i < size; ++i) {
@@ -183,24 +183,24 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
 
     /** The non-style virtual "data" property, a <code>ListData</code> which represents rendered model information. */
     private static final String PROPERTY_DATA = "data";
-    
+
     /** The non-style selection state property. */
     private static final String PROPERTY_SELECTION = "selection";
-    
+
     /** The non-style selection mode property. */
     private static final String PROPERTY_SELECTION_MODE = "selectionMode";
-    
+
     static {
         WebContainerServlet.getServiceRegistry().add(LIST_COMPONENT_SERVICE);
     }
-    
+
     /**
      * Default constructor.
      * Installs additional output properties.
      */
     public AbstractListComponentPeer() {
         super();
-        
+
         addOutputProperty(PROPERTY_DATA);
         addOutputProperty(PROPERTY_SELECTION);
         addOutputProperty(PROPERTY_SELECTION_MODE);
@@ -220,7 +220,7 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
     public String getClientComponentType(boolean mode) {
         return mode ? "LC" : "AbstractListComponent";
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getComponentClass()
      */
@@ -275,7 +275,7 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
      */
     public Iterator getUpdatedOutputPropertyNames(Context context, Component component, ServerComponentUpdate update) {
         Set additionalPropertyNames = new HashSet();
-        if (update.hasUpdatedProperty(AbstractListComponent.SELECTION_CHANGED_PROPERTY) || 
+        if (update.hasUpdatedProperty(AbstractListComponent.SELECTION_CHANGED_PROPERTY) ||
                 update.hasUpdatedProperty(AbstractListComponent.SELECTION_MODEL_CHANGED_PROPERTY)) {
             additionalPropertyNames.add(PROPERTY_SELECTION);
             additionalPropertyNames.add(PROPERTY_SELECTION_MODE);
@@ -286,7 +286,7 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
             additionalPropertyNames.add(PROPERTY_DATA);
         }
         return new MultiIterator(new Iterator[]{
-                super.getUpdatedOutputPropertyNames(context, component, update), 
+                super.getUpdatedOutputPropertyNames(context, component, update),
                 additionalPropertyNames.iterator()});
     }
 
@@ -298,7 +298,7 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(LIST_COMPONENT_SERVICE.getId());
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#storeInputProperty(
      *      nextapp.echo.app.util.Context, nextapp.echo.app.Component, java.lang.String, int, java.lang.Object)

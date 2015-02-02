@@ -1,4 +1,4 @@
-/* 
+/*
  * This file is part of the Echo Web Application Framework (hereinafter "Echo").
  * Copyright (C) 2002-2009 NextApp, Inc.
  *
@@ -46,17 +46,17 @@ import nextapp.echo.webcontainer.WebContainerServlet;;
 /**
  * <code>ContainerContext</code> implementation.
  */
-class ContainerContextImpl 
+class ContainerContextImpl
 implements ContainerContext, Serializable {
-    
+
     /** Serial Version UID. */
     private static final long serialVersionUID = 20070101L;
 
     private UserInstance userInstance;
-    
+
     /**
      * Creates a new <code>ContainerContextImpl</code>
-     * 
+     *
      * @param userInstance the relevant <code>UserInstance</code>
      */
     ContainerContextImpl(UserInstance userInstance) {
@@ -64,9 +64,6 @@ implements ContainerContext, Serializable {
         this.userInstance = userInstance;
     }
 
-    /**
-     * @see nextapp.echo.webcontainer.ContainerContext#addCookie(javax.servlet.http.Cookie)
-     */
     public void addCookie(Cookie cookie)
     throws IllegalStateException {
         Connection conn = WebContainerServlet.getActiveConnection();
@@ -75,14 +72,14 @@ implements ContainerContext, Serializable {
         }
         conn.getResponse().addCookie(cookie);
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.ContainerContext#getClientProperties()
      */
     public ClientProperties getClientProperties() {
         return userInstance.getClientProperties();
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.ContainerContext#getCookies()
      */
@@ -94,35 +91,35 @@ implements ContainerContext, Serializable {
             return conn.getRequest().getCookies();
         }
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.ContainerContext#getInitialRequestParameterMap()
      */
     public Map getInitialRequestParameterMap() {
         return userInstance.getInitialRequestParameterMap();
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.ContainerContext#getServiceUri(nextapp.echo.webcontainer.Service)
      */
     public String getServiceUri(Service service) {
         return userInstance.getServiceUri(service);
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.ContainerContext#getServletUri()
      */
     public String getServletUri() {
         return userInstance.getServletUri();
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.ContainerContext#getSession()
      */
     public HttpSession getSession() {
         return userInstance.getSession();
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.ContainerContext#getUserPrincipal()
      */
@@ -134,7 +131,7 @@ implements ContainerContext, Serializable {
             return conn.getRequest().getUserPrincipal();
         }
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.ContainerContext#isUserInRole(java.lang.String)
      */
@@ -146,7 +143,7 @@ implements ContainerContext, Serializable {
             return conn.getRequest().isUserInRole(role);
         }
     }
-    
+
     /**
      * @see nextapp.echo.webcontainer.ContainerContext#setClientConfiguration(nextapp.echo.webcontainer.ClientConfiguration)
      */

@@ -1,4 +1,4 @@
-/* 
+/*
  * This file is part of the Echo Web Application Framework (hereinafter "Echo").
  * Copyright (C) 2002-2009 NextApp, Inc.
  *
@@ -37,19 +37,19 @@ import java.io.InputStream;
  * Provides functionality for obtaining text and binary resource files.
  */
 public class Resource {
-    
+
     /** Buffer size for use in streaming an <code>InputStream</code> to an <code>OutputStream</code>. */
     private static final int BUFFER_SIZE = 4096;
-    
+
     /**
      * A RuntimeException exception that will be thrown in the event that
      * problems are encountered obtaining a resource.
      */
     public static class ResourceException extends RuntimeException {
-    
+
         /** Serial Version UID. */
         private static final long serialVersionUID = 20070101L;
-    
+
         /**
          * Creates a resource exception.
          *
@@ -70,17 +70,17 @@ public class Resource {
     public static String getResourceAsString(String resourceName) {
         return getResource(resourceName).toString();
     }
-    
+
     /**
      * Retrieves the specified resource as an array of <code>byte</code>s.
      *
      * @param resourceName the name of the resource to be retrieved
-     * @return the specified resource as an array of <code>byte<code>s
+     * @return the specified resource as an array of <code>byte</code>s
      */
     public static byte[] getResourceAsByteArray(String resourceName) {
         return getResource(resourceName).toByteArray();
     }
-    
+
     /**
      * An internal method used to retrieve a resource as a
      * <code>ByteArrayOutputStream</code>.
@@ -94,7 +94,7 @@ public class Resource {
         byte[] buffer = new byte[BUFFER_SIZE];
         ByteArrayOutputStream out = null;
         int bytesRead = 0;
-        
+
         try {
             in = Resource.class.getClassLoader().getResourceAsStream(resourceName);
             if (in == null) {
@@ -110,9 +110,9 @@ public class Resource {
         } catch (IOException ex) {
             throw new ResourceException("Cannot get resource: \"" + resourceName + "\".", ex);
         } finally {
-            if (in != null) { try { in.close(); } catch (IOException ex) { } } 
+            if (in != null) { try { in.close(); } catch (IOException ex) { } }
         }
-        
+
         return out;
     }
 
