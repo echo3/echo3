@@ -27,11 +27,11 @@ Core.Web = {
      * Flag indicating that a drag-and-drop operation is in process.
      * Setting this flag will prevent text selections within the browser.
      * It must be un-set when the drag operation completes.
-     * 
+     *
      * @type Boolean
      */
     dragInProgress: false,
-    
+
     /**
      * Initializes the Web Core.  This method must be executed prior to using any Web Core capabilities.
      */
@@ -40,7 +40,7 @@ Core.Web = {
             // Already initialized.
             return;
         }
-    
+
         Core.Web.Env._init();
         Core.Web.Measure._calculateExtentSizes();
         Core.Web.Measure.Bounds._initMeasureContainer();
@@ -48,18 +48,18 @@ Core.Web = {
             // Enable virtual positioning.
             Core.Web.VirtualPosition._init();
         }
-    
+
         if (Core.Web.Env.ENGINE_MSHTML) {
             Core.Web.DOM.addEventListener(document, "selectstart", Core.Web._selectStartListener, false);
             Core.Web.DOM.addEventListener(document, "dragstart", Core.Web._selectStartListener, false);
         }
-        
+
         Core.Web.initialized = true;
     },
-    
+
     /**
      * Internet Explorer-specific event listener to deny selection.
-     * 
+     *
      * @param {Event} e the selection event
      */
     _selectStartListener: function(e) {
@@ -88,8 +88,8 @@ Core.Web.DOM = {
     _focusRunnable: null,
 
     /**
-     * Adds an event listener to an object, using the client's supported event 
-     * model.  This method does NOT support method references. 
+     * Adds an event listener to an object, using the client's supported event
+     * model.  This method does NOT support method references.
      *
      * @param {Element} eventSource the event source
      * @param {String} eventType the type of event (the 'on' prefix should NOT be included
@@ -97,7 +97,7 @@ Core.Web.DOM = {
      *        be specified instead of "onmouseover")
      * @param {Function} eventListener the event listener to be invoked when the event occurs
      * @param {Boolean} useCapture a flag indicating whether the event listener should capture
-     *        events in the final phase of propagation (only supported by 
+     *        events in the final phase of propagation (only supported by
      *        DOM Level 2 event model, not available on Internet Explorer)
      */
     addEventListener: function(eventSource, eventType, eventListener, useCapture) {
@@ -107,11 +107,11 @@ Core.Web.DOM = {
             eventSource.attachEvent("on" + eventType, eventListener);
         }
     },
-    
+
     /**
      * Creates a new XML DOM.
      *
-     * @param {String} namespaceUri the unique URI of the namespace of the root element in 
+     * @param {String} namespaceUri the unique URI of the namespace of the root element in
      *        the created document (not supported for
      *        Internet Explorer 6 clients, null may be specified for all clients)
      * @param {String} qualifiedName the name of the root element of the new document (this
@@ -149,31 +149,31 @@ Core.Web.DOM = {
             throw new Error("XML DOM creation not supported by browser environment.");
         }
     },
-    
+
     /**
      * Focuses the given DOM element.
      * The focus operation may be placed in the scheduler if the browser requires the focus
      * operation to be performed outside of current JavaScript context (i.e., in the case
      * where the element to be focused was just rendered in this context).
-     * Passing a null element argument will cancel any scheduler runnable attempting to 
+     * Passing a null element argument will cancel any scheduler runnable attempting to
      * set the focus.
-     * 
+     *
      * @param {Element} element the DOM element to focus
      */
     focusElement: function(element) {
         if (!this._focusRunnable) {
             this._focusRunnable = new (Core.extend(Core.Web.Scheduler.Runnable, {
-                
+
                 repeat: true,
-                
+
                 attempt: 0,
-                
+
                 timeInterval: 25,
-            
+
                 run: function() {
                     element = Core.Web.DOM._focusPendingElement;
                     Core.Debug.consoleWrite("Focus:" + element + "/" + element.id + "/" + Core.Web.DOM.isDisplayed(element));
-                    
+
                     var done = false;
                     if (Core.Web.DOM.isDisplayed(element)) {
                         done = true;
@@ -183,11 +183,11 @@ Core.Web.DOM = {
                             // Silently digest IE focus exceptions.
                         }
                     }
-                    
+
                     done |= this.attempt > 25;
-                    
+
                     ++this.attempt;
-                    
+
                     if (done) {
                         Core.Web.DOM._focusPendingElement = null;
                         Core.Web.Scheduler.remove(this);
@@ -202,16 +202,16 @@ Core.Web.DOM = {
             Core.Web.Scheduler.remove(this._focusRunnable);
             return;
         }
-        
+
         this._focusPendingElement = element;
-        
+
         this._focusRunnable.attempt = 0;
         Core.Web.Scheduler.add(this._focusRunnable);
     },
-    
+
     /**
      * Returns the first immediate child element of parentElement with the specified tag name.
-     * 
+     *
      * @param {Element} parentElement the parent element
      * @param tagName the tag name
      * @return the first child element of parentElement with the specified tag name,
@@ -228,10 +228,10 @@ Core.Web.DOM = {
         }
         return null;
     },
-    
+
     /**
      * Returns an array containing all immediate child element of parentElement with the specified tag name.
-     * 
+     *
      * @param {Element} parentElement the parent element
      * @param tagName the tag name
      * @return the child elements
@@ -248,10 +248,10 @@ Core.Web.DOM = {
         }
         return elements;
     },
-    
+
     /**
      * Returns x/y coordinates of mouse relative to the element which fired an event.
-     * 
+     *
      * @param {Event} e the event
      * @return object containing 'x' and 'y' properties specifying the numeric pixel
      *         coordinates of the mouse relative to the element, with {x: 0, y: 0}
@@ -265,7 +265,7 @@ Core.Web.DOM = {
             return { x: e.clientX - bounds.left, y: e.clientY - bounds.top };
         }
     },
-    
+
     /**
      * Returns the target of an event, using the client's supported event model.
      * On clients which support the W3C DOM Level 2 event specification,
@@ -280,7 +280,7 @@ Core.Web.DOM = {
     getEventTarget: function(e) {
         return e.target ? e.target : e.srcElement;
     },
-    
+
     /**
      * Returns the related target of an event, using the client's supported event model.
      * On clients which support the W3C DOM Level 2 event specification,
@@ -295,7 +295,7 @@ Core.Web.DOM = {
     getEventRelatedTarget: function(e) {
         return e.relatedTarget ? e.relatedTarget : e.toElement;
     },
-    
+
     /**
      * Determines if <code>ancestorNode</code> is or is an ancestor of
      * <code>descendantNode</code>.
@@ -316,20 +316,20 @@ Core.Web.DOM = {
         }
         return false;
     },
-    
+
     /**
      * Determines if the given node is theoretically dispalyed within the document.
      * The following conditions are verified:
      * <ul>
      *  <li><code>node</code> must be a descendant of <code>document.body</code></li>
-     *  <li><code>node</code>'s element ancestry must not contain a element whose CSS <code>visibility</code> state is 
+     *  <li><code>node</code>'s element ancestry must not contain a element whose CSS <code>visibility</code> state is
      *    <code>hidden</code></li>
-     *  <li><code>node</code>'s element ancestry must not contain a element whose CSS <code>display</code> state is 
+     *  <li><code>node</code>'s element ancestry must not contain a element whose CSS <code>display</code> state is
      *    <code>none</code></li>
      * </ul>
-     * 
+     *
      * @param {Node} node to analyze
-     * @return true if the node is displayed 
+     * @return true if the node is displayed
      */
     isDisplayed: function(node) {
         while (node != null) {
@@ -343,7 +343,7 @@ Core.Web.DOM = {
                     }
                 }
             }
-            
+
             if (node == document.body) {
                 return true;
             }
@@ -369,7 +369,7 @@ Core.Web.DOM = {
             e.returnValue = false;
         }
     },
-    
+
     /**
      * Removes all child nodes from the specified DOM node.
      *
@@ -380,9 +380,9 @@ Core.Web.DOM = {
             node.removeChild(node.firstChild);
         }
     },
-    
+
     /**
-     * Removes an event listener from an object, using the client's supported event 
+     * Removes an event listener from an object, using the client's supported event
      * model.  This method does NOT support method references.
      *
      * @param {Element} eventSource the event source
@@ -391,7 +391,7 @@ Core.Web.DOM = {
      *        be specified instead of "onmouseover")
      * @param {Function} eventListener the event listener to be invoked when the event occurs
      * @param {Boolean}useCapture a flag indicating whether the event listener should capture
-     *        events in the final phase of propagation (only supported by 
+     *        events in the final phase of propagation (only supported by
      *        DOM Level 2 event model, not available on Internet Explorer)
      */
     removeEventListener: function(eventSource, eventType, eventListener, useCapture) {
@@ -401,7 +401,7 @@ Core.Web.DOM = {
             eventSource.detachEvent("on" + eventType, eventListener);
         }
     },
-    
+
     /**
      * Removes the specified DOM node from the DOM tree. This method employs a workaround for the
      * <code>QUIRK_PERFORMANCE_LARGE_DOM_REMOVE</code> quirk.
@@ -420,7 +420,7 @@ Core.Web.DOM = {
             parentNode.removeChild(node);
         }
     },
-    
+
     /**
      * Removes the specified DOM node from the DOM tree in a recursive manner, i.e. all descendants
      * of the given node are removed individually. This alleviates slow performance when removing large
@@ -437,9 +437,9 @@ Core.Web.DOM = {
         }
         node.parentNode.removeChild(node);
     },
-    
+
     /**
-     * Stops an event from propagating ("bubbling") to parent nodes in the DOM, 
+     * Stops an event from propagating ("bubbling") to parent nodes in the DOM,
      * using the client's supported event model.
      * On clients which support the W3C DOM Level 2 event specification,
      * the stopPropagation() method of the event is invoked.
@@ -523,14 +523,14 @@ Core.Web.Env = {
 
     /**
      * The major browser version. For Firefox 3.0.6 this would be 3.
-     * 
+     *
      * @type Number
      */
     BROWSER_VERSION_MAJOR: null,
 
     /**
      * The minor browser version. For Firefox 3.0.6, this would be 0.
-     * 
+     *
      * @type Number
      */
     BROWSER_VERSION_MINOR: null,
@@ -538,7 +538,7 @@ Core.Web.Env = {
     /**
      * The major engine version. For Firefox 3.0.6, which uses the Gecko 1.9,
      * this would be 1.
-     * 
+     *
      * @type Number
      */
     ENGINE_VERSION_MAJOR: null,
@@ -546,7 +546,7 @@ Core.Web.Env = {
     /**
      * The minor engine version. For Firefox 3.0.6, which uses the Gecko 1.9,
      * this would be 9.
-     * 
+     *
      * @type Number
      */
     ENGINE_VERSION_MINOR: null,
@@ -577,23 +577,23 @@ Core.Web.Env = {
      * @type Boolean
      */
     NOT_SUPPORTED_CSS_OPACITY: null,
-    
+
     /**
-     * Flag indicating that relative table column widths are not supported, 
+     * Flag indicating that relative table column widths are not supported,
      * e.g., "*" or "2*".
      * @type Boolean
      */
     NOT_SUPPORTED_RELATIVE_COLUMN_WIDTHS: null,
-    
+
     /**
      * Flag indicating that selectionStart/selectionEnd/setSelectionRange() are not
      * supported on text field INPUT elements and TEXTAREA elements.
      * @type Boolean
      */
     NOT_SUPPORTED_INPUT_SELECTION: null,
-    
+
     /**
-     * Flag indicating complete lack of support for W3C DOM range API. 
+     * Flag indicating complete lack of support for W3C DOM range API.
      * @type Boolean
      */
     NOT_SUPPORTED_RANGE: null,
@@ -626,31 +626,31 @@ Core.Web.Env = {
      * @type Boolean
      */
     PROPRIETARY_IE_PNG_ALPHA_FILTER_REQUIRED: null,
-    
+
     /**
      * Flag indicating support for the IE text range API.
      * @type Boolean
      */
     PROPRIETARY_IE_RANGE: null,
-    
+
     /**
      * Flag indicating that keypress events will place charCode value in keyCode property.
      * @type Boolean
      */
     QUIRK_KEY_CODE_IS_CHAR_CODE: null,
-    
+
     /**
      * Flag indicating that keypress events are fired for special keys.
      * @type Boolean
      */
     QUIRK_KEY_PRESS_FIRED_FOR_SPECIAL_KEYS: null,
-    
+
     /**
      * Flag indicating that keypress events are fired for special keys.
      * @type Boolean
      */
     QUIRK_KEY_DOWN_NOT_FIRED_FOR_SPECIAL_KEYS: null,
-    
+
     /**
      * Flag indicating collapsed borders appear inside a table's rendered rather
      * than around it. For example, a proper rendering for a 2px collapsed
@@ -675,7 +675,7 @@ Core.Web.Env = {
      * @type Boolean
      */
     QUIRK_DELAYED_FOCUS_REQUIRED: null,
-    
+
     /**
      * Flag indicating peculiar behavior in Internet Explorer where screen suddenly appears blank after
      * DOM manipulations have been performed.  This is commonly seen when many JavaScript execution contexts
@@ -686,13 +686,13 @@ Core.Web.Env = {
      * @type Boolean
      */
     QUIRK_IE_BLANK_SCREEN: null,
-    
+
     /**
      * Flag indicating a fundamental issue in Internet Explorer's rendering engine wherein the browser is incapable of correctly
      * sizing/positioning elements unless certain CSS attributes (which should not be necessary) are present.
-     * Setting the proprietary "zoom" attribute to a value of '1' can force this browser to properly layout an an element that 
+     * Setting the proprietary "zoom" attribute to a value of '1' can force this browser to properly layout an an element that
      * sufferes this quirk.
-     * See http://msdn.microsoft.com/en-us/library/bb250481.aspx 
+     * See http://msdn.microsoft.com/en-us/library/bb250481.aspx
      */
     QUIRK_IE_HAS_LAYOUT: null,
 
@@ -715,7 +715,7 @@ Core.Web.Env = {
      * @type Boolean
      */
     QUIRK_IE_SELECT_Z_INDEX: null,
-    
+
     /**
      * Flag indicating an IE browser that incorrectly displays the security warning,
      * "This page contains both secure and nonsecure items. Do you want to display the nonsecure items?".
@@ -795,19 +795,19 @@ Core.Web.Env = {
      * string can be searched for whole words using indexOf("/example/")
      */
     _uaAlpha: null,
-    
+
     /**
      * Performs initial analysis of environment. Automatically invoked when
      * Core.Web module is initialized.
      */
     _init: function() {
-        var browserVersion = null, 
-            engineVersion = null, 
+        var browserVersion = null,
+            engineVersion = null,
             engineId = false;
 
         this._ua = navigator.userAgent.toLowerCase();
         this._uaAlpha = "/" + this._ua.replace(/[^a-z]+/g, "/") + "/";
-        
+
         // Parse version string for known major browsers, in reverse order of which they are imitated,
         // i.e., Chrome imitates Safari and Gecko, while Mozilla imitates nothing.
         if (this._testUAString("opera")) {
@@ -833,7 +833,7 @@ Core.Web.Env = {
             // the IE version.
             engineVersion = browserVersion = this._parseVersionInfo("msie ");
         }
-        
+
         if (!engineId) {
             // Browser/engine not yet identified, attempt to identify by engine.
             if (this._testUAString("presto")) {
@@ -848,7 +848,7 @@ Core.Web.Env = {
                 this.BROWSER_MOZILLA = this.ENGINE_GECKO = true;
             }
         }
-        
+
         if (!engineVersion) {
             if (this.ENGINE_PRESTO) {
                 engineVersion = this._parseVersionInfo("presto/");
@@ -861,7 +861,7 @@ Core.Web.Env = {
                 }
             }
         }
-        
+
         if (browserVersion) {
             this.BROWSER_VERSION_MAJOR = browserVersion.major;
             this.BROWSER_VERSION_MINOR = browserVersion.minor;
@@ -870,15 +870,15 @@ Core.Web.Env = {
             this.ENGINE_VERSION_MAJOR = engineVersion.major;
             this.ENGINE_VERSION_MINOR = engineVersion.minor;
         }
-        
+
         // Note deceptive user agent fields:
         // - Konqueror and Safari UA fields contain "like Gecko"
         // - Opera UA field typically contains "MSIE"
         // If this flag is set, browser is not GECKO/MSHTML
         this.DECEPTIVE_USER_AGENT = this.BROWSER_OPERA || this.BROWSER_SAFARI || this.BROWSER_CHROME || this.BROWSER_KONQUEROR;
-        
+
         this.MEASURE_OFFSET_EXCLUDES_BORDER = false;
-                
+
         // Set IE Quirk Flags
         if (this.BROWSER_INTERNET_EXPLORER) {
             // Internet Explorer Flags (all versions).
@@ -896,7 +896,7 @@ Core.Web.Env = {
             this.QUIRK_IE_HAS_LAYOUT = true;
             this.NOT_SUPPORTED_CSS_OPACITY = true;
             this.PROPRIETARY_IE_OPACITY_FILTER_REQUIRED = true;
-            
+
             if (this.BROWSER_VERSION_MAJOR < 9) {
                 this.QUIRK_IE_BLANK_SCREEN = true;
             }
@@ -907,7 +907,7 @@ Core.Web.Env = {
                 this.QUIRK_CSS_BORDER_COLLAPSE_INSIDE = true;
                 this.QUIRK_IE_TABLE_PERCENT_WIDTH_SCROLLBAR_ERROR = true;
                 this.QUIRK_IE_SELECT_PERCENT_WIDTH = true;
-                
+
                 if (this.BROWSER_VERSION_MAJOR < 7) {
                     // Internet Explorer 6 Flags.
                     this.QUIRK_IE_SELECT_LIST_DOM_UPDATE = true;
@@ -949,7 +949,7 @@ Core.Web.Env = {
             }
         }
     },
-    
+
     /**
      * Parses version information from user agent string. The text argument specifies
      * the string that prefixes the version info in the ua string (ie 'version/' for Safari for example).
@@ -960,20 +960,20 @@ Core.Web.Env = {
      * If the ua string does not supply a minor version, the minor version is assumed to be 0.
      *
      * @param ua the lower cased user agent string
-     * @param searchString the text that prefixes the version info (version info must be the first appearance of 
+     * @param searchString the text that prefixes the version info (version info must be the first appearance of
      *          this text in the ua string)
      */
     _parseVersionInfo: function(searchString) {
         var version = { };
-        
+
         var ix1 = this._ua.indexOf(searchString);
         if (ix1 == -1) {
             return;
         }
-        
+
         var ix2 = this._ua.indexOf(".", ix1);
         var ix3 = this._ua.length;
-        
+
         if (ix2 == -1) {
             ix2 = this._ua.length;
         } else {
@@ -986,17 +986,17 @@ Core.Web.Env = {
                 }
             }
         }
-        
+
         version.major = parseInt(this._ua.substring(ix1 + searchString.length, ix2), 10);
         if (ix2 == this._ua.length) {
             version.minor = 0;
         } else {
             version.minor = parseInt(this._ua.substring(ix2 + 1, ix3), 10);
         }
-        
+
         return version;
     },
-    
+
     _testUAString: function(browser) {
         return this._uaAlpha.indexOf("/" + browser + "/") != -1;
     }
@@ -1037,18 +1037,18 @@ Core.Web.Env = {
  * system adding a layer of abstraction between event registration and the
  * browser, and then invoking event listeners itself.
  * <p>
- * This implementation relies on the fact that all event listeners will be 
+ * This implementation relies on the fact that all event listeners will be
  * registered through it.  The implementation is in fact internally registering only
- * bubbling-phase event listeners on the DOM.  Thus, if other event listeners are 
+ * bubbling-phase event listeners on the DOM.  Thus, if other event listeners are
  * registered directly on the DOM, scenarios may occur such as a direct-registered
  * bubbling listener receiving an event before a Core.Web.Event-registered capturing
  * listener.  This is not necessarily a critical issue, but the developer should
- * be aware of it. 
- * 
+ * be aware of it.
+ *
  * @class
  */
 Core.Web.Event = {
-    
+
     /**
      * Provides utilities for restricting selection of DOM elements.  These are necessary as double click and drag
      * events will cause/begin undesired selections.
@@ -1070,19 +1070,19 @@ Core.Web.Event = {
                 Core.Web.Event.add(element, "selectstart", Core.Web.Event.Selection._disposeEvent, false);
             }
         },
-        
+
         /**
          * Selection denial listener implementation.
-         * 
+         *
          * @param e the selection/click event
          */
         _disposeEvent: function(e) {
             Core.Web.DOM.preventEventDefault(e);
         },
-    
+
         /**
          * Removes a selection denial listener.
-         * 
+         *
          * @param element the element from which to remove the selection denial listener
          * @see Core.Web.Event.Selection#enable
          */
@@ -1093,38 +1093,38 @@ Core.Web.Event = {
             }
         }
     },
-    
+
     /**
      * Next available sequentially assigned element identifier.
-     * Elements are assigned unique identifiers to enable mapping between 
+     * Elements are assigned unique identifiers to enable mapping between
      * elements and lists of registered event listeners.
      *
      * @type Integer
      */
     _nextId: 0,
-    
+
     /**
      * Current listener count.
      */
     _listenerCount: 0,
-    
+
     /**
      * Flag to display listener count every time an event is fired.  Enable this flag to check for listener leaks.
      */
     debugListenerCount: false,
-    
+
     /**
      * Mapping between element ids and ListenerLists containing listeners to invoke during capturing phase.
      * @type Core.Arrays.LargeMap
      */
     _capturingListenerMap: new Core.Arrays.LargeMap(),
-    
+
     /**
      * Mapping between element ids and ListenerLists containing listeners to invoke during bubbling phase.
      * @type Core.Arrays.LargeMap
      */
     _bubblingListenerMap: new Core.Arrays.LargeMap(),
-    
+
     /**
      * Registers an event handler.
      *
@@ -1139,27 +1139,27 @@ Core.Web.Event = {
         if (!element.__eventProcessorId) {
             element.__eventProcessorId = ++Core.Web.Event._nextId;
         }
-    
+
         var listenerList;
-        
+
         // Determine the Core.ListenerList to which the listener should be added.
-        if (element.__eventProcessorId == Core.Web.Event._lastId && 
+        if (element.__eventProcessorId == Core.Web.Event._lastId &&
                 capture == Core.Web.Event._lastCapture) {
             // If the 'element' and 'capture' properties are identical to those specified on the prior invocation
-            // of this method, the correct listener list is stored in the '_lastListenerList' property. 
-            listenerList = Core.Web.Event._lastListenerList; 
+            // of this method, the correct listener list is stored in the '_lastListenerList' property.
+            listenerList = Core.Web.Event._lastListenerList;
         } else {
             // Obtain correct id->ListenerList mapping based on capture parameter.
             var listenerMap = capture ? Core.Web.Event._capturingListenerMap : Core.Web.Event._bubblingListenerMap;
-            
-            // Obtain ListenerList based on element id.                              
+
+            // Obtain ListenerList based on element id.
             listenerList = listenerMap.map[element.__eventProcessorId];
             if (!listenerList) {
                 // Create new ListenerList if none exists.
                 listenerList = new Core.ListenerList();
                 listenerMap.map[element.__eventProcessorId] = listenerList;
             }
-            
+
             // Cache element's event processor id, capture parameter value, and listener list.
             // If the same element/capture properties are provided in the next call (which commonly occurs),
             // the lookup operation will be unnecessary.
@@ -1167,7 +1167,7 @@ Core.Web.Event = {
             Core.Web.Event._lastCapture = capture;
             Core.Web.Event._lastListenerList = listenerList;
         }
-    
+
         // Register event listener on DOM element.
         if (!listenerList.hasListeners(eventType)) {
             Core.Web.DOM.addEventListener(element, eventType, Core.Web.Event._processEvent, false);
@@ -1177,27 +1177,27 @@ Core.Web.Event = {
         // Add event handler to the ListenerList.
         listenerList.addListener(eventType, eventTarget);
     },
-    
+
     /**
      * Listener method which is invoked when ANY event registered with the event processor occurs.
-     * 
-     * @param {Event} e 
+     *
+     * @param {Event} e
      */
     _processEvent: function(e) {
         if (Core.Web.Event.debugListenerCount) {
-            Core.Debug.consoleWrite("Core.Web.Event listener count: " + Core.Web.Event._listenerCount);        
+            Core.Debug.consoleWrite("Core.Web.Event listener count: " + Core.Web.Event._listenerCount);
         }
 
         e = e ? e : window.event;
-        
+
         if (!e.target && e.srcElement) {
             // The Internet Explorer event model stores the target element in the 'srcElement' property of an event.
             // Modify the event such the target is retrievable using the W3C DOM Level 2 specified property 'target'.
             e.target = e.srcElement;
         }
 
-        // Establish array containing elements ancestry, with index 0 containing 
-        // the element and the last index containing its most distant ancestor.  
+        // Establish array containing elements ancestry, with index 0 containing
+        // the element and the last index containing its most distant ancestor.
         // Only record elements that have ids.
         var elementAncestry = [];
         var targetElement = e.target;
@@ -1243,16 +1243,16 @@ Core.Web.Event = {
         // Event will otherwise be re-processed by higher-level elements registered with the event processor.
         Core.Web.DOM.stopEventPropagation(e);
     },
-    
+
     /**
      * Unregisters an event handler.
-     * 
+     *
      * CAUTION: If you are unregistering an event listener created with Core.method(), please see the documentation for
      * Core.method() and note that a new closure-wrapped method is returned each time Core.method() is invoked.
      * Thus calling removeListener(Core.method(this, this,_someListener)) will NOT remove an existing listener.
      * The solution to this issue is to retain a reference to Core.method() wrapped listeners within the object
      * that will register and unregister them.
-     * 
+     *
      * If you are removing all listeners registered for a particular element (e.g., one which is being disposed)
      * it is more efficient to simply invoke removeAll().
      *
@@ -1264,20 +1264,20 @@ Core.Web.Event = {
      */
     remove: function(element, eventType, eventTarget, capture) {
         Core.Web.Event._lastId = null;
-        
+
         if (!element.__eventProcessorId) {
             return;
         }
-    
+
         // Obtain correct id->ListenerList mapping based on capture parameter.
         var listenerMap = capture ? Core.Web.Event._capturingListenerMap : Core.Web.Event._bubblingListenerMap;
-    
-        // Obtain ListenerList based on element id.                              
+
+        // Obtain ListenerList based on element id.
         var listenerList = listenerMap.map[element.__eventProcessorId];
         if (listenerList) {
             // Remove event handler from the ListenerList.
             listenerList.removeListener(eventType, eventTarget);
-            
+
             if (listenerList.isEmpty()) {
                 listenerMap.remove(element.__eventProcessorId);
             }
@@ -1289,12 +1289,12 @@ Core.Web.Event = {
             }
         }
     },
-    
+
     /**
      * Unregister all event handlers from a specific element.
      * Use of this operation is recommended when disposing of components, it is
      * more efficient than removing listeners individually and guarantees proper clean-up.
-     * 
+     *
      * @param {Element} element the element
      */
     removeAll: function(element) {
@@ -1305,11 +1305,11 @@ Core.Web.Event = {
         Core.Web.Event._removeAllImpl(element, Core.Web.Event._capturingListenerMap);
         Core.Web.Event._removeAllImpl(element, Core.Web.Event._bubblingListenerMap);
     },
-    
+
     /**
      * Implementation method for removeAll().
      * Removes all capturing or bubbling listeners from a specific element
-     * 
+     *
      * @param {Element} element the element
      * @param {Core.Arrays.LargeMap} listenerMap the map from which the listeners should be removed, either
      *        Core.Web.Event._capturingListenerMap or Core.Web.Event._bubblingListenerMap
@@ -1319,20 +1319,20 @@ Core.Web.Event = {
         if (!listenerList) {
             return;
         }
-    
+
         var types = listenerList.getListenerTypes();
         for (var i = 0; i < types.length; ++i) {
             Core.Web.DOM.removeEventListener(element, types[i], Core.Web.Event._processEvent, false);
             --Core.Web.Event._listenerCount;
         }
-        
+
         listenerMap.remove(element.__eventProcessorId);
     },
-    
+
     /**
      * toString() implementation for debugging purposes.
      * Displays contents of capturing and bubbling listener maps.
-     * 
+     *
      * @return string representation of listener maps
      * @type String
      */
@@ -1344,31 +1344,31 @@ Core.Web.Event = {
 /**
  * An HTTP connection to the hosting server.  This method provides a cross
  * platform wrapper for XMLHttpRequest and additionally allows method
- * reference-based listener registration.  
+ * reference-based listener registration.
  */
 Core.Web.HttpConnection = Core.extend({
 
     /** The URL. */
     _url: null,
-    
+
     /** The request content type. */
     _contentType: null,
-    
+
     /** The request method. */
     _method: null,
-    
+
     /** The message content object. */
     _messageObject: null,
-    
+
     /** Listener storage facility. */
     _listenerList: null,
-    
+
     /** Disposed state. */
     _disposed: false,
-    
+
     /** Browser XMLHttpRequest object. */
     _xmlHttpRequest: null,
-    
+
     /** Request header value map. */
     _requestHeaders: null,
 
@@ -1390,17 +1390,17 @@ Core.Web.HttpConnection = Core.extend({
         if (Core.Web.Env.QUIRK_WEBKIT_DOM_TEXT_ESCAPE && messageObject instanceof Document) {
             this._preprocessWebkitDOM(messageObject.documentElement);
         }
-        
+
         this._messageObject = messageObject;
         this._listenerList = new Core.ListenerList();
     },
-    
+
     /**
      * Preprocesses outgoing requests to Webkit (invoked when appropriate quirk is detected).
      * All less than, greater than, and ampersands are replaced with escaped values, as this render engine
      * is broken in this regard and will otherwise fail. Recursively invoked on nodes, starting with
      * document element.
-     * 
+     *
      * @param {Node} node the node to process
      */
     _preprocessWebkitDOM: function(node) {
@@ -1418,16 +1418,16 @@ Core.Web.HttpConnection = Core.extend({
             }
         }
     },
-    
+
     /**
      * Adds a response listener to be notified when a response is received from the connection.
-     * 
+     *
      * @param {Function} l the listener to add
      */
     addResponseListener: function(l) {
         this._listenerList.addListener("response", l);
     },
-    
+
     /**
      * Executes the HTTP connection.
      * This method will return before the HTTP connection has received a response.
@@ -1442,11 +1442,11 @@ Core.Web.HttpConnection = Core.extend({
         } else {
             throw "Connect failed: Cannot create XMLHttpRequest.";
         }
-    
+
         var instance = this;
-        
+
         // Create closure around instance.
-        this._xmlHttpRequest.onreadystatechange = function() { 
+        this._xmlHttpRequest.onreadystatechange = function() {
             if (!instance) {
                 return;
             }
@@ -1459,7 +1459,7 @@ Core.Web.HttpConnection = Core.extend({
                 }
             }
         };
-        
+
         this._xmlHttpRequest.open(this._method, this._url, true);
 
         // Set headers.
@@ -1472,7 +1472,7 @@ Core.Web.HttpConnection = Core.extend({
                 }
             }
         }
-        
+
         // Set Content-Type, if supplied.
         if (this._contentType && (usingActiveXObject || this._xmlHttpRequest.setRequestHeader)) {
             this._xmlHttpRequest.setRequestHeader("Content-Type", this._contentType);
@@ -1486,9 +1486,9 @@ Core.Web.HttpConnection = Core.extend({
             this._xmlHttpRequest.send(this._messageObject ? this._messageObject : null);
         }
     },
-    
+
     /**
-     * Disposes of the connection.  This method must be invoked when the connection 
+     * Disposes of the connection.  This method must be invoked when the connection
      * will no longer be used/processed.
      */
     dispose: function() {
@@ -1498,7 +1498,7 @@ Core.Web.HttpConnection = Core.extend({
         this._disposed = true;
         this._requestHeaders = null;
     },
-    
+
     /**
      * Returns a header from the received response.
      * @param {String} header the header to retrieve
@@ -1506,7 +1506,7 @@ Core.Web.HttpConnection = Core.extend({
     getResponseHeader: function(header) {
         return this._xmlHttpRequest ? this._xmlHttpRequest.getResponseHeader(header) : null;
     },
-    
+
     /**
      * Returns all the headers of the response.
      * @param {String} header the header to retrieve
@@ -1514,17 +1514,17 @@ Core.Web.HttpConnection = Core.extend({
     getAllResponseHeaders: function() {
         return this._xmlHttpRequest ? this._xmlHttpRequest.getAllResponseHeaders() : null;
     },
-    
+
     /**
      * Returns the response status code of the HTTP connection, if available.
-     * 
+     *
      * @return the response status code
      * @type Integer
      */
     getStatus: function() {
         return this._xmlHttpRequest ? this._xmlHttpRequest.status : null;
     },
-    
+
     /**
      * Returns the response as text.
      * This method may only be invoked from a response handler.
@@ -1535,7 +1535,7 @@ Core.Web.HttpConnection = Core.extend({
     getResponseText: function() {
         return this._xmlHttpRequest ? this._xmlHttpRequest.responseText : null;
     },
-    
+
     /**
      * Returns the response as an XML DOM.
      * This method may only be invoked from a response handler.
@@ -1546,7 +1546,7 @@ Core.Web.HttpConnection = Core.extend({
     getResponseXml: function() {
         return this._xmlHttpRequest ? this._xmlHttpRequest.responseXML : null;
     },
-    
+
     /**
      * Event listener for <code>readystatechange</code> events received from
      * the <code>XMLHttpRequest</code>.
@@ -1555,44 +1555,44 @@ Core.Web.HttpConnection = Core.extend({
         if (this._disposed) {
             return;
         }
-        
+
         if (this._xmlHttpRequest.readyState == 4) {
             var responseEvent;
             try {
                 // 0 included as a valid response code for non-served applications.
-                var valid = !this._xmlHttpRequest.status ||  
+                var valid = !this._xmlHttpRequest.status ||
                         (this._xmlHttpRequest.status >= 200 && this._xmlHttpRequest.status <= 299);
                 responseEvent = {type: "response", source: this, valid: valid};
             } catch (ex) {
                 responseEvent = {type: "response", source: this, valid: false, exception: ex};
             }
-            
+
             Core.Web.Scheduler.run(Core.method(this, function() {
                 this._listenerList.fireEvent(responseEvent);
                 this.dispose();
             }));
         }
     },
-    
+
     /**
      * Removes a response listener to be notified when a response is received from the connection.
-     * 
+     *
      * @param {Function} l the listener to remove
      */
     removeResponseListener: function(l) {
         this._listenerList.removeListener("response", l);
     },
-    
+
     /**
      * Sets a header in the request.
-     * 
+     *
      * @param {String} header the header to retrieve
      * @param {String} value the value of the header
      */
     setRequestHeader: function(header, value) {
         if (!this._requestHeaders) {
             this._requestHeaders = { };
-        } 
+        }
         this._requestHeaders[header] = value;
     }
 });
@@ -1602,12 +1602,12 @@ Core.Web.HttpConnection = Core.extend({
  * @class
  */
 Core.Web.Image = {
-    
+
     /**
      * Expiration time, after which an image monitor will give up.
      */
     _EXPIRE_TIME: 5000,
-    
+
     /**
      * Work object for monitorImageLoading() method.
      */
@@ -1615,28 +1615,28 @@ Core.Web.Image = {
 
         /** Reference to _processImageLoad method. */
         _processImageLoadRef: null,
-        
+
         /** Currently enqueued runnable. */
         _runnable: null,
-        
+
         /** Listener to notify of successful image loadings. */
         _listener: null,
-        
+
         /** Images with remaining load listeners. */
         _images: null,
-        
+
         /** The number of images to be loaded. */
         _count: 0,
-        
+
         /** Expiration time.  When system time is greater than this value, monitor will give up. */
         _expiration: null,
-        
-        /** Flag indicating whether one or more images have been loaded since last update. */ 
+
+        /** Flag indicating whether one or more images have been loaded since last update. */
         _imagesLoadedSinceUpdate: false,
-        
+
         /**
          * Creates a new image monitor.
-         * 
+         *
          * @param {Element} element the root element which may (or may not) contain IMG elements
          * @param {Function} listener the method to invoke when images are loaded
          * @param {Number} interval the minimum time interval at which to notify the listener of successfully loaded images
@@ -1644,47 +1644,47 @@ Core.Web.Image = {
         $construct: function(element, listener, interval) {
             this._listener = listener;
             this._processImageLoadRef = Core.method(this, this._processImageLoad);
-            
+
             this._runnable = new Core.Web.Scheduler.MethodRunnable(Core.method(this, this._updateProgress), interval || 250, true);
-            
+
             // Find all images beneath element, register load listeners on all which are not yet loaded.
             var nodeList = element.getElementsByTagName("img");
             this._images = [];
             for (var i = 0; i < nodeList.length; ++i) {
-                if (!nodeList[i].complete && (Core.Web.Env.QUIRK_UNLOADED_IMAGE_HAS_SIZE || 
+                if (!nodeList[i].complete && (Core.Web.Env.QUIRK_UNLOADED_IMAGE_HAS_SIZE ||
                         (!nodeList[i].height && !nodeList[i].style.height))) {
                     this._images.push(nodeList[i]);
                     Core.Web.Event.add(nodeList[i], "load", this._processImageLoadRef, false);
                 }
             }
-            
+
             this._count = this._images.length;
             if (this._count > 0) {
                 this._expiration = new Date().getTime() + Core.Web.Image._EXPIRE_TIME;
                 Core.Web.Scheduler.add(this._runnable);
             }
         },
-        
+
         /**
          * Process an image loading event.
-         * 
+         *
          * @param e the event object
          */
         _processImageLoad: function(e) {
             e = e ? e : window.event;
             var image = Core.Web.DOM.getEventTarget(e);
-            
+
             this._imagesLoadedSinceUpdate = true;
-            
+
             // Remove listener.
             Core.Web.Event.remove(image, "load", this._processImageLoadRef, false);
-            
+
             // Remove image from list of images to be loaded.
             Core.Arrays.remove(this._images, image);
-            
+
             // Decrement remaining image count.
             --this._count;
-            
+
             // If runnable is enqueued and no more images now remain to be loaded,
             // remove the enqueued runnable, perform immediate notification.
             if (this._count === 0) {
@@ -1692,9 +1692,9 @@ Core.Web.Image = {
                 this._notify();
             }
         },
-        
+
         /**
-         * Notifies the listener of images having been loaded or expiration of the monitor. 
+         * Notifies the listener of images having been loaded or expiration of the monitor.
          */
         _notify: function() {
             Core.Web.Scheduler.run(Core.method(this, function() {
@@ -1706,7 +1706,7 @@ Core.Web.Image = {
                 });
             }));
         },
-        
+
         /**
          * Stops monitoring.
          */
@@ -1714,13 +1714,13 @@ Core.Web.Image = {
             // Remove runnable.
             Core.Web.Scheduler.remove(this._runnable);
             this._runnable = null;
-            
+
             // Disconnect listeners from images.
             for (var i = 0; i < this._images.length; ++i) {
                 Core.Web.Event.remove(this._images[i], "load", this._processImageLoadRef, false);
             }
         },
-        
+
         /**
          * Scheduled method invoked at intervals to monitor progress.
          */
@@ -1732,7 +1732,7 @@ Core.Web.Image = {
                 this._notify();
                 return;
             }
-            
+
             // Perform notification if new images have loaded.
             if (this._imagesLoadedSinceUpdate) {
                 this._imagesLoadedSinceUpdate = false;
@@ -1740,16 +1740,16 @@ Core.Web.Image = {
             }
         }
     }),
-    
+
     /**
      * Registers a listener to receive notifications as image size information becomes available.
      * Registers "load" listeners on images which are children of the specified element, invoking the specified listener
-     * zero or more times as the images load.  If all images are already loaded (e.g., they were cached) or have specified 
+     * zero or more times as the images load.  If all images are already loaded (e.g., they were cached) or have specified
      * sizes, the listener may never be invoked.  If the images take some time to load, the listener may be invoked multiple times.
-     * 
+     *
      * @param {Element} element the root element which may (or may not) contain IMG elements
      * @param {Function} l the method to invoke when images are loaded.
-     * @param {Number} interval the maximum time interval at which the listener should be invoked (default value is 50ms, 
+     * @param {Number} interval the maximum time interval at which the listener should be invoked (default value is 50ms,
      *        the listener will be invoked immediately once all images have loaded)
      * @return true if images are waiting to be loaded
      */
@@ -1760,18 +1760,18 @@ Core.Web.Image = {
 };
 
 Core.Web.Key = {
-    
+
     _KEY_TABLES: {
-        
-        GECKO: { 
-            59: 186, 
+
+        GECKO: {
+            59: 186,
             61: 187,
             109: 189
         },
-        
+
         MAC_GECKO: {
         },
-        
+
         PRESTO: {
             59: 186,
             61: 187,
@@ -1785,13 +1785,13 @@ Core.Web.Key = {
             93: 221,
             39: 222
         },
-        
+
         WEBKIT: {
         }
     },
-    
+
     _keyTable: null,
-    
+
     _loadKeyTable: function() {
         if (Core.Web.Env.ENGINE_GECKO) {
             this._keyTable = this._KEY_TABLES.GECKO;
@@ -1820,21 +1820,21 @@ Core.Web.Library = {
      * Set of loaded libraries (keys are library urls, value is true when library has been loaded).
      */
     _loadedLibraries: { },
-    
+
     /**
-     * Determined source code line number of eval() library load statement (useful for debugging on browsers which do not 
+     * Determined source code line number of eval() library load statement (useful for debugging on browsers which do not
      * properly report line numbers for evaluated scripts).
      * @type Number
      */
     evalLine: null,
-    
+
     /**
      * A representation of a group of libraries to be loaded at the same time.
      * Libraries will be retrieved asynchronously, and then installed once ALL the libraries have
      * been retrieved.  Installation will be done in the order in which the add() method was
-     * invoked to add libraries to the group (without regard for the order in which the 
+     * invoked to add libraries to the group (without regard for the order in which the
      * HTTP server returns the library code).
-     * 
+     *
      * A "load" event will be fired (listeners registered via <code>addLoadListener()</code>) when the group
      * has completed loading and the libraries have been installed.  The "success" property of the fired event
      * will be set to true in the event that all libraries were successfully loaded, and false otherwise.
@@ -1847,31 +1847,31 @@ Core.Web.Library = {
      * </ul>
      */
     Group: Core.extend({
-    
+
         /** Listener storage. */
         _listenerList: null,
-        
+
         /**
          * Array of libraries to be loaded.
          * @type Array
          */
         _libraries: null,
-        
+
         /** Number of libraries which have been loaded. */
         _loadedCount: 0,
-        
+
         /** Number of libraries to load. */
         _totalCount: 0,
-    
+
         /**
          * Creates a new library group.
-         * @constructor 
+         * @constructor
          */
         $construct: function() {
             this._listenerList = new Core.ListenerList();
             this._libraries = [];
         },
-        
+
         /**
          * Adds a library to the library group.
          * Libraries which have previously been loaded will not be loaded again.
@@ -1883,11 +1883,11 @@ Core.Web.Library = {
                 // Library already loaded: ignore.
                 return;
             }
-            
+
             var libraryItem = new Core.Web.Library._Item(this, libraryUrl);
             this._libraries.push(libraryItem);
         },
-        
+
         /**
          * Adds a listener to be notified when all libraries in the group have been loaded.
          *
@@ -1896,18 +1896,18 @@ Core.Web.Library = {
         addLoadListener: function(l) {
             this._listenerList.addListener("load", l);
         },
-        
+
         /**
          * Determines if this library group contains any new (not previously loaded)
          * libraries.
-         * 
+         *
          * @return true if any new libraries exist
          * @type Boolean
          */
         hasNewLibraries: function() {
             return this._libraries.length > 0;
         },
-        
+
         /**
          * Installs all libraries in the group.
          * This method is invoked once all libraries have been successfully
@@ -1920,10 +1920,10 @@ Core.Web.Library = {
                     this._libraries[i]._install();
                 } catch (ex) {
                     var e = {
-                        type: "load", 
-                        source: this, 
-                        success: false, 
-                        ex: ex, 
+                        type: "load",
+                        source: this,
+                        success: false,
+                        ex: ex,
                         url: this._libraries[i]._url,
                         cancel: false
                     };
@@ -1938,7 +1938,7 @@ Core.Web.Library = {
             }
             this._listenerList.fireEvent({type: "load", source: this, success: true});
         },
-        
+
         /**
          * Event listener invoked when a single library has been successfully retrieved.
          * When all libraries have been retrieved, this method will invoke _install().
@@ -1949,7 +1949,7 @@ Core.Web.Library = {
                 this._install();
             }
         },
-        
+
         /**
          * Initializes library loading.  When this method is invoked
          * the libraries will be asynchronously loaded.  This method
@@ -1963,7 +1963,7 @@ Core.Web.Library = {
                 this._libraries[i]._retrieve();
             }
         },
-        
+
         /**
          * Removes a listener from being notified when all libraries in the group have been loaded.
          *
@@ -1976,24 +1976,24 @@ Core.Web.Library = {
 
     /**
      * Representation of a single library to be loaded within a group
-     */    
+     */
     _Item: Core.extend({
-    
+
         /** URL Of library to load. */
         _url: null,
-        
+
         /** Containing library group. */
         _group: null,
-        
-        /** 
-         * Loaded library content (set when retrieved). 
+
+        /**
+         * Loaded library content (set when retrieved).
          * @type String
          */
         _content: null,
-    
+
         /**
          * Creates a new library item.
-         * 
+         *
          * @param {Core.Web.Library.Group} group the library group in which the item is contained
          * @param {String} url the URL from which the library may be retrieved
          * @constructor
@@ -2002,21 +2002,21 @@ Core.Web.Library = {
             this._url = url;
             this._group = group;
         },
-        
+
         /**
          * Event listener for response from the HttpConnection used to retrieve the library.
-         * 
+         *
          * @param e the event
          */
         _retrieveListener: function(e) {
             if (!e.valid) {
-                throw new Error("Invalid HTTP response retrieving library \"" + this._url + 
+                throw new Error("Invalid HTTP response retrieving library \"" + this._url +
                         "\", received status: " + e.source.getStatus());
             }
             this._content = e.source.getResponseText();
             this._group._notifyRetrieved();
         },
-        
+
         /**
          * Installs the library.
          * The library must have been loaded before invoking this method.
@@ -2030,12 +2030,16 @@ Core.Web.Library = {
             if (this._content == null) {
                 throw new Error("Attempt to install library when no content has been loaded.");
             }
-            
+
             // Execute content to install library.
             Core.Web.Library.evalLine = new Error().lineNumber + 1;
-            eval(this._content);
+
+            // Support for eval debugging
+            var jscode = this._content + "//# sourceURL=" + this._url;
+
+            eval(jscode);
         },
-        
+
         /**
          * Asynchronously retrieves the library.
          * This method will invoke the retrieve listener when the library has been completed,
@@ -2047,7 +2051,7 @@ Core.Web.Library = {
             conn.connect();
         }
     }),
-    
+
     /**
      * Loads required libraries and then executes a function.
      * This is a convenience method for use by applications that
@@ -2069,12 +2073,12 @@ Core.Web.Library = {
                 group.add(requiredLibraries[i]);
             }
         }
-        
+
         if (group == null) {
             Core.Web.Scheduler.run(f);
             return;
         }
-        
+
         group.addLoadListener(f);
         group.load();
     }
@@ -2090,33 +2094,33 @@ Core.Web.Measure = {
 
     /** Size of one inch in horizontal pixels. */
     _hInch: 96,
-    
+
     /** Size of one inch in vertical pixels. */
     _vInch: 96,
-    
+
     /** Size of one 'ex' in horizontal pixels. */
     _hEx: 7,
-    
+
     /** Size of one 'ex' in vertical pixels. */
     _vEx: 7,
-    
+
     /** Size of one 'em' in horizontal pixels. */
     _hEm: 13.3333,
-    
+
     /** Size of one 'em' in vertical pixels. */
     _vEm: 13.3333,
-    
+
     /** Estimated scroll bar width. */
     SCROLL_WIDTH: 17,
-    
+
     /** Estimated scroll bar height. */
     SCROLL_HEIGHT: 17,
-    
+
     _PARSER: /^(-?\d+(?:\.\d+)?)(.+)?$/,
 
     /**
      * Converts any non-relative extent value to pixels.  Returns null in the case of a percentage extent.
-     * 
+     *
      * @param {String} value a unitized extent value, e.g., "2px", "5em", etc.
      * @param {Boolean} horizontal a flag indicating whether the extent is horizontal (true) or vertical (false)
      * @return the pixel value (may have a fractional part)
@@ -2147,13 +2151,13 @@ Core.Web.Measure = {
     },
 
     /**
-     * Updates internal measures used in converting length units 
+     * Updates internal measures used in converting length units
      * (e.g., in, mm, ex, and em) to pixels.
      * Automatically invoked when Core.Web module is initialized.
      */
     _calculateExtentSizes: function() {
         var containerElement = document.getElementsByTagName("body")[0];
-    
+
         var inchDiv4 = document.createElement("div");
         inchDiv4.style.width = "4in";
         inchDiv4.style.height = "4in";
@@ -2161,7 +2165,7 @@ Core.Web.Measure = {
         Core.Web.Measure._hInch = inchDiv4.offsetWidth / 4;
         Core.Web.Measure._vInch = inchDiv4.offsetHeight / 4;
         containerElement.removeChild(inchDiv4);
-        
+
         var emDiv24 = document.createElement("div");
         emDiv24.style.width = "24em";
         emDiv24.style.height = "24em";
@@ -2169,7 +2173,7 @@ Core.Web.Measure = {
         Core.Web.Measure._hEm = emDiv24.offsetWidth / 24;
         Core.Web.Measure._vEm = emDiv24.offsetHeight / 24;
         containerElement.removeChild(emDiv24);
-        
+
         var exDiv24 = document.createElement("div");
         exDiv24.style.width = "24ex";
         exDiv24.style.height = "24ex";
@@ -2177,7 +2181,7 @@ Core.Web.Measure = {
         Core.Web.Measure._hEx = exDiv24.offsetWidth / 24;
         Core.Web.Measure._vEx = exDiv24.offsetHeight / 24;
         containerElement.removeChild(exDiv24);
-        
+
         var scrollDiv = document.createElement("div");
         scrollDiv.style.cssText = "width:500px;height:100px;overflow:auto;";
         var largeDiv = document.createElement("div");
@@ -2193,11 +2197,11 @@ Core.Web.Measure = {
         }
         containerElement.removeChild(scrollDiv);
     },
-    
+
     /**
      * Measures the scrollbar offset of an element, including any
      * scroll-bar related offsets of its ancestors.
-     * 
+     *
      * @param element the element to measure
      * @return the offset data, with 'left' and 'top' properties specifying the offset amounts
      * @type Object
@@ -2207,22 +2211,22 @@ Core.Web.Measure = {
         do {
             if (element.scrollLeft || element.scrollTop) {
                 valueT += element.scrollTop  || 0;
-                valueL += element.scrollLeft || 0; 
+                valueL += element.scrollLeft || 0;
             }
             element = element.offsetParent;
         } while (element);
         return { left: valueL, top: valueT };
     },
-    
+
     /**
      * Measures the cumulative offset of an element.
-     * 
+     *
      * @param element the element to measure
      * @return the offset data, with 'left' and 'top' properties specifying the offset amounts
      * @type Object
      */
     _getCumulativeOffset: function(element) {
-        var valueT = 0, 
+        var valueT = 0,
             valueL = 0,
             init = true;
         do {
@@ -2263,16 +2267,16 @@ Core.Web.Measure = {
              * Flag indicating that the dimension of elements should be calculated.
              */
             FLAG_MEASURE_DIMENSION: 0x1,
-            
+
             /**
              * Flag indicating that the position of elements should be calculated.
              */
             FLAG_MEASURE_POSITION: 0x2,
-            
+
             _initMeasureContainer: function() {
                 // Create off-screen div element for evaluating sizes.
                 this._offscreenDiv = document.createElement("div");
-                this._offscreenDiv.style.cssText = 
+                this._offscreenDiv.style.cssText =
                         "position: absolute; top: -1300px; left: -1700px; width: 1600px; height: 1200px;";
                 document.body.appendChild(this._offscreenDiv);
             }
@@ -2283,19 +2287,19 @@ Core.Web.Measure = {
          * @type Integer
          */
         width: null,
-        
+
         /**
          * The height of the element, in pixels.
          * @type Integer
          */
         height: null,
-        
+
         /**
          * The top coordinate of the element, in pixels relative to the upper-left corner of the interior of the window.
          * @type Integer
          */
         top: null,
-         
+
         /**
          * The left coordinate of the element, in pixels relative to the upper-left corner of the interior of the window.
          * @type Integer
@@ -2304,47 +2308,47 @@ Core.Web.Measure = {
 
         /**
          * Creates a new Bounds object to calculate the size and/or position of an element.
-         * 
+         *
          * @param element the element to measure.
          * @param constraints an object containing width and or height properties specifying size of region in which to measure
          *        the element
          * @constructor
-         */    
+         */
         $construct: function(element, constraints) {
-            var flags = (constraints && constraints.flags) || 
+            var flags = (constraints && constraints.flags) ||
                     (Core.Web.Measure.Bounds.FLAG_MEASURE_DIMENSION | Core.Web.Measure.Bounds.FLAG_MEASURE_POSITION);
 
             if (element === document.body) {
-                return { 
+                return {
                     x: 0,
                     y: 0,
                     height: window.innerHeight || document.documentElement.clientHeight,
                     width: window.innerWidth || document.documentElement.clientWidth
                 };
             }
-            
+
             var testElement = element;
             while (testElement && testElement != document) {
                 testElement = testElement.parentNode;
             }
             var rendered = testElement == document;
-            
+
             var parentNode, nextSibling;
-            
+
             if (flags & Core.Web.Measure.Bounds.FLAG_MEASURE_DIMENSION) {
                 if (!rendered) {
                     // Element must be added to off-screen element for measuring.
-                    
+
                     // Store parent node and next sibling such that element may be replaced into proper position
                     // once off-screen measurement has been completed.
                     parentNode = element.parentNode;
                     nextSibling = element.nextSibling;
-            
+
                     // Remove element from parent.
                     if (parentNode) {
                         parentNode.removeChild(element);
                     }
-                    
+
                     if (constraints) {
                         if (constraints.width) {
                             Core.Web.Measure.Bounds._offscreenDiv.width = constraints.width;
@@ -2353,20 +2357,20 @@ Core.Web.Measure = {
                             Core.Web.Measure.Bounds._offscreenDiv.height = constraints.height;
                         }
                     }
-                    
+
                     // Append element to measuring container DIV.
                     Core.Web.Measure.Bounds._offscreenDiv.appendChild(element);
-                    
+
                     if (constraints) {
                         Core.Web.Measure.Bounds._offscreenDiv.width = "1600px";
                         Core.Web.Measure.Bounds._offscreenDiv.height = "1200px";
                     }
                 }
-                
+
                 // Store width and height of element.
                 this.width = element.offsetWidth;
                 this.height = element.offsetHeight;
-                
+
                 if (!rendered) {
                     // Replace off-screen measured element in previous location.
                     Core.Web.Measure.Bounds._offscreenDiv.removeChild(element);
@@ -2380,20 +2384,20 @@ Core.Web.Measure = {
             if (rendered && (flags & Core.Web.Measure.Bounds.FLAG_MEASURE_POSITION)) {
                 var cumulativeOffset = Core.Web.Measure._getCumulativeOffset(element);
                 var scrollOffset = Core.Web.Measure._getScrollOffset(element);
-        
+
                 this.top = cumulativeOffset.top - scrollOffset.top;
                 this.left = cumulativeOffset.left - scrollOffset.left;
             }
         },
-        
+
         /**
          * toString() implementation for debug purposes.
-         * 
+         *
          * @return a string representation of the object
          * @type String
          */
         toString: function() {
-            return (this.left != null ? (this.left + "," + this.top + " : ") : "") + 
+            return (this.left != null ? (this.left + "," + this.top + " : ") : "") +
                     (this.width != null ? ("[" + this.width + "x" + this.height + "]") : "");
         }
     })
@@ -2401,34 +2405,34 @@ Core.Web.Measure = {
 
 /**
  * Scheduler namespace.
- * Provides capability to invoke code at regular intervals, after a delay, 
+ * Provides capability to invoke code at regular intervals, after a delay,
  * or after the current JavaScript execution context has completed.
  * Provides an object-oriented means of accomplishing this task.
  */
 Core.Web.Scheduler = {
-    
+
     /**
      * Collection of runnables to execute.
      */
     _runnables: [],
-    
+
     /**
      * The thread handle returned by setTimeout().
-     */ 
+     */
     _threadHandle: null,
-    
+
     /**
      * Time at which next execution of the scheduler should occur.
      * When this field is not null, the _threadHandle field contains a
      * timeout scheduled to occur at this time.
      */
     _nextExecution: null,
-    
+
     /**
      * Enqueues a Runnable to be executed by the scheduler.
      * If the runnable is currently enqueued, it will be removed and re-enqueued.  It will be next be invoked
      * after its specified time interval.
-     * 
+     *
      * @param {Core.Web.Scheduler.Runnable} runnable the runnable to enqueue
      */
     add: function(runnable) {
@@ -2445,11 +2449,11 @@ Core.Web.Scheduler = {
     _execute: function() {
         // Mark now-defunct timeout thread handle as null, because this method was invoked by it.
         Core.Web.Scheduler._threadHandle = null;
-        
+
         var currentTime = new Date().getTime();
         var nextInterval = Number.MAX_VALUE;
         var i, runnable;
-        
+
         // Execute pending runnables.
         for (i = 0; i < Core.Web.Scheduler._runnables.length; ++i) {
             runnable = Core.Web.Scheduler._runnables[i];
@@ -2473,68 +2477,68 @@ Core.Web.Scheduler = {
             if (runnable._nextExecution) {
                 // Runnable is scheduled for execution: add it to new queue.
                 newRunnables.push(runnable);
-                
+
                 // Determine time interval of this runnable, if it is the soonest to be executed, use its execution time
                 // as the setTimeout delay.
                 var interval = runnable._nextExecution - currentTime;
                 if (interval < nextInterval) {
                     nextInterval = interval;
                 }
-                
+
                 // Done processing this runnable.
                 continue;
             }
-            
+
             if (runnable.timeInterval != null && runnable.repeat) {
                 // Runnable is executed at a repeating interval but is not scheduled: schedule it for execution.
                 runnable._nextExecution = currentTime + runnable.timeInterval;
                 newRunnables.push(runnable);
-                
+
                 // If this is the next runnable to be executed, use its execution time as the setTimeout delay.
                 if (runnable.timeInterval < nextInterval) {
                     nextInterval = runnable.timeInterval;
                 }
             }
         }
-    
+
         // Store new runnable queue.
         Core.Web.Scheduler._runnables = newRunnables;
-        
+
         if (nextInterval < Number.MAX_VALUE) {
             Core.Web.Scheduler._setTimeout(currentTime + nextInterval);
         }
     },
-    
+
     /**
      * Dequeues a Runnable so it will no longer be executed by the scheduler.
-     * 
+     *
      * @param {Core.Web.Scheduler.Runnable} runnable the runnable to dequeue
      */
     remove: function(runnable) {
         var index = Core.Arrays.indexOf(Core.Web.Scheduler._runnables, runnable);
         Core.Web.Scheduler._runnables[index] = null;
     },
-    
+
     /**
      * Creates a new Runnable that executes the specified method and enqueues it into the scheduler.
-     * 
+     *
      * @param {Number} time the time interval, in milliseconds, after which the Runnable should be executed
      *        (may be null/undefined to execute task immediately, in such cases repeat must be false)
      * @param {Boolean} repeat a flag indicating whether the task should be repeated
      * @param f a function to invoke, may be null/undefined
      * @return the created Runnable.
-     * @type Core.Web.Scheduler.Runnable 
+     * @type Core.Web.Scheduler.Runnable
      */
     run: function(f, timeInterval, repeat) {
         var runnable = new Core.Web.Scheduler.MethodRunnable(f, timeInterval, repeat);
         Core.Web.Scheduler.add(runnable);
         return runnable;
     },
-    
+
     /**
      * Starts the scheduler "thread", to execute at the specified time.
      * If the specified time is in the past, it will execute with a delay of 0.
-     * 
+     *
      * @param {Number} nextExecution next execution time (milliseconds since epoch)
      */
     _setTimeout: function(nextExecution) {
@@ -2542,22 +2546,22 @@ Core.Web.Scheduler = {
             // The current timeout will fire before nextExecution, thus no work needs to be done here.
             return;
         }
-        
+
         if (Core.Web.Scheduler._threadHandle != null) {
             // Clear any existing timeout.
             window.clearTimeout(Core.Web.Scheduler._threadHandle);
         }
-        
+
         var currentTime = new Date().getTime();
         Core.Web.Scheduler._nextExecution = nextExecution;
         var timeout = nextExecution - currentTime > 0 ? nextExecution - currentTime : 0;
         Core.Web.Scheduler._threadHandle = window.setTimeout(Core.Web.Scheduler._execute, timeout);
     },
-    
+
     /**
      * Updates a previously added runnable to be executed based on its <code>timeInterval</code> setting.
      * Performs no action if specified runnable is not currently enqueued.
-     * 
+     *
      * @param {Core.Web.Scheduler.Runnable} runnable the runnable to update
      */
     update: function(runnable) {
@@ -2575,18 +2579,18 @@ Core.Web.Scheduler = {
  * A runnable task that may be scheduled with the Scheduler.
  */
 Core.Web.Scheduler.Runnable = Core.extend({
-    
+
     /** Next execution time (milliseconds since epoch) */
     _nextExecution: null,
-    
+
     $virtual: {
 
-        /** 
+        /**
          * Time interval, in milliseconds after which the Runnable should be executed.
          * @type Number
          */
         timeInterval: null,
-        
+
         /**
          * Flag indicating whether task should be repeated.
          * @type Boolean
@@ -2595,7 +2599,7 @@ Core.Web.Scheduler.Runnable = Core.extend({
     },
 
     $abstract: {
-        
+
         /** Performs work, provided by derived object. */
         run: function() { }
     }
@@ -2631,7 +2635,7 @@ Core.Web.Scheduler.MethodRunnable = Core.extend(Core.Web.Scheduler.Runnable, {
     },
 
     $virtual: {
-        
+
         /**
          * Default run() implementation. Should be overridden by subclasses.
          */
@@ -2642,13 +2646,13 @@ Core.Web.Scheduler.MethodRunnable = Core.extend(Core.Web.Scheduler.Runnable, {
 });
 
 /**
- * Static object/namespace which provides cross-platform CSS positioning 
+ * Static object/namespace which provides cross-platform CSS positioning
  * capabilities. Do not instantiate.
  * <p>
  * Internet Explorer 6 is ordinarily handicapped by its lack
  * of support for setting 'left' and 'right' or 'top' and 'bottom' positions
  * simultaneously on a single document element.
- * <p> 
+ * <p>
  * To use virtual positioning, simply set the left/right/top/bottom
  * coordinates of an element and invoke redraw().  The redraw() method
  * must be invoked whenever the size of the element should be redrawn,
@@ -2657,15 +2661,15 @@ Core.Web.Scheduler.MethodRunnable = Core.extend(Core.Web.Scheduler.Runnable, {
  */
 Core.Web.VirtualPosition = {
 
-    /** Array containing vertical offset attributes to be added to calculation. */ 
+    /** Array containing vertical offset attributes to be added to calculation. */
     _OFFSETS_VERTICAL: ["paddingTop", "paddingBottom", "marginTop", "marginBottom", "borderTopWidth", "borderBottomWidth"],
-            
-    /** Array containing horizontal offset attributes to be added to calculation. */ 
+
+    /** Array containing horizontal offset attributes to be added to calculation. */
     _OFFSETS_HORIZONTAL: ["paddingLeft", "paddingRight", "marginLeft", "marginRight", "borderLeftWidth", "borderRightWidth"],
-    
+
     /** Flag indicating whether virtual positioning is required/enabled. */
     enabled: false,
-    
+
     /**
      * Calculates horizontal or vertical padding, border, and margin offsets for a particular style.
      *
@@ -2687,17 +2691,17 @@ Core.Web.VirtualPosition = {
         }
         return offsets;
     },
-    
+
     /**
      * Enables and initializes the virtual positioning system.
      */
     _init: function() {
         this.enabled = true;
     },
-    
+
     /**
      * Redraws elements registered with the virtual positioning system.
-     * Adjusts the style.height and style.width attributes of an element to 
+     * Adjusts the style.height and style.width attributes of an element to
      * simulate its specified top, bottom, left, and right CSS position settings
      * The calculation makes allowances for padding, margin, and border width.
      *
@@ -2707,14 +2711,14 @@ Core.Web.VirtualPosition = {
         if (!this.enabled) {
             return;
         }
-    
+
         if (!element || !element.parentNode) {
             return;
         }
-        
+
         var offsets;
-    
-        // Adjust 'height' property if 'top' and 'bottom' properties are set, 
+
+        // Adjust 'height' property if 'top' and 'bottom' properties are set,
         // and if all padding/margin/borders are 0 or set in pixel units.
         if (this._verifyPixelValue(element.style.top) && this._verifyPixelValue(element.style.bottom)) {
             // Verify that offsetHeight is valid, and do nothing if it cannot be calculated.
@@ -2724,7 +2728,7 @@ Core.Web.VirtualPosition = {
             if (!isNaN(offsetHeight)) {
                 offsets = this._calculateOffsets(this._OFFSETS_VERTICAL, element.style);
                 if (offsets != -1) {
-                    var calculatedHeight = offsetHeight - parseInt(element.style.top, 10) - 
+                    var calculatedHeight = offsetHeight - parseInt(element.style.top, 10) -
                             parseInt(element.style.bottom, 10) - offsets;
                     if (calculatedHeight <= 0) {
                         element.style.height = 0;
@@ -2736,8 +2740,8 @@ Core.Web.VirtualPosition = {
                 }
             }
         }
-        
-        // Adjust 'width' property if 'left' and 'right' properties are set, 
+
+        // Adjust 'width' property if 'left' and 'right' properties are set,
         // and if all padding/margin/borders are 0 or set in pixel units.
         if (this._verifyPixelValue(element.style.left) && this._verifyPixelValue(element.style.right)) {
             // Verify that offsetHeight is valid, and do nothing if it cannot be calculated.
@@ -2747,7 +2751,7 @@ Core.Web.VirtualPosition = {
             if (!isNaN(offsetWidth)) {
                 offsets = this._calculateOffsets(this._OFFSETS_HORIZONTAL, element.style);
                 if (offsets != -1) {
-                    var calculatedWidth = offsetWidth - parseInt(element.style.left, 10) - 
+                    var calculatedWidth = offsetWidth - parseInt(element.style.left, 10) -
                             parseInt(element.style.right, 10) - offsets;
                     if (calculatedWidth <= 0) {
                         element.style.width = 0;
@@ -2760,8 +2764,8 @@ Core.Web.VirtualPosition = {
             }
         }
     },
-    
-    /** 
+
+    /**
      * Determines if the specified value contains a pixel dimension, e.g., "20px"
      * Returns false if the value is null/whitespace/undefined.
      *
