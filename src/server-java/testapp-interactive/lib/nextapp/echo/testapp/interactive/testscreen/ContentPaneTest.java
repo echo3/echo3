@@ -163,21 +163,32 @@ public class ContentPaneTest extends SplitPane {
                 removeAllContent(testContentPane);
                 Column column = new Column();
 
+                Button scrollButton = new Button("Set Vertical Scroll = 300+x%");
+                scrollButton.setStyleName("Default");
+                scrollButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        testContentPane.setVerticalScroll(new Extent((int) (300+Math.random()*50)));
+                    }
+                });
+                column.add(scrollButton);
+
                 Label label = new Label(StyleUtil.QUASI_LATIN_TEXT_1 + StyleUtil.QUASI_LATIN_TEXT_1);
                 label.setLineWrap(false);
                 column.add(label);
 
+                for (int i = 0; i < 5; i++) {
+                    label = new Label(StyleUtil.QUASI_LATIN_TEXT_1 + StyleUtil.QUASI_LATIN_TEXT_1);
+                    column.add(label);
+                }
+
                 label = new Label(StyleUtil.QUASI_LATIN_TEXT_1 + StyleUtil.QUASI_LATIN_TEXT_1);
+                label.setLineWrap(false);
                 column.add(label);
                 
                 label = new Label(StyleUtil.QUASI_LATIN_TEXT_1 + StyleUtil.QUASI_LATIN_TEXT_1);
                 label.setLineWrap(false);
                 column.add(label);
-                
-                label = new Label(StyleUtil.QUASI_LATIN_TEXT_1 + StyleUtil.QUASI_LATIN_TEXT_1);
-                label.setLineWrap(false);
-                column.add(label);
-                
+
                 testContentPane.add(column);
             }
         });
@@ -337,6 +348,11 @@ public class ContentPaneTest extends SplitPane {
         controlsColumn.addButton("Set Vertical Scroll = End (-1)", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 testContentPane.setVerticalScroll(new Extent(-1));
+            }
+        });
+        controlsColumn.addButton("Toggle Scroll Tracking", new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                testContentPane.setScrollcaptureEnabled(!testContentPane.isScrollcaptureEnabled());
             }
         });
 

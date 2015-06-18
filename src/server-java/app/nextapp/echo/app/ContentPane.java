@@ -55,6 +55,7 @@ implements Pane, PaneContainer {
     public static final String PROPERTY_INSETS = "insets";
     public static final String PROPERTY_OVERFLOW = "overflow";
     public static final String PROPERTY_VERTICAL_SCROLL = "verticalScroll";
+    public static final String PROPERTY_SCROLLCAPTURE_ENABLED = "scrollcaptureEnabled";
     
     public static final int OVERFLOW_AUTO = 0;
     public static final int OVERFLOW_HIDDEN = 1;
@@ -224,4 +225,31 @@ implements Pane, PaneContainer {
         }
         set(PROPERTY_VERTICAL_SCROLL, newValue);
     }
+
+    /**
+     * Determines, if the component tracks updates of the srollbar.
+     *
+     * @return <code>true</code>, if client-side scrollposition is tracked in the scroll properties.
+     * @see #setScrollcaptureEnabled(boolean)
+     * @see #getVerticalScroll()
+     * @see #getHorizontalScroll()
+     */
+    public boolean isScrollcaptureEnabled() {
+        Boolean value = (Boolean) get(PROPERTY_SCROLLCAPTURE_ENABLED);
+        return value == null ? false : value.booleanValue();
+    }
+
+    /**
+     * Sets whether component tracks updates of the srollbar by the client.
+     * The default value is <code>false</code>.
+     *
+     * @param newValue <code>true</code>, if client-side scrollposition should track the scroll positions.
+     * @see #isScrollcaptureEnabled()
+     * @see #getVerticalScroll()
+     * @see #getHorizontalScroll()
+     */
+    public void setScrollcaptureEnabled(boolean newValue) {
+        set(PROPERTY_SCROLLCAPTURE_ENABLED, Boolean.valueOf(newValue));
+    }
+
 }

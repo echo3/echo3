@@ -31,6 +31,7 @@ package nextapp.echo.webcontainer.sync.component;
 
 import nextapp.echo.app.Component;
 import nextapp.echo.app.ContentPane;
+import nextapp.echo.app.Extent;
 import nextapp.echo.app.util.Context;
 import nextapp.echo.webcontainer.AbstractComponentSynchronizePeer;
 import nextapp.echo.webcontainer.ServerMessage;
@@ -72,5 +73,27 @@ public class ContentPanePeer extends AbstractComponentSynchronizePeer {
         super.init(context, component);
         ServerMessage serverMessage = (ServerMessage) context.get(ServerMessage.class);
         serverMessage.addLibrary(CONTENT_PANE_SERVICE.getId());
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.ComponentSynchronizePeer#getInputPropertyClass(String)
+     */
+    public Class getInputPropertyClass(String propertyName) {
+        if (ContentPane.PROPERTY_HORIZONTAL_SCROLL.equals(propertyName) ||
+            ContentPane.PROPERTY_VERTICAL_SCROLL.equals(propertyName)) {
+            return Extent.class;
+        }
+        return null;
+    }
+
+    /**
+     * @see nextapp.echo.webcontainer.AbstractComponentSynchronizePeer#storeInputProperty(nextapp.echo.app.util.Context,
+     *      nextapp.echo.app.Component, java.lang.String, int, java.lang.Object)
+     */
+    public void storeInputProperty(Context context, Component component, String propertyName, int index, Object newValue) {
+        if (ContentPane.PROPERTY_HORIZONTAL_SCROLL.equals(propertyName) ||
+                ContentPane.PROPERTY_VERTICAL_SCROLL.equals(propertyName)) {
+            component.set(propertyName, newValue);
+        }
     }
 }

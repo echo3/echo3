@@ -27,6 +27,7 @@ TestApp = Core.extend(Echo.Application, {
         testScreen.addTest("SplitPane");
         testScreen.addTest("TextComponent");
         testScreen.addTest("WindowPane");
+        testScreen.addTest("ContentPane");
         this.rootComponent.add(testScreen);
     }
 });
@@ -422,3 +423,72 @@ TestApp.Tests.WindowPane = Core.extend(TestApp.TestPane, {
         this.windowPane.set("title", null);
     }
 });
+
+TestApp.Tests.ContentPane = Core.extend(TestApp.TestPane, {
+
+    $construct: function() {
+        TestApp.TestPane.call(this);
+        //this.addTestButton("Add non-float content", Core.method(this, this._addNonFloat));
+        this.addTestButton("Toggle scroll capturing", Core.method(this, this._toggleScrollCapture));
+        this.addTestButton("Toggle background color", Core.method(this, this._randomBackground));
+        this.addTestButton("Read scroll position", Core.method(this, this._updateScrollPositionLabels));
+
+        this.content.add(this.testContentPane =
+                         new Echo.ContentPane({
+                                 background: "#ffcccc",
+                                 children: [
+                                     new Echo.WindowPane({
+                                         styleName: "Default",
+                                         title: "A floating window",
+                                         positionY: "60%",
+                                         positionX: "60%",
+                                         width: 250,
+                                         height: 50
+                                     }),
+                                     new Echo.WindowPane({
+                                         positionY: "20%",
+                                         positionX: "20%",
+                                         styleName: "Default",
+                                         title: "Another floating window",
+                                         width: 250,
+                                         height: 50,
+                                         children: [ this.scrollLabel = new Echo.Label({ text: "Scroll position: unknown", formatWhitespace: true })]
+                                     }),
+                                     this.column = new Echo.Column()
+                                 ],
+                                 //scrollcaptureEnabled: true,
+                                 verticalScroll: 100,
+                                 horizontalScroll: 20
+                             }));
+        this._addNonFloat();
+        this._updateScrollPositionLabels();
+    },
+
+    _addNonFloat: function() {
+        for (i = 1; i < 150; i++) {
+            this.column.add(new Echo.Label({
+                text: "A very long Content #"+i+ " potentially requiring horizontal scrollbars for testing.",
+                border: "1px solid #ccc",
+                lineWrap : false
+           }));
+        }
+    },
+
+    _updateScrollPositionLabels: function() {
+        var vscroll = this.testContentPane.get("verticalScroll");
+        var hscroll = this.testContentPane.get("horizontalScroll");
+        this.scrollLabel.set("text","Scroll position: \n" + hscroll + "/" + vscroll+ "\n scroll capture enabled:" + (this.testContentPane.get("scrollcaptureEnabled")));
+    },
+
+    _toggleScrollCapture: function() {
+        this.testContentPane.set("scrollcaptureEnabled", !this.testContentPane.get("scrollcaptureEnabled"))
+        this._updateScrollPositionLabels();
+    },
+
+    _randomBackground: function() {
+        this.testContentPane.set("background", "#"+((1<<24)*Math.random()|0).toString(16));
+        this._updateScrollPositionLabels();
+    }
+
+});
+
