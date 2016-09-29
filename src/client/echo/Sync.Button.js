@@ -430,6 +430,17 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
         if (!this.component.render("lineWrap", true)) {
             element.style.whiteSpace = "nowrap";
         }
+        
+        var textOverflow = this.component.render("textOverflow", Echo.Button.TEXT_OVERFLOW_CLIP);
+        switch (textOverflow) {
+        case Echo.Button.TEXT_OVERFLOW_ELLIPSIS:
+            element.style.textOverflow = "ellipsis";
+            break;
+        case Echo.Button.TEXT_OVERFLOW_CLIP: // Fall through
+        default:
+            element.style.textOverflow = "clip";
+            break;
+        }
     },
     
     /** 

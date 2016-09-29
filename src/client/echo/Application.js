@@ -2816,10 +2816,31 @@ Echo.AbstractButton = Core.extend(Echo.Component, {
 });
 
 /**
- * Button component: a stateless "push" button which is used to initiate an
- * action.  May not contain child components.
+ * Button component: a stateless "push" button which is used to initiate an action.  May not contain child components.
+ * @sp {Number} textOverflow a value indicating how the button will clip text if it has a defined width and isn't large enough for
+ *     its text, one of the following values:
+ *     <ul>
+ *     <li><code>TEXT_OVERFLOW_CLIP</code> (the default) clip the text without any indication</li>
+ *     <li><code>TEXT_OVERFLOW_ELLIPSIS</code> clip the text by appending an ellipsis ("...") to the visible portion</li>
+ *     </ul>
  */
 Echo.Button = Core.extend(Echo.AbstractButton, {
+
+    $static: {
+        /**
+         * Constant value for <code>textOverflow</code> property indicating that text that won't fit in the button's width will
+         * simply be clipped.  <code>TEXT_OVERFLOW_CLIP</code> is the default textOverflow setting.
+         * @type Number
+         */
+        TEXT_OVERFLOW_CLIP: 0,
+
+        /**
+         * Constant value for <code>textOverflow</code> property indicating that text that won't fit in the button's width will be
+         * represented by an ellipsis ("...").
+         * @type Number
+         */
+        TEXT_OVERFLOW_ELLIPSIS: 1
+    },
 
     $load: function() {
         Echo.ComponentFactory.registerType("Button", this);
