@@ -37,8 +37,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -82,41 +80,11 @@ public class DomUtil {
             throw new SAXException("External entities not supported.");
         }
     };
-
-    /**
-     * ThreadLocal cache of <code>DocumentBuilder</code> instances.
-     */
-    private static final ThreadLocal documentBuilders = new ThreadLocal() {
-    
-        /**
-         * @see java.lang.ThreadLocal#initialValue()
-         */
-        protected Object initialValue() {
-            try {
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                factory.setNamespaceAware(true);
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                builder.setEntityResolver(entityResolver);
-                return builder;
-            } catch (ParserConfigurationException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    };
     
     /**
-     * ThreadLocal cache of <code>TransformerFactory</code> instances.
+     * The factory which will be used to produce identity transformers
      */
-    private static final ThreadLocal transformerFactories = new ThreadLocal() {
-    
-        /**
-         * @see java.lang.ThreadLocal#initialValue()
-         */
-        protected Object initialValue() {
-            TransformerFactory factory = TransformerFactory.newInstance();
-            return factory;
-        }
-    };
+    private static final TransformerFactory transformerFactory = TransformerFactory.newInstance();
     
     /**
      * Creates a new document.
@@ -128,33 +96,34 @@ public class DomUtil {
      * @param namespaceUri the namespace URI of the document element to create
      */
     public static Document createDocument(String qualifiedName, String publicId, String systemId, String namespaceUri) {
-        DOMImplementation dom = DomUtil.getDocumentBuilder().getDOMImplementation();
-        DocumentType docType = dom.createDocumentType(qualifiedName, publicId, systemId);
-        Document document = dom.createDocument(namespaceUri, qualifiedName, docType);
-        if (namespaceUri != null) {
-            document.getDocumentElement().setAttribute("xmlns", namespaceUri);
+        DocumentBuilder builder = DomUtil.getDocumentBuilder();
+        try {
+			DOMImplementation dom = builder.getDOMImplementation();
+	        DocumentType docType = dom.createDocumentType(qualifiedName, publicId, systemId);
+	        Document document = dom.createDocument(namespaceUri, qualifiedName, docType);
+	        if (namespaceUri != null) {
+	            document.getDocumentElement().setAttribute("xmlns", namespaceUri);
+	        }
+	        return document;
+        } finally {
+        	releaseDocumentBuilder(builder);
         }
-        return document;
     }
 
     /**
-     * Retrieves a thread-specific <code>DocumentBuilder</code>.
+     * Retrieves a <code>DocumentBuilder</code> from the pool
      * As it is a shared resource, the returned object should not be reconfigured in any fashion.
      * 
      * @return the <code>DocumentBuilder</code> serving the current thread.
      */
     public static DocumentBuilder getDocumentBuilder() {
-        return (DocumentBuilder) documentBuilders.get();
+        DocumentBuilder builder = DocumentBuilderPool.getBuilder();
+        builder.setEntityResolver(entityResolver);
+		return builder;
     }
     
-    /**
-     * Retrieves a thread-specific <code>TransformerFactory</code>.
-     * As it is a shared resource, the returned object should not be reconfigured in any fashion.
-     * 
-     * @return the <code>TransformerFactory</code> serving the current thread.
-     */
-    public static TransformerFactory getTransformerFactory() {
-        return (TransformerFactory) transformerFactories.get();
+    public static void releaseDocumentBuilder(DocumentBuilder builder) {
+    	DocumentBuilderPool.release(builder);
     }
     
     /**
@@ -288,8 +257,8 @@ public class DomUtil {
     private static void saveImpl(Document document, StreamResult output, Properties outputProperties) 
     throws SAXException {
         try {
-            TransformerFactory tFactory = getTransformerFactory();
-            Transformer transformer = tFactory.newTransformer();
+        	// We can build an identity transformer from a single factory because it's cheap and there are no thread-safety issues
+            Transformer transformer = transformerFactory.newTransformer();
             if (outputProperties != null) {
                 transformer.setOutputProperties(outputProperties);
             }
