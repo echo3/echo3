@@ -11,6 +11,8 @@ import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 import javax.servlet.http.HttpSessionEvent;
 
+import nextapp.echo.webcontainer.service.StringVersionService;
+
 /**
  * Container / manager of all <code>UserInstance<code> objects in the servlet session.
  */
@@ -215,6 +217,13 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         out.append(WebContainerServlet.SERVICE_ID_PARAMETER);
         out.append("=");
         out.append(service.getId());
+        if (service instanceof StringVersionService) {
+            StringVersionService svs = (StringVersionService) service;
+            if (svs.getVersionAsString() != null) {
+                out.append("&v=");
+                out.append(((StringVersionService)service).getVersionAsString());
+            }
+        }
         if (userInstanceId != null) {
             out.append("&");
             out.append(WebContainerServlet.USER_INSTANCE_ID_PARAMETER);
@@ -246,6 +255,13 @@ implements HttpSessionActivationListener, HttpSessionBindingListener, Serializab
         out.append(WebContainerServlet.SERVICE_ID_PARAMETER);
         out.append("=");
         out.append(service.getId());
+        if (service instanceof StringVersionService) {
+            StringVersionService svs = (StringVersionService) service;
+            if (svs.getVersionAsString() != null) {
+                out.append("&v=");
+                out.append(((StringVersionService)service).getVersionAsString());
+            }
+        }
         if (userInstanceId != null) {
             out.append("&");
             out.append(WebContainerServlet.USER_INSTANCE_ID_PARAMETER);
