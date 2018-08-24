@@ -64,7 +64,7 @@ public class StyleSheetLoader {
      *        instantiate property objects
      * @return the created <code>StyleSheet</code> or null if the resource 
      *         does not exist
-     * @throws ComponentXmlException if parsing/instantiation errors occur
+     * @throws SerialException if parsing/instantiation errors occur
      */
     public static StyleSheet load(String resourceName, ClassLoader classLoader)
     throws SerialException {
@@ -91,7 +91,7 @@ public class StyleSheetLoader {
      * @param classLoader the <code>ClassLoader</code> with which to 
      *        instantiate property objects
      * @return the created <code>StyleSheet</code>
-     * @throws ComponentXmlException if parsing/instantiation errors occur
+     * @throws SerialException if parsing/instantiation errors occur
      */
     public static StyleSheet load(InputStream in, final ClassLoader classLoader)
     throws SerialException {

@@ -53,7 +53,7 @@ public class GridLayoutData extends CellLayoutData {
     private int rowSpan;
     
     /**
-     * Creates a new <code>>GridLayoutData</code> instance with no column span/row span. 
+     * Creates a new <code>GridLayoutData</code> instance with no column span/row span. 
      */
     public GridLayoutData() {
         this(1, 1);
