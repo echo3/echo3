@@ -677,7 +677,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
     
         this._splitPaneDiv = document.createElement("div");
         this._splitPaneDiv.id = this.component.renderId;
-        this._splitPaneDiv.style.cssText = "position:absolute;overflow:hidden;top:0;left:0;right:0;bottom:0;";
+        this._splitPaneDiv.style.cssText = "position:absolute;overflow:visible;top:0;left:0;right:0;bottom:0;";
         
         Echo.Sync.renderComponentDefaults(this.component, this._splitPaneDiv);
         
@@ -755,7 +755,7 @@ Echo.Sync.SplitPane = Core.extend(Echo.Render.ComponentSync, {
             }
         }
         if (child.pane) {
-            paneDiv.style.overflow = "hidden";
+            paneDiv.style.overflow = "visible";
         }
                 
         // Set static CSS positioning attributes on pane DIV.

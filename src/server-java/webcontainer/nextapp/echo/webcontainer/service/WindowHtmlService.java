@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 
 import javax.xml.transform.OutputKeys;
 
+import nextapp.echo.webcontainer.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -43,12 +44,6 @@ import org.xml.sax.SAXException;
 
 import nextapp.echo.app.ApplicationInstance;
 import nextapp.echo.app.util.DomUtil;
-import nextapp.echo.webcontainer.Connection;
-import nextapp.echo.webcontainer.ContentType;
-import nextapp.echo.webcontainer.Service;
-import nextapp.echo.webcontainer.UserInstanceContainer;
-import nextapp.echo.webcontainer.SynchronizationException;
-import nextapp.echo.webcontainer.WebContainerServlet;
 
 /**
  * Completely re-renders a browser window.
@@ -109,7 +104,13 @@ implements Service {
         metaGeneratorElement.setAttribute("content", ApplicationInstance.ID_STRING);
         headElement.appendChild(metaGeneratorElement);
 
-        if (userAgent != null && USER_AGENT_MSIE8.matcher(userAgent).find()) {
+        if (ServerConfiguration.IE_EDGE_MODE) {
+            Element metaCompElement = document.createElement("meta");
+            metaCompElement.setAttribute("http-equiv", "X-UA-Compatible");
+            metaCompElement.setAttribute("content", "IE=edge");
+            headElement.appendChild(metaCompElement);
+        }
+        else if (userAgent != null && USER_AGENT_MSIE8.matcher(userAgent).find()) {
             // Force Internet Explorer 8 standards-compliant mode.
             Element metaCompElement = document.createElement("meta");
             metaCompElement.setAttribute("http-equiv", "X-UA-Compatible");
@@ -138,7 +139,7 @@ implements Service {
         scriptElement.setAttribute("type", "text/javascript");
         scriptElement.setAttribute("src", userInstanceContainer.getServiceUri(BootService.SERVICE, null));
         headElement.appendChild(scriptElement);
-        
+
         WebContainerServlet servlet = conn.getServlet();
         
         // Include application-provided initialization scripts.
@@ -181,7 +182,23 @@ implements Service {
         rootDivElement.setAttribute("style", "position:absolute;width:100%;height:100%;");
         rootDivElement.setAttribute("id", userInstanceContainer.getRootHtmlElementId());
         bodyElement.appendChild(rootDivElement);
-        
+
+        // Add a <noscript> element that shows up when JavaScript is disabled in the browser (and echo therefor
+        // does not work at all)
+        if (ServerConfiguration.NOSCRIPT_MESSAGE != null && !"".equals(ServerConfiguration.NOSCRIPT_MESSAGE)) {
+            Element jsDisabledDiv = document.createElement("noscript");
+            jsDisabledDiv.setTextContent(ServerConfiguration.NOSCRIPT_MESSAGE);
+            jsDisabledDiv.setAttribute("style", "padding: 10px; font-weight: bold; font-size: 14pt;");
+            bodyElement.appendChild(jsDisabledDiv);
+
+            if (ServerConfiguration.NOSCRIPT_URL != null && !"".equals(ServerConfiguration.NOSCRIPT_URL)) {
+                Element jsA = document.createElement("a");
+                jsA.setAttribute("href", ServerConfiguration.NOSCRIPT_URL);
+                jsA.setTextContent(ServerConfiguration.NOSCRIPT_URL);
+                jsDisabledDiv.appendChild(jsA);
+            }
+        }
+
         return document;
     }
     
@@ -204,8 +221,7 @@ implements Service {
      */
     public void service(Connection conn) throws IOException {
         try {
-            boolean debug = !("false".equals(conn.getServlet().getInitParameter("echo.debug")));
-            Document document = createHtmlDocument(conn, debug);
+            Document document = createHtmlDocument(conn, ServerConfiguration.DEBUG);
             conn.setContentType(ContentType.TEXT_HTML);
             DomUtil.save(document, conn.getWriter(), OUTPUT_PROPERTIES);
         } catch (SAXException ex) {

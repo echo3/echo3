@@ -148,7 +148,9 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
      * Events waiting for process.
      */
     _pending_events: null,
-    
+
+    _initialSyncComplete: false,
+
     /**
      * MethodRunnable that handle client async property updates.
      */
@@ -318,6 +320,13 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
                 this._handleSessionExpiration();
                 return;
             } else {
+                if (this.configuration["InvalidResponse.Restart"]) {
+                    window.location.reload();
+                    return;
+                } else if (this.configuration["InvalidResponse.URI"]) {
+                    window.location.href = this.configuration["InvalidResponse.URI"];
+                    return;
+                }
                 detail = e.source.getResponseText();
             }
         } else {
@@ -515,6 +524,13 @@ Echo.RemoteClient = Core.extend(Echo.Client, {
 
         if (this._asyncManager && this._asyncManager._syncComplete) {
             this._asyncManager._syncComplete();
+        }
+
+        if (!this._initialSyncComplete) {
+            if (this._isBrowserOutdated()) {
+                this._showBrowserWarning();
+            }
+            this._initialSyncComplete = true;
         }
     },
     
@@ -1386,7 +1402,7 @@ Echo.RemoteClient.ServerMessage = Core.extend({
                 this.client._asyncManager._start();
             }
         } catch (ex) {
-            this.client.fail("Exception: " + ex);
+            this.client.fail("Exception: " + ex + " -> " + ex.stack);
         }
     },
     

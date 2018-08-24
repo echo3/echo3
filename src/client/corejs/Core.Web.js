@@ -2235,11 +2235,14 @@ Core.Web.Library = {
             // Execute content to install library.
             Core.Web.Library.evalLine = new Error().lineNumber + 1;
 
+            // Support for eval debugging
+            var jscode = this._content + "//# sourceURL=" + this._url;
+
             // We use execScript on Internet Explorer
             // We use an anonymous function so that context is window rather than _Item in Firefox
             (window.execScript || function(data) {
-                window["eval"].call(window, data);
-            })(this._content);
+                window["eval"].call(window, jscode);
+            })(jscode);
         },
         
         /**

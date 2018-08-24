@@ -41,7 +41,7 @@ public class ClientConfiguration
 implements Serializable {
     
     /** Serial Version UID. */
-    private static final long serialVersionUID = 20070101L;
+    private static final long serialVersionUID = 20130812L;
 
     /**
      * Property name constant for the alert message which should be displayed in
@@ -60,6 +60,21 @@ implements Serializable {
      * be restarted in the event session expires.  An alert message will not be shown if this value is set.
      */
     public static final String SESSION_EXPIRATION_RESTART = "SessionExpiration.Restart";
+
+    /**
+     * Property name constant for boolean flag indicating whether the application should automatically
+     * be restarted in the event a XMLHttpRequest response is invalid (non-2xx status codes, no XML in response).
+     * This can happen if for example a web access management agent or proxy intercepts the AJAX request and returns
+     * a login page instead.
+     * An alert message will not be shown if this value is set.
+     */
+    public static final String INVALID_RESPONSE_RESTART = "InvalidResponse.Restart";
+
+    /**
+     * Property name constant for the URI which should be displayed in the event
+     * a response is invalid. An alert message will not be shown if this value is set.
+     */
+    public static final String INVALID_RESPONSE_URI = "InvalidResponse.URI";
     
     /**
      * Property name constant for the alert message which should be displayed when
@@ -98,6 +113,21 @@ implements Serializable {
      * Property name constant for wait indicator background.  Must be a <code>Color</code> value.
      */
     public static final String WAIT_INDICATOR_BACKGROUND = "WaitIndicator.Background";
+
+    /**
+     * Property name constant for boolean flag indicating whether the warning message should *not* be displayed
+     * in the browser even if the browser version is unsupported by the client-side JavaScript implementation.
+     */
+    public static final String OUTDATED_BROWSER_NO_WARNING = "OutdatedBrowserWarning.NoWarning";
+
+    /**
+     * Property name constant for message to display when an outdated browser version is detected.
+     */
+    public static final String OUTDATED_BROWSER_MESSAGE = "OutdatedBrowserWarning.Text";
+    /**
+     * Property name constant for the text in the anchor that can be clicked to close the message.
+     */
+    public static final String OUTDATED_BROWSER_CLOSE = "OutdatedBrowserWarning.CloseText";
 
     /**
      * Mapping from property names to property values.

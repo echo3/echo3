@@ -45,6 +45,11 @@
         <include name="**/*xml"/>
         <include name="**/*stylesheet"/>
         <include name="**/*css"/>
+        <include name="**/*.eot"/>
+        <include name="**/*.otf"/>
+        <include name="**/*.svg"/>
+        <include name="**/*.ttf"/>
+        <include name="**/*.woff"/>
     </patternset>
     
     <target name="-check.dependencies">
@@ -186,7 +191,7 @@
                 <contains text="warnings"/>
             </isfileselected>
         </condition>
-        <fail if="javadoc.warnings">Javadoc generation reports warnings! Please resolve them.</fail>
+        <!--<fail if="javadoc.warnings">Javadoc generation reports warnings! Please resolve them.</fail>-->
     </target>
 
     <target name="doc.app"
@@ -200,7 +205,7 @@
                 DocTitle="${javadoc.doctitle.app}"
                 Overview="${dir.src.server-java.app}/nextapp/echo/app/overview.html"
                 Header="${javadoc.header}"
-                failonerror="true"/>
+                failonerror="false"/>
         <record name="${dir.build}/javadoc.log" action="stop"/>
     </target>
 
@@ -216,7 +221,7 @@
                 Overview="${dir.src.server-java.app}/nextapp/echo/app/overview.html"
                 Header="${javadoc.header}"
                 Private="true"
-                failonerror="true"/>
+                failonerror="false"/>
         <record name="${dir.build}/javadoc.log" action="stop"/>
     </target>
 
@@ -342,7 +347,7 @@
                 DocTitle="${javadoc.doctitle.webcontainer}"
                 Overview="${dir.src.server-java.webcontainer}/nextapp/echo/webcontainer/overview.html"
                 Header="${javadoc.header}"
-                failonerror="true">
+                failonerror="false">
             <classpath>
                 <pathelement path="${servlet.lib.jar}"/>
             </classpath>
@@ -363,7 +368,7 @@
                 Overview="${dir.src.server-java.webcontainer}/nextapp/echo/webcontainer/overview.html"
                 Header="${javadoc.header}"
                 Private="true"
-                failonerror="true">
+                failonerror="false">
             <classpath>
                 <pathelement path="${servlet.lib.jar}"/>
             </classpath>
@@ -538,8 +543,24 @@
         </artifact:install>
 	</target>
 
-    <target name="mvn.snapshot" depends="dist, doc.jars, -mvn.generate.pom, -mvn.inittasks"
+    <!-- Deploy snapshot to Sonatype Maven repository. Called by Travis-CI -->
+    <target name="travis.mvn.snapshot">
+        <property environment="env"/>
+        <condition property="secure_env">
+            <not>
+                <equals arg1="${env.TRAVIS_SECURE_ENV_VARS}" arg2="false"/>
+            </not>
+        </condition>
+        <fail unless="secure_env" message="No secure environment variables available, skipping snapshot deployment" />
+        <antcall target="-mvn.snapshot" />
+    </target>
+
+    <target name="mvn.snapshot" depends="dist, doc.jars, -mvn.snapshot"
             description="Deploy snapshot version to configured Maven snapshot repository">
+    </target>
+
+    <!-- Synthetic Implementation target for code reuse -->
+    <target name="-mvn.snapshot" depends="-mvn.generate.pom, -mvn.inittasks">
         <!-- The artifact:deploy tasks do not repesct settings.xml for proxy/auth, so we use the mvn task -->
         <!-- Deploy Echo App API module. -->
         <artifact:mvn>

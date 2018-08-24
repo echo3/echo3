@@ -416,6 +416,11 @@ Echo.Application = Core.extend({
         Core.Arrays.remove(this._modalComponents, component);
         if (modal) {
             this._modalComponents.push(component);
+        } else {
+            // Component is removed from the list of modal components, therefor its modal status should also be
+            // unset so the calls to getModalContextRoot() below and in the modal event listeners don't consider
+            // it modal anymore
+            component.set('modal', false);
         }
         
         // Auto-focus first component in modal context if component is currently focused component is not within modal context.
@@ -2739,8 +2744,7 @@ Echo.Update.Manager = Core.extend({
  *
  * @sp {String} actionCommand the action command fired in action events 
  *     when the button is pushed
- * @sp {#Alignment} alignment the alignment of the button's content (only horizontal alignments are supported, any vertical
- *     component of the alignment value will not be rendered)
+ * @sp {#Alignment} alignment the alignment of the button's content
  * @sp {#FillImage} backgroundImage the background image
  * @sp {#Border} border the default button border
  * @sp {#BoxShadow} boxShadow A drop shadow displayed behind (or inside) the button
