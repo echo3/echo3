@@ -97,7 +97,7 @@ public class WebSocketConnection extends AbstractConnection {
 
     /**
      * Determines if the <code>WebSocketConnection</code> has been initialized, i.e.,
-     * whether its <code>preInit()</code> && <code>postInit()</code> methods has
+     * whether its <code>preInit()</code> and <code>postInit()</code> methods has
      * been invoked.
      * 
      * @return true if the <code>WebSocketConnection</code> is initialized

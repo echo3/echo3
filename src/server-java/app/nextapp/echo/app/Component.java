@@ -279,7 +279,6 @@ implements RenderIdSupport, Serializable {
     
     /**
      * <b>Last active renderId!</b>
-     * <br />
      * Set when component is unregistering from application instance!
      * @see #renderId
      */

@@ -64,7 +64,7 @@ public class AbstractListComponentPeer extends AbstractComponentSynchronizePeer 
     
     /**
      * Property object describing rendered list data, 
-     * i.e., the <code>ListModel</code> and </code>ListCellRenderer</code>. 
+     * i.e., the <code>ListModel</code> and <code>ListCellRenderer</code>. 
      */
     private class ListData {
 
