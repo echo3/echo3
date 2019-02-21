@@ -84,15 +84,19 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
     },
     
     $virtual: {
-        
+
         /**
          * Processes a user action (i.e., clicking or pressing enter when button is focused).
          * Default implementation invokes <code>doAction()</code> on supported <code>Echo.Component</code>.
+         * @param {Number} clientX The horizontal coordinate (according to the client area) of the mouse pointer when the button
+         *        was clicked.  Can be undefined if unknown.
+         * @param {Number} clientY The vertical coordinate (according to the client area) of the mouse pointer when the button was
+         *        clicked.  Can be undefined if unknown.
          */
-        doAction: function() {
-            this.component.doAction();
+        doAction: function(clientX, clientY) {
+            this.component.doAction(clientX, clientY);
         },
-        
+
         /**
          * Renders the content (e.g. text and/or icon) of the button.
          * Appends rendered content to bounding element (<code>this.div</code>).
@@ -206,7 +210,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             return true;
         }
         if (e.keyCode == 13) {
-            this.doAction();
+            this.doAction(null, null);
             return false;
         } else {
             return true;
@@ -260,7 +264,7 @@ Echo.Sync.Button = Core.extend(Echo.Render.ComponentSync, {
             return true;
         }
         this.client.application.setFocusedComponent(this.component);
-        this.doAction();
+        this.doAction(e.clientX, e.clientY);
     },
     
     /** Processes a focus event. */

@@ -2727,6 +2727,9 @@ Echo.AbstractButton = Core.extend(Echo.Component, {
 /**
  * Button component: a stateless "push" button which is used to initiate an
  * action.  May not contain child components.
+ * @event action An event fired when the button is pressed (clicked).  The <code>actionCommand</code> property of the pressed
+ *        button is provided as a property, and the mouse coordinates at the time of the press are provided as clientX and clientY
+ *        properties if they are known (these property values can be null if the event was fired programatically).
  */
 Echo.Button = Core.extend(Echo.AbstractButton, {
 
@@ -2736,7 +2739,23 @@ Echo.Button = Core.extend(Echo.AbstractButton, {
     },
 
     /** @see Echo.Component#componentType */
-    componentType: "Button"
+    componentType: "Button",
+
+    $virtual: {
+
+        /**
+         * Programmatically performs a button action.
+         * @param {Number} clientX The horizontal coordinate (according to the client area) of the mouse pointer when the button
+         *        was clicked.  Can be undefined if unknown.
+         * @param {Number} clientY The vertical coordinate (according to the client area) of the mouse pointer when the button was
+         *        clicked.  Can be undefined if unknown.
+         */
+        doAction: function(clientX, clientY) {
+            this.fireEvent({type: "action", source: this, actionCommand: this.get("actionCommand"),
+                    clientX: (clientX !== undefined) ? clientX : null,
+                    clientY: (clientY !== undefined) ? clientY : null});
+        }
+    }
 });
 
 /**
